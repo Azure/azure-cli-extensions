@@ -1,3 +1,21 @@
+0.1.7
+++++++++++++++++++
+
+* support linked storage account for application insights component.
+* support link one log analytics workspace to application insights component.
+* support setting public network access for application insights component.
+* one fix for api-key creation.
+
+0.1.6
+++++++++++++++++++
+
+* Typo fixes
+
+0.1.5
+++++++++++++++++++
+
+* Small fixes for help messages and error messages
+
 0.1.4
 ++++++++++++++++++
 

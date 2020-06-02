@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"type": "Usage", "timeframe": "MonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '82'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/d8a992d8-44df-4bab-8c7b-5be82b0cafde","name":"d8a992d8-44df-4bab-8c7b-5be82b0cafde","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '744'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 May 2020 08:16:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 7d206f82-91ff-4e16-aca8-2924bdf85a78
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+version: 1

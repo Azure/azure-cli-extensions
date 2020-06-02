@@ -81,9 +81,9 @@ helps['monitor app-insights component show'] = """
 
 helps['monitor app-insights component delete'] = """
     type: command
-    short-summary: Create a new Application Insights resource.
+    short-summary: Delete a new Application Insights resource.
     examples:
-      - name: Create a component with kind web and location.
+      - name: Delete a component with kind web and location.
         text: |
           az monitor app-insights component delete --app demoApp -g demoRg
 """
@@ -187,9 +187,9 @@ helps['monitor app-insights query'] = """
           the start time will be calculated by subtracting the offset. If --start-time and --end-time are
           provided, then --offset will be ignored.
     examples:
-      - name: Execute a simple query over past 3.5 days.
+      - name: Execute a simple query over past 1 hour and 30 minutes.
         text: |
-          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset P3DT12H
+          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query 'requests | summarize count() by bin(timestamp, 1h)' --offset 1h30m
 """
 
 helps['monitor app-insights metrics show'] = """
@@ -241,4 +241,29 @@ helps['monitor app-insights events show'] = """
       - name: List availability results from the last 24 hours.
         text: |
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --offset 24h
+"""
+
+helps['monitor app-insights component linked-storage'] = """
+    type: group
+    short-summary: Manage linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage show'] = """
+    type: command
+    short-summary: Show the details of linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage link'] = """
+    type: command
+    short-summary: Link a storage account with an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage update'] = """
+    type: command
+    short-summary: Update the linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage unlink'] = """
+    type: command
+    short-summary: Unlink a storage account with an Application Insights component.
 """

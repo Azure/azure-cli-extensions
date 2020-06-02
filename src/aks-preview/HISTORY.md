@@ -2,9 +2,54 @@
 
 Release History
 ===============
+
+0.4.50
++++++
+* Add "--max-surge" for az aks nodepool add/update/upgrade
+
+0.4.49
++++++
+* Fix break in get-versions since container service needs to stay on old api.
+
+0.4.48
++++++
+* Fix issues of storage account name for az aks kollect
+
+0.4.47
++++++
+* Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
+
+0.4.46
++++++
+* Fix issues for az aks kollect on private clusters
+
+0.4.45
++++++
+* Add "--aks-custom-headers" for "az aks nodepool add" and "az aks update"
+
+0.4.44
++++++
+* Fix issues with monitoring addon enabling with CLI versions 2.4.0+
+
+0.4.43
++++++
+* Add support for VMSS node public IP.
+
+0.4.38
++++++
+* Add support for AAD V2.
+
+0.4.37
++++++
+* Added slb outbound ip fix
+
+0.4.36
++++++
+* Added --uptime-sla for paid service
+
 0.4.35
 +++++
-* Adding --uptime-sla for paid service
+* Added support for creation time node labels
 
 0.4.34
 +++++

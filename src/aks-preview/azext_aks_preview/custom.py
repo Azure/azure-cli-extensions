@@ -49,21 +49,22 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterSKU
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPoolUpgradeSettings
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterSKU
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -71,9 +72,12 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
+from ._client_factory import cf_agent_pools
 
 
-from ._helpers import _populate_api_server_access_profile, _set_vm_set_type, _set_outbound_type
+from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
+                       _set_outbound_type, _parse_comma_separated_list,
+                       _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
@@ -260,11 +264,11 @@ def load_service_principals(config_path):
 
 def _invoke_deployment(cli_ctx, resource_group_name, deployment_name, template, parameters, validate, no_wait,
                        subscription_id=None):
-    from azure.mgmt.resource.resources import ResourceManagementClient
-    from azure.mgmt.resource.resources.models import DeploymentProperties
-
+    from azure.cli.core.profiles import ResourceType, get_sdk
+    DeploymentProperties = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, 'DeploymentProperties', mod='models')
     properties = DeploymentProperties(template=template, parameters=parameters, mode='incremental')
-    smc = get_mgmt_service_client(cli_ctx, ResourceManagementClient, subscription_id=subscription_id).deployments
+    smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                  subscription_id=subscription_id).deployments
     if validate:
         logger.info('==== BEGIN TEMPLATE ====')
         logger.info(json.dumps(template, indent=2))
@@ -692,7 +696,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_username=None,
                windows_admin_password=None,
                kubernetes_version='',
-               node_vm_size="Standard_DS2_v2",
+               node_vm_size="Standard_D2s_v3",
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
@@ -733,6 +737,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_tenant_id=None,
                tags=None,
                node_zones=None,
+               enable_node_public_ip=False,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
@@ -748,6 +753,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_subnet_id=None,
                appgw_shared=None,
                appgw_watch_namespace=None,
+               enable_aad=False,
+               aad_admin_group_object_ids=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -789,6 +796,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -831,9 +839,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if no_wait:
                 raise CLIError('When --attach-acr and --enable-managed-identity are both specified, '
                                '--no-wait is not allowed, please wait until the whole operation succeeds.')
-            else:
-                # Attach acr operation will be handled after the cluster is created
-                pass
         else:
             _ensure_aks_acr(cmd.cli_ctx,
                             client_id=service_principal_profile.client_id,
@@ -932,13 +937,27 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                                'Are you an Owner on this subscription?')
 
     aad_profile = None
-    if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret, aad_tenant_id]):
+    if enable_aad:
+        if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
+            raise CLIError('"--enable-aad" cannot be used together with '
+                           '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
+
         aad_profile = ManagedClusterAADProfile(
-            client_app_id=aad_client_app_id,
-            server_app_id=aad_server_app_id,
-            server_app_secret=aad_server_app_secret,
+            managed=True,
+            admin_group_object_ids=_parse_comma_separated_list(aad_admin_group_object_ids),
             tenant_id=aad_tenant_id
         )
+    else:
+        if aad_admin_group_object_ids is not None:
+            raise CLIError('"--admin-aad-object-id" can only be used together with "--enable-aad"')
+
+        if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
+            aad_profile = ManagedClusterAADProfile(
+                client_app_id=aad_client_app_id,
+                server_app_id=aad_server_app_id,
+                server_app_secret=aad_server_app_secret,
+                tenant_id=aad_tenant_id
+            )
 
     # Check that both --disable-rbac and --enable-rbac weren't provided
     if all([disable_rbac, enable_rbac]):
@@ -992,15 +1011,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             tier="Paid"
         )
 
-    headers = {}
-    if aks_custom_headers is not None:
-        if aks_custom_headers != "":
-            for pair in aks_custom_headers.split(','):
-                parts = pair.split('=')
-                if len(parts) != 2:
-                    raise CLIError('custom headers format is incorrect')
-
-                headers[parts[0]] = parts[1]
+    headers = get_aks_custom_headers(aks_custom_headers)
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
@@ -1077,7 +1088,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
                attach_acr=None,
-               detach_acr=None):
+               detach_acr=None,
+               aad_tenant_id=None,
+               aad_admin_group_object_ids=None,
+               aks_custom_headers=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1086,6 +1100,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
+    update_aad_profile = not (aad_tenant_id is None and aad_admin_group_object_ids is None)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1093,7 +1108,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_lb_profile \
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
-       not update_lb_profile:
+       not update_lb_profile and \
+       not update_aad_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1105,7 +1121,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--detach-acr" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
-                       '"--load-balancer-outbound-ip-prefixes"')
+                       '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--aad-tenant-id" or '
+                       '"--aad-admin-group-object-ids"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1113,18 +1131,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
                        'to update per node pool auto scaler settings')
 
-    node_count = instance.agent_pool_profiles[0].count
-
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
                            '--update-cluster-autoscaler set.')
 
     if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count.')
-        if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
 
     if enable_cluster_autoscaler:
         if instance.agent_pool_profiles[0].enable_auto_scaling:
@@ -1152,9 +1166,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
 
-    if not cluster_autoscaler_profile:
+    # if intention is to clear profile
+    if cluster_autoscaler_profile == {}:
         instance.auto_scaler_profile = {}
-    else:
+    # else profile is provided, update instance profile if it exists
+    elif cluster_autoscaler_profile:
         instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
                                                     dict((key.replace("-", "_"), value)
                                                          for (key, value) in cluster_autoscaler_profile.items())) \
@@ -1214,7 +1230,17 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.api_server_access_profile = \
             _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    if update_aad_profile:
+        if instance.aad_profile is None or not instance.aad_profile.managed:
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+                           ' if managed aad not is enabled')
+        if aad_tenant_id is not None:
+            instance.aad_profile.tenant_id = aad_tenant_id
+        if aad_admin_group_object_ids is not None:
+            instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(aad_admin_group_object_ids)
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
 
 
 def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
@@ -1382,7 +1408,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
     deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/v0.2/deployment/aks-periscope.yaml").read().decode()
+        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
@@ -1448,10 +1474,11 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    normalized_fqdn = mc.fqdn.replace('.', '-')
+    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
+    normalized_fqdn = fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{normalized_fqdn}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
@@ -1465,11 +1492,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     if not prompt_y_n('Do you want to see analysis results now?', default="n"):
         print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
               f"anytime to check the analysis results.")
-        return
-
-    display_diagnostics_report(temp_kubeconfig_path)
-
-    return
+    else:
+        display_diagnostics_report(temp_kubeconfig_path)
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
@@ -1512,11 +1536,33 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
                 client,
                 resource_group_name,
                 name,
-                kubernetes_version,
+                kubernetes_version='',
                 control_plane_only=False,
                 no_wait=False,
+                node_image_only=False,
                 **kwargs):  # pylint: disable=unused-argument
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, name)
+
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
+        if not prompt_y_n(msg, default="n"):
+            return None
+        agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+        for agent_pool_profile in instance.agent_pool_profiles:
+            if vmas_cluster:
+                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
+            _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
+        return None
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1527,16 +1573,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
-    from knack.prompting import prompt_y_n
-
     upgrade_all = False
     instance.kubernetes_version = kubernetes_version
-
-    vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.type.lower() == "availabilityset":
-            vmas_cluster = True
-            break
 
     # for legacy clusters, we always upgrade node pools with CCP.
     if instance.max_agent_pools < 8 or vmas_cluster:
@@ -1568,6 +1606,12 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
     instance.aad_profile = None
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_name, agent_pool_profile, no_wait):
+    instance = client.get(resource_group_name, cluster_name, agent_pool_profile.name)
+    instance.node_image_version = 'latest'
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, agent_pool_profile.name, instance)
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
@@ -1932,7 +1976,7 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
                                    agent_pool_profile):
     if enable_cluster_autoscaler:
         if min_count is None or max_count is None:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler enabled')
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler enabled')
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count')
         if int(node_count) < int(min_count) or int(node_count) > int(max_count):
@@ -2028,6 +2072,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       tags=None,
                       kubernetes_version=None,
                       node_zones=None,
+                      enable_node_public_ip=False,
                       node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
@@ -2041,8 +2086,10 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
                       spot_max_price=float('nan'),
-                      public_ip_per_vm=False,
                       labels=None,
+                      max_surge=None,
+                      mode="User",
+                      aks_custom_headers=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2050,6 +2097,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
 
+    upgradeSettings = AgentPoolUpgradeSettings()
     taints_array = []
 
     if node_taints is not None:
@@ -2061,10 +2109,10 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                 raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
 
     if node_vm_size is None:
-        if os_type == "Windows":
-            node_vm_size = "Standard_D2s_v3"
-        else:
-            node_vm_size = "Standard_DS2_v2"
+        node_vm_size = "Standard_D2s_v3"
+
+    if max_surge:
+        upgradeSettings.max_surge = max_surge
 
     agent_pool = AgentPool(
         name=nodepool_name,
@@ -2079,9 +2127,11 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
         availability_zones=node_zones,
+        enable_node_public_ip=enable_node_public_ip,
         node_taints=taints_array,
         scale_set_priority=priority,
-        enable_node_public_ip=public_ip_per_vm
+        upgrade_settings=upgradeSettings,
+        mode=mode
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -2095,7 +2145,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_osdisk_size:
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
 
 def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
@@ -2119,11 +2170,30 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           client,
                           resource_group_name,
                           cluster_name,
-                          kubernetes_version,
                           nodepool_name,
-                          no_wait=False):
+                          kubernetes_version='',
+                          no_wait=False,
+                          node_image_only=False,
+                          max_surge=None,):
+
+    from knack.prompting import prompt_y_n
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
     instance.orchestrator_version = kubernetes_version
+    if node_image_only:
+        msg = "This node image upgrade operation will run across every node in this node pool and might take a while, " \
+              "do you wish to continue? "
+        if not prompt_y_n(msg, default="n"):
+            return None
+        instance.node_image_version = 'latest'
+
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
+    if max_surge:
+        instance.upgrade_settings.max_surge = max_surge
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
@@ -2138,27 +2208,27 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
                          min_count=None, max_count=None,
+                         max_surge=None,
+                         mode=None,
                          no_wait=False):
 
-    update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    if update_flags != 1:
-        if update_flags != 0 or tags is None:
-            raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                           '"--disable-cluster-autoscaler" or '
-                           '"--update-cluster-autoscaler"')
+    update_autoscaler = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+
+    if (update_autoscaler != 1 and not tags and not mode and not max_surge):
+        raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
+                       '"--disable-cluster-autoscaler" or '
+                       '"--update-cluster-autoscaler" or '
+                       '"--tags" or "--mode" or "--max-surge"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    node_count = instance.count
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
                            '--update-cluster-autoscaler set.')
     if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count.')
-        if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
 
     if enable_cluster_autoscaler:
         if instance.enable_auto_scaling:
@@ -2178,6 +2248,12 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.min_count = int(min_count)
         instance.max_count = int(max_count)
 
+    if not instance.upgrade_settings:
+        instance.upgrade_settings = AgentPoolUpgradeSettings()
+
+    if max_surge:
+        instance.upgrade_settings.max_surge = max_surge
+
     if disable_cluster_autoscaler:
         if not instance.enable_auto_scaling:
             logger.warning('Autoscaler is already disabled for this node pool.')
@@ -2187,6 +2263,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.max_count = None
 
     instance.tags = tags
+    if mode is not None:
+        instance.mode = mode
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
@@ -2647,3 +2725,15 @@ def format_bright(msg):
 
 def format_hyperlink(the_link):
     return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
+
+
+def get_aks_custom_headers(aks_custom_headers=None):
+    headers = {}
+    if aks_custom_headers is not None:
+        if aks_custom_headers != "":
+            for pair in aks_custom_headers.split(','):
+                parts = pair.split('=')
+                if len(parts) != 2:
+                    raise CLIError('custom headers format is incorrect')
+                headers[parts[0]] = parts[1]
+    return headers

@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: '{"type": "ActualCost", "timeframe": "Custom", "timePeriod": {"from": "2020-03-01T00:00:00.000Z",
+      "to": "2020-05-09T00:00:00.000Z"}, "dataset": {"granularity": "Daily", "aggregation":
+      {"totalCost": {"name": "PreTaxCost", "function": "Sum"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --time-period --scope --dataset-aggregation
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/e0231aea-cf7c-45dd-a1fb-944e3ab0bbb9","name":"e0231aea-cf7c-45dd-a1fb-944e3ab0bbb9","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"PreTaxCost","type":"Number"},{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[186.758302,20200301,"USD"],[158.349446,20200302,"USD"],[155.97897,20200303,"USD"],[162.358037,20200304,"USD"],[211.443682,20200305,"USD"],[262.572605,20200306,"USD"],[237.858197,20200307,"USD"],[215.20761,20200308,"USD"],[321.937396,20200309,"USD"],[377.267038,20200310,"USD"],[269.002744,20200311,"USD"],[251.907123,20200312,"USD"],[241.57893,20200313,"USD"],[212.738854,20200314,"USD"],[193.864972,20200315,"USD"],[275.1352,20200316,"USD"],[408.350175,20200317,"USD"],[422.827042,20200318,"USD"],[499.081824,20200319,"USD"],[476.498051,20200320,"USD"],[448.647256,20200321,"USD"],[437.914351,20200322,"USD"],[433.324812,20200323,"USD"],[483.099996,20200324,"USD"],[1016.342711,20200325,"USD"],[425.789266,20200326,"USD"],[415.357552,20200327,"USD"],[413.462403,20200328,"USD"],[413.006505,20200329,"USD"],[419.924044,20200330,"USD"],[419.592932,20200331,"USD"],[416.613981,20200401,"USD"],[408.468119,20200402,"USD"],[456.219457,20200403,"USD"],[438.307939,20200404,"USD"],[426.956897,20200405,"USD"],[425.69036,20200406,"USD"],[518.270865,20200407,"USD"],[357.930806,20200408,"USD"],[428.149184,20200409,"USD"],[537.673011,20200410,"USD"],[492.206168,20200411,"USD"],[523.479139,20200412,"USD"],[505.556428,20200413,"USD"],[483.03273,20200414,"USD"],[480.243421,20200415,"USD"],[483.139806,20200416,"USD"],[485.523736,20200417,"USD"],[483.687605,20200418,"USD"],[484.006764,20200419,"USD"],[484.891544,20200420,"USD"],[484.316853,20200421,"USD"],[466.370659,20200422,"USD"],[480.70762,20200423,"USD"],[477.721725,20200424,"USD"],[689.082173,20200425,"USD"],[626.994474,20200426,"USD"],[412.660238,20200427,"USD"],[314.921493,20200428,"USD"],[309.928617,20200429,"USD"],[304.582833,20200430,"USD"],[312.176616,20200501,"USD"],[476.132826,20200502,"USD"],[352.051959,20200503,"USD"],[352.041194,20200504,"USD"],[352.060008,20200505,"USD"],[353.0323,20200506,"USD"],[352.617402,20200507,"USD"],[353.018637,20200508,"USD"],[502.775801,20200509,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2376'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 06:53:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 0082d861-7d65-412d-a921-9a9fe5d2fff7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+version: 1
