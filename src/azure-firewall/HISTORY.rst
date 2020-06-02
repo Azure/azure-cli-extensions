@@ -3,6 +3,11 @@
 Release History
 ===============
 
+
+0.4.0
+++++++
+* `az network firewall create/update`: add --dns-servers, --dns-proxy-enabled, --dns-require-proxy-for-network-rules to configure DNS proxy settings.
+
 0.3.1
 ++++++
 * `az network firewall network-rule/nat-rule`: Bug fixes.
