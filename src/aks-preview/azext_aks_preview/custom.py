@@ -685,6 +685,61 @@ def _add_monitoring_role_assignment(result, cluster_resource_id, cmd):
                        'assignment')
 
 
+def _add_ingress_appgw_addon_role_assignment(result, cmd):
+    service_principal_msi_id = None
+    # Check if service principal exists, if it does, assign permissions to service principal
+    # Else, provide permissions to MSI
+    if (
+            hasattr(result, 'service_principal_profile') and
+            hasattr(result.service_principal_profile, 'client_id') and
+            result.service_principal_profile.client_id != 'msi'
+    ):
+        service_principal_msi_id = result.service_principal_profile.client_id
+        is_service_principal = True
+    elif (
+            (hasattr(result, 'addon_profiles')) and
+            (CONST_INGRESS_APPGW_ADDON_NAME in result.addon_profiles) and
+            (hasattr(result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME], 'identity')) and
+            (hasattr(result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].identity, 'object_id'))
+    ):
+        service_principal_msi_id = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].identity.object_id
+        is_service_principal = False
+
+    if service_principal_msi_id is not None:
+        config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
+        from msrestazure.tools import parse_resource_id, resource_id
+        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
+            appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
+            parsed_appgw_id = parse_resource_id(appgw_id)
+            appgw_group_id = resource_id(subscription=parsed_appgw_id["subscription"],
+                                         resource_group=parsed_appgw_id["resource_group"])
+            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                        service_principal_msi_id, is_service_principal, scope=appgw_group_id):
+                logger.warning('Could not create a role assignment for application gateway: %s '
+                               'specified in %s addon. '
+                               'Are you an Owner on this subscription?', appgw_id, CONST_INGRESS_APPGW_ADDON_NAME)
+        if CONST_INGRESS_APPGW_SUBNET_ID in config:
+            subnet_id = config[CONST_INGRESS_APPGW_SUBNET_ID]
+            if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor',
+                                        service_principal_msi_id, is_service_principal, scope=subnet_id):
+                logger.warning('Could not create a role assignment for subnet: %s '
+                               'specified in %s addon. '
+                               'Are you an Owner on this subscription?', subnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+        if CONST_INGRESS_APPGW_SUBNET_PREFIX in config:
+            if result.agent_pool_profiles[0].vnet_subnet_id is not None:
+                parsed_subnet_vnet_id = parse_resource_id(result.agent_pool_profiles[0].vnet_subnet_id)
+                vnet_id = resource_id(subscription=parsed_subnet_vnet_id["subscription"],
+                                      resource_group=parsed_subnet_vnet_id["resource_group"],
+                                      namespace="Microsoft.Network",
+                                      type="virtualNetworks",
+                                      name=parsed_subnet_vnet_id["name"])
+                if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                            service_principal_msi_id, is_service_principal, scope=vnet_id):
+                    logger.warning('Could not create a role assignment for virtual network: %s '
+                                   'specified in %s addon. '
+                                   'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+
+
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
                resource_group_name,
@@ -914,27 +969,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if 'omsagent' in addon_profiles:
         monitoring = True
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
-    if CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles:
-        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
-            appgw_id = addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
-            from msrestazure.tools import parse_resource_id, resource_id
-            appgw_id_dict = parse_resource_id(appgw_id)
-            appgw_group_id = resource_id(
-                subscription=appgw_id_dict["subscription"],
-                resource_group=appgw_id_dict["resource_group"])
-            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_profile.client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for application gateway: {appgw_id} '
-                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
-                               'Are you an Owner on this subscription?')
-        if CONST_INGRESS_APPGW_SUBNET_ID in addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
-            subnet_id = addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_SUBNET_ID]
-            from msrestazure.tools import parse_resource_id, resource_id
-            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_profile.client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for subnet: {subnet_id} '
-                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
-                               'Are you an Owner on this subscription?')
+
+    # addon is in the list and is enabled
+    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles and \
+        addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
     aad_profile = None
     if enable_aad:
@@ -1019,7 +1057,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     for _ in range(0, max_retry):
         try:
             logger.info('AKS cluster is creating, please wait...')
-            if monitoring:
+
+            # some addons require post cluster creation role assigment
+            need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
+            if need_post_creation_role_assignment:
                 # adding a wait here since we rely on the result for role assignment
                 created_cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
                     resource_group_name=resource_group_name,
@@ -1029,7 +1070,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 cloud_name = cmd.cli_ctx.cloud.name
                 # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
                 # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
-                if cloud_name.lower() == 'azurecloud':
+                if monitoring and cloud_name.lower() == 'azurecloud':
                     from msrestazure.tools import resource_id
                     cluster_resource_id = resource_id(
                         subscription=subscription_id,
@@ -1038,6 +1079,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                         name=name
                     )
                     _add_monitoring_role_assignment(created_cluster, cluster_resource_id, cmd)
+                if ingress_appgw_addon_enabled:
+                    _add_ingress_appgw_addon_role_assignment(created_cluster, cmd)
 
             else:
                 created_cluster = sdk_no_wait(no_wait, client.create_or_update,
@@ -1050,9 +1093,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 # Attach ACR to cluster enabled managed identity
                 if created_cluster.identity_profile is None or \
                    created_cluster.identity_profile["kubeletidentity"] is None:
-                    logger.warning('Your cluster is successfully created, but we failed to attach acr to it, '
-                                   'you can manually grant permission to the identity named <ClUSTER_NAME>-agentpool '
-                                   'in MC_ resource group to give it permission to pull from ACR.')
+                    logger.warning('Your cluster is successfully created, but we failed to attach '
+                                   'acr to it, you can manually grant permission to the identity '
+                                   'named <ClUSTER_NAME>-agentpool in MC_ resource group to give '
+                                   'it permission to pull from ACR.')
                 else:
                     kubelet_identity_client_id = created_cluster.identity_profile["kubeletidentity"].client_id
                     _ensure_aks_acr(cmd.cli_ctx,
@@ -2312,7 +2356,6 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_shared=False, appgw_watch_namespace=None, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    service_principal_client_id = instance.service_principal_profile.client_id
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_shared=appgw_shared, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
@@ -2320,32 +2363,16 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
 
-    if CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles:
-        if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
-            appgw_id = instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
-            from msrestazure.tools import parse_resource_id, resource_id
-            appgw_id_dict = parse_resource_id(appgw_id)
-            appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
-            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_client_id, scope=appgw_group_id):
-                logger.warning('Could not create a role assignment for application gateway: {appgw_id} '
-                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
-                               'Are you an Owner on this subscription?')
-        if CONST_INGRESS_APPGW_SUBNET_ID in instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config:
-            subnet_id = instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config[CONST_INGRESS_APPGW_SUBNET_ID]
-            from msrestazure.tools import parse_resource_id, resource_id
-            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_client_id, scope=subnet_id):
-                logger.warning('Could not create a role assignment for subnet: {subnet_id} '
-                               'specified in {CONST_INGRESS_APPGW_ADDON_NAME} addon. '
-                               'Are you an Owner on this subscription?')
+    monitoring = 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled
+    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
 
-    if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
+    if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
         cloud_name = cmd.cli_ctx.cloud.name
         # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
-        if cloud_name.lower() == 'azurecloud':
+        if monitoring and cloud_name.lower() == 'azurecloud':
             from msrestazure.tools import resource_id
             cluster_resource_id = resource_id(
                 subscription=subscription_id,
@@ -2354,6 +2381,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 name=name
             )
             _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+        if ingress_appgw_addon_enabled:
+            _add_ingress_appgw_addon_role_assignment(result, cmd)
 
     else:
         result = sdk_no_wait(no_wait, client.create_or_update,
@@ -2428,7 +2457,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 if not subnet_name:
                     raise CLIError('The aci-connector addon requires setting a subnet name.')
                 addon_profile.config = {'SubnetName': subnet_name}
-            elif addon.lower() == CONST_INGRESS_APPGW_ADDON_NAME:
+            elif addon.lower() == CONST_INGRESS_APPGW_ADDON_NAME.lower():
                 if addon_profile.enabled:
                     raise CLIError('The ingress-appgw addon is already enabled for this managed cluster.\n'
                                    'To change ingress-appgw configuration, run '
