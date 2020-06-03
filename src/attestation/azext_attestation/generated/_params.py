@@ -22,14 +22,14 @@ from azext_attestation.action import AddPolicySigningCertificatesKeys
 
 def load_arguments(self, _):
 
-    with self.argument_context('attestation attestation-provider list') as c:
+    with self.argument_context('attestation list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('attestation attestation-provider show') as c:
+    with self.argument_context('attestation show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', help='Name of the attestation service instance', id_part='name')
 
-    with self.argument_context('attestation attestation-provider create') as c:
+    with self.argument_context('attestation create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', help='Name of the attestation service')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
@@ -41,6 +41,6 @@ def load_arguments(self, _):
                    'hin the array does not imply an order of preference among them, although applications of JWK Sets c'
                    'an choose to assign a meaning to the order for their purposes, if desired.')
 
-    with self.argument_context('attestation attestation-provider delete') as c:
+    with self.argument_context('attestation delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', help='Name of the attestation service', id_part='name')
