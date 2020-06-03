@@ -10,5 +10,5 @@ def loganalytics_data_plane_client(cli_ctx, _):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(
-        resource="https://api.loganalytics.io")
+        resource=cli_ctx.cloud.endpoints.log_analytics_resource_id)
     return LogAnalyticsDataClient(cred)
