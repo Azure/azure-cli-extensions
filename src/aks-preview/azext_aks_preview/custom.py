@@ -1576,7 +1576,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd,    # pylint: disable=unused-argument
+def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-statements
                 client,
                 resource_group_name,
                 name,
@@ -1584,8 +1584,12 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
                 control_plane_only=False,
                 no_wait=False,
                 node_image_only=False,
-                **kwargs):  # pylint: disable=unused-argument
+                yes=False):
     from knack.prompting import prompt_y_n
+    msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+
     instance = client.get(resource_group_name, name)
 
     if kubernetes_version != '' and node_image_only:
@@ -1599,7 +1603,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
 
     if node_image_only:
         msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
-        if not prompt_y_n(msg, default="n"):
+        if not yes and not prompt_y_n(msg, default="n"):
             return None
         agent_pool_client = cf_agent_pools(cmd.cli_ctx)
         for agent_pool_profile in instance.agent_pool_profiles:
@@ -1625,20 +1629,20 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
         if control_plane_only:
             msg = ("Legacy clusters do not support control plane only upgrade. All node pools will be "
                    "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
-            if not prompt_y_n(msg, default="n"):
+            if not yes and not prompt_y_n(msg, default="n"):
                 return None
         upgrade_all = True
     else:
         if not control_plane_only:
             msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
                    "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
-            if not prompt_y_n(msg, default="n"):
+            if not yes and not prompt_y_n(msg, default="n"):
                 return None
             upgrade_all = True
         else:
             msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
                    "Node pool will not change. Continue?").format(instance.kubernetes_version)
-            if not prompt_y_n(msg, default="n"):
+            if not yes and not prompt_y_n(msg, default="n"):
                 return None
 
     if upgrade_all:
