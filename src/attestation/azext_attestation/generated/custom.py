@@ -27,7 +27,7 @@ def attestation_attestation_provider_show(cmd, client,
 def attestation_attestation_provider_create(cmd, client,
                                             resource_group_name,
                                             provider_name,
-                                            location,
+                                            location=None,
                                             tags=None,
                                             attestation_policy=None,
                                             policy_signing_certificates_keys=None):
