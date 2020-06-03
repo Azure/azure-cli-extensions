@@ -8,11 +8,6 @@
 
 from codecs import open
 from setuptools import setup, find_packages
-try:
-    from azure_bdist_wheel import cmdclass
-except ImportError:
-    from distutils import log as logger
-    logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
@@ -26,8 +21,6 @@ CLASSIFIERS = [
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
@@ -45,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='databox',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools DataBox Extension',
+    description='Microsoft Azure Command-Line Tools DataBoxManagementClient Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
