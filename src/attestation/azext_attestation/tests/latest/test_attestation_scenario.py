@@ -9,94 +9,106 @@
 # --------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if
+from azure.cli.testsdk import JMESPathCheck
+from azure.cli.testsdk import JMESPathCheckExists
+from azure.cli.testsdk import NoneCheck
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 @try_manual
-def setup(test, rg, rg_2, rg_3):
-    pass
-
-
-# EXAMPLE: Operations_List
-@try_manual
-def step_operations_list(test, rg, rg_2, rg_3):
-    # EXAMPLE NOT FOUND!
+def setup(test, rg):
     pass
 
 
 # EXAMPLE: AttestationProviders_Create
 @try_manual
-def step_attestationproviders_create(test, rg, rg_2, rg_3):
-    test.cmd('az attestation attestation-provider create '
-             '--provider-name "myattestationprovider" '
-             '--resource-group "{rg}"',
-             checks=[])
+def step_attestationproviders_create(test, rg):
+    test.cmd('az attestation create '
+             '--name "{myattestation}" '
+             '--resource-group "{rg}" '
+             '--location "eastus2"',
+             checks=[
+                 JMESPathCheck('name', test.kwargs.get('myattestation', '')),
+                 JMESPathCheck('resourceGroup', rg),
+                 JMESPathCheck('location', 'eastus2')])
 
 
 # EXAMPLE: AttestationProviders_Get
 @try_manual
-def step_attestationproviders_get(test, rg, rg_2, rg_3):
-    test.cmd('az attestation attestation-provider show '
-             '--provider-name "myattestationprovider" '
+def step_attestationproviders_get(test, rg):
+    test.cmd('az attestation show '
+             '--name "{myattestation}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 JMESPathCheck('name', test.kwargs.get('myattestation', '')),
+                 JMESPathCheck('resourceGroup', rg),
+                 JMESPathCheck('location', 'eastus2')
+             ])
 
 
 # EXAMPLE: AttestationProviders_List
 @try_manual
-def step_attestationproviders_list(test, rg, rg_2, rg_3):
-    test.cmd('az attestation attestation-provider list '
-             '-g ""',
-             checks=[])
+def step_attestationproviders_list(test, rg):
+    test.cmd('az attestation list '
+             '--resource-group=',
+             checks=[
+                 JMESPathCheckExists('value[?name==\'{}\']'.format(test.kwargs.get('myattestation', '')))
+             ])
 
 
 # EXAMPLE: AttestationProviders_ListByResourceGroup
 @try_manual
-def step_attestationproviders_listbyresourcegroup(test, rg, rg_2, rg_3):
-    test.cmd('az attestation attestation-provider list '
-             '--resource-group "{rg_2}"',
-             checks=[])
+def step_attestationproviders_listbyresourcegroup(test, rg):
+    test.cmd('az attestation list '
+             '--resource-group "{rg}"',
+             checks=[
+                 JMESPathCheck('value[0].name', test.kwargs.get('myattestation', ''))
+             ])
 
 
 # EXAMPLE: AttestationProviders_Delete
 @try_manual
-def step_attestationproviders_delete(test, rg, rg_2, rg_3):
-    test.cmd('az attestation attestation-provider delete '
-             '--provider-name "myattestationprovider" '
-             '--resource-group "{rg_3}"',
+def step_attestationproviders_delete(test, rg):
+    test.cmd('az attestation delete '
+             '--name "{myattestation}" '
+             '--resource-group "{rg}" '
+             '--yes',
              checks=[])
+    test.cmd('az attestation list '
+             '--resource-group "{rg}"',
+             checks=[test.check('length(value)', 0)])
 
 
 @try_manual
-def cleanup(test, rg, rg_2, rg_3):
+def cleanup(test, rg):
     pass
 
 
 @try_manual
-def call_scenario(test, rg, rg_2, rg_3):
-    setup(test, rg, rg_2, rg_3)
-    step_operations_list(test, rg, rg_2, rg_3)
-    step_attestationproviders_create(test, rg, rg_2, rg_3)
-    step_attestationproviders_get(test, rg, rg_2, rg_3)
-    step_attestationproviders_list(test, rg, rg_2, rg_3)
-    step_attestationproviders_listbyresourcegroup(test, rg, rg_2, rg_3)
-    step_attestationproviders_delete(test, rg, rg_2, rg_3)
-    cleanup(test, rg, rg_2, rg_3)
+def call_scenario(test, rg):
+    setup(test, rg)
+    step_attestationproviders_create(test, rg)
+    step_attestationproviders_get(test, rg)
+    step_attestationproviders_list(test, rg)
+    step_attestationproviders_listbyresourcegroup(test, rg)
+    step_attestationproviders_delete(test, rg)
+    cleanup(test, rg)
 
 
 @try_manual
 class AttestationManagementClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestattestation_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestattestation_testrg1'[:7], key='rg_2', parameter_name='rg_2')
-    @ResourceGroupPreparer(name_prefix='clitestattestation_sample-resource-group'[:7], key='rg_3', parameter_name='rg_3'
-                           '')
-    def test_attestation(self, rg, rg_2, rg_3):
+    def test_attestation(self, rg):
 
-        call_scenario(self, rg, rg_2, rg_3)
+        self.kwargs.update({
+            'myattestation': self.create_random_name(prefix='clitestattestation'[:9], length=24)
+        })
+
+        call_scenario(self, rg)
         raise_if()
