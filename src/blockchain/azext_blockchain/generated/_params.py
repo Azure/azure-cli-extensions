@@ -127,5 +127,6 @@ def load_arguments(self, _):
         c.argument('blockchain_member_name', options_list=['--member-name'], help='Blockchain member name.')
         c.argument('transaction_node_name', options_list=['--name', '-n'], help='Transaction node name.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('key_name', help='Gets or sets the API key name.')
+        c.argument('key_name', help='Gets or sets the API key name.',
+                   arg_type=get_enum_type(['key1', 'key2']))
         c.argument('value', help='Gets or sets the API key value.')

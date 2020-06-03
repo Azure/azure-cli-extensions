@@ -204,7 +204,7 @@ def step__transactionnodes_delete_transactionnodes_delete(test, rg):
     test.cmd('az blockchain transaction-node delete '
              '--member-name "{contosemember1}" '
              '--resource-group "{rg}" '
-             '--name "{txnode2}"',
+             '--name "{txnode2}" -y',
              checks=[])
 
 
@@ -213,7 +213,7 @@ def step__transactionnodes_delete_transactionnodes_delete(test, rg):
 def step__blockchainmembers_delete_blockchainmembers_delete(test, rg):
     test.cmd('az blockchain member delete '
              '--name "{contosemember1}" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg}" -y',
              checks=[])
 
 
