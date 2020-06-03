@@ -11,7 +11,7 @@
 
 def cf_attestation(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.attestation import AttestationManagementClient
+    from ..vendored_sdks.azure_mgmt_attestation import AttestationManagementClient
     return get_mgmt_service_client(cli_ctx, AttestationManagementClient)
 
 
