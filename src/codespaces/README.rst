@@ -1,5 +1,6 @@
 Microsoft Azure CLI 'codespaces' Extension
 ==========================================
 
-This package is for the 'codespaces' extension.
-i.e. 'az codespaces'
+Visual Studio Codespaces - Cloud-powered development environments accessible from anywhere.
+
+https://azure.microsoft.com/en-us/services/visual-studio-online/
