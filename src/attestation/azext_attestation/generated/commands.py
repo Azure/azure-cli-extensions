@@ -23,4 +23,4 @@ def load_command_table(self, _):
         g.custom_command('list', 'attestation_attestation_provider_list')
         g.custom_show_command('show', 'attestation_attestation_provider_show')
         g.custom_command('create', 'attestation_attestation_provider_create')
-        g.custom_command('delete', 'attestation_attestation_provider_delete')
+        g.custom_command('delete', 'attestation_attestation_provider_delete', confirmation=True)
