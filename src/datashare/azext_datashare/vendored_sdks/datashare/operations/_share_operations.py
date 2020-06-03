@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
@@ -14,11 +14,17 @@ from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
-T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+
+    T = TypeVar('T')
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 class ShareOperations(object):
     """ShareOperations operations.
@@ -27,7 +33,7 @@ class ShareOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +68,7 @@ class ShareOperations(object):
         :type share_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Share or the result of cls(response)
-        :rtype: ~data_share_management_client.models.Share
+        :rtype: ~azure.mgmt.datashare.models.Share
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Share"]
@@ -95,7 +101,7 @@ class ShareOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Share', pipeline_response)
 
@@ -129,12 +135,12 @@ class ShareOperations(object):
         :param description: Share description.
         :type description: str
         :param share_kind: Share kind.
-        :type share_kind: str or ~data_share_management_client.models.ShareKind
+        :type share_kind: str or ~azure.mgmt.datashare.models.ShareKind
         :param terms: Share terms.
         :type terms: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Share or the result of cls(response)
-        :rtype: ~data_share_management_client.models.Share or ~data_share_management_client.models.Share
+        :rtype: ~azure.mgmt.datashare.models.Share or ~azure.mgmt.datashare.models.Share
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Share"]
@@ -175,7 +181,7 @@ class ShareOperations(object):
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -228,7 +234,7 @@ class ShareOperations(object):
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -263,11 +269,11 @@ class ShareOperations(object):
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :return: An instance of LROPoller that returns OperationResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.OperationResponse]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
@@ -288,7 +294,7 @@ class ShareOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
@@ -314,7 +320,7 @@ class ShareOperations(object):
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareList
+        :rtype: ~azure.mgmt.datashare.models.ShareList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareList"]
@@ -364,7 +370,7 @@ class ShareOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -396,7 +402,7 @@ class ShareOperations(object):
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSynchronizationList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareSynchronizationList
+        :rtype: ~azure.mgmt.datashare.models.ShareSynchronizationList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSynchronizationList"]
@@ -447,7 +453,7 @@ class ShareOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -506,7 +512,7 @@ class ShareOperations(object):
         :type synchronization_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationDetailsList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SynchronizationDetailsList
+        :rtype: ~azure.mgmt.datashare.models.SynchronizationDetailsList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationDetailsList"]
@@ -564,7 +570,7 @@ class ShareOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 

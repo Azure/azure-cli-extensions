@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class TriggerOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +65,7 @@ class TriggerOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Trigger or the result of cls(response)
-        :rtype: ~data_share_management_client.models.Trigger
+        :rtype: ~azure.mgmt.datashare.models.Trigger
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Trigger"]
@@ -97,7 +99,7 @@ class TriggerOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Trigger', pipeline_response)
 
@@ -153,7 +155,7 @@ class TriggerOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -191,17 +193,17 @@ class TriggerOperations:
         :param trigger_name: The name of the trigger.
         :type trigger_name: str
         :param trigger: Trigger details.
-        :type trigger: ~data_share_management_client.models.Trigger
+        :type trigger: ~azure.mgmt.datashare.models.Trigger
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns Trigger
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.Trigger]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.Trigger]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Trigger"]
         raw_result = await self._create_initial(
             resource_group_name=resource_group_name,
@@ -224,7 +226,7 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -269,7 +271,7 @@ class TriggerOperations:
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -306,11 +308,11 @@ class TriggerOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns OperationResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.OperationResponse]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = await self._delete_initial(
             resource_group_name=resource_group_name,
@@ -332,7 +334,7 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -360,7 +362,7 @@ class TriggerOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.TriggerList
+        :rtype: ~azure.mgmt.datashare.models.TriggerList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerList"]
@@ -411,7 +413,7 @@ class TriggerOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 

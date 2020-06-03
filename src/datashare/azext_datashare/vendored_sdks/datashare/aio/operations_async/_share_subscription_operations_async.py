@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class ShareSubscriptionOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +62,7 @@ class ShareSubscriptionOperations:
         :type share_subscription_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscription or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareSubscription
+        :rtype: ~azure.mgmt.datashare.models.ShareSubscription
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscription"]
@@ -93,7 +95,7 @@ class ShareSubscriptionOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('ShareSubscription', pipeline_response)
 
@@ -128,7 +130,7 @@ class ShareSubscriptionOperations:
         :type source_share_location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscription or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareSubscription or ~data_share_management_client.models.ShareSubscription
+        :rtype: ~azure.mgmt.datashare.models.ShareSubscription or ~azure.mgmt.datashare.models.ShareSubscription
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscription"]
@@ -169,7 +171,7 @@ class ShareSubscriptionOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -221,7 +223,7 @@ class ShareSubscriptionOperations:
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -255,11 +257,11 @@ class ShareSubscriptionOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns OperationResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.OperationResponse]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = await self._delete_initial(
             resource_group_name=resource_group_name,
@@ -280,7 +282,7 @@ class ShareSubscriptionOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -305,7 +307,7 @@ class ShareSubscriptionOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscriptionList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareSubscriptionList
+        :rtype: ~azure.mgmt.datashare.models.ShareSubscriptionList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionList"]
@@ -355,7 +357,7 @@ class ShareSubscriptionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -386,7 +388,7 @@ class ShareSubscriptionOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SourceShareSynchronizationSettingList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SourceShareSynchronizationSettingList
+        :rtype: ~azure.mgmt.datashare.models.SourceShareSynchronizationSettingList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SourceShareSynchronizationSettingList"]
@@ -437,7 +439,7 @@ class ShareSubscriptionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -468,7 +470,7 @@ class ShareSubscriptionOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ShareSubscriptionSynchronizationList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.ShareSubscriptionSynchronizationList
+        :rtype: ~azure.mgmt.datashare.models.ShareSubscriptionSynchronizationList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronizationList"]
@@ -519,7 +521,7 @@ class ShareSubscriptionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -553,7 +555,7 @@ class ShareSubscriptionOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationDetailsList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SynchronizationDetailsList
+        :rtype: ~azure.mgmt.datashare.models.SynchronizationDetailsList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationDetailsList"]
@@ -611,7 +613,7 @@ class ShareSubscriptionOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -666,7 +668,7 @@ class ShareSubscriptionOperations:
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -701,17 +703,17 @@ class ShareSubscriptionOperations:
         :type share_subscription_name: str
         :param synchronization_mode: Mode of synchronization used in triggers and snapshot sync.
      Incremental by default.
-        :type synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
+        :type synchronization_mode: str or ~azure.mgmt.datashare.models.SynchronizationMode
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns ShareSubscriptionSynchronization
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.ShareSubscriptionSynchronization]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.ShareSubscriptionSynchronization]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
         raw_result = await self._synchronize_initial(
             resource_group_name=resource_group_name,
@@ -733,7 +735,7 @@ class ShareSubscriptionOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'},  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -785,7 +787,7 @@ class ShareSubscriptionOperations:
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -825,11 +827,11 @@ class ShareSubscriptionOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns ShareSubscriptionSynchronization
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.ShareSubscriptionSynchronization]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.ShareSubscriptionSynchronization]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ShareSubscriptionSynchronization"]
         raw_result = await self._cancel_synchronization_initial(
             resource_group_name=resource_group_name,
@@ -851,7 +853,7 @@ class ShareSubscriptionOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'},  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)

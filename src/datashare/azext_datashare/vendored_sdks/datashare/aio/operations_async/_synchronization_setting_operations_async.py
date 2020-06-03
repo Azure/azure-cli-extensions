@@ -13,6 +13,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -26,7 +28,7 @@ class SynchronizationSettingOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,7 +65,7 @@ class SynchronizationSettingOperations:
         :type synchronization_setting_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationSetting or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SynchronizationSetting
+        :rtype: ~azure.mgmt.datashare.models.SynchronizationSetting
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationSetting"]
@@ -97,7 +99,7 @@ class SynchronizationSettingOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('SynchronizationSetting', pipeline_response)
 
@@ -129,10 +131,10 @@ class SynchronizationSettingOperations:
         :param synchronization_setting_name: The name of the synchronizationSetting.
         :type synchronization_setting_name: str
         :param synchronization_setting: The new synchronization setting information.
-        :type synchronization_setting: ~data_share_management_client.models.SynchronizationSetting
+        :type synchronization_setting: ~azure.mgmt.datashare.models.SynchronizationSetting
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationSetting or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SynchronizationSetting or ~data_share_management_client.models.SynchronizationSetting
+        :rtype: ~azure.mgmt.datashare.models.SynchronizationSetting or ~azure.mgmt.datashare.models.SynchronizationSetting
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationSetting"]
@@ -172,7 +174,7 @@ class SynchronizationSettingOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -226,7 +228,7 @@ class SynchronizationSettingOperations:
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -263,11 +265,11 @@ class SynchronizationSettingOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :return: An instance of LROPoller that returns OperationResponse
-        :rtype: ~azure.core.polling.LROPoller[~data_share_management_client.models.OperationResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datashare.models.OperationResponse]
 
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResponse"]
         raw_result = await self._delete_initial(
             resource_group_name=resource_group_name,
@@ -289,7 +291,7 @@ class SynchronizationSettingOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
@@ -317,7 +319,7 @@ class SynchronizationSettingOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SynchronizationSettingList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.SynchronizationSettingList
+        :rtype: ~azure.mgmt.datashare.models.SynchronizationSettingList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SynchronizationSettingList"]
@@ -368,7 +370,7 @@ class SynchronizationSettingOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 

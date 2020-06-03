@@ -12,6 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
@@ -25,7 +26,7 @@ class DataSetMappingOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_share_management_client.models
+    :type models: ~azure.mgmt.datashare.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +63,7 @@ class DataSetMappingOperations:
         :type data_set_mapping_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSetMapping or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSetMapping
+        :rtype: ~azure.mgmt.datashare.models.DataSetMapping
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSetMapping"]
@@ -96,7 +97,7 @@ class DataSetMappingOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DataSetMapping', pipeline_response)
 
@@ -130,10 +131,10 @@ class DataSetMappingOperations:
         :param data_set_mapping_name: The name of the data set mapping to be created.
         :type data_set_mapping_name: str
         :param data_set_mapping: Destination data set configuration details.
-        :type data_set_mapping: ~data_share_management_client.models.DataSetMapping
+        :type data_set_mapping: ~azure.mgmt.datashare.models.DataSetMapping
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSetMapping or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSetMapping or ~data_share_management_client.models.DataSetMapping
+        :rtype: ~azure.mgmt.datashare.models.DataSetMapping or ~azure.mgmt.datashare.models.DataSetMapping
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSetMapping"]
@@ -173,7 +174,7 @@ class DataSetMappingOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -243,7 +244,7 @@ class DataSetMappingOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.DataShareError, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
           return cls(pipeline_response, None, {})
@@ -272,7 +273,7 @@ class DataSetMappingOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataSetMappingList or the result of cls(response)
-        :rtype: ~data_share_management_client.models.DataSetMappingList
+        :rtype: ~azure.mgmt.datashare.models.DataSetMappingList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataSetMappingList"]
@@ -323,7 +324,7 @@ class DataSetMappingOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.DataShareError, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
