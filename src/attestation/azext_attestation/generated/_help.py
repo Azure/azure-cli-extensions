@@ -12,33 +12,30 @@
 from knack.help_files import helps
 
 
-helps['attestation attestation-provider'] = """
-    type: group
-    short-summary: attestation attestation-provider
-"""
-
-helps['attestation attestation-provider list'] = """
+helps['attestation list'] = """
     type: command
-    short-summary: Returns a list of attestation providers in a subscription.
+    short-summary: Returns a list of attestation in a subscription or resource group.
     examples:
-      - name: AttestationProviders_ListByResourceGroup
+      - name: List all attestations in a subscription
         text: |-
-               az attestation attestation-provider list --resource-group "testrg1"
+               az attestation list
+      - name: List all attestations in a resource group
+        text: |-
+               az attestation list --resource-group "MyResourceGroup"
 """
 
-helps['attestation attestation-provider show'] = """
+helps['attestation show'] = """
     type: command
-    short-summary: Get the status of Attestation Provider.
+    short-summary: Gets the status of an attestation.
     examples:
-      - name: AttestationProviders_Get
+      - name: Get details for an attestation in a subscription
         text: |-
-               az attestation attestation-provider show --provider-name "myattestationprovider" --resource-group "MyRes\
-ourceGroup"
+               az attestation show --name "myattestationprovider" --resource-group "MyResourceGroup"
 """
 
-helps['attestation attestation-provider create'] = """
+helps['attestation create'] = """
     type: command
-    short-summary: Creates or updates the Attestation Provider.
+    short-summary: Creates or updates an attestation.
     parameters:
       - name: --policy-signing-certificates-keys
         short-summary: The value of the "keys" parameter is an array of JWK values.  Bydefault, the order of the JWK va\
@@ -81,18 +78,16 @@ ificate containing the key value MUST be the firstcertificate.
 
             Multiple actions can be specified by using more than one --policy-signing-certificates-keys argument.
     examples:
-      - name: AttestationProviders_Create
+      - name: Create or update an attestation
         text: |-
-               az attestation attestation-provider create --provider-name "myattestationprovider" --resource-group "MyR\
-esourceGroup"
+               az attestation create --name "myattestationprovider" --resource-group "MyResourceGroup"
 """
 
-helps['attestation attestation-provider delete'] = """
+helps['attestation delete'] = """
     type: command
-    short-summary: Delete Attestation Service.
+    short-summary: Deletes an attestation.
     examples:
-      - name: AttestationProviders_Delete
+      - name: Delete an attestation
         text: |-
-               az attestation attestation-provider delete --provider-name "myattestationprovider" --resource-group "sam\
-ple-resource-group"
+               az attestation delete --name "myattestationprovider" --resource-group "MyResourceGroup"
 """

@@ -32,8 +32,8 @@ def load_arguments(self, _):
     with self.argument_context('attestation create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
-                   validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group,
+                   help='List of available regions for the resource type is \'eastus2,centralus,uksouth\'')
         c.argument('tags', tags_type)
         c.argument('attestation_policy', help='Name of attestation policy.')
         c.argument('policy_signing_certificates_keys', action=AddPolicySigningCertificatesKeys, nargs='+', help='The va'
