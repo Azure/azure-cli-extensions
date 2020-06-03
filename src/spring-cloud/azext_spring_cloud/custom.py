@@ -7,6 +7,10 @@
 
 import yaml   # pylint: disable=import-error
 from time import sleep
+
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
+
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id
@@ -38,16 +42,34 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None, enable_distributed_tracing=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
 
     properties = models.ClusterResourceProperties()
 
+    create_app_insights = False
+
     if app_insights_key is not None:
         properties.trace = models.TraceProperties(
             enabled=True, app_insight_instrumentation_key=app_insights_key)
+    elif app_insights is not None:
+        instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+        properties.trace = models.TraceProperties(
+            enabled=True, app_insight_instrumentation_key=instrumentation_key)
+    elif enable_distributed_tracing:
+        create_app_insights = True
+
+    if create_app_insights:
+        try:
+            instrumentation_key = try_create_application_insights(cmd, resource_group, name, location)
+            if instrumentation_key is not None:
+                properties.trace = models.TraceProperties(
+                    enabled=True, app_insight_instrumentation_key=instrumentation_key)
+        except Exception:  # pylint: disable=broad-except
+            logger.warning('Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
+                           'Please use the Azure Portal to create and configure the Application Insights, if needed.')
 
     resource = models.ServiceResource(
         location=location, properties=properties)
@@ -1238,3 +1260,40 @@ def domain_update(cmd, client, resource_group, service, app,
 def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     client.custom_domains.get(resource_group, service, app, domain_name)
     return client.custom_domains.delete(resource_group, service, app, domain_name)
+
+def get_app_insights_key(cli_ctx, resource_group, name):
+    appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
+    appinsights = appinsights_client.components.get(resource_group, name)
+    if appinsights is None or appinsights.instrumentation_key is None:
+        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return appinsights.instrumentation_key
+
+def try_create_application_insights(cmd, resource_group, name, location):
+    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
+                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
+                           'if needed.'
+
+    ai_resource_group_name = resource_group
+    ai_name = name
+    ai_location = location
+
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
+    ai_properties = {
+        "name": ai_name,
+        "location": ai_location,
+        "kind": "web",
+        "properties": {
+            "Application_Type": "web"
+        }
+    }
+    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+    if appinsights is None or appinsights.instrumentation_key is None:
+        logger.warning(creation_failed_warn)
+        return None
+
+    # We make this success message as a warning to no interfere with regular JSON output in stdout
+    logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
+                   'You can visit https://portal.azure.com/#resource%s/overview to view your '
+                   'Application Insights component', appinsights.name, appinsights.id)
+
+    return appinsights.instrumentation_key
