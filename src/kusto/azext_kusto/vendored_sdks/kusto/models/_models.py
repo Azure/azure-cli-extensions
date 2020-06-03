@@ -2013,7 +2013,7 @@ class ReadWriteDatabase(Database):
     :ivar statistics: The statistics of the database.
     :vartype statistics: ~azure.mgmt.kusto.models.DatabaseStatistics
     :ivar is_followed: Indicates whether the database is followed.
-    :vartype is_followed: str
+    :vartype is_followed: bool
     """
 
     _validation = {
@@ -2036,7 +2036,7 @@ class ReadWriteDatabase(Database):
         'soft_delete_period': {'key': 'properties.softDeletePeriod', 'type': 'duration'},
         'hot_cache_period': {'key': 'properties.hotCachePeriod', 'type': 'duration'},
         'statistics': {'key': 'properties.statistics', 'type': 'DatabaseStatistics'},
-        'is_followed': {'key': 'properties.isFollowed', 'type': 'str'},
+        'is_followed': {'key': 'properties.isFollowed', 'type': 'bool'},
     }
 
     def __init__(

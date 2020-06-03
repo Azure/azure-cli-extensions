@@ -15,6 +15,7 @@ from azure_devtools.scenario_tests import SingleValueReplacer
 from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 
+
 KEY_RESOURCE_GROUP = 'rg'
 KEY_VIRTUAL_NETWORK = 'vnet'
 KEY_VNET_SUBNET = 'subnet'
@@ -66,8 +67,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         # delete vnet if test is being recorded and if the vnet is not a dev rg
         if not self.dev_setting_name:
             self.live_only_execute(
-                self.cli_ctx, 'az network vnet delete --name {} --resource-group {}'
-                .format(name, self.resource_group_name))
+                self.cli_ctx, 'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
 
 
 class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
