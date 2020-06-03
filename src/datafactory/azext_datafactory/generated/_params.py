@@ -43,17 +43,21 @@ def load_arguments(self, _):
     with self.argument_context('datafactory factory create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n'], help='The factory name.')
-        c.argument('if_match', help='ETag of the factory entity. Should only be specified for update, for which it shou'
-                   'ld match existing entity or can be * for unconditional update.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('if_match',
+                   help='ETag of the factory entity. Should only be specified for update, for which it shou'
+                        'ld match existing entity or can be * for unconditional update.')
+        c.argument('location',
+                   arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
                    'epo information.', arg_group='RepoConfiguration')
         c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s G'
                    'itHub repo information.', arg_group='RepoConfiguration')
-        c.argument('global_parameters', arg_type=CLIArgumentType(options_list=['--global-parameters'], help='List of pa'
-                   'rameters for factory. Expected value: json-string/@json-file.'))
+        c.argument('global_parameters',
+                   arg_type=CLIArgumentType(options_list=['--global-parameters'],
+                                            help='List of parameters for factory. Expected value: '
+                                                 'json-string/@json-file.'))
 
     with self.argument_context('datafactory factory update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -81,7 +85,8 @@ def load_arguments(self, _):
                    'pty string is supported which corresponds to the factory resource.')
         c.argument('profile_name', help='The name of the profile. Currently only the default is supported. The default '
                    'value is DefaultProfile.')
-        c.argument('start_time', help='Start time for the token. If not specified the current time will be used.')
+        c.argument(
+            'start_time', help='Start time for the token. If not specified the current time will be used.')
         c.argument('expire_time', help='Expiration time for the token. Maximum duration for the token is eight hours an'
                    'd by default the token will expire in eight hours.')
 
@@ -90,7 +95,8 @@ def load_arguments(self, _):
         c.argument('factory_name', options_list=['--name', '-n'], help='The factory name.', id_part='name')
         c.argument('git_hub_access_code', help='GitHub access code.')
         c.argument('git_hub_client_id', help='GitHub application client ID.')
-        c.argument('git_hub_access_token_base_url', help='GitHub access token base URL.')
+        c.argument('git_hub_access_token_base_url',
+                   help='GitHub access token base URL.')
 
     with self.argument_context('datafactory integration-runtime list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -107,7 +113,8 @@ def load_arguments(self, _):
     with self.argument_context('datafactory integration-runtime linked-integration-runtime create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
-        c.argument('integration_runtime_name', help='The integration runtime name.')
+        c.argument('integration_runtime_name',
+                   help='The integration runtime name.')
         c.argument('name', help='The name of the linked integration runtime.')
         c.argument('subscription_id',
                    help='The ID of the subscription that the linked integration runtime belongs to.')
@@ -123,12 +130,14 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
                    'hich it should match existing entity or can be * for unconditional update.')
         c.argument('description', help='Integration runtime description.')
-        c.argument('type_properties_compute_properties', arg_type=CLIArgumentType(options_list=['--type-properties-comp'
-                   'ute-properties'], help='The compute resource for managed integration runtime. Expected value: json-'
-                   'string/@json-file.'))
-        c.argument('type_properties_ssis_properties', arg_type=CLIArgumentType(options_list=['--type-properties-ssis-pr'
-                   'operties'], help='SSIS properties for managed integration runtime. Expected value: json-string/@jso'
-                   'n-file.'))
+        c.argument('type_properties_compute_properties',
+                   arg_type=CLIArgumentType(options_list=['--type-properties-compute-properties'],
+                                            help='The compute resource for managed integration runtime. '
+                                            'Expected value: json-string/@json-file.'))
+        c.argument('type_properties_ssis_properties',
+                   arg_type=CLIArgumentType(options_list=['--type-properties-ssis-properties'],
+                                            help='SSIS properties for managed integration runtime. '
+                                            'Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory integration-runtime self-hosted create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -137,9 +146,10 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the integration runtime entity. Should only be specified for update, for w'
                    'hich it should match existing entity or can be * for unconditional update.')
         c.argument('description', help='Integration runtime description.')
-        c.argument('type_properties_linked_info', arg_type=CLIArgumentType(options_list=['--type-properties-linked-info'
-                   ''], help='The base definition of a linked integration runtime. Expected value: json-string/@json-fi'
-                   'le.'))
+        c.argument('type_properties_linked_info',
+                   arg_type=CLIArgumentType(options_list=['--type-properties-linked-info'],
+                                            help='The base definition of a linked integration runtime. '
+                                            'Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory integration-runtime update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -193,7 +203,8 @@ def load_arguments(self, _):
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('integration_runtime_name', options_list=['--name', '-n'], help='The integration runtime name.',
                    id_part='child_name_1')
-        c.argument('linked_factory_name', help='The data factory name for linked integration runtime.')
+        c.argument('linked_factory_name',
+                   help='The data factory name for linked integration runtime.')
 
     with self.argument_context('datafactory integration-runtime start') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -230,28 +241,36 @@ def load_arguments(self, _):
     with self.argument_context('datafactory integration-runtime-node show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
-        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name',
+                   help='The integration runtime name.', id_part='child_name_1')
+        c.argument(
+            'node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory integration-runtime-node update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
-        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name',
+                   help='The integration runtime name.', id_part='child_name_1')
+        c.argument(
+            'node_name', help='The integration runtime node name.', id_part='child_name_2')
         c.argument('concurrent_jobs_limit', help='The number of concurrent jobs permitted to run on the integration run'
                    'time node. Values between 1 and maxConcurrentJobs(inclusive) are allowed.')
 
     with self.argument_context('datafactory integration-runtime-node delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
-        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name',
+                   help='The integration runtime name.', id_part='child_name_1')
+        c.argument(
+            'node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory integration-runtime-node get-ip-address') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
-        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name',
+                   help='The integration runtime name.', id_part='child_name_1')
+        c.argument(
+            'node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory linked-service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -272,7 +291,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Properties of linked ser'
-                   'vice. Expected value: json-string/@json-file.'))
+                                                          'vice. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory linked-service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -282,7 +301,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Properties of linked ser'
-                   'vice. Expected value: json-string/@json-file.'))
+                                                          'vice. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -308,7 +327,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties. Expe'
-                   'cted value: json-string/@json-file.'))
+                                                          'cted value: json-string/@json-file.'))
 
     with self.argument_context('datafactory dataset update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -317,7 +336,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Dataset properties. Expe'
-                   'cted value: json-string/@json-file.'))
+                                                          'cted value: json-string/@json-file.'))
 
     with self.argument_context('datafactory dataset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -342,7 +361,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the pipeline entity.  Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
         c.argument('pipeline', arg_type=CLIArgumentType(options_list=['--pipeline'], help='Pipeline resource definition'
-                   '. Expected value: json-string/@json-file.'))
+                                                        '. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory pipeline update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -351,7 +370,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the pipeline entity.  Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
         c.argument('pipeline', arg_type=CLIArgumentType(options_list=['--pipeline'], help='Pipeline resource definition'
-                   '. Expected value: json-string/@json-file.'))
+                                                        '. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory pipeline delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -372,9 +391,11 @@ def load_arguments(self, _):
         c.argument('start_from_failure', arg_type=get_three_state_flag(), help='In recovery mode, if set to true, the r'
                    'erun will start from failed activities. The property will be used only if startActivityName is not '
                    'specified.')
-        c.argument('parameters', arg_type=CLIArgumentType(options_list=['--parameters'], help='Parameters of the pipeli'
-                   'ne run. These parameters will be used only if the runId is not specified. Expected value: json-stri'
-                   'ng/@json-file.'))
+        c.argument('parameters',
+                   arg_type=CLIArgumentType(
+                       options_list=['--parameters'],
+                       help='Parameters of the pipeline run. These parameters will be used only if the runId is not '
+                            'specified. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory pipeline-run show') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -397,13 +418,16 @@ def load_arguments(self, _):
                    'mat.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' f'
                    'ormat.')
-        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters,
+                   nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+',
+                   help='List of OrderBy option.')
 
     with self.argument_context('datafactory activity-run query-by-pipeline-run') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_1')
+        c.argument('run_id', help='The pipeline run identifier.',
+                   id_part='child_name_1')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
                    'rst page.')
         c.argument('last_updated_after', help='The time at or after which the run event was updated in \'ISO 8601\' for'
@@ -431,7 +455,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Properties of the trigge'
-                   'r. Expected value: json-string/@json-file.'))
+                                                          'r. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory trigger update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -440,7 +464,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Properties of the trigge'
-                   'r. Expected value: json-string/@json-file.'))
+                                                          'r. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -496,14 +520,18 @@ def load_arguments(self, _):
                    'mat.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' f'
                    'ormat.')
-        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters,
+                   nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+',
+                   help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger-run rerun') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('trigger_name', help='The trigger name.', id_part='child_name_1')
-        c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_2')
+        c.argument('trigger_name', help='The trigger name.',
+                   id_part='child_name_1')
+        c.argument('run_id', help='The pipeline run identifier.',
+                   id_part='child_name_2')
 
     with self.argument_context('datafactory data-flow list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -524,7 +552,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Data flow properties. Ex'
-                   'pected value: json-string/@json-file.'))
+                                                          'pected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory data-flow update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -534,7 +562,7 @@ def load_arguments(self, _):
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Data flow properties. Ex'
-                   'pected value: json-string/@json-file.'))
+                                                          'pected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory data-flow delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -549,10 +577,13 @@ def load_arguments(self, _):
                    ' in integration runtime if provided.')
         c.argument('core_count', help='Core count of the cluster. The value will be overwritten by the same setting in '
                    'integration runtime if provided.')
-        c.argument('time_to_live', help='Time to live setting of the cluster in minutes.')
+        c.argument('time_to_live',
+                   help='Time to live setting of the cluster in minutes.')
         c.argument('integration_runtime_name', help='The resource name.')
-        c.argument('integration_runtime_properties', arg_type=CLIArgumentType(options_list=['--integration-runtime-prop'
-                   'erties'], help='Integration runtime properties. Expected value: json-string/@json-file.'))
+        c.argument('integration_runtime_properties',
+                   arg_type=CLIArgumentType(options_list=['--integration-runtime-properties'],
+                                            help='Integration runtime properties. Expected value: '
+                                            'json-string/@json-file.'))
 
     with self.argument_context('datafactory data-flow-debug-session delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -563,31 +594,39 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('datasets', arg_type=CLIArgumentType(options_list=['--datasets'], help='List of datasets. Expected v'
-                   'alue: json-string/@json-file.'))
+        c.argument('datasets',
+                   arg_type=CLIArgumentType(options_list=['--datasets'],
+                                            help='List of datasets. Expected value: json-string/@json-file.'))
         c.argument('linked_services', arg_type=CLIArgumentType(options_list=['--linked-services'], help='List of linked'
-                   ' services. Expected value: json-string/@json-file.'))
+                                                               ' services. Expected value: json-string/@json-file.'))
         c.argument('debug_settings_source_settings', action=AddDebugSettingsSourceSettings, nargs='+', help='Source set'
                    'ting for data flow debug.')
-        c.argument('debug_settings_parameters', arg_type=CLIArgumentType(options_list=['--debug-settings-parameters'],
-                   help='Data flow parameters. Expected value: json-string/@json-file.'))
-        c.argument('debug_settings_dataset_parameters', arg_type=CLIArgumentType(options_list=['--debug-settings-datase'
-                   't-parameters'], help='Parameters for dataset. Expected value: json-string/@json-file.'))
+        c.argument('debug_settings_parameters',
+                   arg_type=CLIArgumentType(options_list=['--debug-settings-parameters'],
+                                            help='Data flow parameters. Expected value: json-string/@json-file.'))
+        c.argument('debug_settings_dataset_parameters',
+                   arg_type=CLIArgumentType(options_list=['--debug-settings-dataset-parameters'],
+                                            help='Parameters for dataset. Expected value: json-string/@json-file.'))
         c.argument('staging_folder_path', help='Folder path for staging blob.')
         c.argument('staging_linked_service_reference_name', help='Reference LinkedService name.')
-        c.argument('staging_linked_service_parameters', arg_type=CLIArgumentType(options_list=['--staging-linked-servic'
-                   'e-parameters'], help='Arguments for LinkedService. Expected value: json-string/@json-file.'))
+        c.argument('staging_linked_service_parameters',
+                   arg_type=CLIArgumentType(options_list=['--staging-linked-service-parameters'],
+                                            help='Arguments for LinkedService. Expected value: '
+                                            'json-string/@json-file.'))
         c.argument('data_flow_name', help='The resource name.')
-        c.argument('data_flow_properties', arg_type=CLIArgumentType(options_list=['--data-flow-properties'], help='Data'
-                   ' flow properties. Expected value: json-string/@json-file.'))
+        c.argument('data_flow_properties',
+                   arg_type=CLIArgumentType(options_list=['--data-flow-properties'],
+                                            help='Data flow properties. Expected value: json-string/@json-file.'))
 
     with self.argument_context('datafactory data-flow-debug-session execute-command') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('command', arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressi'
-                   'onQuery']), help='The command type.')
-        c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
+        c.argument('command',
+                   arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']),
+                   help='The command type.')
+        c.argument('command_payload', action=AddCommandPayload,
+                   nargs='+', help='The command payload object.')
 
     with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
         c.argument('resource_group_name', resource_group_name_type)

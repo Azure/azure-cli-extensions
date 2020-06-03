@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 import json
 from knack.util import CLIError
@@ -53,7 +54,7 @@ def datafactory_factory_create(client,
                                    if_match=if_match,
                                    location=location,
                                    tags=tags,
-                                   identity=None,
+                                   identity=json.loads("{\"type\": \"SystemAssigned\"}"),
                                    repo_configuration=repo_configuration,
                                    global_parameters=global_parameters)
 
@@ -65,7 +66,7 @@ def datafactory_factory_update(client,
     return client.update(resource_group_name=resource_group_name,
                          factory_name=factory_name,
                          tags=tags,
-                         identity=None)
+                         identity=json.loads("{\"type\": \"SystemAssigned\"}"))
 
 
 def datafactory_factory_delete(client,
