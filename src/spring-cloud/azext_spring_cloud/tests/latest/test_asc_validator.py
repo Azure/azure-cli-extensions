@@ -5,7 +5,7 @@
 import unittest
 from argparse import Namespace
 from azure.cli.core.util import CLIError
-from ..._validators import (validate_vnet, validate_vnet_required_parameters, _validate_cidr_range)
+from ..._validators import (validate_vnet, validate_vnet_required_parameters, _validate_cidr_range, _set_default_cidr_range)
 
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
@@ -99,3 +99,15 @@ class TestValidateIPRanges(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
             self.assertEqual('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.', str(context.exception))
+
+    def test_set_default_cidr_range(self):
+        self.assertEqual('11.1.0.0/16,11.2.0.0/16,11.3.0.1/16', _set_default_cidr_range(['10.0.0.0/8', '11.0.2.0/16']))
+        self.assertEqual('10.0.0.0/16,10.1.0.0/16,10.2.0.1/16', _set_default_cidr_range(['172.168.0.0/8']))
+        # Should jump 127.0.0.0/8
+        self.assertEqual('128.0.0.0/16,128.1.0.0/16,128.2.0.1/16', _set_default_cidr_range(['0.0.0.0/2', '64.0.0.0/3', '96.0.0.0/4', '112.0.0.0/5', '120.0.0.0/6', '124.0.0.0/7', '126.0.0.0/8']))
+        with self.assertRaises(CLIError) as context:
+            # Should never be 127.0.0.0/8
+            _set_default_cidr_range(['128.0.0.0/1', '0.0.0.0/2', '64.0.0.0/3', '96.0.0.0/4', '112.0.0.0/5', '120.0.0.0/6', '124.0.0.0/7', '126.0.0.0/8'])
+            self.assertEqual('Cannot set "reserved-cidr-range" automatically.Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.', str(context.exception))
+            _set_default_cidr_range(['0.0.0.0/1'])
+            self.assertEqual('Cannot set "reserved-cidr-range" automatically.Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.', str(context.exception))

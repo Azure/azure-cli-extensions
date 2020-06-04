@@ -183,7 +183,9 @@ def validate_vnet(cmd, namespace):
         _validate_cidr_range(namespace)
     else:
         vnet_obj = _get_vnet(cmd, vnet_id)
-        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj)
+        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj.address_space.address_prefixes) if \
+            vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
+            else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
 
 
 def _get_vnet(cmd, vnet_id):
@@ -199,18 +201,32 @@ def _get_network_client(cli_ctx):
                                    api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
 
 
-def _set_default_cidr_range(vnet):
-    candidates = ['10.0.0.0/14', '172.16.0.0/14']
-    if not vnet or not vnet.address_space or not vnet.address_space.address_prefixes:
-        return candidates[0]
-    subnets = [ip_network(ip, strict=False) for ip in candidates]
-    for value in vnet.address_space.address_prefixes:
-        ip = ip_network(value)
-        subnets = [x for x in subnets if not x.overlaps(ip)]
-    if not subnets:
-        raise CLIError('Cannot set "reserved-cidr-range" automatically. '
-                       'Please specify an used CIDR range in your vnet.')
-    return str(subnets[0])
+def _set_default_cidr_range(address_prefixes):
+    ip_ranges = [ip_network(x, strict=False) for x in address_prefixes]
+    candidates = []
+    current = ip_network('10.0.0.0/16')
+    while len(candidates) < 3:
+        while any(x.overlaps(current) for x in ip_ranges):
+            current = _next_range(current, 16)
+        candidates.append(current)
+        current = _next_range(current, 16)
+    # the last one requires x.x.x.1/16 from API side, it is not a strict address
+    last = candidates[-1]
+    result = [str(x) for x in candidates]
+    result[-1] = '{0}/16'.format(str(last[1]))
+    return ','.join(result)
+
+
+def _next_range(ip, prefix):
+    try:
+        address = ip[-1] + 1
+        # should never be 127.0.0.0/8
+        while address.is_loopback:
+            address = address + 16777216
+        return ip_network('{0}/{1}'.format(address, prefix), strict=False)
+    except ValueError:
+        raise CLIError('Cannot set "reserved-cidr-range" automatically.'
+                       'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.')
 
 
 def _parse_vnet_id_from_subnet(subnet_id):
@@ -245,12 +261,13 @@ def _validate_cidr_range(namespace):
     ranges = namespace.reserved_cidr_range.split(',')
     ranges = [x for x in ranges if x != '']  # filter out empty ones
 
-    if len(ranges) == 1:
-        _validate_ip(ranges[0], 14)
-        namespace.reserved_cidr_range = ranges[0]
-        return
+    # Not support one /14 range yet
+    # if len(ranges) == 1:
+    #     _validate_ip(ranges[0], 14)
+    #     namespace.reserved_cidr_range = ranges[0]
+    #     return
     if len(ranges) != 3:
-        raise CLIError('--reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP ranges')
+        raise CLIError('--reserved-cidr-range should be 3 unused /16 IP ranges')
     ipv4 = [_validate_ip(ip, 16) for ip in ranges]
     # check no overlap with each other
     for i, item in enumerate(ipv4):
@@ -270,7 +287,7 @@ def _validate_ip(ip, prefix):
         if ip_address.prefixlen > prefix:
             raise CLIError(
                 '{0} doesn\'t has valid CIDR prefix. '
-                ' --reserved-cidr-range should be 1 unused /14 IP range, or 3 unused /16 IP ranges.'.format(ip))
+                ' --reserved-cidr-range should be 3 unused /16 IP ranges.'.format(ip))
         return ip_address
     except ValueError:
         raise CLIError('{0} is not a valid CIDR'.format(ip))
