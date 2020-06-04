@@ -24,7 +24,7 @@ helps['spring-cloud update'] = """
     short-summary: Update pricing tier of an Azure Spring Cloud.
     examples:
     - name: Update pricing tier.
-      text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup -l westus
+      text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
 """
 
 helps['spring-cloud delete'] = """
