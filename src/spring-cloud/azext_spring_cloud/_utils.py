@@ -197,8 +197,8 @@ def _get_rg_location(ctx, resource_group_name, subscription_id=None):
 
 def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
     tier = tier.upper()
-    if tier in ['BASIC']:
+    if tier == 'BASIC':
         return 'B0'
-    if tier in ['STANDARD']:
+    if tier == 'STANDARD':
         return 'S0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
