@@ -99,7 +99,8 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} -l centralus --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} -l centralus --kind StorageV2 --hierarchical-namespace true '
+                 ' --https-only')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -119,6 +120,27 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 11))
+
+        # Test directory name contains Spaces
+        contain_space_dir = 'test move directory'
+        # Move directory to contain_space_dir
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, contain_space_dir) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        self.storage_cmd('storage blob directory move -c "{}" -d "{}" -s "{}"', account_info, container,
+                         contain_space_dir, des_directory)
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, contain_space_dir) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        # Move contain_space_dir back to directory
+        self.storage_cmd('storage blob directory move -c "{}" -d "{}" -s "{}"', account_info, container,
+                         des_directory, contain_space_dir)
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+        self.storage_cmd('storage blob directory exists -c "{}" -d "{}"', account_info, container, contain_space_dir) \
+            .assert_with_checks(JMESPathCheck('exists', False))
 
         # Move from a directory to a existing empty directory
         directory2 = 'dir2'

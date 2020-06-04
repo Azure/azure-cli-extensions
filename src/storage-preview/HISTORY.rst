@@ -3,6 +3,9 @@
  Release History
 ===============
 
+0.2.11 (2020-06-04)
+* Fix the bug for command `az storage blob directory move`
+
 0.2.10 (2019-11-25)
 ++++++++++++++++
 * Fix bugs for ADLS Gen2
