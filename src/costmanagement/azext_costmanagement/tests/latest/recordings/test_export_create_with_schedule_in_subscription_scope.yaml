@@ -1,0 +1,242 @@
+interactions:
+- request:
+    body: 'b''b\''{"properties": {"format": "Csv", "definition": {"timeframe": "TheLastMonth",
+      "dataset": {"granularity": "Daily"}}, "deliveryInfo": {"destination": {"resourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_export_schedule000001/providers/Microsoft.Storage/storageAccounts/testexportschedule000002",
+      "container": "export"}}, "schedule": {"status": "Active", "recurrence": "Weekly",
+      "recurrencePeriod": {"from": "2020-06-01T00:00:00.000Z", "to": "2020-10-31T00:00:00.000Z"}}}}\'''''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '552'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --scope --name --storage-account-id --storage-container --timeframe --recurrence
+        --recurrence-period --schedule-status
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-02?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-02","name":"ep-02","type":"Microsoft.CostManagement/exports","eTag":"\"1d632b63fc1f02c\"","properties":{"schedule":{"status":"Active","recurrence":"Weekly","recurrencePeriod":{"from":"2020-06-01T00:00:00Z","to":"2020-10-31T00:00:00Z"}},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_export_schedule000001/providers/Microsoft.Storage/storageAccounts/testexportschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastMonth","dataSet":{"granularity":"Daily"}}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '750'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 17:02:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://consumption.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-02?api-version=2019-11-01
+      pragma:
+      - no-cache
+      session-id:
+      - 336ddc09-3140-41b1-bdb4-cc8b655ec825
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope --name
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-02?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-02","name":"ep-02","type":"Microsoft.CostManagement/exports","eTag":"\"1d632b63fc1f02c\"","properties":{"schedule":{"status":"Active","recurrence":"Weekly","recurrencePeriod":{"from":"2020-06-01T00:00:00Z","to":"2020-10-31T00:00:00Z"}},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_export_schedule000001/providers/Microsoft.Storage/storageAccounts/testexportschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastMonth","dataSet":{"granularity":"Daily"}}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '750'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 17:02:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 3534ff0b-c57e-4e9c-8dfe-3bede1074dac
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports?api-version=2019-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-02","name":"ep-02","type":"Microsoft.CostManagement/exports","eTag":"\"1d632b63fc1f02c\"","properties":{"schedule":{"status":"Active","recurrence":"Weekly","recurrencePeriod":{"from":"2020-06-01T00:00:00Z","to":"2020-10-31T00:00:00Z"}},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_export_schedule000001/providers/Microsoft.Storage/storageAccounts/testexportschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastMonth","dataSet":{"granularity":"Daily"}}}}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '762'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 17:02:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 47c0121f-b169-4e6f-88ff-f924f1f37830
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --scope --name
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-02?api-version=2019-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 May 2020 17:02:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - ff579052-533d-4ffa-b45f-9b010824a969
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope --name
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-02?api-version=2019-11-01
+  response:
+    body:
+      string: '{"error":{"code":"404","message":"No export found for ep-02, Subscription:
+        0b1f6471-1bf0-4dda-aec3-cb9272f09590. (Request ID: c5981703-754c-4d66-bf6e-ec7d6e194319)"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 May 2020 17:02:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 0be6f646-5c8f-4c55-8250-da54e03e48b6
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+version: 1

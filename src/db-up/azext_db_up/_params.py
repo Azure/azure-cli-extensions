@@ -47,7 +47,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('storage_mb', options_list=['--storage-size'], type=int,
                        help='The max storage size of the server. Unit is megabytes.')
             c.argument('ssl_enforcement', arg_type=get_enum_type(SslEnforcementEnum),
-                       default=SslEnforcementEnum.disabled.value,
+                       default=SslEnforcementEnum.enabled.value,
                        help='Enable ssl enforcement or not when connect to server.')
 
     with self.argument_context('mysql up') as c:

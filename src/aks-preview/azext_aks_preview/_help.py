@@ -220,19 +220,16 @@ helps['aks create'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --appgw-name
           type: string
-          short-summary: Name of the application gateway to create/use in the node resource group
+          short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
         - name: --appgw-subnet-prefix
           type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-id
           type: string
-          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
         - name: --appgw-subnet-id
           type: string
-          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-        - name: --appgw-shared
-          type: bool
-          short-summary: Use shared flag if application gateway will be shared
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-watch-namespace
           type: string
           short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
@@ -290,6 +287,9 @@ helps['aks upgrade'] = """
         - name: --control-plane-only
           type: bool
           short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade node image for agent pools.
 """
 
 helps['aks update'] = """
@@ -517,6 +517,9 @@ helps['aks nodepool add'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool scale'] = """
@@ -535,6 +538,12 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade agent pool's node image.
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool update'] = """
@@ -556,6 +565,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -598,25 +610,25 @@ parameters:
     short-summary: The subnet name for the virtual node to use.
   - name: --appgw-name
     type: string
-    short-summary: Name of the application gateway to create/use in the node resource group
+    short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
   - name: --appgw-subnet-prefix
     type: string
-    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-id
     type: string
-    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
   - name: --appgw-subnet-id
     type: string
-    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-  - name: --appgw-shared
-    type: bool
-    short-summary: Use shared flag if application gateway will be shared
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-watch-namespace
     type: string
-    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+  - name: Enable ingress-appgw addon with subnet prefix.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
     crafted: true
 """
 

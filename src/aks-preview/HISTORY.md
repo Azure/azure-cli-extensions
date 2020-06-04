@@ -2,6 +2,23 @@
 
 Release History
 ===============
+
+0.4.50
++++++
+* Add "--max-surge" for az aks nodepool add/update/upgrade
+
+0.4.49
++++++
+* Fix break in get-versions since container service needs to stay on old api.
+
+0.4.48
++++++
+* Fix issues of storage account name for az aks kollect
+
+0.4.47
++++++
+* Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
+
 0.4.46
 +++++
 * Fix issues for az aks kollect on private clusters
