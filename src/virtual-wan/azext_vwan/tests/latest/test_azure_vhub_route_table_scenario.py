@@ -14,14 +14,15 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         self.kwargs.update({
             'vwan': 'testvwan',
             'vhub': 'myclitestvhub',
+            'vpngateway': 'mycligateway',
             'routetable': 'testroutetable',
-            'rg': 1015
+            'rg': resource_group
         })
-        '''
+
         # workaround due to service limitation. It should be fixed in the future.
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS')
-        '''
+        self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l SouthCentralUS')
 
         self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub} --connections All_Vnets --destination-type CIDR --destinations 10.4.0.0/16 10.6.0.0/16 --next-hop-type IPAddress --next-hops 10.0.0.68', checks=[
             self.check('name', self.kwargs['routetable'])
