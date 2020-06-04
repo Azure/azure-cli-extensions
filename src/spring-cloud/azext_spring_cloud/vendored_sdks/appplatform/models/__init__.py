@@ -32,6 +32,7 @@ try:
     from ._models_py3 import GitPatternRepository
     from ._models_py3 import LogFileUrlResponse
     from ._models_py3 import LogSpecification
+    from ._models_py3 import ManagedIdentityProperties
     from ._models_py3 import MetricDimension
     from ._models_py3 import MetricSpecification
     from ._models_py3 import NameAvailability
@@ -82,6 +83,7 @@ except (SyntaxError, ImportError):
     from ._models import GitPatternRepository
     from ._models import LogFileUrlResponse
     from ._models import LogSpecification
+    from ._models import ManagedIdentityProperties
     from ._models import MetricDimension
     from ._models import MetricSpecification
     from ._models import NameAvailability
@@ -121,6 +123,7 @@ from ._app_platform_management_client_enums import (
     ProvisioningState,
     ConfigServerState,
     TraceProxyState,
+    ManagedIdentityType,
     TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
@@ -155,6 +158,7 @@ __all__ = [
     'GitPatternRepository',
     'LogFileUrlResponse',
     'LogSpecification',
+    'ManagedIdentityProperties',
     'MetricDimension',
     'MetricSpecification',
     'NameAvailability',
@@ -193,6 +197,7 @@ __all__ = [
     'ProvisioningState',
     'ConfigServerState',
     'TraceProxyState',
+    'ManagedIdentityType',
     'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',

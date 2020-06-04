@@ -91,6 +91,8 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+    :param identity: The Managed Identity type of the app resource
+    :type identity: ~azure.mgmt.appplatform.models.ManagedIdentityProperties
     :param location: The GEO location of the application, always the same with
      its parent resource
     :type location: str
@@ -107,12 +109,14 @@ class AppResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
+        'identity': {'key': 'identity', 'type': 'ManagedIdentityProperties'},
         'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, *, properties=None, location: str=None, **kwargs) -> None:
+    def __init__(self, *, properties=None, identity=None, location: str=None, **kwargs) -> None:
         super(AppResource, self).__init__(**kwargs)
         self.properties = properties
+        self.identity = identity
         self.location = location
 
 
@@ -819,13 +823,16 @@ class DeploymentResourceProperties(Model):
 class DeploymentSettings(Model):
     """Deployment settings payload.
 
-    :param cpu: Required CPU. Default value: 1 .
+    :param cpu: Required CPU, basic tier should be 1, standard tier should be
+     in range (1, 4). Default value: 1 .
     :type cpu: int
-    :param memory_in_gb: Required Memory size in GB. Default value: 1 .
+    :param memory_in_gb: Required Memory size in GB, basic tier should be in
+     range (1, 2), standard tier should be in range (1, 8). Default value: 1 .
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param instance_count: Instance count. Default value: 1 .
+    :param instance_count: Instance count, basic tier should be in range (1,
+     25), standard tier should be in range (1, 500). Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
@@ -834,12 +841,6 @@ class DeploymentSettings(Model):
     :type runtime_version: str or
      ~azure.mgmt.appplatform.models.RuntimeVersion
     """
-
-    _validation = {
-        'cpu': {'maximum': 4, 'minimum': 1},
-        'memory_in_gb': {'maximum': 8, 'minimum': 1},
-        'instance_count': {'maximum': 20, 'minimum': 1},
-    }
 
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
@@ -987,6 +988,31 @@ class LogSpecification(Model):
         self.name = name
         self.display_name = display_name
         self.blob_duration = blob_duration
+
+
+class ManagedIdentityProperties(Model):
+    """Managed identity properties retrieved from ARM request headers.
+
+    :param type: Possible values include: 'None', 'SystemAssigned',
+     'UserAssigned', 'SystemAssigned,UserAssigned'
+    :type type: str or ~azure.mgmt.appplatform.models.ManagedIdentityType
+    :param principal_id:
+    :type principal_id: str
+    :param tenant_id:
+    :type tenant_id: str
+    """
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+    }
+
+    def __init__(self, *, type=None, principal_id: str=None, tenant_id: str=None, **kwargs) -> None:
+        super(ManagedIdentityProperties, self).__init__(**kwargs)
+        self.type = type
+        self.principal_id = principal_id
+        self.tenant_id = tenant_id
 
 
 class MetricDimension(Model):
@@ -1548,9 +1574,7 @@ class ServiceSpecification(Model):
 class Sku(Model):
     """Sku of Azure Spring Cloud.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param name: Required. Name of the Sku
+    :param name: Name of the Sku
     :type name: str
     :param tier: Tier of the Sku
     :type tier: str
@@ -1558,17 +1582,13 @@ class Sku(Model):
     :type capacity: int
     """
 
-    _validation = {
-        'name': {'required': True},
-    }
-
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'tier': {'key': 'tier', 'type': 'str'},
         'capacity': {'key': 'capacity', 'type': 'int'},
     }
 
-    def __init__(self, *, name: str, tier: str=None, capacity: int=None, **kwargs) -> None:
+    def __init__(self, *, name: str=None, tier: str=None, capacity: int=None, **kwargs) -> None:
         super(Sku, self).__init__(**kwargs)
         self.name = name
         self.tier = tier
