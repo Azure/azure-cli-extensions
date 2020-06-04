@@ -37,14 +37,14 @@ def load_command_table(self, _):
     )
 
     network_firewall_policies_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_07_01.operations#FirewallPoliciesOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2020_05_01.operations#FirewallPoliciesOperations.{}',
         client_factory=cf_firewall_policies,
         resource_type=CUSTOM_FIREWALL_POLICY,
         min_api='2019-07-01'
     )
 
     network_firewall_policy_rule_groups = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_07_01.operations#FirewallPolicyRuleGroupsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2020_05_01.operations#FirewallPolicyRuleGroupsOperations.{}',
         client_factory=cf_firewall_policy_rule_groups,
         resource_type=CUSTOM_FIREWALL_POLICY,
         min_api='2019-07-01'
