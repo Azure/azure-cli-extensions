@@ -15,7 +15,7 @@ def network_client_route_table_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_VHUB_ROUTE_TABLE
     return get_mgmt_service_client(cli_ctx, CUSTOM_VHUB_ROUTE_TABLE, aux_subscriptions=aux_subscriptions,
-                                   api_version='2020-03-01')
+                                   api_version='2020-04-01')
 
 
 def cf_virtual_wans(cli_ctx, _):
