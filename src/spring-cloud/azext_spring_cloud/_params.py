@@ -35,7 +35,7 @@ def load_arguments(self, _):
             self.cli_ctx), validator=validate_location)
         c.argument('app_insights_key', help="Instrumentation key of App Insights to be added for the distributed tracing")
         c.argument('app_insights', help="Name of the existing App Insights to be added for the distributed tracing. Must be in the same resource group.")
-        c.argument('enable_distributed_tracing', arg_type=get_three_state_flag(return_label=True), help="Enable distributed tracing, if you don't specify an existing one by using --app-insights-key or --app-insights, will create a new one.")
+        c.argument('enable_distributed_tracing', arg_type=get_three_state_flag(), help="Enable distributed tracing, if you don't specify an existing one by using --app-insights-key or --app-insights, will create a new one.")
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(

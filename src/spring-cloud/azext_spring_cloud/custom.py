@@ -58,10 +58,10 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
         instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
         properties.trace = models.TraceProperties(
             enabled=True, app_insight_instrumentation_key=instrumentation_key)
-    elif enable_distributed_tracing:
+    elif enable_distributed_tracing is not False:
         create_app_insights = True
 
-    if create_app_insights:
+    if create_app_insights is True:
         try:
             instrumentation_key = try_create_application_insights(cmd, resource_group, name, location)
             if instrumentation_key is not None:
