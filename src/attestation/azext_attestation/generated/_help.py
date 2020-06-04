@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['attestation'] = """
+    type: group
+    short-summary: attestation
+"""
+
 helps['attestation list'] = """
     type: command
     short-summary: Returns a list of attestation in a subscription or resource group.
