@@ -57,7 +57,8 @@ def step_attestationproviders_list(test, rg):
     test.cmd('az attestation list '
              '--resource-group=',
              checks=[
-                 JMESPathCheckExists('value[?name==\'{}\']'.format(test.kwargs.get('myattestation', '')))
+                 JMESPathCheckExists('value[?name==\'{}\']'.format(
+                     test.kwargs.get('myattestation', '')))
              ])
 
 
@@ -67,7 +68,8 @@ def step_attestationproviders_listbyresourcegroup(test, rg):
     test.cmd('az attestation list '
              '--resource-group "{rg}"',
              checks=[
-                 JMESPathCheck('value[0].name', test.kwargs.get('myattestation', ''))
+                 JMESPathCheck('value[0].name',
+                               test.kwargs.get('myattestation', ''))
              ])
 
 
