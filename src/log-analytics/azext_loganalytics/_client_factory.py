@@ -11,4 +11,7 @@ def loganalytics_data_plane_client(cli_ctx, _):
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(
         resource=cli_ctx.cloud.endpoints.log_analytics_resource_id)
-    return LogAnalyticsDataClient(cred, base_url=cli_ctx.cloud.endpoints.log_analytics_resource_id)
+
+    api_version = 'v1'
+    return LogAnalyticsDataClient(cred,
+                                  base_url=cli_ctx.cloud.endpoints.log_analytics_resource_id + '/{}'.format(api_version))
