@@ -42,7 +42,8 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights_name=None, app_insights_resource_id=None, enable_distributed_tracing=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights_name=None,
+                        app_insights_resource_id=None, enable_distributed_tracing=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
@@ -78,7 +79,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
                            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
 
     resource = models.ServiceResource(
-        location=location, properties=properties)
+        location=location, properties=properties, tags=tags)
 
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group, service_name=name, resource=resource)

@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_nodes_count,
@@ -43,6 +43,7 @@ def load_arguments(self, _):
         c.argument('enable_distributed_tracing',
                    arg_type=get_three_state_flag(),
                    help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key, --app-insights-name or --app-insights-resource-id, will create a new one.")
+        c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
