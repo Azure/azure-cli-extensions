@@ -129,7 +129,7 @@ n-branch=XX root-folder=XX last-commit-id=XX
                az datafactory factory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1\
 234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --fac\
 tory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" repos\
-itory-name="repo" root-folder="/" tenant-id="" --location-id "East US"
+itory-name="repo" root-folder="/" tenant-id="" --location "East US"
 """
 
 helps['datafactory factory get-data-plane-access'] = """
@@ -190,9 +190,9 @@ helps['datafactory integration-runtime linked-integration-runtime create'] = """
       - name: IntegrationRuntimes_CreateLinkedIntegrationRuntime
         text: |-
                az datafactory integration-runtime linked-integration-runtime create --name "bfa92911-9fb6-4fbe-8f23-bea\
-e87bc1c83" --data-factory-location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" --subscription-\
-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" --integration-runtime-name "exampleIntegr\
-ationRuntime" --resource-group "exampleResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
+e87bc1c83" --location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" --subscription-id "061774c7-\
+4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" --integration-runtime-name "exampleIntegrationRuntime"\
+ --resource-group "exampleResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory integration-runtime managed'] = """

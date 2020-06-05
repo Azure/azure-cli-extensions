@@ -8,7 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
 
 import json
 from knack.util import CLIError
@@ -77,7 +76,7 @@ def datafactory_factory_delete(client,
 
 
 def datafactory_factory_configure_factory_repo(client,
-                                               location_id,
+                                               location,
                                                factory_resource_id=None,
                                                factory_vsts_configuration=None,
                                                factory_git_hub_configuration=None):
@@ -90,7 +89,7 @@ def datafactory_factory_configure_factory_repo(client,
         raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for repo_co'
                        'nfiguration!')
     repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
-    return client.configure_factory_repo(location_id=location_id,
+    return client.configure_factory_repo(location_id=location,
                                          factory_resource_id=factory_resource_id,
                                          repo_configuration=repo_configuration)
 
@@ -150,14 +149,14 @@ def datafactory_integration_runtime_linked_integration_runtime_create(client,
                                                                       name=None,
                                                                       subscription_id=None,
                                                                       data_factory_name=None,
-                                                                      data_factory_location=None):
+                                                                      location=None):
     return client.create_linked_integration_runtime(resource_group_name=resource_group_name,
                                                     factory_name=factory_name,
                                                     integration_runtime_name=integration_runtime_name,
                                                     name=name,
                                                     subscription_id=subscription_id,
                                                     data_factory_name=data_factory_name,
-                                                    data_factory_location=data_factory_location)
+                                                    data_factory_location=location)
 
 
 def datafactory_integration_runtime_managed_create(client,

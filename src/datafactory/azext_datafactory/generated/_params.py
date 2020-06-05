@@ -46,8 +46,7 @@ def load_arguments(self, _):
         c.argument('if_match',
                    help='ETag of the factory entity. Should only be specified for update, for which it shou'
                         'ld match existing entity or can be * for unconditional update.')
-        c.argument('location',
-                   arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
@@ -69,7 +68,7 @@ def load_arguments(self, _):
         c.argument('factory_name', options_list=['--name', '-n'], help='The factory name.', id_part='name')
 
     with self.argument_context('datafactory factory configure-factory-repo') as c:
-        c.argument('location_id', help='The location identifier.', id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('factory_resource_id', help='The factory resource id.')
         c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS r'
                    'epo information.', arg_group='RepoConfiguration')
@@ -85,8 +84,7 @@ def load_arguments(self, _):
                    'pty string is supported which corresponds to the factory resource.')
         c.argument('profile_name', help='The name of the profile. Currently only the default is supported. The default '
                    'value is DefaultProfile.')
-        c.argument(
-            'start_time', help='Start time for the token. If not specified the current time will be used.')
+        c.argument('start_time', help='Start time for the token. If not specified the current time will be used.')
         c.argument('expire_time', help='Expiration time for the token. Maximum duration for the token is eight hours an'
                    'd by default the token will expire in eight hours.')
 
@@ -95,8 +93,7 @@ def load_arguments(self, _):
         c.argument('factory_name', options_list=['--name', '-n'], help='The factory name.', id_part='name')
         c.argument('git_hub_access_code', help='GitHub access code.')
         c.argument('git_hub_client_id', help='GitHub application client ID.')
-        c.argument('git_hub_access_token_base_url',
-                   help='GitHub access token base URL.')
+        c.argument('git_hub_access_token_base_url', help='GitHub access token base URL.')
 
     with self.argument_context('datafactory integration-runtime list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -113,15 +110,13 @@ def load_arguments(self, _):
     with self.argument_context('datafactory integration-runtime linked-integration-runtime create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
-        c.argument('integration_runtime_name',
-                   help='The integration runtime name.')
+        c.argument('integration_runtime_name', help='The integration runtime name.')
         c.argument('name', help='The name of the linked integration runtime.')
-        c.argument('subscription_id',
-                   help='The ID of the subscription that the linked integration runtime belongs to.')
+        c.argument('subscription_id', help='The ID of the subscription that the linked integration runtime belongs to.')
         c.argument('data_factory_name', help='The name of the data factory that the linked integration runtime belongs '
                    'to.')
-        c.argument('data_factory_location', help='The location of the data factory that the linked integration runtime '
-                   'belongs to.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)  
 
     with self.argument_context('datafactory integration-runtime managed create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -203,8 +198,7 @@ def load_arguments(self, _):
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('integration_runtime_name', options_list=['--name', '-n'], help='The integration runtime name.',
                    id_part='child_name_1')
-        c.argument('linked_factory_name',
-                   help='The data factory name for linked integration runtime.')
+        c.argument('linked_factory_name', help='The data factory name for linked integration runtime.')
 
     with self.argument_context('datafactory integration-runtime start') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -241,36 +235,28 @@ def load_arguments(self, _):
     with self.argument_context('datafactory integration-runtime-node show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name',
-                   help='The integration runtime name.', id_part='child_name_1')
-        c.argument(
-            'node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
+        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory integration-runtime-node update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name',
-                   help='The integration runtime name.', id_part='child_name_1')
-        c.argument(
-            'node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
+        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
         c.argument('concurrent_jobs_limit', help='The number of concurrent jobs permitted to run on the integration run'
                    'time node. Values between 1 and maxConcurrentJobs(inclusive) are allowed.')
 
     with self.argument_context('datafactory integration-runtime-node delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name',
-                   help='The integration runtime name.', id_part='child_name_1')
-        c.argument(
-            'node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
+        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory integration-runtime-node get-ip-address') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('integration_runtime_name',
-                   help='The integration runtime name.', id_part='child_name_1')
-        c.argument(
-            'node_name', help='The integration runtime node name.', id_part='child_name_2')
+        c.argument('integration_runtime_name', help='The integration runtime name.', id_part='child_name_1')
+        c.argument('node_name', help='The integration runtime node name.', id_part='child_name_2')
 
     with self.argument_context('datafactory linked-service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -418,16 +404,13 @@ def load_arguments(self, _):
                    'mat.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' f'
                    'ormat.')
-        c.argument('filters', action=AddFilters,
-                   nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+',
-                   help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory activity-run query-by-pipeline-run') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('run_id', help='The pipeline run identifier.',
-                   id_part='child_name_1')
+        c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_1')
         c.argument('continuation_token', help='The continuation token for getting the next page of results. Null for fi'
                    'rst page.')
         c.argument('last_updated_after', help='The time at or after which the run event was updated in \'ISO 8601\' for'
@@ -520,18 +503,14 @@ def load_arguments(self, _):
                    'mat.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' f'
                    'ormat.')
-        c.argument('filters', action=AddFilters,
-                   nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+',
-                   help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger-run rerun') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('trigger_name', help='The trigger name.',
-                   id_part='child_name_1')
-        c.argument('run_id', help='The pipeline run identifier.',
-                   id_part='child_name_2')
+        c.argument('trigger_name', help='The trigger name.', id_part='child_name_1')
+        c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_2')
 
     with self.argument_context('datafactory data-flow list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -540,8 +519,7 @@ def load_arguments(self, _):
     with self.argument_context('datafactory data-flow show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
+        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.', id_part='child_name_1')
         c.argument('if_none_match', help='ETag of the data flow entity. Should only be specified for get. If the ETag m'
                    'atches the existing entity tag, or if * was provided, then no content will be returned.')
 
@@ -557,8 +535,7 @@ def load_arguments(self, _):
     with self.argument_context('datafactory data-flow update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
+        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.', id_part='child_name_1')
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
         c.argument('properties', arg_type=CLIArgumentType(options_list=['--properties'], help='Data flow properties. Ex'
@@ -567,8 +544,7 @@ def load_arguments(self, _):
     with self.argument_context('datafactory data-flow delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
+        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.', id_part='child_name_1')
 
     with self.argument_context('datafactory data-flow-debug-session create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -577,8 +553,7 @@ def load_arguments(self, _):
                    ' in integration runtime if provided.')
         c.argument('core_count', help='Core count of the cluster. The value will be overwritten by the same setting in '
                    'integration runtime if provided.')
-        c.argument('time_to_live',
-                   help='Time to live setting of the cluster in minutes.')
+        c.argument('time_to_live', help='Time to live setting of the cluster in minutes.')
         c.argument('integration_runtime_name', help='The resource name.')
         c.argument('integration_runtime_properties',
                    arg_type=CLIArgumentType(options_list=['--integration-runtime-properties'],
@@ -625,8 +600,7 @@ def load_arguments(self, _):
         c.argument('command',
                    arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']),
                    help='The command type.')
-        c.argument('command_payload', action=AddCommandPayload,
-                   nargs='+', help='The command payload object.')
+        c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
 
     with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
         c.argument('resource_group_name', resource_group_name_type)

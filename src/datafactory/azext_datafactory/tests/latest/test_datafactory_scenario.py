@@ -65,7 +65,7 @@ def step__factories_post_factories_configurefactoryrepo(test, rg):
              'ry/factories/{exampleFactoryName}" '
              '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-n'
              'ame="project" repository-name="repo" root-folder="/" tenant-id="" '
-             '--location-id "East US"',
+             '--location "East US"',
              checks=[])
 
 
@@ -364,7 +364,7 @@ def step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg):
 def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg):
     test.cmd('az datafactory integration-runtime linked-integration-runtime create '
              '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
-             '--data-factory-location "West US" '
+             '--location "West US" '
              '--data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" '
              '--subscription-id "061774c7-4b5a-4159-a55b-365581830283" '
              '--factory-name "{exampleFactoryName}" '

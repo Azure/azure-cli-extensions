@@ -178,7 +178,7 @@ configure-factory-repo a datafactory factory.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-|**--location-id**|string|The location identifier.|location_id|
+|**--location**|string|The location identifier.|location|
 |**--factory-resource-id**|string|The factory resource id.|factory_resource_id|
 |**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|
 |**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|
@@ -301,7 +301,7 @@ linked-integration-runtime create a datafactory integration-runtime.
 |**--name**|string|The name of the linked integration runtime.|name|
 |**--subscription-id**|string|The ID of the subscription that the linked integration runtime belongs to.|subscription_id|
 |**--data-factory-name**|string|The name of the data factory that the linked integration runtime belongs to.|data_factory_name|
-|**--data-factory-location**|string|The location of the data factory that the linked integration runtime belongs to.|data_factory_location|
+|**--location**|string|The location of the data factory that the linked integration runtime belongs to.|location|
 ### datafactory integration-runtime list
 
 list a datafactory integration-runtime.
