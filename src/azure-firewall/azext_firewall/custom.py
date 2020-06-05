@@ -258,7 +258,7 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
                     item_class, item_name, params, collection_params):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, firewall_name)
-    collection = getattr(af, collection_param_name)
+    collection = getattr(af, collection_param_name, [])
 
     collection_name = collection_params.get('name', '')
     priority = collection_params.get('priority', None)
