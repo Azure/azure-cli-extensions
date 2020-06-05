@@ -5,8 +5,8 @@
 
 # pylint: disable=line-too-long, protected-access
 
-import isodate
 import datetime
+import isodate
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException

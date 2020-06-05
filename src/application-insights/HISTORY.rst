@@ -1,7 +1,7 @@
 0.1.8
 ++++++++++++++++++
 
-* one fix for --offset
+* Argument `--offset` in `az monitor app-insights query` supports iso8601 format.
 
 0.1.7
 ++++++++++++++++++
