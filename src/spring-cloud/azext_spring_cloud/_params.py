@@ -34,16 +34,19 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(
             self.cli_ctx), validator=validate_location)
-        c.argument('app_insights_key',
-                   help="Instrumentation key of the existing Application Insights to be added for the distributed tracing")
-        c.argument('app_insights_name',
-                   help="Name of the existing Application Insights to be added for the distributed tracing. Must be in the same resource group.")
-        c.argument('app_insights_resource_id', validator=validate_application_insights_resource_id,
-                   help="Resource id of the existing Application Insights to be added for the distributed tracing")
-        c.argument('enable_distributed_tracing',
-                   arg_type=get_three_state_flag(),
-                   help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key, --app-insights-name or --app-insights-resource-id, will create a new one.")
-        c.argument('tags', arg_type=tags_type)
+
+    for scope in ['spring-cloud create', 'spring-cloud update']:
+        with self.argument_context(scope) as c:
+            c.argument('app_insights_key',
+                       help="Instrumentation key of the existing Application Insights to be added for the distributed tracing")
+            c.argument('app_insights_name',
+                       help="Name of the existing Application Insights to be added for the distributed tracing. Must be in the same resource group.")
+            c.argument('app_insights_resource_id', validator=validate_application_insights_resource_id,
+                       help="Resource id of the existing Application Insights to be added for the distributed tracing")
+            c.argument('enable_distributed_tracing',
+                       arg_type=get_three_state_flag(),
+                       help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key, --app-insights-name or --app-insights-resource-id, will create a new one.")
+            c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
