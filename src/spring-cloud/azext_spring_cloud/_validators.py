@@ -66,6 +66,13 @@ def validate_resource_id(namespace):
         raise CLIError("Invalid resource id {}".format(namespace.resource_id))
 
 
+def validate_application_insights_resource_id(namespace):
+    if namespace.app_insights_resource_id is None:
+        return
+    elif not is_valid_resource_id(namespace.app_insights_resource_id):
+        raise CLIError("Invalid resource id {}".format(namespace.app_insights_resource_id))
+
+
 def validate_cosmos_type(namespace):
     if namespace.api_type is None:
         return

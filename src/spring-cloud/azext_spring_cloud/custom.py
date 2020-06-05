@@ -42,7 +42,7 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None, enable_distributed_tracing=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights_name=None, app_insights_resource_id=None, enable_distributed_tracing=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
@@ -54,8 +54,14 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     if app_insights_key is not None:
         properties.trace = models.TraceProperties(
             enabled=True, app_insight_instrumentation_key=app_insights_key)
-    elif app_insights is not None:
-        instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+    elif app_insights_name is not None:
+        instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights_name)
+        properties.trace = models.TraceProperties(
+            enabled=True, app_insight_instrumentation_key=instrumentation_key)
+    elif app_insights_resource_id is not None:
+        resource_id_dict = parse_resource_id(app_insights_resource_id)
+        instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                   resource_id_dict['resource_name'])
         properties.trace = models.TraceProperties(
             enabled=True, app_insight_instrumentation_key=instrumentation_key)
     elif enable_distributed_tracing is not False:

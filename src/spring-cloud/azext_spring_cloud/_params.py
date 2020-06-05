@@ -9,7 +9,8 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_nodes_count,
-                          validate_log_lines, validate_log_limit, validate_log_since)
+                          validate_log_lines, validate_log_limit, validate_log_since,
+                          validate_application_insights_resource_id)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -33,9 +34,15 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(
             self.cli_ctx), validator=validate_location)
-        c.argument('app_insights_key', help="Instrumentation key of App Insights to be added for the distributed tracing")
-        c.argument('app_insights', help="Name of the existing App Insights to be added for the distributed tracing. Must be in the same resource group.")
-        c.argument('enable_distributed_tracing', arg_type=get_three_state_flag(), help="Enable distributed tracing, if you don't specify an existing one by using --app-insights-key or --app-insights, will create a new one.")
+        c.argument('app_insights_key',
+                   help="Instrumentation key of the existing Application Insights to be added for the distributed tracing")
+        c.argument('app_insights_name',
+                   help="Name of the existing Application Insights to be added for the distributed tracing. Must be in the same resource group.")
+        c.argument('app_insights_resource_id', validator=validate_application_insights_resource_id,
+                   help="Resource id of the existing Application Insights to be added for the distributed tracing")
+        c.argument('enable_distributed_tracing',
+                   arg_type=get_three_state_flag(),
+                   help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key, --app-insights-name or --app-insights-resource-id, will create a new one.")
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
