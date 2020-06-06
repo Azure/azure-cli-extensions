@@ -14,11 +14,12 @@ from azure.cli.command_modules.resource._client_factory import _resource_client_
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
+from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
     _get_repair_resource_tag,
-    _uses_encrypted_disk,
+    _fetch_encryption_settings,
     _resolve_api_version,
     check_extension_version
 )
@@ -58,9 +59,16 @@ def validate_create(cmd, namespace):
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
-    if _uses_encrypted_disk(source_vm):
-        # TODO, validate this with encrypted VMs
-        logger.warning('The source VM\'s OS disk is encrypted.')
+    encryption_type, _, _ = _fetch_encryption_settings(source_vm)
+    # Currently only supporting single pass
+    if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
+        if not namespace.unlock_encrypted_vm:
+            _prompt_encrypted_vm(namespace)
+    elif encryption_type is Encryption.DUAL:
+        logger.warning('The source VM\'s OS disk is encrypted using dual pass method.')
+        raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
+    else:
+        logger.debug('The source VM\'s OS disk is not encrypted')
 
     # Validate Auth Params
     # Prompt vm username
@@ -156,6 +164,20 @@ def validate_run(cmd, namespace):
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
+
+
+def _prompt_encrypted_vm(namespace):
+    from knack.prompting import prompt_y_n, NoTTYException
+    try:
+        message = 'The source VM\'s OS disk is encrypted. The current command will unlock the copied OS disk within the repair VM.'
+        logger.warning(message)
+        if prompt_y_n('Continue?'):
+            namespace.unlock_encrypted_vm = True
+        else:
+            raise CLIError('Stopping execution upon user input.')
+
+    except NoTTYException:
+        raise CLIError('Please specify the unlock_encrypted_vm parameter in non-interactive mode.')
 
 
 def _prompt_repair_username(namespace):
