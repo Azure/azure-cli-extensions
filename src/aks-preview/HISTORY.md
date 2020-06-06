@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.4.51
++++++
+* Remove --appgw-shared flag from AGIC addon
+* Handle role assignments for AGIC addon post-cluster creation
+* Support --yes for "az aks upgrade"
+* Revert default VM SKU to Standard_DS2_v2
+
 0.4.50
 +++++
 * Add "--max-surge" for az aks nodepool add/update/upgrade
