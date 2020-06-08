@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import uuid
+import mock
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
                                JMESPathCheck, NoneCheck, api_version_constraint)
 
@@ -43,13 +45,16 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('name', self.kwargs.get('connection'))
         ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_vpn_server_config')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vpn_server_config', location='westcentralus')
     def test_azure_vpn_server_config_basic_scenario(self, resource_group):
         self.kwargs.update({
             'vserverconfig': 'clitestserverconfig',
             'cert_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.cer'),
             'pem_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.pem'),
-            'rg': resource_group
+            'rg': resource_group,
+            'aad_tenant': 'https://login.microsoftonline.com/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4',
+            'aad_issuer': 'https://sts.windows.net/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4/',
+            'aad_audience': 'a21fce82-76af-45e6-8583-a08cb3b956f9'
         })
 
         self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} '
@@ -63,11 +68,10 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--radius-servers address=test2 secret=clitest score=10')
 
         self.cmd('network vpn-server-config wait -n {vserverconfig} -g {rg} --created')
-
         self.cmd('network vpn-server-config set -n {vserverconfig} -g {rg} --auth-types AAD '
-                 '--aad-audience 222 '
-                 '--aad-issuer 222 '
-                 '--aad-tenant 222 '
+                 '--aad-audience {aad_audience} '
+                 '--aad-issuer {aad_issuer} '
+                 '--aad-tenant {aad_tenant} '
                  '--no-wait')
 
         self.cmd('network vpn-server-config wait -n {vserverconfig} -g {rg} --created')
@@ -96,22 +100,37 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         self.cmd('network vpn-server-config delete -n {vserverconfig} -g {rg}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection', location='westus')
     def test_azure_p2s_vpn_gateway_basic_scenario(self, resource_group):
         self.kwargs.update({
-            'vnet': 'clitestvnet',
             'vwan': 'clitestvwan',
+            'vwan2': 'clitestvwan2',
             'vhub': 'clitestvhub',
+            'vhub2': 'clitestvhub2',
+            'cert_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.cer'),
+            'pem_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.pem'),
             'vserverconfig': 'clitestserverconfig',
+            'vserverconfig2': 'clitestserverconfig2',
             'vp2sgateway': 'clitestvp2sgateway',
             'rg': resource_group
         })
 
-        self.cmd('network vnet create -g {rg} -n {vnet}')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
         self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} '
-                 '--vpn-client-root-certs ".\\ApplicationGatewayAuthCert.cer" '
-                 '--vpn-client-revoked-certs ".\\ApplicationGatewayAuthCert.pem"')
+                 '--vpn-client-root-certs "{cert_file}" '
+                 '--vpn-client-revoked-certs "{pem_file}"')
+        self.cmd('network vpn-server-config create -n {vserverconfig2} -g {rg} '
+                 '--vpn-client-root-certs "{cert_file}" '
+                 '--vpn-client-revoked-certs "{pem_file}"')
         self.cmd('az network p2s-vpn-gateway create -g {rg} -n {vp2sgateway} --scale-unit 2 '
-                 '--vhub {vhub} --vpn-server-config {vserverconfig} --address-space 10.0.0.0/24 11.0.0.0/24')
+                 '--vhub {vhub} --vpn-server-config {vserverconfig} --address-space 10.0.0.0/24 11.0.0.0/24 --no-wait')
+        self.cmd('az network p2s-vpn-gateway wait -g {rg} -n {vp2sgateway} --created')
+        self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --scale-unit 3 '
+                 '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24')
+        self.cmd('az network p2s-vpn-gateway list -g {rg}')
+        self.cmd('az network p2s-vpn-gateway list')
+        self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
+        self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway}')
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')

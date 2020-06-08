@@ -184,6 +184,7 @@ def load_arguments(self, _):
         c.argument('ike_integrity', arg_type=get_enum_type(IkeIntegrity), help='IKE integrity algorithm (IKE phase 2).')
         c.argument('dh_group', arg_type=get_enum_type(DhGroup), help='DH Groups used in IKE Phase 1 for initial SA.')
         c.argument('pfs_group', arg_type=get_enum_type(PfsGroup), help='The Pfs Groups used in IKE Phase 2 for new child SA.')
+        c.argument('index', type=int, help='List index of the item (starting with 0).')
     # endregion
 
     # region P2SVpnGateways

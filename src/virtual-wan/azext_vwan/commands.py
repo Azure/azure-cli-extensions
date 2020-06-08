@@ -58,14 +58,14 @@ def load_command_table(self, _):
     )
 
     network_vpn_server_config_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_03_01.operations#VpnServerConfigurationsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_04_01.operations#VpnServerConfigurationsOperations.{}',
         client_factory=cf_vpn_server_config,
         resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2020-03-01'
     )
 
     network_p2s_vpn_gateway_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_03_01.operations#P2sVpnGatewaysOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_04_01.operations#P2sVpnGatewaysOperations.{}',
         client_factory=cf_p2s_vpn_gateways,
         resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2020-03-01'

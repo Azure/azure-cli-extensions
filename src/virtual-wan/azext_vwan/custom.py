@@ -680,13 +680,13 @@ def add_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_conf
     if no_wait:
         return poller
     from azure.cli.core.commands import LongRunningOperation
-    return LongRunningOperation(poller).vpn_client_ipsec_policies
+    return LongRunningOperation(cmd.cli_ctx)(poller).vpn_client_ipsec_policies
 
 
 def list_vpn_server_config_ipsec_policies(cmd, resource_group_name, vpn_server_configuration_name):
     client = network_client_route_table_factory(cmd.cli_ctx).vpn_server_configurations
     vpn_server_config = client.get(resource_group_name, vpn_server_configuration_name)
-    return vpn_server_config.ipsec_policies
+    return vpn_server_config.vpn_client_ipsec_policies
 
 
 # pylint: disable=inconsistent-return-statements
@@ -702,7 +702,7 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
     if no_wait:
         return poller
     from azure.cli.core.commands import LongRunningOperation
-    return LongRunningOperation(poller).vpn_client_ipsec_policies
+    return LongRunningOperation(cmd.cli_ctx)(poller).vpn_client_ipsec_policies
 
 
 def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
@@ -725,17 +725,17 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
         p2_sconnection_configurations= [
             P2SConnectionConfiguration(
                 vpn_client_address_pool=AddressSpace(
-                    address_prefixes=address_prefix
+                    address_prefixes=address_space
                 ),
                 name = p2s_conn_config_name
-            ) for address_prefix in address_space
+            )
         ]
     )
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name, gateway_name, gateway)
 
 
-def update_p2s_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_unit=None,
+def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
                            vpn_server_config=None, address_space=None, p2s_conn_config_name=None,):
     (SubResource,
      P2SConnectionConfiguration,
@@ -743,17 +743,16 @@ def update_p2s_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_uni
                                     'P2SConnectionConfiguration',
                                     'AddressSpace')
     with UpdateContext(instance) as c:
-        c.update_param('virtual_hub', SubResource(id=virtual_hub) if virtual_hub else None, True)
         c.update_param('tags', tags, True)
         c.update_param('vpn_gateway_scale_unit', scale_unit, False)
         c.update_param('vpn_server_configuration', SubResource(id=vpn_server_config) if vpn_server_config else None, True)
         c.update_param('p2_sconnection_configurations', [
             P2SConnectionConfiguration(
                 vpn_client_address_pool=AddressSpace(
-                    address_prefixes=address_prefix
+                    address_prefixes=address_space
                 ),
                 name=p2s_conn_config_name is p2s_conn_config_name is not None
-            ) for address_prefix in address_space
+            )
         ], False)
 
     return instance
