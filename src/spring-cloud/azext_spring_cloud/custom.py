@@ -91,6 +91,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     location = resource.location
     resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
+    updated_resource = models.ServiceResource()
 
     app_insights_target_status = False
     update_app_insights = False
@@ -104,7 +105,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         if resource_properties.trace.enabled is True:
             update_app_insights = True
 
-    # update app insights
+    # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
             resource_properties.trace.enabled = app_insights_target_status
@@ -116,12 +117,18 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
                                   app_insights_name, app_insights_resource_id, enable_distributed_tracing)
         updated_resource_properties.trace = resource_properties.trace
 
-    if update_app_insights is False:
+    # update service tags
+    update_service_tags = False
+    if tags is not None:
+        updated_resource.tags = tags
+        update_service_tags = True
+
+    if update_app_insights is False and update_service_tags is False:
         return resource
 
-    resource = models.ServiceResource(properties=updated_resource_properties)
+    updated_resource.properties = updated_resource_properties
     return sdk_no_wait(no_wait, client.update,
-                       resource_group_name=resource_group, service_name=name, resource=resource)
+                       resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):

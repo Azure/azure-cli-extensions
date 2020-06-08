@@ -17,14 +17,18 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
 """
 
 helps['spring-cloud update'] = """
     type: command
     short-summary: Update an Azure Spring Cloud.
     examples:
-    - name: Update a new Azure Spring Cloud in westus. todo
-      text: az spring-cloud create -n MyService -g MyResourceGroup
+    - name: Enable the distributed tracing of the existing Azure Spring Cloud
+      text: az spring-cloud update -n MyService -g MyResourceGroup --enable-distributed-tracing true
+    - name: Update the tags of the existing Azure Spring Cloud
+      text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
 
 helps['spring-cloud delete'] = """
