@@ -1156,19 +1156,29 @@ class NetworkProfile(Model):
     :type app_subnet_id: str
     :param service_cidr: Azure Spring Cloud service reserved CIDR
     :type service_cidr: str
+    :param service_runtime_network_resource_group: Name of the resource group
+     containing network resources of Azure Spring Cloud Service Runtime
+    :type service_runtime_network_resource_group: str
+    :param app_network_resource_group: Name of the resource group containing
+     network resources of Azure Spring Cloud Apps
+    :type app_network_resource_group: str
     """
 
     _attribute_map = {
         'service_runtime_subnet_id': {'key': 'serviceRuntimeSubnetId', 'type': 'str'},
         'app_subnet_id': {'key': 'appSubnetId', 'type': 'str'},
         'service_cidr': {'key': 'serviceCidr', 'type': 'str'},
+        'service_runtime_network_resource_group': {'key': 'serviceRuntimeNetworkResourceGroup', 'type': 'str'},
+        'app_network_resource_group': {'key': 'appNetworkResourceGroup', 'type': 'str'},
     }
 
-    def __init__(self, *, service_runtime_subnet_id: str=None, app_subnet_id: str=None, service_cidr: str=None, **kwargs) -> None:
+    def __init__(self, *, service_runtime_subnet_id: str=None, app_subnet_id: str=None, service_cidr: str=None, service_runtime_network_resource_group: str=None, app_network_resource_group: str=None, **kwargs) -> None:
         super(NetworkProfile, self).__init__(**kwargs)
         self.service_runtime_subnet_id = service_runtime_subnet_id
         self.app_subnet_id = app_subnet_id
         self.service_cidr = service_cidr
+        self.service_runtime_network_resource_group = service_runtime_network_resource_group
+        self.app_network_resource_group = app_network_resource_group
 
 
 class OperationDetail(Model):
