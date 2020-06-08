@@ -1,6 +1,12 @@
 Release History
 ===============
 
+0.3.0
+-----
+* Add command "az spring-cloud update"
+* Support the tags update
+* Support to enable the distributed tracing when creating the service
+
 0.2.4
 -----
 * Add command "az spring-cloud app identity" to support Managed Identity feature
