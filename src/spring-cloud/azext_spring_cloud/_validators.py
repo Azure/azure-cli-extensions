@@ -298,3 +298,16 @@ def validate_vnet_required_parameters(namespace):
        or not namespace.service_runtime_subnet:
         raise CLIError(
             '--app-subnet, --service-runtime-subnet must be set when deploying to VNet')
+
+
+def validate_node_resource_group(namespace):
+    validate_vnet_required_parameters(namespace)
+    _validate_resource_group_name(namespace.service_runtime_network_resource_group,
+                                  'service-runtime-network-resource-group')
+    _validate_resource_group_name(namespace.app_network_resource_group, 'app-network-resource-group')
+
+
+def _validate_resource_group_name(name, message_name):
+    matchObj = match(r'^[-\\w\\._\\(\\)]+$', name)
+    if matchObj is None:
+        raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))

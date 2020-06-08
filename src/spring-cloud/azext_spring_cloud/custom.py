@@ -40,6 +40,8 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
+                        vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
+                        service_runtime_network_resource_group=None, app_network_resource_group=None,
                         disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
@@ -51,7 +53,9 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
         properties.network_profile = models.NetworkProfile(
             service_runtime_subnet_id=service_runtime_subnet,
             app_subnet_id=app_subnet,
-            service_cidr=reserved_cidr_range
+            service_cidr=reserved_cidr_range,
+            app_network_resource_group=app_network_resource_group,
+            service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
     if sku is None:

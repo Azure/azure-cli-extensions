@@ -32,8 +32,9 @@ class TestValidateIPRanges(unittest.TestCase):
 
     def test_single_cidr(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8')
-        _validate_cidr_range(ns)
-        self.assertEqual(ns.reserved_cidr_range, '10.0.0.0/8')
+        with self.assertRaises(CLIError) as context:
+            _validate_cidr_range(ns)
+            self.assertEqual('--reserved-cidr-range should be 3 unused /16 IP ranges', str(context.exception))
 
     def test_multi_cidr(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16')
@@ -53,7 +54,7 @@ class TestValidateIPRanges(unittest.TestCase):
                              str(context.exception))
 
     def test_valid_vnet(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8', vnet='test-vnet', app_subnet='app', service_runtime_subnet='svc', resource_group='test')
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', vnet='test-vnet', app_subnet='app', service_runtime_subnet='svc', resource_group='test')
         validate_vnet(_get_test_cmd(), ns)
         self.assertEqual(ns.app_subnet.lower(),
                          '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app'.lower())
@@ -61,7 +62,7 @@ class TestValidateIPRanges(unittest.TestCase):
                          '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc'.lower())
 
     def test_invalid_vnet(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16',
                        vnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/NetworkInterfaces/test-vnet',
                        app_subnet='app', service_runtime_subnet='svc', resource_group='test')
         with self.assertRaises(CLIError) as context:
@@ -69,13 +70,13 @@ class TestValidateIPRanges(unittest.TestCase):
             self.assertTrue('is not a valid VirtualNetwork resource ID' in str(context.exception))
 
     def test_only_subnet_name(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8', app_subnet='app', service_runtime_subnet='svc', resource_group='test', vnet=None)
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', app_subnet='app', service_runtime_subnet='svc', resource_group='test', vnet=None)
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
             self.assertTrue('is not a valid subnet resource ID' in str(context.exception))
 
     def test_valid_subnets(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8', resource_group='test', vnet=None,
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
         validate_vnet(_get_test_cmd(), ns)
@@ -85,7 +86,7 @@ class TestValidateIPRanges(unittest.TestCase):
                          '/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc'.lower())
 
     def test_subnets_same(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8', resource_group='test', vnet=None,
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualnetworks/test-Vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app')
         with self.assertRaises(CLIError) as context:
@@ -93,7 +94,7 @@ class TestValidateIPRanges(unittest.TestCase):
             self.assertEqual('--app-subnet and --service-runtime-subnet should not be same.', str(context.exception))
 
     def test_subnets_in_different_vnet(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8', resource_group='test', vnet=None,
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualnetworks/test-Vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet1/subnets/svc')
         with self.assertRaises(CLIError) as context:
