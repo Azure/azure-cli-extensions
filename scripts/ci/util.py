@@ -62,7 +62,7 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
     azext_metadata = _get_azext_metadata(ext_dir)
 
     if not azext_metadata:
-        raise ValueError('azext_metadata.json for Azure CLI Extension Metadata is missing')
+        raise ValueError('azext_metadata.json for Extension "{}" Metadata is missing'.format(ext_name))
 
     metadata.update(azext_metadata)
 
