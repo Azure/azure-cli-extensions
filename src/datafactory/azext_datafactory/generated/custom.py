@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 import json
 from knack.util import CLIError
@@ -167,10 +168,6 @@ def datafactory_integration_runtime_managed_create(client,
                                                    description=None,
                                                    type_properties_compute_properties=None,
                                                    type_properties_ssis_properties=None):
-    if isinstance(type_properties_compute_properties, str):
-        type_properties_compute_properties = json.loads(type_properties_compute_properties)
-    if isinstance(type_properties_ssis_properties, str):
-        type_properties_ssis_properties = json.loads(type_properties_ssis_properties)
     properties = {}
     properties['type'] = 'Managed'
     properties['description'] = description
@@ -190,8 +187,6 @@ def datafactory_integration_runtime_self_hosted_create(client,
                                                        if_match=None,
                                                        description=None,
                                                        type_properties_linked_info=None):
-    if isinstance(type_properties_linked_info, str):
-        type_properties_linked_info = json.loads(type_properties_linked_info)
     properties = {}
     properties['type'] = 'SelfHosted'
     properties['description'] = description
@@ -395,8 +390,6 @@ def datafactory_linked_service_create(client,
                                       linked_service_name,
                                       properties,
                                       if_match=None):
-    if isinstance(properties, str):
-        properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    linked_service_name=linked_service_name,
@@ -445,8 +438,6 @@ def datafactory_dataset_create(client,
                                dataset_name,
                                properties,
                                if_match=None):
-    if isinstance(properties, str):
-        properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    dataset_name=dataset_name,
@@ -495,8 +486,6 @@ def datafactory_pipeline_create(client,
                                 pipeline_name,
                                 pipeline,
                                 if_match=None):
-    if isinstance(pipeline, str):
-        pipeline = json.loads(pipeline)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    pipeline_name=pipeline_name,
@@ -530,8 +519,6 @@ def datafactory_pipeline_create_run(client,
                                     start_activity_name=None,
                                     start_from_failure=None,
                                     parameters=None):
-    if isinstance(parameters, str):
-        parameters = json.loads(parameters)
     return client.create_run(resource_group_name=resource_group_name,
                              factory_name=factory_name,
                              pipeline_name=pipeline_name,
@@ -622,8 +609,6 @@ def datafactory_trigger_create(client,
                                trigger_name,
                                properties,
                                if_match=None):
-    if isinstance(properties, str):
-        properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    trigger_name=trigger_name,
@@ -768,8 +753,6 @@ def datafactory_data_flow_create(client,
                                  data_flow_name,
                                  properties,
                                  if_match=None):
-    if isinstance(properties, str):
-        properties = json.loads(properties)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    data_flow_name=data_flow_name,
@@ -802,8 +785,6 @@ def datafactory_data_flow_debug_session_create(client,
                                                time_to_live=None,
                                                integration_runtime_name=None,
                                                integration_runtime_properties=None):
-    if isinstance(integration_runtime_properties, str):
-        integration_runtime_properties = json.loads(integration_runtime_properties)
     return client.begin_create(resource_group_name=resource_group_name,
                                factory_name=factory_name,
                                compute_type=compute_type,
@@ -836,18 +817,6 @@ def datafactory_data_flow_debug_session_add_data_flow(client,
                                                       staging_linked_service_parameters=None,
                                                       data_flow_name=None,
                                                       data_flow_properties=None):
-    if isinstance(datasets, str):
-        datasets = json.loads(datasets)
-    if isinstance(linked_services, str):
-        linked_services = json.loads(linked_services)
-    if isinstance(debug_settings_parameters, str):
-        debug_settings_parameters = json.loads(debug_settings_parameters)
-    if isinstance(debug_settings_dataset_parameters, str):
-        debug_settings_dataset_parameters = json.loads(debug_settings_dataset_parameters)
-    if isinstance(staging_linked_service_parameters, str):
-        staging_linked_service_parameters = json.loads(staging_linked_service_parameters)
-    if isinstance(data_flow_properties, str):
-        data_flow_properties = json.loads(data_flow_properties)
     return client.add_data_flow(resource_group_name=resource_group_name,
                                 factory_name=factory_name,
                                 session_id=session_id,

@@ -7,6 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 
 from azure.cli.core.commands import CliCommandType
 
@@ -74,7 +76,7 @@ def load_command_table(self, _):
         'eOperations.{}',
         client_factory=cf_linked_service)
     with self.command_group('datafactory linked-service', datafactory_linked_service, client_factory=cf_linked_service,
-                             is_experimental=True) as g:
+                            is_experimental=True) as g:
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')

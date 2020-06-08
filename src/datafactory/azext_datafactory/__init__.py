@@ -16,10 +16,10 @@ class DataFactoryManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_datafactory.generated._client_factory import cf_datafactory
+        from azext_datafactory.generated._client_factory import cf_datafactory_cl
         datafactory_custom = CliCommandType(
             operations_tmpl='azext_datafactory.custom#{}',
-            client_factory=cf_datafactory)
+            client_factory=cf_datafactory_cl)
         parent = super(DataFactoryManagementClientCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=datafactory_custom)
 
