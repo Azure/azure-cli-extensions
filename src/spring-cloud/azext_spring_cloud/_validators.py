@@ -220,9 +220,13 @@ def _set_default_cidr_range(address_prefixes):
 def _next_range(ip, prefix):
     try:
         address = ip[-1] + 1
-        # should never be 127.0.0.0/8
+        # should never in 127.0.0.0/8, 169.254.0.0/16, 224.0.0.0/4
         while address.is_loopback:
             address = address + 16777216
+        while address.is_link_local:
+            address = address + 65536
+        while address.is_multicast:
+            address = address + 268435456
         return ip_network('{0}/{1}'.format(address, prefix), strict=False)
     except ValueError:
         raise CLIError('Cannot set "reserved-cidr-range" automatically.'
