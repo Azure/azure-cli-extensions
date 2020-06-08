@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AzureVWanVHubScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table')

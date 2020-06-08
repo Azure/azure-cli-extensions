@@ -31,7 +31,7 @@ class UpdateContext(object):
         pass
 
     def update_param(self, prop, value, allow_clear):
-        if (value == '' or value == []) and allow_clear:
+        if value in ('', []) and allow_clear:
             setattr(self.instance, prop, None)
         elif value is not None:
             setattr(self.instance, prop, value)
@@ -579,6 +579,7 @@ def list_vpn_sites(cmd, resource_group_name=None):
 
 
 # region VPN server configuarions
+# pylint: disable=line-too-long
 def create_vpn_server_config(cmd, resource_group_name, vpn_server_configuration_name, location=None,
                              vpn_protocols=None, vpn_auth_types=None,
                              vpn_client_root_certs=None, vpn_client_revoked_certs=None,
@@ -608,7 +609,7 @@ def create_vpn_server_config(cmd, resource_group_name, vpn_server_configuration_
         radius_client_root_certificates=_load_certificates_and_build_name_and_thumbprint(VpnServerConfigRadiusClientRootCertificate,
                                                                                          radius_client_root_certs),
         radius_server_root_certificates=_load_certificates_and_build_name_and_public_cert_data(VpnServerConfigRadiusServerRootCertificate,
-                                                                                              radius_server_root_certs),
+                                                                                               radius_server_root_certs),
         aad_authentication_parameters=AadAuthenticationParameters(
             aad_tenant=aad_tenant,
             aad_audience=aad_audience,
@@ -620,6 +621,7 @@ def create_vpn_server_config(cmd, resource_group_name, vpn_server_configuration_
                        resource_group_name, vpn_server_configuration_name, vpn_server_config)
 
 
+# pylint: disable=line-too-long
 def update_vpn_server_config(instance, cmd, vpn_protocols=None, vpn_auth_types=None,
                              vpn_client_root_certs=None, vpn_client_revoked_certs=None,
                              radius_servers=None, radius_client_root_certs=None, radius_server_root_certs=None,
@@ -722,12 +724,12 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
         virtual_hub=SubResource(id=virtual_hub) if virtual_hub else None,
         vpn_gateway_scale_unit=scale_unit,
         vpn_server_configuration=SubResource(id=vpn_server_config) if vpn_server_config else None,
-        p2_sconnection_configurations= [
+        p2_sconnection_configurations=[
             P2SConnectionConfiguration(
                 vpn_client_address_pool=AddressSpace(
                     address_prefixes=address_space
                 ),
-                name = p2s_conn_config_name
+                name=p2s_conn_config_name
             )
         ]
     )
@@ -751,7 +753,7 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
                 vpn_client_address_pool=AddressSpace(
                     address_prefixes=address_space
                 ),
-                name=p2s_conn_config_name is p2s_conn_config_name is not None
+                name=p2s_conn_config_name
             )
         ], False)
 

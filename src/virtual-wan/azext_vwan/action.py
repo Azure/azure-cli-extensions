@@ -12,7 +12,7 @@ from .profiles import CUSTOM_VHUB_ROUTE_TABLE
 
 class RadiusServerAddAction(argparse._AppendAction):
 
-    def __call__(self, parser, namespace, values, keys=[], option_string=None):
+    def __call__(self, parser, namespace, values, keys=None, option_string=None):
         RadiusServer = namespace._cmd.get_models('RadiusServer', resource_type=CUSTOM_VHUB_ROUTE_TABLE)
         kwargs = {}
         for item in values:

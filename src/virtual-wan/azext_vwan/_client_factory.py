@@ -37,6 +37,7 @@ def cf_vpn_server_config(cli_ctx, _):
 def cf_p2s_vpn_gateways(cli_ctx, _):
     return network_client_route_table_factory(cli_ctx).p2s_vpn_gateways
 
+
 def cf_vpn_sites(cli_ctx, _):
     return network_client_factory(cli_ctx).vpn_sites
 
