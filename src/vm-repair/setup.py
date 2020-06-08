@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -37,6 +37,13 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    package_data={'azext_vm_repair': ['scripts/linux-run-driver.sh', 'scripts/win-run-driver.ps1', 'scripts/mount-encrypted-disk.sh']},
+    package_data={
+        'azext_vm_repair': [
+            'scripts/linux-run-driver.sh',
+            'scripts/win-run-driver.ps1',
+            'scripts/mount-encrypted-disk.sh',
+            'azext_metadata.json'
+        ]
+    },
     install_requires=DEPENDENCIES
 )
