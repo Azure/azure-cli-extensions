@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from OpenSSL import crypto
+
 import os
 import re
 import hashlib
 
+from OpenSSL import crypto
 from knack.util import CLIError
 from knack.log import get_logger
 
