@@ -59,7 +59,13 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} '
                  '--vpn-client-root-certs "{cert_file}" '
-                 '--vpn-client-revoked-certs "{pem_file}"')
+                 '--vpn-client-revoked-certs "{pem_file}"',
+                 checks=[
+                     self.check('name', '{vserverconfig}'),
+                     self.exists('vpnClientRootCertificates[0].publicCertData'),
+                     self.exists('vpnClientRevokedCertificates[0].thumbprint'),
+                     self.check('vpnAuthenticationTypes[0]', 'Certificate')
+                 ])
 
         self.cmd('network vpn-server-config set -n {vserverconfig} -g {rg} --auth-types Radius '
                  '--radius-client-root-certs "{cert_file}" '
@@ -76,29 +82,64 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         self.cmd('network vpn-server-config wait -n {vserverconfig} -g {rg} --created')
 
-        self.cmd('network vpn-server-config show -n {vserverconfig} -g {rg}')
+        self.cmd('network vpn-server-config show -n {vserverconfig} -g {rg}', checks=[
+            self.check('vpnAuthenticationTypes[0]', 'AAD'),
+            self.check('aadAuthenticationParameters.aadTenant', '{aad_tenant}'),
+            self.check('aadAuthenticationParameters.aadAudience', '{aad_audience}'),
+            self.check('aadAuthenticationParameters.aadIssuer', '{aad_issuer}')
+        ])
 
-        self.cmd('network vpn-server-config list -g {rg}')
+        self.cmd('network vpn-server-config list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
 
-        self.cmd('network vpn-server-config list')
+        self.cmd('network vpn-server-config list', checks=[
+            self.check('length(@)', 1)
+        ])
 
         self.cmd('network vpn-server-config ipsec-policy add -n {vserverconfig} -g {rg} '
                  '--ipsec-encryption AES256 --ipsec-integrity SHA256 '
                  '--sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
-                 '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+                 '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14',
+                 checks=[
+                     self.check('@[0].saLifeTimeSeconds', 86471),
+                     self.check('@[0].saDataSizeKilobytes', 429496),
+                     self.check('@[0].ipsecEncryption', 'AES256'),
+                     self.check('@[0].ipsecIntegrity', 'SHA256'),
+                     self.check('@[0].ikeEncryption', 'AES256'),
+                     self.check('@[0].ikeIntegrity', 'SHA384'),
+                     self.check('@[0].dhGroup', 'DHGroup14'),
+                     self.check('@[0].pfsGroup', 'PFS14')
+                 ])
 
-        self.cmd('network vpn-server-config ipsec-policy list -n {vserverconfig} -g {rg}')
+        self.cmd('network vpn-server-config ipsec-policy list -n {vserverconfig} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
 
         self.cmd('network vpn-server-config ipsec-policy remove -n {vserverconfig} -g {rg} --index 0')
 
         self.cmd('network vpn-server-config ipsec-policy add -n {vserverconfig} -g {rg} '
                  '--ipsec-encryption AES256 --ipsec-integrity SHA256 '
                  '--sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
-                 '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+                 '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14',
+                 checks=[
+                     self.check('@[0].saLifeTimeSeconds', 86471),
+                     self.check('@[0].saDataSizeKilobytes', 429496),
+                     self.check('@[0].ipsecEncryption', 'AES256'),
+                     self.check('@[0].ipsecIntegrity', 'SHA256'),
+                     self.check('@[0].ikeEncryption', 'AES256'),
+                     self.check('@[0].ikeIntegrity', 'SHA384'),
+                     self.check('@[0].dhGroup', 'DHGroup14'),
+                     self.check('@[0].pfsGroup', 'PFS14')
+                 ])
 
-        self.cmd('network vpn-server-config ipsec-policy list -n {vserverconfig} -g {rg}')
+        self.cmd('network vpn-server-config ipsec-policy list -n {vserverconfig} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
 
-        self.cmd('network vpn-server-config delete -n {vserverconfig} -g {rg}')
+        self.cmd('network vpn-server-config delete -n {vserverconfig} -g {rg} -y')
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('network vpn-server-config show -n {vserverconfig} -g {rg}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection', location='westus')
     def test_azure_p2s_vpn_gateway_basic_scenario(self, resource_group):
@@ -128,9 +169,16 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('az network p2s-vpn-gateway wait -g {rg} -n {vp2sgateway} --created')
         self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --scale-unit 3 '
                  '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24')
-        self.cmd('az network p2s-vpn-gateway list -g {rg}')
-        self.cmd('az network p2s-vpn-gateway list')
-        self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
-        self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway}')
+        self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('az network p2s-vpn-gateway list', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}', checks=[
+            self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
+            self.check('vpnGatewayScaleUnit', 3)
+        ])
+        self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
