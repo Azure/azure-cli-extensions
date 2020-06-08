@@ -5,6 +5,8 @@
 
 # pylint: disable=line-too-long, protected-access
 
+import datetime
+import isodate
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
@@ -19,6 +21,8 @@ def execute_query(cmd, client, application, analytics_query, start_time=None, en
     """Executes a query against the provided Application Insights application."""
     from .vendored_sdks.applicationinsights.models import QueryBody
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
+    if not isinstance(offset, datetime.timedelta):
+        offset = isodate.parse_duration(offset)
     try:
         return client.query.execute(targets[0], QueryBody(query=analytics_query, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), applications=targets[1:]))
     except ErrorResponseException as ex:
