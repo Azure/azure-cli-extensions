@@ -104,8 +104,8 @@ def create_codespace(cmd,
                      plan_name,
                      friendly_name,
                      resource_group_name=None,
-                     sku_name='standardLinux',
-                     autoshutdown_delay=30,
+                     sku_name=None,
+                     autoshutdown_delay=None,
                      git_repo=None,
                      git_user_name=None,
                      git_user_email=None,
@@ -114,6 +114,19 @@ def create_codespace(cmd,
                      dotfiles_command=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    # Use plan defaults if needed and available
+    missing_args = []
+    sku_name = sku_name or plan.properties.default_environment_sku
+    if not sku_name:
+        logger.warning("No default instance type specified for plan and no instance type specified in command.")
+        missing_args.append("--instance-type")
+    autoshutdown_delay = autoshutdown_delay or plan.properties.default_auto_suspend_delay_minutes
+    if not autoshutdown_delay:
+        logger.warning("No default shutdown delay specified for plan and no shutdown delay specified in command.")
+        missing_args.append("--suspend-after")
+    if missing_args:
+        raise CLIError(f"usage error: please specify {' '.join(missing_args)}")
+    # Construct create parameters
     create_data = {}
     create_data['planId'] = plan.id
     create_data['friendlyName'] = friendly_name
@@ -135,6 +148,7 @@ def create_codespace(cmd,
             create_data["personalization"]["dotfilesTargetPath"] = dotfiles_path
         if dotfiles_command:
             create_data["personalization"]["dotfilesInstallCommand"] = dotfiles_command
+    # Create codespace
     return cf_api.create_codespace(token.access_token, create_data)
 
 

@@ -95,7 +95,7 @@ helps['codespace create'] = """
           populator-commands:
               - az codespace location show
     examples:
-        - name: Create a Codespace with default settings
+        - name: Create a Codespace with default plan settings
           text: az codespace create -g my-rg --plan my-plan --name my-codespace
         - name: Create a Codespace with a different instance type with custom suspend time
           text: az codespace create -g my-rg --plan my-plan --name my-codespace --instance-type premiumLinux --suspend-after 5
