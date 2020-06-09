@@ -19,6 +19,14 @@ helps['spring-cloud create'] = """
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
 """
 
+helps['spring-cloud update'] = """
+    type: command
+    short-summary: Update pricing tier of an Azure Spring Cloud.
+    examples:
+    - name: Update pricing tier.
+      text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
+"""
+
 helps['spring-cloud delete'] = """
     type: command
     short-summary: Delete an Azure Spring Cloud.

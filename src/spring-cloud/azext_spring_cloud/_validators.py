@@ -31,6 +31,12 @@ def validate_location(namespace):
                                       for piece in location_slice])
 
 
+def validate_sku(namespace):
+    namespace.sku = namespace.sku.upper()
+    if namespace.sku not in ['BASIC', 'STANDARD']:
+        raise CLIError("The pricing tier only accept value [Basic, Standard]")
+
+
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
@@ -84,19 +90,6 @@ def validate_cosmos_type(namespace):
         if namespace.key_space is None:
             raise CLIError(
                 "Cosmosdb with type {} should specify collection name".format(type))
-
-
-def validate_nodes_count(namespace):
-    """Validate that cpu, memory and instance-count is set in a range"""
-    if namespace.cpu is not None:
-        if namespace.cpu < 1 or namespace.cpu > 4:
-            raise CLIError('--cpu must be in the range [1,4]')
-    if namespace.memory is not None:
-        if namespace.memory < 1 or namespace.memory > 8:
-            raise CLIError('--memory must be in the range [1,8]')
-    if namespace.instance_count is not None:
-        if namespace.instance_count < 1 or namespace.instance_count > 20:
-            raise CLIError('--instance-count must be in the range [1,20]')
 
 
 def validate_log_limit(namespace):
