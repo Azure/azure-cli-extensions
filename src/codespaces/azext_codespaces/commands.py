@@ -24,7 +24,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_plan')
         g.custom_command('update', 'update_plan')
         g.show_command('show', 'get')
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation="Are you sure you want to delete this Codespace plan?")
 
     with self.command_group('codespace', plan_operations, client_factory=cf_codespaces_plan) as g:
         g.custom_command('list', 'list_codespaces', table_transformer=transform_codespace_list_output)
