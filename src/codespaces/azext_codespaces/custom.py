@@ -183,7 +183,6 @@ def update_codespace(cmd,
     if codespace_name:
         codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name)
     data = {}
-
     codespace = cf_api.get_codespace(token.access_token, codespace_id)
     if codespace['state'] != 'Shutdown':
         raise CLIError("Codespace must be in state 'Shutdown'. "
