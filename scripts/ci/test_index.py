@@ -117,16 +117,17 @@ class TestIndex(unittest.TestCase):
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
-        historical_extensios = [
-            'keyvault-preview',
-        ]
-
         skipable_extension_thresholds = {
             'ip-group': '0.1.2',
             'vm-repair': '0.3.1',
             'mixed-reality': '0.0.2',
             'subscription': '0.1.4',
             'managementpartner': '0.1.3',
+            'log-analytics': '0.2.1'
+        }
+
+        historical_extensios = {
+            'keyvault-preview': '0.1.3',
             'log-analytics': '0.2.1'
         }
 
@@ -139,14 +140,14 @@ class TestIndex(unittest.TestCase):
 
                 print(ext_file)
 
+                ext_version = item['metadata']['version']
                 try:
-                    metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
+                    metadata = get_ext_metadata(ext_dir, ext_file, ext_name)    # check file exists
                 except ValueError as ex:
                     if ext_name in skipable_extension_thresholds:
-                        ext_version = item['metadata']['version']
                         threshold_version = skipable_extension_thresholds[ext_name]
 
-                        if LooseVersion(ext_version) < LooseVersion(threshold_version):
+                        if LooseVersion(ext_version) <= LooseVersion(threshold_version):
                             continue
                         else:
                             raise ex
@@ -154,10 +155,15 @@ class TestIndex(unittest.TestCase):
                         raise ex
 
                 try:
-                    self.assertIn('azext.minCliCoreVersion', metadata)
+                    self.assertIn('azext.minCliCoreVersion', metadata)  # check key properties exists
                 except AssertionError as ex:
                     if ext_name in historical_extensios:
-                        pass
+                        threshold_version = historical_extensios[ext_name]
+
+                        if LooseVersion(ext_version) <= LooseVersion(threshold_version):
+                            continue
+                        else:
+                            raise ex
                     else:
                         raise ex
 
