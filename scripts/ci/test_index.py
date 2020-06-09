@@ -16,8 +16,8 @@ import unittest
 import hashlib
 import shutil
 
+from distutils.version import LooseVersion
 from wheel.install import WHEEL_INFO_RE
-from pkg_resources import parse_version
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
 
@@ -133,6 +133,8 @@ class TestIndex(unittest.TestCase):
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                             self.whl_cache_dir, self.whl_cache)
 
+                print(ext_file)
+
                 try:
                     metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
                 except ValueError as ex:
@@ -140,7 +142,7 @@ class TestIndex(unittest.TestCase):
                         ext_version = item['metadata']['version']
                         threshold_version = skipable_extension_thresholds[ext_name]
 
-                        if parse_version(ext_version) < parse_version(threshold_version):
+                        if LooseVersion(ext_version) < LooseVersion(threshold_version):
                             continue
                         else:
                             raise ex
@@ -178,7 +180,7 @@ class TestIndex(unittest.TestCase):
         extensions_dir = tempfile.mkdtemp()
 
         for ext_name, exts in self.index['extensions'].items():
-            latest = max(exts, key=lambda e: parse_version(e['metadata']['version']))
+            latest = max(exts, key=lambda e: LooseVersion(e['metadata']['version']))
 
             ext_dir = tempfile.mkdtemp(dir=extensions_dir)
             ext_file = get_whl_from_url(latest['downloadUrl'], latest['filename'], self.whl_cache_dir, self.whl_cache)
