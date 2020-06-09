@@ -242,7 +242,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
         self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westcentralus')
     def test_azure_firewall_with_firewall_policy(self, resource_group):
 
         self.kwargs.update({
@@ -261,7 +261,7 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy with vhub firewall
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westcentralus --sku Standard')
 
         self.cmd('network firewall policy create -g {rg} -n {policy} -l westcentralus', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
