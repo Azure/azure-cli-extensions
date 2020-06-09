@@ -117,6 +117,10 @@ class TestIndex(unittest.TestCase):
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
+        historical_extensios = [
+            'keyvault-preview',
+        ]
+
         skipable_extension_thresholds = {
             'ip-group': '0.1.2',
             'vm-repair': '0.3.1',
@@ -149,6 +153,14 @@ class TestIndex(unittest.TestCase):
                     else:
                         raise ex
 
+                try:
+                    self.assertIn('azext.minCliCoreVersion', metadata)
+                except AssertionError as ex:
+                    if ext_name in historical_extensios:
+                        pass
+                    else:
+                        raise ex
+
                 # Due to https://github.com/pypa/wheel/issues/195 we prevent whls built with 0.31.0 or greater.
                 # 0.29.0, 0.30.0 are the two previous versions before that release.
                 supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
@@ -170,30 +182,6 @@ class TestIndex(unittest.TestCase):
                         "Dependencies of {} use disallowed extension dependencies. "
                         "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
-
-    def test_azext_metadata(self):
-
-        historical_extensios = [
-            'keyvault-preview',
-        ]
-
-        extensions_dir = tempfile.mkdtemp()
-
-        for ext_name, exts in self.index['extensions'].items():
-            latest = max(exts, key=lambda e: LooseVersion(e['metadata']['version']))
-
-            ext_dir = tempfile.mkdtemp(dir=extensions_dir)
-            ext_file = get_whl_from_url(latest['downloadUrl'], latest['filename'], self.whl_cache_dir, self.whl_cache)
-
-            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
-
-            try:
-                self.assertIn('azext.minCliCoreVersion', metadata)
-            except AssertionError as ex:
-                if ext_name in historical_extensios:
-                    pass
-                else:
-                    raise ex
 
 
 if __name__ == '__main__':
