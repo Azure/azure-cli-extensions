@@ -27,6 +27,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor app-insights component') as c:
         c.argument('workspace_resource_id', options_list=['--workspace'], validator=validate_log_analytic_workspace_name_or_id,
                    help='Name or resource ID of a log analytics workspace')
+        c.argument('retention_in_days', options_list=['--retention-time'], help='Retention in days for Application Insights. The value can be one of the following values: 30,60,90,120,180,270,365,550,730. It can be set only when Application Insights is not connected to a Log Analytics workspace.')
         from .vendored_sdks.mgmt_applicationinsights.models import PublicNetworkAccessType
         c.argument('public_network_access_for_ingestion', options_list=['--ingestion-access'], help='The public network access type for accessing Application Insights ingestion.',
                    arg_type=get_enum_type(PublicNetworkAccessType))

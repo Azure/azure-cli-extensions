@@ -39,7 +39,7 @@ helps['monitor app-insights component create'] = """
     examples:
       - name: Create a component with kind web and location.
         text: |
-          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web
+          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web --retention-time 120
 """
 
 helps['monitor app-insights component update'] = """
@@ -52,7 +52,7 @@ helps['monitor app-insights component update'] = """
     examples:
       - name: Update a component with kind web.
         text: |
-          az monitor app-insights component update --app demoApp -k web -g demoRg
+          az monitor app-insights component update --app demoApp -k web -g demoRg --retention-time 120
 """
 
 helps['monitor app-insights component update-tags'] = """
