@@ -149,12 +149,12 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
-        c.argument('rule_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
         c.argument('priority', type=int, help='Priority of the Firewall Policy Rule Collection Group')
 
     with self.argument_context('network firewall policy rule-collection-group collection') as c:
-        c.argument('rule_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
-        c.argument('rule_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
         c.argument('rule_priority', options_list=['--collection-priority'], type=int, help='The priority of the rule in Firewall Policy Rule Collection Group')
         c.argument('description', arg_group='Common Rule', help='The description of rule.')
         c.argument('destination_addresses', arg_group='Common Rule', nargs='+', help="Space-separated list of destination IP addresses.")
@@ -176,6 +176,6 @@ def load_arguments(self, _):
         c.argument('nat_action', options_list=['--action'], arg_type=get_enum_type(['DNAT', 'SNAT']), help='The action type of a rule collection.')
 
     with self.argument_context('network firewall policy rule-collection-group collection rule') as c:
-        c.argument('rule_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
         c.argument('condition_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
     # endregion
