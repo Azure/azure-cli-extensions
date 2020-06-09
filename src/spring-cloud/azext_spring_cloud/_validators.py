@@ -314,6 +314,6 @@ def validate_node_resource_group(namespace):
 def _validate_resource_group_name(name, message_name):
     if not name:
         return
-    matchObj = match(r'^[-\\w\\._\\(\\)]+$', name)
+    matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
         raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
