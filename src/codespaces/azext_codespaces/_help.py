@@ -41,7 +41,13 @@ helps['codespace plan create'] = """
         - name: Create a plan in a specific region
           text: az codespace plan create -g my-rg -n my-plan -l westus2
         - name: Create a plan with tags
-          text: az codespace plan create -g my-rg -n my-plan -l westus2 --tags tagname=tagvalue
+          text: az codespace plan create -g my-rg -n my-plan --tags tagname=tagvalue
+        - name: Create a plan with a default instance type
+          text: az codespace plan create -g my-rg -n my-plan --default-instance-type premiumLinux
+        - name: Create a plan with a default suspend after
+          text: az codespace plan create -g my-rg -n my-plan --default-suspend-after 120
+        - name: Create a plan associated with a subnet
+          text: az codespace plan create -g my-rg -n my-plan --subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet/subnets/default
 """
 
 helps['codespace plan list'] = """
@@ -52,6 +58,16 @@ helps['codespace plan list'] = """
           text: az codespace plan list
         - name: List plans in a given resource group
           text: az codespace plan list -g my-rg
+"""
+
+helps['codespace plan update'] = """
+    type: command
+    short-summary: Update a Codespace plan.
+    examples:
+        - name: Update a plan with a different default suspend after
+          text: az codespace plan update -g my-rg -n my-plan --default-suspend-after 30
+        - name: Update a plan with a different default instance type
+          text: az codespace plan update -g my-rg -n my-plan --default-instance-type standardLinux
 """
 
 helps['codespace plan delete'] = """
@@ -109,7 +125,16 @@ helps['codespace delete'] = """
           text: az codespace delete -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Delete a Codespace given plan id and Codespace name
           text: az codespace delete --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+"""
 
+helps['codespace update'] = """
+    type: command
+    short-summary: Update a Codespace.
+    examples:
+        - name: Update a Codespace with a different instance type
+          text: az codespace update -g my-rg --plan my-plan --name my-codespace --instance-type premiumLinux
+        - name: Update a Codespace with a different suspend after
+          text: az codespace update -g my-rg --plan my-plan --name my-codespace --suspend-after 30
 """
 
 helps['codespace show'] = """

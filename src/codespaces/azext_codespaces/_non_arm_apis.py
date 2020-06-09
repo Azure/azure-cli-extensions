@@ -129,3 +129,11 @@ def create_codespace(access_token, data):
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.post(url, headers=headers, json=data)
     return response
+
+
+@api_response_decorator
+def update_codespace(access_token, codespace_id, data):
+    url = f'{API_ROOT}/environments/{codespace_id}'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    response = session.patch(url, headers=headers, json=data)
+    return response

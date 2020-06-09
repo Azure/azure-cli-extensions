@@ -12,18 +12,9 @@
 from msrest.serialization import Model
 
 
-class VSOnlinePlanProperties(Model):
-    """VS Online Additional properties.
+class VSOPlanUpdateParametersProperties(Model):
+    """Additional VS Online Plan properties.
 
-    Additional VS Online Plan properties.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :param user_id: unique user assigned id.
-    :type user_id: str
-    :ivar service_uri: Service endpoint.
-    :vartype service_uri: str
     :param default_auto_suspend_delay_minutes: Specifies auto suspend interval
      for environments in this plan.
     :type default_auto_suspend_delay_minutes: int
@@ -35,22 +26,14 @@ class VSOnlinePlanProperties(Model):
     :type vnet_properties: ~microsoft.vsonline.models.VnetProperties
     """
 
-    _validation = {
-        'service_uri': {'readonly': True},
-    }
-
     _attribute_map = {
-        'user_id': {'key': 'userId', 'type': 'str'},
-        'service_uri': {'key': 'serviceUri', 'type': 'str'},
         'default_auto_suspend_delay_minutes': {'key': 'defaultAutoSuspendDelayMinutes', 'type': 'int'},
         'default_environment_sku': {'key': 'defaultEnvironmentSku', 'type': 'str'},
         'vnet_properties': {'key': 'vnetProperties', 'type': 'VnetProperties'},
     }
 
-    def __init__(self, *, user_id: str=None, default_auto_suspend_delay_minutes: int=None, default_environment_sku: str=None, vnet_properties=None, **kwargs) -> None:
-        super(VSOnlinePlanProperties, self).__init__(**kwargs)
-        self.user_id = user_id
-        self.service_uri = None
+    def __init__(self, *, default_auto_suspend_delay_minutes: int=None, default_environment_sku: str=None, vnet_properties=None, **kwargs) -> None:
+        super(VSOPlanUpdateParametersProperties, self).__init__(**kwargs)
         self.default_auto_suspend_delay_minutes = default_auto_suspend_delay_minutes
         self.default_environment_sku = default_environment_sku
         self.vnet_properties = vnet_properties

@@ -7,7 +7,11 @@ from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from azext_codespaces import _non_arm_apis as cf_api
-from .vendored_sdks.vsonline.models import VSOnlinePlan, VSOnlinePlanProperties
+from .vendored_sdks.vsonline.models import (
+    VSOnlinePlan,
+    VSOnlinePlanProperties,
+    VnetProperties,
+    VSOPlanUpdateParametersProperties)
 
 logger = get_logger(__name__)
 
@@ -30,7 +34,15 @@ def list_plans(cmd, client, resource_group_name=None):
     return client.list_by_subscription()
 
 
-def create_plan(cmd, client, resource_group_name, plan_name, location=None, tags=None):
+def create_plan(cmd,
+                client,
+                resource_group_name,
+                plan_name,
+                location=None,
+                tags=None,
+                subnet_id=None,
+                default_sku_name=None,
+                default_autoshutdown_delay=None):
     import jwt  # pylint: disable=import-error
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -47,9 +59,28 @@ def create_plan(cmd, client, resource_group_name, plan_name, location=None, tags
         logger.debug("Unable to determine 'tid' and 'oid' from token claims: %s", decoded_token)
         raise CLIError("Unable to create plan. Use --debug for details.")
     user_id = f"{tid}_{oid}"
-    plan_props = VSOnlinePlanProperties(user_id=user_id)
+    vnet_props = VnetProperties(subnet_id=subnet_id) if subnet_id else None
+    plan_props = VSOnlinePlanProperties(
+        user_id=user_id,
+        default_auto_suspend_delay_minutes=default_autoshutdown_delay,
+        default_environment_sku=default_sku_name,
+        vnet_properties=vnet_props)
     vsonline_plan = VSOnlinePlan(location=location, properties=plan_props, tags=tags)
     return client.create(resource_group_name, plan_name, vsonline_plan)
+
+
+def update_plan(cmd,
+                client,
+                plan_name,
+                resource_group_name=None,
+                default_sku_name=None,
+                default_autoshutdown_delay=None):
+    vsonline_plan_update_parameters = VSOPlanUpdateParametersProperties(
+        default_auto_suspend_delay_minutes=default_autoshutdown_delay,
+        default_environment_sku=default_sku_name)
+    return client.update(resource_group_name,
+                         plan_name,
+                         vsonline_plan_update_parameters)
 
 
 def list_available_locations():
@@ -137,6 +168,31 @@ def suspend_codespace(cmd, client, plan_name, resource_group_name=None, codespac
     if codespace_name:
         codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name)
     return cf_api.shutdown_codespace(token.access_token, codespace_id)
+
+
+# pylint: disable=unused-argument
+def update_codespace(cmd,
+                     client,
+                     plan_name,
+                     resource_group_name=None,
+                     codespace_id=None,
+                     codespace_name=None,
+                     sku_name=None,
+                     autoshutdown_delay=None):
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    if codespace_name:
+        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name)
+    data = {}
+
+    codespace = cf_api.get_codespace(token.access_token, codespace_id)
+    if codespace['state'] != 'Shutdown':
+        raise CLIError("Codespace must be in state 'Shutdown'. "
+                       f"Cannot update a Codespace in state '{codespace['state']}'.")
+    if sku_name:
+        data['skuName'] = sku_name
+    if autoshutdown_delay:
+        data['autoShutdownDelayMinutes'] = autoshutdown_delay
+    return cf_api.update_codespace(token.access_token, codespace_id, data)
 
 
 # pylint: disable=unused-argument
