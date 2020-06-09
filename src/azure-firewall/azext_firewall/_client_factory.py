@@ -30,5 +30,5 @@ def cf_firewall_policies(cli_ctx, _):
     return network_client_policy_factory(cli_ctx).firewall_policies
 
 
-def cf_firewall_policy_rule_groups(cli_ctx, _):
-    return network_client_policy_factory(cli_ctx).firewall_policy_rule_groups
+def cf_firewall_policy_rule_collection_groups(cli_ctx, _):
+    return network_client_policy_factory(cli_ctx).firewall_policy_rule_collection_groups
