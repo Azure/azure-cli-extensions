@@ -91,18 +91,24 @@ helps['network vhub route-table create'] = """
     type: command
     short-summary: Create a route table in the virtual hub.
     examples:
-    - name: Create a route table in the virtual hub.
+    - name: Create a v2 route table in the virtual hub.
       text: |
           az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
+    - name: Create a v3 route table in the virtual hub.
+      text: |
+          az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --route-name MyRoute --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type ResourceId --next-hop /subscriptions/MySub/resourceGroups/MyResourceGroup/providers/Microsoft.Network/azureFirewalls/MyFirewall --labels label1 label2
 """
 
 helps['network vhub route-table update'] = """
     type: command
     short-summary: Update a route table in the virtual hub.
     examples:
-    - name: Create a route table in the virtual hub.
+    - name: Update the connections for a v2 route table in the virtual hub.
       text: |
           az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets All_Branches
+    - name: Update the labels for a v3 route table in the virtual hub.
+      text: |
+          az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --labels label1 label2
 """
 
 helps['network vhub route-table delete'] = """
@@ -133,12 +139,15 @@ helps['network vhub route-table route add'] = """
     type: command
     short-summary: Add a route into route table of the virtual hub.
     examples:
-      - name: Add a route with CIDR destination into route table of the virtual hub.
+      - name: Add a route with CIDR destination into route table of the virtual hub (route table v2).
         text: |
             az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
-      - name: Add a route with Service destination into route table of the virtual hub.
+      - name: Add a route with Service destination into route table of the virtual hub (route table v2).
         text: |
             az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type Service --destinations Skype Sharepoint --next-hop-type IPAddress --next-hops "10.0.0.68"
+      - name: Add a route with firewall as next hop into route table of the virtual hub (route table v3).
+        text: |
+            az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type ResourceId --next-hop /subscriptions/MySub/resourceGroups/MyResourceGroup/providers/Microsoft.Network/azureFirewalls/MyFirewall
 """
 
 helps['network vhub route-table route list'] = """
