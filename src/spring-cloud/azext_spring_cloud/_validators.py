@@ -298,6 +298,14 @@ def _validate_ip(ip, prefix):
 
 
 def validate_vnet_required_parameters(namespace):
+    # pylint: disable=too-many-boolean-expressions
+    if not namespace.app_subnet and \
+       not namespace.service_runtime_subnet and \
+       not namespace.app_network_resource_group and \
+       not namespace.service_runtime_network_resource_group and \
+       not namespace.reserved_cidr_range and \
+       not namespace.vnet:
+        return
     if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
         raise CLIError(
