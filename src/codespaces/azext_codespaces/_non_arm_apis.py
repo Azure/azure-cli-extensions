@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 SERVICE_DOMAIN = "https://online.visualstudio.com"
 API_ROOT = f"{SERVICE_DOMAIN}/api/v1"
-CODESPACES_PORTAL_PREFIX = f"{SERVICE_DOMAIN}/environments"
+CODESPACES_PORTAL_PREFIX = f"{SERVICE_DOMAIN}/environment"
 
 
 def _get_user_agent_string():
