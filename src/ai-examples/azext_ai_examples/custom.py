@@ -41,7 +41,9 @@ def get_generated_examples(cli_term):
 
     if response.status_code == 200:
         for answer in json.loads(response.content):
-            examples.append(clean_from_http_answer(answer))
+            # Ignore pruned responses
+            if answer['source'] != 'pruned':
+                examples.append(clean_from_http_answer(answer))
 
     return examples
 
