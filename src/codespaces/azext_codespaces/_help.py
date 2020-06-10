@@ -60,16 +60,6 @@ helps['codespace plan list'] = """
           text: az codespace plan list -g my-rg
 """
 
-helps['codespace plan update'] = """
-    type: command
-    short-summary: Update a Codespace plan.
-    examples:
-        - name: Update a plan with a different default suspend after
-          text: az codespace plan update -g my-rg -n my-plan --default-suspend-after 30
-        - name: Update a plan with a different default instance type
-          text: az codespace plan update -g my-rg -n my-plan --default-instance-type standardLinux
-"""
-
 helps['codespace plan delete'] = """
     type: command
     short-summary: Delete a Codespace plan.

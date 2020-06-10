@@ -15,8 +15,6 @@ from .vendored_sdks.vsonline.models import (
 
 logger = get_logger(__name__)
 
-CODESPACE_IN_BROWSER_PREFIX = "https://online.visualstudio.com/environment"
-
 
 def _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
@@ -221,7 +219,7 @@ def open_codespace(cmd, client, plan_name, resource_group_name=None, codespace_i
         user_confirmed = prompt_y_n(msg)
         if not user_confirmed:
             raise CLIError("Operation cancelled.")
-    url = f"{CODESPACE_IN_BROWSER_PREFIX}/{codespace['id']}"
+    url = f"{cf_api.CODESPACES_PORTAL_PREFIX}/{codespace['id']}"
     logger.warning("Opening: %s", url)
     success = webbrowser.open_new_tab(url)
     if not success:

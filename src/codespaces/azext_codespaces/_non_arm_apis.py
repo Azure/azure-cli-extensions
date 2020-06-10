@@ -17,7 +17,9 @@ from .version import VERSION
 
 logger = get_logger(__name__)
 
-API_ROOT = "https://online.visualstudio.com/api/v1"
+SERVICE_DOMAIN = "https://online.visualstudio.com"
+API_ROOT = f"{SERVICE_DOMAIN}/api/v1"
+CODESPACES_PORTAL_PREFIX = f"{SERVICE_DOMAIN}/environments"
 
 
 def _get_user_agent_string():
