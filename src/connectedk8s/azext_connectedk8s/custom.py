@@ -65,7 +65,7 @@ Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy=None, http_proxy=None, no_proxy=None, location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -250,6 +250,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
                         "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                        "--set", "global.httpsProxy={}".format(https_proxy),
+                        "--set", "global.httpProxy={}".format(http_proxy),
+                        "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--kubeconfig", kube_config, "--output", "json"]
