@@ -432,19 +432,24 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
     return client.create_or_update(resource_group_name, firewall_policy_name, fire_wall_policy)
 
 
-def update_azure_firewall_policies(instance, tags=None, threat_intel_mode=None,
+def update_azure_firewall_policies(cmd,
+                                   instance, tags=None, threat_intel_mode=None,
                                    dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
         instance.threat_intel_mode = threat_intel_mode
 
-    if dns_servers is not None:
-        instance.dns_settings.servers = dns_servers
-    if enable_dns_proxy is not None:
-        instance.dns_settings.enable_proxy = enable_dns_proxy
-    if require_dns_proxy_for_network_rules is not None:
-        instance.dns_settings.require_proxy_for_network_rules = require_dns_proxy_for_network_rules
+    if cmd.supported_api_version(min_api='2020-05-01'):
+        if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
+            DnsSettings = cmd.get_models('DnsSettings')
+            instance.dns_settings = DnsSettings()
+        if dns_servers is not None:
+            instance.dns_settings.servers = dns_servers
+        if enable_dns_proxy is not None:
+            instance.dns_settings.enable_proxy = enable_dns_proxy
+        if require_dns_proxy_for_network_rules is not None:
+            instance.dns_settings.require_proxy_for_network_rules = require_dns_proxy_for_network_rules
 
     return instance
 
