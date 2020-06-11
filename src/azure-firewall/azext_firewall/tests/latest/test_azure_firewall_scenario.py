@@ -457,6 +457,54 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
+    @ResourceGroupPreparer(name_prefix='test_firewall_policy_with_dns_settings')
+    def test_firewall_policy_with_dns_settings(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': 'eastus2euap',   # available only in this location for now
+            'policy': 'fwp01',
+            'dns_servers': '10.0.0.1 10.0.0.2 10.0.0.3',
+        })
+
+        creation_data = self.cmd('network firewall policy create '
+                                 '--resource-group {rg} '
+                                 '--location {location} '
+                                 '--name {policy} '
+                                 '--dns-servers {dns_servers} ').get_output_in_json()
+        self.assertEqual(creation_data['name'], self.kwargs['policy'])
+        self.assertEqual(creation_data['dnsSettings']['servers'], self.kwargs['dns_servers'].split())
+        self.assertEqual(creation_data['dnsSettings']['enableProxy'], None)     # None instead of False
+        self.assertEqual(creation_data['dnsSettings']['requireProxyForNetworkRules'], True)
+
+        show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
+        self.assertEqual(show_data['name'], self.kwargs['policy'])
+        self.assertEqual(show_data['dnsSettings']['servers'], self.kwargs['dns_servers'].split())
+        self.assertEqual(show_data['dnsSettings']['enableProxy'], None)
+        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], True)
+
+        self.cmd('network firewall policy update '
+                 '--resource {rg} '
+                 '--name {policy} '
+                 '--dns-servers 10.0.1.0 '
+                 '--enable-dns-proxy true ').get_output_in_json()
+        show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
+        self.assertEqual(show_data['name'], self.kwargs['policy'])
+        self.assertEqual(show_data['dnsSettings']['servers'], ['10.0.1.0'])  # update successfully
+        self.assertEqual(show_data['dnsSettings']['enableProxy'], True)     # update succesefully
+        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], True)
+
+        self.cmd('network firewall policy update '
+                 '--resource {rg} '
+                 '--name {policy} '
+                 '--require-dns-proxy-for-network-rules false').get_output_in_json()
+        show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
+        self.assertEqual(show_data['name'], self.kwargs['policy'])
+        self.assertEqual(show_data['dnsSettings']['servers'], ['10.0.1.0'])
+        self.assertEqual(show_data['dnsSettings']['enableProxy'], True)
+        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], False)
+
+        self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
+
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy')
     def test_firewall_with_dns_proxy(self, resource_group):
         self.kwargs.update({
