@@ -433,7 +433,7 @@ class AzureFirewallScenario(ScenarioTest):
                                  '--dns-servers {dns_servers} ').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['policy'])
         self.assertEqual(creation_data['dnsSettings']['servers'], self.kwargs['dns_servers'].split())
-        self.assertEqual(creation_data['dnsSettings']['enableProxy'], None) # None instead of False
+        self.assertEqual(creation_data['dnsSettings']['enableProxy'], None)     # None instead of False
         self.assertEqual(creation_data['dnsSettings']['requireProxyForNetworkRules'], True)
 
         show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
@@ -464,7 +464,6 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], False)
 
         self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
-
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy')
     def test_firewall_with_dns_proxy(self, resource_group):
