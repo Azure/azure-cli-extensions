@@ -413,21 +413,39 @@ def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure
 
 # region AzureFirewallPolicies
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
-                                   threat_intel_mode=None, location=None, tags=None):
+                                   threat_intel_mode=None, location=None, tags=None,
+                                   dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
-    FirewallPolicy, SubResource = cmd.get_models('FirewallPolicy', 'SubResource')
+    FirewallPolicy, SubResource, DnsSettings = cmd.get_models('FirewallPolicy', 'SubResource', 'DnsSettings')
     fire_wall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
                                       threat_intel_mode=threat_intel_mode,
                                       location=location,
                                       tags=tags)
+
+    if cmd.supported_api_version(min_api='2020-05-01'):
+        if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
+            dns_settings = DnsSettings(servers=dns_servers,
+                                       enable_proxy=enable_dns_proxy or False,
+                                       require_proxy_for_network_rules=require_dns_proxy_for_network_rules or True)
+            fire_wall_policy.dns_settings = dns_settings
+
     return client.create_or_update(resource_group_name, firewall_policy_name, fire_wall_policy)
 
 
-def update_azure_firewall_policies(instance, tags=None, threat_intel_mode=None):
+def update_azure_firewall_policies(instance, tags=None, threat_intel_mode=None,
+                                   dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
         instance.threat_intel_mode = threat_intel_mode
+
+    if dns_servers is not None:
+        instance.dns_settings.servers = dns_servers
+    if enable_dns_proxy is not None:
+        instance.dns_settings.enable_proxy = enable_dns_proxy
+    if require_dns_proxy_for_network_rules is not None:
+        instance.dns_settings.require_proxy_for_network_rules = require_dns_proxy_for_network_rules
+
     return instance
 
 
