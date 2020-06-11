@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.cli.testsdk.checkers import JMESPathCheck, JMESPathPatternCheck, JMESPathCheckExists
+from azure.cli.testsdk.checkers import JMESPathCheck, JMESPathCheckExists
 
 
 # EXAMPLE: /HostPools/put/HostPool_Create
@@ -32,7 +32,7 @@ def step__hostpools_put_hostpool_create(test, rg):
                  JMESPathCheck('name', test.kwargs["MyHostPool"]),
                  JMESPathCheck('tags.tag1', 'value1'),
                  JMESPathCheck('tags.tag2', 'value2'),
-                 ])
+             ])
 
 
 # EXAMPLE: /HostPools/get/HostPool_List
@@ -40,7 +40,8 @@ def step__hostpools_get_hostpool_list(test, rg):
     test.cmd('az desktopvirtualization hostpool list '
              '-g ""',
              checks=[
-                 JMESPathCheckExists('[?name==\'{}\']'.format(test.kwargs["MyHostPool"])),
+                 JMESPathCheckExists('[?name==\'{}\']'.format(
+                     test.kwargs["MyHostPool"])),
              ])
 
 
@@ -90,7 +91,8 @@ def step__applicationgroups_get_applicationgroup_listbyresourcegroup(test, rg):
              '--filter "applicationGroupType eq \'RailApplication\'" '
              '--resource-group "{rg}"',
              checks=[
-                 JMESPathCheckExists('[?name==\'{}\']'.format(test.kwargs["MyApplicationGroup"])),
+                 JMESPathCheckExists('[?name==\'{}\']'.format(
+                     test.kwargs["MyApplicationGroup"])),
              ])
 
 
@@ -148,4 +150,3 @@ def step__workspaces_patch_workspace_update(test, rg):
                  JMESPathCheck('tags.tag1', 'value3'),
                  JMESPathCheck('tags.tag2', 'value4'),
              ])
-
