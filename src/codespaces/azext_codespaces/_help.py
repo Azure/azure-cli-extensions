@@ -24,7 +24,7 @@ helps['codespace location list'] = """
 
 helps['codespace location show'] = """
     type: command
-    short-summary: Show details on a region.
+    short-summary: Show details of a region.
 """
 
 helps['codespace plan'] = """
