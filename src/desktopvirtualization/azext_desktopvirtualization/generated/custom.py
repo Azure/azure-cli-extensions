@@ -8,8 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-
-import json
+# pylint: disable=unused-argument
 
 
 def desktopvirtualization_workspace_list(client,
@@ -50,8 +49,6 @@ def desktopvirtualization_workspace_update(client,
                                            description=None,
                                            friendly_name=None,
                                            application_group_references=None):
-    if isinstance(tags, str):
-        tags = json.loads(tags)
     return client.update(resource_group_name=resource_group_name,
                          workspace_name=workspace_name,
                          tags=tags,
@@ -108,8 +105,6 @@ def desktopvirtualization_applicationgroup_update(client,
                                                   tags=None,
                                                   description=None,
                                                   friendly_name=None):
-    if isinstance(tags, str):
-        tags = json.loads(tags)
     return client.update(resource_group_name=resource_group_name,
                          application_group_name=application_group_name,
                          tags=tags,
@@ -187,8 +182,6 @@ def desktopvirtualization_hostpool_update(client,
                                           validation_environment=None,
                                           registration_info=None,
                                           sso_context=None):
-    if isinstance(tags, str):
-        tags = json.loads(tags)
     return client.update(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
                          tags=tags,

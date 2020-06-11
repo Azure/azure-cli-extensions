@@ -30,7 +30,7 @@ class WorkspaceOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,8 +59,8 @@ class WorkspaceOperations(object):
         :param workspace_name: The name of the workspace.
         :type workspace_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workspace or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Workspace
+        :return: Workspace, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Workspace
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workspace"]
@@ -97,7 +97,7 @@ class WorkspaceOperations(object):
         deserialized = self._deserialize('Workspace', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/workspaces/{workspaceName}'}  # type: ignore
@@ -131,8 +131,8 @@ class WorkspaceOperations(object):
         :param application_group_references: List of applicationGroup resource Ids.
         :type application_group_references: list[str]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workspace or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Workspace
+        :return: Workspace, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Workspace
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workspace"]
@@ -182,7 +182,7 @@ class WorkspaceOperations(object):
             deserialized = self._deserialize('Workspace', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/workspaces/{workspaceName}'}  # type: ignore
@@ -201,7 +201,7 @@ class WorkspaceOperations(object):
         :param workspace_name: The name of the workspace.
         :type workspace_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -236,7 +236,7 @@ class WorkspaceOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/workspaces/{workspaceName}'}  # type: ignore
 
@@ -244,7 +244,7 @@ class WorkspaceOperations(object):
         self,
         resource_group_name,  # type: str
         workspace_name,  # type: str
-        tags=None,  # type: Optional[object]
+        tags=None,  # type: Optional[Dict[str, str]]
         description=None,  # type: Optional[str]
         friendly_name=None,  # type: Optional[str]
         application_group_references=None,  # type: Optional[List[str]]
@@ -258,7 +258,7 @@ class WorkspaceOperations(object):
         :param workspace_name: The name of the workspace.
         :type workspace_name: str
         :param tags: tags to be updated.
-        :type tags: object
+        :type tags: dict[str, str]
         :param description: Description of Workspace.
         :type description: str
         :param friendly_name: Friendly name of Workspace.
@@ -266,8 +266,8 @@ class WorkspaceOperations(object):
         :param application_group_references: List of applicationGroup links.
         :type application_group_references: list[str]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workspace or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Workspace
+        :return: Workspace, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Workspace
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workspace"]
@@ -315,7 +315,7 @@ class WorkspaceOperations(object):
         deserialized = self._deserialize('Workspace', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/workspaces/{workspaceName}'}  # type: ignore
@@ -331,8 +331,8 @@ class WorkspaceOperations(object):
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of WorkspaceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.WorkspaceList]
+        :return: An iterator like instance of either WorkspaceList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.WorkspaceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkspaceList"]
@@ -396,8 +396,8 @@ class WorkspaceOperations(object):
         """List workspaces in subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of WorkspaceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.WorkspaceList]
+        :return: An iterator like instance of either WorkspaceList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.WorkspaceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkspaceList"]

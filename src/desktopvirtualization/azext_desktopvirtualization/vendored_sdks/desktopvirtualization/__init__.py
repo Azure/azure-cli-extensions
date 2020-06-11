@@ -7,9 +7,6 @@
 # --------------------------------------------------------------------------
 
 from ._desktop_virtualization_api_client import DesktopVirtualizationAPIClient
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['DesktopVirtualizationAPIClient']
 
 try:

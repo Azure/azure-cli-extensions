@@ -26,7 +26,7 @@ class UserSessionOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,8 +58,8 @@ class UserSessionOperations:
      and sessionstate.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of UserSessionList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.desktopvirtualization.models.UserSessionList]
+        :return: An iterator like instance of either UserSessionList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.UserSessionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSessionList"]
@@ -137,8 +137,8 @@ class UserSessionOperations:
         :param user_session_id: The name of the user session within the specified session host.
         :type user_session_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: UserSession or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.UserSession
+        :return: UserSession, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.UserSession
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSession"]
@@ -177,7 +177,7 @@ class UserSessionOperations:
         deserialized = self._deserialize('UserSession', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}/userSessions/{userSessionId}'}  # type: ignore
@@ -204,7 +204,7 @@ class UserSessionOperations:
         :param force: Force flag to login off userSession.
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -243,7 +243,7 @@ class UserSessionOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}/userSessions/{userSessionId}'}  # type: ignore
 
@@ -263,8 +263,8 @@ class UserSessionOperations:
         :param session_host_name: The name of the session host within the specified host pool.
         :type session_host_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of UserSessionList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.desktopvirtualization.models.UserSessionList]
+        :return: An iterator like instance of either UserSessionList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.UserSessionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSessionList"]
@@ -341,7 +341,7 @@ class UserSessionOperations:
         :param user_session_id: The name of the user session within the specified session host.
         :type user_session_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -378,7 +378,7 @@ class UserSessionOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     disconnect.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}/userSessions/{userSessionId}/disconnect'}  # type: ignore
 
@@ -407,7 +407,7 @@ class UserSessionOperations:
         :param message_body: Body of message.
         :type message_body: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -455,6 +455,6 @@ class UserSessionOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     send_message.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/sessionHosts/{sessionHostName}/userSessions/{userSessionId}/sendMessage'}  # type: ignore

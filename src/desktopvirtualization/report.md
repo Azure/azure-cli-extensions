@@ -46,7 +46,7 @@ update a desktopvirtualization applicationgroup.
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|
 |**--application-group-name**|string|The name of the application group|application_group_name|
-|**--tags**|any|tags to be updated|tags|
+|**--tags**|dictionary|tags to be updated|tags|
 |**--description**|string|Description of ApplicationGroup.|description|
 |**--friendly-name**|string|Friendly name of ApplicationGroup.|friendly_name|
 ### desktopvirtualization hostpool create
@@ -103,7 +103,7 @@ update a desktopvirtualization hostpool.
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|
 |**--host-pool-name**|string|The name of the host pool within the specified resource group|host_pool_name|
-|**--tags**|any|tags to be updated|tags|
+|**--tags**|dictionary|tags to be updated|tags|
 |**--friendly-name**|string|Friendly name of HostPool.|friendly_name|
 |**--description**|string|Description of HostPool.|description|
 |**--custom-rdp-property**|string|Custom rdp property of HostPool.|custom_rdp_property|
@@ -158,7 +158,7 @@ update a desktopvirtualization workspace.
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|
 |**--workspace-name**|string|The name of the workspace|workspace_name|
-|**--tags**|any|tags to be updated|tags|
+|**--tags**|dictionary|tags to be updated|tags|
 |**--description**|string|Description of Workspace.|description|
 |**--friendly-name**|string|Friendly name of Workspace.|friendly_name|
 |**--application-group-references**|array|List of applicationGroup links.|application_group_references|

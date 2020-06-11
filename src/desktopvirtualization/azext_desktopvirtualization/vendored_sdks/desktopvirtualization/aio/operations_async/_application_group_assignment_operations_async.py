@@ -26,7 +26,7 @@ class ApplicationGroupAssignmentOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,8 +58,8 @@ class ApplicationGroupAssignmentOperations:
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.desktopvirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]

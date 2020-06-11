@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import DesktopVirtualizationAPIClientConfiguration
 from .operations import OperationOperations
 from .operations import WorkspaceOperations
@@ -34,27 +36,27 @@ class DesktopVirtualizationAPIClient(object):
     """DesktopVirtualizationAPIClient.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.desktopvirtualization.operations.OperationOperations
+    :vartype operation: desktop_virtualization_api_client.operations.OperationOperations
     :ivar workspace: WorkspaceOperations operations
-    :vartype workspace: azure.mgmt.desktopvirtualization.operations.WorkspaceOperations
+    :vartype workspace: desktop_virtualization_api_client.operations.WorkspaceOperations
     :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: azure.mgmt.desktopvirtualization.operations.ApplicationGroupAssignmentOperations
+    :vartype application_group_assignment: desktop_virtualization_api_client.operations.ApplicationGroupAssignmentOperations
     :ivar application_group: ApplicationGroupOperations operations
-    :vartype application_group: azure.mgmt.desktopvirtualization.operations.ApplicationGroupOperations
+    :vartype application_group: desktop_virtualization_api_client.operations.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
-    :vartype start_menu_item: azure.mgmt.desktopvirtualization.operations.StartMenuItemOperations
+    :vartype start_menu_item: desktop_virtualization_api_client.operations.StartMenuItemOperations
     :ivar application: ApplicationOperations operations
-    :vartype application: azure.mgmt.desktopvirtualization.operations.ApplicationOperations
+    :vartype application: desktop_virtualization_api_client.operations.ApplicationOperations
     :ivar desktop: DesktopOperations operations
-    :vartype desktop: azure.mgmt.desktopvirtualization.operations.DesktopOperations
+    :vartype desktop: desktop_virtualization_api_client.operations.DesktopOperations
     :ivar host_pool: HostPoolOperations operations
-    :vartype host_pool: azure.mgmt.desktopvirtualization.operations.HostPoolOperations
+    :vartype host_pool: desktop_virtualization_api_client.operations.HostPoolOperations
     :ivar user_session: UserSessionOperations operations
-    :vartype user_session: azure.mgmt.desktopvirtualization.operations.UserSessionOperations
+    :vartype user_session: desktop_virtualization_api_client.operations.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
-    :vartype session_host: azure.mgmt.desktopvirtualization.operations.SessionHostOperations
+    :vartype session_host: desktop_virtualization_api_client.operations.SessionHostOperations
     :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: azure.mgmt.desktopvirtualization.operations.ActiveApplicationOperations
+    :vartype active_application: desktop_virtualization_api_client.operations.ActiveApplicationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.

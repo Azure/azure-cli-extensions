@@ -29,7 +29,7 @@ class DesktopOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,8 +61,8 @@ class DesktopOperations(object):
         :param desktop_name: The name of the desktop within the specified desktop group.
         :type desktop_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Desktop or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Desktop
+        :return: Desktop, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Desktop
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Desktop"]
@@ -100,7 +100,7 @@ class DesktopOperations(object):
         deserialized = self._deserialize('Desktop', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops/{desktopName}'}  # type: ignore
@@ -110,7 +110,7 @@ class DesktopOperations(object):
         resource_group_name,  # type: str
         application_group_name,  # type: str
         desktop_name,  # type: str
-        tags=None,  # type: Optional[object]
+        tags=None,  # type: Optional[Dict[str, str]]
         description=None,  # type: Optional[str]
         friendly_name=None,  # type: Optional[str]
         **kwargs  # type: Any
@@ -125,14 +125,14 @@ class DesktopOperations(object):
         :param desktop_name: The name of the desktop within the specified desktop group.
         :type desktop_name: str
         :param tags: tags to be updated.
-        :type tags: object
+        :type tags: dict[str, str]
         :param description: Description of Desktop.
         :type description: str
         :param friendly_name: Friendly name of Desktop.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Desktop or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Desktop
+        :return: Desktop, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Desktop
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Desktop"]
@@ -181,7 +181,7 @@ class DesktopOperations(object):
         deserialized = self._deserialize('Desktop', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops/{desktopName}'}  # type: ignore
@@ -200,8 +200,8 @@ class DesktopOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DesktopList or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.DesktopList
+        :return: DesktopList, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.DesktopList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DesktopList"]
@@ -238,7 +238,7 @@ class DesktopOperations(object):
         deserialized = self._deserialize('DesktopList', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/desktops'}  # type: ignore

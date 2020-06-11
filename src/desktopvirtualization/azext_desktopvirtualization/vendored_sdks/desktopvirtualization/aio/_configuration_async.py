@@ -11,12 +11,11 @@ from typing import Any, TYPE_CHECKING
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-from .._version import VERSION
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
+VERSION = "unknown"
 
 class DesktopVirtualizationAPIClientConfiguration(Configuration):
     """Configuration for DesktopVirtualizationAPIClient.
@@ -47,7 +46,7 @@ class DesktopVirtualizationAPIClientConfiguration(Configuration):
         self.api_version = "2019-12-10-preview"
         self.credential_scopes = ['https://management.azure.com/.default']
         self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
-        kwargs.setdefault('sdk_moniker', 'mgmt-desktopvirtualization/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'desktopvirtualizationapiclient/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

@@ -30,7 +30,7 @@ class ApplicationOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,8 +62,8 @@ class ApplicationOperations(object):
         :param application_name: The name of the application within the specified application group.
         :type application_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Application or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Application
+        :return: Application, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Application
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Application"]
@@ -101,7 +101,7 @@ class ApplicationOperations(object):
         deserialized = self._deserialize('Application', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/applications/{applicationName}'}  # type: ignore
@@ -133,7 +133,7 @@ class ApplicationOperations(object):
         :param command_line_setting: Specifies whether this published application can be launched with
          command line arguments provided by the client, command line arguments specified at publish
          time, or no command line arguments at all.
-        :type command_line_setting: str or ~azure.mgmt.desktopvirtualization.models.CommandLineSetting
+        :type command_line_setting: str or ~desktop_virtualization_api_client.models.CommandLineSetting
         :param description: Description of Application.
         :type description: str
         :param friendly_name: Friendly name of Application.
@@ -150,8 +150,8 @@ class ApplicationOperations(object):
         :param icon_index: Index of the icon.
         :type icon_index: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Application or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Application
+        :return: Application, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Application
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Application"]
@@ -202,7 +202,7 @@ class ApplicationOperations(object):
             deserialized = self._deserialize('Application', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/applications/{applicationName}'}  # type: ignore
@@ -224,7 +224,7 @@ class ApplicationOperations(object):
         :param application_name: The name of the application within the specified application group.
         :type application_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -260,7 +260,7 @@ class ApplicationOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/applications/{applicationName}'}  # type: ignore
 
@@ -269,7 +269,7 @@ class ApplicationOperations(object):
         resource_group_name,  # type: str
         application_group_name,  # type: str
         application_name,  # type: str
-        tags=None,  # type: Optional[object]
+        tags=None,  # type: Optional[Dict[str, str]]
         description=None,  # type: Optional[str]
         friendly_name=None,  # type: Optional[str]
         file_path=None,  # type: Optional[str]
@@ -290,7 +290,7 @@ class ApplicationOperations(object):
         :param application_name: The name of the application within the specified application group.
         :type application_name: str
         :param tags: tags to be updated.
-        :type tags: object
+        :type tags: dict[str, str]
         :param description: Description of Application.
         :type description: str
         :param friendly_name: Friendly name of Application.
@@ -300,7 +300,7 @@ class ApplicationOperations(object):
         :param command_line_setting: Specifies whether this published application can be launched with
          command line arguments provided by the client, command line arguments specified at publish
          time, or no command line arguments at all.
-        :type command_line_setting: str or ~azure.mgmt.desktopvirtualization.models.CommandLineSetting
+        :type command_line_setting: str or ~desktop_virtualization_api_client.models.CommandLineSetting
         :param command_line_arguments: Command Line Arguments for Application.
         :type command_line_arguments: str
         :param show_in_portal: Specifies whether to show the RemoteApp program in the RD Web Access
@@ -311,8 +311,8 @@ class ApplicationOperations(object):
         :param icon_index: Index of the icon.
         :type icon_index: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Application or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.Application
+        :return: Application, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.Application
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Application"]
@@ -361,7 +361,7 @@ class ApplicationOperations(object):
         deserialized = self._deserialize('Application', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}/applications/{applicationName}'}  # type: ignore
@@ -380,8 +380,8 @@ class ApplicationOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.ApplicationList]
+        :return: An iterator like instance of either ApplicationList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ApplicationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationList"]

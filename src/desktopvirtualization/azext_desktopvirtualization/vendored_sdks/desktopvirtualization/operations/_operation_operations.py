@@ -29,7 +29,7 @@ class OperationOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -52,8 +52,8 @@ class OperationOperations(object):
         """List all of the available operations the Desktop Virtualization resource provider supports.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ResourceProviderOperationList or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.ResourceProviderOperationList
+        :return: ResourceProviderOperationList, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ResourceProviderOperationList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderOperationList"]
@@ -84,7 +84,7 @@ class OperationOperations(object):
         deserialized = self._deserialize('ResourceProviderOperationList', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     list.metadata = {'url': '/providers/Microsoft.DesktopVirtualization/operations'}  # type: ignore

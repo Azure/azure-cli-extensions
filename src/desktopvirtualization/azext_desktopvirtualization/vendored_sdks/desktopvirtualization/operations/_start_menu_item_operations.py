@@ -30,7 +30,7 @@ class StartMenuItemOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,8 +59,8 @@ class StartMenuItemOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of StartMenuItemList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.StartMenuItemList]
+        :return: An iterator like instance of either StartMenuItemList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.StartMenuItemList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.StartMenuItemList"]

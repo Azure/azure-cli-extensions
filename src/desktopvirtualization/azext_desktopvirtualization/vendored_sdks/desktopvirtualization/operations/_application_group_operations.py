@@ -30,7 +30,7 @@ class ApplicationGroupOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.desktopvirtualization.models
+    :type models: ~desktop_virtualization_api_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,8 +59,8 @@ class ApplicationGroupOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -97,7 +97,7 @@ class ApplicationGroupOperations(object):
         deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -126,7 +126,7 @@ class ApplicationGroupOperations(object):
         :param host_pool_arm_path: HostPool arm path of ApplicationGroup.
         :type host_pool_arm_path: str
         :param application_group_type: Resource Type of ApplicationGroup.
-        :type application_group_type: str or ~azure.mgmt.desktopvirtualization.models.ApplicationGroupType
+        :type application_group_type: str or ~desktop_virtualization_api_client.models.ApplicationGroupType
         :param tags: Resource tags.
         :type tags: dict[str, str]
         :param description: Description of ApplicationGroup.
@@ -134,8 +134,8 @@ class ApplicationGroupOperations(object):
         :param friendly_name: Friendly name of ApplicationGroup.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -185,7 +185,7 @@ class ApplicationGroupOperations(object):
             deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -204,7 +204,7 @@ class ApplicationGroupOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
@@ -239,7 +239,7 @@ class ApplicationGroupOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
 
@@ -247,7 +247,7 @@ class ApplicationGroupOperations(object):
         self,
         resource_group_name,  # type: str
         application_group_name,  # type: str
-        tags=None,  # type: Optional[object]
+        tags=None,  # type: Optional[Dict[str, str]]
         description=None,  # type: Optional[str]
         friendly_name=None,  # type: Optional[str]
         **kwargs  # type: Any
@@ -260,14 +260,14 @@ class ApplicationGroupOperations(object):
         :param application_group_name: The name of the application group.
         :type application_group_name: str
         :param tags: tags to be updated.
-        :type tags: object
+        :type tags: dict[str, str]
         :param description: Description of ApplicationGroup.
         :type description: str
         :param friendly_name: Friendly name of ApplicationGroup.
         :type friendly_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApplicationGroup or the result of cls(response)
-        :rtype: ~azure.mgmt.desktopvirtualization.models.ApplicationGroup
+        :return: ApplicationGroup, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ApplicationGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
@@ -315,7 +315,7 @@ class ApplicationGroupOperations(object):
         deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/applicationGroups/{applicationGroupName}'}  # type: ignore
@@ -335,8 +335,8 @@ class ApplicationGroupOperations(object):
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
@@ -406,8 +406,8 @@ class ApplicationGroupOperations(object):
      applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.desktopvirtualization.models.ApplicationGroupList]
+        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
