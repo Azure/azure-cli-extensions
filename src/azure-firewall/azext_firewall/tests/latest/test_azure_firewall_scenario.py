@@ -27,7 +27,12 @@ class AzureFirewallScenario(ScenarioTest):
             'rule1': 'rule1',
             'rule2': 'rule2'
         })
-        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert', checks=[
+            self.check('threatIntelMode', 'Alert')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny', checks=[
+            self.check('threatIntelMode', 'Deny')
+        ])
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
