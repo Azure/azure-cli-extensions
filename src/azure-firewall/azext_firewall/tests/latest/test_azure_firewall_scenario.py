@@ -290,9 +290,8 @@ class AzureFirewallScenario(ScenarioTest):
         ])
         self.cmd('network firewall update -g {rg} -n {af2} --firewall-policy {policy2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
-    def test_azure_firewall_policy(self, resource_group, resource_group_location):
-        from knack.util import CLIError
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_whitelist', location='eastus2euap')
+    def test_azure_firewall_policy_with_threat_intel_whitelist(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
             'policy': 'myclipolicy',
@@ -304,6 +303,37 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
+
+        self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny '
+                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy}'),
+                     self.check('threatIntelMode', 'Deny'),
+                     self.check('threatIntelWhitelist.fqdns[0]', '*.google.com'),
+                     self.check('threatIntelWhitelist.ipAddresses[0]', '102.0.0.0'),
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
+                 ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
+    def test_azure_firewall_policy(self, resource_group, resource_group_location):
+        from knack.util import CLIError
+        self.kwargs.update({
+            'collectiongroup': 'myclirulecollectiongroup',
+            'policy': 'myclipolicy',
+            'rg': resource_group,
+            'location': resource_group_location,
+            'collection_group_priority': 10000
+        })
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
+                 '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy}'),
+                     self.check('threatIntelWhitelist.fqdns[0]', '*.microsoft.com'),
+                     self.check('threatIntelWhitelist.ipAddresses[0]', '101.0.0.0'),
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1')
+                 ])
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
@@ -317,11 +347,16 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy list')
 
-        self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny', checks=[
-            self.check('type', 'Microsoft.Network/FirewallPolicies'),
-            self.check('name', '{policy}'),
-            self.check('threatIntelMode', 'Deny')
-        ])
+        self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny '
+                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy}'),
+                     self.check('threatIntelMode', 'Deny'),
+                     self.check('threatIntelWhitelist.fqdns[0]', '*.google.com'),
+                     self.check('threatIntelWhitelist.ipAddresses[0]', '102.0.0.0'),
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
+                 ])
 
         self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}', checks=[
             self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
