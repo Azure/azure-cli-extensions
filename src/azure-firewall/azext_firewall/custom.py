@@ -459,7 +459,7 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_mode = threat_intel_mode
 
     if cmd.supported_api_version(min_api='2020-05-01'):
-        if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
+        if instance.dns_settings is None and any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
             DnsSettings = cmd.get_models('DnsSettings')
             instance.dns_settings = DnsSettings()
         if dns_servers is not None:
