@@ -51,7 +51,7 @@ def load_command_table(self, _):
     )
 
     appservice_plan_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.web.operations#AppServicePlansOperations.{}',
+        operations_tmpl='azext_appservice_kube.vendored_sdks.azure_mgmt_web.operations#AppServicePlansOperations.{}',
         client_factory=cf_plans
     )
 
