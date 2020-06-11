@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -9,4 +8,16 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+
+def cf_healthcareapis(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from ..vendored_sdks.healthcareapis import HealthcareApisManagementClient
+    return get_mgmt_service_client(cli_ctx, HealthcareApisManagementClient)
+
+
+def cf_service(cli_ctx, *_):
+    return cf_healthcareapis(cli_ctx).service
+
+
+def cf_operation_result(cli_ctx, *_):
+    return cf_healthcareapis(cli_ctx).operation_result

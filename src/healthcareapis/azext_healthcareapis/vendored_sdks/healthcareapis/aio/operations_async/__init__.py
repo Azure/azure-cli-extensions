@@ -6,14 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._healthcare_apis_management_client import HealthcareApisManagementClient
-from ._version import VERSION
+from ._service_operations_async import ServiceOperations
+from ._operation_operations_async import OperationOperations
+from ._operation_result_operations_async import OperationResultOperations
 
-__version__ = VERSION
-__all__ = ['HealthcareApisManagementClient']
-
-try:
-    from .patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+__all__ = [
+    'ServiceOperations',
+    'OperationOperations',
+    'OperationResultOperations',
+]
