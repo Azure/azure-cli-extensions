@@ -66,7 +66,8 @@ def _find_item_at_path(instance, path):
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
-                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
+                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
+                          threat_intel_mode=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall, SubResource, AzureFirewallSku = cmd.get_models('AzureFirewall', 'SubResource', 'AzureFirewallSku')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
@@ -76,7 +77,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                              additional_properties={},
                              virtual_hub=SubResource(id=virtual_hub) if virtual_hub is not None else None,
                              firewall_policy=SubResource(id=firewall_policy) if firewall_policy is not None else None,
-                             sku=sku_instance if sku is not None else None)
+                             sku=sku_instance if sku is not None else None,
+                             threat_intel_mode=threat_intel_mode)
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
@@ -92,7 +94,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
-                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
+                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
+                          threat_intel_mode=None):
     SubResource = cmd.get_models('SubResource')
     if tags is not None:
         instance.tags = tags
@@ -116,7 +119,8 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         instance.additional_properties['DNSRequireProxyForNetworkRules'] = require_dns_proxy_for_network_rules
     if dns_servers is not None:
         instance.additional_properties['DNSServer'] = dns_servers
-
+    if threat_intel_mode is not None:
+        instance.threat_intel_mode = threat_intel_mode
     return instance
 
 
@@ -413,14 +417,25 @@ def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure
 
 # region AzureFirewallPolicies
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
-                                   threat_intel_mode=None, location=None, tags=None,
+                                   threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
+                                   fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
     client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
-    FirewallPolicy, SubResource, DnsSettings = cmd.get_models('FirewallPolicy', 'SubResource', 'DnsSettings')
+    (FirewallPolicy,
+     SubResource,
+     FirewallPolicyThreatIntelWhitelist,
+     DnsSettings) = cmd.get_models('FirewallPolicy',
+                                   'SubResource',
+                                   'FirewallPolicyThreatIntelWhitelist',
+                                   'DnsSettings')
     fire_wall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
                                       threat_intel_mode=threat_intel_mode,
                                       location=location,
                                       tags=tags)
+
+    threat_intel_whitelist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
+                                                                fqdns=fqdns) if ip_addresses and fqdns else None
+    fire_wall_policy.threat_intel_whitelist = threat_intel_whitelist
 
     if cmd.supported_api_version(min_api='2020-05-01'):
         if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
@@ -433,8 +448,11 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
 
 
 def update_azure_firewall_policies(cmd,
-                                   instance, tags=None, threat_intel_mode=None,
+                                   instance, tags=None, threat_intel_mode=None, ip_addresses=None,
+                                   fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
+
+    (FirewallPolicyThreatIntelWhitelist) = cmd.get_models('FirewallPolicyThreatIntelWhitelist')
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
@@ -451,6 +469,13 @@ def update_azure_firewall_policies(cmd,
         if require_dns_proxy_for_network_rules is not None:
             instance.dns_settings.require_proxy_for_network_rules = require_dns_proxy_for_network_rules
 
+    if instance.threat_intel_whitelist is None and any([ip_addresses, fqdns]):
+        instance.threat_intel_whitelist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
+                                                                             fqnds=fqdns)
+    if ip_addresses is not None:
+        instance.threat_intel_whitelist.ip_addresses = ip_addresses
+    if fqdns is not None:
+        instance.threat_intel_whitelist.fqdns = fqdns
     return instance
 
 

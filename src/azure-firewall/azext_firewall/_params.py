@@ -57,6 +57,7 @@ def load_arguments(self, _):
                                                                                   'The default sku in server end is AZFW_VNet. '
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+        c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
@@ -146,6 +147,10 @@ def load_arguments(self, _):
         c.argument('firewall_policy_name', options_list=['--name', '-n'], help='The name of the Firewall Policy.')
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+
+    with self.argument_context('network firewall policy', arg_group='Threat Intel Whitelist') as c:
+        c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')

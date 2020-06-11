@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap"}'
+    body: '{"location": "eastus2euap", "properties": {"threatIntelWhitelist": {"ipAddresses":
+      ["101.0.0.0", "101.0.0.1"], "fqdns": ["*.microsoft.com"]}}}'
     headers:
       Accept:
       - application/json
@@ -11,11 +12,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '27'
+      - '142'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n -l
+      - -g -n -l --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
@@ -26,21 +27,24 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/0da26542-dc17-4637-885c-1b8c9061fa68?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/040c1c3f-c1bc-4bdf-83ca-950b3865409d?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '547'
+      - '717'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:33 GMT
+      - Thu, 11 Jun 2020 03:02:59 GMT
       expires:
       - '-1'
       pragma:
@@ -52,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -68,12 +72,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l
+      - -g -n -l --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/0da26542-dc17-4637-885c-1b8c9061fa68?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/040c1c3f-c1bc-4bdf-83ca-950b3865409d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -85,7 +89,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:46 GMT
+      - Thu, 11 Jun 2020 03:03:10 GMT
       expires:
       - '-1'
       pragma:
@@ -115,7 +119,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l
+      - -g -n -l --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
@@ -124,19 +128,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '548'
+      - '718'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:47 GMT
+      - Thu, 11 Jun 2020 03:03:11 GMT
       expires:
       - '-1'
       pragma:
@@ -177,19 +184,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '548'
+      - '718'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:49 GMT
+      - Thu, 11 Jun 2020 03:03:14 GMT
       expires:
       - '-1'
       pragma:
@@ -230,21 +240,24 @@ interactions:
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"threatIntelMode\":
-        \"Alert\",\r\n        \"childPolicies\": [],\r\n        \"ruleCollectionGroups\":
+        \"Alert\",\r\n        \"threatIntelWhitelist\": {\r\n          \"fqdns\":
+        [\r\n            \"*.microsoft.com\"\r\n          ],\r\n          \"ipAddresses\":
+        [\r\n            \"101.0.0.0\",\r\n            \"101.0.0.1\"\r\n          ]\r\n
+        \       },\r\n        \"childPolicies\": [],\r\n        \"ruleCollectionGroups\":
         [],\r\n        \"firewalls\": [],\r\n        \"provisioningState\": \"Succeeded\"\r\n
         \     },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \     \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \     \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n      \"location\":
+        \     \"etag\": \"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73\",\r\n      \"location\":
         \"eastus2euap\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '629'
+      - '835'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:51 GMT
+      - Thu, 11 Jun 2020 03:03:16 GMT
       expires:
       - '-1'
       pragma:
@@ -282,36 +295,29 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/firewallPolicies?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"threatIntelMode\":
-        \"Alert\",\r\n        \"childPolicies\": [],\r\n        \"ruleCollectionGroups\":
-        [],\r\n        \"firewalls\": [],\r\n        \"provisioningState\": \"Succeeded\"\r\n
-        \     },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \     \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \     \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n      \"location\":
-        \"eastus2euap\"\r\n    }\r\n  ]\r\n}"
+      string: '{"value":[{"properties":{"threatIntelMode":"Alert","childPolicies":[],"ruleCollectionGroups":[],"firewalls":[],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold/providers/Microsoft.Network/firewallPolicies/fwp01","name":"fwp01","type":"Microsoft.Network/FirewallPolicies","etag":"2254bd57-74d2-45eb-92e9-ed8327964553","location":"eastus"},{"properties":{"threatIntelMode":"Alert","threatIntelWhitelist":{"fqdns":["*.microsoft.com"],"ipAddresses":["101.0.0.0","101.0.0.1"]},"childPolicies":[],"ruleCollectionGroups":[],"firewalls":[],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy","name":"myclipolicy","type":"Microsoft.Network/FirewallPolicies","etag":"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73","location":"eastus2euap"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '629'
+      - '974'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:53 GMT
+      - Thu, 11 Jun 2020 03:03:17 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
     status:
       code: 200
       message: OK
@@ -327,7 +333,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
@@ -338,19 +344,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7ff4f972-a446-4b89-9d91-345e1a8523b0\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"29e45c8f-cef0-43c6-a5d6-e860a6ce8a73\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '548'
+      - '718'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:55 GMT
+      - Thu, 11 Jun 2020 03:03:19 GMT
       expires:
       - '-1'
       pragma:
@@ -370,7 +379,8 @@ interactions:
       message: OK
 - request:
     body: 'b''{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
-      "location": "eastus2euap", "properties": {"threatIntelMode": "Deny"}}'''
+      "location": "eastus2euap", "properties": {"threatIntelMode": "Deny", "threatIntelWhitelist":
+      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}}}'''
     headers:
       Accept:
       - application/json
@@ -381,11 +391,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '279'
+      - '375'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n --threat-intel-mode
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
@@ -396,21 +406,24 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5c8a768b-3a07-4a74-8973-875cab747a17\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"486a391c-8b57-46a4-a384-a036662c13c6\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/e6496a84-40cd-4e65-b242-9cea2c0e0309?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/5e9a2a08-be08-47d5-bf8c-6268ac8a729e?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '546'
+      - '713'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:26:57 GMT
+      - Thu, 11 Jun 2020 03:03:22 GMT
       expires:
       - '-1'
       pragma:
@@ -426,7 +439,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -442,12 +455,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/e6496a84-40cd-4e65-b242-9cea2c0e0309?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/5e9a2a08-be08-47d5-bf8c-6268ac8a729e?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -459,7 +472,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:09 GMT
+      - Thu, 11 Jun 2020 03:03:34 GMT
       expires:
       - '-1'
       pragma:
@@ -489,7 +502,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
@@ -498,19 +511,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
         \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5c8a768b-3a07-4a74-8973-875cab747a17\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"486a391c-8b57-46a4-a384-a036662c13c6\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '547'
+      - '714'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:10 GMT
+      - Thu, 11 Jun 2020 03:03:35 GMT
       expires:
       - '-1'
       pragma:
@@ -557,10 +573,10 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"b49740e9-bd07-431a-8a86-6f110b482921\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"057dca15-2997-4e12-8161-f71c1b880ccf\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/7a74f8b2-c664-404a-b062-def052748303?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/5d197e39-186d-4772-b8c0-a59676ee6950?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -568,7 +584,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:13 GMT
+      - Thu, 11 Jun 2020 03:03:39 GMT
       expires:
       - '-1'
       pragma:
@@ -601,7 +617,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/7a74f8b2-c664-404a-b062-def052748303?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/5d197e39-186d-4772-b8c0-a59676ee6950?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -613,7 +629,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:24 GMT
+      - Thu, 11 Jun 2020 03:03:50 GMT
       expires:
       - '-1'
       pragma:
@@ -654,7 +670,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"b49740e9-bd07-431a-8a86-6f110b482921\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"057dca15-2997-4e12-8161-f71c1b880ccf\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -663,7 +679,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:25 GMT
+      - Thu, 11 Jun 2020 03:03:51 GMT
       expires:
       - '-1'
       pragma:
@@ -706,7 +722,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"b49740e9-bd07-431a-8a86-6f110b482921\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"057dca15-2997-4e12-8161-f71c1b880ccf\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -715,7 +731,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:26 GMT
+      - Thu, 11 Jun 2020 03:03:52 GMT
       expires:
       - '-1'
       pragma:
@@ -759,7 +775,7 @@ interactions:
         10000,\r\n        \"ruleCollections\": [],\r\n        \"provisioningState\":
         \"Succeeded\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \     \"name\": \"myclirulecollectiongroup\",\r\n      \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \     \"etag\": \"b49740e9-bd07-431a-8a86-6f110b482921\",\r\n      \"location\":
+        \     \"etag\": \"057dca15-2997-4e12-8161-f71c1b880ccf\",\r\n      \"location\":
         \"eastus2euap\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
@@ -769,7 +785,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:28 GMT
+      - Thu, 11 Jun 2020 03:03:55 GMT
       expires:
       - '-1'
       pragma:
@@ -812,7 +828,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"b49740e9-bd07-431a-8a86-6f110b482921\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"057dca15-2997-4e12-8161-f71c1b880ccf\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -821,7 +837,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:30 GMT
+      - Thu, 11 Jun 2020 03:03:56 GMT
       expires:
       - '-1'
       pragma:
@@ -869,10 +885,10 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"24fd3695-27de-4049-b096-ce0503d53818\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b846b7c1-c47e-48b0-9baa-556951ef9abb\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/6a9e4b4f-3be9-4ed2-9cab-6267a1328023?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/cef860a5-2dd1-4d1c-b264-d8e08d2c65de?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -880,7 +896,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:34 GMT
+      - Thu, 11 Jun 2020 03:03:59 GMT
       expires:
       - '-1'
       pragma:
@@ -896,7 +912,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -917,7 +933,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/6a9e4b4f-3be9-4ed2-9cab-6267a1328023?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/cef860a5-2dd1-4d1c-b264-d8e08d2c65de?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -929,7 +945,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:45 GMT
+      - Thu, 11 Jun 2020 03:04:11 GMT
       expires:
       - '-1'
       pragma:
@@ -970,7 +986,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"24fd3695-27de-4049-b096-ce0503d53818\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b846b7c1-c47e-48b0-9baa-556951ef9abb\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -979,7 +995,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:46 GMT
+      - Thu, 11 Jun 2020 03:04:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1024,7 +1040,7 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\":
         [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"24fd3695-27de-4049-b096-ce0503d53818\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b846b7c1-c47e-48b0-9baa-556951ef9abb\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1033,7 +1049,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:47 GMT
+      - Thu, 11 Jun 2020 03:04:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1101,10 +1117,10 @@ interactions:
         \       \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\n      }\r\n
         \   ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"5c78839a-8c1f-42a4-981a-2d1078ed7bbc\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"e6d55174-95fd-49df-8a8e-42465f5071ae\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/b406e499-d491-41c9-a11d-eb9fdb5e87a4?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/4ff828a7-3767-4676-bae1-e7193dcf45d4?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -1112,7 +1128,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:27:50 GMT
+      - Thu, 11 Jun 2020 03:04:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1151,7 +1167,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/b406e499-d491-41c9-a11d-eb9fdb5e87a4?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/4ff828a7-3767-4676-bae1-e7193dcf45d4?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1163,7 +1179,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:02 GMT
+      - Thu, 11 Jun 2020 03:04:27 GMT
       expires:
       - '-1'
       pragma:
@@ -1218,7 +1234,7 @@ interactions:
         \       \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\n      }\r\n
         \   ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"5c78839a-8c1f-42a4-981a-2d1078ed7bbc\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"e6d55174-95fd-49df-8a8e-42465f5071ae\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1227,7 +1243,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:02 GMT
+      - Thu, 11 Jun 2020 03:04:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1284,7 +1300,7 @@ interactions:
         \       \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\n      }\r\n
         \   ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"5c78839a-8c1f-42a4-981a-2d1078ed7bbc\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"e6d55174-95fd-49df-8a8e-42465f5071ae\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1293,7 +1309,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:04 GMT
+      - Thu, 11 Jun 2020 03:04:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1378,10 +1394,10 @@ interactions:
         \       \"priority\": 13000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"fe11f1f4-9cd0-42a4-bd0f-97145db4d9bd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"266a41bf-cc54-46a4-be44-cff192d7724f\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9caee7cf-c949-427f-b689-61bec8f15f22?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/74223994-4ac4-4a21-bb90-d90f6e99643c?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -1389,7 +1405,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:07 GMT
+      - Thu, 11 Jun 2020 03:04:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1405,7 +1421,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -1428,7 +1444,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9caee7cf-c949-427f-b689-61bec8f15f22?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/74223994-4ac4-4a21-bb90-d90f6e99643c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1440,7 +1456,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:19 GMT
+      - Thu, 11 Jun 2020 03:04:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1507,7 +1523,7 @@ interactions:
         \       \"priority\": 13000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"fe11f1f4-9cd0-42a4-bd0f-97145db4d9bd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"266a41bf-cc54-46a4-be44-cff192d7724f\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1516,7 +1532,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:20 GMT
+      - Thu, 11 Jun 2020 03:04:46 GMT
       expires:
       - '-1'
       pragma:
@@ -1585,7 +1601,7 @@ interactions:
         \       \"priority\": 13000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"fe11f1f4-9cd0-42a4-bd0f-97145db4d9bd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"266a41bf-cc54-46a4-be44-cff192d7724f\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1594,7 +1610,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:23 GMT
+      - Thu, 11 Jun 2020 03:04:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1698,10 +1714,10 @@ interactions:
         \       \"priority\": 14000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"80c73418-86e2-4c44-95a4-d1734fd593dd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"2b580038-f034-4500-aec2-7f28e2d25153\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/d385909c-fdac-4427-be1b-2b2bd6ebe7f4?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/6379ac45-6f89-41a8-ae55-c89cea6ec94f?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -1709,7 +1725,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:26 GMT
+      - Thu, 11 Jun 2020 03:04:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1725,7 +1741,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -1748,7 +1764,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/d385909c-fdac-4427-be1b-2b2bd6ebe7f4?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/6379ac45-6f89-41a8-ae55-c89cea6ec94f?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1760,7 +1776,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:38 GMT
+      - Thu, 11 Jun 2020 03:05:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1840,7 +1856,7 @@ interactions:
         \       \"priority\": 14000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"80c73418-86e2-4c44-95a4-d1734fd593dd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"2b580038-f034-4500-aec2-7f28e2d25153\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1849,7 +1865,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:39 GMT
+      - Thu, 11 Jun 2020 03:05:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1929,7 +1945,7 @@ interactions:
         \       \"priority\": 14000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"80c73418-86e2-4c44-95a4-d1734fd593dd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"2b580038-f034-4500-aec2-7f28e2d25153\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1938,7 +1954,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:41 GMT
+      - Thu, 11 Jun 2020 03:05:06 GMT
       expires:
       - '-1'
       pragma:
@@ -2019,7 +2035,7 @@ interactions:
         \       \"priority\": 14000\r\n      }\r\n    ],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"80c73418-86e2-4c44-95a4-d1734fd593dd\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"2b580038-f034-4500-aec2-7f28e2d25153\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2028,7 +2044,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:42 GMT
+      - Thu, 11 Jun 2020 03:05:07 GMT
       expires:
       - '-1'
       pragma:
@@ -2145,10 +2161,10 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"afeb4247-faa9-44c0-a1b0-9cdeb93b1ac9\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b0b4d533-e6be-406a-be58-b5bef3189962\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9818ffd7-9611-4cbc-aafc-76d64a517310?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/7806fffe-084a-4daf-87d0-553ccb0759e4?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -2156,7 +2172,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:45 GMT
+      - Thu, 11 Jun 2020 03:05:11 GMT
       expires:
       - '-1'
       pragma:
@@ -2172,7 +2188,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
     status:
       code: 200
       message: OK
@@ -2194,7 +2210,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9818ffd7-9611-4cbc-aafc-76d64a517310?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/7806fffe-084a-4daf-87d0-553ccb0759e4?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2206,7 +2222,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:58 GMT
+      - Thu, 11 Jun 2020 03:05:22 GMT
       expires:
       - '-1'
       pragma:
@@ -2295,7 +2311,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"afeb4247-faa9-44c0-a1b0-9cdeb93b1ac9\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b0b4d533-e6be-406a-be58-b5bef3189962\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2304,7 +2320,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:28:59 GMT
+      - Thu, 11 Jun 2020 03:05:23 GMT
       expires:
       - '-1'
       pragma:
@@ -2396,7 +2412,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"afeb4247-faa9-44c0-a1b0-9cdeb93b1ac9\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"b0b4d533-e6be-406a-be58-b5bef3189962\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2405,7 +2421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:02 GMT
+      - Thu, 11 Jun 2020 03:05:25 GMT
       expires:
       - '-1'
       pragma:
@@ -2535,10 +2551,10 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"781c6b38-4bba-42f1-af4f-da33899f306e\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9f7341b5-b800-4964-af02-707a06954685\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/e7850293-59f1-477e-873b-8cacc9b36112?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/242d5f74-1218-455b-bb99-523e9c54d530?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -2546,7 +2562,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:05 GMT
+      - Thu, 11 Jun 2020 03:05:28 GMT
       expires:
       - '-1'
       pragma:
@@ -2562,7 +2578,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -2585,7 +2601,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/e7850293-59f1-477e-873b-8cacc9b36112?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/242d5f74-1218-455b-bb99-523e9c54d530?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2597,7 +2613,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:16 GMT
+      - Thu, 11 Jun 2020 03:05:40 GMT
       expires:
       - '-1'
       pragma:
@@ -2696,7 +2712,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"781c6b38-4bba-42f1-af4f-da33899f306e\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9f7341b5-b800-4964-af02-707a06954685\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2705,7 +2721,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:18 GMT
+      - Thu, 11 Jun 2020 03:05:41 GMT
       expires:
       - '-1'
       pragma:
@@ -2804,7 +2820,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"781c6b38-4bba-42f1-af4f-da33899f306e\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9f7341b5-b800-4964-af02-707a06954685\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2813,7 +2829,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:19 GMT
+      - Thu, 11 Jun 2020 03:05:44 GMT
       expires:
       - '-1'
       pragma:
@@ -2929,10 +2945,10 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"755f4b4a-cdb5-4cce-b935-407afabeb5ce\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"19dbb37d-ba5f-4c9e-871d-75e56965b061\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/41fbed38-639d-45bb-a664-f7a91ab3eb2c?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/416f3597-b156-4c08-bf0f-a3742542037c?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -2940,7 +2956,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:22 GMT
+      - Thu, 11 Jun 2020 03:05:47 GMT
       expires:
       - '-1'
       pragma:
@@ -2956,7 +2972,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -2977,7 +2993,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/41fbed38-639d-45bb-a664-f7a91ab3eb2c?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/416f3597-b156-4c08-bf0f-a3742542037c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2989,7 +3005,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:34 GMT
+      - Thu, 11 Jun 2020 03:05:58 GMT
       expires:
       - '-1'
       pragma:
@@ -3077,7 +3093,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"755f4b4a-cdb5-4cce-b935-407afabeb5ce\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"19dbb37d-ba5f-4c9e-871d-75e56965b061\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3086,7 +3102,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:35 GMT
+      - Thu, 11 Jun 2020 03:05:58 GMT
       expires:
       - '-1'
       pragma:
@@ -3176,7 +3192,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"755f4b4a-cdb5-4cce-b935-407afabeb5ce\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"19dbb37d-ba5f-4c9e-871d-75e56965b061\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3185,7 +3201,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:37 GMT
+      - Thu, 11 Jun 2020 03:06:01 GMT
       expires:
       - '-1'
       pragma:
@@ -3285,10 +3301,10 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"2df16b83-8176-4d65-a82c-3d7247c14507\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"69bc79c9-479f-4914-adf4-ec7928fbb42a\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/8c829425-b480-4d5f-b92b-d520caf60b1c?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/1524ce58-2b1f-4cdd-aef7-42a09eb18f9f?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -3296,7 +3312,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:40 GMT
+      - Thu, 11 Jun 2020 03:06:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3312,7 +3328,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -3333,7 +3349,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/8c829425-b480-4d5f-b92b-d520caf60b1c?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/1524ce58-2b1f-4cdd-aef7-42a09eb18f9f?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3345,7 +3361,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:52 GMT
+      - Thu, 11 Jun 2020 03:06:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3422,7 +3438,7 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"2df16b83-8176-4d65-a82c-3d7247c14507\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"69bc79c9-479f-4914-adf4-ec7928fbb42a\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3431,7 +3447,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:53 GMT
+      - Thu, 11 Jun 2020 03:06:17 GMT
       expires:
       - '-1'
       pragma:
@@ -3512,10 +3528,10 @@ interactions:
         \     }\r\n    ],\r\n    \"provisioningState\": \"Deleting\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
         \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"2df16b83-8176-4d65-a82c-3d7247c14507\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"69bc79c9-479f-4914-adf4-ec7928fbb42a\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9cd437eb-4652-4f9f-94f7-38de8edb2986?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/ca7188af-4914-4d8d-839e-71e1bb00ca92?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -3523,11 +3539,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:29:57 GMT
+      - Thu, 11 Jun 2020 03:06:21 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperationResults/9cd437eb-4652-4f9f-94f7-38de8edb2986?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperationResults/ca7188af-4914-4d8d-839e-71e1bb00ca92?api-version=2020-05-01
       pragma:
       - no-cache
       server:
@@ -3558,7 +3574,7 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-network/10.2.0
         Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9cd437eb-4652-4f9f-94f7-38de8edb2986?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/ca7188af-4914-4d8d-839e-71e1bb00ca92?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3570,7 +3586,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:30:08 GMT
+      - Thu, 11 Jun 2020 03:06:33 GMT
       expires:
       - '-1'
       pragma:
@@ -3619,7 +3635,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 05:30:10 GMT
+      - Thu, 11 Jun 2020 03:06:34 GMT
       expires:
       - '-1'
       pragma:
@@ -3668,7 +3684,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 09 Jun 2020 05:30:26 GMT
+      - Thu, 11 Jun 2020 03:06:44 GMT
       expires:
       - '-1'
       pragma:
