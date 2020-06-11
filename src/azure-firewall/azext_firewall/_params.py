@@ -57,6 +57,7 @@ def load_arguments(self, _):
                                                                                   'The default sku in server end is AZFW_VNet. '
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+        c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
