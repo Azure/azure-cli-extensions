@@ -164,13 +164,6 @@ def app_create(cmd, client, resource_group, service, name,
         raise CLIError("App '{}' already exists.".format(name))
     logger.warning("[1/4] Creating app with name '{}'".format(name))
     properties = models.AppResourceProperties()
-    if enable_persistent_storage:
-        properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=50, mount_path="/persistent")
-    else:
-        properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=0, mount_path="/persistent")
-
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
 
@@ -210,6 +203,13 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+
+    if enable_persistent_storage:
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=50, mount_path="/persistent")
+    else:
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
     app_resource.location = location
