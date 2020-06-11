@@ -3,7 +3,7 @@ interactions:
     body: '{"tags": {"tag1": "value1", "tag2": "value2"}, "location": "centralus",
       "properties": {"friendlyName": "friendly", "description": "des1", "hostPoolType":
       "Pooled", "personalDesktopAssignmentType": "Automatic", "maxSessionLimit": 999999,
-      "loadBalancerType": "BreadthFirst", "registrationInfo": {"expirationTime": "2020-10-01T14:01:54.957124Z",
+      "loadBalancerType": "BreadthFirst", "registrationInfo": {"expirationTime": "2020-07-01T14:01:54.957124Z",
       "registrationTokenOperation": "Update"}, "ssoContext": "KeyVaultPath"}}'
     headers:
       Accept:
@@ -26,23 +26,23 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjA5OGQ4NTc4LTY0MDYtNDk5Yi1iNjg4LWZlMDg1YzIyOGU5NSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM4NCwiZXhwIjoxNjAxNTYwOTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.GbVc2sAfkOg-jjjZ6Tq6trumXm2cqSeXaGW9GERZXS-bHLoYfo2k6c2QUM06vNkyI_stV0L_vkLqyBfzwSX2B3OkB-NMYKJYYQo6i9aoQGEod7fVTLmXSk-gG4UNl752bOouIIPnZ3Cag1NeykB2rBlLoCu4WOQwqy0LoiXBd6pp739bsvH_olDR4T1AtupzkYsnopvrgFKFbYY50IuGVb13QFc9HcKc7qLSojJuBhCy2Y77Li9GFSaBwMwTac4y0LN0AS3zyA-v9GsQviSbdzuBqo8CFs-rd6bbmuf6etZ5_5XRQHenqWw9kCSXIo8IL6K7RNJIT7WSdd1JwG1k6g","resetToken":false,"registrationTokenOperation":"Update"},"vmTemplate":null}}'
+      string: '{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjNiMzMxM2Y1LTcyNGMtNDUzOC05OTAyLWE4MTVkYTIwNDJmYyIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjE4NiwiZXhwIjoxNTkzNjEyMTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.VqCQtW2kNZhA9w2dHn3LBQPdre6WU1-cMtQ0d_9opk41W1QfdwFxs31V2klmCUdlps8LBca9uxdcR6SogaFKmBMUyzwjkzkEKc4tLzm1Mkqm86JT8UJZavxHVPzO6AE-7fX_NqSZl32ROk6FBu76WVCwm-x0A658QMauWpsgHQUzP5bTx0Hxt8lM9BVw_GYHaukGo6ZqRaNkCK43Zv-tagywlnjdr0rt-pht6eZFTo6SKP6hTjTL2dDrQH7F360iUe92gL4SL1LM2ArAWzVQDqI54g_La8AonSsP6ojvDeTtgoUn6FhRqp8RBhycv7FqpoOICt9hE9ZrLOGt651rXA","resetToken":false,"registrationTokenOperation":"Update"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1753'
+      - '1789'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:05 GMT
+      - Thu, 11 Jun 2020 06:16:29 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool
       pragma:
       - no-cache
       server:
@@ -54,11 +54,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - b9786755-df07-4538-9349-311322c87739
+      - 21d43984-fbde-4953-bd75-90ab13e2a033
       x-ms-lamport-ts:
-      - '148950372'
+      - '150332869'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -81,19 +83,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjA5OGQ4NTc4LTY0MDYtNDk5Yi1iNjg4LWZlMDg1YzIyOGU5NSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM4NCwiZXhwIjoxNjAxNTYwOTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.GbVc2sAfkOg-jjjZ6Tq6trumXm2cqSeXaGW9GERZXS-bHLoYfo2k6c2QUM06vNkyI_stV0L_vkLqyBfzwSX2B3OkB-NMYKJYYQo6i9aoQGEod7fVTLmXSk-gG4UNl752bOouIIPnZ3Cag1NeykB2rBlLoCu4WOQwqy0LoiXBd6pp739bsvH_olDR4T1AtupzkYsnopvrgFKFbYY50IuGVb13QFc9HcKc7qLSojJuBhCy2Y77Li9GFSaBwMwTac4y0LN0AS3zyA-v9GsQviSbdzuBqo8CFs-rd6bbmuf6etZ5_5XRQHenqWw9kCSXIo8IL6K7RNJIT7WSdd1JwG1k6g","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null}}'
+      string: '{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjNiMzMxM2Y1LTcyNGMtNDUzOC05OTAyLWE4MTVkYTIwNDJmYyIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjE4NiwiZXhwIjoxNTkzNjEyMTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.VqCQtW2kNZhA9w2dHn3LBQPdre6WU1-cMtQ0d_9opk41W1QfdwFxs31V2klmCUdlps8LBca9uxdcR6SogaFKmBMUyzwjkzkEKc4tLzm1Mkqm86JT8UJZavxHVPzO6AE-7fX_NqSZl32ROk6FBu76WVCwm-x0A658QMauWpsgHQUzP5bTx0Hxt8lM9BVw_GYHaukGo6ZqRaNkCK43Zv-tagywlnjdr0rt-pht6eZFTo6SKP6hTjTL2dDrQH7F360iUe92gL4SL1LM2ArAWzVQDqI54g_La8AonSsP6ojvDeTtgoUn6FhRqp8RBhycv7FqpoOICt9hE9ZrLOGt651rXA","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1751'
+      - '1787'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:07 GMT
+      - Thu, 11 Jun 2020 06:16:31 GMT
       expires:
       - '-1'
       pragma:
@@ -101,7 +103,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -111,9 +113,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 93001eae-4a28-4416-a905-42aa0746d462
+      - 3c08bcff-438d-4bf1-896a-65e1640edd32
       x-ms-lamport-ts:
-      - '148953337'
+      - '150332872'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool
       x-powered-by:
       - ASP.NET
     status:
@@ -139,16 +143,20 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DesktopVirtualization/hostPools?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"value":[{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjA5OGQ4NTc4LTY0MDYtNDk5Yi1iNjg4LWZlMDg1YzIyOGU5NSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM4NCwiZXhwIjoxNjAxNTYwOTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.GbVc2sAfkOg-jjjZ6Tq6trumXm2cqSeXaGW9GERZXS-bHLoYfo2k6c2QUM06vNkyI_stV0L_vkLqyBfzwSX2B3OkB-NMYKJYYQo6i9aoQGEod7fVTLmXSk-gG4UNl752bOouIIPnZ3Cag1NeykB2rBlLoCu4WOQwqy0LoiXBd6pp739bsvH_olDR4T1AtupzkYsnopvrgFKFbYY50IuGVb13QFc9HcKc7qLSojJuBhCy2Y77Li9GFSaBwMwTac4y0LN0AS3zyA-v9GsQviSbdzuBqo8CFs-rd6bbmuf6etZ5_5XRQHenqWw9kCSXIo8IL6K7RNJIT7WSdd1JwG1k6g","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null}}],"nextLink":null}'
+      string: '{"value":[{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup2"],"customRdpProperty":"","maxSessionLimit":99,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}},{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestb7tguyk47spo7uq46wldfpoyivp25v6e6ehujhl6lsihhb6vrdmwhlxy5fejeuim3kou/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}},{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestozelmzuo3lidppoz7bqfrwncvojo23ch7f2j4wj2bf3jlkxxnkf2o2y7wrgegk7wu6yt/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}},{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestqoadita4wp52uq5hbhejscv7f3kabnhpig4rripodyranyeyo2h3jfos3e5stx5bu2m6/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}},{"name":"hostPool5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/hostpools/hostPool5","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"audiocapturemode:i:1;audiomode:i:0;desktop
+        size id:i:3;drivestoredirect:s:*;redirectclipboard:i:1;redirectcomports:i:0;redirectprinters:i:1;redirectsmartcards:i:1;screen
+        mode id:i:1;","maxSessionLimit":99,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":"{\"domain\":\"RdsPTTenant1.onmicrosoft.com\",\"galleryImageOffer\":\"Windows-10\",\"galleryImagePublisher\":\"MicrosoftWindowsDesktop\",\"galleryImageSKU\":\"19h2-evd\",\"imageType\":\"Gallery\",\"imageUri\":null,\"customImageId\":null,\"namePrefix\":\"some\",\"osDiskType\":\"StandardSSD_LRS\",\"useManagedDisks\":true,\"vmSize\":{\"id\":\"Standard_D2s_v3\",\"cores\":2,\"ram\":8}}","preferredAppGroupType":"Desktop"}},{"name":"hostPool6","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/hostpools/hostPool6","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"audiocapturemode:i:1;audiomode:i:0;desktop
+        size id:i:3;drivestoredirect:s:*;redirectclipboard:i:1;redirectcomports:i:0;redirectprinters:i:1;redirectsmartcards:i:1;screen
+        mode id:i:1;","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":null,"token":null,"resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":"aaa","preferredAppGroupType":"Desktop"}},{"name":"hostPool8","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/hostpools/hostPool8","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6ImE4NTEzM2FjLWFkYTgtNDNjZC1hOTlmLTZhYTM1ZmJjMTllZSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYWUyYzVhM2ItMDY5NS00ZDFiLTg0OTYtNjMxMGVhNGYyNmYyIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MDEyODY5NSwiZXhwIjoxNjAxNTYwOTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.YUKWPQE7b_HM-Jd70ZgyGKl_Pcs9O_d89qmeY7zK_mPAxmsW6Jib4_DKgfqJ4T3VMFj5wbfsUKIo3HEsCPFwt24rOQ6iDYa602XPGzYfDEyxz4ZnHPq8aN8xpRZA9qBOE7oDeUBCmeUQ1qyH2GvuBNAOjkZbKm7Ei0-bBTZh9PnKflKA3I9Ldf60FcFAjd3iIYa6QfeM44veCQBfzTjFGdgiMlvv0axmKmd_TZQuQoKaxwEMGEDS4x75RaL6Ezw6oZIDr-yJrEfYyRaUSXb-ypsIXyym_UI1OPOFrgw053LA4_OcsFI38VEQez5UOI99l_pH75Ry65k0e3_N3k3gdA","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}},{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjNiMzMxM2Y1LTcyNGMtNDUzOC05OTAyLWE4MTVkYTIwNDJmYyIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjE4NiwiZXhwIjoxNTkzNjEyMTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.VqCQtW2kNZhA9w2dHn3LBQPdre6WU1-cMtQ0d_9opk41W1QfdwFxs31V2klmCUdlps8LBca9uxdcR6SogaFKmBMUyzwjkzkEKc4tLzm1Mkqm86JT8UJZavxHVPzO6AE-7fX_NqSZl32ROk6FBu76WVCwm-x0A658QMauWpsgHQUzP5bTx0Hxt8lM9BVw_GYHaukGo6ZqRaNkCK43Zv-tagywlnjdr0rt-pht6eZFTo6SKP6hTjTL2dDrQH7F360iUe92gL4SL1LM2ArAWzVQDqI54g_La8AonSsP6ojvDeTtgoUn6FhRqp8RBhycv7FqpoOICt9hE9ZrLOGt651rXA","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1779'
+      - '9061'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:09 GMT
+      - Thu, 11 Jun 2020 06:16:35 GMT
       expires:
       - '-1'
       pragma:
@@ -156,7 +164,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -166,9 +174,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - da1f9746-3e6b-4510-85a0-bad1557b906c
+      - 2c489718-3bef-4cb2-bc3b-0b0e3740e211
       x-ms-lamport-ts:
-      - '148953340'
+      - '150332886'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4
       x-powered-by:
       - ASP.NET
     status:
@@ -194,16 +204,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"value":[{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjA5OGQ4NTc4LTY0MDYtNDk5Yi1iNjg4LWZlMDg1YzIyOGU5NSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM4NCwiZXhwIjoxNjAxNTYwOTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.GbVc2sAfkOg-jjjZ6Tq6trumXm2cqSeXaGW9GERZXS-bHLoYfo2k6c2QUM06vNkyI_stV0L_vkLqyBfzwSX2B3OkB-NMYKJYYQo6i9aoQGEod7fVTLmXSk-gG4UNl752bOouIIPnZ3Cag1NeykB2rBlLoCu4WOQwqy0LoiXBd6pp739bsvH_olDR4T1AtupzkYsnopvrgFKFbYY50IuGVb13QFc9HcKc7qLSojJuBhCy2Y77Li9GFSaBwMwTac4y0LN0AS3zyA-v9GsQviSbdzuBqo8CFs-rd6bbmuf6etZ5_5XRQHenqWw9kCSXIo8IL6K7RNJIT7WSdd1JwG1k6g","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null}}],"nextLink":null}'
+      string: '{"value":[{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T14:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjNiMzMxM2Y1LTcyNGMtNDUzOC05OTAyLWE4MTVkYTIwNDJmYyIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjE4NiwiZXhwIjoxNTkzNjEyMTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.VqCQtW2kNZhA9w2dHn3LBQPdre6WU1-cMtQ0d_9opk41W1QfdwFxs31V2klmCUdlps8LBca9uxdcR6SogaFKmBMUyzwjkzkEKc4tLzm1Mkqm86JT8UJZavxHVPzO6AE-7fX_NqSZl32ROk6FBu76WVCwm-x0A658QMauWpsgHQUzP5bTx0Hxt8lM9BVw_GYHaukGo6ZqRaNkCK43Zv-tagywlnjdr0rt-pht6eZFTo6SKP6hTjTL2dDrQH7F360iUe92gL4SL1LM2ArAWzVQDqI54g_La8AonSsP6ojvDeTtgoUn6FhRqp8RBhycv7FqpoOICt9hE9ZrLOGt651rXA","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1779'
+      - '1815'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:11 GMT
+      - Thu, 11 Jun 2020 06:16:38 GMT
       expires:
       - '-1'
       pragma:
@@ -221,20 +231,22 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 918c548f-7638-43d8-9602-9f2bbfd0276a
+      - 039eb143-5085-440e-8c05-22c9dc42b018
       x-ms-lamport-ts:
-      - '148950386'
+      - '150332889'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"tags": {"{\"tag1\":\"value1\",\"tag2\":\"value2\"}": ""}, "properties":
-      {"friendlyName": "friendly", "description": "des1", "maxSessionLimit": 999999,
-      "personalDesktopAssignmentType": "Automatic", "loadBalancerType": "BreadthFirst",
-      "registrationInfo": {"expirationTime": "2020-10-01T15:01:54.957124Z", "registrationTokenOperation":
-      "Update"}, "ssoContext": "KeyVaultPath"}}'
+    body: '{"tags": {"tag1": "value1", "tag2": "value2"}, "properties": {"friendlyName":
+      "friendly", "description": "des1", "maxSessionLimit": 999999, "personalDesktopAssignmentType":
+      "Automatic", "loadBalancerType": "BreadthFirst", "registrationInfo": {"expirationTime":
+      "2020-07-01T15:01:54.957124Z", "registrationTokenOperation": "Update"}, "ssoContext":
+      "KeyVaultPath"}}'
     headers:
       Accept:
       - application/json
@@ -245,7 +257,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '376'
+      - '363'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -255,19 +267,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T15:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjI5NmVkNzBlLTQ3NTQtNDljYi1iYzI3LTFiMDUzMzMzYTcwNCIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM5NiwiZXhwIjoxNjAxNTY0NTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.A5XS8u9nQmPvY9GPoS1N1du6fsGk4-n_jAvqDiY2WVkmzXBcjH5cDvuvJ1F4V3NVYasqTggYWjXAH8T6h8nGVvT2SsorNlzOkdZCKEkk0f1r3O4Lf0p8w4nzXpA6c3VepgYC4DxU3jsRuORMe4paG42iZrUh3KLiY-SFWLWOvHH9IwBKhb9fQYsEymKfBF9wQp9DlhE7QRrkG-0hT2OA_NZMjJK2CtHNAE9N1auwKS-AduOs__xwAsknNzknIgLBHhwbMirorKW5mL_jaoM4IWe2Q6mPrdKPa934I6nP-NNOiey4BczXz5bx5qJxkNBOKFyxwVvHU7Tm72oieIw0cg","resetToken":false,"registrationTokenOperation":"Update"},"vmTemplate":null}}'
+      string: '{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T15:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjQ1Y2EzYzEzLTJlYmYtNGNhZC05MmNmLTUyNGU5NzRjMDIzZSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjIwMiwiZXhwIjoxNTkzNjE1NzE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.W8s8dcA2UH9UiohKft3KwnUbREOD3OBmFbNBsae51252pgriey4eS8uP0McvUwK_xUSOP0u7iwSop5S7TwVpL4hNHUcWjRey5KxlDd_84tHb5qJ8tRSGCw7qTu5MgNJFOVPyxhsR16JBhuZ7zMQsslndXxOzkTgx1Rnx_qSZOqR4w1dyLaWnEBYHNG5QIstm-jVcgNH7iyiIqvycPesWvT5-VZkATEmozaDvQo_VvcEH_eUJ8iaMJiQ-9eXLW9jAl46sLF71aFWPgyc1O_DoyzzKLDKk4H4bcJPyHvqMQ3WpCc1fc5jSyBSNOBFiQF2XDQE0usIiz-KMR3zh0LkzOA","resetToken":false,"registrationTokenOperation":"Update"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1768'
+      - '1789'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:17 GMT
+      - Thu, 11 Jun 2020 06:16:45 GMT
       expires:
       - '-1'
       pragma:
@@ -285,11 +297,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - fb86d1e6-7ed8-472a-870b-56298fb9a76d
+      - 04fcd4fa-2c9c-4549-8108-053aec55774f
       x-ms-lamport-ts:
-      - '148953346'
+      - '150333796'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -298,7 +312,7 @@ interactions:
 - request:
     body: '{"tags": {"tag1": "value1", "tag2": "value2"}, "location": "centralus",
       "properties": {"description": "des1", "friendlyName": "friendly", "hostPoolArmPath":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1",
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool",
       "applicationGroupType": "RemoteApp"}}'
     headers:
       Accept:
@@ -310,7 +324,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '402'
+      - '403'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -320,37 +334,39 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/applicationGroup1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
+      string: '{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '744'
+      - '747'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:24 GMT
+      - Thu, 11 Jun 2020 06:16:57 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup
       pragma:
       - no-cache
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=79e06db539acb57119e709978d2cf1da299e8341753d6f6345007fcab3f69bc5;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 689631ea-d404-4843-9e29-d9c8f593bc95
+      - 7a4e4d8b-6d5c-4d02-871e-b333c94eeecf
       x-ms-lamport-ts:
-      - '148953300'
+      - '150332927'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-powered-by:
@@ -375,19 +391,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/applicationGroup1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
+      string: '{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '744'
+      - '747'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:26 GMT
+      - Thu, 11 Jun 2020 06:17:00 GMT
       expires:
       - '-1'
       pragma:
@@ -395,7 +411,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -405,9 +421,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 03b51115-0699-4b9c-afd8-2db1394bb278
+      - 86b612e1-f4d4-487b-95bd-0b5572c24ceb
       x-ms-lamport-ts:
-      - '148953361'
+      - '150332930'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup
       x-powered-by:
       - ASP.NET
     status:
@@ -433,16 +451,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DesktopVirtualization/applicationGroups?api-version=2019-12-10-preview&$filter=applicationGroupType%20eq%20%27RailApplication%27
   response:
     body:
-      string: '{"value":[{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}],"nextLink":null}'
+      string: '{"value":[{"name":"applicationGroup2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup2","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test-changlong/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}},{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '772'
+      - '1398'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:27 GMT
+      - Thu, 11 Jun 2020 06:17:03 GMT
       expires:
       - '-1'
       pragma:
@@ -460,9 +478,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 77a5a4a8-6402-4079-adfb-edf872e6b959
+      - 3d7b6f36-2219-48a8-a5ad-24f7b5fee4b1
       x-ms-lamport-ts:
-      - '148950412'
+      - '150332942'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4
       x-powered-by:
       - ASP.NET
     status:
@@ -488,76 +508,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups?api-version=2019-12-10-preview&$filter=applicationGroupType%20eq%20%27RailApplication%27
   response:
     body:
-      string: '{"value":[{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}],"nextLink":null}'
+      string: '{"value":[{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '772'
+      - '775'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:30 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      set-cookie:
-      - ARRAffinity=79e06db539acb57119e709978d2cf1da299e8341753d6f6345007fcab3f69bc5;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-correlation-id:
-      - 160a11e0-0b42-40df-b756-7829cc7c6913
-      x-ms-lamport-ts:
-      - '148953315'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"tags": {"{\"tag1\":\"value1\",\"tag2\":\"value2\"}": ""}, "properties":
-      {"description": "des1", "friendlyName": "friendly"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - desktopvirtualization applicationgroup update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '126'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --description --friendly-name --tags --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
-        (Windows-10-10.0.18362-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/applicationGroup1?api-version=2019-12-10-preview
-  response:
-    body:
-      string: '{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '759'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 09 Jun 2020 06:33:39 GMT
+      - Thu, 11 Jun 2020 06:17:04 GMT
       expires:
       - '-1'
       pragma:
@@ -575,9 +535,73 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 0df3e7eb-6f28-44df-be2f-b99703383102
+      - c3040df2-f1a6-4421-9ddc-04d4e993d278
       x-ms-lamport-ts:
-      - '148953378'
+      - '150333849'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag1": "value1", "tag2": "value2"}, "properties": {"description":
+      "des1", "friendlyName": "friendly"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization applicationgroup update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --description --friendly-name --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
+        (Windows-10-10.0.18362-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup?api-version=2019-12-10-preview
+  response:
+    body:
+      string: '{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '747'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jun 2020 06:17:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      set-cookie:
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 76c01035-ba9e-4930-84c3-22d808cf1214
+      x-ms-lamport-ts:
+      - '150332951'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-powered-by:
@@ -604,19 +628,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/applicationGroup1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"applicationGroup1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/applicationGroup1","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
+      string: '{"name":"MyApplicationGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/applicationgroups/MyApplicationGroup","type":"Microsoft.DesktopVirtualization/applicationgroups","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":"RemoteApp","properties":{"hostPoolArmPath":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","workspaceArmPath":null,"description":"des1","friendlyName":"friendly","applicationGroupType":"RemoteApp"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '759'
+      - '747'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:47 GMT
+      - Thu, 11 Jun 2020 06:17:15 GMT
       expires:
       - '-1'
       pragma:
@@ -624,7 +648,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -634,9 +658,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 9b0332b0-a114-4f3c-ba4a-3205e31aca09
+      - b9f1ebac-f1fb-4b73-987e-99cc63be9b6f
       x-ms-lamport-ts:
-      - '148953392'
+      - '150332963'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/applicationGroups/MyApplicationGroup
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-powered-by:
@@ -666,37 +692,39 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
+      string: '{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '457'
+      - '459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:54 GMT
+      - Thu, 11 Jun 2020 06:17:27 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace
       pragma:
       - no-cache
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - d43ca196-ec0d-4f32-bdf1-90525168c9b7
+      - 9ee0d10a-435c-492e-ae7c-14ee74fcc8eb
       x-ms-lamport-ts:
-      - '148950438'
+      - '150333893'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-powered-by:
@@ -721,19 +749,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
+      string: '{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '457'
+      - '459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:56 GMT
+      - Thu, 11 Jun 2020 06:17:29 GMT
       expires:
       - '-1'
       pragma:
@@ -741,7 +769,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=79e06db539acb57119e709978d2cf1da299e8341753d6f6345007fcab3f69bc5;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -751,9 +779,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - fd2c33ba-471e-4961-a3e4-84dfcd8bb375
+      - e8c90d67-1213-493d-a711-bfadfa098004
       x-ms-lamport-ts:
-      - '148953348'
+      - '150333003'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace
       x-powered-by:
       - ASP.NET
     status:
@@ -779,16 +809,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"value":[{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}],"nextLink":null}'
+      string: '{"value":[{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '485'
+      - '487'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:33:58 GMT
+      - Thu, 11 Jun 2020 06:17:31 GMT
       expires:
       - '-1'
       pragma:
@@ -796,7 +826,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=79e06db539acb57119e709978d2cf1da299e8341753d6f6345007fcab3f69bc5;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -806,9 +836,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - ad8855b1-1646-47f1-acd3-dd96877d5274
+      - c52fa4d0-8f16-456d-94e5-c6c97403c4f0
       x-ms-lamport-ts:
-      - '148953408'
+      - '150333980'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt
       x-powered-by:
       - ASP.NET
     status:
@@ -834,16 +866,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DesktopVirtualization/workspaces?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"value":[{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}],"nextLink":null}'
+      string: '{"value":[{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '485'
+      - '487'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:34:00 GMT
+      - Thu, 11 Jun 2020 06:17:34 GMT
       expires:
       - '-1'
       pragma:
@@ -851,7 +883,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=bd0dfb948b4e67ff60a11cd6e169712e6848609ad034c4789ebdf993fcec41fb;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -861,17 +893,19 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 0603bb3b-47c5-4242-972a-c298ba22a241
+      - 793973cd-2968-4417-bd23-6b2a3d74b345
       x-ms-lamport-ts:
-      - '148953414'
+      - '150333033'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"tags": {"{\"tag1\":\"value1\",\"tag2\":\"value2\"}": ""}, "properties":
-      {"description": "des1", "friendlyName": "friendly"}}'
+    body: '{"tags": {"tag1": "value1", "tag2": "value2"}, "properties": {"description":
+      "des1", "friendlyName": "friendly"}}'
     headers:
       Accept:
       - application/json
@@ -882,7 +916,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '126'
+      - '113'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -891,19 +925,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
+      string: '{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '472'
+      - '459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:34:08 GMT
+      - Thu, 11 Jun 2020 06:17:40 GMT
       expires:
       - '-1'
       pragma:
@@ -921,11 +955,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - 8290907d-d700-4bb7-b6a6-93c71297fd2d
+      - 46f0c56d-33ad-44bd-9a28-9d3f3431c4c6
       x-ms-lamport-ts:
-      - '148953422'
+      - '150333938'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -950,19 +986,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1?api-version=2019-12-10-preview&force=true
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool?api-version=2019-12-10-preview&force=true
   response:
     body:
-      string: '{"name":"hostPool1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/hostPool1","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":null,"ring":null,"registrationInfo":{"expirationTime":"2020-10-01T15:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjI5NmVkNzBlLTQ3NTQtNDljYi1iYzI3LTFiMDUzMzMzYTcwNCIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiYmU4ZThmZWMtOTg5ZC00ZjE1LWJiZjItNmRjYWJmNGQwMmMwIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTY4NDM5NiwiZXhwIjoxNjAxNTY0NTE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.A5XS8u9nQmPvY9GPoS1N1du6fsGk4-n_jAvqDiY2WVkmzXBcjH5cDvuvJ1F4V3NVYasqTggYWjXAH8T6h8nGVvT2SsorNlzOkdZCKEkk0f1r3O4Lf0p8w4nzXpA6c3VepgYC4DxU3jsRuORMe4paG42iZrUh3KLiY-SFWLWOvHH9IwBKhb9fQYsEymKfBF9wQp9DlhE7QRrkG-0hT2OA_NZMjJK2CtHNAE9N1auwKS-AduOs__xwAsknNzknIgLBHhwbMirorKW5mL_jaoM4IWe2Q6mPrdKPa934I6nP-NNOiey4BczXz5bx5qJxkNBOKFyxwVvHU7Tm72oieIw0cg","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null}}'
+      string: '{"name":"MyHostPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostpools/MyHostPool","type":"Microsoft.DesktopVirtualization/hostpools","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"friendlyName":"friendly","description":"des1","hostPoolType":"Pooled","personalDesktopAssignmentType":null,"applicationGroupReferences":[],"customRdpProperty":"","maxSessionLimit":999999,"loadBalancerType":"BreadthFirst","validationEnvironment":true,"ring":null,"registrationInfo":{"expirationTime":"2020-07-01T15:01:54.957124Z","token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFCOUNENjgwRUZFN0M3ODhEQjExMDQ0Qjk0M0Y5MjMwRUZEOUVDRDYiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjQ1Y2EzYzEzLTJlYmYtNGNhZC05MmNmLTUyNGU5NzRjMDIzZSIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy11cy1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLXVzLXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNTNmODc1ZTMtNTM1MS00MzY2LWE0MmMtMWEwNjA5MjgyY2ZhIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJVUyIsIm5iZiI6MTU5MTg1NjIwMiwiZXhwIjoxNTkzNjE1NzE0LCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.W8s8dcA2UH9UiohKft3KwnUbREOD3OBmFbNBsae51252pgriey4eS8uP0McvUwK_xUSOP0u7iwSop5S7TwVpL4hNHUcWjRey5KxlDd_84tHb5qJ8tRSGCw7qTu5MgNJFOVPyxhsR16JBhuZ7zMQsslndXxOzkTgx1Rnx_qSZOqR4w1dyLaWnEBYHNG5QIstm-jVcgNH7iyiIqvycPesWvT5-VZkATEmozaDvQo_VvcEH_eUJ8iaMJiQ-9eXLW9jAl46sLF71aFWPgyc1O_DoyzzKLDKk4H4bcJPyHvqMQ3WpCc1fc5jSyBSNOBFiQF2XDQE0usIiz-KMR3zh0LkzOA","resetToken":false,"registrationTokenOperation":"None"},"vmTemplate":null,"preferredAppGroupType":"Desktop"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1766'
+      - '1787'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:34:13 GMT
+      - Thu, 11 Jun 2020 06:17:45 GMT
       expires:
       - '-1'
       pragma:
@@ -970,7 +1006,7 @@ interactions:
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=79e06db539acb57119e709978d2cf1da299e8341753d6f6345007fcab3f69bc5;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinity=7bf5a65c9ab6652b7e960fdced88dd5501d933c0715fe792714d5d958b2e56fd;Path=/;HttpOnly;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -980,11 +1016,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - ba4db776-0d70-4942-b806-9715e4da861c
+      - 7da0ca68-7a38-4349-9c80-2040ea162bf3
       x-ms-lamport-ts:
-      - '148953363'
+      - '150333978'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
@@ -1009,19 +1047,19 @@ interactions:
       - AZURECLI/2.7.0 azsdk-python-desktopvirtualizationapiclient/unknown Python/3.8.1
         (Windows-10-10.0.18362-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1?api-version=2019-12-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace?api-version=2019-12-10-preview
   response:
     body:
-      string: '{"name":"workspace1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace1","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"{\"tag1\":\"value1\",\"tag2\":\"value2\"}":""},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
+      string: '{"name":"MyWorkspace","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace","type":"Microsoft.DesktopVirtualization/workspaces","location":"centralus","tags":{"tag1":"value1","tag2":"value2"},"kind":null,"properties":{"description":"des1","friendlyName":"friendly","applicationGroupReferences":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '472'
+      - '459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jun 2020 06:34:17 GMT
+      - Thu, 11 Jun 2020 06:17:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1039,11 +1077,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-correlation-id:
-      - b633cd4f-cbe5-4fe2-8bca-489764c699e8
+      - be2c1921-760a-4d18-b783-f630b19f774d
       x-ms-lamport-ts:
-      - '148953430'
+      - '150333990'
+      x-ms-opsarmpath:
+      - /subscriptions/7fd08dcc-a653-4b0f-8f8c-4dac889fdda4/resourceGroups/clitestrf65z67jjtwlw46evabk5mx257ovtv2qp2s6ogihbyzmg5yw3t4nohclpabjturekknt/providers/Microsoft.DesktopVirtualization/workspaces/MyWorkspace
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
       x-powered-by:
       - ASP.NET
     status:
