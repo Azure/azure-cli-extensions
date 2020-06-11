@@ -90,9 +90,12 @@ def get_location_details(location_name):
 
 
 # pylint: disable=unused-argument
-def list_codespaces(cmd, client, plan_name, resource_group_name=None):
+def list_codespaces(cmd, client, plan_name, resource_group_name=None, list_all=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    if list_all:
+        token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    else:
+        token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     return cf_api.list_codespaces(token.access_token, plan.id)
 
 
@@ -152,7 +155,7 @@ def create_codespace(cmd,
 
 # pylint: disable=unused-argument
 def get_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
-    token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name)
     return cf_api.get_codespace(token.access_token, codespace_id)
@@ -209,7 +212,7 @@ def update_codespace(cmd,
 # pylint: disable=unused-argument
 def open_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None,
                    codespace_name=None, do_not_prompt=None):
-    token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name)
     codespace = cf_api.get_codespace(token.access_token, codespace_id)

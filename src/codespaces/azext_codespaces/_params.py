@@ -40,6 +40,10 @@ def load_arguments(self, _):
         c.argument('dotfiles_path', arg_group="Dotfiles", help="Path where you expect your dotfiles repository to be cloned into the Codespace.")
         c.argument('dotfiles_command', arg_group="Dotfiles", help="The command we'll run after cloning your dotfiles repository.")
 
+    with self.argument_context('codespace list') as c:
+        c.argument('list_all', options_list=['--all'], action='store_true',
+                   help="Include the Codespaces of other users. You may not have access to connect or modify these other Codespaces.")
+
     with self.argument_context('codespace open') as c:
         c.argument('do_not_prompt', options_list=['--yes', '-y'], action='store_true', help='Do not prompt for confirmation.')
 

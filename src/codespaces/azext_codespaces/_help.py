@@ -101,7 +101,7 @@ helps['codespace list'] = """
     examples:
         - name: List Codespaces
           text: az codespace list -g my-rg --plan my-plan
-        - name: List Codespaces given plan id and Codespace name
+        - name: List Codespaces given plan id
           text: az codespace list --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan
 """
 
