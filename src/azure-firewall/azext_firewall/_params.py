@@ -147,6 +147,10 @@ def load_arguments(self, _):
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
+    with self.argument_context('network firewall policy', arg_group='Threat Intel Whitelist') as c:
+        c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
+
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
         c.argument('rule_collection_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
