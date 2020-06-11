@@ -8,15 +8,29 @@
 
 from enum import Enum
 
-class ProvisioningState(str, Enum):
-    """Provisioning state of the Account
+class DataSetMappingStatus(str, Enum):
+    """Gets the status of the data set mapping.
     """
 
-    succeeded = "Succeeded"
-    creating = "Creating"
-    deleting = "Deleting"
-    moving = "Moving"
-    failed = "Failed"
+    ok = "Ok"
+    broken = "Broken"
+
+class DataSetType(str, Enum):
+    """Type of the data set
+    """
+
+    blob = "Blob"
+    container = "Container"
+    blob_folder = "BlobFolder"
+    adls_gen2_file_system = "AdlsGen2FileSystem"
+    adls_gen2_folder = "AdlsGen2Folder"
+    adls_gen2_file = "AdlsGen2File"
+    adls_gen1_folder = "AdlsGen1Folder"
+    adls_gen1_file = "AdlsGen1File"
+    kusto_cluster = "KustoCluster"
+    kusto_database = "KustoDatabase"
+    sql_db_table = "SqlDBTable"
+    sql_dw_table = "SqlDWTable"
 
 class InvitationStatus(str, Enum):
     """The status of the invitation.
@@ -43,9 +57,31 @@ class Kind(str, Enum):
     kusto_database = "KustoDatabase"
     sql_db_table = "SqlDBTable"
     sql_dw_table = "SqlDWTable"
-
-class SynchronizationKind(str, Enum):
     schedule_based = "ScheduleBased"
+
+class OutputType(str, Enum):
+    """File output type
+    """
+
+    csv = "Csv"
+    parquet = "Parquet"
+
+class ProvisioningState(str, Enum):
+    """Provisioning state of the Account
+    """
+
+    succeeded = "Succeeded"
+    creating = "Creating"
+    deleting = "Deleting"
+    moving = "Moving"
+    failed = "Failed"
+
+class RecurrenceInterval(str, Enum):
+    """Recurrence Interval
+    """
+
+    hour = "Hour"
+    day = "Day"
 
 class ShareKind(str, Enum):
     """Share kind.
@@ -53,30 +89,6 @@ class ShareKind(str, Enum):
 
     copy_based = "CopyBased"
     in_place = "InPlace"
-
-class SynchronizationMode(str, Enum):
-    """Synchronization mode
-    """
-
-    incremental = "Incremental"
-    full_sync = "FullSync"
-
-class DataSetType(str, Enum):
-    """Type of the data set
-    """
-
-    blob = "Blob"
-    container = "Container"
-    blob_folder = "BlobFolder"
-    adls_gen2_file_system = "AdlsGen2FileSystem"
-    adls_gen2_folder = "AdlsGen2Folder"
-    adls_gen2_file = "AdlsGen2File"
-    adls_gen1_folder = "AdlsGen1Folder"
-    adls_gen1_file = "AdlsGen1File"
-    kusto_cluster = "KustoCluster"
-    kusto_database = "KustoDatabase"
-    sql_db_table = "SqlDBTable"
-    sql_dw_table = "SqlDWTable"
 
 class ShareSubscriptionStatus(str, Enum):
     """Gets the status of share subscription
@@ -98,12 +110,12 @@ class Status(str, Enum):
     failed = "Failed"
     canceled = "Canceled"
 
-class RecurrenceInterval(str, Enum):
-    """Recurrence Interval
+class SynchronizationMode(str, Enum):
+    """Synchronization mode
     """
 
-    hour = "Hour"
-    day = "Day"
+    incremental = "Incremental"
+    full_sync = "FullSync"
 
 class TriggerStatus(str, Enum):
     """Gets the trigger state
@@ -112,17 +124,3 @@ class TriggerStatus(str, Enum):
     active = "Active"
     inactive = "Inactive"
     source_synchronization_setting_deleted = "SourceSynchronizationSettingDeleted"
-
-class DataSetMappingStatus(str, Enum):
-    """Gets the status of the data set mapping.
-    """
-
-    ok = "Ok"
-    broken = "Broken"
-
-class OutputType(str, Enum):
-    """File output type
-    """
-
-    csv = "Csv"
-    parquet = "Parquet"
