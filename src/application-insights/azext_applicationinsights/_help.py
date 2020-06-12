@@ -39,7 +39,7 @@ helps['monitor app-insights component create'] = """
     examples:
       - name: Create a component with kind web and location.
         text: |
-          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web
+          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web --retention-time 120
 """
 
 helps['monitor app-insights component update'] = """
@@ -52,7 +52,7 @@ helps['monitor app-insights component update'] = """
     examples:
       - name: Update a component with kind web.
         text: |
-          az monitor app-insights component update --app demoApp -k web -g demoRg
+          az monitor app-insights component update --app demoApp -k web -g demoRg --retention-time 120
 """
 
 helps['monitor app-insights component update-tags'] = """
@@ -241,4 +241,29 @@ helps['monitor app-insights events show'] = """
       - name: List availability results from the last 24 hours.
         text: |
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --offset 24h
+"""
+
+helps['monitor app-insights component linked-storage'] = """
+    type: group
+    short-summary: Manage linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage show'] = """
+    type: command
+    short-summary: Show the details of linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage link'] = """
+    type: command
+    short-summary: Link a storage account with an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage update'] = """
+    type: command
+    short-summary: Update the linked storage account for an Application Insights component.
+"""
+
+helps['monitor app-insights component linked-storage unlink'] = """
+    type: command
+    short-summary: Unlink a storage account with an Application Insights component.
 """

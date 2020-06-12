@@ -2,6 +2,42 @@
 
 Release History
 ===============
+
+0.4.51
++++++
+* Remove --appgw-shared flag from AGIC addon
+* Handle role assignments for AGIC addon post-cluster creation
+* Support --yes for "az aks upgrade"
+* Revert default VM SKU to Standard_DS2_v2
+
+0.4.50
++++++
+* Add "--max-surge" for az aks nodepool add/update/upgrade
+
+0.4.49
++++++
+* Fix break in get-versions since container service needs to stay on old api.
+
+0.4.48
++++++
+* Fix issues of storage account name for az aks kollect
+
+0.4.47
++++++
+* Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
+
+0.4.46
++++++
+* Fix issues for az aks kollect on private clusters
+
+0.4.45
++++++
+* Add "--aks-custom-headers" for "az aks nodepool add" and "az aks update"
+
+0.4.44
++++++
+* Fix issues with monitoring addon enabling with CLI versions 2.4.0+
+
 0.4.43
 +++++
 * Add support for VMSS node public IP.

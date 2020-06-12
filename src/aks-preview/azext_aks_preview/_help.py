@@ -181,10 +181,10 @@ helps['aks create'] = """
           long-summary: If specified, please make sure the kubernetes version is larger than 1.10.6.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -199,7 +199,7 @@ helps['aks create'] = """
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
         - name: --uptime-sla
           type: bool
-          short-summary: Enable paid managed cluster service with high availability.
+          short-summary: Enable a paid managed cluster service with a financially backed SLA.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -220,19 +220,16 @@ helps['aks create'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --appgw-name
           type: string
-          short-summary: Name of the application gateway to create/use in the node resource group
+          short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
         - name: --appgw-subnet-prefix
           type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-id
           type: string
-          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
         - name: --appgw-subnet-id
           type: string
-          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-        - name: --appgw-shared
-          type: bool
-          short-summary: Use shared flag if application gateway will be shared
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-watch-namespace
           type: string
           short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
@@ -290,6 +287,9 @@ helps['aks upgrade'] = """
         - name: --control-plane-only
           type: bool
           short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade node image for agent pools.
 """
 
 helps['aks update'] = """
@@ -307,10 +307,10 @@ helps['aks update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -355,6 +355,9 @@ helps['aks update'] = """
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -486,10 +489,10 @@ helps['aks nodepool add'] = """
           short-summary: Enable cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
@@ -511,6 +514,12 @@ helps['aks nodepool add'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool scale'] = """
@@ -529,6 +538,12 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade agent pool's node image.
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool update'] = """
@@ -546,10 +561,13 @@ helps['aks nodepool update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -592,25 +610,25 @@ parameters:
     short-summary: The subnet name for the virtual node to use.
   - name: --appgw-name
     type: string
-    short-summary: Name of the application gateway to create/use in the node resource group
+    short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
   - name: --appgw-subnet-prefix
     type: string
-    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-id
     type: string
-    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
   - name: --appgw-subnet-id
     type: string
-    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-  - name: --appgw-shared
-    type: bool
-    short-summary: Use shared flag if application gateway will be shared
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-watch-namespace
     type: string
-    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+  - name: Enable ingress-appgw addon with subnet prefix.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
     crafted: true
 """
 

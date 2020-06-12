@@ -1,3 +1,16 @@
+0.1.8
+++++++++++++++++++
+
+* Argument `--offset` in `az monitor app-insights query` supports iso8601 format.
+
+0.1.7
+++++++++++++++++++
+
+* support linked storage account for application insights component.
+* support link one log analytics workspace to application insights component.
+* support setting public network access for application insights component.
+* one fix for api-key creation.
+
 0.1.6
 ++++++++++++++++++
 

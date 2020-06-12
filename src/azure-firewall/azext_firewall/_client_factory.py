@@ -15,7 +15,7 @@ def network_client_policy_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_FIREWALL_POLICY
     return get_mgmt_service_client(cli_ctx, CUSTOM_FIREWALL_POLICY, aux_subscriptions=aux_subscriptions,
-                                   api_version='2019-07-01')
+                                   api_version='2020-05-01')
 
 
 def cf_firewalls(cli_ctx, _):
@@ -30,5 +30,5 @@ def cf_firewall_policies(cli_ctx, _):
     return network_client_policy_factory(cli_ctx).firewall_policies
 
 
-def cf_firewall_policy_rule_groups(cli_ctx, _):
-    return network_client_policy_factory(cli_ctx).firewall_policy_rule_groups
+def cf_firewall_policy_rule_collection_groups(cli_ctx, _):
+    return network_client_policy_factory(cli_ctx).firewall_policy_rule_collection_groups

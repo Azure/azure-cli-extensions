@@ -20,6 +20,7 @@ from azure.cli.core.profiles import ResourceType, get_sdk
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
+from ._utils import _get_sku_name
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
@@ -38,19 +39,34 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, sku=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
-    resource = models.ServiceResource(location=location)
 
-    return sdk_no_wait(no_wait, client.create_or_update,
-                       resource_group_name=resource_group, service_name=name, resource=resource)
+    if sku is None:
+        sku = "Standard"
+    full_sku = models.Sku(
+        name=_get_sku_name(sku),
+        tier=sku
+    )
+    resource = models.ServiceResource(location=location, sku=full_sku)
+
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group, service_name=name, resource=resource)
+
+
+def spring_cloud_update(cmd, client, resource_group, name, sku=None, no_wait=False):
+    full_sku = models.Sku(
+        name=_get_sku_name(sku),
+        tier=sku
+    )
+    resource = models.ServiceResource(sku=full_sku)
+
+    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group, service_name=name, resource=resource)
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
-                       resource_group_name=resource_group, service_name=name)
+    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, service_name=name)
 
 
 def spring_cloud_list(cmd, client, resource_group=None):
@@ -178,8 +194,9 @@ def app_update(cmd, client, resource_group, service, name,
                runtime_version=None,
                jvm_options=None,
                env=None,
-               enable_persistent_storage=None):
-    properties = models.AppResourceProperties(public=is_public)
+               enable_persistent_storage=None,
+               https_only=None):
+    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=50, mount_path="/persistent")
@@ -1169,3 +1186,63 @@ def _get_app_log(url, user_name, password, exceptions):
         response.release_conn()
     except CLIError as e:
         exceptions.append(e)
+
+
+def certificate_add(cmd, client, resource_group, service, name, vault_uri, vault_certificate_name):
+    properties = models.CertificateProperties(
+        vault_uri=vault_uri,
+        key_vault_cert_name=vault_certificate_name
+    )
+    return client.certificates.create_or_update(resource_group, service, name, properties)
+
+
+def certificate_show(cmd, client, resource_group, service, name):
+    return client.certificates.get(resource_group, service, name)
+
+
+def certificate_list(cmd, client, resource_group, service):
+    return client.certificates.list(resource_group, service)
+
+
+def certificate_remove(cmd, client, resource_group, service, name):
+    client.certificates.get(resource_group, service, name)
+    return client.certificates.delete(resource_group, service, name)
+
+
+def domain_bind(cmd, client, resource_group, service, app,
+                domain_name,
+                certificate=None):
+    properties = models.CustomDomainProperties()
+    if certificate is not None:
+        certificate_response = client.certificates.get(resource_group, service, certificate)
+        properties = models.CustomDomainProperties(
+            thumbprint=certificate_response.properties.thumbprint,
+            cert_name=certificate
+        )
+    return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def domain_show(cmd, client, resource_group, service, app, domain_name):
+    return client.custom_domains.get(resource_group, service, app, domain_name)
+
+
+def domain_list(cmd, client, resource_group, service, app):
+    return client.custom_domains.list(resource_group, service, app)
+
+
+def domain_update(cmd, client, resource_group, service, app,
+                  domain_name,
+                  certificate=None):
+    properties = models.CustomDomainProperties()
+    if certificate is not None:
+        certificate_response = client.certificates.get(resource_group, service, certificate)
+        properties = models.CustomDomainProperties(
+            thumbprint=certificate_response.properties.thumbprint,
+            cert_name=certificate
+        )
+    return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def domain_unbind(cmd, client, resource_group, service, app, domain_name):
+    client.custom_domains.get(resource_group, service, app, domain_name)
+    return client.custom_domains.delete(resource_group, service, app, domain_name)
