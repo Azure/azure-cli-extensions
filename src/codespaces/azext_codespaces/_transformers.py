@@ -19,7 +19,7 @@ def transform_codespace_item_output(item):
                               ('created', item['created']),
                               ('updated', item['updated']),
                               ('lastUsed', item['lastUsed']),
-                              ('autoShutdownDelayMinutes', item['autoShutdownDelayMinutes'])])
+                              ('autoShutdownDelayMinutes', item.get('autoShutdownDelayMinutes', None))])
     return new_result
 
 

@@ -6,8 +6,8 @@ import webbrowser
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from azext_codespaces import _non_arm_apis as cf_api
-from ._config import get_service_domain
+from azext_codespaces import _non_arm_apis as cs_api
+from azext_codespaces import _config as cs_config
 from .vendored_sdks.vsonline.models import (
     VSOnlinePlan,
     VSOnlinePlanProperties,
@@ -21,7 +21,7 @@ def _determine_codespace_id(client, resource_group_name, plan_name, token, codes
     if not cli_ctx:
         raise ValueError("cli_ctx kwarg must be set.")
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    codespaces = cf_api.list_codespaces(token.access_token, plan.id, cli_ctx=cli_ctx)
+    codespaces = cs_api.list_codespaces(token.access_token, plan.id, cli_ctx=cli_ctx)
     codespace_id = next((c['id'] for c in codespaces if c['friendlyName'] == codespace_name), None)
     if codespace_id:
         return codespace_id
@@ -85,24 +85,22 @@ def update_plan(cmd,
 
 
 def list_available_locations(cmd):
-    return cf_api.list_locations(cli_ctx=cmd.cli_ctx)
+    return cs_api.list_locations(cli_ctx=cmd.cli_ctx)
 
 
 def get_location_details(cmd, location_name):
-    return cf_api.get_location_details(location_name, cli_ctx=cmd.cli_ctx)
+    return cs_api.get_location_details(location_name, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def list_codespaces(cmd, client, plan_name, resource_group_name=None, list_all=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
     if list_all:
         token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     else:
         token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
-    return cf_api.list_codespaces(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
+    return cs_api.list_codespaces(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def create_codespace(cmd,
                      client,
                      plan_name,
@@ -153,42 +151,41 @@ def create_codespace(cmd,
         if dotfiles_command:
             create_data["personalization"]["dotfilesInstallCommand"] = dotfiles_command
     # Create codespace
-    return cf_api.create_codespace(token.access_token, create_data, cli_ctx=cmd.cli_ctx)
+    return cs_api.create_codespace(token.access_token, create_data, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def get_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
-    return cf_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+    return cs_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def delete_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
-    cf_api.delete_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+    cs_api.delete_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def resume_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
-    return cf_api.start_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+    return cs_api.start_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def suspend_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
-    return cf_api.shutdown_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+    return cs_api.shutdown_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
 
 
-# pylint: disable=unused-argument
 def update_codespace(cmd,
                      client,
                      plan_name,
@@ -199,9 +196,10 @@ def update_codespace(cmd,
                      autoshutdown_delay=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
     data = {}
-    codespace = cf_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+    codespace = cs_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
     if codespace['state'] != 'Shutdown':
         raise CLIError("Codespace must be in state 'Shutdown'. "
                        f"Cannot update a Codespace in state '{codespace['state']}'.")
@@ -209,24 +207,37 @@ def update_codespace(cmd,
         data['skuName'] = sku_name
     if autoshutdown_delay:
         data['autoShutdownDelayMinutes'] = autoshutdown_delay
-    return cf_api.update_codespace(token.access_token, codespace_id, data, cli_ctx=cmd.cli_ctx)
+    return cs_api.update_codespace(token.access_token, codespace_id, data, cli_ctx=cmd.cli_ctx)
 
 
 def open_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None,
                    codespace_name=None, do_not_prompt=None):
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
-        codespace_id = _determine_codespace_id(client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
-    codespace = cf_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
+        codespace_id = _determine_codespace_id(
+            client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
+    codespace = cs_api.get_codespace(token.access_token, codespace_id, cli_ctx=cmd.cli_ctx)
     if not do_not_prompt and codespace['state'] != 'Available':
         msg = f"Current state of the codespace is '{codespace['state']}'." \
-            " Continuing will cause the environment to be resumed. Do you want to continue?"
+            " Continuing will cause the environment to be resumed.\nDo you want to continue?"
         user_confirmed = prompt_y_n(msg)
         if not user_confirmed:
             raise CLIError("Operation cancelled.")
-    domain = get_service_domain(cmd.cli_ctx)
+    domain = cs_config.get_service_domain(cmd.cli_ctx)
     url = f"https://{domain}/environment/{codespace['id']}"
     logger.warning("Opening: %s", url)
     success = webbrowser.open_new_tab(url)
     if not success:
         raise CLIError("Unable to open browser")
+
+
+def set_config(cmd, config_rp_api_version='', config_service_domain='', config_clear=False):
+    if config_clear and any([config_rp_api_version, config_service_domain]):
+            raise CLIError("If you wish to clear config, do not specify other values.")
+    else:
+        cs_config.set_rp_api_version(cmd.cli_ctx, config_rp_api_version)
+        cs_config.set_service_domain(cmd.cli_ctx, config_service_domain)
+
+
+def show_config(cmd):
+    return cs_config.get_current_config(cmd.cli_ctx)

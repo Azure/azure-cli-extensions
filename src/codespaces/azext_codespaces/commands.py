@@ -13,6 +13,9 @@ from ._transformers import (
     transform_location_detail_output)
 
 
+ADVANCED_MESSAGE_FUNC = lambda _: 'This command group is for advanced usage only.'
+
+
 def load_command_table(self, _):
 
     plan_operations = CliCommandType(
@@ -36,6 +39,14 @@ def load_command_table(self, _):
         g.custom_command('resume', 'resume_codespace', table_transformer=transform_codespace_item_output)
         g.custom_command('suspend', 'suspend_codespace', table_transformer=transform_codespace_item_output)
         g.custom_command('update', 'update_codespace', table_transformer=transform_codespace_item_output)
+
+    # Hidden commands that should largely be used by the dev team
+    with self.command_group('codespace') as g:
+        g.custom_command('set-config', 'set_config',
+                         deprecate_info=self.deprecate(hide=True, message_func=ADVANCED_MESSAGE_FUNC))
+        g.custom_command('show-config', 'show_config',
+                         deprecate_info=self.deprecate(hide=True, message_func=ADVANCED_MESSAGE_FUNC))
+
 
     with self.command_group('codespace location', plan_operations, client_factory=cf_codespaces_plan) as g:
         g.custom_command('list', 'list_available_locations', table_transformer=transform_location_list_output)

@@ -49,3 +49,9 @@ def load_arguments(self, _):
 
     with self.argument_context('codespace location show') as c:
         c.argument('location_name', options_list=['--name', '-n'], help='Name of the region.')
+
+    # Hidden arguments that should largely be used by the dev team
+    with self.argument_context('codespace') as c:
+        c.argument('config_rp_api_version', options_list=['--rp'], help="Resource Provider API version to use.")
+        c.argument('config_service_domain', options_list=['--domain'], help="Service domain to use.")
+        c.argument('config_clear', options_list=['--clear'], action='store_true', help='Clear current configuration to return to defaults.')
