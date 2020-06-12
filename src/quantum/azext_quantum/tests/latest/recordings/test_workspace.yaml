@@ -1,0 +1,190 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.13 msrest_azure/0.6.3
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.Quantum%2FWorkspaces%27&api-version=2019-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alchocro-test-001/providers/Microsoft.Quantum/Workspaces/test-workspace-001","name":"test-workspace-001","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpaz-privpreview/providers/Microsoft.Quantum/Workspaces/anpaz-privpreview","name":"anpaz-privpreview","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/testworkspace","name":"testworkspace","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/validator-workspace-westus","name":"validator-workspace-westus","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/validator-workspae-westus","name":"validator-workspae-westus","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-test/providers/Microsoft.Quantum/Workspaces/demo","name":"demo","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-test/providers/Microsoft.Quantum/Workspaces/test-yinshen","name":"test-yinshen","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashwinm-test-private-preview/providers/Microsoft.Quantum/Workspaces/aq-private-preview-test","name":"aq-private-preview-test","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashwinm-test-private-preview/providers/Microsoft.Quantum/Workspaces/aq-private-preview-test-01","name":"aq-private-preview-test-01","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/etperr-test/providers/Microsoft.Quantum/Workspaces/etperr-test","name":"etperr-test","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete","name":"proddelete","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete2","name":"proddelete2","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete3","name":"proddelete3","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/dfDemoNew8","name":"dfDemoNew8","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/mycontoso1","name":"mycontoso1","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/myionq1","name":"myionq1","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew10","name":"dfDemoNew10","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew8","name":"dfDemoNew8","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew9","name":"dfDemoNew9","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/prod1","name":"prod1","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaz-aq-pp-rg/providers/Microsoft.Quantum/Workspaces/jaz-aq-pp","name":"jaz-aq-pp","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rwolfso/providers/Microsoft.Quantum/Workspaces/rowolfso","name":"rowolfso","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace","name":"testworkspace","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary","name":"testworkspace-canary","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary2","name":"testworkspace-canary2","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-1qbit","name":"testworkspace-canary-1qbit","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-1qbit-ge","name":"testworkspace-canary-1qbit-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-honeywell-ge","name":"testworkspace-canary-honeywell-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-ionq","name":"testworkspace-canary-ionq","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-ionq-ge","name":"testworkspace-canary-ionq-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-microsoft","name":"testworkspace-canary-microsoft","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-microsoft2","name":"testworkspace-canary-microsoft2","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/demo-yinshen","name":"demo-yinshen","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/yinshen-test","name":"yinshen-test","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/yinshen-workspace","name":"yinshen-workspace","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/accepted","name":"accepted","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/new","name":"new","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/yinshen-test-new","name":"yinshen-test-new","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jun 2020 09:19:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.13 msrest_azure/0.6.3
+        azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.Quantum%2FWorkspaces%27&api-version=2019-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/alchocro-test-001/providers/Microsoft.Quantum/Workspaces/test-workspace-001","name":"test-workspace-001","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpaz-privpreview/providers/Microsoft.Quantum/Workspaces/anpaz-privpreview","name":"anpaz-privpreview","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/testworkspace","name":"testworkspace","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/validator-workspace-westus","name":"validator-workspace-westus","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/Workspaces/validator-workspae-westus","name":"validator-workspae-westus","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-test/providers/Microsoft.Quantum/Workspaces/demo","name":"demo","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-test/providers/Microsoft.Quantum/Workspaces/test-yinshen","name":"test-yinshen","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashwinm-test-private-preview/providers/Microsoft.Quantum/Workspaces/aq-private-preview-test","name":"aq-private-preview-test","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashwinm-test-private-preview/providers/Microsoft.Quantum/Workspaces/aq-private-preview-test-01","name":"aq-private-preview-test-01","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/etperr-test/providers/Microsoft.Quantum/Workspaces/etperr-test","name":"etperr-test","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete","name":"proddelete","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete2","name":"proddelete2","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-deletetest/providers/Microsoft.Quantum/Workspaces/proddelete3","name":"proddelete3","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/dfDemoNew8","name":"dfDemoNew8","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/mycontoso1","name":"mycontoso1","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testcanary/providers/Microsoft.Quantum/Workspaces/myionq1","name":"myionq1","type":"Microsoft.Quantum/Workspaces","location":"eastus2euap","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew10","name":"dfDemoNew10","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew8","name":"dfDemoNew8","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/dfDemoNew9","name":"dfDemoNew9","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hay-testRG/providers/Microsoft.Quantum/workspaces/prod1","name":"prod1","type":"Microsoft.Quantum/workspaces","location":"westus","tags":{"department":"MightyMight","company":"Contoso"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaz-aq-pp-rg/providers/Microsoft.Quantum/Workspaces/jaz-aq-pp","name":"jaz-aq-pp","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rwolfso/providers/Microsoft.Quantum/Workspaces/rowolfso","name":"rowolfso","type":"Microsoft.Quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace","name":"testworkspace","type":"microsoft.quantum/Workspaces","location":"westus"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary","name":"testworkspace-canary","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary2","name":"testworkspace-canary2","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-1qbit","name":"testworkspace-canary-1qbit","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-1qbit-ge","name":"testworkspace-canary-1qbit-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-honeywell-ge","name":"testworkspace-canary-honeywell-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-ionq","name":"testworkspace-canary-ionq","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-ionq-ge","name":"testworkspace-canary-ionq-ge","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-microsoft","name":"testworkspace-canary-microsoft","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/Workspaces/testworkspace-canary-microsoft2","name":"testworkspace-canary-microsoft2","type":"microsoft.quantum/Workspaces","location":"eastus2euap"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/demo-yinshen","name":"demo-yinshen","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/yinshen-test","name":"yinshen-test","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test/providers/Microsoft.Quantum/Workspaces/yinshen-workspace","name":"yinshen-workspace","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/accepted","name":"accepted","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/new","name":"new","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yinshen-test-001/providers/Microsoft.Quantum/Workspaces/yinshen-test-new","name":"yinshen-test-new","type":"Microsoft.Quantum/Workspaces","location":"westus","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jun 2020 09:19:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -w -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.13 msrest_azure/0.6.3
+        quantummanagementclient/2019-11-04-preview Azure-SDK-For-Python AZURECLI/2.7.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-workspace-westus?api-version=2019-11-04-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-workspace-westus","name":"validator-workspace-westus","type":"microsoft.quantum/workspaces","location":"westus","identity":null,"properties":{"providers":[{"providerId":"Microsoft","providerSku":"Basic","applicationName":"validator-workspace-westus-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '489'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jun 2020 09:19:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.13 msrest_azure/0.6.3
+        quantummanagementclient/2019-11-04-preview Azure-SDK-For-Python AZURECLI/2.7.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-workspace-westus?api-version=2019-11-04-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-workspace-westus","name":"validator-workspace-westus","type":"microsoft.quantum/workspaces","location":"westus","identity":null,"properties":{"providers":[{"providerId":"Microsoft","providerSku":"Basic","applicationName":"validator-workspace-westus-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '489'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jun 2020 09:19:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
