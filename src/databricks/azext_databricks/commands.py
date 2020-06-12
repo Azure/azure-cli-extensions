@@ -13,14 +13,15 @@ from ._validators import validate_workspace_values
 
 def load_command_table(self, _):
 
-    from ._client_factory import cf_workspaces
-
-    with self.command_group('databricks', is_preview=True):
-        pass
-
+    from ._client_factory import cf_workspaces, cf_vnet_peering
     databricks_workspaces = CliCommandType(
         operations_tmpl='azext_databricks.vendored_sdks.databricks.operations._workspaces_operations#WorkspacesOperations.{}',
         client_factory=cf_workspaces)
+
+    databricks_vnet_peering = CliCommandType(
+        operations_tmpl='azext_databricks.vendored_sdks.databricks.operations._vnet_peering_operations#VNetPeeringOperations.{}',
+        client_factory=cf_vnet_peering)
+
     with self.command_group('databricks workspace', databricks_workspaces, client_factory=cf_workspaces) as g:
         g.custom_command('create', 'create_databricks_workspace', validator=validate_workspace_values, supports_no_wait=True)
         g.custom_command('update', 'update_databricks_workspace', supports_no_wait=True)
@@ -28,3 +29,10 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_databricks_workspace')
         g.custom_command('list', 'list_databricks_workspace')
         g.wait_command('wait')
+
+    with self.command_group('databricks workspace vnet-peering', databricks_vnet_peering, client_factory=cf_vnet_peering) as g:
+        #g.custom_command('create', 'create_databricks_vnet_peering')
+        g.command('delete', 'delete')
+        #g.command('list', 'list')
+        g.show_command('show', 'get')
+        #g.wait_command('wait')

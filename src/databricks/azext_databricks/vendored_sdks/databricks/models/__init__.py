@@ -10,8 +10,13 @@
 # --------------------------------------------------------------------------
 
 try:
+<<<<<<< HEAD
     from ._models_py3 import CreatedBy
     from ._models_py3 import Encryption
+=======
+    from ._models_py3 import AddressSpace
+    from ._models_py3 import CreatedBy
+>>>>>>> Init
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorInfo
     from ._models_py3 import ErrorResponse, ErrorResponseException
@@ -21,6 +26,9 @@ try:
     from ._models_py3 import Resource
     from ._models_py3 import Sku
     from ._models_py3 import TrackedResource
+    from ._models_py3 import VirtualNetworkPeering
+    from ._models_py3 import VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork
+    from ._models_py3 import VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork
     from ._models_py3 import Workspace
     from ._models_py3 import WorkspaceCustomBooleanParameter
     from ._models_py3 import WorkspaceCustomObjectParameter
@@ -30,8 +38,13 @@ try:
     from ._models_py3 import WorkspaceProviderAuthorization
     from ._models_py3 import WorkspaceUpdate
 except (SyntaxError, ImportError):
+<<<<<<< HEAD
     from ._models import CreatedBy
     from ._models import Encryption
+=======
+    from ._models import AddressSpace
+    from ._models import CreatedBy
+>>>>>>> Init
     from ._models import ErrorDetail
     from ._models import ErrorInfo
     from ._models import ErrorResponse, ErrorResponseException
@@ -41,6 +54,9 @@ except (SyntaxError, ImportError):
     from ._models import Resource
     from ._models import Sku
     from ._models import TrackedResource
+    from ._models import VirtualNetworkPeering
+    from ._models import VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork
+    from ._models import VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork
     from ._models import Workspace
     from ._models import WorkspaceCustomBooleanParameter
     from ._models import WorkspaceCustomObjectParameter
@@ -55,11 +71,18 @@ from ._databricks_client_enums import (
     CustomParameterType,
     KeySource,
     ProvisioningState,
+    PeeringProvisioningState,
+    VirtualNetworkPeeringState,
 )
 
 __all__ = [
+<<<<<<< HEAD
     'CreatedBy',
     'Encryption',
+=======
+    'AddressSpace',
+    'CreatedBy',
+>>>>>>> Init
     'ErrorDetail',
     'ErrorInfo',
     'ErrorResponse', 'ErrorResponseException',
@@ -69,6 +92,9 @@ __all__ = [
     'Resource',
     'Sku',
     'TrackedResource',
+    'VirtualNetworkPeering',
+    'VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork',
+    'VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork',
     'Workspace',
     'WorkspaceCustomBooleanParameter',
     'WorkspaceCustomObjectParameter',
@@ -82,4 +108,6 @@ __all__ = [
     'CustomParameterType',
     'KeySource',
     'ProvisioningState',
+    'PeeringProvisioningState',
+    'VirtualNetworkPeeringState',
 ]
