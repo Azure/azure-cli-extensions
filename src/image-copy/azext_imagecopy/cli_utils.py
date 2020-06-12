@@ -7,6 +7,8 @@ import sys
 import json
 
 from subprocess import check_output, STDOUT, CalledProcessError
+from typing import List
+
 from knack.util import CLIError
 
 from knack.log import get_logger
@@ -86,3 +88,9 @@ def get_storage_account_id_from_blob_path(cmd, blob_path, resource_group, subscr
         namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)
 
     return storage_account_id
+
+
+def format_cmd(cmd: List[str]):
+    if len(cmd)
+    terms = cmd[3:]
+    return 'Running: az ' + ' '.join(cmd[3:])

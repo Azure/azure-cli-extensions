@@ -8,7 +8,9 @@ from multiprocessing import Pool
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
+from azext_imagecopy.cli_utils import (
+    run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path, format_cmd
+)
 from azext_imagecopy.create_target import create_target_image
 
 logger = get_logger(__name__)
@@ -19,14 +21,24 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 def imagecopy(cmd, source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name='image-copy-rg',
-              source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
+              source_type='image', cleanup=None, parallel_degree=-1, tags=None, target_name=None,
               target_subscription=None, export_as_snapshot='false', timeout=3600):
+    # If --cleanup is set, forbid using an existing temporary resource group name.
+    # It is dangerous to clean up an existing resource group.
+    if cleanup:
+        cli_cmd = prepare_cli_command(['group', 'exists', '-n', temporary_resource_group_name],
+                                      output_as_json=False)
+        logger.warning(format_cmd(cli_cmd))
+        cmd_output = run_cli_command(cli_cmd)
+        if 'true' in cmd_output:
+            raise CLIError('Don\'t specify an existing resource group when --cleanup is set')
 
     # get the os disk id from source vm/image
-    logger.warning("Getting os disk id of the source vm/image")
+    logger.warning("Getting os disk ID of the source VM/image")
     cli_cmd = prepare_cli_command([source_type, 'show',
                                    '--name', source_object_name,
                                    '--resource-group', source_resource_group_name])
+    logger.warning(format_cmd(cli_cmd))
 
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
 
@@ -91,6 +103,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                        '--resource-group', source_resource_group_name,
                                        '--source', source_os_disk_id])
 
+    logger.warning(format_cmd(cli_cmd))
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
@@ -105,6 +118,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                    '--resource-group', source_resource_group_name,
                                    '--duration-in-seconds', str(timeout)])
 
+    logger.warning(format_cmd(cli_cmd))
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
     source_os_disk_snapshot_url = json_output['accessSas']
@@ -201,11 +215,13 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
 
 def create_resource_group(resource_group_name, location, subscription=None):
     # check if target resource group exists
+    logger.warning('Checking existence of resource group: {}'.format(resource_group_name))
     cli_cmd = prepare_cli_command(['group', 'exists',
                                    '--name', resource_group_name],
                                   output_as_json=False,
                                   subscription=subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     cmd_output = run_cli_command(cli_cmd)
 
     if 'true' in cmd_output:
@@ -218,4 +234,5 @@ def create_resource_group(resource_group_name, location, subscription=None):
                                    '--location', location],
                                   subscription=subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     run_cli_command(cli_cmd)

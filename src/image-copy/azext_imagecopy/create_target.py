@@ -9,7 +9,9 @@ import time
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
+from azext_imagecopy.cli_utils import (
+    run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path, format_cmd
+)
 
 logger = get_logger(__name__)
 
@@ -37,6 +39,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                    '--sku', 'Standard_LRS'],
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_blob_endpoint = json_output['primaryEndpoints']['blob']
 
@@ -46,6 +49,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                    '--resource-group', transient_resource_group_name],
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
     target_storage_account_key = json_output[0]['value']
@@ -65,6 +69,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                   output_as_json=False,
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     sas_token = run_cli_command(cli_cmd)
     sas_token = sas_token.rstrip("\n\r")  # STRANGE
     logger.debug("sas token: %s", sas_token)
@@ -78,6 +83,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                    '--account-name', target_storage_account_name],
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     run_cli_command(cli_cmd)
 
     # Copy the snapshot to the target region using the SAS URL
@@ -92,6 +98,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                    '--sas-token', sas_token],
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     run_cli_command(cli_cmd)
 
     # Wait for the copy to complete
@@ -126,6 +133,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                    '--source-storage-account-id', source_storage_account_id],
                                   subscription=target_subscription)
 
+    logger.warning(format_cmd(cli_cmd))
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
 
@@ -150,7 +158,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                        '--source', target_snapshot_id],
                                       tags=tags,
                                       subscription=target_subscription)
-
+        logger.warning(format_cmd(cli_cmd))
         run_cli_command(cli_cmd)
 
 
