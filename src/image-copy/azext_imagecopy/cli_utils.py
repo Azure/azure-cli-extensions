@@ -91,6 +91,6 @@ def get_storage_account_id_from_blob_path(cmd, blob_path, resource_group, subscr
 
 
 def format_cmd(cmd: List[str]):
-    if len(cmd)
-    terms = cmd[3:]
-    return 'Running: az ' + ' '.join(cmd[3:])
+    if len(cmd) > 3:
+        return 'Running: az ' + ' '.join(cmd[3:])
+    return 'Running: ' + ' '.join(cmd)
