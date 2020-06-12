@@ -33,7 +33,7 @@ class VSOnlineClientConfiguration(AzureConfiguration):
     """
 
     def __init__(
-            self, credentials, subscription_id, base_url=None):
+            self, credentials, subscription_id, base_url=None, api_version=None):
 
         if credentials is None:
             raise ValueError("Parameter 'credentials' must not be None.")
@@ -49,6 +49,7 @@ class VSOnlineClientConfiguration(AzureConfiguration):
 
         self.credentials = credentials
         self.subscription_id = subscription_id
+        self.api_version = api_version
 
 
 class VSOnlineClient(SDKClient):
@@ -72,9 +73,9 @@ class VSOnlineClient(SDKClient):
     """
 
     def __init__(
-            self, credentials, subscription_id, base_url=None):
+            self, credentials, subscription_id, base_url=None, api_version=None):
 
-        self.config = VSOnlineClientConfiguration(credentials, subscription_id, base_url)
+        self.config = VSOnlineClientConfiguration(credentials, subscription_id, base_url, api_version)
         super(VSOnlineClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}

@@ -14,13 +14,11 @@ from knack.log import get_logger
 from azure.cli.core import __version__ as az_version
 
 from .version import VERSION
+from ._config import get_service_domain
 
 logger = get_logger(__name__)
 
-SERVICE_DOMAIN = "https://online.visualstudio.com"
-API_ROOT = f"{SERVICE_DOMAIN}/api/v1"
-CODESPACES_PORTAL_PREFIX = f"{SERVICE_DOMAIN}/environment"
-
+API_ROUTE = "/api/v1"
 
 def _get_user_agent_string():
     pv = platform.python_version()
@@ -58,6 +56,7 @@ session.headers.update({
 })
 
 
+
 def api_response_decorator(func):
     def wrapper(*args, **kwargs):
         try:
@@ -70,72 +69,91 @@ def api_response_decorator(func):
     return wrapper
 
 
+def custom_api_root_decorator(func):
+    def wrapper(*args, **kwargs):
+        cli_ctx = kwargs.pop('cli_ctx')
+        domain = get_service_domain(cli_ctx)
+        api_root = f"https://{domain}{API_ROUTE}"
+        kwargs['api_root'] = api_root
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@custom_api_root_decorator
 @api_response_decorator
-def list_locations():
-    url = f'{API_ROOT}/locations'
+def list_locations(api_root=None):
+    url = f'{api_root}/locations'
     response = session.get(url)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def get_location_details(location):
-    url = f'{API_ROOT}/locations/{location}'
+def get_location_details(location, api_root=None):
+    url = f'{api_root}/locations/{location}'
     response = session.get(url)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def list_codespaces(access_token, plan_id):
-    url = f'{API_ROOT}/environments'
+def list_codespaces(access_token, plan_id, api_root=None):
+    url = f'{api_root}/environments'
     headers = {'Authorization': f'Bearer {access_token}'}
     params = {'planId': plan_id}
     response = session.get(url, headers=headers, params=params)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def get_codespace(access_token, codespace_id):
-    url = f'{API_ROOT}/environments/{codespace_id}'
+def get_codespace(access_token, codespace_id, api_root=None):
+    url = f'{api_root}/environments/{codespace_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.get(url, headers=headers)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def start_codespace(access_token, codespace_id):
-    url = f'{API_ROOT}/environments/{codespace_id}/start'
+def start_codespace(access_token, codespace_id, api_root=None):
+    url = f'{api_root}/environments/{codespace_id}/start'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.post(url, headers=headers)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def shutdown_codespace(access_token, codespace_id):
-    url = f'{API_ROOT}/environments/{codespace_id}/shutdown'
+def shutdown_codespace(access_token, codespace_id, api_root=None):
+    url = f'{api_root}/environments/{codespace_id}/shutdown'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.post(url, headers=headers)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def delete_codespace(access_token, codespace_id):
-    url = f'{API_ROOT}/environments/{codespace_id}'
+def delete_codespace(access_token, codespace_id, api_root=None):
+    url = f'{api_root}/environments/{codespace_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.delete(url, headers=headers)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def create_codespace(access_token, data):
-    url = f'{API_ROOT}/environments'
+def create_codespace(access_token, data, api_root=None):
+    url = f'{api_root}/environments'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.post(url, headers=headers, json=data)
     return response
 
 
+@custom_api_root_decorator
 @api_response_decorator
-def update_codespace(access_token, codespace_id, data):
-    url = f'{API_ROOT}/environments/{codespace_id}'
+def update_codespace(access_token, codespace_id, data, api_root=None):
+    url = f'{api_root}/environments/{codespace_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.patch(url, headers=headers, json=data)
     return response

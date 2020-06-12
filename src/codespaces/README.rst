@@ -13,6 +13,10 @@ cd /specification/vsonline/resource-manager
 autorest --python readme.md
 ```
 
+Custom changes made to auto-generated SDK:
+1. Remove trailing `/` from `list_by_resource_group` and `list_by_subscription` plan operations as server will reject request otherwise.
+2. Add support for custom API version to be set.
+
 Before submitting a PR
 ----------------------
 
