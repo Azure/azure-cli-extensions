@@ -86,6 +86,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Removing quotes from kubeconfig path. This is necessary for windows OS.
     trim_kube_config(kube_config)
 
+    # Escaping comma, forward slash present in https proxy urls, needed for helm params.
+    https_proxy = escape_proxy_settings(https_proxy)
+
+    # Escaping comma, forward slash present in http proxy urls, needed for helm params.
+    http_proxy = escape_proxy_settings(http_proxy)
+
+    # Escaping comma, forward slash present in no proxy urls, needed for helm params.
+    no_proxy = escape_proxy_settings(no_proxy)
+
     # Loading the kubeconfig file in kubernetes client configuration
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
@@ -306,6 +315,15 @@ def trim_kube_config(kube_config):
         kube_config = kube_config[1:]
     if (kube_config.endswith("'") or kube_config.endswith('"')):
         kube_config = kube_config[:-1]
+
+
+def escape_proxy_settings(proxy_setting):
+    if proxy_setting is None:
+       return ""
+    r_proxy_setting = proxy_setting.replace(',', '\,')
+    r_proxy_setting = r_proxy_setting.replace('/', '\/')
+    return r_proxy_setting
+
 
 
 def check_kube_connection(configuration):
