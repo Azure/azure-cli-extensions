@@ -15,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumScenarioTest(ScenarioTest):
-    
+
     def test_targets(self):
         # Since azure quantum is still in private preview, we require
         # these tests to run in a specific subscription (AzureQuantum-test)
@@ -28,7 +28,7 @@ class QuantumScenarioTest(ScenarioTest):
 
         # clear current target
         self.cmd(f'az quantum target clear')
-        
+
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
@@ -51,4 +51,3 @@ class QuantumScenarioTest(ScenarioTest):
 
         # clear
         self.cmd(f'az quantum target clear')
-

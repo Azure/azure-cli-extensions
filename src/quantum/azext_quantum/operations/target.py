@@ -3,23 +3,23 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-outside-toplevel,line-too-long,redefined-builtin
+# pylint: disable=line-too-long,redefined-builtin
 
 from .._client_factory import cf_providers
 from .workspace import WorkspaceInfo
+
 
 class TargetInfo(object):
     def __init__(self, cmd, target_id=None):
 
         def select_value(key, value):
-            if not value is None:
+            if value is not None:
                 return value
             value = cmd.cli_ctx.config.get('quantum', key, None)
-            if not value is None:
+            if value is not None:
                 return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
-            if not value is None:
-                return value
+            return value
 
         self.target_id = select_value('target_id', target_id)
 
@@ -40,6 +40,7 @@ def show(cmd, target_id=None):
     info = TargetInfo(cmd, target_id)
     return info
 
+
 def set(cmd, target_id=None):
     """
     Selects the default target to use when submitting jobs to Azure Quantum.
@@ -49,6 +50,7 @@ def set(cmd, target_id=None):
         info.save(cmd)
     return info
 
+
 def list(cmd, resource_group_name=None, workspace_name=None):
     """
     Returns the list of providers and their targets in a Quantum Workspace.
@@ -56,6 +58,7 @@ def list(cmd, resource_group_name=None, workspace_name=None):
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
     return client.get_status()
+
 
 def clear(cmd):
     """

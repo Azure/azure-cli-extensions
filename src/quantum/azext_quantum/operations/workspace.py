@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-outside-toplevel,line-too-long,redefined-builtin
+# pylint: disable=line-too-long,redefined-builtin
 
 from knack.util import CLIError
 
 from .._client_factory import cf_workspaces
+
 
 class WorkspaceInfo(object):
     def __init__(self, cmd, resource_group_name=None, workspace_name=None):
@@ -18,14 +19,13 @@ class WorkspaceInfo(object):
         # then it checks if the key exists in the 'quantum' section in config, and uses that if available.
         # finally, it checks in the 'global' section in the config.
         def select_value(key, value):
-            if not value is None:
+            if value is not None:
                 return value
             value = cmd.cli_ctx.config.get('quantum', key, None)
-            if not value is None:
+            if value is not None:
                 return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
-            if not value is None:
-                return value
+            return value
 
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
@@ -51,6 +51,7 @@ def list(cmd, resource_group_name=None, tag=None, location=None):
     from azure.cli.command_modules.resource.custom import list_resources
     return list_resources(cmd, resource_group_name=resource_group_name, resource_type="Microsoft.Quantum/Workspaces", tag=tag, location=location)
 
+
 def show(cmd, resource_group_name=None, workspace_name=None):
     """
     Returns the details of the given (or current) Quantum Workspace.
@@ -62,6 +63,7 @@ def show(cmd, resource_group_name=None, workspace_name=None):
     ws = client.get(info.resource_group, info.name)
     return ws
 
+
 def set(cmd, workspace_name, resource_group_name=None):
     """
     Sets the default Quantum Workspace.
@@ -71,7 +73,8 @@ def set(cmd, workspace_name, resource_group_name=None):
     ws = client.get(info.resource_group, info.name)
     if ws:
         info.save(cmd)
-        return ws
+    return ws
+
 
 def clear(cmd):
     """
