@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
+++++++
+* `az connectedk8s connect`: Added CLI params to support proxy.
+
 0.2.1
 ++++++
 * `az connectedk8s connect`: Added kubernetes distribution.

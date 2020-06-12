@@ -20,6 +20,9 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
     - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
+    - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy settings.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --https-proxy https://proxy-url --http-proxy http://proxy-url --no-proxy excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+
 """
 
 helps['connectedk8s list'] = """
