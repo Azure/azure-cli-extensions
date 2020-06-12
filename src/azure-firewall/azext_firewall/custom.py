@@ -67,9 +67,17 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
-                          threat_intel_mode=None):
+                          threat_intel_mode=None, hub_public_ip_count=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
-    AzureFirewall, SubResource, AzureFirewallSku = cmd.get_models('AzureFirewall', 'SubResource', 'AzureFirewallSku')
+    (AzureFirewall,
+     SubResource,
+     AzureFirewallSku,
+     HubIPAddresses,
+     HubPublicIPAddresses) = cmd.get_models('AzureFirewall',
+                                            'SubResource',
+                                            'AzureFirewallSku',
+                                            'HubIPAddresses',
+                                            'HubPublicIPAddresses')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
     firewall = AzureFirewall(location=location,
                              tags=tags,
@@ -78,7 +86,13 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                              virtual_hub=SubResource(id=virtual_hub) if virtual_hub is not None else None,
                              firewall_policy=SubResource(id=firewall_policy) if firewall_policy is not None else None,
                              sku=sku_instance if sku is not None else None,
-                             threat_intel_mode=threat_intel_mode)
+                             threat_intel_mode=threat_intel_mode,
+                             hub_ip_addresses=HubIPAddresses(
+                                 public_ips=HubPublicIPAddresses(
+                                     count=hub_public_ip_count
+                                 )
+                             ) if hub_public_ip_count is not None else None
+                             )
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
@@ -96,8 +110,15 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
-                          threat_intel_mode=None):
-    SubResource = cmd.get_models('SubResource')
+                          threat_intel_mode=None, hub_public_ip_addresses=None,
+                          hub_public_ip_count=None):
+    (SubResource,
+     AzureFirewallPublicIPAddress,
+     HubIPAddresses,
+     HubPublicIPAddresses) = cmd.get_models('SubResource',
+                                            'AzureFirewallPublicIPAddress',
+                                            'HubIPAddresses',
+                                            'HubPublicIPAddresses')
     if tags is not None:
         instance.tags = tags
     if zones is not None:
@@ -122,6 +143,16 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         instance.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
     if threat_intel_mode is not None:
         instance.threat_intel_mode = threat_intel_mode
+
+    if instance.hub_ip_addresses is None and hub_public_ip_addresses is not None:
+        raise CLIError('Cannot delete public ip addresses from vhub without creation.')
+    if hub_public_ip_count is not None:
+        if instance.hub_ip_addresses is None:
+            instance.hub_ip_addresses = HubIPAddresses(
+                public_ips=HubPublicIPAddresses(
+                    count=hub_public_ip_count
+                )
+            )
     return instance
 
 

@@ -15,6 +15,8 @@ from msrest import Serializer, Deserializer
 from ._configuration import NetworkManagementClientConfiguration
 from .operations import NetworkManagementClientOperationsMixin
 from .operations import ApplicationGatewaysOperations
+from .operations import ApplicationGatewayPrivateLinkResourcesOperations
+from .operations import ApplicationGatewayPrivateEndpointConnectionsOperations
 from .operations import ApplicationSecurityGroupsOperations
 from .operations import AvailableDelegationsOperations
 from .operations import AvailableResourceGroupDelegationsOperations
@@ -124,6 +126,10 @@ class NetworkManagementClient(NetworkManagementClientOperationsMixin, SDKClient)
 
     :ivar application_gateways: ApplicationGateways operations
     :vartype application_gateways: azure.mgmt.network.v2020_05_01.operations.ApplicationGatewaysOperations
+    :ivar application_gateway_private_link_resources: ApplicationGatewayPrivateLinkResources operations
+    :vartype application_gateway_private_link_resources: azure.mgmt.network.v2020_05_01.operations.ApplicationGatewayPrivateLinkResourcesOperations
+    :ivar application_gateway_private_endpoint_connections: ApplicationGatewayPrivateEndpointConnections operations
+    :vartype application_gateway_private_endpoint_connections: azure.mgmt.network.v2020_05_01.operations.ApplicationGatewayPrivateEndpointConnectionsOperations
     :ivar application_security_groups: ApplicationSecurityGroups operations
     :vartype application_security_groups: azure.mgmt.network.v2020_05_01.operations.ApplicationSecurityGroupsOperations
     :ivar available_delegations: AvailableDelegations operations
@@ -342,6 +348,10 @@ class NetworkManagementClient(NetworkManagementClientOperationsMixin, SDKClient)
         self._deserialize = Deserializer(client_models)
 
         self.application_gateways = ApplicationGatewaysOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.application_gateway_private_link_resources = ApplicationGatewayPrivateLinkResourcesOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.application_gateway_private_endpoint_connections = ApplicationGatewayPrivateEndpointConnectionsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.application_security_groups = ApplicationSecurityGroupsOperations(
             self._client, self.config, self._serialize, self._deserialize)
