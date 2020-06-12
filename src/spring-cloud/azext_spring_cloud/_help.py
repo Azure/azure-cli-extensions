@@ -26,7 +26,7 @@ helps['spring-cloud update'] = """
     short-summary: Update an Azure Spring Cloud.
     examples:
     - name: Enable the distributed tracing of the existing Azure Spring Cloud
-      text: az spring-cloud update -n MyService -g MyResourceGroup --enable-distributed-tracing true
+      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-distributed-tracing false
     - name: Update the tags of the existing Azure Spring Cloud
       text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """

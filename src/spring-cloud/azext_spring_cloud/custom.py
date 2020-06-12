@@ -41,7 +41,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
-                        enable_distributed_tracing=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
@@ -49,7 +49,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     properties = models.ClusterResourceProperties()
 
     update_tracing_config(cmd, resource_group, name, location, properties,
-                          app_insights_key, app_insights, enable_distributed_tracing)
+                          app_insights_key, app_insights, disable_distributed_tracing)
 
     resource = models.ServiceResource(
         location=location, properties=properties, tags=tags)
@@ -59,7 +59,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        enable_distributed_tracing=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, tags=None, no_wait=False):
     resource = client.get(resource_group, name)
     location = resource.location
     resource_properties = resource.properties
@@ -69,11 +69,11 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     app_insights_target_status = False
     update_app_insights = False
 
-    if app_insights is not None or app_insights_key is not None or enable_distributed_tracing is True:
+    if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
         app_insights_target_status = True
         if resource_properties.trace.enabled is False:
             update_app_insights = True
-    elif enable_distributed_tracing is False:
+    elif disable_distributed_tracing is True:
         app_insights_target_status = False
         if resource_properties.trace.enabled is True:
             update_app_insights = True
@@ -87,7 +87,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
             resource_properties.trace.enabled = app_insights_target_status
         else:
             update_tracing_config(cmd, resource_group, name, location, resource_properties, app_insights_key,
-                                  app_insights, enable_distributed_tracing)
+                                  app_insights, disable_distributed_tracing)
         updated_resource_properties.trace = resource_properties.trace
 
     # update service tags
@@ -1296,7 +1296,7 @@ def get_app_insights_key(cli_ctx, resource_group, name):
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
-                          app_insights, enable_distributed_tracing):
+                          app_insights, disable_distributed_tracing):
     create_app_insights = False
 
     if app_insights_key is not None:
@@ -1313,7 +1313,7 @@ def update_tracing_config(cmd, resource_group, service_name, location, resource_
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
             resource_properties.trace = models.TraceProperties(
                 enabled=True, app_insight_instrumentation_key=instrumentation_key)
-    elif enable_distributed_tracing is not False:
+    elif disable_distributed_tracing is not True:
         create_app_insights = True
 
     if create_app_insights is True:
