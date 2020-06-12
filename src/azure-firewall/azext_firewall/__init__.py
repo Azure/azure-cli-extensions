@@ -20,7 +20,7 @@ class AzureFirewallCommandsLoader(AzCommandsLoader):
         super(AzureFirewallCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(operations_tmpl='azext_firewall.custom#{}'),
-            resource_type=CUSTOM_FIREWALL
+            resource_type=CUSTOM_FIREWALL_POLICY
         )
 
     def load_command_table(self, args):

@@ -7,13 +7,13 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory, network_client_policy_factory
+from ._client_factory import network_client_policy_factory
 
 logger = get_logger(__name__)
 
 
 def _generic_list(cli_ctx, operation_name, resource_group_name):
-    ncf = network_client_factory(cli_ctx)
+    ncf = network_client_policy_factory(cli_ctx)
     operation_group = getattr(ncf, operation_name)
     if resource_group_name:
         return operation_group.list(resource_group_name)
@@ -68,7 +68,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
                           threat_intel_mode=None, hub_public_ip_count=None):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
      AzureFirewallSku,
@@ -153,6 +153,19 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                     count=hub_public_ip_count
                 )
             )
+        elif instance.hub_ip_addresses.public_ips is None:
+            instance.hub_ip_addresses.public_ips = HubPublicIPAddresses(
+                    count=hub_public_ip_count
+                )
+        else:
+            if hub_public_ip_addresses is not None:
+                if len(hub_public_ip_addresses) != hub_public_ip_count:
+                    raise CLIError('Public Ip addresses number must be consistent.')
+                if instance.hub_ip_addresses.public_ips.count and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:
+                    raise CLIError('Cannot add and remove public ip addresses at same time.')
+            instance.hub_ip_addresses.public_ips.count = hub_public_ip_count
+            instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip)
+                                                              for ip in hub_public_ip_addresses] if hub_public_ip_addresses else None
     return instance
 
 
@@ -166,7 +179,7 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
                                management_item_name=None, management_public_ip_address=None,
                                management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
@@ -189,7 +202,7 @@ def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
                                           public_ip_address, virtual_network_name,  # pylint: disable=unused-argument
                                           subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
@@ -212,19 +225,19 @@ def update_af_management_ip_configuration(cmd, instance, public_ip_address=None,
 
 
 def set_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name, parameters):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     poller = client.create_or_update(resource_group_name, azure_firewall_name, parameters)
     return poller.result().management_ip_configuration
 
 
 def show_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     return af.management_ip_configuration
 
 
 def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     af.management_ip_configuration = None
     poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
@@ -232,7 +245,7 @@ def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
 
 
 def delete_af_ip_configuration(cmd, resource_group_name, resource_name, item_name, no_wait=False):  # pylint: disable=unused-argument
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, resource_name)
     keep_items = \
         [x for x in af.ip_configurations if x.name.lower() != item_name.lower()]
@@ -253,7 +266,7 @@ def build_af_rule_list(item_param_name, collection_param_name):
     import sys
 
     def list_func(cmd, resource_group_name, firewall_name, collection_name):
-        client = network_client_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         return _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
 
@@ -266,7 +279,7 @@ def build_af_rule_show(item_param_name, collection_param_name):
     import sys
 
     def show_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
-        client = network_client_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         return _find_item_at_path(af, '{}.{}.rules.{}'.format(collection_param_name, collection_name, item_name))
 
@@ -279,7 +292,7 @@ def build_af_rule_delete(item_param_name, collection_param_name):
     import sys
 
     def delete_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
-        client = network_client_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         collection = _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
         collection.rules = [rule for rule in collection.rules if rule.name != item_name]
@@ -292,7 +305,7 @@ def build_af_rule_delete(item_param_name, collection_param_name):
 
 def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_name, collection_class,
                     item_class, item_name, params, collection_params):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, firewall_name)
     collection = getattr(af, collection_param_name, [])
 
@@ -404,7 +417,7 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
 
 def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name,
                                                  ip_addresses=None, fqdns=None):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if ip_addresses is not None:
         if firewall.additional_properties is None:
@@ -430,7 +443,7 @@ def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fq
 
 
 def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is None:
         firewall.additional_properties = {}
@@ -438,7 +451,7 @@ def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_f
 
 
 def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is not None:
         firewall.additional_properties.pop('ThreatIntel.Whitelist.IpAddresses', None)
