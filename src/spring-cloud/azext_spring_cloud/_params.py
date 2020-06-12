@@ -42,7 +42,7 @@ def load_arguments(self, _):
                        help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.")
             c.argument('enable_distributed_tracing',
                        arg_type=get_three_state_flag(),
-                       help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key, --app-insights-name or --app-insights-resource-id, will create a new one.")
+                       help="Enable distributed tracing, if you don't specify an existing Application Insights by using --app-insights-key or --app-insights, will create a new one.")
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
