@@ -319,11 +319,10 @@ def trim_kube_config(kube_config):
 
 def escape_proxy_settings(proxy_setting):
     if proxy_setting is None:
-       return ""
-    r_proxy_setting = proxy_setting.replace(',', '\,')
-    r_proxy_setting = r_proxy_setting.replace('/', '\/')
-    return r_proxy_setting
-
+        return ""
+    proxy_setting = proxy_setting.replace(',', r'\,')
+    proxy_setting = proxy_setting.replace('/', r'\/')
+    return proxy_setting
 
 
 def check_kube_connection(configuration):
