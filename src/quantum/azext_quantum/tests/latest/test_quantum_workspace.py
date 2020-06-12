@@ -15,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumScenarioTest(ScenarioTest):
-    
+
     def test_workspace(self):
         # Since azure quantum is still in private preview, we require
         # these tests to run in a specific subscription (AzureQuantum-test)
@@ -25,10 +25,10 @@ class QuantumScenarioTest(ScenarioTest):
 
         # clear
         self.cmd(f'az quantum workspace clear')
-        
+
         # list
         workspaces = self.cmd('az quantum workspace list -o json').get_output_in_json()
-        assert len(workspaces) > 0        
+        assert len(workspaces) > 0
         self.cmd('az quantum workspace list -o json', checks=[
             self.check(f"[?name=='{TEST_WORKSPACE}'].resourceGroup | [0]", TEST_RG)
         ])
@@ -45,4 +45,3 @@ class QuantumScenarioTest(ScenarioTest):
 
         # clear
         self.cmd(f'az quantum workspace clear')
-

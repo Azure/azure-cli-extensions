@@ -25,6 +25,7 @@ def transform_targets(providers):
         for target in provider['targets']
     ]
 
+
 def transform_job(result):
     result = OrderedDict([
         ('Id', result['id']),
@@ -34,6 +35,7 @@ def transform_job(result):
         ('Completion time', result['endExecutionTime'])
     ])
     return result
+
 
 def transform_jobs(results):
     def creation(job):
@@ -61,7 +63,7 @@ def transform_output(results):
             items = range(0, len(histogram), 2)
             for i in items:
                 key = histogram[i]
-                value = histogram[i+1]
+                value = histogram[i + 1]
                 table.append(one(key, value))
             return table
 
@@ -80,10 +82,9 @@ def load_command_table(self, _):
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('list', 'list')
-        w.command('show', 'show', validator=validate_workspace_info)   ## TODO: argument list/help
+        w.command('show', 'show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
-
 
     with self.command_group('quantum target', target_ops) as w:
         w.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
@@ -91,14 +92,12 @@ def load_command_table(self, _):
         w.command('set', 'set', validator=validate_target_info)
         w.command('clear', 'clear')
 
-
     with self.command_group('quantum job', job_ops) as j:
         j.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_jobs)
         j.command('show', 'show', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
-
 
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('execute', 'execute', validator=validate_workspace_and_target_info, table_transformer=transform_output)

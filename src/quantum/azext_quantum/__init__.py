@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-outside-toplevel
 from azure.cli.core import AzCommandsLoader
 
 import azext_quantum._help  # pylint: disable=unused-import
+
 
 class QuantumCommandsLoader(AzCommandsLoader):
 

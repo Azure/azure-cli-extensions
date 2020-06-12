@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-outside-toplevel
+# pylint: disable=redefined-builtin
 
 import logging
 
@@ -15,7 +15,7 @@ from .target import TargetInfo
 
 logger = logging.getLogger(__name__)
 
-# pylint: disable=redefined-builtin
+
 def list(cmd, resource_group_name=None, workspace_name=None):
     """
     Returns the list of jobs in a Quantum Workspace.
@@ -112,6 +112,7 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
 
     return args
 
+
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
            job_name=None, shots=None, no_build=False):
     """
@@ -158,6 +159,7 @@ def _parse_blob_url(url):
         "sas_token": sas_token
     }
 
+
 def output(cmd, job_id, resource_group_name=None, workspace_name=None):
     """ Returns back the results of a Q# execution """
     import tempfile
@@ -168,9 +170,9 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None):
     path = os.path.join(tempfile.gettempdir(), job_id)
 
     if os.path.exists(path):
-        logger.debug(f"Using existing blob from {path}")
+        logger.debug("Using existing blob from %s", path)
     else:
-        logger.debug(f"Downloading job results blob into {path}")
+        logger.debug("Downloading job results blob into %s", path)
 
         info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
         client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
@@ -216,6 +218,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wa
         print("")
 
     return job
+
 
 def execute(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
             job_name=None, shots=None, no_build=False):

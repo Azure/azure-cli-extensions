@@ -76,7 +76,7 @@ class QuantumScenarioTest(ScenarioTest):
         self.assertIn("--job-name", args)
         self.assertIn("--shots", args)
 
-    def test_parse_blob_url(self):            
+    def test_parse_blob_url(self):
         sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
         url = f"https://getest2.blob.core.windows.net/qio/rawOutputData?{sas}"
         args = _parse_blob_url(url)

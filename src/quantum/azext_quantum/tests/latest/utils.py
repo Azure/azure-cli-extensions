@@ -7,6 +7,7 @@ TEST_SUBS = "677fc922-91d0-4bf6-9b06-4274d319a0fa"
 TEST_RG = 'aqua-provider-validator'
 TEST_WORKSPACE = 'validator-workspace-westus'
 
+
 def is_private_preview_subscription(scenario):
     """ Returns True if running in AzureQuantum-test """
 
