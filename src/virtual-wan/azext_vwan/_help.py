@@ -130,6 +130,14 @@ helps['network vhub route-table list'] = """
     short-summary: List all route tables in the virtual hub.
 """
 
+helps['network vhub route-table wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vhub route-table is met.
+    examples:
+      - name: Pause executing next line of CLI script until the route table is successfully provisioned.
+        text: az network vhub route-table wait -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --created
+"""
+
 helps['network vhub route-table route'] = """
     type: group
     short-summary: Manage routes of route table in the virtual hub.
