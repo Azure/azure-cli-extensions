@@ -9,7 +9,7 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, tags_type, get_location_type, get_three_state_flag, get_enum_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
+from .profiles import CUSTOM_VHUB_ROUTE_TABLE
 from ._validators import get_network_resource_name_or_id
 
 
@@ -62,7 +62,7 @@ def load_arguments(self, _):
         c.argument('remote_virtual_network', options_list='--remote-vnet', help='Name of ID of the remote VNet to connect to.', validator=get_network_resource_name_or_id('remote_virtual_network', 'virtualNetworks'))
         c.argument('allow_hub_to_remote_vnet_transit', arg_type=get_three_state_flag(), options_list='--remote-vnet-transit', help='Enable hub to remote VNet transit.')
         c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', help='Allow remote VNet to use hub\'s VNet gateways.')
-        c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security.')
+        c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
 
     with self.argument_context('network vhub connection list') as c:
         c.argument('resource_name', vhub_name_type, id_part=None)
@@ -73,15 +73,18 @@ def load_arguments(self, _):
         c.argument('next_hop_ip_address', options_list='--next-hop', help='IP address of the next hop.')
         c.argument('index', type=int, help='List index of the item (starting with 1).')
 
-    with self.argument_context('network vhub route-table') as c:
+    with self.argument_context('network vhub route-table', resource_type=CUSTOM_VHUB_ROUTE_TABLE) as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
-        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table')
-        c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR']), help='The type of destinations')
+        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2")
+        c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR', 'ResourceId']), help='The type of destinations')
         c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
-        c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress']), help='The type of next hops. Currently it only supports IP Address.')
-        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop.')
+        c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress', 'ResourceId']), help='The type of next hop. If --next-hops (v2) is provided, it should be IPAddress; if --next-hop (v3) is provided, it should be ResourceId.')
+        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2")
         c.argument('index', type=int, help='List index of the item (starting with 1).')
+        c.argument('next_hop', help='The resource ID of the next hop.', arg_group="route table v3", min_api='2020-04-01')
+        c.argument('route_name', help='The name of the route.', arg_group="route table v3", min_api='2020-04-01')
+        c.argument('labels', nargs='+', help='Space-separated list of all labels associated with this route table.', arg_group="route table v3", min_api='2020-04-01')
     # endregion
 
     # region VpnGateways
