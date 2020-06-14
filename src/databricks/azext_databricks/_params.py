@@ -23,9 +23,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('managed_resource_group', help='The managed resource group to create. It can be either a name or a resource ID.')
-        c.argument('custom_virtual_network_id', options_list=['--vnet'], arg_group='Custom VNET', help='Virtual network name or resource ID.')
-        c.argument('custom_public_subnet_name', options_list=['--public-subnet'], arg_group='Custom VNET', help='The name of a new public subnet.')
-        c.argument('custom_private_subnet_name', options_list=['--private-subnet'], arg_group='Custom VNET', help='The name of a new private subnet.')
+        c.argument('custom_virtual_network_id', options_list=['--vnet'], arg_group='Custom VNET', help='Virtual Network name or resource ID.')
+        c.argument('custom_public_subnet_name', options_list=['--public-subnet'], arg_group='Custom VNET', help='The name of a Public Subnet within the Virtual Network.')
+        c.argument('custom_private_subnet_name', options_list=['--private-subnet'], arg_group='Custom VNET', help='The name of a Private Subnet within the Virtual Network.')
         c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['standard', 'premium', 'trial']), help='The SKU tier name.')
         c.argument('prepare_encryption', action='store_true', help='Flag to enable the Managed Identity for managed storage account to prepare for CMK encryption.')
 

@@ -15,7 +15,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_workspaces
 
-    with self.command_group('databricks', is_experimental=True):
+    with self.command_group('databricks', is_preview=True):
         pass
 
     databricks_workspaces = CliCommandType(

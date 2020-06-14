@@ -20,8 +20,10 @@ helps['databricks workspace create'] = """
     examples:
       - name: Create a workspace
         text: |-
-               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location \\
-               westus  --sku standard
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard
+      - name: Create a workspace with managed identity for storage account
+        text: |-
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --prepare-encryption
 """
 
 helps['databricks workspace update'] = """
