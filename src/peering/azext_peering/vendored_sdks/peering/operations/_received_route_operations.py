@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -56,7 +56,7 @@ class ReceivedRouteOperations(object):
         skip_token=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.PeeringReceivedRouteListResult"]
+        # type: (...) -> "models.PeeringReceivedRouteListResult"
         """Lists the prefixes received over the specified peering under the given subscription and resource group.
 
         :param resource_group_name: The name of the resource group.
@@ -77,42 +77,41 @@ class ReceivedRouteOperations(object):
      result.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of PeeringReceivedRouteListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.peering.models.PeeringReceivedRouteListResult]
+        :return: PeeringReceivedRouteListResult or the result of cls(response)
+        :rtype: ~azure.mgmt.peering.models.PeeringReceivedRouteListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PeeringReceivedRouteListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-01-01-preview"
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        api_version = "2020-04-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_peering.metadata['url']  # type: ignore
+                url = self.list_by_peering.metadata['url']
                 path_format_arguments = {
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'peeringName': self._serialize.url("peering_name", peering_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                if prefix is not None:
-                    query_parameters['prefix'] = self._serialize.query("prefix", prefix, 'str')
-                if as_path is not None:
-                    query_parameters['asPath'] = self._serialize.query("as_path", as_path, 'str')
-                if origin_as_validation_state is not None:
-                    query_parameters['originAsValidationState'] = self._serialize.query("origin_as_validation_state", origin_as_validation_state, 'str')
-                if rpki_validation_state is not None:
-                    query_parameters['rpkiValidationState'] = self._serialize.query("rpki_validation_state", rpki_validation_state, 'str')
-                if skip_token is not None:
-                    query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
             else:
                 url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
+
+            # Construct parameters
+            query_parameters = {}  # type: Dict[str, Any]
+            if prefix is not None:
+                query_parameters['prefix'] = self._serialize.query("prefix", prefix, 'str')
+            if as_path is not None:
+                query_parameters['asPath'] = self._serialize.query("as_path", as_path, 'str')
+            if origin_as_validation_state is not None:
+                query_parameters['originAsValidationState'] = self._serialize.query("origin_as_validation_state", origin_as_validation_state, 'str')
+            if rpki_validation_state is not None:
+                query_parameters['rpkiValidationState'] = self._serialize.query("rpki_validation_state", rpki_validation_state, 'str')
+            if skip_token is not None:
+                query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
+            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -144,4 +143,4 @@ class ReceivedRouteOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_peering.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Peering/peerings/{peeringName}/receivedRoutes'}  # type: ignore
+    list_by_peering.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Peering/peerings/{peeringName}/receivedRoutes'}

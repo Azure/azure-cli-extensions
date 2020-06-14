@@ -9,8 +9,11 @@
 # --------------------------------------------------------------------------
 
 import os
+import unittest
+
+from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if
+from .. import try_manual
 from azure.cli.testsdk import ResourceGroupPreparer
 
 
@@ -31,7 +34,7 @@ def step__peerasns_put_create_a_peer_asn(test, rg):
     #          '--peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" '
     #          '--peer-contact-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" '
     #          '--peer-name "Contoso" '
-    #          '--name "{PeerAsns_2}"',
+    #          '--peer-asn-name "{PeerAsns_2}"',
     #          checks=[])
 
 
@@ -51,7 +54,7 @@ def step__peerings_put_create_an_exchange_peering(test, rg):
     'ft.Peering/peerAsns/{myAsn1}\\"}}}}" '
     #          '--peering-location "peeringLocation0" '
     #          '--sku name="Basic_Exchange_Free" '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -70,7 +73,7 @@ def step__peerings_put_create_a_peering_with_exchange_route_server(test, rg):
     'iption_id}/providers/Microsoft.Peering/peerAsns/{myAsn1}\\"}}}}" '
     #          '--peering-location "peeringLocation0" '
     #          '--sku name="Premium_Direct_Free" '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -91,7 +94,7 @@ def step__peerings_put_create_a_direct_peering(test, rg):
     'oft.Peering/peerAsns/{myAsn1}\\"}}}}" '
     #          '--peering-location "peeringLocation0" '
     #          '--sku name="Basic_Direct_Free" '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -103,7 +106,7 @@ def step__peeringservices_put_create_a__peering_service(test, rg):
              '--location "eastus" '
              '--peering-service-location "state1" '
              '--peering-service-provider "serviceProvider1" '
-             '--name "{peeringServiceName}" '
+             '--peering-service-name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -114,7 +117,7 @@ def step__registeredasns_put_create_or_update_a_registered_asn_for_the_peering(t
     # test.cmd('az peering registered-asn create '
     #          '--peering-name "{peeringName}" '
     #          '--asn 65000 '
-    #          '--name "{registeredAsnName}" '
+    #          '--registered-asn-name "{registeredAsnName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -126,7 +129,7 @@ def step__prefixes_put_create_or_update_a_prefix_for_the_peering_service(test, r
     #          '--peering-service-name "{peeringServiceName}" '
     #          '--peering-service-prefix-key "00000000-0000-0000-0000-000000000000" '
     #          '--prefix "192.168.1.0/24" '
-    #          '--name "{peeringServicePrefixName}" '
+    #          '--prefix-name "{peeringServicePrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -137,7 +140,7 @@ def step__registeredprefixes_put_create_or_update_a_registered_prefix_for_the_pe
     # test.cmd('az peering registered-prefix create '
     #          '--peering-name "{peeringName}" '
     #          '--prefix "10.22.20.0/24" '
-    #          '--name "{registeredPrefixName}" '
+    #          '--registered-prefix-name "{registeredPrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -147,7 +150,7 @@ def step__registeredprefixes_put_create_or_update_a_registered_prefix_for_the_pe
 def step__registeredprefixes_get_get_a_registered_prefix_associated_with_the_peering(test, rg):
     # test.cmd('az peering registered-prefix show '
     #          '--peering-name "{peeringName}" '
-    #          '--name "{registeredPrefixName}" '
+    #          '--registered-prefix-name "{registeredPrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -157,7 +160,7 @@ def step__registeredprefixes_get_get_a_registered_prefix_associated_with_the_pee
 def step__prefixes_get_get_a_prefix_associated_with_the_peering_service(test, rg):
     # test.cmd('az peering service prefix show '
     #          '--peering-service-name "{peeringServiceName}" '
-    #          '--name "{peeringServicePrefixName}" '
+    #          '--prefix-name "{peeringServicePrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -167,7 +170,7 @@ def step__prefixes_get_get_a_prefix_associated_with_the_peering_service(test, rg
 def step__registeredasns_get_get_a_registered_asn_associated_with_the_peering(test, rg):
     # test.cmd('az peering registered-asn show '
     #          '--peering-name "{peeringName}" '
-    #          '--name "{RegisteredAsns_2}" '
+    #          '--registered-asn-name "{RegisteredAsns_2}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -194,7 +197,7 @@ def step__registeredprefixes_get_list_all_the_registered_prefixes_associated_wit
 @try_manual
 def step__peeringservices_get_get_a_peering_service(test, rg):
     test.cmd('az peering service show '
-             '--name "{peeringServiceName}" '
+             '--peering-service-name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -212,7 +215,7 @@ def step__registeredasns_get_list_all_the_registered_asns_associated_with_the_pe
 @try_manual
 def step__peerings_get_get_a_peering(test, rg):
     # test.cmd('az peering peering show '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -237,7 +240,7 @@ def step__peerings_get_list_peerings_in_a_resource_group(test, rg):
 @try_manual
 def step__peerasns_get_get_a_peer_asn(test, rg):
     test.cmd('az peering asn show '
-             '--name "{PeerAsns_2}"',
+             '--peer-asn-name "{PeerAsns_2}"',
              checks=[])
 
 
@@ -281,8 +284,7 @@ def step__peeringlocations_get_list_direct_peering_locations(test, rg):
 # EXAMPLE: /PeeringServices/get/List peering services in a subscription
 @try_manual
 def step__peeringservices_get_list_peering_services_in_a_subscription(test, rg):
-    test.cmd('az peering service list '
-             '-g ""',
+    test.cmd('az peering service list',
              checks=[])
 
 
@@ -305,8 +307,7 @@ def step__peerasns_get_list_peer_asns_in_a_subscription(test, rg):
 # EXAMPLE: /Peerings/get/List peerings in a subscription
 @try_manual
 def step__peerings_get_list_peerings_in_a_subscription(test, rg):
-    test.cmd('az peering peering list '
-             '-g ""',
+    test.cmd('az peering peering list',
              checks=[])
 
 
@@ -321,7 +322,7 @@ def step__operations_get_list_peering_operations(test, rg):
 @try_manual
 def step__peeringservices_patch_update_peering_service_tags(test, rg):
     # test.cmd('az peering service update '
-    #          '--name "{peeringServiceName}" '
+    #          '--peering-service-name "{peeringServiceName}" '
     #          '--resource-group "{rg}" '
     #          '--tags tags={{"tag0":"value0","tag1":"value1"}}',
     #          checks=[])
@@ -331,7 +332,7 @@ def step__peeringservices_patch_update_peering_service_tags(test, rg):
 @try_manual
 def step__peerings_patch_update_peering_tags(test, rg):
     # test.cmd('az peering peering update '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}" '
     #          '--tags tags={{"tag0":"value0","tag1":"value1"}}',
     #          checks=[])
@@ -349,7 +350,7 @@ def step___post_check_if_peering_service_provider_is_available_in_customer_locat
 def step__registeredprefixes_delete_deletes_a_registered_prefix_associated_with_the_peering(test, rg):
     # test.cmd('az peering registered-prefix delete '
     #          '--peering-name "{peeringName}" '
-    #          '--name "{registeredPrefixName}" '
+    #          '--registered-prefix-name "{registeredPrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -359,7 +360,7 @@ def step__registeredprefixes_delete_deletes_a_registered_prefix_associated_with_
 def step__prefixes_delete_delete_a_prefix_associated_with_the_peering_service(test, rg):
     # test.cmd('az peering service prefix delete '
     #          '--peering-service-name "{peeringServiceName}" '
-    #          '--name "{peeringServicePrefixName}" '
+    #          '--prefix-name "{peeringServicePrefixName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -369,7 +370,7 @@ def step__prefixes_delete_delete_a_prefix_associated_with_the_peering_service(te
 def step__registeredasns_delete_deletes_a_registered_asn_associated_with_the_peering(test, rg):
     # test.cmd('az peering registered-asn delete '
     #          '--peering-name "{peeringName}" '
-    #          '--name "{registeredAsnName}" '
+    #          '--registered-asn-name "{registeredAsnName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -378,7 +379,7 @@ def step__registeredasns_delete_deletes_a_registered_asn_associated_with_the_pee
 @try_manual
 def step__peeringservices_delete_delete_a_peering_service(test, rg):
     test.cmd('az peering service delete '
-             '--name "{peeringServiceName}" '
+             '--peering-service-name "{peeringServiceName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -387,7 +388,7 @@ def step__peeringservices_delete_delete_a_peering_service(test, rg):
 @try_manual
 def step__peerings_delete_delete_a_peering(test, rg):
     # test.cmd('az peering peering delete '
-    #          '--name "{peeringName}" '
+    #          '--peering-name "{peeringName}" '
     #          '--resource-group "{rg}"',
     #          checks=[])
 
@@ -396,7 +397,7 @@ def step__peerings_delete_delete_a_peering(test, rg):
 @try_manual
 def step__peerasns_delete_delete_a_peer_asn(test, rg):
     test.cmd('az peering asn delete '
-             '--name "{PeerAsns_2}"',
+             '--peer-asn-name "{PeerAsns_2}"',
              checks=[])
 
 
@@ -461,14 +462,13 @@ class PeeringManagementClientScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'myAsn1': 'myAsn1',
-            'PeerAsns_2': 'peerAsnName',
+            'PeerAsns_2': 'PeerAsns_2',
             'peeringName': 'peeringName',
             'peeringServiceName': 'peeringServiceName',
             'registeredAsnName': 'registeredAsnName',
-            'RegisteredAsns_2': 'registeredAsnName0',
+            'RegisteredAsns_2': 'RegisteredAsns_2',
             'registeredPrefixName': 'registeredPrefixName',
             'peeringServicePrefixName': 'peeringServicePrefixName',
         })
 
         call_scenario(self, rg)
-        raise_if()

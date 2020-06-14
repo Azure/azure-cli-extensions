@@ -9,55 +9,55 @@
 # --------------------------------------------------------------------------
 
 
-def cf_peering_client(cli_ctx, *_):
+def cf_peering(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.peering import PeeringManagementClient
     return get_mgmt_service_client(cli_ctx, PeeringManagementClient)
 
 
 def cf_legacy_peering(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).legacy_peering
+    return cf_peering(cli_ctx).legacy_peering
 
 
 def cf_peer_asn(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peer_asn
+    return cf_peering(cli_ctx).peer_asn
 
 
 def cf_peering_location(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering_location
+    return cf_peering(cli_ctx).peering_location
 
 
 def cf_registered_asn(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).registered_asn
+    return cf_peering(cli_ctx).registered_asn
 
 
 def cf_registered_prefix(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).registered_prefix
+    return cf_peering(cli_ctx).registered_prefix
 
 
 def cf_peering(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering
+    return cf_peering(cli_ctx).peering
 
 
 def cf_received_route(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).received_route
+    return cf_peering(cli_ctx).received_route
 
 
 def cf_peering_service_country(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering_service_country
+    return cf_peering(cli_ctx).peering_service_country
 
 
 def cf_peering_service_location(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering_service_location
+    return cf_peering(cli_ctx).peering_service_location
 
 
 def cf_prefix(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).prefix
+    return cf_peering(cli_ctx).prefix
 
 
 def cf_peering_service_provider(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering_service_provider
+    return cf_peering(cli_ctx).peering_service_provider
 
 
 def cf_peering_service(cli_ctx, *_):
-    return cf_peering_client(cli_ctx).peering_service
+    return cf_peering(cli_ctx).peering_service

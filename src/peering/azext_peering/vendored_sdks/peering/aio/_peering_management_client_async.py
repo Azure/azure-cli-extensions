@@ -63,7 +63,6 @@ class PeeringManagementClient(PeeringManagementClientOperationsMixin):
     :param subscription_id: The Azure subscription ID.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

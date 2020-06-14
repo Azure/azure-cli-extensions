@@ -38,15 +38,14 @@ class PeeringManagementClientOperationsMixin:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Union[str, "models.Enum0"]]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
         _check_service_provider_availability_input = models.CheckServiceProviderAvailabilityInput(peering_service_location=peering_service_location, peering_service_provider=peering_service_provider)
-        api_version = "2020-01-01-preview"
+        api_version = "2020-04-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.check_service_provider_availability.metadata['url']  # type: ignore
+        url = self.check_service_provider_availability.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
         }
@@ -81,4 +80,4 @@ class PeeringManagementClientOperationsMixin:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_service_provider_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/CheckServiceProviderAvailability'}  # type: ignore
+    check_service_provider_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Peering/CheckServiceProviderAvailability'}

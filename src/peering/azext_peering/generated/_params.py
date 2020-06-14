@@ -40,10 +40,10 @@ def load_arguments(self, _):
         pass
 
     with self.argument_context('peering asn show') as c:
-        c.argument('peer_asn_name', options_list=['--name', '-n'], help='The peer ASN name.', id_part='name')
+        c.argument('peer_asn_name', help='The peer ASN name.')
 
     with self.argument_context('peering asn create') as c:
-        c.argument('peer_asn_name', options_list=['--name', '-n'], help='The peer ASN name.')
+        c.argument('peer_asn_name', help='The peer ASN name.')
         c.argument('peer_asn', help='The Autonomous System Number (ASN) of the peer.')
         c.argument('peer_contact_detail', action=AddPeerContactDetail, nargs='+', help='The contact details of the peer'
                    '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: role, email, phone.')
@@ -52,7 +52,7 @@ def load_arguments(self, _):
                    'idation state of the ASN associated with the peer.')
 
     with self.argument_context('peering asn update') as c:
-        c.argument('peer_asn_name', options_list=['--name', '-n'], help='The peer ASN name.', id_part='name')
+        c.argument('peer_asn_name', help='The peer ASN name.')
         c.argument('peer_asn', help='The Autonomous System Number (ASN) of the peer.')
         c.argument('peer_contact_detail', action=AddPeerContactDetail, nargs='+', help='The contact details of the peer'
                    '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: role, email, phone.')
@@ -61,7 +61,7 @@ def load_arguments(self, _):
                    'idation state of the ASN associated with the peer.')
 
     with self.argument_context('peering asn delete') as c:
-        c.argument('peer_asn_name', options_list=['--name', '-n'], help='The peer ASN name.', id_part='name')
+        c.argument('peer_asn_name', help='The peer ASN name.')
 
     with self.argument_context('peering location list') as c:
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
@@ -74,28 +74,25 @@ def load_arguments(self, _):
 
     with self.argument_context('peering registered-asn show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_asn_name', options_list=['--name', '-n'], help='The name of the registered ASN.',
-                   id_part='child_name_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_asn_name', help='The name of the registered ASN.')
 
     with self.argument_context('peering registered-asn create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
-        c.argument('registered_asn_name', options_list=['--name', '-n'], help='The name of the ASN.')
+        c.argument('registered_asn_name', help='The name of the ASN.')
         c.argument('asn', help='The customer\'s ASN from which traffic originates.')
 
     with self.argument_context('peering registered-asn update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_asn_name', options_list=['--name', '-n'], help='The name of the ASN.', id_part='child_na'
-                   'me_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_asn_name', help='The name of the ASN.')
         c.argument('asn', help='The customer\'s ASN from which traffic originates.')
 
     with self.argument_context('peering registered-asn delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_asn_name', options_list=['--name', '-n'], help='The name of the registered ASN.',
-                   id_part='child_name_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_asn_name', help='The name of the registered ASN.')
 
     with self.argument_context('peering registered-prefix list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -103,39 +100,36 @@ def load_arguments(self, _):
 
     with self.argument_context('peering registered-prefix show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_prefix_name', options_list=['--name', '-n'], help='The name of the registered prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_prefix_name', help='The name of the registered prefix.')
 
     with self.argument_context('peering registered-prefix create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_name', help='The name of the peering.')
-        c.argument('registered_prefix_name', options_list=['--name', '-n'], help='The name of the registered prefix.')
+        c.argument('registered_prefix_name', help='The name of the registered prefix.')
         c.argument('prefix', help='The customer\'s prefix from which traffic originates.')
 
     with self.argument_context('peering registered-prefix update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_prefix_name', options_list=['--name', '-n'], help='The name of the registered prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_prefix_name', help='The name of the registered prefix.')
         c.argument('prefix', help='The customer\'s prefix from which traffic originates.')
 
     with self.argument_context('peering registered-prefix delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', help='The name of the peering.', id_part='name')
-        c.argument('registered_prefix_name', options_list=['--name', '-n'], help='The name of the registered prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_name', help='The name of the peering.')
+        c.argument('registered_prefix_name', help='The name of the registered prefix.')
 
     with self.argument_context('peering peering list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('peering peering show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', options_list=['--name', '-n'], help='The name of the peering.', id_part='name')
+        c.argument('peering_name', help='The name of the peering.')
 
     with self.argument_context('peering peering create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', options_list=['--name', '-n'], help='The name of the peering.')
+        c.argument('peering_name', help='The name of the peering.')
         c.argument('sku', action=AddPeeringsSku, nargs='+', help='The SKU that defines the tier and kind of the peering'
                    '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: name, tier, family, size.')
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
@@ -150,12 +144,12 @@ def load_arguments(self, _):
 
     with self.argument_context('peering peering update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', options_list=['--name', '-n'], help='The name of the peering.', id_part='name')
+        c.argument('peering_name', help='The name of the peering.')
         c.argument('tags', tags_type)
 
     with self.argument_context('peering peering delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_name', options_list=['--name', '-n'], help='The name of the peering.', id_part='name')
+        c.argument('peering_name', help='The name of the peering.')
 
     with self.argument_context('peering received-route list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -182,31 +176,28 @@ def load_arguments(self, _):
 
     with self.argument_context('peering service prefix show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
-        c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_service_name', help='The name of the peering service.')
+        c.argument('prefix_name', help='The name of the prefix.')
         c.argument('expand', help='The properties to be expanded.')
 
     with self.argument_context('peering service prefix create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('peering_service_name', help='The name of the peering service.')
-        c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.')
+        c.argument('prefix_name', help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
     with self.argument_context('peering service prefix update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
-        c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_service_name', help='The name of the peering service.')
+        c.argument('prefix_name', help='The name of the prefix.')
         c.argument('prefix', help='The prefix from which your traffic originates.')
         c.argument('peering_service_prefix_key', help='The peering service prefix key')
 
     with self.argument_context('peering service prefix delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', help='The name of the peering service.', id_part='name')
-        c.argument('prefix_name', options_list=['--name', '-n'], help='The name of the prefix.',
-                   id_part='child_name_1')
+        c.argument('peering_service_name', help='The name of the peering service.')
+        c.argument('prefix_name', help='The name of the prefix.')
 
     with self.argument_context('peering service provider list') as c:
         pass
@@ -216,12 +207,11 @@ def load_arguments(self, _):
 
     with self.argument_context('peering service show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', options_list=['--name', '-n'], help='The name of the peering.', id_part='nam'
-                   'e')
+        c.argument('peering_service_name', help='The name of the peering.')
 
     with self.argument_context('peering service create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', options_list=['--name', '-n'], help='The name of the peering service.')
+        c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('sku', action=AddPeeringservicesSku, nargs='+', help='The SKU that defines the type of the peering s'
                    'ervice. Expect value: name=xx.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
@@ -232,11 +222,9 @@ def load_arguments(self, _):
 
     with self.argument_context('peering service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', options_list=['--name', '-n'], help='The name of the peering service.',
-                   id_part='name')
+        c.argument('peering_service_name', help='The name of the peering service.')
         c.argument('tags', tags_type)
 
     with self.argument_context('peering service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('peering_service_name', options_list=['--name', '-n'], help='The name of the peering service.',
-                   id_part='name')
+        c.argument('peering_service_name', help='The name of the peering service.')

@@ -62,7 +62,7 @@ helps['peering asn show'] = """
     examples:
       - name: Get a peer ASN
         text: |-
-               az peering asn show --name "peerAsnName"
+               az peering asn show --peer-asn-name "peerAsnName"
 """
 
 helps['peering asn create'] = """
@@ -74,7 +74,8 @@ ription.
         text: |-
                az peering asn create --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567\
 -8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-\
-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --name "peerAsnName"
+detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAs\
+nName"
 """
 
 helps['peering asn update'] = """
@@ -86,7 +87,8 @@ ription.
         text: |-
                az peering asn update --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567\
 -8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-\
-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --name "peerAsnName"
+detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAs\
+nName"
 """
 
 helps['peering asn delete'] = """
@@ -95,7 +97,7 @@ helps['peering asn delete'] = """
     examples:
       - name: Delete a peer ASN
         text: |-
-               az peering asn delete --name "peerAsnName"
+               az peering asn delete --peer-asn-name "peerAsnName"
 """
 
 helps['peering location'] = """
@@ -136,8 +138,8 @@ helps['peering registered-asn show'] = """
     examples:
       - name: Get a registered ASN associated with the peering
         text: |-
-               az peering registered-asn show --peering-name "peeringName" --name "registeredAsnName0" --resource-group\
- "rgName"
+               az peering registered-asn show --peering-name "peeringName" --registered-asn-name "registeredAsnName0" -\
+-resource-group "rgName"
 """
 
 helps['peering registered-asn create'] = """
@@ -147,8 +149,8 @@ d peering.
     examples:
       - name: Create or update a registered ASN for the peering
         text: |-
-               az peering registered-asn create --peering-name "peeringName" --asn 65000 --name "registeredAsnName" --r\
-esource-group "rgName"
+               az peering registered-asn create --peering-name "peeringName" --asn 65000 --registered-asn-name "registe\
+redAsnName" --resource-group "rgName"
 """
 
 helps['peering registered-asn update'] = """
@@ -158,8 +160,8 @@ d peering.
     examples:
       - name: Create or update a registered ASN for the peering
         text: |-
-               az peering registered-asn update --peering-name "peeringName" --asn 65000 --name "registeredAsnName" --r\
-esource-group "rgName"
+               az peering registered-asn update --peering-name "peeringName" --asn 65000 --registered-asn-name "registe\
+redAsnName" --resource-group "rgName"
 """
 
 helps['peering registered-asn delete'] = """
@@ -169,8 +171,8 @@ oup and peering.
     examples:
       - name: Deletes a registered ASN associated with the peering
         text: |-
-               az peering registered-asn delete --peering-name "peeringName" --name "registeredAsnName" --resource-grou\
-p "rgName"
+               az peering registered-asn delete --peering-name "peeringName" --registered-asn-name "registeredAsnName" \
+--resource-group "rgName"
 """
 
 helps['peering registered-prefix'] = """
@@ -194,8 +196,8 @@ oup and peering.
     examples:
       - name: Get a registered prefix associated with the peering
         text: |-
-               az peering registered-prefix show --peering-name "peeringName" --name "registeredPrefixName" --resource-\
-group "rgName"
+               az peering registered-prefix show --peering-name "peeringName" --registered-prefix-name "registeredPrefi\
+xName" --resource-group "rgName"
 """
 
 helps['peering registered-prefix create'] = """
@@ -205,8 +207,8 @@ helps['peering registered-prefix create'] = """
     examples:
       - name: Create or update a registered prefix for the peering
         text: |-
-               az peering registered-prefix create --peering-name "peeringName" --prefix "10.22.20.0/24" --name "regist\
-eredPrefixName" --resource-group "rgName"
+               az peering registered-prefix create --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-p\
+refix-name "registeredPrefixName" --resource-group "rgName"
 """
 
 helps['peering registered-prefix update'] = """
@@ -216,8 +218,8 @@ helps['peering registered-prefix update'] = """
     examples:
       - name: Create or update a registered prefix for the peering
         text: |-
-               az peering registered-prefix update --peering-name "peeringName" --prefix "10.22.20.0/24" --name "regist\
-eredPrefixName" --resource-group "rgName"
+               az peering registered-prefix update --peering-name "peeringName" --prefix "10.22.20.0/24" --registered-p\
+refix-name "registeredPrefixName" --resource-group "rgName"
 """
 
 helps['peering registered-prefix delete'] = """
@@ -227,8 +229,8 @@ helps['peering registered-prefix delete'] = """
     examples:
       - name: Deletes a registered prefix associated with the peering
         text: |-
-               az peering registered-prefix delete --peering-name "peeringName" --name "registeredPrefixName" --resourc\
-e-group "rgName"
+               az peering registered-prefix delete --peering-name "peeringName" --registered-prefix-name "registeredPre\
+fixName" --resource-group "rgName"
 """
 
 helps['peering peering'] = """
@@ -251,7 +253,7 @@ helps['peering peering show'] = """
     examples:
       - name: Get a peering
         text: |-
-               az peering peering show --name "peeringName" --resource-group "rgName"
+               az peering peering show --peering-name "peeringName" --resource-group "rgName"
 """
 
 helps['peering peering create'] = """
@@ -268,8 +270,8 @@ ationKey\\":\\"test-md5-auth-key\\",\\"sessionPrefixV4\\":\\"192.168.0.0/31\\",\
 sProvider\\":\\"Peer\\",\\"useForPeeringService\\":false},{\\"bandwidthInMbps\\":10000,\\"connectionIdentifier\\":\\"8A\
 B00818-D533-4504-A25A-03A17F61201C\\",\\"peeringDBFacilityId\\":99999,\\"sessionAddressProvider\\":\\"Microsoft\\",\\"u\
 seForPeeringService\\":true}],\\"directPeeringType\\":\\"Edge\\",\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/provid\
-ers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Direct_Free" --name\
- "peeringName" --resource-group "rgName"
+ers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Direct_Free" --peer\
+ing-name "peeringName" --resource-group "rgName"
       - name: Create a peering with exchange route server
         text: |-
                az peering peering create --kind "Direct" --location "eastus" --direct "{\\"connections\\":[{\\"bandwidt\
@@ -278,7 +280,7 @@ sionIPv4Address\\":\\"192.168.0.123\\",\\"peerSessionIPv4Address\\":\\"192.168.0
 8.0.0/24\\"},\\"connectionIdentifier\\":\\"5F4CB5C7-6B43-4444-9338-9ABC72606C16\\",\\"peeringDBFacilityId\\":99999,\\"s\
 essionAddressProvider\\":\\"Peer\\",\\"useForPeeringService\\":true}],\\"directPeeringType\\":\\"IxRs\\",\\"peerAsn\\":\
 {\\"id\\":\\"/subscriptions/subId/providers/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation\
-0" --sku name="Premium_Direct_Free" --name "peeringName" --resource-group "rgName"
+0" --sku name="Premium_Direct_Free" --peering-name "peeringName" --resource-group "rgName"
       - name: Create an exchange peering
         text: |-
                az peering peering create --kind "Exchange" --location "eastus" --exchange "{\\"connections\\":[{\\"bgpS\
@@ -288,8 +290,8 @@ ntifier\\":\\"CE495334-0E94-4E51-8164-8116D6CD284D\\",\\"peeringDBFacilityId\\":
 sAdvertisedV4\\":1000,\\"maxPrefixesAdvertisedV6\\":100,\\"md5AuthenticationKey\\":\\"test-md5-auth-key\\",\\"peerSessi\
 onIPv4Address\\":\\"192.168.2.2\\",\\"peerSessionIPv6Address\\":\\"fd00::2\\"},\\"connectionIdentifier\\":\\"CDD8E673-C\
 B07-47E6-84DE-3739F778762B\\",\\"peeringDBFacilityId\\":99999}],\\"peerAsn\\":{\\"id\\":\\"/subscriptions/subId/provide\
-rs/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Exchange_Free" --nam\
-e "peeringName" --resource-group "rgName"
+rs/Microsoft.Peering/peerAsns/myAsn1\\"}}" --peering-location "peeringLocation0" --sku name="Basic_Exchange_Free" --pee\
+ring-name "peeringName" --resource-group "rgName"
 """
 
 helps['peering peering update'] = """
@@ -298,8 +300,8 @@ helps['peering peering update'] = """
     examples:
       - name: Update peering tags
         text: |-
-               az peering peering update --name "peeringName" --resource-group "rgName" --tags tags={"tag0":"value0","t\
-ag1":"value1"}
+               az peering peering update --peering-name "peeringName" --resource-group "rgName" --tags tags={"tag0":"va\
+lue0","tag1":"value1"}
 """
 
 helps['peering peering delete'] = """
@@ -308,7 +310,7 @@ helps['peering peering delete'] = """
     examples:
       - name: Delete a peering
         text: |-
-               az peering peering delete --name "peeringName" --resource-group "rgName"
+               az peering peering delete --peering-name "peeringName" --resource-group "rgName"
 """
 
 helps['peering received-route'] = """
@@ -376,8 +378,8 @@ ring service.
     examples:
       - name: Get a prefix associated with the peering service
         text: |-
-               az peering service prefix show --peering-service-name "peeringServiceName" --name "peeringServicePrefixN\
-ame" --resource-group "rgName"
+               az peering service prefix show --peering-service-name "peeringServiceName" --prefix-name "peeringService\
+PrefixName" --resource-group "rgName"
 """
 
 helps['peering service prefix create'] = """
@@ -388,8 +390,8 @@ g service.
       - name: Create or update a prefix for the peering service
         text: |-
                az peering service prefix create --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
-y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --name "peeringServicePrefixName" --resource-group "\
-rgName"
+y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-\
+group "rgName"
 """
 
 helps['peering service prefix update'] = """
@@ -400,8 +402,8 @@ g service.
       - name: Create or update a prefix for the peering service
         text: |-
                az peering service prefix update --peering-service-name "peeringServiceName" --peering-service-prefix-ke\
-y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --name "peeringServicePrefixName" --resource-group "\
-rgName"
+y "00000000-0000-0000-0000-000000000000" --prefix "192.168.1.0/24" --prefix-name "peeringServicePrefixName" --resource-\
+group "rgName"
 """
 
 helps['peering service prefix delete'] = """
@@ -411,8 +413,8 @@ peering service.
     examples:
       - name: Delete a prefix associated with the peering service
         text: |-
-               az peering service prefix delete --peering-service-name "peeringServiceName" --name "peeringServicePrefi\
-xName" --resource-group "rgName"
+               az peering service prefix delete --peering-service-name "peeringServiceName" --prefix-name "peeringServi\
+cePrefixName" --resource-group "rgName"
 """
 
 helps['peering service provider'] = """
@@ -450,7 +452,7 @@ roup.
     examples:
       - name: Get a peering service
         text: |-
-               az peering service show --name "peeringServiceName" --resource-group "rgName"
+               az peering service show --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
 helps['peering service create'] = """
@@ -461,7 +463,7 @@ helps['peering service create'] = """
       - name: Create a  peering service
         text: |-
                az peering service create --location "eastus" --peering-service-location "state1" --peering-service-prov\
-ider "serviceProvider1" --name "peeringServiceName" --resource-group "rgName"
+ider "serviceProvider1" --peering-service-name "peeringServiceName" --resource-group "rgName"
 """
 
 helps['peering service update'] = """
@@ -471,8 +473,8 @@ helps['peering service update'] = """
     examples:
       - name: Update peering service tags
         text: |-
-               az peering service update --name "peeringServiceName" --resource-group "rgName" --tags tags={"tag0":"val\
-ue0","tag1":"value1"}
+               az peering service update --peering-service-name "peeringServiceName" --resource-group "rgName" --tags t\
+ags={"tag0":"value0","tag1":"value1"}
 """
 
 helps['peering service delete'] = """
@@ -482,5 +484,5 @@ e group.
     examples:
       - name: Delete a peering service
         text: |-
-               az peering service delete --name "peeringServiceName" --resource-group "rgName"
+               az peering service delete --peering-service-name "peeringServiceName" --resource-group "rgName"
 """

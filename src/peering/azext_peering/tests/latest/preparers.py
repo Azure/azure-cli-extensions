@@ -19,7 +19,6 @@ from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 KEY_RESOURCE_GROUP = 'rg'
 KEY_VIRTUAL_NETWORK = 'vnet'
 KEY_VNET_SUBNET = 'subnet'
-KEY_VNET_NIC = 'nic'
 
 
 class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
@@ -57,7 +56,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             tags['job'] = os.environ['ENV_JOB_NAME']
         tags = ' '.join(['{}={}'.format(key, value)
                          for key, value in tags.items()])
-        template = 'az network vnet create --resource-group {} --name {} --subnet-name default --tag ' + tags
+        template = 'az network vnet create --resource-group {} --name {} --tag ' + tags
         self.live_only_execute(self.cli_ctx, template.format(
             self.resource_group_name, name))
 
@@ -115,53 +114,3 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def remove_resource(self, name, **kwargs):
         pass
-
-class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='clitest.nic',
-                 parameter_name='subnet',
-                 resource_group_name=None,
-                 resource_group_key=KEY_RESOURCE_GROUP,
-                 vnet_name=None,
-                 vnet_key=KEY_VIRTUAL_NETWORK,
-                 dev_setting_name='AZURE_CLI_TEST_DEV_VNET_NIC_NAME',
-                 random_name_length=15, key=KEY_VNET_NIC):
-        if ' ' in name_prefix:
-            raise CliTestError(
-                'Error: Space character in name prefix \'%s\'' % name_prefix)
-        super(VnetNicPreparer, self).__init__(
-            name_prefix, random_name_length)
-        self.cli_ctx = get_dummy_cli()
-        self.parameter_name = parameter_name
-        self.key = key
-        self.resource_group_name = resource_group_name
-        self.resource_group_key = resource_group_key
-        self.vnet_name = vnet_name
-        self.vnet_key = vnet_key
-        self.dev_setting_name = os.environ.get(dev_setting_name, None)
-
-    def create_resource(self, name, **kwargs):
-        if self.dev_setting_name:
-            return {self.parameter_name: self.dev_setting_name, }
-
-        if not self.resource_group_name:
-            self.resource_group_name = self.test_class_instance.kwargs.get(
-                self.resource_group_key)
-            if not self.resource_group_name:
-                raise CliTestError("Error: No resource group configured!")
-        if not self.vnet_name:
-            self.vnet_name = self.test_class_instance.kwargs.get(self.vnet_key)
-            if not self.vnet_name:
-                raise CliTestError("Error: No vnet configured!")
-
-        template = 'az network nic create --resource-group {} --name {} --vnet-name {} --subnet default '
-        self.live_only_execute(self.cli_ctx, template.format(
-            self.resource_group_name, name, self.vnet_name))
-
-        self.test_class_instance.kwargs[self.key] = name
-        return {self.parameter_name: name}
-
-    def remove_resource(self, name, **kwargs):
-        if not self.dev_setting_name:
-            self.live_only_execute(
-                self.cli_ctx,
-                'az network nic delete --name {} --resource-group {}'.format(name, self.resource_group_name))

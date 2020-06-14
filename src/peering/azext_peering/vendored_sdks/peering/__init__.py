@@ -13,7 +13,7 @@ __version__ = VERSION
 __all__ = ['PeeringManagementClient']
 
 try:
-    from ._patch import patch_sdk
+    from .patch import patch_sdk
     patch_sdk()
 except ImportError:
     pass
