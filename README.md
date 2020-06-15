@@ -35,7 +35,7 @@ Add your extension to the index to make it available in these CLI commands:
 
 ## About extension publishing
 
-There is a pipeline to automatically help build, upload and publish extension wheels.
+There is a pipeline to automatically build, upload and publish extension wheels.
 
 Once your PR is merged into master branch, a new PR will be created to update `src/index.json` automatically.
 
