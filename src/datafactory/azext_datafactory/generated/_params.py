@@ -611,8 +611,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('command', arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressi'
-                   'onQuery']), help='The command type.')
+        c.argument('command',
+                   arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']),
+                   help='The command type.')
         c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
 
     with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
