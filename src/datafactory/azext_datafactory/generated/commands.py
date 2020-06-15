@@ -80,8 +80,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')
-        g.generic_update_command('update', setter_arg_name='properties', custom_func_name='datafactory_linked_service_u'
-                                 'pdate')
+        g.generic_update_command('update', setter_arg_name='properties', custom_func_name=''
+                                 'datafactory_linked_service_update')
         g.custom_command('delete', 'datafactory_linked_service_delete')
 
     from azext_datafactory.generated._client_factory import cf_dataset
@@ -174,8 +174,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_data_flow_list')
         g.custom_show_command('show', 'datafactory_data_flow_show')
         g.custom_command('create', 'datafactory_data_flow_create')
-        g.generic_update_command('update', setter_arg_name='properties', custom_func_name='datafactory_data_flow_update'
-                                 '')
+        g.generic_update_command('update', setter_arg_name='properties', custom_func_name=''
+                                 'datafactory_data_flow_update')
         g.custom_command('delete', 'datafactory_data_flow_delete')
 
     from azext_datafactory.generated._client_factory import cf_data_flow_debug_session

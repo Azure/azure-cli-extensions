@@ -23,7 +23,7 @@ helps['datafactory factory list'] = """
     examples:
       - name: Factories_ListByResourceGroup
         text: |-
-               az datafactory factory list --resource-group "exampleResourceGroup"
+               az datafactory factory list --resource-group "myResourceGroup"
 """
 
 helps['datafactory factory show'] = """
@@ -32,7 +32,7 @@ helps['datafactory factory show'] = """
     examples:
       - name: Factories_Get
         text: |-
-               az datafactory factory show --name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory factory show --name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory factory create'] = """
@@ -42,8 +42,8 @@ helps['datafactory factory create'] = """
       - name: --factory-vsts-configuration
         short-summary: Factory's VSTS repo information.
         long-summary: |
-            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX repository-name=XX\
- collaboration-branch=XX root-folder=XX last-commit-id=XX
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
+repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
 
             project-name: Required. VSTS project name.
             tenant-id: VSTS tenant id.
@@ -56,8 +56,8 @@ helps['datafactory factory create'] = """
       - name: --factory-git-hub-configuration
         short-summary: Factory's GitHub repo information.
         long-summary: |
-            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX collaboratio\
-n-branch=XX root-folder=XX last-commit-id=XX
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
+collaboration-branch=XX root-folder=XX last-commit-id=XX
 
             host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
             type: Required. Type of repo configuration.
@@ -69,8 +69,8 @@ n-branch=XX root-folder=XX last-commit-id=XX
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
-               az datafactory factory create --location "East US" --name "exampleFactoryName" --resource-group "example\
-ResourceGroup"
+               az datafactory factory create --location "East US" --name "myFactoryName" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory factory update'] = """
@@ -79,8 +79,8 @@ helps['datafactory factory update'] = """
     examples:
       - name: Factories_Update
         text: |-
-               az datafactory factory update --name "exampleFactoryName" --tags exampleTag="exampleValue" --resource-gr\
-oup "exampleResourceGroup"
+               az datafactory factory update --name "myFactoryName" --tags exampleTag="myValue" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory factory delete'] = """
@@ -89,7 +89,7 @@ helps['datafactory factory delete'] = """
     examples:
       - name: Factories_Delete
         text: |-
-               az datafactory factory delete --name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory factory delete --name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory factory configure-factory-repo'] = """
@@ -99,8 +99,8 @@ helps['datafactory factory configure-factory-repo'] = """
       - name: --factory-vsts-configuration
         short-summary: Factory's VSTS repo information.
         long-summary: |
-            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX repository-name=XX\
- collaboration-branch=XX root-folder=XX last-commit-id=XX
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
+repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
 
             project-name: Required. VSTS project name.
             tenant-id: VSTS tenant id.
@@ -113,8 +113,8 @@ helps['datafactory factory configure-factory-repo'] = """
       - name: --factory-git-hub-configuration
         short-summary: Factory's GitHub repo information.
         long-summary: |
-            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX collaboratio\
-n-branch=XX root-folder=XX last-commit-id=XX
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
+collaboration-branch=XX root-folder=XX last-commit-id=XX
 
             host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
             type: Required. Type of repo configuration.
@@ -127,9 +127,9 @@ n-branch=XX root-folder=XX last-commit-id=XX
       - name: Factories_ConfigureFactoryRepo
         text: |-
                az datafactory factory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1\
-234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --fac\
-tory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" repos\
-itory-name="repo" root-folder="/" tenant-id="" --location "East US"
+234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
+--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
+repository-name="repo" root-folder="/" tenant-id="" --location "East US"
 """
 
 helps['datafactory factory get-data-plane-access'] = """
@@ -138,9 +138,9 @@ helps['datafactory factory get-data-plane-access'] = """
     examples:
       - name: Factories_GetDataPlaneAccess
         text: |-
-               az datafactory factory get-data-plane-access --name "exampleFactoryName" --access-resource-path "" --exp\
-ire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time "2018-11-10T02:4\
-6:20.2659347Z" --resource-group "exampleResourceGroup"
+               az datafactory factory get-data-plane-access --name "myFactoryName" --access-resource-path "" \
+--expire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time \
+"2018-11-10T02:46:20.2659347Z" --resource-group "myResourceGroup"
 """
 
 helps['datafactory factory get-git-hub-access-token'] = """
@@ -149,8 +149,8 @@ helps['datafactory factory get-git-hub-access-token'] = """
     examples:
       - name: Factories_GetGitHubAccessToken
         text: |-
-               az datafactory factory get-git-hub-access-token --name "exampleFactoryName" --git-hub-access-code "some"\
- --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
+               az datafactory factory get-git-hub-access-token --name "myFactoryName" --git-hub-access-code \
+"some" --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime'] = """
@@ -164,8 +164,8 @@ helps['datafactory integration-runtime list'] = """
     examples:
       - name: IntegrationRuntimes_ListByFactory
         text: |-
-               az datafactory integration-runtime list --factory-name "exampleFactoryName" --resource-group "exampleRes\
-ourceGroup"
+               az datafactory integration-runtime list --factory-name "myFactoryName" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory integration-runtime show'] = """
@@ -174,8 +174,8 @@ helps['datafactory integration-runtime show'] = """
     examples:
       - name: IntegrationRuntimes_Get
         text: |-
-               az datafactory integration-runtime show --factory-name "exampleFactoryName" --name "exampleIntegrationRu\
-ntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime show --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime linked-integration-runtime'] = """
@@ -189,10 +189,11 @@ helps['datafactory integration-runtime linked-integration-runtime create'] = """
     examples:
       - name: IntegrationRuntimes_CreateLinkedIntegrationRuntime
         text: |-
-               az datafactory integration-runtime linked-integration-runtime create --name "bfa92911-9fb6-4fbe-8f23-bea\
-e87bc1c83" --location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" --subscription-id "061774c7-\
-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" --integration-runtime-name "exampleIntegrationRuntime"\
- --resource-group "exampleResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
+               az datafactory integration-runtime linked-integration-runtime create --name \
+"bfa92911-9fb6-4fbe-8f23-beae87bc1c83" --location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" \
+--subscription-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "myFactoryName" \
+--integration-runtime-name "myIntegrationRuntime" --resource-group "myResourceGroup" --subscription-id \
+"12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory integration-runtime managed'] = """
@@ -206,8 +207,8 @@ helps['datafactory integration-runtime managed create'] = """
     examples:
       - name: IntegrationRuntimes_Create
         text: |-
-               az datafactory integration-runtime managed create --factory-name "exampleFactoryName" --description "A s\
-elfhosted integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime managed create --factory-name "myFactoryName" --description "A \
+selfhosted integration runtime" --name "myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
@@ -221,8 +222,8 @@ helps['datafactory integration-runtime self-hosted create'] = """
     examples:
       - name: IntegrationRuntimes_Create
         text: |-
-               az datafactory integration-runtime self-hosted create --factory-name "exampleFactoryName" --description \
-"A selfhosted integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime self-hosted create --factory-name "myFactoryName" --description \
+"A selfhosted integration runtime" --name "myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime update'] = """
@@ -231,8 +232,9 @@ helps['datafactory integration-runtime update'] = """
     examples:
       - name: IntegrationRuntimes_Update
         text: |-
-               az datafactory integration-runtime update --factory-name "exampleFactoryName" --name "exampleIntegration\
-Runtime" --resource-group "exampleResourceGroup" --auto-update "Off" --update-delay-offset "\\"PT3H\\""
+               az datafactory integration-runtime update --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup" --auto-update "Off" --update-delay-offset \
+"\\"PT3H\\""
 """
 
 helps['datafactory integration-runtime delete'] = """
@@ -241,8 +243,8 @@ helps['datafactory integration-runtime delete'] = """
     examples:
       - name: IntegrationRuntimes_Delete
         text: |-
-               az datafactory integration-runtime delete --factory-name "exampleFactoryName" --name "exampleIntegration\
-Runtime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime delete --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime get-connection-info'] = """
@@ -252,19 +254,19 @@ source credentials.
     examples:
       - name: IntegrationRuntimes_GetConnectionInfo
         text: |-
-               az datafactory integration-runtime get-connection-info --factory-name "exampleFactoryName" --name "examp\
-leIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-connection-info --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime get-monitoring-data'] = """
     type: command
-    short-summary: Get the integration runtime monitoring data, which includes the monitor data for all the nodes under\
- this integration runtime.
+    short-summary: Get the integration runtime monitoring data, which includes the monitor data for all the nodes \
+under this integration runtime.
     examples:
       - name: IntegrationRuntimes_GetMonitoringData
         text: |-
-               az datafactory integration-runtime get-monitoring-data --factory-name "exampleFactoryName" --name "examp\
-leIntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-monitoring-data --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime get-status'] = """
@@ -273,8 +275,8 @@ helps['datafactory integration-runtime get-status'] = """
     examples:
       - name: IntegrationRuntimes_GetStatus
         text: |-
-               az datafactory integration-runtime get-status --factory-name "exampleFactoryName" --name "exampleIntegra\
-tionRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime get-status --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime list-auth-key'] = """
@@ -283,8 +285,8 @@ helps['datafactory integration-runtime list-auth-key'] = """
     examples:
       - name: IntegrationRuntimes_ListAuthKeys
         text: |-
-               az datafactory integration-runtime list-auth-key --factory-name "exampleFactoryName" --name "exampleInte\
-grationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime list-auth-key --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime regenerate-auth-key'] = """
@@ -293,19 +295,19 @@ helps['datafactory integration-runtime regenerate-auth-key'] = """
     examples:
       - name: IntegrationRuntimes_RegenerateAuthKey
         text: |-
-               az datafactory integration-runtime regenerate-auth-key --factory-name "exampleFactoryName" --name "examp\
-leIntegrationRuntime" --key-name "authKey2" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime regenerate-auth-key --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --key-name "authKey2" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime remove-link'] = """
     type: command
-    short-summary: Remove all linked integration runtimes under specific data factory in a self-hosted integration runt\
-ime.
+    short-summary: Remove all linked integration runtimes under specific data factory in a self-hosted integration \
+runtime.
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime remove-link --factory-name "exampleFactoryName" --name "exampleIntegr\
-ationRuntime" --resource-group "exampleResourceGroup" --linked-factory-name "exampleFactoryName-linked"
+               az datafactory integration-runtime remove-link --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --linked-factory-name "myFactoryName-linked" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime start'] = """
@@ -314,8 +316,8 @@ helps['datafactory integration-runtime start'] = """
     examples:
       - name: IntegrationRuntimes_Start
         text: |-
-               az datafactory integration-runtime start --factory-name "exampleFactoryName" --name "exampleManagedInteg\
-rationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime start --factory-name "myFactoryName" --name \
+"myManagedIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime stop'] = """
@@ -324,21 +326,21 @@ helps['datafactory integration-runtime stop'] = """
     examples:
       - name: IntegrationRuntimes_Stop
         text: |-
-               az datafactory integration-runtime stop --factory-name "exampleFactoryName" --name "exampleManagedIntegr\
-ationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime stop --factory-name "myFactoryName" --name \
+"myManagedIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime sync-credentials'] = """
     type: command
     short-summary: Force the integration runtime to synchronize credentials across integration runtime nodes, and this \
 will override the credentials across all worker nodes with those available on the dispatcher node. If you already have \
-the latest credential backup file, you should manually import it (preferred) on any self-hosted integration runtime nod\
-e than using this API directly.
+the latest credential backup file, you should manually import it (preferred) on any self-hosted integration runtime \
+node than using this API directly.
     examples:
       - name: IntegrationRuntimes_SyncCredentials
         text: |-
-               az datafactory integration-runtime sync-credentials --factory-name "exampleFactoryName" --name "exampleI\
-ntegrationRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime sync-credentials --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime upgrade'] = """
@@ -347,19 +349,19 @@ helps['datafactory integration-runtime upgrade'] = """
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime upgrade --factory-name "exampleFactoryName" --name "exampleIntegratio\
-nRuntime" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime upgrade --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the datafactory integration-runtime is met.
     examples:
-      - name: Pause executing next line of CLI script until the datafactory integration-runtime is successfully created\
-.
+      - name: Pause executing next line of CLI script until the datafactory integration-runtime is successfully \
+created.
         text: |-
-               az datafactory integration-runtime wait --factory-name "exampleFactoryName" --name "exampleIntegrationRu\
-ntime" --resource-group "exampleResourceGroup" --created
+               az datafactory integration-runtime wait --factory-name "myFactoryName" --name \
+"myIntegrationRuntime" --resource-group "myResourceGroup" --created
 """
 
 helps['datafactory integration-runtime-node'] = """
@@ -373,8 +375,8 @@ helps['datafactory integration-runtime-node show'] = """
     examples:
       - name: IntegrationRuntimeNodes_Get
         text: |-
-               az datafactory integration-runtime-node show --factory-name "exampleFactoryName" --integration-runtime-n\
-ame "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime-node show --factory-name "myFactoryName" \
+--integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime-node update'] = """
@@ -383,9 +385,9 @@ helps['datafactory integration-runtime-node update'] = """
     examples:
       - name: IntegrationRuntimeNodes_Update
         text: |-
-               az datafactory integration-runtime-node update --factory-name "exampleFactoryName" --integration-runtime\
--name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup" --concurrent-jobs-limit \
-2
+               az datafactory integration-runtime-node update --factory-name "myFactoryName" \
+--integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup" \
+--concurrent-jobs-limit 2
 """
 
 helps['datafactory integration-runtime-node delete'] = """
@@ -394,8 +396,8 @@ helps['datafactory integration-runtime-node delete'] = """
     examples:
       - name: IntegrationRuntimesNodes_Delete
         text: |-
-               az datafactory integration-runtime-node delete --factory-name "exampleFactoryName" --integration-runtime\
--name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime-node delete --factory-name "myFactoryName" \
+--integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
 """
 
 helps['datafactory integration-runtime-node get-ip-address'] = """
@@ -404,8 +406,8 @@ helps['datafactory integration-runtime-node get-ip-address'] = """
     examples:
       - name: IntegrationRuntimeNodes_GetIpAddress
         text: |-
-               az datafactory integration-runtime-node get-ip-address --factory-name "exampleFactoryName" --integration\
--runtime-name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
+               az datafactory integration-runtime-node get-ip-address --factory-name "myFactoryName" \
+--integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
 """
 
 helps['datafactory linked-service'] = """
@@ -419,8 +421,8 @@ helps['datafactory linked-service list'] = """
     examples:
       - name: LinkedServices_ListByFactory
         text: |-
-               az datafactory linked-service list --factory-name "exampleFactoryName" --resource-group "exampleResource\
-Group"
+               az datafactory linked-service list --factory-name "myFactoryName" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory linked-service show'] = """
@@ -429,8 +431,8 @@ helps['datafactory linked-service show'] = """
     examples:
       - name: LinkedServices_Get
         text: |-
-               az datafactory linked-service show --factory-name "exampleFactoryName" --name "exampleLinkedService" --r\
-esource-group "exampleResourceGroup"
+               az datafactory linked-service show --factory-name "myFactoryName" --name "myLinkedService" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory linked-service create'] = """
@@ -439,16 +441,16 @@ helps['datafactory linked-service create'] = """
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service create --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
-ureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpoin\
-tsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exampleLinkedService" --reso\
-urce-group "exampleResourceGroup"
+               az datafactory linked-service create --factory-name "myFactoryName" --properties \
+"{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\"\
+:\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name \
+"myLinkedService" --resource-group "myResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service create --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
-ureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"S\
-ecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\
-\\"}}}" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service create --factory-name "myFactoryName" --properties \
+"{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\\
+":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun\
+tKey=<storage key>\\"}}}" --name "myLinkedService" --resource-group "myResourceGroup"
 """
 
 helps['datafactory linked-service update'] = """
@@ -457,12 +459,12 @@ helps['datafactory linked-service update'] = """
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service update --factory-name "exampleFactoryName" --name "exampleLinkedService" -\
--resource-group "exampleResourceGroup"
+               az datafactory linked-service update --factory-name "myFactoryName" --name "myLinkedService" \
+--resource-group "myResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example descript\
-ion" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service update --factory-name "myFactoryName" --description "Example \
+description" --name "myLinkedService" --resource-group "myResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -471,8 +473,8 @@ helps['datafactory linked-service delete'] = """
     examples:
       - name: LinkedServices_Delete
         text: |-
-               az datafactory linked-service delete --factory-name "exampleFactoryName" --name "exampleLinkedService" -\
--resource-group "exampleResourceGroup"
+               az datafactory linked-service delete --factory-name "myFactoryName" --name "myLinkedService" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset'] = """
@@ -486,7 +488,7 @@ helps['datafactory dataset list'] = """
     examples:
       - name: Datasets_ListByFactory
         text: |-
-               az datafactory dataset list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset list --factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset show'] = """
@@ -495,8 +497,8 @@ helps['datafactory dataset show'] = """
     examples:
       - name: Datasets_Get
         text: |-
-               az datafactory dataset show --name "exampleDataset" --factory-name "exampleFactoryName" --resource-group\
- "exampleResourceGroup"
+               az datafactory dataset show --name "myDataset" --factory-name "myFactoryName" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset create'] = """
@@ -506,19 +508,19 @@ helps['datafactory dataset create'] = """
       - name: Datasets_Create
         text: |-
                az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
+\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
 "type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"\
 TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\
-\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
+\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "myDataset" --factory-name \
+"myFactoryName" --resource-group "myResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example des\
-cription\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typ\
-eProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@\
-dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --\
-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example \
+description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedSer\
+vice\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"\
+typeProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\
+\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}\
+" --name "myDataset" --factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset update'] = """
@@ -535,15 +537,15 @@ helps['datafactory dataset update'] = """
       - name: Datasets_Create
         text: |-
                az datafactory dataset update --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referen\
-ceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
-"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceG\
-roup"
+ceName\\":\\"myLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
+"type\\":\\"String\\"}}" --name "myDataset" --factory-name "myFactoryName" --resource-group \
+"myResourceGroup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset update --description "Example description" --linked-service-name "{\\"type\\":\\"\
-LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
-\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName\
-" --resource-group "exampleResourceGroup"
+               az datafactory dataset update --description "Example description" --linked-service-name \
+"{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}" --parameters \
+"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "myDataset" \
+--factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -552,8 +554,8 @@ helps['datafactory dataset delete'] = """
     examples:
       - name: Datasets_Delete
         text: |-
-               az datafactory dataset delete --name "exampleDataset" --factory-name "exampleFactoryName" --resource-gro\
-up "exampleResourceGroup"
+               az datafactory dataset delete --name "myDataset" --factory-name "myFactoryName" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline'] = """
@@ -567,7 +569,8 @@ helps['datafactory pipeline list'] = """
     examples:
       - name: Pipelines_ListByFactory
         text: |-
-               az datafactory pipeline list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory pipeline list --factory-name "myFactoryName" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory pipeline show'] = """
@@ -576,8 +579,8 @@ helps['datafactory pipeline show'] = """
     examples:
       - name: Pipelines_Get
         text: |-
-               az datafactory pipeline show --factory-name "exampleFactoryName" --name "examplePipeline" --resource-gro\
-up "exampleResourceGroup"
+               az datafactory pipeline show --factory-name "myFactoryName" --name "myPipeline" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline create'] = """
@@ -586,30 +589,30 @@ helps['datafactory pipeline create'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"activities\\":[{\\"na\
-me\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"Exam\
-pleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileNa\
-me\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\
-\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"va\
-lue\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProp\
-erties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\
-\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBl\
-obNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\
-\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\
-\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" --resource-group "exampleR\
-esourceGroup"
+               az datafactory pipeline create --factory-name "myFactoryName" --pipeline \
+"{\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activiti\
+es\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"\
+parameters\\":{\\"MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\
+\\":\\"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"typ\
+e\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"exam\
+pleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\"\
+:{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipe\
+line().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameLi\
+st\\":{\\"type\\":\\"Array\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":\
+{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "myPipeline" \
+--resource-group "myResourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline "{\\"description\\":\\"Exa\
-mple description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperti\
-es\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"Datas\
-etReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}\
-,\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFi\
-leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referen\
-ceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\
-\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"\
-value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameList\\":{\\"type\\":\\"\
-Array\\"}}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline create --factory-name "myFactoryName" --pipeline \
+"{\\"description\\":\\"Example description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"\
+ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"input\
+s\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\
+\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\\
+",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"exam\
+plecontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\
+\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"t\
+ype\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlob\
+NameList\\":{\\"type\\":\\"Array\\"}}}" --name "myPipeline" --resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline update'] = """
@@ -618,29 +621,30 @@ helps['datafactory pipeline update'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --activities "[{\\"name\\":\\"Example\
-ForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\
-\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"exampl\
-econtainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[\
-{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item\
-()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"d\
-ataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSeq\
-uential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}\
-]" --parameters "{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --run-dimen\
-sions "{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}" --variables "{\\"Tes\
-tVariableArray\\":{\\"type\\":\\"Array\\"}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "myFactoryName" --activities \
+"[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\"\
+:\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"\
+MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDatas\
+et\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\
+\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\\
+"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"Bl\
+obSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.\
+OutputBlobNameList\\"}}}]" --parameters "{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\\
+"Array\\"}}" --run-dimensions "{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"\
+}}" --variables "{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}}" --name "myPipeline" --resource-group \
+"myResourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --description "Example description" -\
--activities "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":\
-[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parame\
-ters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"\
-exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\\
-"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleData\
-set\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"ty\
-pe\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().\
-parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name "exampl\
-ePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "myFactoryName" --description "Example description" \
+--activities "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\"\
+:[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"param\
+eters\\":{\\"MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\\
+"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\
+\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDa\
+taset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"\
+type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline(\
+).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name \
+"myPipeline" --resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """
@@ -649,8 +653,8 @@ helps['datafactory pipeline delete'] = """
     examples:
       - name: Pipelines_Delete
         text: |-
-               az datafactory pipeline delete --factory-name "exampleFactoryName" --name "examplePipeline" --resource-g\
-roup "exampleResourceGroup"
+               az datafactory pipeline delete --factory-name "myFactoryName" --name "myPipeline" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline create-run'] = """
@@ -659,8 +663,9 @@ helps['datafactory pipeline create-run'] = """
     examples:
       - name: Pipelines_CreateRun
         text: |-
-               az datafactory pipeline create-run --factory-name "exampleFactoryName" --parameters "{\\"OutputBlobNameL\
-ist\\":[\\"exampleoutput.csv\\"]}" --name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline create-run --factory-name "myFactoryName" --parameters \
+"{\\"OutputBlobNameList\\":[\\"myoutput.csv\\"]}" --name "myPipeline" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory pipeline-run'] = """
@@ -674,8 +679,8 @@ helps['datafactory pipeline-run show'] = """
     examples:
       - name: PipelineRuns_Get
         text: |-
-               az datafactory pipeline-run show --factory-name "exampleFactoryName" --resource-group "exampleResourceGr\
-oup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
+               az datafactory pipeline-run show --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
 """
 
 helps['datafactory pipeline-run cancel'] = """
@@ -684,8 +689,8 @@ helps['datafactory pipeline-run cancel'] = """
     examples:
       - name: PipelineRuns_Cancel
         text: |-
-               az datafactory pipeline-run cancel --factory-name "exampleFactoryName" --resource-group "exampleResource\
-Group" --run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"
+               az datafactory pipeline-run cancel --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"
 """
 
 helps['datafactory pipeline-run query-by-factory'] = """
@@ -697,9 +702,9 @@ helps['datafactory pipeline-run query-by-factory'] = """
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
-            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
-pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
-ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are \
+PipelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, \
+ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
             operator: Required. Operator to be used for filter.
             values: Required. List of filter values.
 
@@ -709,18 +714,18 @@ ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimes
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
-            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
- runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
-nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for \
+pipeline runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, \
+ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
             order: Required. Sorting order of the parameter.
 
             Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: PipelineRuns_QueryByFactory
         text: |-
-               az datafactory pipeline-run query-by-factory --factory-name "exampleFactoryName" --filters operand="Pipe\
-lineName" operator="Equals" values="examplePipeline" --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated\
--before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
+               az datafactory pipeline-run query-by-factory --factory-name "myFactoryName" --filters \
+operand="PipelineName" operator="Equals" values="myPipeline" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
+--last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "myResourceGroup"
 """
 
 helps['datafactory activity-run'] = """
@@ -737,9 +742,9 @@ helps['datafactory activity-run query-by-pipeline-run'] = """
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
-            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
-pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
-ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are \
+PipelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, \
+ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
             operator: Required. Operator to be used for filter.
             values: Required. List of filter values.
 
@@ -749,18 +754,18 @@ ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimes
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
-            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
- runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
-nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for \
+pipeline runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, \
+ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
             order: Required. Sorting order of the parameter.
 
             Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: ActivityRuns_QueryByPipelineRun
         text: |-
-               az datafactory activity-run query-by-pipeline-run --factory-name "exampleFactoryName" --last-updated-aft\
-er "2018-06-16T00:36:44.3345758Z" --last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourc\
-eGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
+               az datafactory activity-run query-by-pipeline-run --factory-name "myFactoryName" \
+--last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated-before "2018-06-16T00:49:48.3686473Z" \
+--resource-group "myResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
 """
 
 helps['datafactory trigger'] = """
@@ -774,7 +779,7 @@ helps['datafactory trigger list'] = """
     examples:
       - name: Triggers_ListByFactory
         text: |-
-               az datafactory trigger list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory trigger list --factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory trigger show'] = """
@@ -783,8 +788,8 @@ helps['datafactory trigger show'] = """
     examples:
       - name: Triggers_Get
         text: |-
-               az datafactory trigger show --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---name "exampleTrigger"
+               az datafactory trigger show --factory-name "myFactoryName" --resource-group "myResourceGroup" \
+--name "myTrigger"
 """
 
 helps['datafactory trigger create'] = """
@@ -793,20 +798,20 @@ helps['datafactory trigger create'] = """
     examples:
       - name: Triggers_Create
         text: |-
-               az datafactory trigger create --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exam\
-pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\\
-"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\
-\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "exampleTri\
-gger"
+               az datafactory trigger create --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlo\
+bNameList\\":[\\"myoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\"\
+:\\"myPipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"f\
+requency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}\
+}" --name "myTrigger"
       - name: Triggers_Update
         text: |-
-               az datafactory trigger create --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines\\":[{\\"para\
-meters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\
-\\",\\"referenceName\\":\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00\
-:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"ti\
-meZone\\":\\"UTC\\"}}}" --name "exampleTrigger"
+               az datafactory trigger create --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example \
+description\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"myoutput.csv\\"]},\\"pipelineRefer\
+ence\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}],\\"typeProperties\\":{\\"recur\
+rence\\":{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\"\
+:\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "myTrigger"
 """
 
 helps['datafactory trigger update'] = """
@@ -815,12 +820,12 @@ helps['datafactory trigger update'] = """
     examples:
       - name: Triggers_Create
         text: |-
-               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --name "exampleTrigger"
+               az datafactory trigger update --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --name "myTrigger"
       - name: Triggers_Update
         text: |-
-               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --description "Example description" --name "exampleTrigger"
+               az datafactory trigger update --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --description "Example description" --name "myTrigger"
 """
 
 helps['datafactory trigger delete'] = """
@@ -829,8 +834,8 @@ helps['datafactory trigger delete'] = """
     examples:
       - name: Triggers_Delete
         text: |-
-               az datafactory trigger delete --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --name "exampleTrigger"
+               az datafactory trigger delete --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --name "myTrigger"
 """
 
 helps['datafactory trigger get-event-subscription-status'] = """
@@ -839,8 +844,8 @@ helps['datafactory trigger get-event-subscription-status'] = """
     examples:
       - name: Triggers_GetEventSubscriptionStatus
         text: |-
-               az datafactory trigger get-event-subscription-status --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup" --name "exampleTrigger"
+               az datafactory trigger get-event-subscription-status --factory-name "myFactoryName" \
+--resource-group "myResourceGroup" --name "myTrigger"
 """
 
 helps['datafactory trigger query-by-factory'] = """
@@ -849,8 +854,8 @@ helps['datafactory trigger query-by-factory'] = """
     examples:
       - name: Triggers_QueryByFactory
         text: |-
-               az datafactory trigger query-by-factory --factory-name "exampleFactoryName" --parent-trigger-name "examp\
-leTrigger" --resource-group "exampleResourceGroup"
+               az datafactory trigger query-by-factory --factory-name "myFactoryName" --parent-trigger-name \
+"myTrigger" --resource-group "myResourceGroup"
 """
 
 helps['datafactory trigger start'] = """
@@ -859,8 +864,8 @@ helps['datafactory trigger start'] = """
     examples:
       - name: Triggers_Start
         text: |-
-               az datafactory trigger start --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"\
- --name "exampleTrigger"
+               az datafactory trigger start --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --name "myTrigger"
 """
 
 helps['datafactory trigger stop'] = """
@@ -869,8 +874,8 @@ helps['datafactory trigger stop'] = """
     examples:
       - name: Triggers_Stop
         text: |-
-               az datafactory trigger stop --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---name "exampleTrigger"
+               az datafactory trigger stop --factory-name "myFactoryName" --resource-group "myResourceGroup" \
+--name "myTrigger"
 """
 
 helps['datafactory trigger subscribe-to-event'] = """
@@ -879,8 +884,8 @@ helps['datafactory trigger subscribe-to-event'] = """
     examples:
       - name: Triggers_SubscribeToEvents
         text: |-
-               az datafactory trigger subscribe-to-event --factory-name "exampleFactoryName" --resource-group "exampleR\
-esourceGroup" --name "exampleTrigger"
+               az datafactory trigger subscribe-to-event --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --name "myTrigger"
 """
 
 helps['datafactory trigger unsubscribe-from-event'] = """
@@ -889,8 +894,8 @@ helps['datafactory trigger unsubscribe-from-event'] = """
     examples:
       - name: Triggers_UnsubscribeFromEvents
         text: |-
-               az datafactory trigger unsubscribe-from-event --factory-name "exampleFactoryName" --resource-group "exam\
-pleResourceGroup" --name "exampleTrigger"
+               az datafactory trigger unsubscribe-from-event --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --name "myTrigger"
 """
 
 helps['datafactory trigger wait'] = """
@@ -899,8 +904,8 @@ helps['datafactory trigger wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the datafactory trigger is successfully created.
         text: |-
-               az datafactory trigger wait --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---name "exampleTrigger" --created
+               az datafactory trigger wait --factory-name "myFactoryName" --resource-group "myResourceGroup" \
+--name "myTrigger" --created
 """
 
 helps['datafactory trigger-run'] = """
@@ -917,9 +922,9 @@ helps['datafactory trigger-run query-by-factory'] = """
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
-            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are Pi\
-pelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, Act\
-ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            operand: Required. Parameter name to be used for filter. The allowed operands to query pipeline runs are \
+PipelineName, RunStart, RunEnd and Status; to query activity runs are ActivityName, ActivityRunStart, ActivityRunEnd, \
+ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimestamp and Status.
             operator: Required. Operator to be used for filter.
             values: Required. List of filter values.
 
@@ -929,18 +934,18 @@ ivityType and Status, and to query trigger runs are TriggerName, TriggerRunTimes
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
-            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for pipeline\
- runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, ActivityRunE\
-nd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
+            order-by: Required. Parameter name to be used for order by. The allowed parameters to order by for \
+pipeline runs are PipelineName, RunStart, RunEnd and Status; for activity runs are ActivityName, ActivityRunStart, \
+ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp and Status.
             order: Required. Sorting order of the parameter.
 
             Multiple actions can be specified by using more than one --order-by argument.
     examples:
       - name: TriggerRuns_QueryByFactory
         text: |-
-               az datafactory trigger-run query-by-factory --factory-name "exampleFactoryName" --filters operand="Trigg\
-erName" operator="Equals" values="exampleTrigger" --last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated-be\
-fore "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
+               az datafactory trigger-run query-by-factory --factory-name "myFactoryName" --filters \
+operand="TriggerName" operator="Equals" values="myTrigger" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
+--last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "myResourceGroup"
 """
 
 helps['datafactory trigger-run rerun'] = """
@@ -949,8 +954,8 @@ helps['datafactory trigger-run rerun'] = """
     examples:
       - name: Triggers_Rerun
         text: |-
-               az datafactory trigger-run rerun --factory-name "exampleFactoryName" --resource-group "exampleResourceGr\
-oup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "exampleTrigger"
+               az datafactory trigger-run rerun --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "myTrigger"
 """
 
 helps['datafactory data-flow'] = """
@@ -964,8 +969,8 @@ helps['datafactory data-flow list'] = """
     examples:
       - name: DataFlows_ListByFactory
         text: |-
-               az datafactory data-flow list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-"
+               az datafactory data-flow list --factory-name "myFactoryName" --resource-group \
+"myResourceGroup"
 """
 
 helps['datafactory data-flow show'] = """
@@ -974,8 +979,8 @@ helps['datafactory data-flow show'] = """
     examples:
       - name: DataFlows_Get
         text: |-
-               az datafactory data-flow show --name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-gr\
-oup "exampleResourceGroup"
+               az datafactory data-flow show --name "myDataFlow" --factory-name "myFactoryName" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory data-flow create'] = """
@@ -985,35 +990,37 @@ helps['datafactory data-flow create'] = """
       - name: DataFlows_Create
         text: |-
                az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
-ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
-eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
-rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
-ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
-validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
-= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
-SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
-dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
-t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
-y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
-xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+ple demo data flow to convert currencies showing usage of union, derive and conditional split \
+transformation.\\",\\"typeProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as \
+string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> \
+USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as \
+string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, \
+CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> \
+NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> \
+ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@C\
+AD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\\":{\\"type\\":\\"Data\
+setReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\\"type\\":\\"DatasetRef\
+erence\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{\\"type\\"\
+:\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSource\\",\\"dataset\\":{\\"ty\
+pe\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "myDataFlow" \
+--factory-name "myFactoryName" --resource-group "myResourceGroup"
       - name: DataFlows_Update
         text: |-
                az datafactory data-flow create --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
-ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
-eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
-rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
-ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
-validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
-= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
-SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
-dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
-t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
-y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
-xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+ple demo data flow to convert currencies showing usage of union, derive and conditional split \
+transformation.\\",\\"typeProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as \
+string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> \
+USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as \
+string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, \
+CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> \
+NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> \
+ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@C\
+AD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"dataset\\":{\\"type\\":\\"Data\
+setReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"dataset\\":{\\"type\\":\\"DatasetRef\
+erence\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrency\\",\\"dataset\\":{\\"type\\"\
+:\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CADSource\\",\\"dataset\\":{\\"ty\
+pe\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "myDataFlow" \
+--factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory data-flow update'] = """
@@ -1021,7 +1028,8 @@ helps['datafactory data-flow update'] = """
     short-summary: Creates or updates a data flow.
     parameters:
       - name: --folder
-        short-summary: The folder that this data flow is in. If not specified, Data flow will appear at the root level.
+        short-summary: The folder that this data flow is in. If not specified, Data flow will appear at the root \
+level.
         long-summary: |
             Usage: --folder name=XX
 
@@ -1029,14 +1037,14 @@ helps['datafactory data-flow update'] = """
     examples:
       - name: DataFlows_Create
         text: |-
-               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing usage\
- of union, derive and conditional split transformation." --name "exampleDataFlow" --factory-name "exampleFactoryName" -\
--resource-group "exampleResourceGroup"
+               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing \
+usage of union, derive and conditional split transformation." --name "myDataFlow" --factory-name \
+"myFactoryName" --resource-group "myResourceGroup"
       - name: DataFlows_Update
         text: |-
-               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing usage\
- of union, derive and conditional split transformation." --name "exampleDataFlow" --factory-name "exampleFactoryName" -\
--resource-group "exampleResourceGroup"
+               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing \
+usage of union, derive and conditional split transformation." --name "myDataFlow" --factory-name \
+"myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory data-flow delete'] = """
@@ -1045,8 +1053,8 @@ helps['datafactory data-flow delete'] = """
     examples:
       - name: DataFlows_Delete
         text: |-
-               az datafactory data-flow delete --name "exampleDataFlow" --factory-name "exampleFactoryName" --resource-\
-group "exampleResourceGroup"
+               az datafactory data-flow delete --name "myDataFlow" --factory-name "myFactoryName" \
+--resource-group "myResourceGroup"
 """
 
 helps['datafactory data-flow-debug-session'] = """
@@ -1060,10 +1068,10 @@ helps['datafactory data-flow-debug-session create'] = """
     examples:
       - name: DataFlowDebugSession_Create
         text: |-
-               az datafactory data-flow-debug-session create --factory-name "exampleFactoryName" --resource-group "exam\
-pleResourceGroup" --integration-runtime-name "ir1" --integration-runtime-properties "{\\"type\\":\\"Managed\\",\\"typeP\
-roperties\\":{\\"computeProperties\\":{\\"dataFlowProperties\\":{\\"computeType\\":\\"General\\",\\"coreCount\\":48,\\"\
-timeToLive\\":10},\\"location\\":\\"AutoResolve\\"}}}" --time-to-live 60
+               az datafactory data-flow-debug-session create --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --integration-runtime-name "ir1" --integration-runtime-properties \
+"{\\"type\\":\\"Managed\\",\\"typeProperties\\":{\\"computeProperties\\":{\\"dataFlowProperties\\":{\\"computeType\\":\
+\\"General\\",\\"coreCount\\":48,\\"timeToLive\\":10},\\"location\\":\\"AutoResolve\\"}}}" --time-to-live 60
 """
 
 helps['datafactory data-flow-debug-session delete'] = """
@@ -1072,8 +1080,8 @@ helps['datafactory data-flow-debug-session delete'] = """
     examples:
       - name: DataFlowDebugSession_Delete
         text: |-
-               az datafactory data-flow-debug-session delete --factory-name "exampleFactoryName" --resource-group "exam\
-pleResourceGroup" --session-id "91fb57e0-8292-47be-89ff-c8f2d2bb2a7e"
+               az datafactory data-flow-debug-session delete --factory-name "myFactoryName" --resource-group \
+"myResourceGroup" --session-id "91fb57e0-8292-47be-89ff-c8f2d2bb2a7e"
 """
 
 helps['datafactory data-flow-debug-session add-data-flow'] = """
@@ -1092,21 +1100,23 @@ helps['datafactory data-flow-debug-session add-data-flow'] = """
     examples:
       - name: DataFlowDebugSession_AddDataFlow
         text: |-
-               az datafactory data-flow-debug-session add-data-flow --factory-name "exampleFactoryName" --resource-grou\
-p "exampleResourceGroup" --data-flow-name "dataflow1" --data-flow-properties "{\\"type\\":\\"MappingDataFlow\\",\\"type\
-Properties\\":{\\"script\\":\\"\\\\n\\\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSche\
-maDrift: true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{\\"name\\":\\"source1\\",\\\
-"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}],\\"transformations\\":[]}}" \
---datasets "[{\\"name\\":\\"dataset1\\",\\"properties\\":{\\"type\\":\\"DelimitedText\\",\\"schema\\":[{\\"type\\":\\"S\
-tring\\"}],\\"annotations\\":[],\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\\
-"linkedService5\\"},\\"typeProperties\\":{\\"columnDelimiter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHe\
-ader\\":true,\\"location\\":{\\"type\\":\\"AzureBlobStorageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fi\
-leName\\":\\"Ansiencoding.csv\\"},\\"quoteChar\\":\\"\\\\\\"\\"}}}]" --debug-settings-dataset-parameters "{\\"Movies\\"\
-:{\\"path\\":\\"abc\\"},\\"Output\\":{\\"time\\":\\"def\\"}}" --debug-settings-source-settings row-limit=1000 source-na\
-me="source1" --debug-settings-source-settings row-limit=222 source-name="source2" --linked-services "[{\\"name\\":\\"li\
-nkedService1\\",\\"properties\\":{\\"type\\":\\"AzureBlobStorage\\",\\"annotations\\":[],\\"typeProperties\\":{\\"conne\
-ctionString\\":\\"DefaultEndpointsProtocol=https;AccountName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encry\
-ptedCredential\\":\\"<credential>\\"}}}]" --session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
+               az datafactory data-flow-debug-session add-data-flow --factory-name "myFactoryName" \
+--resource-group "myResourceGroup" --data-flow-name "dataflow1" --data-flow-properties \
+"{\\"type\\":\\"MappingDataFlow\\",\\"typeProperties\\":{\\"script\\":\\"\\\\n\\\\nsource(output(\\\\n\\\\t\\\\tColumn_\
+1 as string\\\\n\\\\t),\\\\n\\\\tallowSchemaDrift: true,\\\\n\\\\tvalidateSchema: false) ~> \
+source1\\",\\"sinks\\":[],\\"sources\\":[{\\"name\\":\\"source1\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"\
+referenceName\\":\\"DelimitedText2\\"}}],\\"transformations\\":[]}}" --datasets "[{\\"name\\":\\"dataset1\\",\\"propert\
+ies\\":{\\"type\\":\\"DelimitedText\\",\\"schema\\":[{\\"type\\":\\"String\\"}],\\"annotations\\":[],\\"linkedServiceNa\
+me\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"linkedService5\\"},\\"typeProperties\\":{\\"colum\
+nDelimiter\\":\\",\\",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHeader\\":true,\\"location\\":{\\"type\\":\\"AzureBl\
+obStorageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fileName\\":\\"Ansiencoding.csv\\"},\\"quoteChar\\":\
+\\"\\\\\\"\\"}}}]" --debug-settings-dataset-parameters "{\\"Movies\\":{\\"path\\":\\"abc\\"},\\"Output\\":{\\"time\\":\
+\\"def\\"}}" --debug-settings-parameters "{\\"sourcePath\\":\\"Toy\\"}" --debug-settings-source-settings \
+row-limit=1000 source-name="source1" --debug-settings-source-settings row-limit=222 source-name="source2" \
+--linked-services "[{\\"name\\":\\"linkedService1\\",\\"properties\\":{\\"type\\":\\"AzureBlobStorage\\",\\"annotations\
+\\":[],\\"typeProperties\\":{\\"connectionString\\":\\"DefaultEndpointsProtocol=https;AccountName=<storageName>;Endpoin\
+tSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<credential>\\"}}}]" --session-id \
+"f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
 """
 
 helps['datafactory data-flow-debug-session execute-command'] = """
@@ -1125,9 +1135,9 @@ helps['datafactory data-flow-debug-session execute-command'] = """
     examples:
       - name: DataFlowDebugSession_ExecuteCommand
         text: |-
-               az datafactory data-flow-debug-session execute-command --factory-name "exampleFactoryName" --resource-gr\
-oup "exampleResourceGroup" --command "executePreviewQuery" --command-payload row-limits=100 stream-name="source1" --ses\
-sion-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
+               az datafactory data-flow-debug-session execute-command --factory-name "myFactoryName" \
+--resource-group "myResourceGroup" --command "executePreviewQuery" --command-payload row-limits=100 \
+stream-name="source1" --session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"
 """
 
 helps['datafactory data-flow-debug-session query-by-factory'] = """
@@ -1136,6 +1146,6 @@ helps['datafactory data-flow-debug-session query-by-factory'] = """
     examples:
       - name: DataFlowDebugSession_QueryByFactory
         text: |-
-               az datafactory data-flow-debug-session query-by-factory --factory-name "exampleFactoryName" --resource-g\
-roup "exampleResourceGroup"
+               az datafactory data-flow-debug-session query-by-factory --factory-name "myFactoryName" \
+--resource-group "myResourceGroup"
 """

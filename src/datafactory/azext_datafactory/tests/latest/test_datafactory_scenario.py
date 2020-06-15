@@ -27,7 +27,7 @@ def setup(test, rg):
 def step__factories_put_factories_createorupdate(test, rg):
     test.cmd('az datafactory factory create '
              '--location "East US" '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -36,7 +36,7 @@ def step__factories_put_factories_createorupdate(test, rg):
 @try_manual
 def step__factories_get_factories_get(test, rg):
     test.cmd('az datafactory factory show '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -63,8 +63,8 @@ def step__factories_post_factories_configurefactoryrepo(test, rg):
     test.cmd('az datafactory factory configure-factory-repo '
              '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
              'ry/factories/{exampleFactoryName}" '
-             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-n'
-             'ame="project" repository-name="repo" root-folder="/" tenant-id="" '
+             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
+             'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
              '--location "East US"',
              checks=[])
 
@@ -73,7 +73,7 @@ def step__factories_post_factories_configurefactoryrepo(test, rg):
 @try_manual
 def step__factories_post_factories_getdataplaneaccess(test, rg):
     test.cmd('az datafactory factory get-data-plane-access '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--access-resource-path "" '
              '--expire-time "2018-11-10T09:46:20.2659347Z" '
              '--permissions "r" '
@@ -87,7 +87,7 @@ def step__factories_post_factories_getdataplaneaccess(test, rg):
 @try_manual
 def step__factories_post_factories_getgithubaccesstoken(test, rg):
     test.cmd('az datafactory factory get-git-hub-access-token '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--git-hub-access-code "some" '
              '--git-hub-access-token-base-url "some" '
              '--git-hub-client-id "some" '
@@ -99,7 +99,7 @@ def step__factories_post_factories_getgithubaccesstoken(test, rg):
 @try_manual
 def step__factories_patch_factories_update(test, rg):
     test.cmd('az datafactory factory update '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--tags exampleTag="exampleValue" '
              '--resource-group "{rg}"',
              checks=[])
@@ -109,9 +109,9 @@ def step__factories_patch_factories_update(test, rg):
 @try_manual
 def step__integrationruntimes_put_integrationruntimes_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--description "A selfhosted integration runtime" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -120,23 +120,24 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
 @try_manual
 def step__dataflows_put_dataflows_create(test, rg):
     test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
-             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
-             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
-             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
-             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
-             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
-             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
-             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
-             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
-             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
-             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
-             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
-             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
-             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
+             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
+             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
+             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
+             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
+             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
+             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
+             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
+             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
+             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
+             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
+             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
+             '\\"}}}}]}}}}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -145,23 +146,24 @@ def step__dataflows_put_dataflows_create(test, rg):
 @try_manual
 def step__dataflows_put_dataflows_create(test, rg):
     test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
-             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
-             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
-             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
-             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
-             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
-             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
-             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
-             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
-             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
-             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
-             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
-             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
-             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
+             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
+             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
+             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
+             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
+             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
+             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
+             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
+             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
+             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
+             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
+             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
+             '\\"}}}}]}}}}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -170,11 +172,11 @@ def step__dataflows_put_dataflows_create(test, rg):
 @try_manual
 def step__linkedservices_put_linkedservices_create(test, rg):
     test.cmd('az datafactory linked-service create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
              '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
              'tKey=<storage key>\\"}}}}}}" '
-             '--name "{exampleLinkedService}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -183,11 +185,11 @@ def step__linkedservices_put_linkedservices_create(test, rg):
 @try_manual
 def step__linkedservices_put_linkedservices_create(test, rg):
     test.cmd('az datafactory linked-service create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
              '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
              'tKey=<storage key>\\"}}}}}}" '
-             '--name "{exampleLinkedService}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -196,11 +198,11 @@ def step__linkedservices_put_linkedservices_create(test, rg):
 @try_manual
 def step__linkedservices_put_linkedservices_update(test, rg):
     test.cmd('az datafactory linked-service create '
-             '--factory-name "{exampleFactoryName}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperti'
-             'es\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=ht'
-             'tps;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
-             '--name "{exampleLinkedService}" '
+             '--factory-name "{myFactoryName}" '
+             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example '
+             'description\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":'
+             '\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -209,11 +211,11 @@ def step__linkedservices_put_linkedservices_update(test, rg):
 @try_manual
 def step__linkedservices_put_linkedservices_update(test, rg):
     test.cmd('az datafactory linked-service create '
-             '--factory-name "{exampleFactoryName}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperti'
-             'es\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=ht'
-             'tps;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
-             '--name "{exampleLinkedService}" '
+             '--factory-name "{myFactoryName}" '
+             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example '
+             'description\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":'
+             '\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -227,8 +229,8 @@ def step__datasets_put_datasets_create(test, rg):
              'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
              'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
              '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -242,8 +244,8 @@ def step__datasets_put_datasets_create(test, rg):
              'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
              'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
              '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -252,7 +254,7 @@ def step__datasets_put_datasets_create(test, rg):
 @try_manual
 def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
     test.cmd('az datafactory activity-run query-by-pipeline-run '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
              '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
              '--resource-group "{rg}" '
@@ -270,8 +272,8 @@ def step__datasets_put_datasets_update(test, rg):
              '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
              'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
              '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -286,8 +288,8 @@ def step__datasets_put_datasets_update(test, rg):
              '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
              'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
              '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -296,7 +298,7 @@ def step__datasets_put_datasets_update(test, rg):
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg):
     test.cmd('az datafactory data-flow-debug-session execute-command '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--command "executePreviewQuery" '
              '--command-payload row-limits=100 stream-name="source1" '
@@ -308,7 +310,7 @@ def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg):
     test.cmd('az datafactory data-flow-debug-session query-by-factory '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -317,23 +319,24 @@ def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg
 @try_manual
 def step__dataflows_put_dataflows_update(test, rg):
     test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
-             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
-             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
-             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
-             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
-             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
-             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
-             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
-             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
-             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
-             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
-             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
-             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
-             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
+             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
+             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
+             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
+             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
+             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
+             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
+             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
+             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
+             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
+             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
+             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
+             '\\"}}}}]}}}}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -342,23 +345,24 @@ def step__dataflows_put_dataflows_update(test, rg):
 @try_manual
 def step__dataflows_put_dataflows_update(test, rg):
     test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
-             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
-             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
-             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
-             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
-             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
-             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
-             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
-             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
-             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
-             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
-             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
-             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
-             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
+             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
+             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
+             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
+             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
+             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
+             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
+             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
+             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
+             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
+             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
+             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
+             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
+             '\\"}}}}]}}}}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -367,8 +371,8 @@ def step__dataflows_put_dataflows_update(test, rg):
 @try_manual
 def step__dataflows_get_dataflows_get(test, rg):
     test.cmd('az datafactory data-flow show '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -377,9 +381,9 @@ def step__dataflows_get_dataflows_get(test, rg):
 @try_manual
 def step__integrationruntimes_put_integrationruntimes_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--description "A selfhosted integration runtime" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -388,8 +392,8 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
 @try_manual
 def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg):
     test.cmd('az datafactory integration-runtime-node get-ip-address '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--integration-runtime-name "{myIntegrationRuntime}" '
              '--node-name "Node_1" '
              '--resource-group "{rg}"',
              checks=[])
@@ -399,8 +403,8 @@ def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test
 @try_manual
 def step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg):
     test.cmd('az datafactory integration-runtime-node update '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--integration-runtime-name "{myIntegrationRuntime}" '
              '--node-name "Node_1" '
              '--resource-group "{rg}" '
              '--concurrent-jobs-limit 2',
@@ -411,8 +415,8 @@ def step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg):
     test.cmd('az datafactory integration-runtime sync-credentials '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -421,8 +425,8 @@ def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
 @try_manual
 def step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg):
     test.cmd('az datafactory integration-runtime-node show '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--integration-runtime-name "{myIntegrationRuntime}" '
              '--node-name "Node_1" '
              '--resource-group "{rg}"',
              checks=[])
@@ -432,8 +436,8 @@ def step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg):
 @try_manual
 def step__integrationruntimes_get_integrationruntimes_get(test, rg):
     test.cmd('az datafactory integration-runtime show '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -442,7 +446,7 @@ def step__integrationruntimes_get_integrationruntimes_get(test, rg):
 @try_manual
 def step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg):
     test.cmd('az datafactory integration-runtime list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -455,8 +459,8 @@ def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationru
              '--location "West US" '
              '--data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" '
              '--subscription-id "061774c7-4b5a-4159-a55b-365581830283" '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--integration-runtime-name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
              '--subscription-id "12345678-1234-1234-1234-12345678abc"',
              checks=[])
@@ -466,8 +470,8 @@ def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationru
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg):
     test.cmd('az datafactory integration-runtime get-connection-info '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -476,8 +480,8 @@ def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, r
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg):
     test.cmd('az datafactory integration-runtime get-monitoring-data '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -486,8 +490,8 @@ def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, r
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_getstatus(test, rg):
     test.cmd('az datafactory integration-runtime get-status '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -496,8 +500,8 @@ def step__integrationruntimes_post_integrationruntimes_getstatus(test, rg):
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg):
     test.cmd('az datafactory integration-runtime list-auth-key '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -506,8 +510,8 @@ def step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg):
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg):
     test.cmd('az datafactory integration-runtime regenerate-auth-key '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--key-name "authKey2" '
              '--resource-group "{rg}"',
              checks=[])
@@ -517,7 +521,7 @@ def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, r
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_start(test, rg):
     test.cmd('az datafactory integration-runtime start '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--name "{IntegrationRuntimes_2}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -527,7 +531,7 @@ def step__integrationruntimes_post_integrationruntimes_start(test, rg):
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
     test.cmd('az datafactory integration-runtime stop '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--name "{IntegrationRuntimes_2}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -537,14 +541,14 @@ def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
     test.cmd('az datafactory data-flow-debug-session add-data-flow '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--data-flow-name "dataflow1" '
              '--data-flow-properties "{{\\"type\\":\\"MappingDataFlow\\",\\"typeProperties\\":{{\\"script\\":\\"\\\\n\\'
-             '\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSchemaDrift: true,\\\\n\\\\t'
-             'validateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{{\\"name\\":\\"source1\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}}}],\\"transformations'
-             '\\":[]}}}}" '
+             '\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSchemaDrift: '
+             'true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{{\\"name\\":\\"source1'
+             '\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}}}],\\"tr'
+             'ansformations\\":[]}}}}" '
              '--datasets "[{{\\"name\\":\\"dataset1\\",\\"properties\\":{{\\"type\\":\\"DelimitedText\\",\\"schema\\":['
              '{{\\"type\\":\\"String\\"}}],\\"annotations\\":[],\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceRe'
              'ference\\",\\"referenceName\\":\\"linkedService5\\"}},\\"typeProperties\\":{{\\"columnDelimiter\\":\\",\\'
@@ -553,6 +557,7 @@ def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
              'teChar\\":\\"\\\\\\"\\"}}}}}}]" '
              '--debug-settings-dataset-parameters "{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{\\"time\\":\\'
              '"def\\"}}}}" '
+             '--debug-settings-parameters "{{\\"sourcePath\\":\\"Toy\\"}}" '
              '--debug-settings-source-settings row-limit=1000 source-name="source1" '
              '--debug-settings-source-settings row-limit=222 source-name="source2" '
              '--linked-services "[{{\\"name\\":\\"linkedService1\\",\\"properties\\":{{\\"type\\":\\"AzureBlobStorage\\'
@@ -567,8 +572,9 @@ def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--linked-factory-name "exampleFactoryName-linked" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -577,8 +583,9 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--linked-factory-name "exampleFactoryName-linked" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -587,8 +594,8 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
 @try_manual
 def step__integrationruntimes_patch_integrationruntimes_update(test, rg):
     test.cmd('az datafactory integration-runtime update '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
              '--auto-update "Off" '
              '--update-delay-offset "\\"PT3H\\""',
@@ -599,8 +606,8 @@ def step__integrationruntimes_patch_integrationruntimes_update(test, rg):
 @try_manual
 def step__datasets_get_datasets_get(test, rg):
     test.cmd('az datafactory dataset show '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -609,7 +616,7 @@ def step__datasets_get_datasets_get(test, rg):
 @try_manual
 def step__datasets_get_datasets_listbyfactory(test, rg):
     test.cmd('az datafactory dataset list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -618,7 +625,7 @@ def step__datasets_get_datasets_listbyfactory(test, rg):
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg):
     test.cmd('az datafactory data-flow-debug-session create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--integration-runtime-name "ir1" '
              '--integration-runtime-properties "{{\\"type\\":\\"Managed\\",\\"typeProperties\\":{{\\"computeProperties'
@@ -632,7 +639,7 @@ def step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg):
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg):
     test.cmd('az datafactory data-flow-debug-session delete '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--session-id "91fb57e0-8292-47be-89ff-c8f2d2bb2a7e"',
              checks=[])
@@ -642,8 +649,8 @@ def step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg):
 @try_manual
 def step__linkedservices_get_linkedservices_get(test, rg):
     test.cmd('az datafactory linked-service show '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleLinkedService}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -652,7 +659,7 @@ def step__linkedservices_get_linkedservices_get(test, rg):
 @try_manual
 def step__linkedservices_get_linkedservices_listbyfactory(test, rg):
     test.cmd('az datafactory linked-service list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -661,7 +668,7 @@ def step__linkedservices_get_linkedservices_listbyfactory(test, rg):
 @try_manual
 def step__pipelineruns_get_pipelineruns_get(test, rg):
     test.cmd('az datafactory pipeline-run show '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
              checks=[])
@@ -671,7 +678,7 @@ def step__pipelineruns_get_pipelineruns_get(test, rg):
 @try_manual
 def step__pipelineruns_post_pipelineruns_cancel(test, rg):
     test.cmd('az datafactory pipeline-run cancel '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
              checks=[])
@@ -681,7 +688,7 @@ def step__pipelineruns_post_pipelineruns_cancel(test, rg):
 @try_manual
 def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
     test.cmd('az datafactory pipeline-run query-by-factory '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--filters operand="PipelineName" operator="Equals" values="examplePipeline" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
              '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
@@ -693,7 +700,7 @@ def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
 @try_manual
 def step__pipelines_put_pipelines_create(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
              'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
              '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
@@ -706,7 +713,7 @@ def step__pipelines_put_pipelines_create(test, rg):
              '{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"Te'
              'stVariableArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Express'
              'ion\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
-             '--name "{examplePipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -715,7 +722,7 @@ def step__pipelines_put_pipelines_create(test, rg):
 @try_manual
 def step__pipelines_put_pipelines_create(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
              'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
              '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
@@ -728,7 +735,7 @@ def step__pipelines_put_pipelines_create(test, rg):
              '{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"Te'
              'stVariableArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Express'
              'ion\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
-             '--name "{examplePipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -737,7 +744,7 @@ def step__pipelines_put_pipelines_create(test, rg):
 @try_manual
 def step__pipelines_put_pipelines_update(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
              'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
              'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
@@ -748,7 +755,7 @@ def step__pipelines_put_pipelines_update(test, rg):
              '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
              'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
              'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
-             '--name "{examplePipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -757,7 +764,7 @@ def step__pipelines_put_pipelines_update(test, rg):
 @try_manual
 def step__pipelines_put_pipelines_update(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
              'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
              'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
@@ -768,7 +775,7 @@ def step__pipelines_put_pipelines_update(test, rg):
              '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
              'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
              'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
-             '--name "{examplePipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -777,8 +784,8 @@ def step__pipelines_put_pipelines_update(test, rg):
 @try_manual
 def step__pipelines_get_pipelines_get(test, rg):
     test.cmd('az datafactory pipeline show '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{examplePipeline}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -787,7 +794,7 @@ def step__pipelines_get_pipelines_get(test, rg):
 @try_manual
 def step__pipelines_get_pipelines_listbyfactory(test, rg):
     test.cmd('az datafactory pipeline list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -796,9 +803,9 @@ def step__pipelines_get_pipelines_listbyfactory(test, rg):
 @try_manual
 def step__pipelines_post_pipelines_createrun(test, rg):
     test.cmd('az datafactory pipeline create-run '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
-             '--name "{examplePipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -807,14 +814,14 @@ def step__pipelines_post_pipelines_createrun(test, rg):
 @try_manual
 def step__triggers_put_triggers_create(test, rg):
     test.cmd('az datafactory trigger create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
              'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
              'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
              '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
              ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -822,14 +829,14 @@ def step__triggers_put_triggers_create(test, rg):
 @try_manual
 def step__triggers_put_triggers_create(test, rg):
     test.cmd('az datafactory trigger create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
              'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
              'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
              '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
              ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -837,14 +844,15 @@ def step__triggers_put_triggers_create(test, rg):
 @try_manual
 def step__triggers_put_triggers_update(test, rg):
     test.cmd('az datafactory trigger create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines'
-             '\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{'
-             '\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{'
-             '\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interv'
-             'al\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{exampleTrigger}"',
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
+             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}'
+             '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
+             'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
+             'C\\"}}}}}}" '
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -852,14 +860,15 @@ def step__triggers_put_triggers_update(test, rg):
 @try_manual
 def step__triggers_put_triggers_update(test, rg):
     test.cmd('az datafactory trigger create '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines'
-             '\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{'
-             '\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{'
-             '\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interv'
-             'al\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{exampleTrigger}"',
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
+             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}'
+             '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
+             'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
+             'C\\"}}}}}}" '
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -867,7 +876,7 @@ def step__triggers_put_triggers_update(test, rg):
 @try_manual
 def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
     test.cmd('az datafactory trigger-run query-by-factory '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--filters operand="TriggerName" operator="Equals" values="exampleTrigger" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
              '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
@@ -879,10 +888,10 @@ def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
 @try_manual
 def step__triggerruns_post_triggers_rerun(test, rg):
     test.cmd('az datafactory trigger-run rerun '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
-             '--trigger-name "{exampleTrigger}"',
+             '--trigger-name "{myTrigger}"',
              checks=[])
 
 
@@ -890,9 +899,9 @@ def step__triggerruns_post_triggers_rerun(test, rg):
 @try_manual
 def step__triggers_get_triggers_get(test, rg):
     test.cmd('az datafactory trigger show '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -900,7 +909,7 @@ def step__triggers_get_triggers_get(test, rg):
 @try_manual
 def step__triggers_get_triggers_listbyfactory(test, rg):
     test.cmd('az datafactory trigger list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -909,9 +918,9 @@ def step__triggers_get_triggers_listbyfactory(test, rg):
 @try_manual
 def step__triggers_post_triggers_geteventsubscriptionstatus(test, rg):
     test.cmd('az datafactory trigger get-event-subscription-status '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -919,7 +928,7 @@ def step__triggers_post_triggers_geteventsubscriptionstatus(test, rg):
 @try_manual
 def step__triggers_post_triggers_querybyfactory(test, rg):
     test.cmd('az datafactory trigger query-by-factory '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--parent-trigger-name "exampleTrigger" '
              '--resource-group "{rg}"',
              checks=[])
@@ -929,9 +938,9 @@ def step__triggers_post_triggers_querybyfactory(test, rg):
 @try_manual
 def step__triggers_post_triggers_start(test, rg):
     test.cmd('az datafactory trigger start '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -939,9 +948,9 @@ def step__triggers_post_triggers_start(test, rg):
 @try_manual
 def step__triggers_post_triggers_stop(test, rg):
     test.cmd('az datafactory trigger stop '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -949,9 +958,9 @@ def step__triggers_post_triggers_stop(test, rg):
 @try_manual
 def step__triggers_post_triggers_subscribetoevents(test, rg):
     test.cmd('az datafactory trigger subscribe-to-event '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -959,9 +968,9 @@ def step__triggers_post_triggers_subscribetoevents(test, rg):
 @try_manual
 def step__triggers_post_triggers_unsubscribefromevents(test, rg):
     test.cmd('az datafactory trigger unsubscribe-from-event '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -969,7 +978,7 @@ def step__triggers_post_triggers_unsubscribefromevents(test, rg):
 @try_manual
 def step__dataflows_get_dataflows_listbyfactory(test, rg):
     test.cmd('az datafactory data-flow list '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -978,8 +987,8 @@ def step__dataflows_get_dataflows_listbyfactory(test, rg):
 @try_manual
 def step__datasets_delete_datasets_delete(test, rg):
     test.cmd('az datafactory dataset delete '
-             '--name "{exampleDataset}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -988,8 +997,8 @@ def step__datasets_delete_datasets_delete(test, rg):
 @try_manual
 def step__dataflows_delete_dataflows_delete(test, rg):
     test.cmd('az datafactory data-flow delete '
-             '--name "{exampleDataFlow}" '
-             '--factory-name "{exampleFactoryName}" '
+             '--name "{myDataFlow}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -998,8 +1007,8 @@ def step__dataflows_delete_dataflows_delete(test, rg):
 @try_manual
 def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg):
     test.cmd('az datafactory integration-runtime-node delete '
-             '--factory-name "{exampleFactoryName}" '
-             '--integration-runtime-name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--integration-runtime-name "{myIntegrationRuntime}" '
              '--node-name "Node_1" '
              '--resource-group "{rg}"',
              checks=[])
@@ -1009,8 +1018,8 @@ def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, r
 @try_manual
 def step__integrationruntimes_delete_integrationruntimes_delete(test, rg):
     test.cmd('az datafactory integration-runtime delete '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -1019,8 +1028,8 @@ def step__integrationruntimes_delete_integrationruntimes_delete(test, rg):
 @try_manual
 def step__linkedservices_delete_linkedservices_delete(test, rg):
     test.cmd('az datafactory linked-service delete '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleLinkedService}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -1029,8 +1038,8 @@ def step__linkedservices_delete_linkedservices_delete(test, rg):
 @try_manual
 def step__pipelines_delete_pipelines_delete(test, rg):
     test.cmd('az datafactory pipeline delete '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{examplePipeline}" '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -1039,9 +1048,9 @@ def step__pipelines_delete_pipelines_delete(test, rg):
 @try_manual
 def step__triggers_delete_triggers_delete(test, rg):
     test.cmd('az datafactory trigger delete '
-             '--factory-name "{exampleFactoryName}" '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--name "{exampleTrigger}"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
@@ -1049,7 +1058,7 @@ def step__triggers_delete_triggers_delete(test, rg):
 @try_manual
 def step__factories_delete_factories_delete(test, rg):
     test.cmd('az datafactory factory delete '
-             '--name "{exampleFactoryName}" '
+             '--name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -1159,14 +1168,14 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'exampleFactoryName': 'exampleFactoryName',
-            'exampleIntegrationRuntime': 'exampleIntegrationRuntime',
-            'IntegrationRuntimes_2': 'exampleManagedIntegrationRuntime',
-            'exampleLinkedService': 'exampleLinkedService',
-            'exampleDataset': 'exampleDataset',
-            'examplePipeline': 'examplePipeline',
-            'exampleTrigger': 'exampleTrigger',
-            'exampleDataFlow': 'exampleDataFlow',
+            'myFactoryName': 'myFactoryName',
+            'myIntegrationRuntime': 'myIntegrationRuntime',
+            'IntegrationRuntimes_2': 'myManagedIntegrationRuntime',
+            'myLinkedService': 'myLinkedService',
+            'myDataset': 'myDataset',
+            'myPipeline': 'myPipeline',
+            'myTrigger': 'myTrigger',
+            'myDataFlow': 'myDataFlow',
         })
 
         call_scenario(self, rg)

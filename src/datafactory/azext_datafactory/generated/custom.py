@@ -46,8 +46,8 @@ def datafactory_factory_create(client,
     if factory_git_hub_configuration is not None:
         all_repo_configuration.append(factory_git_hub_configuration)
     if len(all_repo_configuration) > 1:
-        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for repo_co'
-                       'nfiguration!')
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
+                       'repo_configuration!')
     repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
@@ -86,8 +86,8 @@ def datafactory_factory_configure_factory_repo(client,
     if factory_git_hub_configuration is not None:
         all_repo_configuration.append(factory_git_hub_configuration)
     if len(all_repo_configuration) > 1:
-        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for repo_co'
-                       'nfiguration!')
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
+                       'repo_configuration!')
     repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     return client.configure_factory_repo(location_id=location,
                                          factory_resource_id=factory_resource_id,
