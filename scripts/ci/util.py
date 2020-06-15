@@ -10,7 +10,7 @@ import zipfile
 
 # Dependencies that will not be checked.
 # This is for packages starting with 'azure-' but do not use the 'azure' namespace.
-SKIP_DEP_CHECK = ['azure-batch-extensions']
+SKIP_DEP_CHECK = ['azure-batch-extensions', 'azure-mgmt-storageimportexport']
 
 # copy from wheel==0.30.0
 WHEEL_INFO_RE = re.compile(
