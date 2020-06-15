@@ -34,7 +34,7 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'numpy~=1.18.0',
+    'ab~=1.0',
     'azure-mgmt-storageimportexport~=0.1.0',
 ]
 
