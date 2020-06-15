@@ -41,7 +41,7 @@ Once your PR is merged into master branch, a new PR will be created to update `s
 
 The precondition is to put your code inside this repo and upgrade the version in the PR but do not modify `src/index.json`.
 
-If you want to host source code in your dedicated repo, you have to upload and WHL file and update the `src/index.json` manually.
+If you want to host the source code in your dedicated repo, you have to upload the WHL file and update the `src/index.json` manually.
 
 For detail, please visit [Publish section in Azure CLI Extension Authoring](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md#publish).
 
