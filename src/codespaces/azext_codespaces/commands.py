@@ -10,7 +10,8 @@ from ._transformers import (
     transform_codespace_list_output,
     transform_codespace_item_output,
     transform_location_list_output,
-    transform_location_detail_output)
+    transform_location_detail_output,
+    transform_plan_secret_list_output)
 
 
 ADVANCED_MESSAGE_FUNC = lambda _: 'This command group is for advanced usage only.'
@@ -30,6 +31,12 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation="Are you sure you want to delete this Codespace plan?")
 
+    with self.command_group('codespace secret', plan_operations, client_factory=cf_codespaces_plan) as g:
+        g.custom_command('list', 'list_plan_secrets', table_transformer=transform_plan_secret_list_output)
+        g.custom_command('update', 'update_plan_secrets')
+        g.custom_command('create', 'create_plan_secret')
+        g.custom_command('delete', 'delete_plan_secret')
+
     with self.command_group('codespace', plan_operations, client_factory=cf_codespaces_plan) as g:
         g.custom_command('list', 'list_codespaces', table_transformer=transform_codespace_list_output)
         g.custom_show_command('show', 'get_codespace', table_transformer=transform_codespace_item_output)
@@ -48,9 +55,10 @@ def load_command_table(self, _):
                          deprecate_info=self.deprecate(hide=True, message_func=ADVANCED_MESSAGE_FUNC))
 
 
-    with self.command_group('codespace location', plan_operations, client_factory=cf_codespaces_plan) as g:
+    with self.command_group('codespace location') as g:
         g.custom_command('list', 'list_available_locations', table_transformer=transform_location_list_output)
         g.custom_show_command('show', 'get_location_details', table_transformer=transform_location_detail_output)
+
 
     # Mark all commands as in preview
     with self.command_group('codespace', is_preview=True):

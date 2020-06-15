@@ -6,8 +6,8 @@ import webbrowser
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from azext_codespaces import _non_arm_apis as cs_api
-from azext_codespaces import _config as cs_config
+from . import _non_arm_apis as cs_api
+from . import _config as cs_config
 from .vendored_sdks.vsonline.models import (
     VSOnlinePlan,
     VSOnlinePlanProperties,
@@ -241,3 +241,33 @@ def set_config(cmd, config_rp_api_version='', config_service_domain='', config_c
 
 def show_config(cmd):
     return cs_config.get_current_config(cmd.cli_ctx)
+
+
+def list_plan_secrets(cmd, client, plan_name, resource_group_name=None):
+    plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    return cs_api.list_secrets(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
+
+
+def update_plan_secrets(cmd, client):
+    raise CLIError("TODO-DEREK")
+
+
+def create_plan_secret(cmd, client, plan_name, secret_name, secret_value, secret_note, resource_group_name=None):
+    plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    create_data = {}
+    create_data['secretName'] = secret_name
+    create_data['value'] = secret_value
+    create_data['notes'] = secret_note
+    create_data['type'] = cs_api.SecretType.ENVIRONMENT_VARIABLE
+    create_data['scope'] = cs_api.SecretScope.USER
+    # TODO-DEREK add filters
+    create_data['filters'] = []
+    return cs_api.create_secret(token.access_token, plan.id, create_data, cli_ctx=cmd.cli_ctx)
+
+
+def delete_plan_secret(cmd, client, plan_name, secret_id, resource_group_name=None):
+    plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    cs_api.delete_secret(token.access_token, plan.id, cs_api.SecretScope.USER, secret_id, cli_ctx=cmd.cli_ctx)

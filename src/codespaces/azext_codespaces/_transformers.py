@@ -43,3 +43,19 @@ def transform_location_detail_output(result):
                                  ('defaultAutoSuspendDelayMinutes', defaultAutoSuspendDelayMinutes)])
         new_result.append(new_entry)
     return new_result
+
+
+def transform_plan_secret_list_output(result):
+    new_result = [transform_plan_secret_item_output(item) for item in result]
+    return new_result
+
+
+def transform_plan_secret_item_output(item):
+    from collections import OrderedDict
+    new_result = OrderedDict([('secretId', item['id']),
+                              ('secretName', item['secretName']),
+                              ('secretType', item['type']),
+                              ('scope', item['scope']),
+                              ('lastModified', item['lastModified']),
+                              ('notes', item['notes'])])
+    return new_result

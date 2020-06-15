@@ -9,6 +9,7 @@
 
 import platform
 import requests
+from enum import Enum
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core import __version__ as az_version
@@ -20,6 +21,14 @@ logger = get_logger(__name__)
 
 API_ROUTE = "/api/v1"
 
+# The current secret scopes available on the service
+class SecretScope(Enum):
+    PLAN = 1
+    USER = 2
+
+# The current secret types available on the service
+class SecretType(Enum):
+    ENVIRONMENT_VARIABLE = 1
 
 def _get_user_agent_string():
     pv = platform.python_version()
@@ -156,4 +165,34 @@ def update_codespace(access_token, codespace_id, data, api_root=None, **_):
     url = f'{api_root}/environments/{codespace_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     response = session.patch(url, headers=headers, json=data)
+    return response
+
+
+@custom_api_root_decorator
+@api_response_decorator
+def list_secrets(access_token, plan_id, api_root=None, **_):
+    url = f'{api_root}/secrets'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    params = {'planId': plan_id}
+    response = session.get(url, headers=headers, params=params)
+    return response
+
+
+@custom_api_root_decorator
+@api_response_decorator
+def create_secret(access_token, plan_id, data, api_root=None, **_):
+    url = f'{api_root}/secrets'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    params = {'planId': plan_id}
+    response = session.post(url, headers=headers, json=data)
+    return response
+
+
+@custom_api_root_decorator
+@api_response_decorator
+def delete_secret(access_token, plan_id, scope, secret_id, api_root=None, **_):
+    url = f'{api_root}/secrets/{secret_id}'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    params = {'planId': plan_id, 'scope': scope}
+    response = session.delete(url, headers=headers, params=params)
     return response
