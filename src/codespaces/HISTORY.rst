@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* Support Secrets Management.
+
 0.2.0
 ++++++
 * Update to latest resource provider API version, 2020-05-26.
