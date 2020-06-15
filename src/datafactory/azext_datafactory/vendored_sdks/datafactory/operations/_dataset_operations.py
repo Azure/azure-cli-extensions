@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -320,3 +320,183 @@ class DatasetOperations(object):
             return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/datasets/{datasetName}'}  # type: ignore
+
+    def create(
+        self,
+        resource_group_name,  # type: str
+        factory_name,  # type: str
+        dataset_name,  # type: str
+        properties,  # type: "models.Dataset"
+        if_match=None,  # type: Optional[str]
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.DatasetResource"
+        """Creates or updates a dataset.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param dataset_name: The dataset name.
+        :type dataset_name: str
+        :param properties: Dataset properties.
+        :type properties: ~data_factory_management_client.models.Dataset
+        :param if_match: ETag of the dataset entity.  Should only be specified for update, for which it
+         should match existing entity or can be * for unconditional update.
+        :type if_match: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DatasetResource, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.DatasetResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatasetResource"]
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+
+        _dataset = models.DatasetResource(properties=properties)
+        api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
+
+        # Construct URL
+        url = self.create.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'datasetName': self._serialize.url("dataset_name", dataset_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        if if_match is not None:
+            header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = 'application/json'
+
+        # Construct and send request
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_dataset, 'DatasetResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DatasetResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/datasets/{datasetName}'}  # type: ignore
+
+    def update(
+        self,
+        resource_group_name,  # type: str
+        factory_name,  # type: str
+        dataset_name,  # type: str
+        properties_type,  # type: str
+        properties_linked_service_name,  # type: "models.LinkedServiceReference"
+        if_match=None,  # type: Optional[str]
+        properties_description=None,  # type: Optional[str]
+        properties_structure=None,  # type: Optional[object]
+        properties_schema=None,  # type: Optional[object]
+        properties_parameters=None,  # type: Optional[Dict[str, "models.ParameterSpecification"]]
+        properties_annotations=None,  # type: Optional[List[object]]
+        properties_folder=None,  # type: Optional["models.DatasetFolder"]
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.DatasetResource"
+        """Creates or updates a dataset.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param dataset_name: The dataset name.
+        :type dataset_name: str
+        :param properties_type: Type of dataset.
+        :type properties_type: str
+        :param properties_linked_service_name: Linked service reference.
+        :type properties_linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+        :param if_match: ETag of the dataset entity.  Should only be specified for update, for which it
+         should match existing entity or can be * for unconditional update.
+        :type if_match: str
+        :param properties_description: Dataset description.
+        :type properties_description: str
+        :param properties_structure: Columns that define the structure of the dataset. Type: array (or
+         Expression with resultType array), itemType: DatasetDataElement.
+        :type properties_structure: object
+        :param properties_schema: Columns that define the physical type schema of the dataset. Type:
+         array (or Expression with resultType array), itemType: DatasetSchemaDataElement.
+        :type properties_schema: object
+        :param properties_parameters: Parameters for dataset.
+        :type properties_parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+        :param properties_annotations: List of tags that can be used for describing the Dataset.
+        :type properties_annotations: list[object]
+        :param properties_folder: The folder that this Dataset is in. If not specified, Dataset will
+         appear at the root level.
+        :type properties_folder: ~data_factory_management_client.models.DatasetFolder
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DatasetResource, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.DatasetResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatasetResource"]
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+
+        _dataset = models.DatasetResource(properties=properties, type=properties_type, description=properties_description, structure=properties_structure, schema=properties_schema, linked_service_name=properties_linked_service_name, parameters=properties_parameters, annotations=properties_annotations, folder=properties_folder)
+        api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
+
+        # Construct URL
+        url = self.update.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'datasetName': self._serialize.url("dataset_name", dataset_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        if if_match is not None:
+            header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = 'application/json'
+
+        # Construct and send request
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_dataset, 'DatasetResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DatasetResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/datasets/{datasetName}'}  # type: ignore

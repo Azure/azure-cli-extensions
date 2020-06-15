@@ -627,6 +627,14 @@ class SparkThriftTransportProtocol(str, Enum):
     sasl = "SASL"
     http = "HTTP "
 
+class SqlPartitionOption(str, Enum):
+    """The partition mechanism that will be used for Sql read in parallel.
+    """
+
+    none = "None"
+    physical_partitions_of_table = "PhysicalPartitionsOfTable"
+    dynamic_range = "DynamicRange"
+
 class SsisObjectMetadataType(str, Enum):
     """The type of SSIS object metadata.
     """

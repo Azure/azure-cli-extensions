@@ -1473,6 +1473,9 @@ class AmazonS3ReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -1496,6 +1499,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -1512,6 +1516,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -1525,6 +1530,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -2465,6 +2471,9 @@ class AzureBlobFsReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -2487,6 +2496,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -2502,6 +2512,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -2514,6 +2525,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -2921,6 +2933,9 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -2944,6 +2959,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -2960,6 +2976,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -2973,6 +2990,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -3946,11 +3964,22 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
      configured in the dataset) that you want to copy. Type: string (or Expression with resultType
      string).
     :type file_list_path: object
+    :param list_after: Lists files after the value (exclusive) based on file/folder names’
+     lexicographical order. Applies under the folderPath in data set, and filter files/sub-folders
+     under the folderPath. Type: string (or Expression with resultType string).
+    :type list_after: object
+    :param list_before: Lists files before the value (inclusive) based on file/folder names’
+     lexicographical order. Applies under the folderPath in data set, and filter files/sub-folders
+     under the folderPath. Type: string (or Expression with resultType string).
+    :type list_before: object
     :param enable_partition_discovery: Indicates whether to enable partition discovery.
     :type enable_partition_discovery: bool
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -3971,8 +4000,11 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
+        'list_after': {'key': 'listAfter', 'type': 'object'},
+        'list_before': {'key': 'listBefore', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -3986,8 +4018,11 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
         file_list_path: Optional[object] = None,
+        list_after: Optional[object] = None,
+        list_before: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -3998,8 +4033,11 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         self.wildcard_folder_path = wildcard_folder_path
         self.wildcard_file_name = wildcard_file_name
         self.file_list_path = file_list_path
+        self.list_after = list_after
+        self.list_before = list_before
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -4342,6 +4380,9 @@ class AzureFileStorageReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -4365,6 +4406,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -4381,6 +4423,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -4394,6 +4437,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -6680,6 +6724,11 @@ class AzureSqlSource(TabularSource):
      ~data_factory_management_client.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
+    :param partition_option: The partition mechanism that will be used for Sql read in parallel.
+     Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :param partition_settings: The settings that will be leveraged for Sql source partitioning.
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -6698,6 +6747,8 @@ class AzureSqlSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
+        'partition_option': {'key': 'partitionOption', 'type': 'str'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
@@ -6713,6 +6764,8 @@ class AzureSqlSource(TabularSource):
         sql_reader_stored_procedure_name: Optional[object] = None,
         stored_procedure_parameters: Optional[Dict[str, "StoredProcedureParameter"]] = None,
         produce_additional_types: Optional[object] = None,
+        partition_option: Optional[Union[str, "SqlPartitionOption"]] = None,
+        partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
         super(AzureSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
@@ -6721,6 +6774,8 @@ class AzureSqlSource(TabularSource):
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
         self.stored_procedure_parameters = stored_procedure_parameters
         self.produce_additional_types = produce_additional_types
+        self.partition_option = partition_option
+        self.partition_settings = partition_settings
 
 
 class AzureSqlTableDataset(Dataset):
@@ -15309,6 +15364,9 @@ class FileServerReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -15334,6 +15392,7 @@ class FileServerReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
         'file_filter': {'key': 'fileFilter', 'type': 'object'},
@@ -15350,6 +15409,7 @@ class FileServerReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         file_filter: Optional[object] = None,
@@ -15363,6 +15423,7 @@ class FileServerReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
         self.file_filter = file_filter
@@ -15789,6 +15850,9 @@ class FtpReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param file_list_path: Point to a text file that lists each file (relative path to the path
      configured in the dataset) that you want to copy. Type: string (or Expression with resultType
      string).
@@ -15810,6 +15874,7 @@ class FtpReadSettings(StoreReadSettings):
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'use_binary_transfer': {'key': 'useBinaryTransfer', 'type': 'bool'},
     }
@@ -15824,6 +15889,7 @@ class FtpReadSettings(StoreReadSettings):
         wildcard_file_name: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         file_list_path: Optional[object] = None,
         use_binary_transfer: Optional[bool] = None,
         **kwargs
@@ -15835,6 +15901,7 @@ class FtpReadSettings(StoreReadSettings):
         self.wildcard_file_name = wildcard_file_name
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.file_list_path = file_list_path
         self.use_binary_transfer = use_binary_transfer
 
@@ -16873,6 +16940,9 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
     :param partition_root_path: Specify the root path where partition discovery starts from. Type:
      string (or Expression with resultType string).
     :type partition_root_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -16896,6 +16966,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -16912,6 +16983,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         file_list_path: Optional[object] = None,
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -16925,6 +16997,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         self.file_list_path = file_list_path
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -32140,6 +32213,9 @@ class SftpReadSettings(StoreReadSettings):
      configured in the dataset) that you want to copy. Type: string (or Expression with resultType
      string).
     :type file_list_path: object
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     :param modified_datetime_start: The start of file's modified datetime. Type: string (or
      Expression with resultType string).
     :type modified_datetime_start: object
@@ -32162,6 +32238,7 @@ class SftpReadSettings(StoreReadSettings):
         'enable_partition_discovery': {'key': 'enablePartitionDiscovery', 'type': 'bool'},
         'partition_root_path': {'key': 'partitionRootPath', 'type': 'object'},
         'file_list_path': {'key': 'fileListPath', 'type': 'object'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
     }
@@ -32177,6 +32254,7 @@ class SftpReadSettings(StoreReadSettings):
         enable_partition_discovery: Optional[bool] = None,
         partition_root_path: Optional[object] = None,
         file_list_path: Optional[object] = None,
+        delete_files_after_completion: Optional[object] = None,
         modified_datetime_start: Optional[object] = None,
         modified_datetime_end: Optional[object] = None,
         **kwargs
@@ -32189,6 +32267,7 @@ class SftpReadSettings(StoreReadSettings):
         self.enable_partition_discovery = enable_partition_discovery
         self.partition_root_path = partition_root_path
         self.file_list_path = file_list_path
+        self.delete_files_after_completion = delete_files_after_completion
         self.modified_datetime_start = modified_datetime_start
         self.modified_datetime_end = modified_datetime_end
 
@@ -33583,6 +33662,11 @@ class SqlDWSource(TabularSource):
      Example: "{Parameter1: {value: "1", type: "int"}}". Type: object (or Expression with resultType
      object), itemType: StoredProcedureParameter.
     :type stored_procedure_parameters: object
+    :param partition_option: The partition mechanism that will be used for Sql read in parallel.
+     Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :param partition_settings: The settings that will be leveraged for Sql source partitioning.
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -33600,6 +33684,8 @@ class SqlDWSource(TabularSource):
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': 'object'},
+        'partition_option': {'key': 'partitionOption', 'type': 'str'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
@@ -33614,6 +33700,8 @@ class SqlDWSource(TabularSource):
         sql_reader_query: Optional[object] = None,
         sql_reader_stored_procedure_name: Optional[object] = None,
         stored_procedure_parameters: Optional[object] = None,
+        partition_option: Optional[Union[str, "SqlPartitionOption"]] = None,
+        partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
         super(SqlDWSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
@@ -33621,6 +33709,8 @@ class SqlDWSource(TabularSource):
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
         self.stored_procedure_parameters = stored_procedure_parameters
+        self.partition_option = partition_option
+        self.partition_settings = partition_settings
 
 
 class SqlMiSink(CopySink):
@@ -33752,6 +33842,11 @@ class SqlMiSource(TabularSource):
      ~data_factory_management_client.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
+    :param partition_option: The partition mechanism that will be used for Sql read in parallel.
+     Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :param partition_settings: The settings that will be leveraged for Sql source partitioning.
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -33770,6 +33865,8 @@ class SqlMiSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
+        'partition_option': {'key': 'partitionOption', 'type': 'str'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
@@ -33785,6 +33882,8 @@ class SqlMiSource(TabularSource):
         sql_reader_stored_procedure_name: Optional[object] = None,
         stored_procedure_parameters: Optional[Dict[str, "StoredProcedureParameter"]] = None,
         produce_additional_types: Optional[object] = None,
+        partition_option: Optional[Union[str, "SqlPartitionOption"]] = None,
+        partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
         super(SqlMiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
@@ -33793,6 +33892,47 @@ class SqlMiSource(TabularSource):
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
         self.stored_procedure_parameters = stored_procedure_parameters
         self.produce_additional_types = produce_additional_types
+        self.partition_option = partition_option
+        self.partition_settings = partition_settings
+
+
+class SqlPartitionSettings(msrest.serialization.Model):
+    """The settings that will be leveraged for Sql source partitioning.
+
+    :param partition_column_name: The name of the column in integer or datetime type that will be
+     used for proceeding partitioning. If not specified, the primary key of the table is auto-
+     detected and used as the partition column. Type: string (or Expression with resultType string).
+    :type partition_column_name: object
+    :param partition_upper_bound: The maximum value of the partition column for partition range
+     splitting. This value is used to decide the partition stride, not for filtering the rows in
+     table. All rows in the table or query result will be partitioned and copied. Type: string (or
+     Expression with resultType string).
+    :type partition_upper_bound: object
+    :param partition_lower_bound: The minimum value of the partition column for partition range
+     splitting. This value is used to decide the partition stride, not for filtering the rows in
+     table. All rows in the table or query result will be partitioned and copied. Type: string (or
+     Expression with resultType string).
+    :type partition_lower_bound: object
+    """
+
+    _attribute_map = {
+        'partition_column_name': {'key': 'partitionColumnName', 'type': 'object'},
+        'partition_upper_bound': {'key': 'partitionUpperBound', 'type': 'object'},
+        'partition_lower_bound': {'key': 'partitionLowerBound', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        *,
+        partition_column_name: Optional[object] = None,
+        partition_upper_bound: Optional[object] = None,
+        partition_lower_bound: Optional[object] = None,
+        **kwargs
+    ):
+        super(SqlPartitionSettings, self).__init__(**kwargs)
+        self.partition_column_name = partition_column_name
+        self.partition_upper_bound = partition_upper_bound
+        self.partition_lower_bound = partition_lower_bound
 
 
 class SqlServerLinkedService(LinkedService):
@@ -33996,6 +34136,11 @@ class SqlServerSource(TabularSource):
      ~data_factory_management_client.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
+    :param partition_option: The partition mechanism that will be used for Sql read in parallel.
+     Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :param partition_settings: The settings that will be leveraged for Sql source partitioning.
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -34014,6 +34159,8 @@ class SqlServerSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
+        'partition_option': {'key': 'partitionOption', 'type': 'str'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
@@ -34029,6 +34176,8 @@ class SqlServerSource(TabularSource):
         sql_reader_stored_procedure_name: Optional[object] = None,
         stored_procedure_parameters: Optional[Dict[str, "StoredProcedureParameter"]] = None,
         produce_additional_types: Optional[object] = None,
+        partition_option: Optional[Union[str, "SqlPartitionOption"]] = None,
+        partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
         super(SqlServerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
@@ -34037,6 +34186,8 @@ class SqlServerSource(TabularSource):
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
         self.stored_procedure_parameters = stored_procedure_parameters
         self.produce_additional_types = produce_additional_types
+        self.partition_option = partition_option
+        self.partition_settings = partition_settings
 
 
 class SqlServerStoredProcedureActivity(ExecutionActivity):
@@ -34321,6 +34472,11 @@ class SqlSource(TabularSource):
      values: ReadCommitted/ReadUncommitted/RepeatableRead/Serializable/Snapshot. The default value
      is ReadCommitted. Type: string (or Expression with resultType string).
     :type isolation_level: object
+    :param partition_option: The partition mechanism that will be used for Sql read in parallel.
+     Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :param partition_settings: The settings that will be leveraged for Sql source partitioning.
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -34339,6 +34495,8 @@ class SqlSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'isolation_level': {'key': 'isolationLevel', 'type': 'object'},
+        'partition_option': {'key': 'partitionOption', 'type': 'str'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
@@ -34354,6 +34512,8 @@ class SqlSource(TabularSource):
         sql_reader_stored_procedure_name: Optional[object] = None,
         stored_procedure_parameters: Optional[Dict[str, "StoredProcedureParameter"]] = None,
         isolation_level: Optional[object] = None,
+        partition_option: Optional[Union[str, "SqlPartitionOption"]] = None,
+        partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
         super(SqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
@@ -34362,6 +34522,8 @@ class SqlSource(TabularSource):
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
         self.stored_procedure_parameters = stored_procedure_parameters
         self.isolation_level = isolation_level
+        self.partition_option = partition_option
+        self.partition_settings = partition_settings
 
 
 class SquareLinkedService(LinkedService):

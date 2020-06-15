@@ -524,6 +524,7 @@ try:
     from ._models_py3 import SqlDWSource
     from ._models_py3 import SqlMiSink
     from ._models_py3 import SqlMiSource
+    from ._models_py3 import SqlPartitionSettings
     from ._models_py3 import SqlServerLinkedService
     from ._models_py3 import SqlServerSink
     from ._models_py3 import SqlServerSource
@@ -1133,6 +1134,7 @@ except (SyntaxError, ImportError):
     from ._models import SqlDWSource  # type: ignore
     from ._models import SqlMiSink  # type: ignore
     from ._models import SqlMiSource  # type: ignore
+    from ._models import SqlPartitionSettings  # type: ignore
     from ._models import SqlServerLinkedService  # type: ignore
     from ._models import SqlServerSink  # type: ignore
     from ._models import SqlServerSource  # type: ignore
@@ -1296,6 +1298,7 @@ from ._data_factory_management_client_enums import (
     SparkAuthenticationType,
     SparkServerType,
     SparkThriftTransportProtocol,
+    SqlPartitionOption,
     SsisObjectMetadataType,
     SsisPackageLocationType,
     StoredProcedureParameterType,
@@ -1828,6 +1831,7 @@ __all__ = [
     'SqlDWSource',
     'SqlMiSink',
     'SqlMiSource',
+    'SqlPartitionSettings',
     'SqlServerLinkedService',
     'SqlServerSink',
     'SqlServerSource',
@@ -1989,6 +1993,7 @@ __all__ = [
     'SparkAuthenticationType',
     'SparkServerType',
     'SparkThriftTransportProtocol',
+    'SqlPartitionOption',
     'SsisObjectMetadataType',
     'SsisPackageLocationType',
     'StoredProcedureParameterType',

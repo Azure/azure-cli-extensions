@@ -116,65 +116,66 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Create
+# EXAMPLE: /DataFlows/put/DataFlows_Create
 @try_manual
-def step__datasets_put_datasets_create(test, rg):
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
-             'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
-             'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
-             '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
+def step__dataflows_put_dataflows_create(test, rg):
+    test.cmd('az datafactory data-flow create '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
+             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
+             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
+             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
+             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
+             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
+             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
+             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
+             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
+             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
+             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
+             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
+             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
+             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
+             '--name "{exampleDataFlow}" '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Update
+# EXAMPLE: /DataFlows/put/DataFlows_Create
 @try_manual
-def step__datasets_put_datasets_update(test, rg):
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"param'
-             'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
-             '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
-             'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
-             '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{exampleDataset}" '
+def step__dataflows_put_dataflows_create(test, rg):
+    test.cmd('az datafactory data-flow create '
+             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
+             'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
+             '\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Curr'
+             'entConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(out'
+             'put(PreviousConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as doubl'
+             'e),allowSchemaDrift: true,validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: tr'
+             'ue)~> Union\\\\nUnion derive(NewCurrencyRate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\'
+             '\\nNewCurrencyColumn split(Country == \'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(U'
+             'SD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sin'
+             'k(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type'
+             '\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset'
+             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name'
+             '\\":\\"USDCurrency\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDa'
+             'tasetUSD\\"}}}},{{\\"name\\":\\"CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referen'
+             'ceName\\":\\"CurrencyDatasetCAD\\"}}}}]}}}}" '
+             '--name "{exampleDataFlow}" '
              '--factory-name "{exampleFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/get/Datasets_Get
+# EXAMPLE: /LinkedServices/put/LinkedServices_Create
 @try_manual
-def step__datasets_get_datasets_get(test, rg):
-    test.cmd('az datafactory dataset show '
-             '--name "{exampleDataset}" '
+def step__linkedservices_put_linkedservices_create(test, rg):
+    test.cmd('az datafactory linked-service create '
              '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
+             '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
+             'tKey=<storage key>\\"}}}}}}" '
+             '--name "{exampleLinkedService}" '
              '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/get/Datasets_ListByFactory
-@try_manual
-def step__datasets_get_datasets_listbyfactory(test, rg):
-    test.cmd('az datafactory dataset list '
-             '--factory-name "{exampleFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /ActivityRuns/post/ActivityRuns_QueryByPipelineRun
-@try_manual
-def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
-    test.cmd('az datafactory activity-run query-by-pipeline-run '
-             '--factory-name "{exampleFactoryName}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
              checks=[])
 
 
@@ -204,6 +205,93 @@ def step__linkedservices_put_linkedservices_update(test, rg):
              checks=[])
 
 
+# EXAMPLE: /LinkedServices/put/LinkedServices_Update
+@try_manual
+def step__linkedservices_put_linkedservices_update(test, rg):
+    test.cmd('az datafactory linked-service create '
+             '--factory-name "{exampleFactoryName}" '
+             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperti'
+             'es\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=ht'
+             'tps;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
+             '--name "{exampleLinkedService}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/put/Datasets_Create
+@try_manual
+def step__datasets_put_datasets_create(test, rg):
+    test.cmd('az datafactory dataset create '
+             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
+             '\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
+             'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
+             'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
+             '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '--name "{exampleDataset}" '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/put/Datasets_Create
+@try_manual
+def step__datasets_put_datasets_create(test, rg):
+    test.cmd('az datafactory dataset create '
+             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
+             '\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
+             'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
+             'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
+             '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '--name "{exampleDataset}" '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /ActivityRuns/post/ActivityRuns_QueryByPipelineRun
+@try_manual
+def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
+    test.cmd('az datafactory activity-run query-by-pipeline-run '
+             '--factory-name "{exampleFactoryName}" '
+             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
+             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+             '--resource-group "{rg}" '
+             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/put/Datasets_Update
+@try_manual
+def step__datasets_put_datasets_update(test, rg):
+    test.cmd('az datafactory dataset create '
+             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
+             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"param'
+             'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
+             '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
+             'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
+             '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '--name "{exampleDataset}" '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/put/Datasets_Update
+@try_manual
+def step__datasets_put_datasets_update(test, rg):
+    test.cmd('az datafactory dataset create '
+             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
+             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"param'
+             'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
+             '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
+             'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
+             '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '--name "{exampleDataset}" '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_ExecuteCommand
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg):
@@ -225,9 +313,9 @@ def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg
              checks=[])
 
 
-# EXAMPLE: /DataFlows/put/DataFlows_Create
+# EXAMPLE: /DataFlows/put/DataFlows_Update
 @try_manual
-def step__dataflows_put_dataflows_create(test, rg):
+def step__dataflows_put_dataflows_update(test, rg):
     test.cmd('az datafactory data-flow create '
              '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert cu'
              'rrencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{{'
@@ -319,12 +407,12 @@ def step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Stop
+# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_SyncCredentials
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
-    test.cmd('az datafactory integration-runtime stop '
+def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg):
+    test.cmd('az datafactory integration-runtime sync-credentials '
              '--factory-name "{exampleFactoryName}" '
-             '--name "{IntegrationRuntimes_2}" '
+             '--name "{exampleIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -435,6 +523,16 @@ def step__integrationruntimes_post_integrationruntimes_start(test, rg):
              checks=[])
 
 
+# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Stop
+@try_manual
+def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
+    test.cmd('az datafactory integration-runtime stop '
+             '--factory-name "{exampleFactoryName}" '
+             '--name "{IntegrationRuntimes_2}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
 # EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_AddDataFlow
 @try_manual
 def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
@@ -462,16 +560,6 @@ def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
              'countName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<credential>\\"}'
              '}}}}}]" '
              '--session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_SyncCredentials
-@try_manual
-def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg):
-    test.cmd('az datafactory integration-runtime sync-credentials '
-             '--factory-name "{exampleFactoryName}" '
-             '--name "{exampleIntegrationRuntime}" '
-             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -504,6 +592,25 @@ def step__integrationruntimes_patch_integrationruntimes_update(test, rg):
              '--resource-group "{rg}" '
              '--auto-update "Off" '
              '--update-delay-offset "\\"PT3H\\""',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/get/Datasets_Get
+@try_manual
+def step__datasets_get_datasets_get(test, rg):
+    test.cmd('az datafactory dataset show '
+             '--name "{exampleDataset}" '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Datasets/get/Datasets_ListByFactory
+@try_manual
+def step__datasets_get_datasets_listbyfactory(test, rg):
+    test.cmd('az datafactory dataset list '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}"',
              checks=[])
 
 
@@ -604,6 +711,48 @@ def step__pipelines_put_pipelines_create(test, rg):
              checks=[])
 
 
+# EXAMPLE: /Pipelines/put/Pipelines_Create
+@try_manual
+def step__pipelines_put_pipelines_create(test, rg):
+    test.cmd('az datafactory pipeline create '
+             '--factory-name "{exampleFactoryName}" '
+             '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
+             'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
+             '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
+             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{'
+             '\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"va'
+             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset'
+             '\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"s'
+             'ource\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Express'
+             'ion\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":'
+             '{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"Te'
+             'stVariableArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Express'
+             'ion\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
+             '--name "{examplePipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Pipelines/put/Pipelines_Update
+@try_manual
+def step__pipelines_put_pipelines_update(test, rg):
+    test.cmd('az datafactory pipeline create '
+             '--factory-name "{exampleFactoryName}" '
+             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
+             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
+             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
+             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
+             '\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
+             'leName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontaine'
+             'r\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
+             '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
+             'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
+             'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
+             '--name "{examplePipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
 # EXAMPLE: /Pipelines/put/Pipelines_Update
 @try_manual
 def step__pipelines_put_pipelines_update(test, rg):
@@ -665,6 +814,36 @@ def step__triggers_put_triggers_create(test, rg):
              'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
              '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
              ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+             '--name "{exampleTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: /Triggers/put/Triggers_Create
+@try_manual
+def step__triggers_put_triggers_create(test, rg):
+    test.cmd('az datafactory trigger create '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}" '
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
+             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
+             'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
+             '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
+             ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+             '--name "{exampleTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: /Triggers/put/Triggers_Update
+@try_manual
+def step__triggers_put_triggers_update(test, rg):
+    test.cmd('az datafactory trigger create '
+             '--factory-name "{exampleFactoryName}" '
+             '--resource-group "{rg}" '
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines'
+             '\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{'
+             '\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{'
+             '\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interv'
+             'al\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
              '--name "{exampleTrigger}"',
              checks=[])
 
@@ -892,22 +1071,26 @@ def call_scenario(test, rg):
     step__factories_post_factories_getgithubaccesstoken(test, rg)
     step__factories_patch_factories_update(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    step__datasets_put_datasets_create(test, rg)
-    step__datasets_put_datasets_update(test, rg)
-    step__datasets_get_datasets_get(test, rg)
-    step__datasets_get_datasets_listbyfactory(test, rg)
-    step__activityruns_post_activityruns_querybypipelinerun(test, rg)
+    step__dataflows_put_dataflows_create(test, rg)
+    step__dataflows_put_dataflows_create(test, rg)
+    step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_update(test, rg)
+    step__linkedservices_put_linkedservices_update(test, rg)
+    step__datasets_put_datasets_create(test, rg)
+    step__datasets_put_datasets_create(test, rg)
+    step__activityruns_post_activityruns_querybypipelinerun(test, rg)
+    step__datasets_put_datasets_update(test, rg)
+    step__datasets_put_datasets_update(test, rg)
     step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg)
     step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg)
-    step__dataflows_put_dataflows_create(test, rg)
+    step__dataflows_put_dataflows_update(test, rg)
     step__dataflows_put_dataflows_update(test, rg)
     step__dataflows_get_dataflows_get(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
     step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg)
     step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
-    step__integrationruntimes_post_integrationruntimes_stop(test, rg)
+    step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
     step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg)
     step__integrationruntimes_get_integrationruntimes_get(test, rg)
     step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg)
@@ -918,11 +1101,13 @@ def call_scenario(test, rg):
     step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg)
     step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg)
     step__integrationruntimes_post_integrationruntimes_start(test, rg)
+    step__integrationruntimes_post_integrationruntimes_stop(test, rg)
     step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg)
-    step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
     step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
     step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
     step__integrationruntimes_patch_integrationruntimes_update(test, rg)
+    step__datasets_get_datasets_get(test, rg)
+    step__datasets_get_datasets_listbyfactory(test, rg)
     step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg)
     step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg)
     step__linkedservices_get_linkedservices_get(test, rg)
@@ -931,11 +1116,15 @@ def call_scenario(test, rg):
     step__pipelineruns_post_pipelineruns_cancel(test, rg)
     step__pipelineruns_post_pipelineruns_querybyfactory(test, rg)
     step__pipelines_put_pipelines_create(test, rg)
+    step__pipelines_put_pipelines_create(test, rg)
+    step__pipelines_put_pipelines_update(test, rg)
     step__pipelines_put_pipelines_update(test, rg)
     step__pipelines_get_pipelines_get(test, rg)
     step__pipelines_get_pipelines_listbyfactory(test, rg)
     step__pipelines_post_pipelines_createrun(test, rg)
     step__triggers_put_triggers_create(test, rg)
+    step__triggers_put_triggers_create(test, rg)
+    step__triggers_put_triggers_update(test, rg)
     step__triggers_put_triggers_update(test, rg)
     step__triggerruns_post_triggerruns_querybyfactory(test, rg)
     step__triggerruns_post_triggers_rerun(test, rg)

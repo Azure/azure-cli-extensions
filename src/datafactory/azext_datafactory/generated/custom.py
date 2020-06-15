@@ -55,8 +55,7 @@ def datafactory_factory_create(client,
                                    location=location,
                                    tags=tags,
                                    identity=json.loads("{\"type\": \"SystemAssigned\"}"),
-                                   repo_configuration=repo_configuration,
-                                   global_parameters=global_parameters)
+                                   repo_configuration=repo_configuration)
 
 
 def datafactory_factory_update(client,
@@ -401,7 +400,15 @@ def datafactory_linked_service_update(instance,
                                       resource_group_name,
                                       factory_name,
                                       linked_service_name,
-                                      if_match=None):
+                                      if_match=None,
+                                      connect_via=None,
+                                      description=None,
+                                      parameters=None,
+                                      annotations=None):
+    instance.connect_via = connect_via
+    instance.description = description
+    instance.parameters = parameters
+    instance.annotations = annotations
     return instance
 
 
@@ -449,7 +456,21 @@ def datafactory_dataset_update(instance,
                                resource_group_name,
                                factory_name,
                                dataset_name,
-                               if_match=None):
+                               linked_service_name,
+                               if_match=None,
+                               description=None,
+                               structure=None,
+                               schema=None,
+                               parameters=None,
+                               annotations=None,
+                               folder=None):
+    instance.description = description
+    instance.structure = structure
+    instance.schema = schema
+    instance.linked_service_name = linked_service_name
+    instance.parameters = parameters
+    instance.annotations = annotations
+    instance.folder = folder
     return instance
 
 
@@ -620,7 +641,11 @@ def datafactory_trigger_update(instance,
                                resource_group_name,
                                factory_name,
                                trigger_name,
-                               if_match=None):
+                               if_match=None,
+                               description=None,
+                               annotations=None):
+    instance.description = description
+    instance.annotations = annotations
     return instance
 
 
@@ -764,7 +789,13 @@ def datafactory_data_flow_update(instance,
                                  resource_group_name,
                                  factory_name,
                                  data_flow_name,
-                                 if_match=None):
+                                 if_match=None,
+                                 description=None,
+                                 annotations=None,
+                                 folder=None):
+    instance.description = description
+    instance.annotations = annotations
+    instance.folder = folder
     return instance
 
 

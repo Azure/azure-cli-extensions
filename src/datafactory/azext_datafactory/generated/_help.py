@@ -457,16 +457,12 @@ helps['datafactory linked-service update'] = """
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service update --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
-ureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpoin\
-tsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exampleLinkedService" --reso\
-urce-group "exampleResourceGroup"
+               az datafactory linked-service update --factory-name "exampleFactoryName" --name "exampleLinkedService" -\
+-resource-group "exampleResourceGroup"
       - name: LinkedServices_Update
         text: |-
-               az datafactory linked-service update --factory-name "exampleFactoryName" --properties "{\\"type\\":\\"Az\
-ureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"S\
-ecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\
-\\"}}}" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
+               az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example descript\
+ion" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -528,23 +524,26 @@ name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exam
 helps['datafactory dataset update'] = """
     type: command
     short-summary: Creates or updates a dataset.
+    parameters:
+      - name: --folder
+        short-summary: The folder that this Dataset is in. If not specified, Dataset will appear at the root level.
+        long-summary: |
+            Usage: --folder name=XX
+
+            name: The name of the folder that this Dataset is in.
     examples:
       - name: Datasets_Create
         text: |-
-               az datafactory dataset update --properties "{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
-"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"\
-TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\
-\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset" --factory-name "examp\
-leFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset update --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referen\
+ceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\\
+"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceG\
+roup"
       - name: Datasets_Update
         text: |-
-               az datafactory dataset update --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example des\
-cription\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedServic\
-e\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typ\
-eProperties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@\
-dataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --\
-name "exampleDataset" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory dataset update --description "Example description" --linked-service-name "{\\"type\\":\\"\
+LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\
+\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName\
+" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -818,19 +817,11 @@ helps['datafactory trigger update'] = """
       - name: Triggers_Create
         text: |-
                az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exam\
-pleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\\
-"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\
-\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "exampleTri\
-gger"
+" --name "exampleTrigger"
       - name: Triggers_Update
         text: |-
                az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup\
-" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines\\":[{\\"para\
-meters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\
-\\",\\"referenceName\\":\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00\
-:55:14.905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"ti\
-meZone\\":\\"UTC\\"}}}" --name "exampleTrigger"
+" --description "Example description" --name "exampleTrigger"
 """
 
 helps['datafactory trigger delete'] = """
@@ -1029,39 +1020,24 @@ xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleRes
 helps['datafactory data-flow update'] = """
     type: command
     short-summary: Creates or updates a data flow.
+    parameters:
+      - name: --folder
+        short-summary: The folder that this data flow is in. If not specified, Data flow will appear at the root level.
+        long-summary: |
+            Usage: --folder name=XX
+
+            name: The name of the folder that this data flow is in.
     examples:
       - name: DataFlows_Create
         text: |-
-               az datafactory data-flow update --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
-ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
-eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
-rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
-ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
-validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
-= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
-SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
-dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
-t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
-y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
-xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing usage\
+ of union, derive and conditional split transformation." --name "exampleDataFlow" --factory-name "exampleFactoryName" -\
+-resource-group "exampleResourceGroup"
       - name: DataFlows_Update
         text: |-
-               az datafactory data-flow update --properties "{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sam\
-ple demo data flow to convert currencies showing usage of union, derive and conditional split transformation.\\",\\"typ\
-eProperties\\":{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as string,Cu\
-rrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> USDCurrency\\\\nsource(output(Previous\
-ConversionRate as double,Country as string,DateTime1 as string,CurrentConversionRate as double),allowSchemaDrift: true,\
-validateSchema: false) ~> CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrency\
-Rate = round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == \'USD\',Country =\
-= \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD sink(saveMode:\'overwrite\' ) ~> U\
-SDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> CADSink\\",\\"sinks\\":[{\\"name\\":\\"USDSink\\",\\"\
-dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"USDOutput\\"}},{\\"name\\":\\"CADSink\\",\\"datase\
-t\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CADOutput\\"}}],\\"sources\\":[{\\"name\\":\\"USDCurrenc\
-y\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}},{\\"name\\":\\"CAD\
-Source\\",\\"dataset\\":{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD\\"}}]}}" --name "e\
-xampleDataFlow" --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory data-flow update --description "Sample demo data flow to convert currencies showing usage\
+ of union, derive and conditional split transformation." --name "exampleDataFlow" --factory-name "exampleFactoryName" -\
+-resource-group "exampleResourceGroup"
 """
 
 helps['datafactory data-flow delete'] = """

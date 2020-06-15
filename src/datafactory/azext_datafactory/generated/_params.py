@@ -24,8 +24,10 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
+    AddDatasetsFolder,
     AddFilters,
     AddOrderBy,
+    AddDataflowsFolder,
     AddDebugSettingsSourceSettings,
     AddCommandPayload
 )
@@ -280,8 +282,14 @@ def load_arguments(self, _):
                    'd_name_1')
         c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
                    'it should match existing entity or can be * for unconditional update.')
-        c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: json-s'
-                   'tring/@json-file.')
+        c.argument('connect_via', type=validate_file_or_dict, help='The integration runtime reference. Expected value: '
+                   'json-string/@json-file.')
+        c.argument('description', help='Linked service description.')
+        c.argument('parameters', type=validate_file_or_dict, help='Parameters for linked service. Expected value: json-'
+                   'string/@json-file.')
+        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the li'
+                   'nked service. Expected value: json-string/@json-file.')
+        c.ignore('properties')
 
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -315,8 +323,22 @@ def load_arguments(self, _):
         c.argument('dataset_name', options_list=['--name', '-n'], help='The dataset name.', id_part='child_name_1')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: json-string/@jso'
-                   'n-file.')
+        c.argument('description', help='Dataset description.')
+        c.argument('structure', type=validate_file_or_dict, help='Columns that define the structure of the dataset. Typ'
+                   'e: array (or Expression with resultType array), itemType: DatasetDataElement. Expected value: json-'
+                   'string/@json-file.')
+        c.argument('schema', type=validate_file_or_dict, help='Columns that define the physical type schema of the data'
+                   'set. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement. Expecte'
+                   'd value: json-string/@json-file.')
+        c.argument('linked_service_name', type=validate_file_or_dict, help='Linked service reference. Expected value: j'
+                   'son-string/@json-file.')
+        c.argument('parameters', type=validate_file_or_dict, help='Parameters for dataset. Expected value: json-string/'
+                   '@json-file.')
+        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the Da'
+                   'taset. Expected value: json-string/@json-file.')
+        c.argument('folder', action=AddDatasetsFolder, nargs='+', help='The folder that this Dataset is in. If not spec'
+                   'ified, Dataset will appear at the root level.')
+        c.ignore('properties')
 
     with self.argument_context('datafactory dataset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -437,8 +459,10 @@ def load_arguments(self, _):
         c.argument('trigger_name', options_list=['--name', '-n'], help='The trigger name.', id_part='child_name_1')
         c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it sho'
                    'uld match existing entity or can be * for unconditional update.')
-        c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: json-stri'
-                   'ng/@json-file.')
+        c.argument('description', help='Trigger description.')
+        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the tr'
+                   'igger. Expected value: json-string/@json-file.')
+        c.ignore('properties')
 
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -531,8 +555,12 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
-        c.argument('properties', type=validate_file_or_dict, help='Data flow properties. Expected value: json-string/@j'
-                   'son-file.')
+        c.argument('description', help='The description of the data flow.')
+        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the da'
+                   'ta flow. Expected value: json-string/@json-file.')
+        c.argument('folder', action=AddDataflowsFolder, nargs='+', help='The folder that this data flow is in. If not s'
+                   'pecified, Data flow will appear at the root level.')
+        c.ignore('properties')
 
     with self.argument_context('datafactory data-flow delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -583,9 +611,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('command',
-                   arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']),
-                   help='The command type.')
+        c.argument('command', arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressi'
+                   'onQuery']), help='The command type.')
         c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
 
     with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
