@@ -809,6 +809,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_subnet_id=None,
                appgw_watch_namespace=None,
                enable_aad=False,
+               aad_enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                no_wait=False):
     if not no_ssh_key:
@@ -982,12 +983,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
         aad_profile = ManagedClusterAADProfile(
             managed=True,
+            enable_azure_rbac=aad_enable_azure_rbac,
             admin_group_object_ids=_parse_comma_separated_list(aad_admin_group_object_ids),
             tenant_id=aad_tenant_id
         )
     else:
         if aad_admin_group_object_ids is not None:
             raise CLIError('"--admin-aad-object-id" can only be used together with "--enable-aad"')
+
+        if aad_enable_azure_rbac is True:
+            raise CLIError('"--enable_azure_rbac" can only be used together with "--enable-aad"')
 
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
             aad_profile = ManagedClusterAADProfile(
