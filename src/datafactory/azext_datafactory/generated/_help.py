@@ -305,7 +305,7 @@ ime.
       - name: IntegrationRuntimes_Upgrade
         text: |-
                az datafactory integration-runtime remove-link --factory-name "exampleFactoryName" --name "exampleIntegr\
-ationRuntime" --resource-group "exampleResourceGroup"
+ationRuntime" --resource-group "exampleResourceGroup" --linked-factory-name "exampleFactoryName-linked"
 """
 
 helps['datafactory integration-runtime start'] = """
@@ -618,30 +618,29 @@ helps['datafactory pipeline update'] = """
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"activities\\":[{\\"na\
-me\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"Exam\
-pleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileNa\
-me\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\
-\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"va\
-lue\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProp\
-erties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\
-\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBl\
-obNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\
-\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\
-\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" --resource-group "exampleR\
-esourceGroup"
+               az datafactory pipeline update --factory-name "exampleFactoryName" --activities "[{\\"name\\":\\"Example\
+ForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\
+\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"exampl\
+econtainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[\
+{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item\
+()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"d\
+ataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSeq\
+uential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}\
+]" --parameters "{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --run-dimen\
+sions "{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}" --variables "{\\"Tes\
+tVariableArray\\":{\\"type\\":\\"Array\\"}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline "{\\"description\\":\\"Exa\
-mple description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperti\
-es\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"Datas\
-etReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}\
-,\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFi\
-leName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referen\
-ceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\
-\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"\
-value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameList\\":{\\"type\\":\\"\
-Array\\"}}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "exampleFactoryName" --description "Example description" -\
+-activities "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":\
+[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parame\
+ters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"\
+exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\\
+"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleData\
+set\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"ty\
+pe\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().\
+parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name "exampl\
+ePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """

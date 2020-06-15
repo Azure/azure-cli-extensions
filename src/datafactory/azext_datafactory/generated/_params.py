@@ -371,8 +371,20 @@ def load_arguments(self, _):
         c.argument('pipeline_name', options_list=['--name', '-n'], help='The pipeline name.', id_part='child_name_1')
         c.argument('if_match', help='ETag of the pipeline entity.  Should only be specified for update, for which it sh'
                    'ould match existing entity or can be * for unconditional update.')
-        c.argument('pipeline', type=validate_file_or_dict, help='Pipeline resource definition. Expected value: json-str'
-                   'ing/@json-file.')
+        c.argument('description', help='The description of the pipeline.')
+        c.argument('activities', type=validate_file_or_dict, help='List of activities in pipeline. Expected value: json'
+                   '-string/@json-file.')
+        c.argument('parameters', type=validate_file_or_dict, help='List of parameters for pipeline. Expected value: jso'
+                   'n-string/@json-file.')
+        c.argument('variables', type=validate_file_or_dict, help='List of variables for pipeline. Expected value: json-'
+                   'string/@json-file.')
+        c.argument('concurrency', help='The max number of concurrent runs for the pipeline.')
+        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the Pi'
+                   'peline. Expected value: json-string/@json-file.')
+        c.argument('run_dimensions', type=validate_file_or_dict, help='Dimensions emitted by Pipeline. Expected value: '
+                   'json-string/@json-file.')
+        c.argument('folder_name', help='The name of the folder that this Pipeline is in.')
+        c.ignore('pipeline')
 
     with self.argument_context('datafactory pipeline delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
