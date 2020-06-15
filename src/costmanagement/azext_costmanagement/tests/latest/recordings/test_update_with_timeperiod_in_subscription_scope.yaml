@@ -1,0 +1,203 @@
+interactions:
+- request:
+    body: 'b''b\''{"properties": {"format": "Csv", "definition": {"timeframe": "TheLastMonth",
+      "dataset": {"granularity": "Daily"}}, "deliveryInfo": {"destination": {"resourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_update_schedule000001/providers/Microsoft.Storage/storageAccounts/testupdateschedule000002",
+      "container": "export"}}}}\'''''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '402'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --scope --name --storage-account-id --storage-container --timeframe
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.6.8 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-03?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-03","name":"ep-03","type":"Microsoft.CostManagement/exports","eTag":"\"1d6349e4e2280a3\"","properties":{"schedule":{"status":"Inactive"},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_update_schedule000001/providers/Microsoft.Storage/storageAccounts/testupdateschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastMonth","dataSet":{"granularity":"Daily"}}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '651'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 28 May 2020 03:15:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://consumption.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-03?api-version=2019-11-01
+      pragma:
+      - no-cache
+      session-id:
+      - 66e27b54-aed6-4a49-89af-494bfc36267c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope --name --recurrence-period --timeframe
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.6.8 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-03?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-03","name":"ep-03","type":"Microsoft.CostManagement/exports","eTag":"\"1d6349e4e2280a3\"","properties":{"schedule":{"status":"Inactive"},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_update_schedule000001/providers/Microsoft.Storage/storageAccounts/testupdateschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastMonth","dataSet":{"granularity":"Daily"}}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '651'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 28 May 2020 03:15:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 7bc73480-159e-464b-9f3c-9a6393f55a5c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''b\''{"eTag": "\\\\"1d6349e4e2280a3\\\\"", "properties": {"format": "Csv",
+      "definition": {"type": "Usage", "timeframe": "TheLastBillingMonth", "dataset":
+      {"granularity": "Daily"}}, "deliveryInfo": {"destination": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_update_schedule000001/providers/Microsoft.Storage/storageAccounts/testupdateschedule000002",
+      "container": "export"}}, "schedule": {"status": "Inactive", "recurrencePeriod":
+      {"from": "2020-08-01T00:00:00.000Z", "to": "2020-10-31T00:00:00.000Z"}}}}\'''''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '585'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --scope --name --recurrence-period --timeframe
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.6.8 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-03?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/exports/ep-03","name":"ep-03","type":"Microsoft.CostManagement/exports","eTag":"\"1d6349e50a33823\"","properties":{"schedule":{"status":"Inactive","recurrencePeriod":{"from":"2020-08-01T00:00:00Z","to":"2020-10-31T00:00:00Z"}},"format":"Csv","deliveryInfo":{"destination":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_update_schedule000001/providers/Microsoft.Storage/storageAccounts/testupdateschedule000002","container":"export","rootFolderPath":null}},"definition":{"type":"Usage","timeframe":"TheLastBillingMonth","dataSet":{"granularity":"Daily"}}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 28 May 2020 03:16:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 59c60dfe-2bdd-4d55-81eb-ab05e67a3c77
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement export delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --scope --name
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.6.8 (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/exports/ep-03?api-version=2019-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 28 May 2020 03:16:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 7af62cb9-75aa-4731-ba51-a37eeac6387f
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

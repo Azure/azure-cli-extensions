@@ -17,16 +17,18 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'name_a': 'demoApp',
             'name_b': 'testApp',
             'kind': 'web',
-            'application_type': 'web'
+            'application_type': 'web',
+            'retention_time': 120
         })
 
-        self.cmd('az monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+        self.cmd('az monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type} --retention-time {retention_time}', checks=[
             self.check('name', '{name_a}'),
             self.check('location', '{loc}'),
             self.check('kind', '{kind}'),
             self.check('applicationType', '{application_type}'),
             self.check('applicationId', '{name_a}'),
             self.check('provisioningState', 'Succeeded'),
+            self.check('retentionInDays', self.kwargs['retention_time'])
         ])
 
         self.cmd('monitor app-insights component billing show --app {name_a} -g {resource_group}', checks=[
@@ -39,11 +41,13 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         self.kwargs.update({
-            'kind': 'ios'
+            'kind': 'ios',
+            'retention_time': 180
         })
 
-        self.cmd('az monitor app-insights component update --app {name_a} --kind {kind} -g {resource_group}', checks=[
-            self.check('kind', '{kind}')
+        self.cmd('az monitor app-insights component update --app {name_a} --kind {kind} -g {resource_group} --retention-time {retention_time}', checks=[
+            self.check('kind', '{kind}'),
+            self.check('retentionInDays', self.kwargs['retention_time'])
         ])
 
         self.cmd('az monitor app-insights component create --app {name_b} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[

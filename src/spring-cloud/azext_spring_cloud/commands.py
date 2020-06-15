@@ -15,14 +15,11 @@ from ._transformers import (transform_spring_cloud_table_output,
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
     with self.command_group('spring-cloud', client_factory=cf_app_services) as g:
-        g.custom_command('create', 'spring_cloud_create',
-                         supports_no_wait=True)
-        g.custom_command('delete', 'spring_cloud_delete',
-                         supports_no_wait=True)
-        g.custom_command('list', 'spring_cloud_list',
-                         table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get',
-                              table_transformer=transform_spring_cloud_table_output)
+        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
+        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
+        g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
+        g.custom_command('list', 'spring_cloud_list', table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud) as g:
         g.custom_command('enable ', 'enable_test_endpoint')

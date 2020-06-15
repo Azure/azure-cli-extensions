@@ -16,6 +16,7 @@ from ._certificates_operations import CertificatesOperations
 from ._custom_domains_operations import CustomDomainsOperations
 from ._deployments_operations import DeploymentsOperations
 from ._operations import Operations
+from ._sku_operations import SkuOperations
 
 __all__ = [
     'ServicesOperations',
@@ -25,4 +26,5 @@ __all__ = [
     'CustomDomainsOperations',
     'DeploymentsOperations',
     'Operations',
+    'SkuOperations',
 ]

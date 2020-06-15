@@ -1,0 +1,917 @@
+interactions:
+- request:
+    body: '{"type": "ActualCost", "timeframe": "BillingMonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '94'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/f2f83e84-0030-482d-b03c-5e7d05bc4cb2","name":"f2f83e84-0030-482d-b03c-5e7d05bc4cb2","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 7dc397f6-eb86-4f22-9fe0-28af95f06abd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "ActualCost", "timeframe": "MonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/ffa52968-a782-43f0-a1e0-cd01fef363aa","name":"ffa52968-a782-43f0-a1e0-cd01fef363aa","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - e68eb5b7-9eeb-4509-870f-8ee38e1af92f
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "ActualCost", "timeframe": "TheLastBillingMonth", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/bd33b066-1fdc-4374-b06f-9fff04d7ebe3","name":"bd33b066-1fdc-4374-b06f-9fff04d7ebe3","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 9b9ebd49-a217-4137-968a-5fc4af4af96f
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "ActualCost", "timeframe": "TheLastMonth", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '88'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/1bd9241c-07c4-4231-8f26-6b6a7c8f7e17","name":"1bd9241c-07c4-4231-8f26-6b6a7c8f7e17","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - dd081615-59b1-493a-92fe-1f307d3dcaa7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '28'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "ActualCost", "timeframe": "WeekToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/f85d230d-d9f3-4bd5-8823-c16cadc700c3","name":"f85d230d-d9f3-4bd5-8823-c16cadc700c3","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - e446c36e-0704-4bd4-bbcd-78e94912b838
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '28'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "AmortizedCost", "timeframe": "BillingMonthToDate", "dataset":
+      {"granularity": "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/d34ced7b-1c13-4576-a40a-425d008354fc","name":"d34ced7b-1c13-4576-a40a-425d008354fc","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 631b36ce-cdd3-4848-8e48-fd9e9ddd4ad3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '28'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "AmortizedCost", "timeframe": "MonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/c65a5149-244e-46fa-936a-03dea70cd92c","name":"c65a5149-244e-46fa-936a-03dea70cd92c","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - e33e8170-61ae-4495-8dcd-6287fb8fe751
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '27'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "AmortizedCost", "timeframe": "TheLastBillingMonth", "dataset":
+      {"granularity": "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '98'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/59599c13-8311-4c4d-941e-6cf74c129a4b","name":"59599c13-8311-4c4d-941e-6cf74c129a4b","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 4cdaae3e-c0d4-483d-ae2d-ad582ce29b9c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '26'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "AmortizedCost", "timeframe": "TheLastMonth", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '91'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/a9bb3ab9-fae3-4498-8c4a-e4374e2237db","name":"a9bb3ab9-fae3-4498-8c4a-e4374e2237db","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 4a6640c2-c6db-4dd2-bfd5-64d013eb84f9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '29'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "AmortizedCost", "timeframe": "WeekToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '89'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/970b5077-b60b-4dfd-9e2f-ea5a5db0397e","name":"970b5077-b60b-4dfd-9e2f-ea5a5db0397e","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 4ab6bc88-3174-4ede-8399-9d0465366e2a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '27'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "Usage", "timeframe": "BillingMonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '89'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/b1697fdb-b663-45ca-b5cb-56d7482b0c22","name":"b1697fdb-b663-45ca-b5cb-56d7482b0c22","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:39:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 24d65f17-5073-4563-9dd5-0b75bde02d5e
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '25'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '195'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "Usage", "timeframe": "MonthToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '82'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/0a1f9c5b-d1e5-4cba-bf1e-c5e1ebdf99cf","name":"0a1f9c5b-d1e5-4cba-bf1e-c5e1ebdf99cf","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200501,"USD"],[20200502,"USD"],[20200503,"USD"],[20200504,"USD"],[20200505,"USD"],[20200506,"USD"],[20200507,"USD"],[20200508,"USD"],[20200509,"USD"],[20200510,"USD"],[20200511,"USD"],[20200512,"USD"],[20200513,"USD"],[20200514,"USD"],[20200515,"USD"],[20200516,"USD"],[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:40:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 22e5e4b6-8c33-4f63-9892-20a6a17f7b35
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '27'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "Usage", "timeframe": "TheLastBillingMonth", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/a416d550-7de0-49c9-8020-c1e632cfb4c8","name":"a416d550-7de0-49c9-8020-c1e632cfb4c8","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:40:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 5b30dcdd-389d-4597-8a5d-cf3825a7fd66
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '26'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "Usage", "timeframe": "TheLastMonth", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '83'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/1e35a9c6-74d7-4c28-bc6d-bec77a897418","name":"1e35a9c6-74d7-4c28-bc6d-bec77a897418","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200401,"USD"],[20200402,"USD"],[20200403,"USD"],[20200404,"USD"],[20200405,"USD"],[20200406,"USD"],[20200407,"USD"],[20200408,"USD"],[20200409,"USD"],[20200410,"USD"],[20200411,"USD"],[20200412,"USD"],[20200413,"USD"],[20200414,"USD"],[20200415,"USD"],[20200416,"USD"],[20200417,"USD"],[20200418,"USD"],[20200419,"USD"],[20200420,"USD"],[20200421,"USD"],[20200422,"USD"],[20200423,"USD"],[20200424,"USD"],[20200425,"USD"],[20200426,"USD"],[20200427,"USD"],[20200428,"USD"],[20200429,"USD"],[20200430,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:40:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 553eba7f-00b6-40f7-946e-fd134692dd60
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '24'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '194'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"type": "Usage", "timeframe": "WeekToDate", "dataset": {"granularity":
+      "Daily"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '81'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --timeframe --scope
+      User-Agent:
+      - AZURECLI/2.6.0 azsdk-python-mgmt-costmanagement/1.2.0 Python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/query?api-version=2019-11-01
+  response:
+    body:
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.CostManagement/query/7aa9da0a-6be7-4f3a-a98c-0ff4a76f0868","name":"7aa9da0a-6be7-4f3a-a98c-0ff4a76f0868","type":"Microsoft.CostManagement/query","location":null,"sku":null,"eTag":null,"properties":{"nextLink":null,"columns":[{"name":"UsageDate","type":"Number"},{"name":"Currency","type":"String"}],"rows":[[20200517,"USD"],[20200518,"USD"],[20200519,"USD"],[20200520,"USD"],[20200521,"USD"],[20200522,"USD"],[20200523,"USD"]]}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 23 May 2020 05:40:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - 351b8150-9cc9-4a64-bc37-e3e3aef4ea83
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-microsoft.costmanagement-entity-retry-after:
+      - '60'
+      x-ms-ratelimit-microsoft.costmanagement-tenant-retry-after:
+      - '60'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-entity-requests:
+      - '28'
+      x-ms-ratelimit-remaining-microsoft.costmanagement-tenant-requests:
+      - '198'
+    status:
+      code: 200
+      message: OK
+version: 1

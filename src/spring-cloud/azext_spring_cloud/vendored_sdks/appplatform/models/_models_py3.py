@@ -271,33 +271,43 @@ class BindingResourceProperties(Model):
 class CertificateProperties(Model):
     """Certificate resource payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
-    :param thumbprint: The thumbprint of certificate.
-    :type thumbprint: str
+    :ivar thumbprint: The thumbprint of certificate.
+    :vartype thumbprint: str
     :param vault_uri: Required. The vault uri of user key vault.
     :type vault_uri: str
     :param key_vault_cert_name: Required. The certificate name of key vault.
     :type key_vault_cert_name: str
     :param cert_version: The certificate version of key vault.
     :type cert_version: str
-    :param issuer: The issuer of certificate.
-    :type issuer: str
-    :param issued_date: The issue date of certificate.
-    :type issued_date: str
-    :param expiration_date: The expiration date of certificate.
-    :type expiration_date: str
-    :param activate_date: The activate date of certificate.
-    :type activate_date: str
-    :param subject_name: The subject name of certificate.
-    :type subject_name: str
-    :param dns_names: The domain list of certificate.
-    :type dns_names: list[str]
+    :ivar issuer: The issuer of certificate.
+    :vartype issuer: str
+    :ivar issued_date: The issue date of certificate.
+    :vartype issued_date: str
+    :ivar expiration_date: The expiration date of certificate.
+    :vartype expiration_date: str
+    :ivar activate_date: The activate date of certificate.
+    :vartype activate_date: str
+    :ivar subject_name: The subject name of certificate.
+    :vartype subject_name: str
+    :ivar dns_names: The domain list of certificate.
+    :vartype dns_names: list[str]
     """
 
     _validation = {
+        'thumbprint': {'readonly': True},
         'vault_uri': {'required': True},
         'key_vault_cert_name': {'required': True},
+        'issuer': {'readonly': True},
+        'issued_date': {'readonly': True},
+        'expiration_date': {'readonly': True},
+        'activate_date': {'readonly': True},
+        'subject_name': {'readonly': True},
+        'dns_names': {'readonly': True},
     }
 
     _attribute_map = {
@@ -313,18 +323,18 @@ class CertificateProperties(Model):
         'dns_names': {'key': 'dnsNames', 'type': '[str]'},
     }
 
-    def __init__(self, *, vault_uri: str, key_vault_cert_name: str, thumbprint: str=None, cert_version: str=None, issuer: str=None, issued_date: str=None, expiration_date: str=None, activate_date: str=None, subject_name: str=None, dns_names=None, **kwargs) -> None:
+    def __init__(self, *, vault_uri: str, key_vault_cert_name: str, cert_version: str=None, **kwargs) -> None:
         super(CertificateProperties, self).__init__(**kwargs)
-        self.thumbprint = thumbprint
+        self.thumbprint = None
         self.vault_uri = vault_uri
         self.key_vault_cert_name = key_vault_cert_name
         self.cert_version = cert_version
-        self.issuer = issuer
-        self.issued_date = issued_date
-        self.expiration_date = expiration_date
-        self.activate_date = activate_date
-        self.subject_name = subject_name
-        self.dns_names = dns_names
+        self.issuer = None
+        self.issued_date = None
+        self.expiration_date = None
+        self.activate_date = None
+        self.subject_name = None
+        self.dns_names = None
 
 
 class CertificateResource(ProxyResource):
@@ -813,13 +823,16 @@ class DeploymentResourceProperties(Model):
 class DeploymentSettings(Model):
     """Deployment settings payload.
 
-    :param cpu: Required CPU. Default value: 1 .
+    :param cpu: Required CPU, basic tier should be 1, standard tier should be
+     in range (1, 4). Default value: 1 .
     :type cpu: int
-    :param memory_in_gb: Required Memory size in GB. Default value: 1 .
+    :param memory_in_gb: Required Memory size in GB, basic tier should be in
+     range (1, 2), standard tier should be in range (1, 8). Default value: 1 .
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param instance_count: Instance count. Default value: 1 .
+    :param instance_count: Instance count, basic tier should be in range (1,
+     25), standard tier should be in range (1, 500). Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
@@ -828,12 +841,6 @@ class DeploymentSettings(Model):
     :type runtime_version: str or
      ~azure.mgmt.appplatform.models.RuntimeVersion
     """
-
-    _validation = {
-        'cpu': {'maximum': 4, 'minimum': 1},
-        'memory_in_gb': {'maximum': 8, 'minimum': 1},
-        'instance_count': {'maximum': 20, 'minimum': 1},
-    }
 
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
@@ -1139,8 +1146,8 @@ class OperationDetail(Model):
 
     :param name: Name of the operation
     :type name: str
-    :param data_action: Indicates whether the operation is a data action
-    :type data_action: bool
+    :param is_data_action: Indicates whether the operation is a data action
+    :type is_data_action: bool
     :param display: Display of the operation
     :type display: ~azure.mgmt.appplatform.models.OperationDisplay
     :param origin: Origin of the operation
@@ -1151,16 +1158,16 @@ class OperationDetail(Model):
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'data_action': {'key': 'dataAction', 'type': 'bool'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
         'origin': {'key': 'origin', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'OperationProperties'},
     }
 
-    def __init__(self, *, name: str=None, data_action: bool=None, display=None, origin: str=None, properties=None, **kwargs) -> None:
+    def __init__(self, *, name: str=None, is_data_action: bool=None, display=None, origin: str=None, properties=None, **kwargs) -> None:
         super(OperationDetail, self).__init__(**kwargs)
         self.name = name
-        self.data_action = data_action
+        self.is_data_action = is_data_action
         self.display = display
         self.origin = origin
         self.properties = properties
@@ -1266,6 +1273,177 @@ class RegenerateTestKeyRequestPayload(Model):
         self.key_type = key_type
 
 
+class ResourceSku(Model):
+    """Describes an available Azure Spring Cloud SKU.
+
+    :param resource_type: Gets the type of resource the SKU applies to.
+    :type resource_type: str
+    :param name: Gets the name of SKU.
+    :type name: str
+    :param tier: Gets the tier of SKU.
+    :type tier: str
+    :param capacity: Gets the capacity of SKU.
+    :type capacity: ~azure.mgmt.appplatform.models.SkuCapacity
+    :param locations: Gets the set of locations that the SKU is available.
+    :type locations: list[str]
+    :param location_info: Gets a list of locations and availability zones in
+     those locations where the SKU is available.
+    :type location_info:
+     list[~azure.mgmt.appplatform.models.ResourceSkuLocationInfo]
+    :param restrictions: Gets the restrictions because of which SKU cannot be
+     used. This is
+     empty if there are no restrictions.
+    :type restrictions:
+     list[~azure.mgmt.appplatform.models.ResourceSkuRestrictions]
+    """
+
+    _attribute_map = {
+        'resource_type': {'key': 'resourceType', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'tier': {'key': 'tier', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'SkuCapacity'},
+        'locations': {'key': 'locations', 'type': '[str]'},
+        'location_info': {'key': 'locationInfo', 'type': '[ResourceSkuLocationInfo]'},
+        'restrictions': {'key': 'restrictions', 'type': '[ResourceSkuRestrictions]'},
+    }
+
+    def __init__(self, *, resource_type: str=None, name: str=None, tier: str=None, capacity=None, locations=None, location_info=None, restrictions=None, **kwargs) -> None:
+        super(ResourceSku, self).__init__(**kwargs)
+        self.resource_type = resource_type
+        self.name = name
+        self.tier = tier
+        self.capacity = capacity
+        self.locations = locations
+        self.location_info = location_info
+        self.restrictions = restrictions
+
+
+class ResourceSkuCapabilities(Model):
+    """ResourceSkuCapabilities.
+
+    :param name: Gets an invariant to describe the feature.
+    :type name: str
+    :param value: Gets an invariant if the feature is measured by quantity.
+    :type value: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(self, *, name: str=None, value: str=None, **kwargs) -> None:
+        super(ResourceSkuCapabilities, self).__init__(**kwargs)
+        self.name = name
+        self.value = value
+
+
+class ResourceSkuLocationInfo(Model):
+    """ResourceSkuLocationInfo.
+
+    :param location: Gets location of the SKU
+    :type location: str
+    :param zones: Gets list of availability zones where the SKU is supported.
+    :type zones: list[str]
+    :param zone_details: Gets details of capabilities available to a SKU in
+     specific zones.
+    :type zone_details:
+     list[~azure.mgmt.appplatform.models.ResourceSkuZoneDetails]
+    """
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'zones': {'key': 'zones', 'type': '[str]'},
+        'zone_details': {'key': 'zoneDetails', 'type': '[ResourceSkuZoneDetails]'},
+    }
+
+    def __init__(self, *, location: str=None, zones=None, zone_details=None, **kwargs) -> None:
+        super(ResourceSkuLocationInfo, self).__init__(**kwargs)
+        self.location = location
+        self.zones = zones
+        self.zone_details = zone_details
+
+
+class ResourceSkuRestrictionInfo(Model):
+    """ResourceSkuRestrictionInfo.
+
+    :param locations: Gets locations where the SKU is restricted
+    :type locations: list[str]
+    :param zones: Gets list of availability zones where the SKU is restricted.
+    :type zones: list[str]
+    """
+
+    _attribute_map = {
+        'locations': {'key': 'locations', 'type': '[str]'},
+        'zones': {'key': 'zones', 'type': '[str]'},
+    }
+
+    def __init__(self, *, locations=None, zones=None, **kwargs) -> None:
+        super(ResourceSkuRestrictionInfo, self).__init__(**kwargs)
+        self.locations = locations
+        self.zones = zones
+
+
+class ResourceSkuRestrictions(Model):
+    """ResourceSkuRestrictions.
+
+    :param type: Gets the type of restrictions. Possible values include:
+     'Location', 'Zone'
+    :type type: str or
+     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionsType
+    :param values: Gets the value of restrictions. If the restriction type is
+     set to
+     location. This would be different locations where the SKU is restricted.
+    :type values: list[str]
+    :param restriction_info: Gets the information about the restriction where
+     the SKU cannot be used.
+    :type restriction_info:
+     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionInfo
+    :param reason_code: Gets the reason for restriction. Possible values
+     include: 'QuotaId', 'NotAvailableForSubscription'
+    :type reason_code: str or
+     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionsReasonCode
+    """
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'values': {'key': 'values', 'type': '[str]'},
+        'restriction_info': {'key': 'restrictionInfo', 'type': 'ResourceSkuRestrictionInfo'},
+        'reason_code': {'key': 'reasonCode', 'type': 'str'},
+    }
+
+    def __init__(self, *, type=None, values=None, restriction_info=None, reason_code=None, **kwargs) -> None:
+        super(ResourceSkuRestrictions, self).__init__(**kwargs)
+        self.type = type
+        self.values = values
+        self.restriction_info = restriction_info
+        self.reason_code = reason_code
+
+
+class ResourceSkuZoneDetails(Model):
+    """ResourceSkuZoneDetails.
+
+    :param name: Gets the set of zones that the SKU is available in with the
+     specified capabilities.
+    :type name: list[str]
+    :param capabilities: Gets a list of capabilities that are available for
+     the SKU in the
+     specified list of zones.
+    :type capabilities:
+     list[~azure.mgmt.appplatform.models.ResourceSkuCapabilities]
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': '[str]'},
+        'capabilities': {'key': 'capabilities', 'type': '[ResourceSkuCapabilities]'},
+    }
+
+    def __init__(self, *, name=None, capabilities=None, **kwargs) -> None:
+        super(ResourceSkuZoneDetails, self).__init__(**kwargs)
+        self.name = name
+        self.capabilities = capabilities
+
+
 class ResourceUploadDefinition(Model):
     """Resource upload definition payload.
 
@@ -1344,6 +1522,8 @@ class ServiceResource(TrackedResource):
     :type tags: dict[str, str]
     :param properties: Properties of the Service resource
     :type properties: ~azure.mgmt.appplatform.models.ClusterResourceProperties
+    :param sku: Sku of the Service resource
+    :type sku: ~azure.mgmt.appplatform.models.Sku
     """
 
     _validation = {
@@ -1359,11 +1539,13 @@ class ServiceResource(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
-    def __init__(self, *, location: str=None, tags=None, properties=None, **kwargs) -> None:
+    def __init__(self, *, location: str=None, tags=None, properties=None, sku=None, **kwargs) -> None:
         super(ServiceResource, self).__init__(location=location, tags=tags, **kwargs)
         self.properties = properties
+        self.sku = sku
 
 
 class ServiceSpecification(Model):
@@ -1387,6 +1569,65 @@ class ServiceSpecification(Model):
         super(ServiceSpecification, self).__init__(**kwargs)
         self.log_specifications = log_specifications
         self.metric_specifications = metric_specifications
+
+
+class Sku(Model):
+    """Sku of Azure Spring Cloud.
+
+    :param name: Name of the Sku
+    :type name: str
+    :param tier: Tier of the Sku
+    :type tier: str
+    :param capacity: Current capacity of the target resource
+    :type capacity: int
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'tier': {'key': 'tier', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'int'},
+    }
+
+    def __init__(self, *, name: str=None, tier: str=None, capacity: int=None, **kwargs) -> None:
+        super(Sku, self).__init__(**kwargs)
+        self.name = name
+        self.tier = tier
+        self.capacity = capacity
+
+
+class SkuCapacity(Model):
+    """The SKU capacity.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param minimum: Required. Gets or sets the minimum.
+    :type minimum: int
+    :param maximum: Gets or sets the maximum.
+    :type maximum: int
+    :param default: Gets or sets the default.
+    :type default: int
+    :param scale_type: Gets or sets the type of the scale. Possible values
+     include: 'None', 'Manual', 'Automatic'
+    :type scale_type: str or ~azure.mgmt.appplatform.models.SkuScaleType
+    """
+
+    _validation = {
+        'minimum': {'required': True},
+    }
+
+    _attribute_map = {
+        'minimum': {'key': 'minimum', 'type': 'int'},
+        'maximum': {'key': 'maximum', 'type': 'int'},
+        'default': {'key': 'default', 'type': 'int'},
+        'scale_type': {'key': 'scaleType', 'type': 'str'},
+    }
+
+    def __init__(self, *, minimum: int, maximum: int=None, default: int=None, scale_type=None, **kwargs) -> None:
+        super(SkuCapacity, self).__init__(**kwargs)
+        self.minimum = minimum
+        self.maximum = maximum
+        self.default = default
+        self.scale_type = scale_type
 
 
 class TemporaryDisk(Model):

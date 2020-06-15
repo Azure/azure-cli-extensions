@@ -1,6 +1,10 @@
 Release History
 ===============
 
+0.2.5
+-----
+* enable to specified sku when create or update service instance
+
 0.2.4
 -----
 * Add command "az spring-cloud app identity" to support Managed Identity feature

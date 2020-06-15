@@ -13,3 +13,7 @@ Release History
 +++++
 * Update service URL to production endpoint.
 * Tag as experimental rather than in-preview.
+
+0.2.0
++++++
+* Change name of required service parameter

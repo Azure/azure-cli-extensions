@@ -4,7 +4,7 @@ Microsoft Azure CLI 'hardware-security-modules' Extension
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name hardwareesecurityemodules
+az extension add --name hardware-security-modules
 ```
 
 ### Getting Help
