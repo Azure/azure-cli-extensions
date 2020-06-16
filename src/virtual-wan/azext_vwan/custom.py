@@ -158,17 +158,36 @@ def list_virtual_hubs(cmd, resource_group_name=None):
 
 def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name, remote_virtual_network,
                                allow_hub_to_remote_vnet_transit=None, allow_remote_vnet_to_use_hub_vnet_gateways=None,
-                               enable_internet_security=None, no_wait=False):
-    HubVirtualNetworkConnection, SubResource = cmd.get_models(
-        'HubVirtualNetworkConnection', 'SubResource')
-    client = network_client_factory(cmd.cli_ctx).virtual_hubs
+                               enable_internet_security=None, associated_route_table=None,
+                               propagated_route_tables=None, labels=None, route_name=None, address_prefixes=None,
+                               next_hop_ip_address=None, no_wait=False):
+    HubVirtualNetworkConnection, SubResource, RoutingConfiguration, PropagatedRouteTable, VnetRoute, StaticRoute = cmd.get_models('HubVirtualNetworkConnection', 'SubResource', 'RoutingConfiguration', 'PropagatedRouteTable', 'VnetRoute', 'StaticRoute')
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hubs
     hub = client.get(resource_group_name, virtual_hub_name)
+
+    propagated_route_tables = PropagatedRouteTable(
+        labels=labels,
+        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None
+    )
+    static_route = StaticRoute(
+        name=route_name,
+        address_prefixes=address_prefixes,
+        next_hop_ip_address=next_hop_ip_address
+    )
+    vnet_routes = VnetRoute(static_routes=[static_route])
+    routing_configuration = RoutingConfiguration(
+        associated_route_table=SubResource(id=associated_route_table),
+        propagated_route_tables=propagated_route_tables,
+        vnet_routes=vnet_routes
+    )
+
     connection = HubVirtualNetworkConnection(
         name=connection_name,
         remote_virtual_network=SubResource(id=remote_virtual_network),
         allow_hub_to_remote_vnet_transit=allow_hub_to_remote_vnet_transit,
         allow_remote_vnet_to_use_hub_vnet_gateway=allow_remote_vnet_to_use_hub_vnet_gateways,
-        enable_internet_security=enable_internet_security
+        enable_internet_security=enable_internet_security,
+        routing_configuration=routing_configuration
     )
     _upsert(hub, 'virtual_network_connections', connection, 'name', warn=True)
     poller = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, virtual_hub_name, hub)
@@ -436,10 +455,21 @@ def update_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_unit=No
 def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connection_name,
                                   remote_vpn_site, routing_weight=None, protocol_type=None,
                                   connection_bandwidth=None, shared_key=None, enable_bgp=None,
-                                  enable_rate_limiting=None, enable_internet_security=None, no_wait=False):
-    client = network_client_factory(cmd.cli_ctx).vpn_gateways
-    VpnConnection, SubResource = cmd.get_models('VpnConnection', 'SubResource')
+                                  enable_rate_limiting=None, enable_internet_security=None, no_wait=False,
+                                  associated_route_table=None, propagated_route_tables=None, labels=None):
+    client = network_client_route_table_factory(cmd.cli_ctx).vpn_gateways
+    VpnConnection, SubResource, RoutingConfiguration, PropagatedRouteTable = cmd.get_models('VpnConnection', 'SubResource', 'RoutingConfiguration', 'PropagatedRouteTable')
     gateway = client.get(resource_group_name, gateway_name)
+
+    propagated_route_tables = PropagatedRouteTable(
+        labels=labels,
+        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables]
+    )
+    routing_configuration = RoutingConfiguration(
+        associated_route_table=SubResource(id=associated_route_table),
+        propagated_route_tables=propagated_route_tables
+    )
+
     conn = VpnConnection(
         name=connection_name,
         remote_vpn_site=SubResource(id=remote_vpn_site),
@@ -449,7 +479,8 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
         shared_key=shared_key,
         enable_bgp=enable_bgp,
         enable_rate_limiting=enable_rate_limiting,
-        enable_internet_security=enable_internet_security
+        enable_internet_security=enable_internet_security,
+        routing_configuration=routing_configuration
     )
     _upsert(gateway, 'connections', conn, 'name')
     return sdk_no_wait(no_wait, client.create_or_update,

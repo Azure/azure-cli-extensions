@@ -68,6 +68,14 @@ def load_arguments(self, _):
         c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', help='Allow remote VNet to use hub\'s VNet gateways.')
         c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
 
+    with self.argument_context('network vhub connection', arg_group='Routing Configuration', resource_type=CUSTOM_VHUB_ROUTE_TABLE, min_api='2020-04-01') as c:
+        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
+        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
+        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
+        c.argument('address_prefixes', nargs='+', help='Space-separated list of all address prefixes.')
+        c.argument('next_hop_ip_address', options_list='--next-hop', help='TThe ip address of the next hop.',  min_api='2020-04-01')
+        c.argument('route_name', help='The name of the StaticRoute that is unique within a VnetRoute.', min_api='2020-04-01')
+
     with self.argument_context('network vhub connection list') as c:
         c.argument('resource_name', vhub_name_type, id_part=None)
 
