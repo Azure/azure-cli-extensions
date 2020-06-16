@@ -442,6 +442,7 @@ def publish_blueprint(cmd,
                       change_notes=None):
     body = {}
     body['change_notes'] = change_notes  # str
+    body['blueprint_name'] = blueprint_name
     return client.create(scope=scope,
                          blueprint_name=blueprint_name,
                          version_id=version_id,
@@ -480,8 +481,9 @@ def list_blueprint_version_artifact(cmd, client, blueprint_name,
 
 
 def _del_artifact_name(rg):
-    del rg['artifact_name']
-    return rg
+    rg_copy = rg.copy()
+    del rg_copy['artifact_name']
+    return rg_copy
 
 
 def create_blueprint_assignment(cmd,
