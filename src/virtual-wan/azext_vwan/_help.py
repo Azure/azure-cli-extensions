@@ -324,6 +324,10 @@ helps['network vpn-server-config'] = """
 helps['network vpn-server-config create'] = """
     type: command
     short-summary: Create a VPN server configuration.
+    examples:
+      - name: Create a VPN server configuration with VPN auth type
+        text: |
+            az network vpn-server-config create -n MyVPNServerConfig -g MyRG --vpn-client-root-certs "ApplicationGatewayAuthCert.cer" --vpn-client-revoked-certs "ApplicationGatewayAuthCert.pem"
 """
 
 helps['network vpn-server-config list'] = """
@@ -339,6 +343,10 @@ helps['network vpn-server-config show'] = """
 helps['network vpn-server-config set'] = """
     type: command
     short-summary: Set settings of a VPN server configuration.
+    examples:
+      - name: Set a VPN server configuration with Radius auth type
+        text: |
+            az network vpn-server-config set -n MyVPNServerConfig -g MyRG --radius-client-root-certs "ApplicationGatewayAuthCert.cer" --radius-server-root-certs "ApplicationGatewayAuthCert.pem" --radius-servers address=test1 secret=clitest score=10 --radius-servers address=test2 secret=clitest score=10
 """
 
 helps['network vpn-server-config delete'] = """
@@ -386,6 +394,10 @@ helps['network p2s-vpn-gateway'] = """
 helps['network p2s-vpn-gateway create'] = """
     type: command
     short-summary: Create a point-to-site VPN gateway.
+    examples:
+      - name: Create a point-to-site VPN gateway.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24
 """
 
 helps['network p2s-vpn-gateway list'] = """

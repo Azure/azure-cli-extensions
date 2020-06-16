@@ -50,8 +50,8 @@ class AzureVWanVHubScenario(ScenarioTest):
     def test_azure_vpn_server_config_basic_scenario(self, resource_group):
         self.kwargs.update({
             'vserverconfig': 'clitestserverconfig',
-            'cert_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.cer'),
-            'pem_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.pem'),
+            'cert_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.cer'),
+            'pem_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.pem'),
             'rg': resource_group,
             'aad_tenant': 'https://login.microsoftonline.com/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4',
             'aad_issuer': 'https://sts.windows.net/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4/',
@@ -149,8 +149,8 @@ class AzureVWanVHubScenario(ScenarioTest):
             'vwan2': 'clitestvwan2',
             'vhub': 'clitestvhub',
             'vhub2': 'clitestvhub2',
-            'cert_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.cer'),
-            'pem_file': os.path.join(TEST_DIR, 'ApplicationGatewayAuthCert.pem'),
+            'cert_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.cer'),
+            'pem_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.pem'),
             'vserverconfig': 'clitestserverconfig',
             'vserverconfig2': 'clitestserverconfig2',
             'vp2sgateway': 'clitestvp2sgateway',
