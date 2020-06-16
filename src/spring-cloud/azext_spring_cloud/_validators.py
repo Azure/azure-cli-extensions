@@ -35,7 +35,8 @@ def validate_sku(namespace):
     if namespace.sku is not None:
         namespace.sku = namespace.sku.upper()
         if namespace.sku not in ['BASIC', 'STANDARD']:
-            raise CLIError("The pricing tier only accept value [Basic, Standard]")
+            raise CLIError("The pricing tier only accepts value [Basic, Standard]")
+
 
 
 def validate_name(namespace):
