@@ -96,7 +96,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
-                       help='If true, mount a 50G disk with default path.')
+                       help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:

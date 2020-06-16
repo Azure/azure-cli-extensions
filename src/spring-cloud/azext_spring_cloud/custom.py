@@ -10,7 +10,7 @@ from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from ._utils import _get_upload_local_file
+from ._utils import _get_upload_local_file, _get_persistent_disk_size
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from knack.log import get_logger
@@ -213,7 +213,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=50, mount_path="/persistent")
+            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     else:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
@@ -243,15 +243,15 @@ def app_update(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                https_only=None):
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
     properties = models.AppResourceProperties(public=is_public, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=50, mount_path="/persistent")
+            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
-
-    resource = client.services.get(resource_group, service)
-    location = resource.location
 
     app_resource = models.AppResource()
     app_resource.properties = properties
