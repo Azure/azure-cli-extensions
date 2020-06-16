@@ -14,7 +14,8 @@ from ._transformers import (
     transform_plan_secret_list_output)
 
 
-ADVANCED_MESSAGE_FUNC = lambda _: 'This command group is for advanced usage only.'
+def advanced_usage_message(_):
+    return 'This command is for advanced usage only.'
 
 
 def load_command_table(self, _):
@@ -50,15 +51,13 @@ def load_command_table(self, _):
     # Hidden commands that should largely be used by the dev team
     with self.command_group('codespace') as g:
         g.custom_command('set-config', 'set_config',
-                         deprecate_info=self.deprecate(hide=True, message_func=ADVANCED_MESSAGE_FUNC))
+                         deprecate_info=self.deprecate(hide=True, message_func=advanced_usage_message))
         g.custom_command('show-config', 'show_config',
-                         deprecate_info=self.deprecate(hide=True, message_func=ADVANCED_MESSAGE_FUNC))
-
+                         deprecate_info=self.deprecate(hide=True, message_func=advanced_usage_message))
 
     with self.command_group('codespace location') as g:
         g.custom_command('list', 'list_available_locations', table_transformer=transform_location_list_output)
         g.custom_show_command('show', 'get_location_details', table_transformer=transform_location_detail_output)
-
 
     # Mark all commands as in preview
     with self.command_group('codespace', is_preview=True):

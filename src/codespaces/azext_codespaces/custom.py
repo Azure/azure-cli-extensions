@@ -233,10 +233,9 @@ def open_codespace(cmd, client, plan_name, resource_group_name=None, codespace_i
 
 def set_config(cmd, config_rp_api_version='', config_service_domain='', config_clear=False):
     if config_clear and any([config_rp_api_version, config_service_domain]):
-            raise CLIError("If you wish to clear config, do not specify other values.")
-    else:
-        cs_config.set_rp_api_version(cmd.cli_ctx, config_rp_api_version)
-        cs_config.set_service_domain(cmd.cli_ctx, config_service_domain)
+        raise CLIError("If you wish to clear config, do not specify other values.")
+    cs_config.set_rp_api_version(cmd.cli_ctx, config_rp_api_version)
+    cs_config.set_service_domain(cmd.cli_ctx, config_service_domain)
 
 
 def show_config(cmd):
@@ -249,25 +248,36 @@ def list_plan_secrets(cmd, client, plan_name, resource_group_name=None):
     return cs_api.list_secrets(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
 
 
-def update_plan_secrets(cmd, client):
-    raise CLIError("TODO-DEREK")
-
-
-def create_plan_secret(cmd, client, plan_name, secret_name, secret_value, secret_note, resource_group_name=None):
+def update_plan_secrets(cmd, client, plan_name, secret_id,
+                        secret_name=None, secret_value=None, secret_note=None,
+                        secret_filters=None, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
-    create_data = {}
-    create_data['secretName'] = secret_name
-    create_data['value'] = secret_value
-    create_data['notes'] = secret_note
-    create_data['type'] = cs_api.SecretType.ENVIRONMENT_VARIABLE
-    create_data['scope'] = cs_api.SecretScope.USER
-    # TODO-DEREK add filters
-    create_data['filters'] = []
-    return cs_api.create_secret(token.access_token, plan.id, create_data, cli_ctx=cmd.cli_ctx)
+    data = {}
+    data['secretName'] = secret_name
+    data['value'] = secret_value
+    data['notes'] = secret_note
+    data['scope'] = cs_api.SecretScope.USER.value
+    data['filters'] = secret_filters
+    return cs_api.update_secret(token.access_token, plan.id, secret_id, data, cli_ctx=cmd.cli_ctx)
+
+
+def create_plan_secret(cmd, client, plan_name,
+                       secret_name, secret_value, secret_note=None,
+                       secret_filters=None, resource_group_name=None):
+    plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    data = {}
+    data['secretName'] = secret_name
+    data['value'] = secret_value
+    data['notes'] = secret_note
+    data['type'] = cs_api.SecretType.ENVIRONMENT_VARIABLE.value
+    data['scope'] = cs_api.SecretScope.USER.value
+    data['filters'] = secret_filters
+    return cs_api.create_secret(token.access_token, plan.id, data, cli_ctx=cmd.cli_ctx)
 
 
 def delete_plan_secret(cmd, client, plan_name, secret_id, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
     token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
-    cs_api.delete_secret(token.access_token, plan.id, cs_api.SecretScope.USER, secret_id, cli_ctx=cmd.cli_ctx)
+    cs_api.delete_secret(token.access_token, plan.id, secret_id, cs_api.SecretScope.USER.value, cli_ctx=cmd.cli_ctx)

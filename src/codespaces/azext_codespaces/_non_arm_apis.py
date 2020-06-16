@@ -21,14 +21,17 @@ logger = get_logger(__name__)
 
 API_ROUTE = "/api/v1"
 
+
 # The current secret scopes available on the service
 class SecretScope(Enum):
     PLAN = 1
     USER = 2
 
+
 # The current secret types available on the service
 class SecretType(Enum):
     ENVIRONMENT_VARIABLE = 1
+
 
 def _get_user_agent_string():
     pv = platform.python_version()
@@ -44,8 +47,12 @@ def assert_status_hook(r, *_, **__):
 
 
 def response_logging_hook(response, *_, **__):
-    logger.debug('Request: %s', response.request.__dict__)
-    logger.debug('Response: %s', response.__dict__)
+    for k in response.request.__dict__:
+        if k and not k.startswith('_'):
+            logger.debug('codespaces-api.request : %s : %s', k, response.request.__dict__[k])
+    for k in response.__dict__:
+        if k and not k.startswith('_'):
+            logger.debug('codespaces-api.response : %s : %s', k, response.__dict__[k])
 
 
 class NoStripAuthSession(requests.Session):
@@ -184,13 +191,23 @@ def create_secret(access_token, plan_id, data, api_root=None, **_):
     url = f'{api_root}/secrets'
     headers = {'Authorization': f'Bearer {access_token}'}
     params = {'planId': plan_id}
-    response = session.post(url, headers=headers, json=data)
+    response = session.post(url, headers=headers, json=data, params=params)
     return response
 
 
 @custom_api_root_decorator
 @api_response_decorator
-def delete_secret(access_token, plan_id, scope, secret_id, api_root=None, **_):
+def update_secret(access_token, plan_id, secret_id, data, api_root=None, **_):
+    url = f'{api_root}/secrets/{secret_id}'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    params = {'planId': plan_id}
+    response = session.put(url, headers=headers, json=data, params=params)
+    return response
+
+
+@custom_api_root_decorator
+@api_response_decorator
+def delete_secret(access_token, plan_id, secret_id, scope, api_root=None, **_):
     url = f'{api_root}/secrets/{secret_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     params = {'planId': plan_id, 'scope': scope}

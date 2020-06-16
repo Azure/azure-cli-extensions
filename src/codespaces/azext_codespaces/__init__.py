@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.events import EVENT_INVOKER_POST_PARSE_ARGS
-from azure.cli.core import AzCommandsLoader
 from knack.log import get_logger
+from azure.cli.core import AzCommandsLoader
 
-from azext_codespaces._help import helps  # pylint: disable=unused-import
-from azext_codespaces._config import get_rp_api_version, get_service_domain, DEFAULT_SERVICE_DOMAIN
+from ._help import helps  # pylint: disable=unused-import
+from ._config import get_rp_api_version, get_service_domain, DEFAULT_SERVICE_DOMAIN
 
 logger = get_logger(__name__)
 
@@ -32,7 +32,7 @@ class CodespacesCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_codespaces._client_factory import cf_codespaces
+        from ._client_factory import cf_codespaces
         codespaces_custom = CliCommandType(
             operations_tmpl='azext_codespaces.custom#{}',
             client_factory=cf_codespaces)
@@ -40,12 +40,12 @@ class CodespacesCommandsLoader(AzCommandsLoader):
         super(CodespacesCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=codespaces_custom)
 
     def load_command_table(self, args):
-        from azext_codespaces.commands import load_command_table
+        from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_codespaces._params import load_arguments
+        from ._params import load_arguments
         load_arguments(self, command)
 
 
