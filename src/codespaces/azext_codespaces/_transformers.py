@@ -57,5 +57,7 @@ def transform_plan_secret_item_output(item):
                               ('secretType', item['type']),
                               ('scope', item['scope']),
                               ('lastModified', item['lastModified']),
-                              ('notes', item.get('notes', None))])
+                              ('filters', ' '.join(f"{v['type']}={v['value']}" for v in item.get('filters', []))),
+                              ('notes', item.get('notes', None)),
+                              ])
     return new_result
