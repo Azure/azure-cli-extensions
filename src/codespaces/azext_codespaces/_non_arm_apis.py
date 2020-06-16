@@ -8,12 +8,13 @@
 """
 
 import platform
-import requests
 from enum import Enum
+
+import requests
+
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core import __version__ as az_version
-
 from .version import VERSION
 from ._config import get_service_domain
 
