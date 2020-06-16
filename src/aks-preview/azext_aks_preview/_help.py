@@ -70,7 +70,7 @@ helps['aks create'] = """
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
-        - name: --aad-enable-azure-rbac
+        - name: --enable-azure-rbac
           type: bool
           short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
         - name: --aad-admin-group-object-ids
