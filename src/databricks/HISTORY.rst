@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
++++++
+* az databricks workspace create/update: add customer-managed key feature
+
 0.2.0
 +++++
 * Rename --virtual-network to --vnet
