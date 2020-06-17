@@ -22,6 +22,7 @@ def create_databricks_workspace(cmd, client,
                                 custom_public_subnet_name=None,
                                 custom_private_subnet_name=None,
                                 tags=None,
+                                prepare_encryption=None,
                                 no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
@@ -30,12 +31,10 @@ def create_databricks_workspace(cmd, client,
     body.setdefault('sku', {})['name'] = sku_name  # str
 
     parameters = {}
-    if custom_virtual_network_id is not None:
-        _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
-    if custom_public_subnet_name is not None:
-        _set_parameter_value(parameters, 'custom_public_subnet_name', custom_public_subnet_name)  # str
-    if custom_private_subnet_name is not None:
-        _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
+    _set_parameter_value(parameters, 'custom_virtual_network_id', custom_virtual_network_id)  # str
+    _set_parameter_value(parameters, 'custom_public_subnet_name', custom_public_subnet_name)  # str
+    _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
+    _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
     body['parameters'] = parameters
 
     return sdk_no_wait(no_wait, client.create_or_update,
@@ -45,18 +44,42 @@ def create_databricks_workspace(cmd, client,
 
 
 def _set_parameter_value(parameters, field, value):
-    parameters.setdefault(field, {})['value'] = value
+    if value is not None:
+        parameters.setdefault(field, {})['value'] = value
 
 
 def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branches
                                 resource_group_name,
                                 workspace_name,
                                 tags=None,
+                                prepare_encryption=None,
+                                encryption_key_source=None,
+                                encryption_key_name=None,
+                                encryption_key_version=None,
+                                encryption_key_vault=None,
                                 no_wait=False):
-    return sdk_no_wait(no_wait, client.update,
+    body = client.get(resource_group_name=resource_group_name,
+                      workspace_name=workspace_name).as_dict()
+    parameters = body['parameters']
+    if tags is not None:
+        body['tags'] = tags
+    if prepare_encryption is not None:
+        _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
+    if encryption_key_source is not None:
+        encryption = {}
+        encryption['key_source'] = encryption_key_source
+        if encryption_key_name is not None:
+            encryption['key_name'] = encryption_key_name
+        if encryption_key_version is not None:
+            encryption['key_version'] = encryption_key_version
+        if encryption_key_vault is not None:
+            encryption['key_vault_uri'] = encryption_key_vault
+        _set_parameter_value(parameters, 'encryption', encryption)
+
+    return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
-                       tags=tags)
+                       parameters=body)
 
 
 def delete_databricks_workspace(cmd, client, resource_group_name,

@@ -19,6 +19,12 @@ class CustomParameterType(str, Enum):
     string = "String"
 
 
+class KeySource(str, Enum):
+
+    default = "Default"
+    microsoft_keyvault = "Microsoft.Keyvault"
+
+
 class ProvisioningState(str, Enum):
 
     accepted = "Accepted"
