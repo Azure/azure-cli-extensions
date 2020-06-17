@@ -9,8 +9,9 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, tags_type, get_location_type, get_three_state_flag, get_enum_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from .profiles import CUSTOM_VHUB_ROUTE_TABLE
 from ._validators import get_network_resource_name_or_id
+from .profiles import CUSTOM_VHUB_ROUTE_TABLE
+from .action import RadiusServerAddAction
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -20,6 +21,8 @@ def load_arguments(self, _):
      VirtualNetworkGatewayConnectionProtocol) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
          'VirtualNetworkGatewayConnectionProtocol')
+
+    (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType', resource_type=CUSTOM_VHUB_ROUTE_TABLE)
 
     # region VirtualWAN
     vwan_name_type = CLIArgumentType(options_list='--vwan-name', metavar='NAME', help='Name of the virtual WAN.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/virtualWANs'))
@@ -151,4 +154,45 @@ def load_arguments(self, _):
     with self.argument_context('network vpn-site download') as c:
         c.argument('virtual_wan_name', vwan_name_type, id_part=None)
         c.argument('vpn_sites', help='Space-separated list of VPN site names or IDs.', nargs='+', validator=get_network_resource_name_or_id('vpn_sites', 'vpnSites'))
+    # endregion
+
+    # region VpnServerConfigurations
+    with self.argument_context('network vpn-server-config') as c:
+        c.argument('vpn_protocols', nargs='+', options_list=['--protocols'], arg_type=get_enum_type(VpnGatewayTunnelingProtocol), help='VPN protocols for the VpnServerConfiguration.')
+        c.argument('vpn_auth_types', nargs='+', options_list=['--auth-types'], arg_type=get_enum_type(VpnAuthenticationType), help='VPN authentication types for the VpnServerConfiguration.')
+        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('vpn_server_configuration_name', options_list=['--name', '-n'], help='Name of the Vpn server configuration.')
+    with self.argument_context('network vpn-server-config', arg_group='AAD Auth') as c:
+        c.argument('aad_tenant', help='AAD Vpn authentication parameter AAD tenant.')
+        c.argument('aad_audience', help='AAD Vpn authentication parameter AAD audience.')
+        c.argument('aad_issuer', help='AAD Vpn authentication parameter AAD issuer.')
+    with self.argument_context('network vpn-server-config', arg_group='Certificate Auth') as c:
+        c.argument('vpn_client_root_certs', help='List of VPN client root certificate file paths.', nargs='+')
+        c.argument('vpn_client_revoked_certs', help='List of VPN client revoked certificate file paths.', nargs='+')
+    with self.argument_context('network vpn-server-config', arg_group='Radius Auth') as c:
+        c.argument('radius_client_root_certs', help='List of Radius client root certificate file paths.', nargs='+')
+        c.argument('radius_server_root_certs', help='List of Radius server root certificate file paths.', nargs='+')
+        c.argument('radius_servers', nargs='+', action=RadiusServerAddAction, help='Radius Server configuration.')
+
+    with self.argument_context('network vpn-server-config', arg_group='IP Security') as c:
+        c.argument('sa_life_time_seconds', options_list='--sa-lifetime', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site-to-site VPN tunnel.', type=int)
+        c.argument('sa_data_size_kilobytes', options_list='--sa-data-size', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site-to-site VPN tunnel.', type=int)
+        c.argument('ipsec_encryption', arg_type=get_enum_type(IpsecEncryption), help='IPSec encryption algorithm (IKE phase 1).')
+        c.argument('ipsec_integrity', arg_type=get_enum_type(IpsecIntegrity), help='IPSec integrity algorithm (IKE phase 1).')
+        c.argument('ike_encryption', arg_type=get_enum_type(IkeEncryption), help='IKE encryption algorithm (IKE phase 2).')
+        c.argument('ike_integrity', arg_type=get_enum_type(IkeIntegrity), help='IKE integrity algorithm (IKE phase 2).')
+        c.argument('dh_group', arg_type=get_enum_type(DhGroup), help='DH Groups used in IKE Phase 1 for initial SA.')
+        c.argument('pfs_group', arg_type=get_enum_type(PfsGroup), help='The Pfs Groups used in IKE Phase 2 for new child SA.')
+        c.argument('index', type=int, help='List index of the ipsec policy(starting with 0).')
+    # endregion
+
+    # region P2SVpnGateways
+    with self.argument_context('network p2s-vpn-gateway') as c:
+        c.argument('address_space', nargs='+', help='Address space for P2S VpnClient. Space-separated list of IP address ranges.')
+        c.argument('p2s_conn_config_name', options_list=['--config-name'], help='Name or p2s connection configuration.')
+        c.argument('scale_unit', type=int, help='The scale unit for this VPN gateway.')
+        c.argument('gateway_name', options_list=['--name', '-n'], help='Name of the P2S Vpn Gateway.')
+        c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
+        c.argument('vpn_server_config', help='Name or ID of a vpn server configuration.', validator=get_network_resource_name_or_id('vpn_server_config', 'vpnServerConfigurations'))
+        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
     # endregion
