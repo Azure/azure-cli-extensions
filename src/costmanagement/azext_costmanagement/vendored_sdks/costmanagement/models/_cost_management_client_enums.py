@@ -15,6 +15,86 @@ class AccumulatedType(str, Enum):
     true = "true"
     false = "false"
 
+class AlertCategory(str, Enum):
+    """Alert category
+    """
+
+    cost = "Cost"
+    usage = "Usage"
+    billing = "Billing"
+    system = "System"
+
+class AlertCriteria(str, Enum):
+    """Criteria that triggered alert
+    """
+
+    cost_threshold_exceeded = "CostThresholdExceeded"
+    usage_threshold_exceeded = "UsageThresholdExceeded"
+    credit_threshold_approaching = "CreditThresholdApproaching"
+    credit_threshold_reached = "CreditThresholdReached"
+    quota_threshold_approaching = "QuotaThresholdApproaching"
+    quota_threshold_reached = "QuotaThresholdReached"
+    multi_currency = "MultiCurrency"
+    forecast_cost_threshold_exceeded = "ForecastCostThresholdExceeded"
+    forecast_usage_threshold_exceeded = "ForecastUsageThresholdExceeded"
+    invoice_due_date_approaching = "InvoiceDueDateApproaching"
+    invoice_due_date_reached = "InvoiceDueDateReached"
+    cross_cloud_new_data_available = "CrossCloudNewDataAvailable"
+    cross_cloud_collection_error = "CrossCloudCollectionError"
+    general_threshold_error = "GeneralThresholdError"
+
+class AlertOperator(str, Enum):
+    """operator used to compare currentSpend with amount
+    """
+
+    none = "None"
+    equal_to = "EqualTo"
+    greater_than = "GreaterThan"
+    greater_than_or_equal_to = "GreaterThanOrEqualTo"
+    less_than = "LessThan"
+    less_than_or_equal_to = "LessThanOrEqualTo"
+
+class AlertSource(str, Enum):
+    """Source of alert
+    """
+
+    preset = "Preset"
+    user = "User"
+
+class AlertStatus(str, Enum):
+    """alert status
+    """
+
+    none = "None"
+    active = "Active"
+    overridden = "Overridden"
+    resolved = "Resolved"
+    dismissed = "Dismissed"
+
+class AlertTimeGrainType(str, Enum):
+    """Type of timegrain cadence
+    """
+
+    none = "None"
+    monthly = "Monthly"
+    quarterly = "Quarterly"
+    annually = "Annually"
+    billing_month = "BillingMonth"
+    billing_quarter = "BillingQuarter"
+    billing_annual = "BillingAnnual"
+
+class AlertType(str, Enum):
+    """type of alert
+    """
+
+    budget = "Budget"
+    invoice = "Invoice"
+    credit = "Credit"
+    quota = "Quota"
+    general = "General"
+    x_cloud = "xCloud"
+    budget_forecast = "BudgetForecast"
+
 class ChartType(str, Enum):
     """Chart type of the main view in Cost Analysis. Required.
     """

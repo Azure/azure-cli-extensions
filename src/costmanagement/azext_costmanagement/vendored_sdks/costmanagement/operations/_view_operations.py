@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -30,7 +30,7 @@ class ViewOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -49,29 +49,30 @@ class ViewOperations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ViewListResult"
+        # type: (...) -> Iterable["models.ViewListResult"]
         """Lists all views by tenant and object.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ViewListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.ViewListResult
+        :return: An iterator like instance of either ViewListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~cost_management_client.models.ViewListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ViewListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list.metadata['url']  # type: ignore
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -103,14 +104,14 @@ class ViewOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.CostManagement/views'}
+    list.metadata = {'url': '/providers/Microsoft.CostManagement/views'}  # type: ignore
 
     def list_by_scope(
         self,
         scope,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ViewListResult"
+        # type: (...) -> Iterable["models.ViewListResult"]
         """Lists all views at the given scope.
 
         :param scope: The scope associated with view operations. This includes
@@ -132,29 +133,30 @@ class ViewOperations(object):
      External Subscription scope.
         :type scope: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ViewListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.ViewListResult
+        :return: An iterator like instance of either ViewListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~cost_management_client.models.ViewListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ViewListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_scope.metadata['url']
+                url = self.list_by_scope.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'scope': self._serialize.url("scope", scope, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -186,7 +188,7 @@ class ViewOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views'}
+    list_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views'}  # type: ignore
 
     def get(
         self,
@@ -199,16 +201,17 @@ class ViewOperations(object):
         :param view_name: View name.
         :type view_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: View or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.View
+        :return: View, or the result of cls(response)
+        :rtype: ~cost_management_client.models.View
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.View"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'viewName': self._serialize.url("view_name", view_name, 'str'),
         }
@@ -235,10 +238,10 @@ class ViewOperations(object):
         deserialized = self._deserialize('View', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}
+    get.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore
 
     def create_or_update(
         self,
@@ -249,8 +252,8 @@ class ViewOperations(object):
         chart=None,  # type: Optional[Union[str, "models.ChartType"]]
         accumulated=None,  # type: Optional[Union[str, "models.AccumulatedType"]]
         metric=None,  # type: Optional[Union[str, "models.MetricType"]]
-        kpis=None,  # type: Optional[List["KpiProperties"]]
-        pivots=None,  # type: Optional[List["PivotProperties"]]
+        kpis=None,  # type: Optional[List["models.KpiProperties"]]
+        pivots=None,  # type: Optional[List["models.PivotProperties"]]
         timeframe=None,  # type: Optional[Union[str, "models.ReportTimeframeType"]]
         time_period=None,  # type: Optional["models.ReportConfigTimePeriod"]
         dataset=None,  # type: Optional["models.ReportConfigDataset"]
@@ -285,36 +288,37 @@ class ViewOperations(object):
          ExternalSubscription scope.
         :type scope: str
         :param chart: Chart type of the main view in Cost Analysis. Required.
-        :type chart: str or ~azure.mgmt.costmanagement.models.ChartType
+        :type chart: str or ~cost_management_client.models.ChartType
         :param accumulated: Show costs accumulated over time.
-        :type accumulated: str or ~azure.mgmt.costmanagement.models.AccumulatedType
+        :type accumulated: str or ~cost_management_client.models.AccumulatedType
         :param metric: Metric to use when displaying costs.
-        :type metric: str or ~azure.mgmt.costmanagement.models.MetricType
+        :type metric: str or ~cost_management_client.models.MetricType
         :param kpis: List of KPIs to show in Cost Analysis UI.
-        :type kpis: list[~azure.mgmt.costmanagement.models.KpiProperties]
+        :type kpis: list[~cost_management_client.models.KpiProperties]
         :param pivots: Configuration of 3 sub-views in the Cost Analysis UI.
-        :type pivots: list[~azure.mgmt.costmanagement.models.PivotProperties]
+        :type pivots: list[~cost_management_client.models.PivotProperties]
         :param timeframe: The time frame for pulling data for the report. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.ReportTimeframeType
+        :type timeframe: str or ~cost_management_client.models.ReportTimeframeType
         :param time_period: Has time period for pulling data for the report.
-        :type time_period: ~azure.mgmt.costmanagement.models.ReportConfigTimePeriod
+        :type time_period: ~cost_management_client.models.ReportConfigTimePeriod
         :param dataset: Has definition for data in this report config.
-        :type dataset: ~azure.mgmt.costmanagement.models.ReportConfigDataset
+        :type dataset: ~cost_management_client.models.ReportConfigDataset
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: View or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.View or ~azure.mgmt.costmanagement.models.View
+        :return: View, or the result of cls(response)
+        :rtype: ~cost_management_client.models.View
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.View"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.View(e_tag=e_tag, display_name=display_name, scope=scope, chart=chart, accumulated=accumulated, metric=metric, kpis=kpis, pivots=pivots, timeframe=timeframe, time_period=time_period, dataset=dataset)
         api_version = "2019-11-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update.metadata['url']
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'viewName': self._serialize.url("view_name", view_name, 'str'),
         }
@@ -351,10 +355,10 @@ class ViewOperations(object):
             deserialized = self._deserialize('View', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}
+    create_or_update.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore
 
     def delete(
         self,
@@ -367,16 +371,17 @@ class ViewOperations(object):
         :param view_name: View name.
         :type view_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'viewName': self._serialize.url("view_name", view_name, 'str'),
         }
@@ -400,9 +405,9 @@ class ViewOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}
+    delete.metadata = {'url': '/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore
 
     def get_by_scope(
         self,
@@ -434,16 +439,17 @@ class ViewOperations(object):
         :param view_name: View name.
         :type view_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: View or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.View
+        :return: View, or the result of cls(response)
+        :rtype: ~cost_management_client.models.View
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.View"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.get_by_scope.metadata['url']
+        url = self.get_by_scope.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str'),
             'viewName': self._serialize.url("view_name", view_name, 'str'),
@@ -471,10 +477,10 @@ class ViewOperations(object):
         deserialized = self._deserialize('View', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}
+    get_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore
 
     def create_or_update_by_scope(
         self,
@@ -486,8 +492,8 @@ class ViewOperations(object):
         chart=None,  # type: Optional[Union[str, "models.ChartType"]]
         accumulated=None,  # type: Optional[Union[str, "models.AccumulatedType"]]
         metric=None,  # type: Optional[Union[str, "models.MetricType"]]
-        kpis=None,  # type: Optional[List["KpiProperties"]]
-        pivots=None,  # type: Optional[List["PivotProperties"]]
+        kpis=None,  # type: Optional[List["models.KpiProperties"]]
+        pivots=None,  # type: Optional[List["models.PivotProperties"]]
         timeframe=None,  # type: Optional[Union[str, "models.ReportTimeframeType"]]
         time_period=None,  # type: Optional["models.ReportConfigTimePeriod"]
         dataset=None,  # type: Optional["models.ReportConfigDataset"]
@@ -540,36 +546,37 @@ class ViewOperations(object):
          ExternalSubscription scope.
         :type view_properties_scope: str
         :param chart: Chart type of the main view in Cost Analysis. Required.
-        :type chart: str or ~azure.mgmt.costmanagement.models.ChartType
+        :type chart: str or ~cost_management_client.models.ChartType
         :param accumulated: Show costs accumulated over time.
-        :type accumulated: str or ~azure.mgmt.costmanagement.models.AccumulatedType
+        :type accumulated: str or ~cost_management_client.models.AccumulatedType
         :param metric: Metric to use when displaying costs.
-        :type metric: str or ~azure.mgmt.costmanagement.models.MetricType
+        :type metric: str or ~cost_management_client.models.MetricType
         :param kpis: List of KPIs to show in Cost Analysis UI.
-        :type kpis: list[~azure.mgmt.costmanagement.models.KpiProperties]
+        :type kpis: list[~cost_management_client.models.KpiProperties]
         :param pivots: Configuration of 3 sub-views in the Cost Analysis UI.
-        :type pivots: list[~azure.mgmt.costmanagement.models.PivotProperties]
+        :type pivots: list[~cost_management_client.models.PivotProperties]
         :param timeframe: The time frame for pulling data for the report. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.ReportTimeframeType
+        :type timeframe: str or ~cost_management_client.models.ReportTimeframeType
         :param time_period: Has time period for pulling data for the report.
-        :type time_period: ~azure.mgmt.costmanagement.models.ReportConfigTimePeriod
+        :type time_period: ~cost_management_client.models.ReportConfigTimePeriod
         :param dataset: Has definition for data in this report config.
-        :type dataset: ~azure.mgmt.costmanagement.models.ReportConfigDataset
+        :type dataset: ~cost_management_client.models.ReportConfigDataset
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: View or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.View or ~azure.mgmt.costmanagement.models.View
+        :return: View, or the result of cls(response)
+        :rtype: ~cost_management_client.models.View
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.View"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.View(e_tag=e_tag, display_name=display_name, scope=view_properties_scope, chart=chart, accumulated=accumulated, metric=metric, kpis=kpis, pivots=pivots, timeframe=timeframe, time_period=time_period, dataset=dataset)
         api_version = "2019-11-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update_by_scope.metadata['url']
+        url = self.create_or_update_by_scope.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str'),
             'viewName': self._serialize.url("view_name", view_name, 'str'),
@@ -607,10 +614,10 @@ class ViewOperations(object):
             deserialized = self._deserialize('View', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}
+    create_or_update_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore
 
     def delete_by_scope(
         self,
@@ -642,16 +649,17 @@ class ViewOperations(object):
         :param view_name: View name.
         :type view_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.delete_by_scope.metadata['url']
+        url = self.delete_by_scope.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str'),
             'viewName': self._serialize.url("view_name", view_name, 'str'),
@@ -676,6 +684,6 @@ class ViewOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}
+    delete_by_scope.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/views/{viewName}'}  # type: ignore

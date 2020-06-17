@@ -9,11 +9,11 @@
 try:
     from ._models_py3 import Alert
     from ._models_py3 import AlertPropertiesDefinition
-    from ._models_py3 import AlertPropertiesDetails
     from ._models_py3 import AlertsResult
     from ._models_py3 import CommonExportProperties
     from ._models_py3 import Dimension
     from ._models_py3 import DimensionsListResult
+    from ._models_py3 import DismissAlertPayload
     from ._models_py3 import ErrorDetails
     from ._models_py3 import ErrorResponse
     from ._models_py3 import Export
@@ -53,11 +53,11 @@ try:
 except (SyntaxError, ImportError):
     from ._models import Alert  # type: ignore
     from ._models import AlertPropertiesDefinition  # type: ignore
-    from ._models import AlertPropertiesDetails  # type: ignore
     from ._models import AlertsResult  # type: ignore
     from ._models import CommonExportProperties  # type: ignore
     from ._models import Dimension  # type: ignore
     from ._models import DimensionsListResult  # type: ignore
+    from ._models import DismissAlertPayload  # type: ignore
     from ._models import ErrorDetails  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import Export  # type: ignore
@@ -97,6 +97,13 @@ except (SyntaxError, ImportError):
 
 from ._cost_management_client_enums import (
     AccumulatedType,
+    AlertCategory,
+    AlertCriteria,
+    AlertOperator,
+    AlertSource,
+    AlertStatus,
+    AlertTimeGrainType,
+    AlertType,
     ChartType,
     ExecutionStatus,
     ExecutionType,
@@ -121,11 +128,11 @@ from ._cost_management_client_enums import (
 __all__ = [
     'Alert',
     'AlertPropertiesDefinition',
-    'AlertPropertiesDetails',
     'AlertsResult',
     'CommonExportProperties',
     'Dimension',
     'DimensionsListResult',
+    'DismissAlertPayload',
     'ErrorDetails',
     'ErrorResponse',
     'Export',
@@ -163,6 +170,13 @@ __all__ = [
     'View',
     'ViewListResult',
     'AccumulatedType',
+    'AlertCategory',
+    'AlertCriteria',
+    'AlertOperator',
+    'AlertSource',
+    'AlertStatus',
+    'AlertTimeGrainType',
+    'AlertType',
     'ChartType',
     'ExecutionStatus',
     'ExecutionType',

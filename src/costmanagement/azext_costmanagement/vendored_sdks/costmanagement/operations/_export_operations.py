@@ -29,7 +29,7 @@ class ExportOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -70,16 +70,17 @@ class ExportOperations(object):
          specific for partners.
         :type scope: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ExportListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.ExportListResult
+        :return: ExportListResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.ExportListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExportListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.list.metadata['url']
+        url = self.list.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
@@ -106,10 +107,10 @@ class ExportOperations(object):
         deserialized = self._deserialize('ExportListResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports'}
+    list.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports'}  # type: ignore
 
     def get(
         self,
@@ -140,16 +141,17 @@ class ExportOperations(object):
         :param export_name: Export Name.
         :type export_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Export or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.Export
+        :return: Export, or the result of cls(response)
+        :rtype: ~cost_management_client.models.Export
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Export"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'exportName': self._serialize.url("export_name", export_name, 'str'),
@@ -177,22 +179,21 @@ class ExportOperations(object):
         deserialized = self._deserialize('Export', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}
+    get.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}  # type: ignore
 
     def create_or_update(
         self,
         scope,  # type: str
         export_name,  # type: str
-        e_tag=None,  # type: Optional[str]
         type=None,  # type: Optional[Union[str, "models.ExportType"]]
         timeframe=None,  # type: Optional[Union[str, "models.TimeframeType"]]
         time_period=None,  # type: Optional["models.QueryTimePeriod"]
         configuration=None,  # type: Optional["models.QueryDatasetConfiguration"]
-        aggregation=None,  # type: Optional[Dict[str, "QueryAggregation"]]
-        grouping=None,  # type: Optional[List["QueryGrouping"]]
+        aggregation=None,  # type: Optional[Dict[str, "models.QueryAggregation"]]
+        grouping=None,  # type: Optional[List["models.QueryGrouping"]]
         filter=None,  # type: Optional["models.QueryFilter"]
         destination=None,  # type: Optional["models.ExportDeliveryDestination"]
         status=None,  # type: Optional[Union[str, "models.StatusType"]]
@@ -222,52 +223,50 @@ class ExportOperations(object):
         :type scope: str
         :param export_name: Export Name.
         :type export_name: str
-        :param e_tag: eTag of the resource. To handle concurrent update scenario, this field will be
-         used to determine whether the user is updating the latest version or not.
-        :type e_tag: str
         :param type: The type of the query.
-        :type type: str or ~azure.mgmt.costmanagement.models.ExportType
+        :type type: str or ~cost_management_client.models.ExportType
         :param timeframe: The time frame for pulling data for the query. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.TimeframeType
+        :type timeframe: str or ~cost_management_client.models.TimeframeType
         :param time_period: Has time period for pulling data for the query.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
+        :type time_period: ~cost_management_client.models.QueryTimePeriod
         :param configuration: Has configuration information for the data in the export. The
          configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
+        :type configuration: ~cost_management_client.models.QueryDatasetConfiguration
         :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
          item in the dictionary is the alias for the aggregated column. Query can have up to 2
          aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
+        :type aggregation: dict[str, ~cost_management_client.models.QueryAggregation]
         :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
          by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
+        :type grouping: list[~cost_management_client.models.QueryGrouping]
         :param filter: Has filter expression to use in the query.
-        :type filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :type filter: ~cost_management_client.models.QueryFilter
         :param destination: Has destination for the export being delivered.
-        :type destination: ~azure.mgmt.costmanagement.models.ExportDeliveryDestination
+        :type destination: ~cost_management_client.models.ExportDeliveryDestination
         :param status: The status of the schedule. Whether active or not. If inactive, the export's
          scheduled execution is paused.
-        :type status: str or ~azure.mgmt.costmanagement.models.StatusType
+        :type status: str or ~cost_management_client.models.StatusType
         :param recurrence: The schedule recurrence.
-        :type recurrence: str or ~azure.mgmt.costmanagement.models.RecurrenceType
+        :type recurrence: str or ~cost_management_client.models.RecurrenceType
         :param recurrence_period: Has start and end date of the recurrence. The start date must be in
          future. If present, the end date must be greater than start date.
-        :type recurrence_period: ~azure.mgmt.costmanagement.models.ExportRecurrencePeriod
+        :type recurrence_period: ~cost_management_client.models.ExportRecurrencePeriod
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Export or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.Export or ~azure.mgmt.costmanagement.models.Export
+        :return: Export, or the result of cls(response)
+        :rtype: ~cost_management_client.models.Export
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Export"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.Export(e_tag=e_tag, type_properties_definition_type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter, destination=destination, status=status, recurrence=recurrence, recurrence_period=recurrence_period)
+        _parameters = models.Export(type_properties_definition_type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter, destination=destination, status=status, recurrence=recurrence, recurrence_period=recurrence_period)
         api_version = "2019-11-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update.metadata['url']
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'exportName': self._serialize.url("export_name", export_name, 'str'),
@@ -305,10 +304,10 @@ class ExportOperations(object):
             deserialized = self._deserialize('Export', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}
+    create_or_update.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}  # type: ignore
 
     def delete(
         self,
@@ -339,16 +338,17 @@ class ExportOperations(object):
         :param export_name: Export Name.
         :type export_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'exportName': self._serialize.url("export_name", export_name, 'str'),
@@ -373,9 +373,9 @@ class ExportOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}
+    delete.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}'}  # type: ignore
 
     def execute(
         self,
@@ -406,16 +406,17 @@ class ExportOperations(object):
         :param export_name: Export Name.
         :type export_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.execute.metadata['url']
+        url = self.execute.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'exportName': self._serialize.url("export_name", export_name, 'str'),
@@ -440,9 +441,9 @@ class ExportOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    execute.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}/run'}
+    execute.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}/run'}  # type: ignore
 
     def get_execution_history(
         self,
@@ -473,16 +474,17 @@ class ExportOperations(object):
         :param export_name: Export Name.
         :type export_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ExportExecutionListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.ExportExecutionListResult
+        :return: ExportExecutionListResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.ExportExecutionListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExportExecutionListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-11-01"
 
         # Construct URL
-        url = self.get_execution_history.metadata['url']
+        url = self.get_execution_history.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'exportName': self._serialize.url("export_name", export_name, 'str'),
@@ -510,7 +512,7 @@ class ExportOperations(object):
         deserialized = self._deserialize('ExportExecutionListResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_execution_history.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}/runHistory'}
+    get_execution_history.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/exports/{exportName}/runHistory'}  # type: ignore
