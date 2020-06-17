@@ -119,6 +119,9 @@ def load_arguments(self, _):
         c.argument('protocol_type', arg_type=get_enum_type(VirtualNetworkGatewayConnectionProtocol), help='Connection protocol.')
         c.argument('routing_weight', type=int, help='Routing weight.')
         c.argument('shared_key', help='Shared key.')
+        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
+        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
+        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
 
     with self.argument_context('network vpn-gateway connection list') as c:
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
