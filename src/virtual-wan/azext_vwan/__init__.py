@@ -20,7 +20,7 @@ class VirtualWanCommandsLoader(AzCommandsLoader):
         super(VirtualWanCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(operations_tmpl='azext_vwan.custom#{}'),
-            resource_type=CUSTOM_VWAN
+            resource_type=CUSTOM_VHUB_ROUTE_TABLE
         )
 
     def load_command_table(self, args):

@@ -262,9 +262,10 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
         self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 5')
-        self.cmd('network firewall update -g {rg} -n {af} --count 3 ')
+        self.cmd('network firewall update -g {rg} -n {af} --count 3')
+        self.cmd('network firewall show -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='eastus2')
     def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
