@@ -189,7 +189,7 @@ helps['codespace secret create'] = """
         - name: Create a plan secret.
           text: az codespace secret create -g my-rg --plan my-plan --name API_KEY --value "secretkey" --note "service api key"
         - name: Create a plan secret with filters.
-          text: az codespace secret create -g my-rg --plan my-plan --name API_KEY --value "secretkey" --filters GitRepo=repo/name CodespaceName=mycodespace
+          text: az codespace secret create -g my-rg --plan my-plan --name API_KEY --value "secretkey" --filters GitRepo=https://github.com/repo/name CodespaceName=mycodespace
 """
 
 helps['codespace secret update'] = """
@@ -199,7 +199,7 @@ helps['codespace secret update'] = """
         - name: Update a plan secret with new values.
           text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --name API_KEY --value "newsecretkey" --note "service api key"
         - name: Update a plan secret with new filters.
-          text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --filters GitRepo=repo/name CodespaceName=mycodespace
+          text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --filters GitRepo=https://github.com/repo/name CodespaceName=mycodespace
         - name: Update a plan secret and clear existing filters.
           text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --filters ''
 """
