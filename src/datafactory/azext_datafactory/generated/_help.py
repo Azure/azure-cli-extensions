@@ -594,8 +594,8 @@ helps['datafactory pipeline create'] = """
 es\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"\
 parameters\\":{\\"MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\
 \\":\\"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"typ\
-e\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"exam\
-pleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\"\
+e\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDataset\
+  \\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\"\
 :{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipe\
 line().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameLi\
 st\\":{\\"type\\":\\"Array\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":\
@@ -624,8 +624,8 @@ helps['datafactory pipeline update'] = """
                az datafactory pipeline update --factory-name "myFactoryName" --activities \
 "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\"\
 :\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"\
-MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDatas\
-et\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\
+MyFileName\\":\\"mycontainer.csv\\",\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\
+  \\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\
 \\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"mycontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\\
 "typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"Bl\
 obSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.\

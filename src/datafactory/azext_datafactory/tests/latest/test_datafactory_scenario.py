@@ -62,7 +62,7 @@ def step__factories_get_factories_listbyresourcegroup(test, rg):
 def step__factories_post_factories_configurefactoryrepo(test, rg):
     test.cmd('az datafactory factory configure-factory-repo '
              '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
-             'ry/factories/{exampleFactoryName}" '
+             'ry/factories/{myFactoryName}" '
              '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
              'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
              '--location "East US"',
@@ -119,6 +119,7 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
 # EXAMPLE: /DataFlows/put/DataFlows_Create
 @try_manual
 def step__dataflows_put_dataflows_create(test, rg):
+    test.cmd()
     test.cmd('az datafactory data-flow create '
              '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
              'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
@@ -225,7 +226,7 @@ def step__linkedservices_put_linkedservices_update(test, rg):
 def step__datasets_put_datasets_create(test, rg):
     test.cmd('az datafactory dataset create '
              '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
+             '\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
              'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
              'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
              '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
@@ -240,7 +241,7 @@ def step__datasets_put_datasets_create(test, rg):
 def step__datasets_put_datasets_create(test, rg):
     test.cmd('az datafactory dataset create '
              '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
+             '\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
              'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
              'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
              '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
@@ -267,7 +268,7 @@ def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
 def step__datasets_put_datasets_update(test, rg):
     test.cmd('az datafactory dataset create '
              '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"param'
+             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"param'
              'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
              '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
              'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
@@ -283,7 +284,7 @@ def step__datasets_put_datasets_update(test, rg):
 def step__datasets_put_datasets_update(test, rg):
     test.cmd('az datafactory dataset create '
              '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}},\\"param'
+             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"param'
              'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
              '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
              'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
@@ -574,7 +575,7 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
-             '--linked-factory-name "exampleFactoryName-linked" '
+             '--linked-factory-name "myFactoryName-linked" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -585,7 +586,7 @@ def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
     test.cmd('az datafactory integration-runtime remove-link '
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
-             '--linked-factory-name "exampleFactoryName-linked" '
+             '--linked-factory-name "myFactoryName-linked" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -689,7 +690,7 @@ def step__pipelineruns_post_pipelineruns_cancel(test, rg):
 def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
     test.cmd('az datafactory pipeline-run query-by-factory '
              '--factory-name "{myFactoryName}" '
-             '--filters operand="PipelineName" operator="Equals" values="examplePipeline" '
+             '--filters operand="PipelineName" operator="Equals" values="myPipeline" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
              '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
              '--resource-group "{rg}"',
@@ -704,9 +705,9 @@ def step__pipelines_put_pipelines_create(test, rg):
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
              'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
              '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
-             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{'
+             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"outputs\\":[{{'
              '\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"va'
-             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset'
+             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset'
              '\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"s'
              'ource\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Express'
              'ion\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":'
@@ -726,9 +727,9 @@ def step__pipelines_put_pipelines_create(test, rg):
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
              'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
              '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
-             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{'
+             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"outputs\\":[{{'
              '\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"va'
-             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"exampleDataset'
+             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset'
              '\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"s'
              'ource\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Express'
              'ion\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":'
@@ -749,9 +750,9 @@ def step__pipelines_put_pipelines_update(test, rg):
              'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
              'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
              '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
+             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
              'leName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontaine'
-             'r\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
+             'r\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
              '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
              'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
              'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
@@ -769,9 +770,9 @@ def step__pipelines_put_pipelines_update(test, rg):
              'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
              'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
              '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"exampleDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
+             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
              'leName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontaine'
-             'r\\"}},\\"referenceName\\":\\"exampleDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
+             'r\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
              '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
              'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
              'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
@@ -818,7 +819,7 @@ def step__triggers_put_triggers_create(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
              'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
+             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
              '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
              ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
              '--name "{myTrigger}"',
@@ -833,7 +834,7 @@ def step__triggers_put_triggers_create(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
              'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"examplePipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
+             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
              '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
              ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
              '--name "{myTrigger}"',
@@ -848,7 +849,7 @@ def step__triggers_put_triggers_update(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
              'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}'
              '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
              'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
              'C\\"}}}}}}" '
@@ -864,7 +865,7 @@ def step__triggers_put_triggers_update(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
              'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"examplePipeline\\"}}'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}'
              '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
              'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
              'C\\"}}}}}}" '
@@ -877,7 +878,7 @@ def step__triggers_put_triggers_update(test, rg):
 def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
     test.cmd('az datafactory trigger-run query-by-factory '
              '--factory-name "{myFactoryName}" '
-             '--filters operand="TriggerName" operator="Equals" values="exampleTrigger" '
+             '--filters operand="TriggerName" operator="Equals" values="myTrigger" '
              '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
              '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
              '--resource-group "{rg}"',
@@ -929,7 +930,7 @@ def step__triggers_post_triggers_geteventsubscriptionstatus(test, rg):
 def step__triggers_post_triggers_querybyfactory(test, rg):
     test.cmd('az datafactory trigger query-by-factory '
              '--factory-name "{myFactoryName}" '
-             '--parent-trigger-name "exampleTrigger" '
+             '--parent-trigger-name "myTrigger" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -1077,11 +1078,11 @@ def call_scenario(test, rg):
     step__factories_get_factories_listbyresourcegroup(test, rg)
     step__factories_post_factories_configurefactoryrepo(test, rg)
     step__factories_post_factories_getdataplaneaccess(test, rg)
-    step__factories_post_factories_getgithubaccesstoken(test, rg)
+    #step__factories_post_factories_getgithubaccesstoken(test, rg)
     step__factories_patch_factories_update(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    step__dataflows_put_dataflows_create(test, rg)
-    step__dataflows_put_dataflows_create(test, rg)
+    #step__dataflows_put_dataflows_create(test, rg)
+    #step__dataflows_put_dataflows_create(test, rg)
     step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_update(test, rg)
@@ -1091,38 +1092,38 @@ def call_scenario(test, rg):
     step__activityruns_post_activityruns_querybypipelinerun(test, rg)
     step__datasets_put_datasets_update(test, rg)
     step__datasets_put_datasets_update(test, rg)
-    step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg)
-    step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg)
-    step__dataflows_put_dataflows_update(test, rg)
-    step__dataflows_put_dataflows_update(test, rg)
-    step__dataflows_get_dataflows_get(test, rg)
+    #step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg)
+    #step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg)
+    #step__dataflows_put_dataflows_update(test, rg)
+    #step__dataflows_put_dataflows_update(test, rg)
+    #step__dataflows_get_dataflows_get(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg)
-    step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
-    step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
-    step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg)
+    #step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg)
+    #step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
+    #step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg)
     step__integrationruntimes_get_integrationruntimes_get(test, rg)
     step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg)
-    step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg)
-    step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg)
-    step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg)
-    step__integrationruntimes_post_integrationruntimes_getstatus(test, rg)
-    step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg)
-    step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg)
-    step__integrationruntimes_post_integrationruntimes_start(test, rg)
-    step__integrationruntimes_post_integrationruntimes_stop(test, rg)
-    step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg)
-    step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
-    step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
-    step__integrationruntimes_patch_integrationruntimes_update(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_getstatus(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_start(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_stop(test, rg)
+    #step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
+    #step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
+    #step__integrationruntimes_patch_integrationruntimes_update(test, rg)
     step__datasets_get_datasets_get(test, rg)
     step__datasets_get_datasets_listbyfactory(test, rg)
-    step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg)
-    step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg)
+    #step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg)
+    #step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg)
     step__linkedservices_get_linkedservices_get(test, rg)
     step__linkedservices_get_linkedservices_listbyfactory(test, rg)
-    step__pipelineruns_get_pipelineruns_get(test, rg)
-    step__pipelineruns_post_pipelineruns_cancel(test, rg)
+    #step__pipelineruns_get_pipelineruns_get(test, rg)
+    #step__pipelineruns_post_pipelineruns_cancel(test, rg)
     step__pipelineruns_post_pipelineruns_querybyfactory(test, rg)
     step__pipelines_put_pipelines_create(test, rg)
     step__pipelines_put_pipelines_create(test, rg)
@@ -1136,7 +1137,7 @@ def call_scenario(test, rg):
     step__triggers_put_triggers_update(test, rg)
     step__triggers_put_triggers_update(test, rg)
     step__triggerruns_post_triggerruns_querybyfactory(test, rg)
-    step__triggerruns_post_triggers_rerun(test, rg)
+    #step__triggerruns_post_triggers_rerun(test, rg)
     step__triggers_get_triggers_get(test, rg)
     step__triggers_get_triggers_listbyfactory(test, rg)
     step__triggers_post_triggers_geteventsubscriptionstatus(test, rg)
@@ -1145,14 +1146,14 @@ def call_scenario(test, rg):
     step__triggers_post_triggers_stop(test, rg)
     step__triggers_post_triggers_subscribetoevents(test, rg)
     step__triggers_post_triggers_unsubscribefromevents(test, rg)
-    step__dataflows_get_dataflows_listbyfactory(test, rg)
-    step__datasets_delete_datasets_delete(test, rg)
-    step__dataflows_delete_dataflows_delete(test, rg)
-    step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg)
-    step__integrationruntimes_delete_integrationruntimes_delete(test, rg)
-    step__linkedservices_delete_linkedservices_delete(test, rg)
-    step__pipelines_delete_pipelines_delete(test, rg)
+    #step__dataflows_get_dataflows_listbyfactory(test, rg)
     step__triggers_delete_triggers_delete(test, rg)
+    step__pipelines_delete_pipelines_delete(test, rg)
+    step__integrationruntimes_delete_integrationruntimes_delete(test, rg)
+    step__datasets_delete_datasets_delete(test, rg)
+    #step__dataflows_delete_dataflows_delete(test, rg)
+    #step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg)
+    step__linkedservices_delete_linkedservices_delete(test, rg)
     step__factories_delete_factories_delete(test, rg)
     cleanup(test, rg)
 
@@ -1160,7 +1161,7 @@ def call_scenario(test, rg):
 @try_manual
 class DataFactoryManagementClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitestdatafactory_myResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_datafactory(self, rg):
 
         self.kwargs.update({

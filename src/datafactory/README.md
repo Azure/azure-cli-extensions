@@ -1,5 +1,11 @@
-Microsoft Azure CLI 'datafactory' Extension
-==========================================
+# Azure CLI Storage Preview Extension #
+This is a extension for datafactory features.
 
-This package is for the 'datafactory' extension.
-i.e. 'az datafactory'
+### How to use ###
+Install this extension using the below CLI command
+```
+az extension add --name datafactory
+```
+
+### Included Features
+#### Factory:
