@@ -46,7 +46,7 @@ class WorkspaceInfo(object):
 
 def list(cmd, resource_group_name=None, tag=None, location=None):
     """
-    Returns the list of Quantum Workspaces available.
+    Get the list of Azure Quantum workspaces available.
     """
     from azure.cli.command_modules.resource.custom import list_resources
     return list_resources(cmd, resource_group_name=resource_group_name, resource_type="Microsoft.Quantum/Workspaces", tag=tag, location=location)
@@ -54,7 +54,7 @@ def list(cmd, resource_group_name=None, tag=None, location=None):
 
 def show(cmd, resource_group_name=None, workspace_name=None):
     """
-    Returns the details of the given (or current) Quantum Workspace.
+    Get the details of the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -66,7 +66,7 @@ def show(cmd, resource_group_name=None, workspace_name=None):
 
 def set(cmd, workspace_name, resource_group_name=None):
     """
-    Sets the default Quantum Workspace.
+    Set the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -78,7 +78,7 @@ def set(cmd, workspace_name, resource_group_name=None):
 
 def clear(cmd):
     """
-    Unsets the default Quantum Workspace.
+    Unset the default Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd)
     info.clear()

@@ -86,11 +86,11 @@ def load_command_table(self, _):
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
 
-    with self.command_group('quantum target', target_ops) as w:
-        w.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
-        w.command('show', 'show', validator=validate_target_info)
-        w.command('set', 'set', validator=validate_target_info)
-        w.command('clear', 'clear')
+    with self.command_group('quantum target', target_ops) as t:
+        t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
+        t.command('show', 'show', validator=validate_target_info)
+        t.command('set', 'set', validator=validate_target_info)
+        t.command('clear', 'clear')
 
     with self.command_group('quantum job', job_ops) as j:
         j.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_jobs)

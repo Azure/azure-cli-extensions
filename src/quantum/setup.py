@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.11.2906.2'
+VERSION = '0.11.2906.3'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -32,9 +32,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def list(cmd, resource_group_name=None, workspace_name=None):
     """
-    Returns the list of jobs in a Quantum Workspace.
+    Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
@@ -27,7 +27,7 @@ def list(cmd, resource_group_name=None, workspace_name=None):
 
 def show(cmd, job_id, resource_group_name=None, workspace_name=None):
     """
-    Shows the job's status and details.
+    Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
@@ -36,7 +36,7 @@ def show(cmd, job_id, resource_group_name=None, workspace_name=None):
 
 def build(cmd, target_id=None, project=None):
     """
-    Compiles a Q# program for execution to Azure Quantum.
+    Compile a Q# program for execution to Azure Quantum.
     """
     target = TargetInfo(cmd, target_id)
 
@@ -116,7 +116,7 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
            job_name=None, shots=None, no_build=False):
     """
-    Submits a Q# project for execution to Azure Quantum.
+    Submit a Q# project for execution to Azure Quantum.
     """
 
     # We first build and then call run.
@@ -161,7 +161,9 @@ def _parse_blob_url(url):
 
 
 def output(cmd, job_id, resource_group_name=None, workspace_name=None):
-    """ Returns back the results of a Q# execution """
+    """ 
+    Get the results of a Q# execution.
+    """
     import tempfile
     import json
     import os
@@ -223,10 +225,10 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wa
 def execute(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
             job_name=None, shots=None, no_build=False):
     """
-    Submits a job for quantum execution on Azure Quantum, and waits for the result.
+    Submit a job for quantum execution on Azure Quantum, and waits for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, target_id, project, job_name, shots, no_build)
-    print("Job id:", job.id)
+    logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
     job = wait(cmd, job.id, resource_group_name, workspace_name)

@@ -35,7 +35,7 @@ class TargetInfo(object):
 
 def show(cmd, target_id=None):
     """
-    Returns the details of the given (or current) target to use when submitting jobs to Azure Quantum.
+    Get the details of the given (or current) target to use when submitting jobs to Azure Quantum.
     """
     info = TargetInfo(cmd, target_id)
     return info
@@ -43,7 +43,7 @@ def show(cmd, target_id=None):
 
 def set(cmd, target_id=None):
     """
-    Selects the default target to use when submitting jobs to Azure Quantum.
+    Select the default target to use when submitting jobs to Azure Quantum.
     """
     info = TargetInfo(cmd, target_id)
     if info:
@@ -53,7 +53,7 @@ def set(cmd, target_id=None):
 
 def list(cmd, resource_group_name=None, workspace_name=None):
     """
-    Returns the list of providers and their targets in a Quantum Workspace.
+    Get the list of providers and their targets in an Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
@@ -62,7 +62,7 @@ def list(cmd, resource_group_name=None, workspace_name=None):
 
 def clear(cmd):
     """
-    Unsets the default target-id.
+    Unset the default target-id.
     """
     info = TargetInfo(cmd)
     info.clear()
