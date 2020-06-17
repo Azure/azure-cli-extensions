@@ -54,6 +54,8 @@ def response_logging_hook(response, *_, **__):
     for k in response.__dict__:
         if k and not k.startswith('_'):
             logger.debug('codespaces-api.response : %s : %s', k, response.__dict__[k])
+    if response.content:
+        logger.debug('codespaces-api.response : %s : %s', 'content', response.content)
 
 
 class NoStripAuthSession(requests.Session):
@@ -82,7 +84,7 @@ def api_response_decorator(func):
                 return response.json() if response.content else response
             return None
         except requests.HTTPError as err:
-            raise CLIError(str(err))
+            raise CLIError(f"{err}.  Use --debug for details.")
     return wrapper
 
 
