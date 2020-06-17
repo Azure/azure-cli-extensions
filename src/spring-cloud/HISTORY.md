@@ -4,11 +4,15 @@ Release History
 0.3.0
 -----
 * Enable distributed tracing by default when creating the service
-* Add command "az spring-cloud update" to update tags and distributed tracing settings
+* Enable to update tags and distributed tracing settings by using "az spring-cloud update"
+
+0.2.6
+-----
+* Fix required sku issue
 
 0.2.5
 -----
-* enable to specified sku when create or update service instance
+* Enable to specified sku when create or update service instance
 
 0.2.4
 -----
