@@ -24,12 +24,9 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
-    AddDatasetsFolder,
+    AddFolder,
     AddFilters,
-    AddOrderBy,
-    AddDataflowsFolder,
-    AddDebugSettingsSourceSettings,
-    AddCommandPayload
+    AddOrderBy
 )
 
 
@@ -337,8 +334,8 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
                    'Dataset. Expected value: json-string/@json-file.')
-        c.argument('folder', action=AddDatasetsFolder, nargs='+', help='The folder that this Dataset is in. If not '
-                   'specified, Dataset will appear at the root level.')
+        c.argument('folder', action=AddFolder, nargs='+', help='The folder that this Dataset is in. If not specified, '
+                   'Dataset will appear at the root level.')
         c.ignore('properties')
 
     with self.argument_context('datafactory dataset delete') as c:
@@ -539,96 +536,3 @@ def load_arguments(self, _):
         c.argument('factory_name', help='The factory name.', id_part='name')
         c.argument('trigger_name', help='The trigger name.', id_part='child_name_1')
         c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_2')
-
-    with self.argument_context('datafactory data-flow list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.')
-
-    with self.argument_context('datafactory data-flow show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
-        c.argument('if_none_match', help='ETag of the data flow entity. Should only be specified for get. If the ETag '
-                   'matches the existing entity tag, or if * was provided, then no content will be returned.')
-
-    with self.argument_context('datafactory data-flow create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.')
-        c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it '
-                   'should match existing entity or can be * for unconditional update.')
-        c.argument('properties', type=validate_file_or_dict, help='Data flow properties. Expected value: '
-                   'json-string/@json-file.')
-
-    with self.argument_context('datafactory data-flow update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
-        c.argument('if_match', help='ETag of the data flow entity. Should only be specified for update, for which it '
-                   'should match existing entity or can be * for unconditional update.')
-        c.argument('description', help='The description of the data flow.')
-        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'data flow. Expected value: json-string/@json-file.')
-        c.argument('folder', action=AddDataflowsFolder, nargs='+', help='The folder that this data flow is in. If not '
-                   'specified, Data flow will appear at the root level.')
-        c.ignore('properties')
-
-    with self.argument_context('datafactory data-flow delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('data_flow_name', options_list=['--name', '-n'], help='The data flow name.',
-                   id_part='child_name_1')
-
-    with self.argument_context('datafactory data-flow-debug-session create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.')
-        c.argument('compute_type', help='Compute type of the cluster. The value will be overwritten by the same '
-                   'setting in integration runtime if provided.')
-        c.argument('core_count', help='Core count of the cluster. The value will be overwritten by the same setting in '
-                   'integration runtime if provided.')
-        c.argument('time_to_live', help='Time to live setting of the cluster in minutes.')
-        c.argument('integration_runtime_name', help='The resource name.')
-        c.argument('integration_runtime_properties', type=validate_file_or_dict, help='Integration runtime properties. '
-                   'Expected value: json-string/@json-file.')
-
-    with self.argument_context('datafactory data-flow-debug-session delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('session_id', help='The ID of data flow debug session.')
-
-    with self.argument_context('datafactory data-flow-debug-session add-data-flow') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('datasets', type=validate_file_or_dict, help='List of datasets. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('linked_services', type=validate_file_or_dict, help='List of linked services. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('debug_settings_source_settings', action=AddDebugSettingsSourceSettings, nargs='+', help='Source '
-                   'setting for data flow debug.')
-        c.argument('debug_settings_parameters', type=validate_file_or_dict, help='Data flow parameters. Expected '
-                   'value: json-string/@json-file.')
-        c.argument('debug_settings_dataset_parameters', type=validate_file_or_dict, help='Parameters for dataset. '
-                   'Expected value: json-string/@json-file.')
-        c.argument('staging_folder_path', help='Folder path for staging blob.')
-        c.argument('staging_linked_service_reference_name', help='Reference LinkedService name.')
-        c.argument('staging_linked_service_parameters', type=validate_file_or_dict, help='Arguments for LinkedService. '
-                   'Expected value: json-string/@json-file.')
-        c.argument('data_flow_name', help='The resource name.')
-        c.argument('data_flow_properties', type=validate_file_or_dict, help='Data flow properties. Expected value: '
-                   'json-string/@json-file.')
-
-    with self.argument_context('datafactory data-flow-debug-session execute-command') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('session_id', help='The ID of data flow debug session.')
-        c.argument('command',
-                   arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']),
-                   help='The command type.')
-        c.argument('command_payload', action=AddCommandPayload, nargs='+', help='The command payload object.')
-
-    with self.argument_context('datafactory data-flow-debug-session query-by-factory') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')

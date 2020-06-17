@@ -116,59 +116,6 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
              checks=[])
 
 
-# EXAMPLE: /DataFlows/put/DataFlows_Create
-@try_manual
-def step__dataflows_put_dataflows_create(test, rg):
-    test.cmd()
-    test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
-             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
-             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
-             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
-             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
-             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
-             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
-             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
-             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
-             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
-             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
-             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
-             '\\"}}}}]}}}}" '
-             '--name "{myDataFlow}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlows/put/DataFlows_Create
-@try_manual
-def step__dataflows_put_dataflows_create(test, rg):
-    test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
-             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
-             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
-             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
-             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
-             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
-             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
-             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
-             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
-             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
-             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
-             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
-             '\\"}}}}]}}}}" '
-             '--name "{myDataFlow}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /LinkedServices/put/LinkedServices_Create
 @try_manual
 def step__linkedservices_put_linkedservices_create(test, rg):
@@ -290,89 +237,6 @@ def step__datasets_put_datasets_update(test, rg):
              'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
              '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
              '--name "{myDataset}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_ExecuteCommand
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg):
-    test.cmd('az datafactory data-flow-debug-session execute-command '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--command "executePreviewQuery" '
-             '--command-payload row-limits=100 stream-name="source1" '
-             '--session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_QueryByFactory
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg):
-    test.cmd('az datafactory data-flow-debug-session query-by-factory '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlows/put/DataFlows_Update
-@try_manual
-def step__dataflows_put_dataflows_update(test, rg):
-    test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
-             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
-             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
-             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
-             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
-             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
-             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
-             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
-             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
-             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
-             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
-             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
-             '\\"}}}}]}}}}" '
-             '--name "{myDataFlow}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlows/put/DataFlows_Update
-@try_manual
-def step__dataflows_put_dataflows_update(test, rg):
-    test.cmd('az datafactory data-flow create '
-             '--properties "{{\\"type\\":\\"MappingDataFlow\\",\\"description\\":\\"Sample demo data flow to convert '
-             'currencies showing usage of union, derive and conditional split transformation.\\",\\"typeProperties\\":{'
-             '{\\"script\\":\\"source(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: false,validateSchema: false) ~> '
-             'USDCurrency\\\\nsource(output(PreviousConversionRate as double,Country as string,DateTime1 as '
-             'string,CurrentConversionRate as double),allowSchemaDrift: true,validateSchema: false) ~> '
-             'CADSource\\\\nUSDCurrency, CADSource union(byName: true)~> Union\\\\nUnion derive(NewCurrencyRate = '
-             'round(CurrentConversionRate*1.25)) ~> NewCurrencyColumn\\\\nNewCurrencyColumn split(Country == '
-             '\'USD\',Country == \'CAD\',disjoint: false) ~> ConditionalSplit1@(USD, CAD)\\\\nConditionalSplit1@USD '
-             'sink(saveMode:\'overwrite\' ) ~> USDSink\\\\nConditionalSplit1@CAD sink(saveMode:\'overwrite\' ) ~> '
-             'CADSink\\",\\"sinks\\":[{{\\"name\\":\\"USDSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"r'
-             'eferenceName\\":\\"USDOutput\\"}}}},{{\\"name\\":\\"CADSink\\",\\"dataset\\":{{\\"type\\":\\"DatasetRefer'
-             'ence\\",\\"referenceName\\":\\"CADOutput\\"}}}}],\\"sources\\":[{{\\"name\\":\\"USDCurrency\\",\\"dataset'
-             '\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetUSD\\"}}}},{{\\"name\\":\\"'
-             'CADSource\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"CurrencyDatasetCAD'
-             '\\"}}}}]}}}}" '
-             '--name "{myDataFlow}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlows/get/DataFlows_Get
-@try_manual
-def step__dataflows_get_dataflows_get(test, rg):
-    test.cmd('az datafactory data-flow show '
-             '--name "{myDataFlow}" '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -538,37 +402,6 @@ def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
              checks=[])
 
 
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_AddDataFlow
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg):
-    test.cmd('az datafactory data-flow-debug-session add-data-flow '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--data-flow-name "dataflow1" '
-             '--data-flow-properties "{{\\"type\\":\\"MappingDataFlow\\",\\"typeProperties\\":{{\\"script\\":\\"\\\\n\\'
-             '\\nsource(output(\\\\n\\\\t\\\\tColumn_1 as string\\\\n\\\\t),\\\\n\\\\tallowSchemaDrift: '
-             'true,\\\\n\\\\tvalidateSchema: false) ~> source1\\",\\"sinks\\":[],\\"sources\\":[{{\\"name\\":\\"source1'
-             '\\",\\"dataset\\":{{\\"type\\":\\"DatasetReference\\",\\"referenceName\\":\\"DelimitedText2\\"}}}}],\\"tr'
-             'ansformations\\":[]}}}}" '
-             '--datasets "[{{\\"name\\":\\"dataset1\\",\\"properties\\":{{\\"type\\":\\"DelimitedText\\",\\"schema\\":['
-             '{{\\"type\\":\\"String\\"}}],\\"annotations\\":[],\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceRe'
-             'ference\\",\\"referenceName\\":\\"linkedService5\\"}},\\"typeProperties\\":{{\\"columnDelimiter\\":\\",\\'
-             '",\\"escapeChar\\":\\"\\\\\\\\\\",\\"firstRowAsHeader\\":true,\\"location\\":{{\\"type\\":\\"AzureBlobSto'
-             'rageLocation\\",\\"container\\":\\"dataflow-sample-data\\",\\"fileName\\":\\"Ansiencoding.csv\\"}},\\"quo'
-             'teChar\\":\\"\\\\\\"\\"}}}}}}]" '
-             '--debug-settings-dataset-parameters "{{\\"Movies\\":{{\\"path\\":\\"abc\\"}},\\"Output\\":{{\\"time\\":\\'
-             '"def\\"}}}}" '
-             '--debug-settings-parameters "{{\\"sourcePath\\":\\"Toy\\"}}" '
-             '--debug-settings-source-settings row-limit=1000 source-name="source1" '
-             '--debug-settings-source-settings row-limit=222 source-name="source2" '
-             '--linked-services "[{{\\"name\\":\\"linkedService1\\",\\"properties\\":{{\\"type\\":\\"AzureBlobStorage\\'
-             '",\\"annotations\\":[],\\"typeProperties\\":{{\\"connectionString\\":\\"DefaultEndpointsProtocol=https;Ac'
-             'countName=<storageName>;EndpointSuffix=core.windows.net;\\",\\"encryptedCredential\\":\\"<credential>\\"}'
-             '}}}}}]" '
-             '--session-id "f06ed247-9d07-49b2-b05e-2cb4a2fc871e"',
-             checks=[])
-
-
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
 @try_manual
 def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
@@ -619,30 +452,6 @@ def step__datasets_get_datasets_listbyfactory(test, rg):
     test.cmd('az datafactory dataset list '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_Create
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg):
-    test.cmd('az datafactory data-flow-debug-session create '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--integration-runtime-name "ir1" '
-             '--integration-runtime-properties "{{\\"type\\":\\"Managed\\",\\"typeProperties\\":{{\\"computeProperties'
-             '\\":{{\\"dataFlowProperties\\":{{\\"computeType\\":\\"General\\",\\"coreCount\\":48,\\"timeToLive\\":10}}'
-             ',\\"location\\":\\"AutoResolve\\"}}}}}}" '
-             '--time-to-live 60',
-             checks=[])
-
-
-# EXAMPLE: /DataFlowDebugSession/post/DataFlowDebugSession_Delete
-@try_manual
-def step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg):
-    test.cmd('az datafactory data-flow-debug-session delete '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--session-id "91fb57e0-8292-47be-89ff-c8f2d2bb2a7e"',
              checks=[])
 
 
@@ -975,30 +784,11 @@ def step__triggers_post_triggers_unsubscribefromevents(test, rg):
              checks=[])
 
 
-# EXAMPLE: /DataFlows/get/DataFlows_ListByFactory
-@try_manual
-def step__dataflows_get_dataflows_listbyfactory(test, rg):
-    test.cmd('az datafactory data-flow list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
 # EXAMPLE: /Datasets/delete/Datasets_Delete
 @try_manual
 def step__datasets_delete_datasets_delete(test, rg):
     test.cmd('az datafactory dataset delete '
              '--name "{myDataset}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DataFlows/delete/DataFlows_Delete
-@try_manual
-def step__dataflows_delete_dataflows_delete(test, rg):
-    test.cmd('az datafactory data-flow delete '
-             '--name "{myDataFlow}" '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -1081,8 +871,6 @@ def call_scenario(test, rg):
     # step__factories_post_factories_getgithubaccesstoken(test, rg)
     step__factories_patch_factories_update(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    # step__dataflows_put_dataflows_create(test, rg)
-    # step__dataflows_put_dataflows_create(test, rg)
     step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_create(test, rg)
     step__linkedservices_put_linkedservices_update(test, rg)
@@ -1092,11 +880,6 @@ def call_scenario(test, rg):
     step__activityruns_post_activityruns_querybypipelinerun(test, rg)
     step__datasets_put_datasets_update(test, rg)
     step__datasets_put_datasets_update(test, rg)
-    # step__dataflowdebugsession_post_dataflowdebugsession_executecommand(test, rg)
-    # step__dataflowdebugsession_post_dataflowdebugsession_querybyfactory(test, rg)
-    # step__dataflows_put_dataflows_update(test, rg)
-    # step__dataflows_put_dataflows_update(test, rg)
-    # step__dataflows_get_dataflows_get(test, rg)
     step__integrationruntimes_put_integrationruntimes_create(test, rg)
     # step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg)
     # step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
@@ -1118,8 +901,6 @@ def call_scenario(test, rg):
     # step__integrationruntimes_patch_integrationruntimes_update(test, rg)
     step__datasets_get_datasets_get(test, rg)
     step__datasets_get_datasets_listbyfactory(test, rg)
-    # step__dataflowdebugsession_post_dataflowdebugsession_create(test, rg)
-    # step__dataflowdebugsession_post_dataflowdebugsession_delete(test, rg)
     step__linkedservices_get_linkedservices_get(test, rg)
     step__linkedservices_get_linkedservices_listbyfactory(test, rg)
     # step__pipelineruns_get_pipelineruns_get(test, rg)
@@ -1146,7 +927,6 @@ def call_scenario(test, rg):
     step__triggers_post_triggers_stop(test, rg)
     step__triggers_post_triggers_subscribetoevents(test, rg)
     step__triggers_post_triggers_unsubscribefromevents(test, rg)
-    # step__dataflows_get_dataflows_listbyfactory(test, rg)
     step__triggers_delete_triggers_delete(test, rg)
     step__pipelines_delete_pipelines_delete(test, rg)
     step__integrationruntimes_delete_integrationruntimes_delete(test, rg)
@@ -1175,8 +955,7 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
             'myLinkedService': 'myLinkedService',
             'myDataset': 'myDataset',
             'myPipeline': 'myPipeline',
-            'myTrigger': 'myTrigger',
-            'myDataFlow': 'myDataFlow',
+            'myTrigger': 'myTrigger'
         })
 
         call_scenario(self, rg)

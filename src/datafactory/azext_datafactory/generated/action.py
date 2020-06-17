@@ -82,7 +82,7 @@ class AddFactoryGitHubConfiguration(argparse.Action):
         return d
 
 
-class AddDatasetsFolder(argparse.Action):
+class AddFolder(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.folder = action
@@ -151,78 +151,4 @@ class AddOrderBy(argparse._AppendAction):
                 d['order_by'] = v[0]
             elif kl == 'order':
                 d['order'] = v[0]
-        return d
-
-
-class AddDataflowsFolder(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.folder = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'name':
-                d['name'] = v[0]
-        return d
-
-
-class AddDebugSettingsSourceSettings(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddDebugSettingsSourceSettings, self).__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'source-name':
-                d['source_name'] = v[0]
-            elif kl == 'row-limit':
-                d['row_limit'] = v[0]
-        return d
-
-
-class AddCommandPayload(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.command_payload = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'stream-name':
-                d['stream_name'] = v[0]
-            elif kl == 'row-limits':
-                d['row_limits'] = v[0]
-            elif kl == 'columns':
-                d['columns'] = v
-            elif kl == 'expression':
-                d['expression'] = v[0]
         return d

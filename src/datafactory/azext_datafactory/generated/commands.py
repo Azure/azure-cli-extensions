@@ -163,30 +163,3 @@ def load_command_table(self, _):
                             is_experimental=True) as g:
         g.custom_command('query-by-factory', 'datafactory_trigger_run_query_by_factory')
         g.custom_command('rerun', 'datafactory_trigger_run_rerun')
-
-    from azext_datafactory.generated._client_factory import cf_data_flow
-    datafactory_data_flow = CliCommandType(
-        operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._data_flow_operations#DataFlowOperation'
-        's.{}',
-        client_factory=cf_data_flow)
-    with self.command_group('datafactory data-flow', datafactory_data_flow, client_factory=cf_data_flow,
-                            is_experimental=True) as g:
-        g.custom_command('list', 'datafactory_data_flow_list')
-        g.custom_show_command('show', 'datafactory_data_flow_show')
-        g.custom_command('create', 'datafactory_data_flow_create')
-        g.generic_update_command('update', setter_arg_name='properties', custom_func_name=''
-                                 'datafactory_data_flow_update')
-        g.custom_command('delete', 'datafactory_data_flow_delete')
-
-    from azext_datafactory.generated._client_factory import cf_data_flow_debug_session
-    datafactory_data_flow_debug_session = CliCommandType(
-        operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._data_flow_debug_session_operations#Dat'
-        'aFlowDebugSessionOperations.{}',
-        client_factory=cf_data_flow_debug_session)
-    with self.command_group('datafactory data-flow-debug-session', datafactory_data_flow_debug_session,
-                            client_factory=cf_data_flow_debug_session, is_experimental=True) as g:
-        g.custom_command('create', 'datafactory_data_flow_debug_session_create')
-        g.custom_command('delete', 'datafactory_data_flow_debug_session_delete')
-        g.custom_command('add-data-flow', 'datafactory_data_flow_debug_session_add_data_flow')
-        g.custom_command('execute-command', 'datafactory_data_flow_debug_session_execute_command')
-        g.custom_command('query-by-factory', 'datafactory_data_flow_debug_session_query_by_factory')

@@ -53,11 +53,3 @@ def cf_trigger(cli_ctx, *_):
 
 def cf_trigger_run(cli_ctx, *_):
     return cf_datafactory_cl(cli_ctx).trigger_run
-
-
-def cf_data_flow(cli_ctx, *_):
-    return cf_datafactory_cl(cli_ctx).data_flow
-
-
-def cf_data_flow_debug_session(cli_ctx, *_):
-    return cf_datafactory_cl(cli_ctx).data_flow_debug_session
