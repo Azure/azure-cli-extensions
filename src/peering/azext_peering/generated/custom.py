@@ -7,16 +7,9 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, unused-argument
 
 import json
-
-
-def peering__check_service_provider_availability(cmd, client,
-                                                 peering_service_location=None,
-                                                 peering_service_provider=None):
-    return client.check_service_provider_availability(peering_service_location=peering_service_location,
-                                                      peering_service_provider=peering_service_provider)
 
 
 def peering_legacy_list(cmd, client,
@@ -48,15 +41,6 @@ def peering_asn_create(cmd, client,
                                    peer_contact_detail=peer_contact_detail,
                                    peer_name=peer_name,
                                    validation_state=validation_state)
-
-
-def peering_asn_update(instance, cmd,
-                       peer_asn_name,
-                       peer_asn=None,
-                       peer_contact_detail=None,
-                       peer_name=None,
-                       validation_state=None):
-    return instance
 
 
 def peering_asn_delete(cmd, client,

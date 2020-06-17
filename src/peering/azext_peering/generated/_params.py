@@ -27,10 +27,6 @@ from azext_peering.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('peering  check-service-provider-availability') as c:
-        c.argument('peering_service_location', help='Gets or sets the peering service location.')
-        c.argument('peering_service_provider', help='Gets or sets the peering service provider.')
-
     with self.argument_context('peering legacy list') as c:
         c.argument('peering_location', help='The location of the peering.')
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
@@ -66,7 +62,7 @@ def load_arguments(self, _):
     with self.argument_context('peering location list') as c:
         c.argument('kind', arg_type=get_enum_type(['Direct', 'Exchange']), help='The kind of the peering.')
         c.argument('direct_peering_type', arg_type=get_enum_type(['Edge', 'Transit', 'Cdn', 'Internal', 'Ix', 'IxRs']),
-                    help='The type of direct peering.')
+                   help='The type of direct peering.')
 
     with self.argument_context('peering registered-asn list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -136,10 +132,14 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('direct', arg_type=CLIArgumentType(options_list=['--direct'], help='The properties that define a dir'
-                   'ect peering. Expected value: json-string/@json-file.'))
-        c.argument('exchange', arg_type=CLIArgumentType(options_list=['--exchange'], help='The properties that define a'
-                   'n exchange peering. Expected value: json-string/@json-file.'))
+        c.argument('direct', arg_type=CLIArgumentType(options_list=['--direct'], help='The properties that define a '
+                                                                                      'direct peering. Expected '
+                                                                                      'value: '
+                                                                                      'json-string/@json-file.'))
+        c.argument('exchange', arg_type=CLIArgumentType(options_list=['--exchange'], help='The properties that define '
+                                                                                          'an exchange peering. '
+                                                                                          'Expected value: '
+                                                                                          'json-string/@json-file.'))
         c.argument('peering_location', help='The location of the peering.')
 
     with self.argument_context('peering peering update') as c:

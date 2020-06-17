@@ -11,14 +11,8 @@
 from azure.cli.core.commands import CliCommandType
 
 
+# pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
-
-    from azext_peering.generated._client_factory import cf_peering
-    peering_ = CliCommandType(
-        operations_tmpl='azext_peering.vendored_sdks.peering.operations._model_operations#ModelOperations.{}',
-        client_factory=cf_peering)
-    with self.command_group('peering ', peering_, client_factory=cf_peering, is_experimental=True) as g:
-        g.custom_command('check-service-provider-availability', 'peering__check_service_provider_availability')
 
     from azext_peering.generated._client_factory import cf_legacy_peering
     peering_legacy_peering = CliCommandType(
@@ -37,8 +31,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'peering_asn_list')
         g.custom_show_command('show', 'peering_asn_show')
         g.custom_command('create', 'peering_asn_create')
-        g.generic_update_command('update', setter_arg_name = 'peer_contact_detail', custom_func_name = 'peering_asn_upd'
-                                 'ate')
         g.custom_command('delete', 'peering_asn_delete')
 
     from azext_peering.generated._client_factory import cf_peering_location

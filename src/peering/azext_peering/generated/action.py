@@ -19,7 +19,6 @@ class AddPeerContactDetail(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddPeerContactDetail, self).__call__(parser, namespace, action, option_string)
 
-
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
             properties = defaultdict(list)
@@ -45,7 +44,6 @@ class AddPeeringsSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.sku = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -74,7 +72,6 @@ class AddPeeringservicesSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.sku = action
-
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

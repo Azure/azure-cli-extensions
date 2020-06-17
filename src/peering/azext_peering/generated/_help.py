@@ -12,19 +12,9 @@
 from knack.help_files import helps
 
 
-helps['peering '] = """
+helps['peering'] = """
     type: group
-    short-summary: peering 
-"""
-
-helps['peering  check-service-provider-availability'] = """
-    type: command
-    short-summary: Checks if the peering service provider is present within 1000 miles of customer's location
-    examples:
-      - name: Check if peering service provider is available in customer location
-        text: |-
-               az peering  check-service-provider-availability --peering-service-location "peeringServiceLocation1" --p\
-eering-service-provider "peeringServiceProvider1"
+    short-summary: Manage peering
 """
 
 helps['peering legacy'] = """
@@ -73,19 +63,6 @@ ription.
       - name: Create a peer ASN
         text: |-
                az peering asn create --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567\
--8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-\
-detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAs\
-nName"
-"""
-
-helps['peering asn update'] = """
-    type: command
-    short-summary: Creates a new peer ASN or updates an existing peer ASN with the specified name under the given subsc\
-ription.
-    examples:
-      - name: Create a peer ASN
-        text: |-
-               az peering asn update --peer-asn 65000 --peer-contact-detail email="noc@contoso.com" phone="+1 (234) 567\
 -8999" role="Noc" --peer-contact-detail email="abc@contoso.com" phone="+1 (234) 567-8900" role="Policy" --peer-contact-\
 detail email="xyz@contoso.com" phone="+1 (234) 567-8900" role="Technical" --peer-name "Contoso" --peer-asn-name "peerAs\
 nName"
