@@ -66,13 +66,14 @@ except (SyntaxError, ImportError):
     from ._models import WorkspaceProviderAuthorization
     from ._models import WorkspaceUpdate
 from ._paged_models import OperationPaged
+from ._paged_models import VirtualNetworkPeeringPaged
 from ._paged_models import WorkspacePaged
 from ._databricks_client_enums import (
     CustomParameterType,
     KeySource,
     ProvisioningState,
     PeeringProvisioningState,
-    VirtualNetworkPeeringState,
+    PeeringState,
 )
 
 __all__ = [
@@ -104,10 +105,11 @@ __all__ = [
     'WorkspaceProviderAuthorization',
     'WorkspaceUpdate',
     'WorkspacePaged',
+    'VirtualNetworkPeeringPaged',
     'OperationPaged',
     'CustomParameterType',
     'KeySource',
     'ProvisioningState',
     'PeeringProvisioningState',
-    'VirtualNetworkPeeringState',
+    'PeeringState',
 ]

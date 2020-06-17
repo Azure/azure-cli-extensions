@@ -31,8 +31,9 @@ def load_command_table(self, _):
         g.wait_command('wait')
 
     with self.command_group('databricks workspace vnet-peering', databricks_vnet_peering, client_factory=cf_vnet_peering) as g:
-        #g.custom_command('create', 'create_databricks_vnet_peering')
-        g.command('delete', 'delete')
-        #g.command('list', 'list')
+        g.custom_command('create', 'create_databricks_vnet_peering', supports_no_wait=True)
+        g.custom_command('update', 'update_databricks_vnet_peering', supports_no_wait=True)
+        g.custom_command('delete', 'delete_databricks_vnet_peering', supports_no_wait=True)
+        g.command('list', 'list_by_workspace')
         g.show_command('show', 'get')
-        #g.wait_command('wait')
+        g.wait_command('wait')

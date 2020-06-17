@@ -48,7 +48,7 @@ class PeeringProvisioningState(str, Enum):
     failed = "Failed"
 
 
-class VirtualNetworkPeeringState(str, Enum):
+class PeeringState(str, Enum):
 
     initiated = "Initiated"
     connected = "Connected"

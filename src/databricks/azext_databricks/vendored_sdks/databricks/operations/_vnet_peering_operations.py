@@ -187,7 +187,7 @@ class VNetPeeringOperations(object):
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings/{peeringName}'}
 
-    def create(
+    def create_or_update(
             self, virtual_network_peering_parameters, resource_group_name, workspace_name, peering_name, custom_headers=None, raw=False, **operation_config):
         """Creates vNet Peering for workspace.
 
@@ -214,7 +214,7 @@ class VNetPeeringOperations(object):
          :class:`ErrorResponseException<azure.mgmt.databricks.models.ErrorResponseException>`
         """
         # Construct URL
-        url = self.create.metadata['url']
+        url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=64, min_length=3),
@@ -245,11 +245,13 @@ class VNetPeeringOperations(object):
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201]:
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
         if response.status_code == 200:
+            deserialized = self._deserialize('VirtualNetworkPeering', response)
+        if response.status_code == 201:
             deserialized = self._deserialize('VirtualNetworkPeering', response)
 
         if raw:
@@ -257,4 +259,76 @@ class VNetPeeringOperations(object):
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings/{peeringName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings/{peeringName}'}
+
+    def list_by_workspace(
+            self, resource_group_name, workspace_name, custom_headers=None, raw=False, **operation_config):
+        """Lists the workspace vNet Peerings.
+
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
+        :type resource_group_name: str
+        :param workspace_name: The name of the workspace.
+        :type workspace_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: An iterator like instance of VirtualNetworkPeering
+        :rtype:
+         ~azure.mgmt.databricks.models.VirtualNetworkPeeringPaged[~azure.mgmt.databricks.models.VirtualNetworkPeering]
+        :raises:
+         :class:`ErrorResponseException<azure.mgmt.databricks.models.ErrorResponseException>`
+        """
+        def prepare_request(next_link=None):
+            if not next_link:
+                # Construct URL
+                url = self.list_by_workspace.metadata['url']
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=64, min_length=3),
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+
+                # Construct parameters
+                query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+            else:
+                url = next_link
+                query_parameters = {}
+
+            # Construct headers
+            header_parameters = {}
+            header_parameters['Accept'] = 'application/json'
+            if self.config.generate_client_request_id:
+                header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+            if custom_headers:
+                header_parameters.update(custom_headers)
+            if self.config.accept_language is not None:
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+            # Construct and send request
+            request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def internal_paging(next_link=None):
+            request = prepare_request(next_link)
+
+            response = self._client.send(request, stream=False, **operation_config)
+
+            if response.status_code not in [200]:
+                raise models.ErrorResponseException(self._deserialize, response)
+
+            return response
+
+        # Deserialize response
+        header_dict = None
+        if raw:
+            header_dict = {}
+        deserialized = models.VirtualNetworkPeeringPaged(internal_paging, self._deserialize.dependencies, header_dict)
+
+        return deserialized
+    list_by_workspace.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings'}

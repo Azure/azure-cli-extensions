@@ -398,6 +398,8 @@ class VirtualNetworkPeering(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :param allow_virtual_network_access: Whether the VMs in the local virtual
      network space would be able to access the VMs in remote virtual network
      space.
@@ -423,18 +425,17 @@ class VirtualNetworkPeering(Model):
     :param databricks_address_space: The reference to the databricks virtual
      network address space.
     :type databricks_address_space: ~azure.mgmt.databricks.models.AddressSpace
-    :param remote_virtual_network:  The remote virtual network should be in
-     the same region. See here to learn more
+    :param remote_virtual_network: Required.  The remote virtual network
+     should be in the same region. See here to learn more
      (https://docs.microsoft.com/en-us/azure/databricks/administration-guide/cloud-configurations/azure/vnet-peering).
     :type remote_virtual_network:
      ~azure.mgmt.databricks.models.VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork
     :param remote_address_space: The reference to the remote virtual network
      address space.
     :type remote_address_space: ~azure.mgmt.databricks.models.AddressSpace
-    :param peering_state: The status of the virtual network peering. Possible
+    :ivar peering_state: The status of the virtual network peering. Possible
      values include: 'Initiated', 'Connected', 'Disconnected'
-    :type peering_state: str or
-     ~azure.mgmt.databricks.models.VirtualNetworkPeeringState
+    :vartype peering_state: str or ~azure.mgmt.databricks.models.PeeringState
     :ivar provisioning_state: The provisioning state of the virtual network
      peering resource. Possible values include: 'Succeeded', 'Updating',
      'Deleting', 'Failed'
@@ -449,6 +450,8 @@ class VirtualNetworkPeering(Model):
     """
 
     _validation = {
+        'remote_virtual_network': {'required': True},
+        'peering_state': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'name': {'readonly': True},
         'id': {'readonly': True},
@@ -481,7 +484,7 @@ class VirtualNetworkPeering(Model):
         self.databricks_address_space = kwargs.get('databricks_address_space', None)
         self.remote_virtual_network = kwargs.get('remote_virtual_network', None)
         self.remote_address_space = kwargs.get('remote_address_space', None)
-        self.peering_state = kwargs.get('peering_state', None)
+        self.peering_state = None
         self.provisioning_state = None
         self.name = None
         self.id = None
