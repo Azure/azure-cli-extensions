@@ -247,8 +247,8 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
         self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westcentralus')
-    def test_azure_firewall_with_firewall_policy(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='eastus2')
+    def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
 
         self.kwargs.update({
             'af': 'af1',
@@ -262,13 +262,14 @@ class AzureFirewallScenario(ScenarioTest):
             'pubip': 'pubip',
             'vnet': 'myvnet',
             'ipconfig': 'myipconfig1',
+            'location': resource_group_location
         })
         # test firewall policy with vhub firewall
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westcentralus --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
 
-        self.cmd('network firewall policy create -g {rg} -n {policy} -l westcentralus', checks=[
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
@@ -289,7 +290,7 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check('name', '{ipconfig}'),
                 self.check('subnet.id', subnet_id_default)
             ])
-        self.cmd('network firewall policy create -g {rg} -n {policy2} -l westcentralus', checks=[
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy2}')
         ])
@@ -518,23 +519,23 @@ class AzureFirewallScenario(ScenarioTest):
                                  '--enable-dns-proxy false '
                                  '--require-dns-proxy-for-network-rules false').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['fw'])
-        self.assertEqual(creation_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
-        self.assertEqual(creation_data['DNSEnableProxy'], 'False')
-        self.assertEqual(creation_data['DNSRequireProxyForNetworkRules'], 'False')
+        self.assertEqual(creation_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
+        self.assertEqual(creation_data['Network.DNS.EnableProxy'], 'False')
+        self.assertEqual(creation_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
 
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
-        self.assertEqual(show_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
-        self.assertEqual(show_data['DNSEnableProxy'], 'False')
-        self.assertEqual(show_data['DNSRequireProxyForNetworkRules'], 'False')
+        self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
+        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'False')
+        self.assertEqual(show_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
 
         self.cmd('network firewall update -g {rg} -n {fw} '
                  '--enable-dns-proxy true').get_output_in_json()
 
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
-        self.assertEqual(show_data['DNSServer'], "['10.0.0.2', '10.0.0.3']")
-        self.assertEqual(show_data['DNSEnableProxy'], 'True')
-        self.assertEqual(show_data['DNSRequireProxyForNetworkRules'], 'False')
+        self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
+        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'True')
+        self.assertEqual(show_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
