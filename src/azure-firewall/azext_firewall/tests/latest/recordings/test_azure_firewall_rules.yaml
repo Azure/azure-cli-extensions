@@ -13,15 +13,15 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-resource/6.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_rules000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001","name":"cli_test_azure_firewall_rules000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-02-06T05:45:49Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001","name":"cli_test_azure_firewall_rules000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-06-18T04:41:44Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:45:56 GMT
+      - Thu, 18 Jun 2020 04:41:47 GMT
       expires:
       - '-1'
       pragma:
@@ -45,7 +45,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus", "properties": {"additionalProperties": {}}}'
+    body: '{"location": "westus", "properties": {"additionalProperties": {"Network.DNS.EnableProxy":
+      "False", "Network.DNS.RequireProxyForNetworkRules": "True", "Network.DNS.Servers":
+      ""}}}'
     headers:
       Accept:
       - application/json
@@ -56,39 +58,43 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '66'
+      - '178'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"8b2c5607-c729-4e0c-9685-9e2c469e9350\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\":
-        [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"9c4531f6-0682-4e29-ad12-d7ee2909fd48\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
+        \   \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\"\
+        : [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/31a77fcc-b36d-4a7a-8789-73a07936c2e5?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/4eafa8c4-d0ec-4996-b13e-9f8c12f451fe?api-version=2019-11-01
       cache-control:
       - no-cache
       content-length:
-      - '690'
+      - '830'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:00 GMT
+      - Thu, 18 Jun 2020 04:41:52 GMT
       expires:
       - '-1'
       pragma:
@@ -101,9 +107,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - cbb7b911-64e1-4541-b2c8-2cc7e16e4ea7
+      - 39ecb34d-2812-4cf0-9667-cd6d128f0368
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1195'
     status:
       code: 201
       message: Created
@@ -121,10 +127,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/31a77fcc-b36d-4a7a-8789-73a07936c2e5?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/4eafa8c4-d0ec-4996-b13e-9f8c12f451fe?api-version=2019-11-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -136,7 +142,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:13 GMT
+      - Thu, 18 Jun 2020 04:42:04 GMT
       expires:
       - '-1'
       pragma:
@@ -153,7 +159,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 83ddb6a7-4171-46bc-a1f8-788ac1c89f03
+      - e4f704f9-3881-4362-98e4-43d2e08f707d
     status:
       code: 200
       message: OK
@@ -171,31 +177,33 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"47147db9-0c93-44f7-9ddb-3b035ecc9a50\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\":
-        [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"a753a89e-650d-4bc0-a853-6c34e3114cd8\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
+        \    \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\"\
+        : [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '691'
+      - '831'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:14 GMT
+      - Thu, 18 Jun 2020 04:42:04 GMT
       etag:
-      - W/"47147db9-0c93-44f7-9ddb-3b035ecc9a50"
+      - W/"a753a89e-650d-4bc0-a853-6c34e3114cd8"
       expires:
       - '-1'
       pragma:
@@ -212,7 +220,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - eea9cc55-6301-490d-86e0-4e178f5ef1cd
+      - b589b790-86f1-42fd-b49b-2e520e94c111
     status:
       code: 200
       message: OK
@@ -231,33 +239,35 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --destination-fqdns
         --destination-ports
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"47147db9-0c93-44f7-9ddb-3b035ecc9a50\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\":
-        [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"a753a89e-650d-4bc0-a853-6c34e3114cd8\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
+        \    \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [],\r\n    \"applicationRuleCollections\"\
+        : [],\r\n    \"natRuleCollections\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '691'
+      - '831'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:16 GMT
+      - Thu, 18 Jun 2020 04:42:05 GMT
       etag:
-      - W/"47147db9-0c93-44f7-9ddb-3b035ecc9a50"
+      - W/"a753a89e-650d-4bc0-a853-6c34e3114cd8"
       expires:
       - '-1'
       pragma:
@@ -274,7 +284,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8a3dbb50-1ae9-40b7-b4d3-5e5bbd2c31f8
+      - 81a49e84-9dec-468e-8dad-7f8fa5227ce3
     status:
       code: 200
       message: OK
@@ -286,7 +296,8 @@ interactions:
       "TCP", "ICMP"], "sourceAddresses": ["10.0.0.0", "111.1.0.0/24"], "destinationPorts":
       ["80"], "destinationFqdns": ["www.bing.com"]}]}, "name": "rc1"}], "ipConfigurations":
       [], "threatIntelMode": "Alert", "sku": {"name": "AZFW_VNet", "tier": "Standard"},
-      "additionalProperties": {}}}'''
+      "additionalProperties": {"Network.DNS.EnableProxy": "False", "Network.DNS.RequireProxyForNetworkRules":
+      "True", "Network.DNS.Servers": ""}}}'''
     headers:
       Accept:
       - application/json
@@ -297,55 +308,58 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '726'
+      - '838'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n -c --priority --action -f --source-addresses --protocols --destination-fqdns
         --destination-ports
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"64a98a58-0ad7-43d4-b87e-c98be3117bcf\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\": \"rc1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\",\r\n
-        \       \"etag\": \"W/\\\"64a98a58-0ad7-43d4-b87e-c98be3117bcf\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
-        \         \"priority\": 10000,\r\n          \"action\": {\r\n            \"type\":
-        \"Allow\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\",\r\n                \"ICMP\"\r\n              ],\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"destinationAddresses\":
-        [],\r\n              \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\":
-        [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"80\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\r\n      }\r\n
-        \   ],\r\n    \"applicationRuleCollections\": [],\r\n    \"natRuleCollections\":
-        []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"c3722002-f31f-4c0f-981e-981ec51aa628\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
+        \   \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\"\
+        : \"rc1\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\"\
+        ,\r\n        \"etag\": \"W/\\\"c3722002-f31f-4c0f-981e-981ec51aa628\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"priority\": 10000,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Allow\"\r\n          },\r\n          \"rules\": [\r\n  \
+        \          {\r\n              \"name\": \"network-rule1\",\r\n           \
+        \   \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        ,\r\n                \"ICMP\"\r\n              ],\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"destinationAddresses\": [],\r\n    \
+        \          \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\"\
+        : [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\
+        \r\n              ],\r\n              \"destinationPorts\": [\r\n        \
+        \        \"80\"\r\n              ]\r\n            }\r\n          ]\r\n   \
+        \     },\r\n        \"type\": \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\
+        \r\n      }\r\n    ],\r\n    \"applicationRuleCollections\": [],\r\n    \"\
+        natRuleCollections\": []\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/661d0352-9223-45b5-a800-c8c5f16aaaac?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/b90a1667-9208-4435-b67c-965c66e2a064?api-version=2019-11-01
       cache-control:
       - no-cache
       content-length:
-      - '1913'
+      - '2053'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:17 GMT
+      - Thu, 18 Jun 2020 04:42:06 GMT
       expires:
       - '-1'
       pragma:
@@ -362,9 +376,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0e0147e6-0217-40d0-96b8-e123b8870e4b
+      - 2694b7f3-c290-46f2-aa4e-feef7715813e
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -383,10 +397,10 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --destination-fqdns
         --destination-ports
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/661d0352-9223-45b5-a800-c8c5f16aaaac?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/b90a1667-9208-4435-b67c-965c66e2a064?api-version=2019-11-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -398,7 +412,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:28 GMT
+      - Thu, 18 Jun 2020 04:42:17 GMT
       expires:
       - '-1'
       pragma:
@@ -415,7 +429,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 41f14400-c218-4d20-a40d-6a329647db7f
+      - 7f9f34fc-3d21-4995-920e-e00d2d196804
     status:
       code: 200
       message: OK
@@ -434,46 +448,49 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --destination-fqdns
         --destination-ports
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\": \"rc1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\",\r\n
-        \       \"etag\": \"W/\\\"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
-        \         \"priority\": 10000,\r\n          \"action\": {\r\n            \"type\":
-        \"Allow\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\",\r\n                \"ICMP\"\r\n              ],\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"destinationAddresses\":
-        [],\r\n              \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\":
-        [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"80\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\r\n      }\r\n
-        \   ],\r\n    \"applicationRuleCollections\": [],\r\n    \"natRuleCollections\":
-        []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"686a108e-35e7-416f-af45-24d2094fcdc7\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
+        \    \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\"\
+        : \"rc1\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\"\
+        ,\r\n        \"etag\": \"W/\\\"686a108e-35e7-416f-af45-24d2094fcdc7\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"priority\": 10000,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Allow\"\r\n          },\r\n          \"rules\": [\r\n  \
+        \          {\r\n              \"name\": \"network-rule1\",\r\n           \
+        \   \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        ,\r\n                \"ICMP\"\r\n              ],\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"destinationAddresses\": [],\r\n    \
+        \          \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\"\
+        : [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\
+        \r\n              ],\r\n              \"destinationPorts\": [\r\n        \
+        \        \"80\"\r\n              ]\r\n            }\r\n          ]\r\n   \
+        \     },\r\n        \"type\": \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\
+        \r\n      }\r\n    ],\r\n    \"applicationRuleCollections\": [],\r\n    \"\
+        natRuleCollections\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1915'
+      - '2055'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:28 GMT
+      - Thu, 18 Jun 2020 04:42:17 GMT
       etag:
-      - W/"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4"
+      - W/"686a108e-35e7-416f-af45-24d2094fcdc7"
       expires:
       - '-1'
       pragma:
@@ -490,7 +507,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ccaa5373-248f-4a87-b319-b6390787ee02
+      - 35d59a55-e2ce-4402-8d6d-6658728a7456
     status:
       code: 200
       message: OK
@@ -509,48 +526,51 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --translated-fqdn
         --destination-ports --destination-addresses --translated-port
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\": \"rc1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\",\r\n
-        \       \"etag\": \"W/\\\"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
-        \         \"priority\": 10000,\r\n          \"action\": {\r\n            \"type\":
-        \"Allow\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\",\r\n                \"ICMP\"\r\n              ],\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"destinationAddresses\":
-        [],\r\n              \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\":
-        [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"80\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\r\n      }\r\n
-        \   ],\r\n    \"applicationRuleCollections\": [],\r\n    \"natRuleCollections\":
-        []\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"686a108e-35e7-416f-af45-24d2094fcdc7\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
+        \    \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\"\
+        : \"rc1\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\"\
+        ,\r\n        \"etag\": \"W/\\\"686a108e-35e7-416f-af45-24d2094fcdc7\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"priority\": 10000,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Allow\"\r\n          },\r\n          \"rules\": [\r\n  \
+        \          {\r\n              \"name\": \"network-rule1\",\r\n           \
+        \   \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        ,\r\n                \"ICMP\"\r\n              ],\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"destinationAddresses\": [],\r\n    \
+        \          \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\"\
+        : [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\
+        \r\n              ],\r\n              \"destinationPorts\": [\r\n        \
+        \        \"80\"\r\n              ]\r\n            }\r\n          ]\r\n   \
+        \     },\r\n        \"type\": \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\
+        \r\n      }\r\n    ],\r\n    \"applicationRuleCollections\": [],\r\n    \"\
+        natRuleCollections\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1915'
+      - '2055'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:36 GMT
+      - Thu, 18 Jun 2020 04:42:19 GMT
       etag:
-      - W/"8f856bec-d3dc-4193-87d1-1c9d9bb8fde4"
+      - W/"686a108e-35e7-416f-af45-24d2094fcdc7"
       expires:
       - '-1'
       pragma:
@@ -567,7 +587,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 098140fd-b821-4c50-a91a-37aabe6ccff7
+      - e09b3602-818a-4b81-9e40-e5f41ae4dcb9
     status:
       code: 200
       message: OK
@@ -584,7 +604,9 @@ interactions:
       "111.1.0.0/24"], "destinationAddresses": [], "destinationPorts": ["80"], "destinationFqdns":
       ["www.bing.com"], "sourceIpGroups": [], "destinationIpGroups": []}]}, "name":
       "rc1"}], "ipConfigurations": [], "threatIntelMode": "Alert", "sku": {"name":
-      "AZFW_VNet", "tier": "Standard"}, "additionalProperties": {}}}'''
+      "AZFW_VNet", "tier": "Standard"}, "additionalProperties": {"Network.DNS.EnableProxy":
+      "False", "Network.DNS.RequireProxyForNetworkRules": "True", "Network.DNS.Servers":
+      ""}}}'''
     headers:
       Accept:
       - application/json
@@ -595,69 +617,74 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1358'
+      - '1470'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n -c --priority --action -f --source-addresses --protocols --translated-fqdn
         --destination-ports --destination-addresses --translated-port
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"6479d9b4-084a-48f8-a54d-b18aced30953\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\": \"rc1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\",\r\n
-        \       \"etag\": \"W/\\\"6479d9b4-084a-48f8-a54d-b18aced30953\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
-        \         \"priority\": 10000,\r\n          \"action\": {\r\n            \"type\":
-        \"Allow\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\",\r\n                \"ICMP\"\r\n              ],\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"destinationAddresses\":
-        [],\r\n              \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\":
-        [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"80\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\r\n      }\r\n
-        \   ],\r\n    \"applicationRuleCollections\": [],\r\n    \"natRuleCollections\":
-        [\r\n      {\r\n        \"name\": \"rc2\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/natRuleCollections/rc2\",\r\n
-        \       \"etag\": \"W/\\\"6479d9b4-084a-48f8-a54d-b18aced30953\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
-        \         \"priority\": 10001,\r\n          \"action\": {\r\n            \"type\":
-        \"Dnat\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\"\r\n              ],\r\n              \"translatedFqdn\":
-        \"server1.internal.com\",\r\n              \"translatedPort\": \"95\",\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"sourceIpGroups\":
-        [],\r\n              \"destinationAddresses\": [\r\n                \"12.36.22.14\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"96\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/natRuleCollections\"\r\n      }\r\n    ]\r\n
-        \ }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"91d5a8ae-d18c-47e3-a32e-ce34b1fe8b48\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
+        \   \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\"\
+        : \"rc1\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\"\
+        ,\r\n        \"etag\": \"W/\\\"91d5a8ae-d18c-47e3-a32e-ce34b1fe8b48\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"priority\": 10000,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Allow\"\r\n          },\r\n          \"rules\": [\r\n  \
+        \          {\r\n              \"name\": \"network-rule1\",\r\n           \
+        \   \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        ,\r\n                \"ICMP\"\r\n              ],\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"destinationAddresses\": [],\r\n    \
+        \          \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\"\
+        : [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\
+        \r\n              ],\r\n              \"destinationPorts\": [\r\n        \
+        \        \"80\"\r\n              ]\r\n            }\r\n          ]\r\n   \
+        \     },\r\n        \"type\": \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\
+        \r\n      }\r\n    ],\r\n    \"applicationRuleCollections\": [],\r\n    \"\
+        natRuleCollections\": [\r\n      {\r\n        \"name\": \"rc2\",\r\n     \
+        \   \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/natRuleCollections/rc2\"\
+        ,\r\n        \"etag\": \"W/\\\"91d5a8ae-d18c-47e3-a32e-ce34b1fe8b48\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"priority\": 10001,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Dnat\"\r\n          },\r\n          \"rules\": [\r\n   \
+        \         {\r\n              \"name\": \"network-rule1\",\r\n            \
+        \  \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        \r\n              ],\r\n              \"translatedFqdn\": \"server1.internal.com\"\
+        ,\r\n              \"translatedPort\": \"95\",\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"sourceIpGroups\": [],\r\n          \
+        \    \"destinationAddresses\": [\r\n                \"12.36.22.14\"\r\n  \
+        \            ],\r\n              \"destinationPorts\": [\r\n             \
+        \   \"96\"\r\n              ]\r\n            }\r\n          ]\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/azureFirewalls/natRuleCollections\"\
+        \r\n      }\r\n    ]\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/4d1a2054-0bc5-4d83-b348-a0b5c022251e?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/048444f9-41cf-42e1-8ed1-361c736f2b0d?api-version=2019-11-01
       cache-control:
       - no-cache
       content-length:
-      - '3116'
+      - '3256'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:37 GMT
+      - Thu, 18 Jun 2020 04:42:19 GMT
       expires:
       - '-1'
       pragma:
@@ -674,9 +701,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d3ed99bc-0486-40ab-9f26-a8ca400e14dc
+      - 7108bf8e-ccbe-46aa-8743-f4479433461c
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -695,10 +722,10 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --translated-fqdn
         --destination-ports --destination-addresses --translated-port
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/4d1a2054-0bc5-4d83-b348-a0b5c022251e?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/048444f9-41cf-42e1-8ed1-361c736f2b0d?api-version=2019-11-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -710,7 +737,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:48 GMT
+      - Thu, 18 Jun 2020 04:42:30 GMT
       expires:
       - '-1'
       pragma:
@@ -727,7 +754,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 85f8ab7d-586a-4c63-92b6-79ea9914d4ed
+      - 1a6b3a68-02de-43b6-b065-e8851a26403b
     status:
       code: 200
       message: OK
@@ -746,60 +773,65 @@ interactions:
       - -g -n -c --priority --action -f --source-addresses --protocols --translated-fqdn
         --destination-ports --destination-addresses --translated-port
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2019-11-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"97d6550a-c957-466f-9df9-f3726351de37\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
-        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
-        \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
-        \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"ipConfigurations\":
-        [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\": \"rc1\",\r\n
-        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\",\r\n
-        \       \"etag\": \"W/\\\"97d6550a-c957-466f-9df9-f3726351de37\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
-        \         \"priority\": 10000,\r\n          \"action\": {\r\n            \"type\":
-        \"Allow\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\",\r\n                \"ICMP\"\r\n              ],\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"destinationAddresses\":
-        [],\r\n              \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\":
-        [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"80\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\r\n      }\r\n
-        \   ],\r\n    \"applicationRuleCollections\": [],\r\n    \"natRuleCollections\":
-        [\r\n      {\r\n        \"name\": \"rc2\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/natRuleCollections/rc2\",\r\n
-        \       \"etag\": \"W/\\\"97d6550a-c957-466f-9df9-f3726351de37\\\"\",\r\n
-        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
-        \         \"priority\": 10001,\r\n          \"action\": {\r\n            \"type\":
-        \"Dnat\"\r\n          },\r\n          \"rules\": [\r\n            {\r\n              \"name\":
-        \"network-rule1\",\r\n              \"protocols\": [\r\n                \"UDP\",\r\n
-        \               \"TCP\"\r\n              ],\r\n              \"translatedFqdn\":
-        \"server1.internal.com\",\r\n              \"translatedPort\": \"95\",\r\n
-        \             \"sourceAddresses\": [\r\n                \"10.0.0.0\",\r\n
-        \               \"111.1.0.0/24\"\r\n              ],\r\n              \"sourceIpGroups\":
-        [],\r\n              \"destinationAddresses\": [\r\n                \"12.36.22.14\"\r\n
-        \             ],\r\n              \"destinationPorts\": [\r\n                \"96\"\r\n
-        \             ]\r\n            }\r\n          ]\r\n        },\r\n        \"type\":
-        \"Microsoft.Network/azureFirewalls/natRuleCollections\"\r\n      }\r\n    ]\r\n
-        \ }\r\n}"
+      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1\"\
+        ,\r\n  \"etag\": \"W/\\\"35e3ccb1-c91f-4fe9-a55a-1fa3025bab15\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\"\
+        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
+        \    \"sku\": {\r\n      \"name\": \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"additionalProperties\"\
+        : {\r\n      \"Network.DNS.EnableProxy\": \"False\",\r\n      \"Network.DNS.RequireProxyForNetworkRules\"\
+        : \"True\",\r\n      \"Network.DNS.Servers\": \"\"\r\n    },\r\n    \"ipConfigurations\"\
+        : [],\r\n    \"networkRuleCollections\": [\r\n      {\r\n        \"name\"\
+        : \"rc1\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/networkRuleCollections/rc1\"\
+        ,\r\n        \"etag\": \"W/\\\"35e3ccb1-c91f-4fe9-a55a-1fa3025bab15\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"priority\": 10000,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Allow\"\r\n          },\r\n          \"rules\": [\r\n  \
+        \          {\r\n              \"name\": \"network-rule1\",\r\n           \
+        \   \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        ,\r\n                \"ICMP\"\r\n              ],\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"destinationAddresses\": [],\r\n    \
+        \          \"sourceIpGroups\": [],\r\n              \"destinationIpGroups\"\
+        : [],\r\n              \"destinationFqdns\": [\r\n                \"www.bing.com\"\
+        \r\n              ],\r\n              \"destinationPorts\": [\r\n        \
+        \        \"80\"\r\n              ]\r\n            }\r\n          ]\r\n   \
+        \     },\r\n        \"type\": \"Microsoft.Network/azureFirewalls/networkRuleCollections\"\
+        \r\n      }\r\n    ],\r\n    \"applicationRuleCollections\": [],\r\n    \"\
+        natRuleCollections\": [\r\n      {\r\n        \"name\": \"rc2\",\r\n     \
+        \   \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_rules000001/providers/Microsoft.Network/azureFirewalls/af1/natRuleCollections/rc2\"\
+        ,\r\n        \"etag\": \"W/\\\"35e3ccb1-c91f-4fe9-a55a-1fa3025bab15\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"priority\": 10001,\r\n          \"action\": {\r\n       \
+        \     \"type\": \"Dnat\"\r\n          },\r\n          \"rules\": [\r\n   \
+        \         {\r\n              \"name\": \"network-rule1\",\r\n            \
+        \  \"protocols\": [\r\n                \"UDP\",\r\n                \"TCP\"\
+        \r\n              ],\r\n              \"translatedFqdn\": \"server1.internal.com\"\
+        ,\r\n              \"translatedPort\": \"95\",\r\n              \"sourceAddresses\"\
+        : [\r\n                \"10.0.0.0\",\r\n                \"111.1.0.0/24\"\r\
+        \n              ],\r\n              \"sourceIpGroups\": [],\r\n          \
+        \    \"destinationAddresses\": [\r\n                \"12.36.22.14\"\r\n  \
+        \            ],\r\n              \"destinationPorts\": [\r\n             \
+        \   \"96\"\r\n              ]\r\n            }\r\n          ]\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/azureFirewalls/natRuleCollections\"\
+        \r\n      }\r\n    ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3119'
+      - '3259'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:46:49 GMT
+      - Thu, 18 Jun 2020 04:42:30 GMT
       etag:
-      - W/"97d6550a-c957-466f-9df9-f3726351de37"
+      - W/"35e3ccb1-c91f-4fe9-a55a-1fa3025bab15"
       expires:
       - '-1'
       pragma:
@@ -816,7 +848,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 99f0a6a9-6d0b-4b5a-b393-681606602655
+      - 60d072e4-86c0-48ce-8e31-3e4b2b9255e5
     status:
       code: 200
       message: OK
@@ -836,8 +868,8 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
       accept-language:
       - en-US
     method: DELETE
@@ -846,18 +878,20 @@ interactions:
     body:
       string: ''
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/712d37c3-a72d-4783-8528-cd0207ccfe5e?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/37892818-f3bd-4b4b-841b-382c63a5eff8?api-version=2019-11-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 06 Feb 2020 05:46:51 GMT
+      - Thu, 18 Jun 2020 04:42:31 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/712d37c3-a72d-4783-8528-cd0207ccfe5e?api-version=2019-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/37892818-f3bd-4b4b-841b-382c63a5eff8?api-version=2019-11-01
       pragma:
       - no-cache
       server:
@@ -868,9 +902,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9b26b696-5517-4121-af29-ecbefd98f56e
+      - 74d1f491-8ed2-48ca-8746-ed675b8da287
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -888,10 +922,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.0.81
+      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-network/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/712d37c3-a72d-4783-8528-cd0207ccfe5e?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/37892818-f3bd-4b4b-841b-382c63a5eff8?api-version=2019-11-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -903,7 +937,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Feb 2020 05:47:03 GMT
+      - Thu, 18 Jun 2020 04:42:42 GMT
       expires:
       - '-1'
       pragma:
@@ -920,7 +954,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c5c7b7cc-ac8a-4dcb-9b41-ec6b14e608ca
+      - 067fcbff-470e-4801-b6ef-bd78bd065545
     status:
       code: 200
       message: OK
