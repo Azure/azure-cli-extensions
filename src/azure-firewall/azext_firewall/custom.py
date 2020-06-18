@@ -158,14 +158,14 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                     count=hub_public_ip_count
                 )
         else:
-            if hub_public_ip_addresses is not None:
-                if len(hub_public_ip_addresses) != hub_public_ip_count:
-                    raise CLIError('Public Ip addresses number must be consistent.')
-                if instance.hub_ip_addresses.public_ips.count and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:
+            if instance.hub_ip_addresses.public_ips.count is not None and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:
+                if hub_public_ip_addresses is not None:
                     raise CLIError('Cannot add and remove public ip addresses at same time.')
+            else:
+                if hub_public_ip_addresses is not None and len(hub_public_ip_addresses) != hub_public_ip_count:
+                    raise CLIError('Public Ip addresses number must be consistent.')
+                instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]
             instance.hub_ip_addresses.public_ips.count = hub_public_ip_count
-            instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip)
-                                                              for ip in hub_public_ip_addresses] if hub_public_ip_addresses else None
     return instance
 
 
