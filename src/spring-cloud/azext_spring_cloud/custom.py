@@ -52,6 +52,8 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
     properties = models.ClusterResourceProperties()
+
+    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     update_tracing_config(cmd, resource_group, name, location, properties,
                           app_insights_key, app_insights, disable_distributed_tracing)
 
@@ -77,6 +79,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
 
+    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     app_insights_target_status = False
     if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
         app_insights_target_status = True
@@ -1300,6 +1303,13 @@ def get_app_insights_key(cli_ctx, resource_group, name):
     if appinsights is None or appinsights.instrumentation_key is None:
         raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
     return appinsights.instrumentation_key
+
+
+def check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing):
+    if (app_insights is not None or app_insights_key is not None) and disable_distributed_tracing is True:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' can not be set with '--disable-distributed-tracing true'.")
+    if app_insights is not None and app_insights_key is not None:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
