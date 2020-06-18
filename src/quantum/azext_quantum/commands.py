@@ -28,6 +28,7 @@ def transform_targets(providers):
 
 def transform_job(result):
     result = OrderedDict([
+        ('Name', result['name']),
         ('Id', result['id']),
         ('Status', result['status']),
         ('Target', result['target']),
