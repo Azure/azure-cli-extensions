@@ -107,6 +107,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
+# pylint: disable=too-many-branches
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
@@ -155,16 +156,16 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
             )
         elif instance.hub_ip_addresses.public_ips is None:
             instance.hub_ip_addresses.public_ips = HubPublicIPAddresses(
-                    count=hub_public_ip_count
-                )
+                count=hub_public_ip_count
+            )
         else:
-            if instance.hub_ip_addresses.public_ips.count is not None and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:
+            if instance.hub_ip_addresses.public_ips.count is not None and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:  # pylint: disable=line-too-long
                 if hub_public_ip_addresses is not None:
                     raise CLIError('Cannot add and remove public ip addresses at same time.')
             else:
                 if hub_public_ip_addresses is not None and len(hub_public_ip_addresses) != hub_public_ip_count:
                     raise CLIError('Public Ip addresses number must be consistent.')
-                instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]
+                instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]  # pylint: disable=line-too-long
             instance.hub_ip_addresses.public_ips.count = hub_public_ip_count
     return instance
 
