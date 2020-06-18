@@ -6,14 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._peering_management_client import PeeringManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
+from ._peering_management_client_async import PeeringManagementClient
 __all__ = ['PeeringManagementClient']
-
-try:
-    from .patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
