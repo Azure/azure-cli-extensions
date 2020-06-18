@@ -22,9 +22,9 @@ def setup(test, rg):
     pass
 
 
-# EXAMPLE: /Factories/put/Factories_CreateOrUpdate
+# EXAMPLE: Factories_CreateOrUpdate
 @try_manual
-def step__factories_put_factories_createorupdate(test, rg):
+def step_factories_createorupdate(test, rg):
     test.cmd('az datafactory factory create '
              '--location "East US" '
              '--name "{myFactoryName}" '
@@ -32,72 +32,9 @@ def step__factories_put_factories_createorupdate(test, rg):
              checks=[])
 
 
-# EXAMPLE: /Factories/get/Factories_Get
+# EXAMPLE: Factories_Update
 @try_manual
-def step__factories_get_factories_get(test, rg):
-    test.cmd('az datafactory factory show '
-             '--name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Factories/get/Factories_List
-@try_manual
-def step__factories_get_factories_list(test, rg):
-    test.cmd('az datafactory factory list '
-             '-g ""',
-             checks=[])
-
-
-# EXAMPLE: /Factories/get/Factories_ListByResourceGroup
-@try_manual
-def step__factories_get_factories_listbyresourcegroup(test, rg):
-    test.cmd('az datafactory factory list '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Factories/post/Factories_ConfigureFactoryRepo
-@try_manual
-def step__factories_post_factories_configurefactoryrepo(test, rg):
-    test.cmd('az datafactory factory configure-factory-repo '
-             '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
-             'ry/factories/{myFactoryName}" '
-             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
-             'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
-             '--location "East US"',
-             checks=[])
-
-
-# EXAMPLE: /Factories/post/Factories_GetDataPlaneAccess
-@try_manual
-def step__factories_post_factories_getdataplaneaccess(test, rg):
-    test.cmd('az datafactory factory get-data-plane-access '
-             '--name "{myFactoryName}" '
-             '--access-resource-path "" '
-             '--expire-time "2018-11-10T09:46:20.2659347Z" '
-             '--permissions "r" '
-             '--profile-name "DefaultProfile" '
-             '--start-time "2018-11-10T02:46:20.2659347Z" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Factories/post/Factories_GetGitHubAccessToken
-@try_manual
-def step__factories_post_factories_getgithubaccesstoken(test, rg):
-    test.cmd('az datafactory factory get-git-hub-access-token '
-             '--name "{myFactoryName}" '
-             '--git-hub-access-code "some" '
-             '--git-hub-access-token-base-url "some" '
-             '--git-hub-client-id "some" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Factories/patch/Factories_Update
-@try_manual
-def step__factories_patch_factories_update(test, rg):
+def step_factories_update(test, rg):
     test.cmd('az datafactory factory update '
              '--name "{myFactoryName}" '
              '--tags exampleTag="exampleValue" '
@@ -105,20 +42,9 @@ def step__factories_patch_factories_update(test, rg):
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/put/IntegrationRuntimes_Create
+# EXAMPLE: LinkedServices_Create
 @try_manual
-def step__integrationruntimes_put_integrationruntimes_create(test, rg):
-    test.cmd('az datafactory integration-runtime managed create '
-             '--factory-name "{myFactoryName}" '
-             '--description "A selfhosted integration runtime" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
-@try_manual
-def step__linkedservices_put_linkedservices_create(test, rg):
+def step_linkedservices_create(test, rg):
     test.cmd('az datafactory linked-service create '
              '--factory-name "{myFactoryName}" '
              '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
@@ -129,22 +55,9 @@ def step__linkedservices_put_linkedservices_create(test, rg):
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Create
+# EXAMPLE: LinkedServices_Update
 @try_manual
-def step__linkedservices_put_linkedservices_create(test, rg):
-    test.cmd('az datafactory linked-service create '
-             '--factory-name "{myFactoryName}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
-             '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
-             'tKey=<storage key>\\"}}}}}}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
-@try_manual
-def step__linkedservices_put_linkedservices_update(test, rg):
+def step_linkedservices_update(test, rg):
     test.cmd('az datafactory linked-service create '
              '--factory-name "{myFactoryName}" '
              '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example '
@@ -155,96 +68,113 @@ def step__linkedservices_put_linkedservices_update(test, rg):
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/put/LinkedServices_Update
+# EXAMPLE: Datasets_Create
 @try_manual
-def step__linkedservices_put_linkedservices_update(test, rg):
-    test.cmd('az datafactory linked-service create '
-             '--factory-name "{myFactoryName}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example '
-             'description\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":'
-             '\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/put/Datasets_Create
-@try_manual
-def step__datasets_put_datasets_create(test, rg):
+def step_datasets_create(test, rg):
     test.cmd('az datafactory dataset create '
              '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
-             'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
-             'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
-             '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Strin'
+             'g\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"type\\":'
+             '\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"}}'
+             ',\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
              '--name "{myDataset}" '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Create
+# EXAMPLE: Datasets_Update
 @try_manual
-def step__datasets_put_datasets_create(test, rg):
+def step_datasets_update(test, rg):
     test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"'
-             'String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"typ'
-             'e\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName'
-             '\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
+             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters'
+             '\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"ty'
+             'peProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression'
+             '\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":'
+             '\\"@dataset().MyFolderPath\\"}}}}}}" '
              '--name "{myDataset}" '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /ActivityRuns/post/ActivityRuns_QueryByPipelineRun
+# EXAMPLE: Pipelines_Create
 @try_manual
-def step__activityruns_post_activityruns_querybypipelinerun(test, rg):
-    test.cmd('az datafactory activity-run query-by-pipeline-run '
+def step_pipelines_create(test, rg):
+    test.cmd('az datafactory pipeline create '
              '--factory-name "{myFactoryName}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+             '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
+             'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
+             '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
+             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"ty'
+             'pe\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value\\'
+             '":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"t'
+             'ypeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{'
+             '\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"v'
+             'alue\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":{{\\"type\\'
+             '":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"TestVariableA'
+             'rray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Expression\\",\\"v'
+             'alue\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Pipelines_Update
+@try_manual
+def step_pipelines_update(test, rg):
+    test.cmd('az datafactory pipeline create '
+             '--factory-name "{myFactoryName}" '
+             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
+             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
+             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
+             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
+             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileNam'
+             'e\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}'
+             '},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":'
+             '{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,'
+             '\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}'
+             '}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Triggers_Create
+@try_manual
+def step_triggers_create(test, rg):
+    test.cmd('az datafactory trigger create '
+             '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
+             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
+             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00'
+             ':55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8'
+             '441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+             '--name "{myTrigger}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Update
+# EXAMPLE: Triggers_Update
 @try_manual
-def step__datasets_put_datasets_update(test, rg):
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"param'
-             'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
-             '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
-             'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
-             '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{myDataset}" '
+def step_triggers_update(test, rg):
+    test.cmd('az datafactory trigger create '
              '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg}" '
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
+             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}}}],'
+             '\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\"'
+             ':\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"'
+             '}}}}}}" '
+             '--name "{myTrigger}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/put/Datasets_Update
+# EXAMPLE: IntegrationRuntimes_Create
 @try_manual
-def step__datasets_put_datasets_update(test, rg):
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"param'
-             'eters\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},'
-             '\\"typeProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expres'
-             'sion\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value'
-             '\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/put/IntegrationRuntimes_Create
-@try_manual
-def step__integrationruntimes_put_integrationruntimes_create(test, rg):
+def step_integrationruntimes_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
              '--factory-name "{myFactoryName}" '
              '--description "A selfhosted integration runtime" '
@@ -253,72 +183,21 @@ def step__integrationruntimes_put_integrationruntimes_create(test, rg):
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimeNodes/post/IntegrationRuntimeNodes_GetIpAddress
+# EXAMPLE: IntegrationRuntimes_Update
 @try_manual
-def step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg):
-    test.cmd('az datafactory integration-runtime-node get-ip-address '
+def step_integrationruntimes_update(test, rg):
+    test.cmd('az datafactory integration-runtime update '
              '--factory-name "{myFactoryName}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimeNodes/patch/IntegrationRuntimeNodes_Update
-@try_manual
-def step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg):
-    test.cmd('az datafactory integration-runtime-node update '
-             '--factory-name "{myFactoryName}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
-             '--concurrent-jobs-limit 2',
+             '--auto-update "Off" '
+             '--update-delay-offset "\\"PT3H\\""',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_SyncCredentials
+# EXAMPLE: IntegrationRuntimes_CreateLinkedIntegrationRuntime
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg):
-    test.cmd('az datafactory integration-runtime sync-credentials '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimeNodes/get/IntegrationRuntimeNodes_Get
-@try_manual
-def step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg):
-    test.cmd('az datafactory integration-runtime-node show '
-             '--factory-name "{myFactoryName}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_Get
-@try_manual
-def step__integrationruntimes_get_integrationruntimes_get(test, rg):
-    test.cmd('az datafactory integration-runtime show '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_ListByFactory
-@try_manual
-def step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg):
-    test.cmd('az datafactory integration-runtime list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_CreateLinkedIntegrationRuntime
-@try_manual
-def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg):
+def step_integrationruntimes_createlinkedintegrationruntime(test, rg):
     test.cmd('az datafactory integration-runtime linked-integration-runtime create '
              '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
              '--location "West US" '
@@ -331,49 +210,185 @@ def step__integrationruntimes_post_integrationruntimes_createlinkedintegrationru
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetConnectionInfo
+# EXAMPLE: Pipelines_CreateRun
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg):
-    test.cmd('az datafactory integration-runtime get-connection-info '
+def step_pipelines_createrun(test, rg):
+    test.cmd('az datafactory pipeline create-run '
+             '--factory-name "{myFactoryName}" '
+             '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_Get
+@try_manual
+def step_integrationruntimes_get(test, rg):
+    test.cmd('az datafactory integration-runtime show '
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetMonitoringData
+# EXAMPLE: RerunTriggers_ListByTrigger
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg):
-    test.cmd('az datafactory integration-runtime get-monitoring-data '
+def step_reruntriggers_listbytrigger(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: LinkedServices_Get
+@try_manual
+def step_linkedservices_get(test, rg):
+    test.cmd('az datafactory linked-service show '
              '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
+             '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetStatus
+# EXAMPLE: PipelineRuns_Get
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_getstatus(test, rg):
-    test.cmd('az datafactory integration-runtime get-status '
+def step_pipelineruns_get(test, rg):
+    test.cmd('az datafactory pipeline-run show '
              '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}" '
+             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+             checks=[])
+
+
+# EXAMPLE: Pipelines_Get
+@try_manual
+def step_pipelines_get(test, rg):
+    test.cmd('az datafactory pipeline show '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_ListAuthKeys
+# EXAMPLE: Datasets_Get
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg):
-    test.cmd('az datafactory integration-runtime list-auth-key '
+def step_datasets_get(test, rg):
+    test.cmd('az datafactory dataset show '
+             '--name "{myDataset}" '
              '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_RegenerateAuthKey
+# EXAMPLE: Triggers_Get
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg):
+def step_triggers_get(test, rg):
+    test.cmd('az datafactory trigger show '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}" '
+             '--name "{myTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_ListByFactory
+@try_manual
+def step_integrationruntimes_listbyfactory(test, rg):
+    test.cmd('az datafactory integration-runtime list '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: LinkedServices_ListByFactory
+@try_manual
+def step_linkedservices_listbyfactory(test, rg):
+    test.cmd('az datafactory linked-service list '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Pipelines_ListByFactory
+@try_manual
+def step_pipelines_listbyfactory(test, rg):
+    test.cmd('az datafactory pipeline list '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Triggers_ListByFactory
+@try_manual
+def step_triggers_listbyfactory(test, rg):
+    test.cmd('az datafactory trigger list '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Datasets_ListByFactory
+@try_manual
+def step_datasets_listbyfactory(test, rg):
+    test.cmd('az datafactory dataset list '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_Get
+@try_manual
+def step_factories_get(test, rg):
+    test.cmd('az datafactory factory show '
+             '--name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_ListByResourceGroup
+@try_manual
+def step_factories_listbyresourcegroup(test, rg):
+    test.cmd('az datafactory factory list '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_List
+@try_manual
+def step_factories_list(test, rg):
+    test.cmd('az datafactory factory list '
+             '-g ""',
+             checks=[])
+
+
+# EXAMPLE: Operations_List
+@try_manual
+def step_operations_list(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: RerunTriggers_Cancel
+@try_manual
+def step_reruntriggers_cancel(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: RerunTriggers_Start
+@try_manual
+def step_reruntriggers_start(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: RerunTriggers_Stop
+@try_manual
+def step_reruntriggers_stop(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: IntegrationRuntimes_RegenerateAuthKey
+@try_manual
+def step_integrationruntimes_regenerateauthkey(test, rg):
     test.cmd('az datafactory integration-runtime regenerate-auth-key '
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
@@ -382,9 +397,77 @@ def step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, r
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Start
+# EXAMPLE: TriggerRuns_Rerun
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_start(test, rg):
+def step_triggerruns_rerun(test, rg):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: IntegrationRuntimes_GetConnectionInfo
+@try_manual
+def step_integrationruntimes_getconnectioninfo(test, rg):
+    test.cmd('az datafactory integration-runtime get-connection-info '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_SyncCredentials
+@try_manual
+def step_integrationruntimes_synccredentials(test, rg):
+    test.cmd('az datafactory integration-runtime sync-credentials '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_GetMonitoringData
+@try_manual
+def step_integrationruntimes_getmonitoringdata(test, rg):
+    test.cmd('az datafactory integration-runtime get-monitoring-data '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_ListAuthKeys
+@try_manual
+def step_integrationruntimes_listauthkeys(test, rg):
+    test.cmd('az datafactory integration-runtime list-auth-key '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_Upgrade
+@try_manual
+def step_integrationruntimes_upgrade(test, rg):
+    test.cmd('az datafactory integration-runtime remove-link '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--linked-factory-name "myFactoryName-linked" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_GetStatus
+@try_manual
+def step_integrationruntimes_getstatus(test, rg):
+    test.cmd('az datafactory integration-runtime get-status '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myIntegrationRuntime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: IntegrationRuntimes_Start
+@try_manual
+def step_integrationruntimes_start(test, rg):
     test.cmd('az datafactory integration-runtime start '
              '--factory-name "{myFactoryName}" '
              '--name "{IntegrationRuntimes_2}" '
@@ -392,9 +475,9 @@ def step__integrationruntimes_post_integrationruntimes_start(test, rg):
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Stop
+# EXAMPLE: IntegrationRuntimes_Stop
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
+def step_integrationruntimes_stop(test, rg):
     test.cmd('az datafactory integration-runtime stop '
              '--factory-name "{myFactoryName}" '
              '--name "{IntegrationRuntimes_2}" '
@@ -402,101 +485,97 @@ def step__integrationruntimes_post_integrationruntimes_stop(test, rg):
              checks=[])
 
 
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
+# EXAMPLE: Triggers_GetEventSubscriptionStatus
 @try_manual
-def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
-    test.cmd('az datafactory integration-runtime remove-link '
+def step_triggers_geteventsubscriptionstatus(test, rg):
+    test.cmd('az datafactory trigger get-event-subscription-status '
              '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
-             '--linked-factory-name "myFactoryName-linked" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
-@try_manual
-def step__integrationruntimes_post_integrationruntimes_upgrade(test, rg):
-    test.cmd('az datafactory integration-runtime remove-link '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
-             '--linked-factory-name "myFactoryName-linked" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/patch/IntegrationRuntimes_Update
-@try_manual
-def step__integrationruntimes_patch_integrationruntimes_update(test, rg):
-    test.cmd('az datafactory integration-runtime update '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
-             '--auto-update "Off" '
-             '--update-delay-offset "\\"PT3H\\""',
+             '--name "{myTrigger}"',
              checks=[])
 
 
-# EXAMPLE: /Datasets/get/Datasets_Get
+# EXAMPLE: ActivityRuns_QueryByPipelineRun
 @try_manual
-def step__datasets_get_datasets_get(test, rg):
-    test.cmd('az datafactory dataset show '
-             '--name "{myDataset}" '
+def step_activityruns_querybypipelinerun(test, rg):
+    test.cmd('az datafactory activity-run query-by-pipeline-run '
              '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/get/Datasets_ListByFactory
-@try_manual
-def step__datasets_get_datasets_listbyfactory(test, rg):
-    test.cmd('az datafactory dataset list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/get/LinkedServices_Get
-@try_manual
-def step__linkedservices_get_linkedservices_get(test, rg):
-    test.cmd('az datafactory linked-service show '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /LinkedServices/get/LinkedServices_ListByFactory
-@try_manual
-def step__linkedservices_get_linkedservices_listbyfactory(test, rg):
-    test.cmd('az datafactory linked-service list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /PipelineRuns/get/PipelineRuns_Get
-@try_manual
-def step__pipelineruns_get_pipelineruns_get(test, rg):
-    test.cmd('az datafactory pipeline-run show '
-             '--factory-name "{myFactoryName}" '
+             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
+             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
              '--resource-group "{rg}" '
              '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
              checks=[])
 
 
-# EXAMPLE: /PipelineRuns/post/PipelineRuns_Cancel
+# EXAMPLE: Triggers_UnsubscribeFromEvents
 @try_manual
-def step__pipelineruns_post_pipelineruns_cancel(test, rg):
-    test.cmd('az datafactory pipeline-run cancel '
+def step_triggers_unsubscribefromevents(test, rg):
+    test.cmd('az datafactory trigger unsubscribe-from-event '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
+             '--name "{myTrigger}"',
              checks=[])
 
 
-# EXAMPLE: /PipelineRuns/post/PipelineRuns_QueryByFactory
+# EXAMPLE: Triggers_SubscribeToEvents
 @try_manual
-def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
+def step_triggers_subscribetoevents(test, rg):
+    test.cmd('az datafactory trigger subscribe-to-event '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}" '
+             '--name "{myTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: Triggers_Start
+@try_manual
+def step_triggers_start(test, rg):
+    test.cmd('az datafactory trigger start '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}" '
+             '--name "{myTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: Triggers_Stop
+@try_manual
+def step_triggers_stop(test, rg):
+    test.cmd('az datafactory trigger stop '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}" '
+             '--name "{myTrigger}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_GetGitHubAccessToken
+@try_manual
+def step_factories_getgithubaccesstoken(test, rg):
+    test.cmd('az datafactory factory get-git-hub-access-token '
+             '--name "{myFactoryName}" '
+             '--git-hub-access-code "some" '
+             '--git-hub-access-token-base-url "some" '
+             '--git-hub-client-id "some" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_GetDataPlaneAccess
+@try_manual
+def step_factories_getdataplaneaccess(test, rg):
+    test.cmd('az datafactory factory get-data-plane-access '
+             '--name "{myFactoryName}" '
+             '--access-resource-path "" '
+             '--expire-time "2018-11-10T09:46:20.2659347Z" '
+             '--permissions "r" '
+             '--profile-name "DefaultProfile" '
+             '--start-time "2018-11-10T02:46:20.2659347Z" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: PipelineRuns_QueryByFactory
+@try_manual
+def step_pipelineruns_querybyfactory(test, rg):
     test.cmd('az datafactory pipeline-run query-by-factory '
              '--factory-name "{myFactoryName}" '
              '--filters operand="PipelineName" operator="Equals" values="myPipeline" '
@@ -506,185 +585,19 @@ def step__pipelineruns_post_pipelineruns_querybyfactory(test, rg):
              checks=[])
 
 
-# EXAMPLE: /Pipelines/put/Pipelines_Create
+# EXAMPLE: PipelineRuns_Cancel
 @try_manual
-def step__pipelines_put_pipelines_create(test, rg):
-    test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
-             '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
-             'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
-             '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
-             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"outputs\\":[{{'
-             '\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"va'
-             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset'
-             '\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"s'
-             'ource\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Express'
-             'ion\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":'
-             '{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"Te'
-             'stVariableArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Express'
-             'ion\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/put/Pipelines_Create
-@try_manual
-def step__pipelines_put_pipelines_create(test, rg):
-    test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
-             '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
-             'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
-             '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
-             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"outputs\\":[{{'
-             '\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"va'
-             'lue\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"myDataset'
-             '\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"s'
-             'ource\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Express'
-             'ion\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":'
-             '{{\\"type\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"Te'
-             'stVariableArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Express'
-             'ion\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/put/Pipelines_Update
-@try_manual
-def step__pipelines_put_pipelines_update(test, rg):
-    test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
-             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
-             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
-             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
-             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
-             'leName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontaine'
-             'r\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
-             '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
-             'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
-             'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/put/Pipelines_Update
-@try_manual
-def step__pipelines_put_pipelines_update(test, rg):
-    test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
-             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
-             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
-             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
-             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFi'
-             'leName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontaine'
-             'r\\"}},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,'
-             '\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequentia'
-             'l\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameL'
-             'ist\\"}}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/get/Pipelines_Get
-@try_manual
-def step__pipelines_get_pipelines_get(test, rg):
-    test.cmd('az datafactory pipeline show '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/get/Pipelines_ListByFactory
-@try_manual
-def step__pipelines_get_pipelines_listbyfactory(test, rg):
-    test.cmd('az datafactory pipeline list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/post/Pipelines_CreateRun
-@try_manual
-def step__pipelines_post_pipelines_createrun(test, rg):
-    test.cmd('az datafactory pipeline create-run '
-             '--factory-name "{myFactoryName}" '
-             '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/put/Triggers_Create
-@try_manual
-def step__triggers_put_triggers_create(test, rg):
-    test.cmd('az datafactory trigger create '
+def step_pipelineruns_cancel(test, rg):
+    test.cmd('az datafactory pipeline-run cancel '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
-             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
-             '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
-             ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{myTrigger}"',
+             '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
              checks=[])
 
 
-# EXAMPLE: /Triggers/put/Triggers_Create
+# EXAMPLE: TriggerRuns_QueryByFactory
 @try_manual
-def step__triggers_put_triggers_create(test, rg):
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
-             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-'
-             '16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39'
-             ':13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/put/Triggers_Update
-@try_manual
-def step__triggers_put_triggers_update(test, rg):
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
-             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}'
-             '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
-             'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
-             'C\\"}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/put/Triggers_Update
-@try_manual
-def step__triggers_put_triggers_update(test, rg):
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
-             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}'
-             '}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequenc'
-             'y\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UT'
-             'C\\"}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /TriggerRuns/post/TriggerRuns_QueryByFactory
-@try_manual
-def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
+def step_triggerruns_querybyfactory(test, rg):
     test.cmd('az datafactory trigger-run query-by-factory '
              '--factory-name "{myFactoryName}" '
              '--filters operand="TriggerName" operator="Equals" values="myTrigger" '
@@ -694,120 +607,21 @@ def step__triggerruns_post_triggerruns_querybyfactory(test, rg):
              checks=[])
 
 
-# EXAMPLE: /TriggerRuns/post/Triggers_Rerun
+# EXAMPLE: Factories_ConfigureFactoryRepo
 @try_manual
-def step__triggerruns_post_triggers_rerun(test, rg):
-    test.cmd('az datafactory trigger-run rerun '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
-             '--trigger-name "{myTrigger}"',
+def step_factories_configurefactoryrepo(test, rg):
+    test.cmd('az datafactory factory configure-factory-repo '
+             '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
+             'ry/factories/{myFactoryName}" '
+             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
+             'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
+             '--location "East US"',
              checks=[])
 
 
-# EXAMPLE: /Triggers/get/Triggers_Get
+# EXAMPLE: IntegrationRuntimes_Delete
 @try_manual
-def step__triggers_get_triggers_get(test, rg):
-    test.cmd('az datafactory trigger show '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/get/Triggers_ListByFactory
-@try_manual
-def step__triggers_get_triggers_listbyfactory(test, rg):
-    test.cmd('az datafactory trigger list '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_GetEventSubscriptionStatus
-@try_manual
-def step__triggers_post_triggers_geteventsubscriptionstatus(test, rg):
-    test.cmd('az datafactory trigger get-event-subscription-status '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_QueryByFactory
-@try_manual
-def step__triggers_post_triggers_querybyfactory(test, rg):
-    test.cmd('az datafactory trigger query-by-factory '
-             '--factory-name "{myFactoryName}" '
-             '--parent-trigger-name "myTrigger" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_Start
-@try_manual
-def step__triggers_post_triggers_start(test, rg):
-    test.cmd('az datafactory trigger start '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_Stop
-@try_manual
-def step__triggers_post_triggers_stop(test, rg):
-    test.cmd('az datafactory trigger stop '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_SubscribeToEvents
-@try_manual
-def step__triggers_post_triggers_subscribetoevents(test, rg):
-    test.cmd('az datafactory trigger subscribe-to-event '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/post/Triggers_UnsubscribeFromEvents
-@try_manual
-def step__triggers_post_triggers_unsubscribefromevents(test, rg):
-    test.cmd('az datafactory trigger unsubscribe-from-event '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-# EXAMPLE: /Datasets/delete/Datasets_Delete
-@try_manual
-def step__datasets_delete_datasets_delete(test, rg):
-    test.cmd('az datafactory dataset delete '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimeNodes/delete/IntegrationRuntimesNodes_Delete
-@try_manual
-def step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg):
-    test.cmd('az datafactory integration-runtime-node delete '
-             '--factory-name "{myFactoryName}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IntegrationRuntimes/delete/IntegrationRuntimes_Delete
-@try_manual
-def step__integrationruntimes_delete_integrationruntimes_delete(test, rg):
+def step_integrationruntimes_delete(test, rg):
     test.cmd('az datafactory integration-runtime delete '
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
@@ -815,29 +629,9 @@ def step__integrationruntimes_delete_integrationruntimes_delete(test, rg):
              checks=[])
 
 
-# EXAMPLE: /LinkedServices/delete/LinkedServices_Delete
+# EXAMPLE: Triggers_Delete
 @try_manual
-def step__linkedservices_delete_linkedservices_delete(test, rg):
-    test.cmd('az datafactory linked-service delete '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Pipelines/delete/Pipelines_Delete
-@try_manual
-def step__pipelines_delete_pipelines_delete(test, rg):
-    test.cmd('az datafactory pipeline delete '
-             '--factory-name "{myFactoryName}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Triggers/delete/Triggers_Delete
-@try_manual
-def step__triggers_delete_triggers_delete(test, rg):
+def step_triggers_delete(test, rg):
     test.cmd('az datafactory trigger delete '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
@@ -845,9 +639,39 @@ def step__triggers_delete_triggers_delete(test, rg):
              checks=[])
 
 
-# EXAMPLE: /Factories/delete/Factories_Delete
+# EXAMPLE: Pipelines_Delete
 @try_manual
-def step__factories_delete_factories_delete(test, rg):
+def step_pipelines_delete(test, rg):
+    test.cmd('az datafactory pipeline delete '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Datasets_Delete
+@try_manual
+def step_datasets_delete(test, rg):
+    test.cmd('az datafactory dataset delete '
+             '--name "{myDataset}" '
+             '--factory-name "{myFactoryName}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: LinkedServices_Delete
+@try_manual
+def step_linkedservices_delete(test, rg):
+    test.cmd('az datafactory linked-service delete '
+             '--factory-name "{myFactoryName}" '
+             '--name "{myLinkedService}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: Factories_Delete
+@try_manual
+def step_factories_delete(test, rg):
     test.cmd('az datafactory factory delete '
              '--name "{myFactoryName}" '
              '--resource-group "{rg}"',
@@ -862,79 +686,67 @@ def cleanup(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
-    step__factories_put_factories_createorupdate(test, rg)
-    step__factories_get_factories_get(test, rg)
-    step__factories_get_factories_list(test, rg)
-    step__factories_get_factories_listbyresourcegroup(test, rg)
-    step__factories_post_factories_configurefactoryrepo(test, rg)
-    step__factories_post_factories_getdataplaneaccess(test, rg)
-    # step__factories_post_factories_getgithubaccesstoken(test, rg)
-    step__factories_patch_factories_update(test, rg)
-    step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    step__linkedservices_put_linkedservices_create(test, rg)
-    step__linkedservices_put_linkedservices_create(test, rg)
-    step__linkedservices_put_linkedservices_update(test, rg)
-    step__linkedservices_put_linkedservices_update(test, rg)
-    step__datasets_put_datasets_create(test, rg)
-    step__datasets_put_datasets_create(test, rg)
-    step__activityruns_post_activityruns_querybypipelinerun(test, rg)
-    step__datasets_put_datasets_update(test, rg)
-    step__datasets_put_datasets_update(test, rg)
-    step__integrationruntimes_put_integrationruntimes_create(test, rg)
-    # step__integrationruntimenodes_post_integrationruntimenodes_getipaddress(test, rg)
-    # step__integrationruntimenodes_patch_integrationruntimenodes_update(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_synccredentials(test, rg)
-    # step__integrationruntimenodes_get_integrationruntimenodes_get(test, rg)
-    step__integrationruntimes_get_integrationruntimes_get(test, rg)
-    step__integrationruntimes_get_integrationruntimes_listbyfactory(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_createlinkedintegrationruntime(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_getconnectioninfo(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_getmonitoringdata(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_getstatus(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_listauthkeys(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_regenerateauthkey(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_start(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_stop(test, rg)
-    # step__dataflowdebugsession_post_dataflowdebugsession_adddataflow(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
-    # step__integrationruntimes_post_integrationruntimes_upgrade(test, rg)
-    # step__integrationruntimes_patch_integrationruntimes_update(test, rg)
-    step__datasets_get_datasets_get(test, rg)
-    step__datasets_get_datasets_listbyfactory(test, rg)
-    step__linkedservices_get_linkedservices_get(test, rg)
-    step__linkedservices_get_linkedservices_listbyfactory(test, rg)
-    # step__pipelineruns_get_pipelineruns_get(test, rg)
-    # step__pipelineruns_post_pipelineruns_cancel(test, rg)
-    step__pipelineruns_post_pipelineruns_querybyfactory(test, rg)
-    step__pipelines_put_pipelines_create(test, rg)
-    step__pipelines_put_pipelines_create(test, rg)
-    step__pipelines_put_pipelines_update(test, rg)
-    step__pipelines_put_pipelines_update(test, rg)
-    step__pipelines_get_pipelines_get(test, rg)
-    step__pipelines_get_pipelines_listbyfactory(test, rg)
-    step__pipelines_post_pipelines_createrun(test, rg)
-    step__triggers_put_triggers_create(test, rg)
-    step__triggers_put_triggers_create(test, rg)
-    step__triggers_put_triggers_update(test, rg)
-    step__triggers_put_triggers_update(test, rg)
-    step__triggerruns_post_triggerruns_querybyfactory(test, rg)
-    # step__triggerruns_post_triggers_rerun(test, rg)
-    step__triggers_get_triggers_get(test, rg)
-    step__triggers_get_triggers_listbyfactory(test, rg)
-    step__triggers_post_triggers_geteventsubscriptionstatus(test, rg)
-    step__triggers_post_triggers_querybyfactory(test, rg)
-    step__triggers_post_triggers_start(test, rg)
-    step__triggers_post_triggers_stop(test, rg)
-    step__triggers_post_triggers_subscribetoevents(test, rg)
-    step__triggers_post_triggers_unsubscribefromevents(test, rg)
-    step__triggers_delete_triggers_delete(test, rg)
-    step__pipelines_delete_pipelines_delete(test, rg)
-    step__integrationruntimes_delete_integrationruntimes_delete(test, rg)
-    step__datasets_delete_datasets_delete(test, rg)
-    # step__dataflows_delete_dataflows_delete(test, rg)
-    # step__integrationruntimenodes_delete_integrationruntimesnodes_delete(test, rg)
-    step__linkedservices_delete_linkedservices_delete(test, rg)
-    step__factories_delete_factories_delete(test, rg)
+    step_factories_createorupdate(test, rg)
+    step_factories_update(test, rg)
+    step_linkedservices_create(test, rg)
+    step_linkedservices_update(test, rg)
+    step_datasets_create(test, rg)
+    step_datasets_update(test, rg)
+    step_pipelines_create(test, rg)
+    step_pipelines_update(test, rg)
+    step_triggers_create(test, rg)
+    step_triggers_update(test, rg)
+    step_integrationruntimes_create(test, rg)
+    step_integrationruntimes_update(test, rg)
+    step_integrationruntimes_createlinkedintegrationruntime(test, rg)
+    step_pipelines_createrun(test, rg)
+    step_integrationruntimes_get(test, rg)
+    step_reruntriggers_listbytrigger(test, rg)
+    step_linkedservices_get(test, rg)
+    step_pipelineruns_get(test, rg)
+    step_pipelines_get(test, rg)
+    step_datasets_get(test, rg)
+    step_triggers_get(test, rg)
+    step_integrationruntimes_listbyfactory(test, rg)
+    step_linkedservices_listbyfactory(test, rg)
+    step_pipelines_listbyfactory(test, rg)
+    step_triggers_listbyfactory(test, rg)
+    step_datasets_listbyfactory(test, rg)
+    step_factories_get(test, rg)
+    step_factories_listbyresourcegroup(test, rg)
+    step_factories_list(test, rg)
+    step_operations_list(test, rg)
+    step_reruntriggers_cancel(test, rg)
+    step_reruntriggers_start(test, rg)
+    step_reruntriggers_stop(test, rg)
+    step_integrationruntimes_regenerateauthkey(test, rg)
+    step_triggerruns_rerun(test, rg)
+    step_integrationruntimes_getconnectioninfo(test, rg)
+    step_integrationruntimes_synccredentials(test, rg)
+    step_integrationruntimes_getmonitoringdata(test, rg)
+    step_integrationruntimes_listauthkeys(test, rg)
+    step_integrationruntimes_upgrade(test, rg)
+    step_integrationruntimes_getstatus(test, rg)
+    step_integrationruntimes_start(test, rg)
+    step_integrationruntimes_stop(test, rg)
+    step_triggers_geteventsubscriptionstatus(test, rg)
+    step_activityruns_querybypipelinerun(test, rg)
+    step_triggers_unsubscribefromevents(test, rg)
+    step_triggers_subscribetoevents(test, rg)
+    step_triggers_start(test, rg)
+    step_triggers_stop(test, rg)
+    step_factories_getgithubaccesstoken(test, rg)
+    step_factories_getdataplaneaccess(test, rg)
+    step_pipelineruns_querybyfactory(test, rg)
+    step_pipelineruns_cancel(test, rg)
+    step_triggerruns_querybyfactory(test, rg)
+    step_factories_configurefactoryrepo(test, rg)
+    step_integrationruntimes_delete(test, rg)
+    step_triggers_delete(test, rg)
+    step_pipelines_delete(test, rg)
+    step_datasets_delete(test, rg)
+    step_linkedservices_delete(test, rg)
+    step_factories_delete(test, rg)
     cleanup(test, rg)
 
 
@@ -955,7 +767,7 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
             'myLinkedService': 'myLinkedService',
             'myDataset': 'myDataset',
             'myPipeline': 'myPipeline',
-            'myTrigger': 'myTrigger'
+            'myTrigger': 'myTrigger',
         })
 
         call_scenario(self, rg)

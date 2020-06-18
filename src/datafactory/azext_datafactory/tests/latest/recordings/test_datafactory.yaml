@@ -71,7 +71,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:42:54 GMT
+      - Thu, 18 Jun 2020 10:07:12 GMT
       expires:
       - '-1'
       pragma:
@@ -109,7 +109,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName?api-version=2018-06-01
   response:
     body:
-      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"0b16b2b4-f311-4b0e-9532-9d6641f67c56","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-17T09:43:03.5613405Z","version":"2018-06-01"},"eTag":"\"00002191-0000-0100-0000-5ee9e5a70000\"","location":"eastus","tags":{}}'
+      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"38860853-a0db-4e03-9482-ea746bd2a337","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-18T10:07:21.5228637Z","version":"2018-06-01"},"eTag":"\"19006e11-0000-0100-0000-5eeb3cd90000\"","location":"eastus","tags":{}}'
     headers:
       cache-control:
       - no-cache
@@ -118,7 +118,119 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:06 GMT
+      - Thu, 18 Jun 2020 10:07:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"exampleTag": "exampleValue"}, "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory factory update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName?api-version=2018-06-01
+  response:
+    body:
+      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"38860853-a0db-4e03-9482-ea746bd2a337","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-18T10:07:21.5228637Z","version":"2018-06-01"},"eTag":"\"19008f11-0000-0100-0000-5eeb3ce00000\"","location":"eastus","tags":{"exampleTag":"exampleValue"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '632'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "AzureStorage", "typeProperties": {"connectionString":
+      {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
+      key>"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory linked-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '208'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --properties --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfOWZjNzdiMjUtZTIzNi00NGNjLTgyNGMtMDBmM2IyM2YxODhlIg0KfQ=="}},"etag":"22003456-0000-0100-0000-5eeb3ce50000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '738'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:33 GMT
       expires:
       - '-1'
       pragma:
@@ -135,6 +247,1104 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "AzureStorage", "description": "Example description",
+      "typeProperties": {"connectionString": {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
+      key>"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory linked-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '246'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --properties --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
+        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfMjYzMWU0N2EtMGRmOC00OGIwLThjNzUtNDRiYWZmNzA2M2U2Ig0KfQ=="}},"etag":"22004456-0000-0100-0000-5eeb3ce60000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '774'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "AzureBlob", "linkedServiceName": {"type": "LinkedServiceReference",
+      "referenceName": "myLinkedService"}, "parameters": {"MyFileName": {"type": "String"},
+      "MyFolderPath": {"type": "String"}}, "typeProperties": {"folderPath": {"type":
+      "Expression", "value": "@dataset().MyFolderPath"}, "fileName": {"type": "Expression",
+      "value": "@dataset().MyFileName"}, "format": {"type": "TextFormat"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory dataset create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '414'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --properties --name --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"22005456-0000-0100-0000-5eeb3ce80000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '726'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "AzureBlob", "description": "Example description",
+      "linkedServiceName": {"type": "LinkedServiceReference", "referenceName": "myLinkedService"},
+      "parameters": {"MyFileName": {"type": "String"}, "MyFolderPath": {"type": "String"}},
+      "typeProperties": {"folderPath": {"type": "Expression", "value": "@dataset().MyFolderPath"},
+      "fileName": {"type": "Expression", "value": "@dataset().MyFileName"}, "format":
+      {"type": "TextFormat"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory dataset create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '452'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --properties --name --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
+        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"22005e56-0000-0100-0000-5eeb3ceb0000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '762'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"activities": [{"name": "ExampleForeachActivity", "type":
+      "ForEach", "typeProperties": {"isSequential": true, "items": {"type": "Expression",
+      "value": "@pipeline().parameters.OutputBlobNameList"}, "activities": [{"name":
+      "ExampleCopyActivity", "type": "Copy", "inputs": [{"type": "DatasetReference",
+      "referenceName": "myDataset", "parameters": {"MyFileName": "examplecontainer.csv",
+      "MyFolderPath": "examplecontainer"}}], "outputs": [{"type": "DatasetReference",
+      "referenceName": "myDataset", "parameters": {"MyFileName": {"type": "Expression",
+      "value": "@item()"}, "MyFolderPath": "examplecontainer"}}], "typeProperties":
+      {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"}, "dataIntegrationUnits":
+      32}}]}}], "parameters": {"JobId": {"type": "String"}, "OutputBlobNameList":
+      {"type": "Array"}}, "variables": {"TestVariableArray": {"type": "Array"}}, "runDimensions":
+      {"JobId": {"type": "Expression", "value": "@pipeline().parameters.JobId"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '972'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --pipeline --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"JobId":{"type":"String"},"OutputBlobNameList":{"type":"Array"}},"variables":{"TestVariableArray":{"type":"Array"}},"runDimensions":{"JobId":{"type":"Expression","value":"@pipeline().parameters.JobId"}}},"etag":"22006a56-0000-0100-0000-5eeb3ced0000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1193'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Example description", "activities": [{"name":
+      "ExampleForeachActivity", "type": "ForEach", "typeProperties": {"isSequential":
+      true, "items": {"type": "Expression", "value": "@pipeline().parameters.OutputBlobNameList"},
+      "activities": [{"name": "ExampleCopyActivity", "type": "Copy", "inputs": [{"type":
+      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
+      "examplecontainer.csv", "MyFolderPath": "examplecontainer"}}], "outputs": [{"type":
+      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
+      {"type": "Expression", "value": "@item()"}, "MyFolderPath": "examplecontainer"}}],
+      "typeProperties": {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"},
+      "dataIntegrationUnits": 32}}]}}], "parameters": {"OutputBlobNameList": {"type":
+      "Array"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '833'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --pipeline --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
+        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"22008056-0000-0100-0000-5eeb3cef0000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1121'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "ScheduleTrigger", "pipelines": [{"pipelineReference":
+      {"type": "PipelineReference", "referenceName": "myPipeline"}, "parameters":
+      {"OutputBlobNameList": ["exampleoutput.csv"]}}], "typeProperties": {"recurrence":
+      {"frequency": "Minute", "interval": 4, "startTime": "2018-06-16T00:39:13.84418Z",
+      "endTime": "2018-06-16T00:55:13.84418Z", "timeZone": "UTC"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '381'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --resource-group --properties --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:13.84418Z","endTime":"2018-06-16T00:55:13.84418Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"22008e56-0000-0100-0000-5eeb3cf00000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '723'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "ScheduleTrigger", "description": "Example description",
+      "pipelines": [{"pipelineReference": {"type": "PipelineReference", "referenceName":
+      "myPipeline"}, "parameters": {"OutputBlobNameList": ["exampleoutput.csv"]}}],
+      "typeProperties": {"recurrence": {"frequency": "Minute", "interval": 4, "startTime":
+      "2018-06-16T00:39:14.905167Z", "endTime": "2018-06-16T00:55:14.905167Z", "timeZone":
+      "UTC"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '421'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --resource-group --properties --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
+        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"22009b56-0000-0100-0000-5eeb3cf20000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "SelfHosted", "description": "A selfhosted integration
+      runtime"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime self-hosted create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '89'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --description --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"SelfHosted","description":"A
+        selfhosted integration runtime"},"etag":"2200ad56-0000-0100-0000-5eeb3cf40000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '469'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"autoUpdate": "Off", "updateDelayOffset": "\"PT3H\""}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --name --resource-group --auto-update --update-delay-offset
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"SelfHosted","description":"A
+        selfhosted integration runtime"},"etag":"2200ad56-0000-0100-0000-5eeb3cf40000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '469'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"OutputBlobNameList": ["exampleoutput.csv"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline create-run
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '45'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --parameters --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline/createRun?api-version=2018-06-01
+  response:
+    body:
+      string: '{"runId":"8f31bb72-b14b-11ea-88e4-00155d9a1476"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '48'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"SelfHosted","description":"A
+        selfhosted integration runtime"},"etag":"2200ad56-0000-0100-0000-5eeb3cf40000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '469'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory linked-service show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
+        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfMjYzMWU0N2EtMGRmOC00OGIwLThjNzUtNDRiYWZmNzA2M2U2Ig0KfQ=="}},"etag":"22004456-0000-0100-0000-5eeb3ce60000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '774'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
+        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"22008056-0000-0100-0000-5eeb3cef0000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1121'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory dataset show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
+        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"22005e56-0000-0100-0000-5eeb3ceb0000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '762'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:07:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
+        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"22009b56-0000-0100-0000-5eeb3cf20000"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"SelfHosted","description":"A
+        selfhosted integration runtime"},"etag":"2200ad56-0000-0100-0000-5eeb3cf40000"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '481'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory linked-service list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
+        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfMjYzMWU0N2EtMGRmOC00OGIwLThjNzUtNDRiYWZmNzA2M2U2Ig0KfQ=="}},"etag":"22004456-0000-0100-0000-5eeb3ce60000"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '786'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
+        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"22008056-0000-0100-0000-5eeb3cef0000"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1133'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
+        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"22009b56-0000-0100-0000-5eeb3cf20000"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '773'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory dataset list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
+        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"22005e56-0000-0100-0000-5eeb3ceb0000"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '774'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
       x-powered-by:
       - ASP.NET
     status:
@@ -160,16 +1370,65 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName?api-version=2018-06-01
   response:
     body:
-      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"0b16b2b4-f311-4b0e-9532-9d6641f67c56","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-17T09:43:03.5613405Z","version":"2018-06-01","factoryStatistics":{"totalResourceCount":0,"maxAllowedResourceCount":0,"factorySizeInGbUnits":0,"maxAllowedFactorySizeInGbUnits":0}},"eTag":"\"00002191-0000-0100-0000-5ee9e5a70000\"","location":"eastus","tags":{}}'
+      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"38860853-a0db-4e03-9482-ea746bd2a337","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-18T10:07:21.5228637Z","version":"2018-06-01","factoryStatistics":{"totalResourceCount":0,"maxAllowedResourceCount":0,"factorySizeInGbUnits":0,"maxAllowedFactorySizeInGbUnits":0}},"eTag":"\"19008f11-0000-0100-0000-5eeb3ce00000\"","location":"eastus","tags":{"exampleTag":"exampleValue"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '738'
+      - '765'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:07 GMT
+      - Thu, 18 Jun 2020 10:08:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory factory list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"38860853-a0db-4e03-9482-ea746bd2a337","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-18T10:07:21.5228637Z","version":"2018-06-01"},"eTag":"\"19008f11-0000-0100-0000-5eeb3ce00000\"","location":"eastus","tags":{"exampleTag":"exampleValue"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:08 GMT
       expires:
       - '-1'
       pragma:
@@ -256,25 +1515,25 @@ interactions:
         \\\"1c0022d9-0000-0100-0000-5ed732870000\\\"\",\r\n      \"location\": \"\
         eastus\",\r\n      \"tags\": {}\r\n    },\r\n    {\r\n      \"name\": \"myFactoryName\"\
         ,\r\n      \"identity\": {\r\n        \"type\": \"SystemAssigned\",\r\n  \
-        \      \"principalId\": \"0b16b2b4-f311-4b0e-9532-9d6641f67c56\",\r\n    \
+        \      \"principalId\": \"38860853-a0db-4e03-9482-ea746bd2a337\",\r\n    \
         \    \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n      },\r\n\
         \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname\"\
         ,\r\n      \"type\": \"Microsoft.DataFactory/factories\",\r\n      \"properties\"\
         : {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"createTime\"\
-        : \"2020-06-17T09:43:03.5613405Z\",\r\n        \"version\": \"2018-06-01\"\
+        : \"2020-06-18T10:07:21.5228637Z\",\r\n        \"version\": \"2018-06-01\"\
         ,\r\n        \"factoryStatistics\": null\r\n      },\r\n      \"eTag\": \"\
-        \\\"00002191-0000-0100-0000-5ee9e5a70000\\\"\",\r\n      \"location\": \"\
-        eastus\",\r\n      \"tags\": {}\r\n    }\r\n  ],\r\n  \"nextLink\": null\r\
-        \n}"
+        \\\"19008f11-0000-0100-0000-5eeb3ce00000\\\"\",\r\n      \"location\": \"\
+        eastus\",\r\n      \"tags\": {\r\n        \"exampleTag\": \"exampleValue\"\
+        \r\n      }\r\n    }\r\n  ],\r\n  \"nextLink\": null\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4225'
+      - '4271'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:09 GMT
+      - Thu, 18 Jun 2020 10:08:08 GMT
       expires:
       - '-1'
       pragma:
@@ -295,35 +1554,139 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"keyName": "authKey2"}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - datafactory factory list
+      - datafactory integration-runtime regenerate-auth-key
       Connection:
       - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - --resource-group
+      - --factory-name --name --key-name --resource-group
       User-Agent:
       - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
         (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories?api-version=2018-06-01
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/regenerateAuthKey?api-version=2018-06-01
   response:
     body:
-      string: '{"value":[{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"0b16b2b4-f311-4b0e-9532-9d6641f67c56","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-17T09:43:03.5613405Z","version":"2018-06-01"},"eTag":"\"00002191-0000-0100-0000-5ee9e5a70000\"","location":"eastus","tags":{}}]}'
+      string: '{"authKey2":"IR@f3bef478-3048-4ad9-bf1d-f44b14381381@myFactoryName@eu@xBGvH+Y/+7y0kVurGM/xnAg7TquxS+hQKOUihymGE+s="}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '617'
+      - '116'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:10 GMT
+      - Thu, 18 Jun 2020 10:08:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime sync-credentials
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/syncCredentials?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime get-monitoring-data
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/monitoringData?api-version=2018-06-01
+  response:
+    body:
+      string: '{"name":"myIntegrationRuntime"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:12 GMT
       expires:
       - '-1'
       pragma:
@@ -351,11 +1714,584 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - datafactory factory list
+      - datafactory integration-runtime list-auth-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/listAuthKeys?api-version=2018-06-01
+  response:
+    body:
+      string: '{"authKey1":"IR@f3bef478-3048-4ad9-bf1d-f44b14381381@myFactoryName@eu@hOgprYlUv+N3cpO05PGX8mNSLF4YqgBJao9QyOGuUG8=","authKey2":"IR@f3bef478-3048-4ad9-bf1d-f44b14381381@myFactoryName@eu@xBGvH+Y/+7y0kVurGM/xnAg7TquxS+hQKOUihymGE+s="}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '231'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"factoryName": "myFactoryName-linked"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime remove-link
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '39'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --name --linked-factory-name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/removeLinks?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory integration-runtime get-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime/getStatus?api-version=2018-06-01
+  response:
+    body:
+      string: '{"name":"myIntegrationRuntime","properties":{"dataFactoryName":"myFactoryName","state":"NeedRegistration","type":"SelfHosted","typeProperties":{"autoUpdate":"Off","taskQueueId":"f3bef478-3048-4ad9-bf1d-f44b14381381","nodes":[],"updateDelayOffset":"PT3H","serviceUrls":["eu.frontend.clouddatahub.net"],"links":[],"versionStatus":"None","capabilities":{},"latestVersion":"4.9.7445.1","newerVersions":["4.9.7430.1","4.9.7435.1","4.9.7441.2","4.9.7445.1","4.7.7368.1"],"createTime":"2020-06-18T10:07:47.880668Z"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '510'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger get-event-subscription-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/getEventSubscriptionStatus?api-version=2018-06-01
+  response:
+    body:
+      string: '{"triggerName":"myTrigger","status":"Enabled"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '46'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1191'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"lastUpdatedAfter": "2018-06-16T00:36:44.334576Z", "lastUpdatedBefore":
+      "2018-06-16T00:49:48.368647Z"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory activity-run query-by-pipeline-run
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '103'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --last-updated-after --last-updated-before --resource-group
+        --run-id
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelineruns/2f7fdb90-5df1-4b8e-ac2f-064cfa58202b/queryActivityruns?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger unsubscribe-from-event
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/unsubscribeFromEvents?api-version=2018-06-01
+  response:
+    body:
+      string: '{"triggerName":"myTrigger","status":"Disabled"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '47'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger subscribe-to-event
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/subscribeToEvents?api-version=2018-06-01
+  response:
+    body:
+      string: '{"triggerName":"myTrigger","status":"Enabled"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '46'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/start?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/stop?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"permissions": "r", "accessResourcePath": "", "profileName": "DefaultProfile",
+      "startTime": "2018-11-10T02:46:20.2659347Z", "expireTime": "2018-11-10T09:46:20.2659347Z"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory factory get-data-plane-access
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '170'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --access-resource-path --expire-time --permissions --profile-name --start-time
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/getDataPlaneAccess?api-version=2018-06-01
+  response:
+    body:
+      string: '{"policy":{"permissions":"r","accessResourcePath":"","profileName":"DefaultProfile","startTime":"2018-11-10T02:46:20.2659347Z","expireTime":"2018-11-10T09:46:20.2659347Z"},"dataPlaneUrl":"https://dpeastus.svc.datafactory.azure.com/dataplane","accessToken":"EAAAAPmIkRHnWjeCeitCcjmPCpWwAQAAZkyiAVrsfZL5uvVNrQ2ob0mTXlYpzmvWViyNdXSV/VyOTQ8V+Or/JftBYAxsDFDcCjf9z9tDGURIYdYAD2rwApspBpobcLLuCTTaV4Ehq0gB3jpv6uZLt9q/w5VhVOJorvRQeFEckshtgvdjouuMxVgvbsZeFWljgmgK8iiiTw1s4/MFwpR+z10cLjPfVpHZDE6FTmqfZeM9N3C04JTlRcjDbFG8VjxpbOGqb3ylGDR+oLoM1mg44mRoLvoBsF5ofnfAWXFkgv6yJi+P1gWAP41ww3iKEdpPsmB6+AFn9jN55EaddCMfb6RT7NQ5u3LGmGG2JVueiWrAxr2YssOG6HqEBBFmnOqZojodp6s1513Q+na+TnUYOBryc4y1tNg/f1YnWp5P6uwLwXY8gyuKPyNGOFn8skZBHzOSCPP7cZp213NexFASOnR6iyhI3JV82TKGM1UzZFkzDjK4udxubfSxqR1HI26tr0pMiSGge1frE2Li9tMeTy9EUEFZ+9jz0lxUf4jhdwoukTEYhpXfv7/KkhbDBGaAnZ7G2+wDx7LcnBmi8HPdDsxTM9Wv/1cOIAAAAEYDQyHodViPkBpWiFyBbVp1cTMDooQj1QP4+rhrvDbj"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '915'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"lastUpdatedAfter": "2018-06-16T00:36:44.334576Z", "lastUpdatedBefore":
+      "2018-06-16T00:49:48.368647Z", "filters": [{"operand": "TriggerName", "operator":
+      "Equals", "values": ["myTrigger"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger-run query-by-factory
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '191'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --factory-name --filters --last-updated-after --last-updated-before --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/queryTriggerRuns?api-version=2018-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2020 10:08:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger-run query-by-factory
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group
+      - --factory-name --filters --last-updated-after --last-updated-before --resource-group
       User-Agent:
       - python/3.6.8 (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
         msrest/0.6.16 msrest_azure/0.6.3 azure-mgmt-resource/9.0.0 Azure-SDK-For-Python
@@ -415,7 +2351,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:10 GMT
+      - Thu, 18 Jun 2020 10:08:28 GMT
       expires:
       - '-1'
       pragma:
@@ -457,28 +2393,29 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"myFactoryName\",\r\n  \"identity\": {\r\n    \"\
-        type\": \"SystemAssigned\",\r\n    \"principalId\": \"0b16b2b4-f311-4b0e-9532-9d6641f67c56\"\
+        type\": \"SystemAssigned\",\r\n    \"principalId\": \"38860853-a0db-4e03-9482-ea746bd2a337\"\
         ,\r\n    \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname\"\
         ,\r\n  \"type\": \"Microsoft.DataFactory/factories\",\r\n  \"properties\"\
         : {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"createTime\": \"\
-        2020-06-17T09:43:03.5613405Z\",\r\n    \"version\": \"2018-06-01\",\r\n  \
+        2020-06-18T10:07:21.5228637Z\",\r\n    \"version\": \"2018-06-01\",\r\n  \
         \  \"factoryStatistics\": null,\r\n    \"repoConfiguration\": {\r\n      \"\
         type\": \"FactoryVSTSConfiguration\",\r\n      \"accountName\": \"ADF\",\r\
         \n      \"repositoryName\": \"repo\",\r\n      \"collaborationBranch\": \"\
         master\",\r\n      \"rootFolder\": \"/\",\r\n      \"lastCommitId\": \"\"\
         ,\r\n      \"projectName\": \"project\",\r\n      \"tenantId\": \"\"\r\n \
-        \   }\r\n  },\r\n  \"eTag\": \"\\\"00002e91-0000-0100-0000-5ee9e5b00000\\\"\
-        \",\r\n  \"location\": \"eastus\",\r\n  \"tags\": {}\r\n}"
+        \   }\r\n  },\r\n  \"eTag\": \"\\\"19003816-0000-0100-0000-5eeb3d1e0000\\\"\
+        \",\r\n  \"location\": \"eastus\",\r\n  \"tags\": {\r\n    \"exampleTag\"\
+        : \"exampleValue\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1018'
+      - '1056'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 17 Jun 2020 09:43:11 GMT
+      - Thu, 18 Jun 2020 10:08:29 GMT
       expires:
       - '-1'
       pragma:
@@ -494,2329 +2431,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"permissions": "r", "accessResourcePath": "", "profileName": "DefaultProfile",
-      "startTime": "2018-11-10T02:46:20.2659347Z", "expireTime": "2018-11-10T09:46:20.2659347Z"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory factory get-data-plane-access
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '170'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --name --access-resource-path --expire-time --permissions --profile-name --start-time
-        --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/getDataPlaneAccess?api-version=2018-06-01
-  response:
-    body:
-      string: '{"policy":{"permissions":"r","accessResourcePath":"","profileName":"DefaultProfile","startTime":"2018-11-10T02:46:20.2659347Z","expireTime":"2018-11-10T09:46:20.2659347Z"},"dataPlaneUrl":"https://dpeastus.svc.datafactory.azure.com/dataplane","accessToken":"EAAAANhguAcOHe/VnXKaoXbuS6mwAQAAEV/thoPG1vE53lwXUuKbY6MH9hFoudmqdWnQwe8nXo4RDeJ9D3nBJ+CO5+222a7Y69SW8AxfSq5FoKYQjZ6VXPDaANInVhtZOI1pRz6PIPh+G1jt1tHT4lWGhsCFsj/1iAoIPJfuTZNJdCytIRFGxSDGJkDA65g+9T5DWGNoCR0ykg87eUsLjaWNWbEHykQSMQqnx2+oMVCna7i9LhJiTmDTHfpbFSZ9B/g5C0xmaNS/IA7NqccifKyO5FUbKSWjnUFfkCnwrkT314Iuij9fpo49aEGxDzHH99+fFln/fy8vhgsB6BOSLXkYGQuZWJUodoOWPY1rU8mhR7rkSPX6maSEHe3YtksOZr4XHZyo3TN50WzgdzrCPoCTnehS32ii1QwO/7XqJjeyvmQ4wooQN5Wgr4J2y+jGAMoguRGu/KD22bo1yMA3B/ivy7DPx/N6v9H5VsfcBwSPDpYNPvhlIT5/PiNFwhNvCksTxEt1xn/EA9LXo0EsNm0h0PTNct6DSxAYKt3Yr51b2tF7lqWe3co3L6nVnqZebiGQ56yaFwnQPLyaVtQT4Hz6r6oMSl5TIAAAANWg7VSCQKU4biOOnJBTDlkHxytDBZBLaGr6xH/MIi66"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '915'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:13 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"tags": {"exampleTag": "exampleValue"}, "identity": {"type": "SystemAssigned"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory factory update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '80'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --name --tags --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName?api-version=2018-06-01
-  response:
-    body:
-      string: '{"name":"myFactoryName","identity":{"type":"SystemAssigned","principalId":"0b16b2b4-f311-4b0e-9532-9d6641f67c56","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myfactoryname","type":"Microsoft.DataFactory/factories","properties":{"provisioningState":"Succeeded","createTime":"2020-06-17T09:43:03.5613405Z","version":"2018-06-01","repoConfiguration":{"type":"FactoryVSTSConfiguration","accountName":"ADF","repositoryName":"repo","collaborationBranch":"master","rootFolder":"/","lastCommitId":"","projectName":"project","tenantId":""}},"eTag":"\"00003591-0000-0100-0000-5ee9e5b60000\"","location":"eastus","tags":{"exampleTag":"exampleValue"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '836'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "Managed", "description": "A selfhosted integration
-      runtime"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory integration-runtime managed create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '86'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --description --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"Managed","description":"A
-        selfhosted integration runtime"},"etag":"970034df-0000-0100-0000-5ee9e5bb0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '466'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:23 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureStorage", "typeProperties": {"connectionString":
-      {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
-      key>"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '208'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --properties --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfOWNkMTNmMDYtNGM2OC00M2E4LThiOTQtNzRlNmY4YmE4ODljIg0KfQ=="}},"etag":"970053df-0000-0100-0000-5ee9e5bd0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '738'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:25 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureStorage", "typeProperties": {"connectionString":
-      {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
-      key>"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '208'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --properties --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfMjAyNTBlOWYtOWU4OS00OTg0LThiM2ItZTVkMGJlOWU0MTg3Ig0KfQ=="}},"etag":"970069df-0000-0100-0000-5ee9e5bf0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '738'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:27 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureStorage", "description": "Example description",
-      "typeProperties": {"connectionString": {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
-      key>"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '246'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --properties --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
-        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfYWM1OThjOWUtMGQyOS00N2FhLTk1YzgtMmE4ZTk0OWFmNGE5Ig0KfQ=="}},"etag":"97008adf-0000-0100-0000-5ee9e5c10000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '774'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:29 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureStorage", "description": "Example description",
-      "typeProperties": {"connectionString": {"type": "SecureString", "value": "DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage
-      key>"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '246'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --properties --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
-        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfNDZlYTkzZjAtNjVhMS00OTgzLWFiZDAtYzE4OTMxZGE2ZmY2Ig0KfQ=="}},"etag":"9700b3df-0000-0100-0000-5ee9e5c30000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '774'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:31 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureBlob", "linkedServiceName": {"type": "LinkedServiceReference",
-      "referenceName": "myLinkedService"}, "parameters": {"MyFileName": {"type": "String"},
-      "MyFolderPath": {"type": "String"}}, "typeProperties": {"folderPath": {"type":
-      "Expression", "value": "@dataset().MyFolderPath"}, "fileName": {"type": "Expression",
-      "value": "@dataset().MyFileName"}, "format": {"type": "TextFormat"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '414'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --properties --name --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"9700dedf-0000-0100-0000-5ee9e5c50000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '726'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureBlob", "linkedServiceName": {"type": "LinkedServiceReference",
-      "referenceName": "myLinkedService"}, "parameters": {"MyFileName": {"type": "String"},
-      "MyFolderPath": {"type": "String"}}, "typeProperties": {"folderPath": {"type":
-      "Expression", "value": "@dataset().MyFolderPath"}, "fileName": {"type": "Expression",
-      "value": "@dataset().MyFileName"}, "format": {"type": "TextFormat"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '414'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --properties --name --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"00000000-0000-0000-0000-000000000000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '726'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"lastUpdatedAfter": "2018-06-16T00:36:44.334576Z", "lastUpdatedBefore":
-      "2018-06-16T00:49:48.368647Z"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory activity-run query-by-pipeline-run
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '103'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --last-updated-after --last-updated-before --resource-group
-        --run-id
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelineruns/2f7fdb90-5df1-4b8e-ac2f-064cfa58202b/queryActivityruns?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '12'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureBlob", "description": "Example description",
-      "linkedServiceName": {"type": "LinkedServiceReference", "referenceName": "myLinkedService"},
-      "parameters": {"MyFileName": {"type": "String"}, "MyFolderPath": {"type": "String"}},
-      "typeProperties": {"folderPath": {"type": "Expression", "value": "@dataset().MyFolderPath"},
-      "fileName": {"type": "Expression", "value": "@dataset().MyFileName"}, "format":
-      {"type": "TextFormat"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '452'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --properties --name --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
-        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"970032e0-0000-0100-0000-5ee9e5c90000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '762'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "AzureBlob", "description": "Example description",
-      "linkedServiceName": {"type": "LinkedServiceReference", "referenceName": "myLinkedService"},
-      "parameters": {"MyFileName": {"type": "String"}, "MyFolderPath": {"type": "String"}},
-      "typeProperties": {"folderPath": {"type": "Expression", "value": "@dataset().MyFolderPath"},
-      "fileName": {"type": "Expression", "value": "@dataset().MyFileName"}, "format":
-      {"type": "TextFormat"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '452'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --properties --name --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
-        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"00000000-0000-0000-0000-000000000000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '762'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:39 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "Managed", "description": "A selfhosted integration
-      runtime"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory integration-runtime managed create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '86'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --description --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"Managed","description":"A
-        selfhosted integration runtime"},"etag":"00000000-0000-0000-0000-000000000000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '466'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:40 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory integration-runtime show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes/myIntegrationRuntime?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"Managed","description":"A
-        selfhosted integration runtime"},"etag":"970034df-0000-0100-0000-5ee9e5bb0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '466'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:41 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory integration-runtime list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationRuntimes?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/integrationruntimes/myIntegrationRuntime","name":"myIntegrationRuntime","type":"Microsoft.DataFactory/factories/integrationruntimes","properties":{"type":"Managed","description":"A
-        selfhosted integration runtime"},"etag":"970034df-0000-0100-0000-5ee9e5bb0000"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '478'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
-        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"970032e0-0000-0100-0000-5ee9e5c90000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '762'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:44 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory dataset list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/datasets/myDataset","name":"myDataset","type":"Microsoft.DataFactory/factories/datasets","properties":{"type":"AzureBlob","description":"Example
-        description","linkedServiceName":{"type":"LinkedServiceReference","referenceName":"myLinkedService"},"parameters":{"MyFileName":{"type":"String"},"MyFolderPath":{"type":"String"}},"typeProperties":{"folderPath":{"type":"Expression","value":"@dataset().MyFolderPath"},"fileName":{"type":"Expression","value":"@dataset().MyFileName"},"format":{"type":"TextFormat"}}},"etag":"970032e0-0000-0100-0000-5ee9e5c90000"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '774'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:45 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
-        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfNDZlYTkzZjAtNjVhMS00OTgzLWFiZDAtYzE4OTMxZGE2ZmY2Ig0KfQ=="}},"etag":"9700b3df-0000-0100-0000-5ee9e5c30000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '774'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:46 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory linked-service list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/linkedservices/myLinkedService","name":"myLinkedService","type":"Microsoft.DataFactory/factories/linkedservices","properties":{"type":"AzureStorage","description":"Example
-        description","typeProperties":{"connectionString":{"type":"SecureString","value":"**********"},"encryptedCredential":"ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk1ZRkFDVE9SWU5BTUVfNDZlYTkzZjAtNjVhMS00OTgzLWFiZDAtYzE4OTMxZGE2ZmY2Ig0KfQ=="}},"etag":"9700b3df-0000-0100-0000-5ee9e5c30000"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '786'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:46 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"lastUpdatedAfter": "2018-06-16T00:36:44.334576Z", "lastUpdatedBefore":
-      "2018-06-16T00:49:48.368647Z", "filters": [{"operand": "PipelineName", "operator":
-      "Equals", "values": ["myPipeline"]}]}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline-run query-by-factory
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '193'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --filters --last-updated-after --last-updated-before --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/queryPipelineRuns?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '12'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"activities": [{"name": "ExampleForeachActivity", "type":
-      "ForEach", "typeProperties": {"isSequential": true, "items": {"type": "Expression",
-      "value": "@pipeline().parameters.OutputBlobNameList"}, "activities": [{"name":
-      "ExampleCopyActivity", "type": "Copy", "inputs": [{"type": "DatasetReference",
-      "referenceName": "myDataset", "parameters": {"MyFileName": "examplecontainer.csv",
-      "MyFolderPath": "examplecontainer"}}], "outputs": [{"type": "DatasetReference",
-      "referenceName": "myDataset", "parameters": {"MyFileName": {"type": "Expression",
-      "value": "@item()"}, "MyFolderPath": "examplecontainer"}}], "typeProperties":
-      {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"}, "dataIntegrationUnits":
-      32}}]}}], "parameters": {"JobId": {"type": "String"}, "OutputBlobNameList":
-      {"type": "Array"}}, "variables": {"TestVariableArray": {"type": "Array"}}, "runDimensions":
-      {"JobId": {"type": "Expression", "value": "@pipeline().parameters.JobId"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '972'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --pipeline --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"JobId":{"type":"String"},"OutputBlobNameList":{"type":"Array"}},"variables":{"TestVariableArray":{"type":"Array"}},"runDimensions":{"JobId":{"type":"Expression","value":"@pipeline().parameters.JobId"}}},"etag":"9700eee0-0000-0100-0000-5ee9e5d60000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1249'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:50 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"activities": [{"name": "ExampleForeachActivity", "type":
-      "ForEach", "typeProperties": {"isSequential": true, "items": {"type": "Expression",
-      "value": "@pipeline().parameters.OutputBlobNameList"}, "activities": [{"name":
-      "ExampleCopyActivity", "type": "Copy", "inputs": [{"type": "DatasetReference",
-      "referenceName": "myDataset", "parameters": {"MyFileName": "examplecontainer.csv",
-      "MyFolderPath": "examplecontainer"}}], "outputs": [{"type": "DatasetReference",
-      "referenceName": "myDataset", "parameters": {"MyFileName": {"type": "Expression",
-      "value": "@item()"}, "MyFolderPath": "examplecontainer"}}], "typeProperties":
-      {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"}, "dataIntegrationUnits":
-      32}}]}}], "parameters": {"JobId": {"type": "String"}, "OutputBlobNameList":
-      {"type": "Array"}}, "variables": {"TestVariableArray": {"type": "Array"}}, "runDimensions":
-      {"JobId": {"type": "Expression", "value": "@pipeline().parameters.JobId"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '972'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --pipeline --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"JobId":{"type":"String"},"OutputBlobNameList":{"type":"Array"}},"variables":{"TestVariableArray":{"type":"Array"}},"runDimensions":{"JobId":{"type":"Expression","value":"@pipeline().parameters.JobId"}}},"etag":"970016e1-0000-0100-0000-5ee9e5d80000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1249'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:52 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"description": "Example description", "activities": [{"name":
-      "ExampleForeachActivity", "type": "ForEach", "typeProperties": {"isSequential":
-      true, "items": {"type": "Expression", "value": "@pipeline().parameters.OutputBlobNameList"},
-      "activities": [{"name": "ExampleCopyActivity", "type": "Copy", "inputs": [{"type":
-      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
-      "examplecontainer.csv", "MyFolderPath": "examplecontainer"}}], "outputs": [{"type":
-      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
-      {"type": "Expression", "value": "@item()"}, "MyFolderPath": "examplecontainer"}}],
-      "typeProperties": {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"},
-      "dataIntegrationUnits": 32}}]}}], "parameters": {"OutputBlobNameList": {"type":
-      "Array"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '833'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --pipeline --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
-        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"970034e1-0000-0100-0000-5ee9e5da0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1121'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:54 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"description": "Example description", "activities": [{"name":
-      "ExampleForeachActivity", "type": "ForEach", "typeProperties": {"isSequential":
-      true, "items": {"type": "Expression", "value": "@pipeline().parameters.OutputBlobNameList"},
-      "activities": [{"name": "ExampleCopyActivity", "type": "Copy", "inputs": [{"type":
-      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
-      "examplecontainer.csv", "MyFolderPath": "examplecontainer"}}], "outputs": [{"type":
-      "DatasetReference", "referenceName": "myDataset", "parameters": {"MyFileName":
-      {"type": "Expression", "value": "@item()"}, "MyFolderPath": "examplecontainer"}}],
-      "typeProperties": {"source": {"type": "BlobSource"}, "sink": {"type": "BlobSink"},
-      "dataIntegrationUnits": 32}}]}}], "parameters": {"OutputBlobNameList": {"type":
-      "Array"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '833'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --pipeline --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
-        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"970055e1-0000-0100-0000-5ee9e5db0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1121'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:56 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
-        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"970055e1-0000-0100-0000-5ee9e5db0000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1121'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:57 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline","name":"myPipeline","type":"Microsoft.DataFactory/factories/pipelines","properties":{"description":"Example
-        description","activities":[{"name":"ExampleForeachActivity","type":"ForEach","typeProperties":{"isSequential":true,"items":{"type":"Expression","value":"@pipeline().parameters.OutputBlobNameList"},"activities":[{"name":"ExampleCopyActivity","type":"Copy","inputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":"examplecontainer.csv","MyFolderPath":"examplecontainer"}}],"outputs":[{"type":"DatasetReference","referenceName":"myDataset","parameters":{"MyFileName":{"type":"Expression","value":"@item()"},"MyFolderPath":"examplecontainer"}}],"typeProperties":{"source":{"type":"BlobSource"},"sink":{"type":"BlobSink"},"dataIntegrationUnits":32}}]}}],"parameters":{"OutputBlobNameList":{"type":"Array"}}},"etag":"970055e1-0000-0100-0000-5ee9e5db0000"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1133'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:43:58 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"OutputBlobNameList": ["exampleoutput.csv"]}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline create-run
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '45'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --parameters --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline/createRun?api-version=2018-06-01
-  response:
-    body:
-      string: '{"runId":"10e0717c-b07f-11ea-a384-00155da502f4"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '48'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:01 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "ScheduleTrigger", "pipelines": [{"pipelineReference":
-      {"type": "PipelineReference", "referenceName": "myPipeline"}, "parameters":
-      {"OutputBlobNameList": ["exampleoutput.csv"]}}], "typeProperties": {"recurrence":
-      {"frequency": "Minute", "interval": 4, "startTime": "2018-06-16T00:39:13.84418Z",
-      "endTime": "2018-06-16T00:55:13.84418Z", "timeZone": "UTC"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '381'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --resource-group --properties --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:13.84418Z","endTime":"2018-06-16T00:55:13.84418Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"9700bfe1-0000-0100-0000-5ee9e5e30000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '723'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "ScheduleTrigger", "pipelines": [{"pipelineReference":
-      {"type": "PipelineReference", "referenceName": "myPipeline"}, "parameters":
-      {"OutputBlobNameList": ["exampleoutput.csv"]}}], "typeProperties": {"recurrence":
-      {"frequency": "Minute", "interval": 4, "startTime": "2018-06-16T00:39:13.84418Z",
-      "endTime": "2018-06-16T00:55:13.84418Z", "timeZone": "UTC"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '381'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --resource-group --properties --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:13.84418Z","endTime":"2018-06-16T00:55:13.84418Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"9700d9e1-0000-0100-0000-5ee9e5e40000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '723'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "ScheduleTrigger", "description": "Example description",
-      "pipelines": [{"pipelineReference": {"type": "PipelineReference", "referenceName":
-      "myPipeline"}, "parameters": {"OutputBlobNameList": ["exampleoutput.csv"]}}],
-      "typeProperties": {"recurrence": {"frequency": "Minute", "interval": 4, "startTime":
-      "2018-06-16T00:39:14.905167Z", "endTime": "2018-06-16T00:55:14.905167Z", "timeZone":
-      "UTC"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '421'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --resource-group --properties --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
-        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"9700f0e1-0000-0100-0000-5ee9e5e50000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '761'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:05 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"type": "ScheduleTrigger", "description": "Example description",
-      "pipelines": [{"pipelineReference": {"type": "PipelineReference", "referenceName":
-      "myPipeline"}, "parameters": {"OutputBlobNameList": ["exampleoutput.csv"]}}],
-      "typeProperties": {"recurrence": {"frequency": "Minute", "interval": 4, "startTime":
-      "2018-06-16T00:39:14.905167Z", "endTime": "2018-06-16T00:55:14.905167Z", "timeZone":
-      "UTC"}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '421'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --resource-group --properties --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
-        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"970007e2-0000-0100-0000-5ee9e5e70000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '761'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"lastUpdatedAfter": "2018-06-16T00:36:44.334576Z", "lastUpdatedBefore":
-      "2018-06-16T00:49:48.368647Z", "filters": [{"operand": "TriggerName", "operator":
-      "Equals", "values": ["myTrigger"]}]}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger-run query-by-factory
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '191'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --filters --last-updated-after --last-updated-before --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/queryTriggerRuns?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '12'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
-        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"970007e2-0000-0100-0000-5ee9e5e70000"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '761'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:09 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --factory-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger","name":"myTrigger","type":"Microsoft.DataFactory/factories/triggers","properties":{"type":"ScheduleTrigger","description":"Example
-        description","pipelines":[{"pipelineReference":{"type":"PipelineReference","referenceName":"myPipeline"},"parameters":{"OutputBlobNameList":["exampleoutput.csv"]}}],"typeProperties":{"recurrence":{"frequency":"Minute","interval":4,"startTime":"2018-06-16T00:39:14.905167Z","endTime":"2018-06-16T00:55:14.905167Z","timeZone":"UTC"}},"runtimeState":"Stopped"},"etag":"970007e2-0000-0100-0000-5ee9e5e70000"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '773'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:11 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger get-event-subscription-status
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/getEventSubscriptionStatus?api-version=2018-06-01
-  response:
-    body:
-      string: '{"triggerName":"myTrigger","status":"Enabled"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '46'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:12 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"parentTriggerName": "myTrigger"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger query-by-factory
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '34'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --factory-name --parent-trigger-name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/querytriggers?api-version=2018-06-01
-  response:
-    body:
-      string: '{"value":[]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '12'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:13 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger start
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/start?api-version=2018-06-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Wed, 17 Jun 2020 09:44:17 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger stop
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/stop?api-version=2018-06-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Wed, 17 Jun 2020 09:44:19 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger subscribe-to-event
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/subscribeToEvents?api-version=2018-06-01
-  response:
-    body:
-      string: '{"triggerName":"myTrigger","status":"Enabled"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '46'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger unsubscribe-from-event
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger/unsubscribeFromEvents?api-version=2018-06-01
-  response:
-    body:
-      string: '{"triggerName":"myTrigger","status":"Disabled"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '47'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 17 Jun 2020 09:44:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory trigger delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --resource-group --name
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Wed, 17 Jun 2020 09:44:27 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - datafactory pipeline delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --factory-name --name --resource-group
-      User-Agent:
-      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
-        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Wed, 17 Jun 2020 09:44:32 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '1195'
       x-powered-by:
       - ASP.NET
     status:
@@ -2851,7 +2466,101 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 17 Jun 2020 09:44:33 GMT
+      - Thu, 18 Jun 2020 10:08:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14995'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory trigger delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --resource-group --name
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/triggers/myTrigger?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datafactory pipeline delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --factory-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.7.0 azsdk-python-datafactorymanagementclient/unknown Python/3.6.8
+        (Linux-4.19.104-microsoft-standard-x86_64-with-Ubuntu-18.04-bionic)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataFactory/factories/myFactoryName/pipelines/myPipeline?api-version=2018-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Jun 2020 10:08:38 GMT
       expires:
       - '-1'
       pragma:
@@ -2898,7 +2607,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 17 Jun 2020 09:44:35 GMT
+      - Thu, 18 Jun 2020 10:08:40 GMT
       expires:
       - '-1'
       pragma:
@@ -2910,7 +2619,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
@@ -2945,7 +2654,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 17 Jun 2020 09:44:37 GMT
+      - Thu, 18 Jun 2020 10:08:43 GMT
       expires:
       - '-1'
       pragma:
@@ -2957,7 +2666,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14996'
       x-powered-by:
       - ASP.NET
     status:
@@ -2992,7 +2701,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 17 Jun 2020 09:44:44 GMT
+      - Thu, 18 Jun 2020 10:08:50 GMT
       expires:
       - '-1'
       pragma:
@@ -3004,7 +2713,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
