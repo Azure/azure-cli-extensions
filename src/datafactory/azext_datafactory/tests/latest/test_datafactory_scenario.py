@@ -149,9 +149,9 @@ def step_triggers_create(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
              'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"myPipeline\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00'
-             ':55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8'
-             '441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+             'nceName\\":\\"{myPipeline}\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"{myEndTime}'
+             '\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":'
+             '\\"UTC\\"}}}}}}" '
              '--name "{myTrigger}"',
              checks=[])
 
@@ -164,9 +164,9 @@ def step_triggers_update(test, rg):
              '--resource-group "{rg}" '
              '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
              'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}}}],'
-             '\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T00:55:14.905167Z\\",\\"frequency\\"'
-             ':\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\\":\\"UTC\\"'
+             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"{myPipeline}\\"}}}}],'
+             '\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"{myEndTime}\\",\\"frequency\\"'
+             ':\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":\\"UTC\\"'
              '}}}}}}" '
              '--name "{myTrigger}"',
              checks=[])
@@ -254,7 +254,7 @@ def step_pipelineruns_get(test, rg):
     test.cmd('az datafactory pipeline-run show '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+             '--run-id "{myRunId}"',
              checks=[])
 
 
@@ -470,7 +470,7 @@ def step_integrationruntimes_getstatus(test, rg):
 def step_integrationruntimes_start(test, rg):
     test.cmd('az datafactory integration-runtime start '
              '--factory-name "{myFactoryName}" '
-             '--name "{IntegrationRuntimes_2}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -480,7 +480,7 @@ def step_integrationruntimes_start(test, rg):
 def step_integrationruntimes_stop(test, rg):
     test.cmd('az datafactory integration-runtime stop '
              '--factory-name "{myFactoryName}" '
-             '--name "{IntegrationRuntimes_2}" '
+             '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -500,10 +500,10 @@ def step_triggers_geteventsubscriptionstatus(test, rg):
 def step_activityruns_querybypipelinerun(test, rg):
     test.cmd('az datafactory activity-run query-by-pipeline-run '
              '--factory-name "{myFactoryName}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
              '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+             '--run-id "{myRunId}"',
              checks=[])
 
 
@@ -565,10 +565,10 @@ def step_factories_getdataplaneaccess(test, rg):
     test.cmd('az datafactory factory get-data-plane-access '
              '--name "{myFactoryName}" '
              '--access-resource-path "" '
-             '--expire-time "2018-11-10T09:46:20.2659347Z" '
+             '--expire-time "{myEndTime}" '
              '--permissions "r" '
              '--profile-name "DefaultProfile" '
-             '--start-time "2018-11-10T02:46:20.2659347Z" '
+             '--start-time "{myStartTime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -579,8 +579,8 @@ def step_pipelineruns_querybyfactory(test, rg):
     test.cmd('az datafactory pipeline-run query-by-factory '
              '--factory-name "{myFactoryName}" '
              '--filters operand="PipelineName" operator="Equals" values="myPipeline" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -591,7 +591,7 @@ def step_pipelineruns_cancel(test, rg):
     test.cmd('az datafactory pipeline-run cancel '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
-             '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
+             '--run-id "{myRunId}"',
              checks=[])
 
 
@@ -601,8 +601,8 @@ def step_triggerruns_querybyfactory(test, rg):
     test.cmd('az datafactory trigger-run query-by-factory '
              '--factory-name "{myFactoryName}" '
              '--filters operand="TriggerName" operator="Equals" values="myTrigger" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -763,7 +763,6 @@ class DataFactoryManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'myFactoryName': 'myFactoryName',
             'myIntegrationRuntime': 'myIntegrationRuntime',
-            'IntegrationRuntimes_2': 'myManagedIntegrationRuntime',
             'myLinkedService': 'myLinkedService',
             'myDataset': 'myDataset',
             'myPipeline': 'myPipeline',
