@@ -480,10 +480,14 @@ def list_blueprint_version_artifact(cmd, client, blueprint_name,
                        version_id=version_id)
 
 
-def _del_artifact_name(rg):
-    rg_copy = rg.copy()
-    del rg_copy['artifact_name']
-    return rg_copy
+def resource_group_list_2_dict(resource_groups):
+    result = {}
+    if resource_groups is not None:
+        for rg in resource_groups:
+            key = rg['artifact_name']
+            del rg['artifact_name']
+            result[key] = rg
+    return result
 
 
 def create_blueprint_assignment(cmd,
@@ -525,7 +529,8 @@ def create_blueprint_assignment(cmd,
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
     body['parameters'] = parameters  # dictionary
-    body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} if resource_groups is not None else {}
+    body['resource_groups'] = resource_group_list_2_dict(resource_groups)  # dictionary
+
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
 
@@ -593,7 +598,7 @@ def update_blueprint_assignment(cmd,
     if parameters is not None:
         body['parameters'] = parameters  # dictionary
     if resource_groups is not None:
-        body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups}  # dictionary
+        body['resource_groups'] = resource_group_list_2_dict(resource_groups)  # dictionary
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
