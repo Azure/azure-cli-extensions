@@ -140,6 +140,7 @@ class TestIndex(unittest.TestCase):
         for ext_name, exts in self.index['extensions'].items():
             for item in exts:
                 ext_dir = tempfile.mkdtemp(dir=extensions_dir)
+<<<<<<< HEAD
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                             self.whl_cache_dir, self.whl_cache)
 
@@ -171,6 +172,9 @@ class TestIndex(unittest.TestCase):
                             raise ex
                     else:
                         raise ex
+=======
+                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'], self.whl_cache_dir, self.whl_cache)
+>>>>>>> c7d4e1dc45f710a83caf5a30bee91bbd266bd25d
 
                 wheel_metadata = get_ext_metadata(ext_dir, ext_file)
                 index_metadata = item['metadata']
