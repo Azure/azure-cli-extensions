@@ -191,7 +191,7 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus --https-only')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -235,7 +235,7 @@ class StorageADLSDirectoryUploadTests(StorageScenarioMixin, LiveScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true --https-only')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -253,6 +253,8 @@ class StorageADLSDirectoryUploadTests(StorageScenarioMixin, LiveScenarioTest):
                          directory, os.path.join(test_dir, 'apple'))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 12))
+        self.storage_cmd('storage blob directory list -c {} -d {} --num-results 9', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 9))
 
         # Upload files in a local directory to the blob directory
         self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
