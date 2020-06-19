@@ -49,9 +49,9 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='*', help='Factory\'s VSTS '
                    'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='*', help='Factory\'s '
                    'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
                    'value: json-string/@json-file.')
@@ -68,9 +68,9 @@ def load_arguments(self, _):
     with self.argument_context('datafactory factory configure-factory-repo') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('factory_resource_id', help='The factory resource id.')
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='*', help='Factory\'s VSTS '
                    'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='*', help='Factory\'s '
                    'GitHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory factory get-data-plane-access') as c:
@@ -334,7 +334,7 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
                    'Dataset. Expected value: json-string/@json-file.')
-        c.argument('folder', action=AddFolder, nargs='+', help='The folder that this Dataset is in. If not specified, '
+        c.argument('folder', action=AddFolder, nargs='*', help='The folder that this Dataset is in. If not specified, '
                    'Dataset will appear at the root level.')
         c.ignore('properties')
 
@@ -427,8 +427,8 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
 
     with self.argument_context('datafactory activity-run query-by-pipeline-run') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -440,8 +440,8 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -528,8 +528,8 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger-run rerun') as c:
         c.argument('resource_group_name', resource_group_name_type)
