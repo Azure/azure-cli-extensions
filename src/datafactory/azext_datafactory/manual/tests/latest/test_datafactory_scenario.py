@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+
 # EXAMPLE: IntegrationRuntimes_Create
 def step_integrationruntimes_create(test, rg):
     test.cmd('az datafactory integration-runtime self-hosted create '
@@ -26,23 +27,24 @@ def step_triggerruns_rerun(test, rg):
              '--run-id "{myRunId}"',
              checks=[])
 
+
 def step_pipelines_createrun(test, rg):
     output = test.cmd('az datafactory pipeline create-run '
-             '--factory-name "{myFactoryName}" '
-             '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[]).get_output_in_json()
+                      '--factory-name "{myFactoryName}" '
+                      '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
+                      '--name "{myPipeline}" '
+                      '--resource-group "{rg}"',
+                      checks=[]).get_output_in_json()
     return output
 
 
 def step_triggerruns_querybyfactory(test, rg):
     output = test.cmd('az datafactory trigger-run query-by-factory '
-             '--factory-name "{myFactoryName}" '
-             '--last-updated-after "{myStartTime}" '
-             '--last-updated-before "{myEndTime}" '
-             '--resource-group "{rg}"',
-             checks=[]).get_output_in_json()
+                      '--factory-name "{myFactoryName}" '
+                      '--last-updated-after "{myStartTime}" '
+                      '--last-updated-before "{myEndTime}" '
+                      '--resource-group "{rg}"',
+                      checks=[]).get_output_in_json()
     return output
 
 
@@ -71,6 +73,7 @@ def step_pipelines_wait_create(test, rg):
              '--resource-group "{rg}" ',
              checks=[])
 
+
 def step_triggers_tumble_create(test, rg):
     test.cmd('az datafactory trigger create '
              '--resource-group "{rg}" '
@@ -86,6 +89,7 @@ def step_triggers_tumble_create(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myTrigger}"',
              checks=[])
+
 
 def call_managed_integrationruntime_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
@@ -122,7 +126,7 @@ def call_triggerrun_scenario(test, rg):
         triggerrun_res = g.step_triggerruns_querybyfactory(test, rg)
         if len(triggerrun_res['value']) > 0 and triggerrun_res['value'][0]['status'] == 'Succeeded':
             test.kwargs.update({'myRunId': triggerrun_res['value'][0]['triggerRunId']})
-            break;
+            break
         else:
             if maxRound > 0:
                 maxRound -= 1
@@ -137,6 +141,7 @@ def call_triggerrun_scenario(test, rg):
     g.step_triggers_delete(test, rg)
     g.step_pipelines_delete(test, rg)
     g.step_factories_delete(test, rg)
+
 
 def call_main_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
@@ -203,6 +208,7 @@ def call_main_scenario(test, rg):
     g.step_linkedservices_delete(test, rg)
     g.step_factories_delete(test, rg)
     g.cleanup(test, rg)
+
 
 def call_scenario(test, rg):
     from datetime import datetime, timedelta
