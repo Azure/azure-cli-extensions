@@ -44,8 +44,3 @@ def validate_workspace_and_target_info(cmd, namespace):
     """
     validate_workspace_info(cmd, namespace)
     validate_target_info(cmd, namespace)
-
-    # For the time being (Private Preview), we also need the AZURE_QUANTUM_STORAGE env variable populated
-    # with the Azure Storage connection string to use to upload the program.
-    if 'AZURE_QUANTUM_STORAGE' not in os.environ:
-        raise ValueError(f"Please set the AZURE_QUANTUM_STORAGE environment variable with an Azure Storage's connection string.")

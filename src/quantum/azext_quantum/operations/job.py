@@ -96,8 +96,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--output")
     args.append("Id")
 
-    args.append("--storage")
-    args.append(os.environ['AZURE_QUANTUM_STORAGE'])
+    if 'AZURE_QUANTUM_STORAGE' in os.environ:
+        args.append("--storage")
+        args.append(os.environ['AZURE_QUANTUM_STORAGE'])
 
     args.append("--aad-token")
     args.append(token)
