@@ -53,7 +53,7 @@ az datafactory dataset update \
 ```
 
 #### Pipeline
-Use pipeline to define a set of activities to operate on your dataset: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipelines-activities)
+Use pipeline to define a set of activities to operate on your dataset: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipelines-activities)  
 *Examples:*  
 ```
 az datafactory pipeline create \
@@ -73,7 +73,7 @@ az datafactory pipeline update \
 ```
 
 #### Pipeline-Run
-You can manually execute your pipeline activities(on demand)[more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipeline-execution-triggers#manual-execution-on-demand)
+You can manually execute your pipeline activities(on demand): [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipeline-execution-triggers#manual-execution-on-demand)  
 *Examples:*  
 ```
 az datafactory pipeline create-run \
