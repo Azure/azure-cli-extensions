@@ -213,7 +213,7 @@ az datafactory integration-runtime-node get-ip-address  \
     --node-name nodeName \
     --resource-group groupName
 ```
-If it's a managed IR, you can perform the following operations on them
+If it's a managed IR, you can perform the following operations on it
 ```
 az datafactory integration-runtime start \
     --factory-name factoryName \
