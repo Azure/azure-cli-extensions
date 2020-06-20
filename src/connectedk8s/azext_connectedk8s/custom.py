@@ -65,7 +65,7 @@ Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy=None, http_proxy=None, no_proxy=None, location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -85,6 +85,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
 
     # Removing quotes from kubeconfig path. This is necessary for windows OS.
     trim_kube_config(kube_config)
+
+    # Escaping comma, forward slash present in https proxy urls, needed for helm params.
+    https_proxy = escape_proxy_settings(https_proxy)
+
+    # Escaping comma, forward slash present in http proxy urls, needed for helm params.
+    http_proxy = escape_proxy_settings(http_proxy)
+
+    # Escaping comma, forward slash present in no proxy urls, needed for helm params.
+    no_proxy = escape_proxy_settings(no_proxy)
 
     # Loading the kubeconfig file in kubernetes client configuration
     try:
@@ -250,6 +259,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, location
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
                         "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                        "--set", "global.httpsProxy={}".format(https_proxy),
+                        "--set", "global.httpProxy={}".format(http_proxy),
+                        "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--kubeconfig", kube_config, "--output", "json"]
@@ -303,6 +315,14 @@ def trim_kube_config(kube_config):
         kube_config = kube_config[1:]
     if (kube_config.endswith("'") or kube_config.endswith('"')):
         kube_config = kube_config[:-1]
+
+
+def escape_proxy_settings(proxy_setting):
+    if proxy_setting is None:
+        return ""
+    proxy_setting = proxy_setting.replace(',', r'\,')
+    proxy_setting = proxy_setting.replace('/', r'\/')
+    return proxy_setting
 
 
 def check_kube_connection(configuration):
