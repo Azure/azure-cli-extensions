@@ -10,11 +10,9 @@
 # --------------------------------------------------------------------------
 
 from .operations import Operations
-from .account_operations import AccountOperations
 from .plan_operations import PlanOperations
 
 __all__ = [
     'Operations',
-    'AccountOperations',
     'PlanOperations',
 ]
