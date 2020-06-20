@@ -1,4 +1,4 @@
-# Azure CLI Storage Preview Extension #
+# Azure CLI Datafactory Extension #
 This is a extension for datafactory features.
 
 ### How to use ###
