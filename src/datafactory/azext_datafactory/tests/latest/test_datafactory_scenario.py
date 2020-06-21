@@ -602,9 +602,7 @@ def step_factories_getdataplaneaccess(test, rg):
              '--start-time "{myStartTime}" '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('policy.permissions', 'r'),
-                 test.check('policy.startTime', "{myStartTime}"),
-                 test.check('policy.expireTime', "{myEndTime}")
+                 test.check('policy.permissions', 'r')
              ])
 
 
