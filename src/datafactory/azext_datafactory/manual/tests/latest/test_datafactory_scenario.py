@@ -16,7 +16,10 @@ def step_integrationruntimes_create(test, rg):
              '--description "A selfhosted integration runtime" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myIntegrationRuntime}"),
+                 test.check('properties.type', 'SelfHosted')
+             ])
 
 
 def step_triggerruns_rerun(test, rg):
@@ -59,7 +62,10 @@ def step_integrationruntimes_managed_create(test, rg):
              '\\"numberOfNodes\\":1,\\"maxParallelExecutionsPerNode\\":2}}" '
              '--type-properties-ssis-properties "{{\\"edition\\":\\"Standard'
              '\\",\\"licenseType\\":\\"LicenseIncluded\\"}}" ',
-             checks=[])
+             checks=[
+                 test.check('name', "{myIntegrationRuntime}"),
+                 test.check('properties.type', "Managed")
+             ])
 
 
 def step_pipelines_wait_create(test, rg):
@@ -71,7 +77,10 @@ def step_pipelines_wait_create(test, rg):
              '}}}}],\\"annotations\\":[]}}" '
              '--name "{myPipeline}" '
              '--resource-group "{rg}" ',
-             checks=[])
+             checks=[
+                 test.check('name', "{myPipeline}"),
+                 test.check('activities[0].type', "Wait")
+             ])
 
 
 def step_triggers_tumble_create(test, rg):
@@ -88,7 +97,12 @@ def step_triggers_tumble_create(test, rg):
              '\\":30}},\\"dependsOn\\":[]}}}}" '
              '--factory-name "{myFactoryName}" '
              '--name "{myTrigger}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myTrigger}"),
+                 test.check('properties.type', "TumblingWindowTrigger"),
+                 test.check('properties.pipeline.pipelineReference.referenceName',
+                            "{myPipeline}")
+             ])
 
 
 def call_managed_integrationruntime_scenario(test, rg):

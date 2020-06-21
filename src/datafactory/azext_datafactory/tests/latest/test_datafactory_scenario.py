@@ -29,7 +29,10 @@ def step_factories_createorupdate(test, rg):
              '--location "East US" '
              '--name "{myFactoryName}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myFactoryName}"),
+                 test.check('provisioningState', 'Succeeded')
+             ])
 
 
 # EXAMPLE: Factories_Update
@@ -39,7 +42,11 @@ def step_factories_update(test, rg):
              '--name "{myFactoryName}" '
              '--tags exampleTag="exampleValue" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myFactoryName}"),
+                 test.check('provisioningState', 'Succeeded'),
+                 test.check('tags.exampleTag', 'exampleValue')
+             ])
 
 
 # EXAMPLE: LinkedServices_Create
@@ -52,7 +59,10 @@ def step_linkedservices_create(test, rg):
              'tKey=<storage key>\\"}}}}}}" '
              '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myLinkedService}"),
+                 test.check('properties.type', 'AzureStorage')
+             ])
 
 
 # EXAMPLE: LinkedServices_Update
@@ -80,7 +90,9 @@ def step_datasets_create(test, rg):
              '--name "{myDataset}" '
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myDataset}")
+             ])
 
 
 # EXAMPLE: Datasets_Update
@@ -118,7 +130,9 @@ def step_pipelines_create(test, rg):
              'alue\\":\\"@pipeline().parameters.JobId\\"}}}}}}" '
              '--name "{myPipeline}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myPipeline}")
+             ])
 
 
 # EXAMPLE: Pipelines_Update
@@ -153,7 +167,9 @@ def step_triggers_create(test, rg):
              '\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":'
              '\\"UTC\\"}}}}}}" '
              '--name "{myTrigger}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myTrigger}")
+             ])
 
 
 # EXAMPLE: Triggers_Update
@@ -228,7 +244,9 @@ def step_integrationruntimes_get(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myIntegrationRuntime}")
+             ])
 
 
 # EXAMPLE: RerunTriggers_ListByTrigger
@@ -245,7 +263,9 @@ def step_linkedservices_get(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myLinkedService}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myLinkedService}")
+             ])
 
 
 # EXAMPLE: PipelineRuns_Get
@@ -255,7 +275,9 @@ def step_pipelineruns_get(test, rg):
              '--factory-name "{myFactoryName}" '
              '--resource-group "{rg}" '
              '--run-id "{myRunId}"',
-             checks=[])
+             checks=[
+                 test.check('runId', "{myRunId}")
+             ])
 
 
 # EXAMPLE: Pipelines_Get
@@ -265,7 +287,9 @@ def step_pipelines_get(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myPipeline}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myPipeline}")
+             ])
 
 
 # EXAMPLE: Datasets_Get
@@ -431,7 +455,9 @@ def step_integrationruntimes_getmonitoringdata(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myIntegrationRuntime}")
+             ])
 
 
 # EXAMPLE: IntegrationRuntimes_ListAuthKeys
@@ -462,7 +488,10 @@ def step_integrationruntimes_getstatus(test, rg):
              '--factory-name "{myFactoryName}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('name', "{myIntegrationRuntime}"),
+                 test.check('properties.dataFactoryName', "{myFactoryName}")
+             ])
 
 
 # EXAMPLE: IntegrationRuntimes_Start
@@ -504,7 +533,9 @@ def step_activityruns_querybypipelinerun(test, rg):
              '--last-updated-before "{myEndTime}" '
              '--resource-group "{rg}" '
              '--run-id "{myRunId}"',
-             checks=[])
+             checks=[
+                 test.check('value[0].pipelineRunId', "{myRunId}")
+             ])
 
 
 # EXAMPLE: Triggers_UnsubscribeFromEvents
@@ -570,7 +601,11 @@ def step_factories_getdataplaneaccess(test, rg):
              '--profile-name "DefaultProfile" '
              '--start-time "{myStartTime}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[
+                 test.check('policy.permissions', 'r'),
+                 test.check('policy.startTime', "{myStartTime}"),
+                 test.check('policy.expireTime', "{myEndTime}")
+             ])
 
 
 # EXAMPLE: PipelineRuns_QueryByFactory
