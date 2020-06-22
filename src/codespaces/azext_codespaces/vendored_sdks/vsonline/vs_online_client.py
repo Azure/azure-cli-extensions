@@ -14,7 +14,6 @@ from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
 from .operations.operations import Operations
-from .operations.account_operations import AccountOperations
 from .operations.plan_operations import PlanOperations
 from . import models
 
@@ -34,7 +33,7 @@ class VSOnlineClientConfiguration(AzureConfiguration):
     """
 
     def __init__(
-            self, credentials, subscription_id, base_url=None):
+            self, credentials, subscription_id, base_url=None, api_version=None):
 
         if credentials is None:
             raise ValueError("Parameter 'credentials' must not be None.")
@@ -50,18 +49,17 @@ class VSOnlineClientConfiguration(AzureConfiguration):
 
         self.credentials = credentials
         self.subscription_id = subscription_id
+        self.api_version = api_version
 
 
 class VSOnlineClient(SDKClient):
-    """Microsoft VS Online REST API version 2019-07-01-preview.
+    """Microsoft VS Online REST API version 2020-05-26-preview.
 
     :ivar config: Configuration for client.
     :vartype config: VSOnlineClientConfiguration
 
     :ivar operations: Operations operations
     :vartype operations: microsoft.vsonline.operations.Operations
-    :ivar account: Account operations
-    :vartype account: microsoft.vsonline.operations.AccountOperations
     :ivar plan: Plan operations
     :vartype plan: microsoft.vsonline.operations.PlanOperations
 
@@ -75,19 +73,17 @@ class VSOnlineClient(SDKClient):
     """
 
     def __init__(
-            self, credentials, subscription_id, base_url=None):
+            self, credentials, subscription_id, base_url=None, api_version=None):
 
-        self.config = VSOnlineClientConfiguration(credentials, subscription_id, base_url)
+        self.config = VSOnlineClientConfiguration(credentials, subscription_id, base_url, api_version)
         super(VSOnlineClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2019-07-01-preview'
+        self.api_version = '2020-05-26-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
         self.operations = Operations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.account = AccountOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.plan = PlanOperations(
             self._client, self.config, self._serialize, self._deserialize)

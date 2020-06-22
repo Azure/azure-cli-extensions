@@ -21,6 +21,70 @@ class CloudError(Model):
     }
 
 
+class CreatedBy(Model):
+    """Provides details of the entity that created/updated the workspace.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar oid: The Object ID that created the workspace.
+    :vartype oid: str
+    :ivar puid: The Personal Object ID corresponding to the object ID above
+    :vartype puid: str
+    :ivar application_id: The application ID of the application that initiated
+     the creation of the workspace. For example, Azure Portal.
+    :vartype application_id: str
+    """
+
+    _validation = {
+        'oid': {'readonly': True},
+        'puid': {'readonly': True},
+        'application_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'oid': {'key': 'oid', 'type': 'str'},
+        'puid': {'key': 'puid', 'type': 'str'},
+        'application_id': {'key': 'applicationId', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(CreatedBy, self).__init__(**kwargs)
+        self.oid = None
+        self.puid = None
+        self.application_id = None
+
+
+class Encryption(Model):
+    """The object that contains details of encryption used on the workspace.
+
+    :param key_source: The encryption keySource (provider). Possible values
+     (case-insensitive):  Default, Microsoft.Keyvault. Possible values include:
+     'Default', 'Microsoft.Keyvault'. Default value: "Default" .
+    :type key_source: str or ~azure.mgmt.databricks.models.KeySource
+    :param key_name: The name of KeyVault key.
+    :type key_name: str
+    :param key_version: The version of KeyVault key.
+    :type key_version: str
+    :param key_vault_uri: The Uri of KeyVault.
+    :type key_vault_uri: str
+    """
+
+    _attribute_map = {
+        'key_source': {'key': 'keySource', 'type': 'str'},
+        'key_name': {'key': 'KeyName', 'type': 'str'},
+        'key_version': {'key': 'keyversion', 'type': 'str'},
+        'key_vault_uri': {'key': 'keyvaulturi', 'type': 'str'},
+    }
+
+    def __init__(self, *, key_source="Default", key_name: str=None, key_version: str=None, key_vault_uri: str=None, **kwargs) -> None:
+        super(Encryption, self).__init__(**kwargs)
+        self.key_source = key_source
+        self.key_name = key_name
+        self.key_version = key_version
+        self.key_vault_uri = key_vault_uri
+
+
 class ErrorDetail(Model):
     """Error details.
 
@@ -122,6 +186,41 @@ class ErrorResponseException(HttpOperationError):
     def __init__(self, deserialize, response, *args):
 
         super(ErrorResponseException, self).__init__(deserialize, response, 'ErrorResponse', *args)
+
+
+class ManagedIdentityConfiguration(Model):
+    """The Managed Identity details for storage account.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The objectId of the Managed Identity that is linked to
+     the Managed Storage account.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant Id where the Managed Identity is created.
+    :vartype tenant_id: str
+    :ivar type: The type of Identity created. It can be either SystemAssigned
+     or UserAssigned.
+    :vartype type: str
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(ManagedIdentityConfiguration, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = None
 
 
 class Operation(Model):
@@ -307,6 +406,25 @@ class Workspace(TrackedResource):
     :param authorizations: The workspace provider authorizations.
     :type authorizations:
      list[~azure.mgmt.databricks.models.WorkspaceProviderAuthorization]
+    :param created_by: Indicates the Object ID, PUID and Application ID of
+     entity that created the workspace.
+    :type created_by: ~azure.mgmt.databricks.models.CreatedBy
+    :param updated_by: Indicates the Object ID, PUID and Application ID of
+     entity that last updated the workspace.
+    :type updated_by: ~azure.mgmt.databricks.models.CreatedBy
+    :param created_date_time: Specifies the date and time when the workspace
+     is created.
+    :type created_date_time: datetime
+    :ivar workspace_id: The unique identifier of the databricks workspace in
+     databricks control plane.
+    :vartype workspace_id: str
+    :ivar workspace_url: The workspace URL which is of the format
+     'adb-{workspaceId}.{random}.azuredatabricks.net'
+    :vartype workspace_url: str
+    :param storage_account_identity: The details of Managed Identity of
+     Storage Account
+    :type storage_account_identity:
+     ~azure.mgmt.databricks.models.ManagedIdentityConfiguration
     :param sku: The SKU of the resource.
     :type sku: ~azure.mgmt.databricks.models.Sku
     """
@@ -318,6 +436,8 @@ class Workspace(TrackedResource):
         'location': {'required': True},
         'managed_resource_group_id': {'required': True},
         'provisioning_state': {'readonly': True},
+        'workspace_id': {'readonly': True},
+        'workspace_url': {'readonly': True},
     }
 
     _attribute_map = {
@@ -331,16 +451,28 @@ class Workspace(TrackedResource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'ui_definition_uri': {'key': 'properties.uiDefinitionUri', 'type': 'str'},
         'authorizations': {'key': 'properties.authorizations', 'type': '[WorkspaceProviderAuthorization]'},
+        'created_by': {'key': 'properties.createdBy', 'type': 'CreatedBy'},
+        'updated_by': {'key': 'properties.updatedBy', 'type': 'CreatedBy'},
+        'created_date_time': {'key': 'properties.createdDateTime', 'type': 'iso-8601'},
+        'workspace_id': {'key': 'properties.workspaceId', 'type': 'str'},
+        'workspace_url': {'key': 'properties.workspaceUrl', 'type': 'str'},
+        'storage_account_identity': {'key': 'properties.storageAccountIdentity', 'type': 'ManagedIdentityConfiguration'},
         'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
-    def __init__(self, *, location: str, managed_resource_group_id: str, tags=None, parameters=None, ui_definition_uri: str=None, authorizations=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, location: str, managed_resource_group_id: str, tags=None, parameters=None, ui_definition_uri: str=None, authorizations=None, created_by=None, updated_by=None, created_date_time=None, storage_account_identity=None, sku=None, **kwargs) -> None:
         super(Workspace, self).__init__(tags=tags, location=location, **kwargs)
         self.managed_resource_group_id = managed_resource_group_id
         self.parameters = parameters
         self.provisioning_state = None
         self.ui_definition_uri = ui_definition_uri
         self.authorizations = authorizations
+        self.created_by = created_by
+        self.updated_by = updated_by
+        self.created_date_time = created_date_time
+        self.workspace_id = None
+        self.workspace_url = None
+        self.storage_account_identity = storage_account_identity
         self.sku = sku
 
 
@@ -401,10 +533,6 @@ class WorkspaceCustomObjectParameter(Model):
 class WorkspaceCustomParameters(Model):
     """Custom Parameters used for Cluster Creation.
 
-    :param aml_workspace_id: The Workspace ID of an Azure Machine Learning
-     Workspace
-    :type aml_workspace_id:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
     :param custom_virtual_network_id: The ID of a Virtual Network where this
      Databricks Cluster should be created
     :type custom_virtual_network_id:
@@ -420,63 +548,33 @@ class WorkspaceCustomParameters(Model):
     :param enable_no_public_ip: Should the Public IP be Disabled?
     :type enable_no_public_ip:
      ~azure.mgmt.databricks.models.WorkspaceCustomBooleanParameter
-    :param load_balancer_backend_pool_name: The name of a Backend Address Pool
-     within an Azure Load Balancer
-    :type load_balancer_backend_pool_name:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
-    :param load_balancer_id: The Resource ID of an Azure Load Balancer
-    :type load_balancer_id:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
-    :param relay_namespace_name: The name of an Azure Relay Namespace
-    :type relay_namespace_name:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
-    :param storage_account_name: The name which should be used for the Storage
-     Account
-    :type storage_account_name:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
-    :param storage_account_sku_name: The SKU which should be used for this
-     Storage Account
-    :type storage_account_sku_name:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
-    :param resource_tags: A map of Tags which should be applied to the
-     resources used by this Databricks Cluster.
-    :type resource_tags:
-     ~azure.mgmt.databricks.models.WorkspaceCustomObjectParameter
-    :param vnet_address_prefix: The first 2 octets of the virtual network /16
-     address range (e.g., '10.139' for the address range 10.139.0.0/16).
-    :type vnet_address_prefix:
-     ~azure.mgmt.databricks.models.WorkspaceCustomStringParameter
+    :param prepare_encryption: Prepare the workspace for encryption. Enables
+     the Managed Identity for managed storage account.
+    :type prepare_encryption:
+     ~azure.mgmt.databricks.models.WorkspaceCustomBooleanParameter
+    :param encryption: Contains the encryption details for Customer-Managed
+     Key (CMK) enabled workspace.
+    :type encryption:
+     ~azure.mgmt.databricks.models.WorkspaceEncryptionParameter
     """
 
     _attribute_map = {
-        'aml_workspace_id': {'key': 'amlWorkspaceId', 'type': 'WorkspaceCustomStringParameter'},
         'custom_virtual_network_id': {'key': 'customVirtualNetworkId', 'type': 'WorkspaceCustomStringParameter'},
         'custom_public_subnet_name': {'key': 'customPublicSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'custom_private_subnet_name': {'key': 'customPrivateSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'enable_no_public_ip': {'key': 'enableNoPublicIp', 'type': 'WorkspaceCustomBooleanParameter'},
-        'load_balancer_backend_pool_name': {'key': 'loadBalancerBackendPoolName', 'type': 'WorkspaceCustomStringParameter'},
-        'load_balancer_id': {'key': 'loadBalancerId', 'type': 'WorkspaceCustomStringParameter'},
-        'relay_namespace_name': {'key': 'relayNamespaceName', 'type': 'WorkspaceCustomStringParameter'},
-        'storage_account_name': {'key': 'storageAccountName', 'type': 'WorkspaceCustomStringParameter'},
-        'storage_account_sku_name': {'key': 'storageAccountSkuName', 'type': 'WorkspaceCustomStringParameter'},
-        'resource_tags': {'key': 'resourceTags', 'type': 'WorkspaceCustomObjectParameter'},
-        'vnet_address_prefix': {'key': 'vnetAddressPrefix', 'type': 'WorkspaceCustomStringParameter'},
+        'prepare_encryption': {'key': 'prepareEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
+        'encryption': {'key': 'encryption', 'type': 'WorkspaceEncryptionParameter'},
     }
 
-    def __init__(self, *, aml_workspace_id=None, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, load_balancer_backend_pool_name=None, load_balancer_id=None, relay_namespace_name=None, storage_account_name=None, storage_account_sku_name=None, resource_tags=None, vnet_address_prefix=None, **kwargs) -> None:
+    def __init__(self, *, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, prepare_encryption=None, encryption=None, **kwargs) -> None:
         super(WorkspaceCustomParameters, self).__init__(**kwargs)
-        self.aml_workspace_id = aml_workspace_id
         self.custom_virtual_network_id = custom_virtual_network_id
         self.custom_public_subnet_name = custom_public_subnet_name
         self.custom_private_subnet_name = custom_private_subnet_name
         self.enable_no_public_ip = enable_no_public_ip
-        self.load_balancer_backend_pool_name = load_balancer_backend_pool_name
-        self.load_balancer_id = load_balancer_id
-        self.relay_namespace_name = relay_namespace_name
-        self.storage_account_name = storage_account_name
-        self.storage_account_sku_name = storage_account_sku_name
-        self.resource_tags = resource_tags
-        self.vnet_address_prefix = vnet_address_prefix
+        self.prepare_encryption = prepare_encryption
+        self.encryption = encryption
 
 
 class WorkspaceCustomStringParameter(Model):
@@ -502,6 +600,27 @@ class WorkspaceCustomStringParameter(Model):
 
     def __init__(self, *, value: str, type=None, **kwargs) -> None:
         super(WorkspaceCustomStringParameter, self).__init__(**kwargs)
+        self.type = type
+        self.value = value
+
+
+class WorkspaceEncryptionParameter(Model):
+    """The object that contains details of encryption used on the workspace.
+
+    :param type: The type of variable that this is. Possible values include:
+     'Bool', 'Object', 'String'
+    :type type: str or ~azure.mgmt.databricks.models.CustomParameterType
+    :param value: The value which should be used for this field.
+    :type value: ~azure.mgmt.databricks.models.Encryption
+    """
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'value': {'key': 'value', 'type': 'Encryption'},
+    }
+
+    def __init__(self, *, type=None, value=None, **kwargs) -> None:
+        super(WorkspaceEncryptionParameter, self).__init__(**kwargs)
         self.type = type
         self.value = value
 

@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.4.52
++++++
+* Add --uptime-sla for az aks update
 
 0.4.51
 +++++

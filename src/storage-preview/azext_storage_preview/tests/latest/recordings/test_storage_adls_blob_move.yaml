@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "StorageV2", "location": "centralus",
-      "properties": {"isHnsEnabled": true}}'
+      "properties": {"supportsHttpsTrafficOnly": true, "isHnsEnabled": true}}'
     headers:
       Accept:
       - application/json
@@ -12,14 +12,14 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '119'
+      - '153'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -n -g --kind --hierarchical-namespace -l
+      - -n -g --kind --hierarchical-namespace -l --https-only
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-storage/3.1.0
+        Azure-SDK-For-Python AZURECLI/2.6.0
       accept-language:
       - en-US
     method: PUT
@@ -35,11 +35,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 26 Nov 2019 13:03:58 GMT
+      - Thu, 04 Jun 2020 05:33:48 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/centralus/asyncoperations/afa1b4c7-c801-4b71-97de-cf0a4597a5cd?monitor=true&api-version=2018-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/centralus/asyncoperations/b6e8703d-7b00-45ec-b2db-77eaa9b6d852?monitor=true&api-version=2018-07-01
       pragma:
       - no-cache
       server:
@@ -49,7 +49,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -65,24 +65,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --kind --hierarchical-namespace -l
+      - -n -g --kind --hierarchical-namespace -l --https-only
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-storage/3.1.0
+        Azure-SDK-For-Python AZURECLI/2.6.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/centralus/asyncoperations/afa1b4c7-c801-4b71-97de-cf0a4597a5cd?monitor=true&api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/centralus/asyncoperations/b6e8703d-7b00-45ec-b2db-77eaa9b6d852?monitor=true&api-version=2018-07-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-26T13:03:58.4876194Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-26T13:03:58.4876194Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-26T13:03:58.3939019Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z19.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z19.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}}'
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2020-06-04T05:33:48.5229485Z"},"blob":{"enabled":true,"lastEnabledTime":"2020-06-04T05:33:48.5229485Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2020-06-04T05:33:48.4448250Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z19.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z19.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1812'
+      - '1811'
       content-type:
       - application/json
       date:
-      - Tue, 26 Nov 2019 13:04:16 GMT
+      - Thu, 04 Jun 2020 05:34:06 GMT
       expires:
       - '-1'
       pragma:
@@ -116,8 +116,8 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-storage/3.1.0
+        Azure-SDK-For-Python AZURECLI/2.6.0
       accept-language:
       - en-US
     method: POST
@@ -133,7 +133,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 26 Nov 2019 13:04:20 GMT
+      - Thu, 04 Jun 2020 05:34:07 GMT
       expires:
       - '-1'
       pragma:
@@ -148,8 +148,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
     status:
       code: 200
       message: OK
@@ -161,9 +161,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:20 GMT
+      - Thu, 04 Jun 2020 05:34:09 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -175,11 +175,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 26 Nov 2019 13:04:23 GMT
+      - Thu, 04 Jun 2020 05:34:12 GMT
       etag:
-      - '"0x8D7727128D01461"'
+      - '"0x8D80848E9AA0948"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:23 GMT
+      - Thu, 04 Jun 2020 05:34:12 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -193,9 +193,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:24 GMT
+      - Thu, 04 Jun 2020 05:34:13 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -205,7 +205,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Tue, 26 Nov 2019 13:04:25 GMT
+      - Thu, 04 Jun 2020 05:34:13 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -225,9 +225,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:25 GMT
+      - Thu, 04 Jun 2020 05:34:14 GMT
       x-ms-umask:
       - '0027'
       x-ms-version:
@@ -241,11 +241,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 26 Nov 2019 13:04:26 GMT
+      - Thu, 04 Jun 2020 05:34:15 GMT
       etag:
-      - '"0x8D772712AA857C2"'
+      - '"0x8D80848EB9C77AE"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:26 GMT
+      - Thu, 04 Jun 2020 05:34:15 GMT
       server:
       - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -261,11 +261,11 @@ interactions:
       Content-Length:
       - '131072'
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:27 GMT
+      - Thu, 04 Jun 2020 05:34:16 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -279,11 +279,11 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       etag:
-      - '"0x8D772712C2C1D4D"'
+      - '"0x8D80848ECFF7A1F"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-request-server-encrypted:
@@ -299,9 +299,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:30 GMT
+      - Thu, 04 Jun 2020 05:34:18 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -311,7 +311,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Tue, 26 Nov 2019 13:04:30 GMT
+      - Thu, 04 Jun 2020 05:34:19 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -331,9 +331,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:31 GMT
+      - Thu, 04 Jun 2020 05:34:19 GMT
       x-ms-umask:
       - '0027'
       x-ms-version:
@@ -347,11 +347,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 26 Nov 2019 13:04:31 GMT
+      - Thu, 04 Jun 2020 05:34:20 GMT
       etag:
-      - '"0x8D772712DDAC3FB"'
+      - '"0x8D80848EEB3DD7A"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:32 GMT
+      - Thu, 04 Jun 2020 05:34:20 GMT
       server:
       - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -365,9 +365,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:32 GMT
+      - Thu, 04 Jun 2020 05:34:21 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -385,11 +385,11 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Tue, 26 Nov 2019 13:04:33 GMT
+      - Thu, 04 Jun 2020 05:34:21 GMT
       etag:
-      - '"0x8D772712C2C1D4D"'
+      - '"0x8D80848ECFF7A1F"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-access-tier:
@@ -399,7 +399,7 @@ interactions:
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -417,9 +417,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:34 GMT
+      - Thu, 04 Jun 2020 05:34:22 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -429,7 +429,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Tue, 26 Nov 2019 13:04:33 GMT
+      - Thu, 04 Jun 2020 05:34:21 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -449,11 +449,11 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:34 GMT
+      - Thu, 04 Jun 2020 05:34:22 GMT
       x-ms-rename-source:
-      - /contyjseltzmz55kty6ylfl2/dir/blobh2oghcltoo7dg2lqatmy
+      - /contlsaugxuznrmzez3blgnh/dir/blobdgxbxieehnkrxnxjq6ji
       x-ms-version:
       - '2019-02-02'
     method: PUT
@@ -465,7 +465,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 26 Nov 2019 13:04:35 GMT
+      - Thu, 04 Jun 2020 05:34:23 GMT
       server:
       - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -479,20 +479,20 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:36 GMT
+      - Thu, 04 Jun 2020 05:34:24 GMT
       x-ms-version:
       - '2019-02-02'
     method: GET
-    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir1%2F&include=metadata%2Ccopy
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir1%2F&maxresults=5000&include=metadata%2Ccopy
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
-        ContainerName=\"cont000003\"><Prefix>dir1/</Prefix><Blobs><Blob><Name>dir1/blob000004</Name><Properties><Creation-Time>Tue,
-        26 Nov 2019 13:04:29 GMT</Creation-Time><Last-Modified>Tue, 26 Nov 2019 13:04:29
-        GMT</Last-Modified><Etag>0x8D772712C2C1D4D</Etag><Content-Length>131072</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
+        ContainerName=\"cont000003\"><Prefix>dir1/</Prefix><MaxResults>5000</MaxResults><Blobs><Blob><Name>dir1/blob000004</Name><Properties><Creation-Time>Thu,
+        04 Jun 2020 05:34:17 GMT</Creation-Time><Last-Modified>Thu, 04 Jun 2020 05:34:17
+        GMT</Last-Modified><Etag>0x8D80848ECFF7A1F</Etag><Content-Length>131072</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
         /><Content-Language /><Content-CRC64 /><Content-MD5>DfvoqkwgtS4bi/PLbL3xkw==</Content-MD5><Cache-Control
         /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
         /></Blob></Blobs><NextMarker /></EnumerationResults>"
@@ -500,7 +500,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Tue, 26 Nov 2019 13:04:36 GMT
+      - Thu, 04 Jun 2020 05:34:25 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -516,23 +516,24 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:38 GMT
+      - Thu, 04 Jun 2020 05:34:26 GMT
       x-ms-version:
       - '2019-02-02'
     method: GET
-    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir%2F&include=metadata%2Ccopy
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir%2F&maxresults=5000&include=metadata%2Ccopy
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
-        ContainerName=\"cont000003\"><Prefix>dir/</Prefix><Blobs /><NextMarker /></EnumerationResults>"
+        ContainerName=\"cont000003\"><Prefix>dir/</Prefix><MaxResults>5000</MaxResults><Blobs
+        /><NextMarker /></EnumerationResults>"
     headers:
       content-type:
       - application/xml
       date:
-      - Tue, 26 Nov 2019 13:04:38 GMT
+      - Thu, 04 Jun 2020 05:34:26 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -548,9 +549,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:39 GMT
+      - Thu, 04 Jun 2020 05:34:27 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -568,11 +569,11 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Tue, 26 Nov 2019 13:04:40 GMT
+      - Thu, 04 Jun 2020 05:34:28 GMT
       etag:
-      - '"0x8D772712C2C1D4D"'
+      - '"0x8D80848ECFF7A1F"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-access-tier:
@@ -582,7 +583,7 @@ interactions:
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Tue, 26 Nov 2019 13:04:29 GMT
+      - Thu, 04 Jun 2020 05:34:17 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -600,9 +601,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:41 GMT
+      - Thu, 04 Jun 2020 05:34:28 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -612,7 +613,7 @@ interactions:
       string: ''
     headers:
       date:
-      - Tue, 26 Nov 2019 13:04:40 GMT
+      - Thu, 04 Jun 2020 05:34:28 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -632,11 +633,11 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:41 GMT
+      - Thu, 04 Jun 2020 05:34:29 GMT
       x-ms-rename-source:
-      - /contyjseltzmz55kty6ylfl2/dir1/blobh2oghcltoo7dg2lqatmy
+      - /contlsaugxuznrmzez3blgnh/dir1/blobdgxbxieehnkrxnxjq6ji
       x-ms-version:
       - '2019-02-02'
     method: PUT
@@ -648,7 +649,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 26 Nov 2019 13:04:42 GMT
+      - Thu, 04 Jun 2020 05:34:30 GMT
       server:
       - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -662,20 +663,20 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:43 GMT
+      - Thu, 04 Jun 2020 05:34:30 GMT
       x-ms-version:
       - '2019-02-02'
     method: GET
-    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir1%2F&include=metadata%2Ccopy
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir1%2F&maxresults=5000&include=metadata%2Ccopy
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
         ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
-        ContainerName=\"cont000003\"><Prefix>dir1/</Prefix><Blobs><Blob><Name>dir1/blob000005</Name><Properties><Creation-Time>Tue,
-        26 Nov 2019 13:04:29 GMT</Creation-Time><Last-Modified>Tue, 26 Nov 2019 13:04:29
-        GMT</Last-Modified><Etag>0x8D772712C2C1D4D</Etag><Content-Length>131072</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
+        ContainerName=\"cont000003\"><Prefix>dir1/</Prefix><MaxResults>5000</MaxResults><Blobs><Blob><Name>dir1/blob000005</Name><Properties><Creation-Time>Thu,
+        04 Jun 2020 05:34:17 GMT</Creation-Time><Last-Modified>Thu, 04 Jun 2020 05:34:17
+        GMT</Last-Modified><Etag>0x8D80848ECFF7A1F</Etag><Content-Length>131072</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
         /><Content-Language /><Content-CRC64 /><Content-MD5>DfvoqkwgtS4bi/PLbL3xkw==</Content-MD5><Cache-Control
         /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
         /></Blob></Blobs><NextMarker /></EnumerationResults>"
@@ -683,7 +684,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Tue, 26 Nov 2019 13:04:44 GMT
+      - Thu, 04 Jun 2020 05:34:31 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -699,9 +700,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.8.0; Windows 10) AZURECLI/2.6.0
       x-ms-date:
-      - Tue, 26 Nov 2019 13:04:45 GMT
+      - Thu, 04 Jun 2020 05:34:32 GMT
       x-ms-version:
       - '2019-02-02'
     method: HEAD
@@ -717,11 +718,11 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Tue, 26 Nov 2019 13:04:45 GMT
+      - Thu, 04 Jun 2020 05:34:33 GMT
       etag:
-      - '"0x8D772712DDAC3FB"'
+      - '"0x8D80848EEB3DD7A"'
       last-modified:
-      - Tue, 26 Nov 2019 13:04:32 GMT
+      - Thu, 04 Jun 2020 05:34:20 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-access-tier:
@@ -731,7 +732,7 @@ interactions:
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Tue, 26 Nov 2019 13:04:32 GMT
+      - Thu, 04 Jun 2020 05:34:20 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:

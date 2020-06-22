@@ -20,8 +20,10 @@ helps['databricks workspace create'] = """
     examples:
       - name: Create a workspace
         text: |-
-               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location \\
-               westus  --sku standard
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard
+      - name: Create a workspace with managed identity for storage account
+        text: |-
+               az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --prepare-encryption
 """
 
 helps['databricks workspace update'] = """
@@ -34,6 +36,16 @@ helps['databricks workspace update'] = """
       - name: Clean the workspace's tags.
         text: |-
                az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --tags ""
+      - name: Prepare for CMK encryption by assigning identity for storage account.
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --prepare-encryption
+      - name: Configure CMK encryption
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Microsoft.KeyVault \
+--key-name MyKey --key-vault https://myKeyVault.vault.azure.net/ --key-version 00000000000000000000000000000000
+      - name: Revert encryption to Microsoft Managed Keys
+        text: |-
+               az databricks workspace update --resource-group MyResourceGroup --name MyWorkspace --key-source Default
 """
 
 helps['databricks workspace delete'] = """

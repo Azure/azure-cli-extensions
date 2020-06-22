@@ -17,6 +17,16 @@ helps['codespace location'] = """
     short-summary: Information on available regions.
 """
 
+helps['codespace plan'] = """
+    type: group
+    short-summary: Manage Codespace plans.
+"""
+
+helps['codespace secret'] = """
+    type: group
+    short-summary: Manage plan secrets.
+"""
+
 helps['codespace location list'] = """
     type: command
     short-summary: List available regions.
@@ -24,12 +34,7 @@ helps['codespace location list'] = """
 
 helps['codespace location show'] = """
     type: command
-    short-summary: Show details on a region.
-"""
-
-helps['codespace plan'] = """
-    type: group
-    short-summary: Manage Codespace plans.
+    short-summary: Show details of a region.
 """
 
 helps['codespace plan create'] = """
@@ -41,7 +46,13 @@ helps['codespace plan create'] = """
         - name: Create a plan in a specific region
           text: az codespace plan create -g my-rg -n my-plan -l westus2
         - name: Create a plan with tags
-          text: az codespace plan create -g my-rg -n my-plan -l westus2 --tags tagname=tagvalue
+          text: az codespace plan create -g my-rg -n my-plan --tags tagname=tagvalue
+        - name: Create a plan with a default instance type
+          text: az codespace plan create -g my-rg -n my-plan --default-instance-type premiumLinux
+        - name: Create a plan with a default suspend after
+          text: az codespace plan create -g my-rg -n my-plan --default-suspend-after 120
+        - name: Create a plan associated with a subnet
+          text: az codespace plan create -g my-rg -n my-plan --subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Network/virtualNetworks/my-vnet/subnets/default
 """
 
 helps['codespace plan list'] = """
@@ -79,7 +90,7 @@ helps['codespace create'] = """
           populator-commands:
               - az codespace location show
     examples:
-        - name: Create a Codespace with default settings
+        - name: Create a Codespace with default plan settings
           text: az codespace create -g my-rg --plan my-plan --name my-codespace
         - name: Create a Codespace with a different instance type with custom suspend time
           text: az codespace create -g my-rg --plan my-plan --name my-codespace --instance-type premiumLinux --suspend-after 5
@@ -95,7 +106,7 @@ helps['codespace list'] = """
     examples:
         - name: List Codespaces
           text: az codespace list -g my-rg --plan my-plan
-        - name: List Codespaces given plan id and Codespace name
+        - name: List Codespaces given plan id
           text: az codespace list --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan
 """
 
@@ -109,7 +120,16 @@ helps['codespace delete'] = """
           text: az codespace delete -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Delete a Codespace given plan id and Codespace name
           text: az codespace delete --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+"""
 
+helps['codespace update'] = """
+    type: command
+    short-summary: Update a Codespace.
+    examples:
+        - name: Update a Codespace with a different instance type
+          text: az codespace update -g my-rg --plan my-plan --name my-codespace --instance-type premiumLinux
+        - name: Update a Codespace with a different suspend after
+          text: az codespace update -g my-rg --plan my-plan --name my-codespace --suspend-after 30
 """
 
 helps['codespace show'] = """
@@ -160,5 +180,52 @@ helps['codespace open'] = """
           text: az codespace open -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Open a Codespace given plan id and Codespace name
           text: az codespace open --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+"""
 
+helps['codespace secret create'] = """
+    type: command
+    short-summary: Create a plan secret.
+    examples:
+        - name: Create a plan secret.
+          text: az codespace secret create -g my-rg --plan my-plan --name API_KEY --value "secretkey" --note "service api key"
+        - name: Create a plan secret with filters.
+          text: az codespace secret create -g my-rg --plan my-plan --name API_KEY --value "secretkey" --filters GitRepo=https://github.com/repo/name CodespaceName=mycodespace
+"""
+
+helps['codespace secret update'] = """
+    type: command
+    short-summary: Update a plan secret.
+    examples:
+        - name: Update a plan secret with new values.
+          text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --name API_KEY --value "newsecretkey" --note "service api key"
+        - name: Update a plan secret with new filters.
+          text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --filters GitRepo=https://github.com/repo/name CodespaceName=mycodespace
+        - name: Update a plan secret and clear existing filters.
+          text: az codespace secret update -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000 --filters ''
+"""
+
+helps['codespace secret delete'] = """
+    type: command
+    short-summary: Delete a plan secret.
+    examples:
+        - name: Delete a plan secret.
+          text: az codespace secret delete -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
+"""
+
+helps['codespace secret list'] = """
+    type: command
+    short-summary: List plan secrets.
+    examples:
+        - name: List plan secrets.
+          text: az codespace secret list -g my-rg --plan my-plan
+"""
+
+helps['codespace set-config'] = """
+    type: command
+    short-summary: Set configuration for codespace commands.
+"""
+
+helps['codespace show-config'] = """
+    type: command
+    short-summary: Show current configuration for codespace commands.
 """

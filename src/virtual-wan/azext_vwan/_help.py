@@ -91,18 +91,24 @@ helps['network vhub route-table create'] = """
     type: command
     short-summary: Create a route table in the virtual hub.
     examples:
-    - name: Create a route table in the virtual hub.
+    - name: Create a v2 route table in the virtual hub.
       text: |
           az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
+    - name: Create a v3 route table in the virtual hub.
+      text: |
+          az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --route-name MyRoute --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type ResourceId --next-hop /subscriptions/MySub/resourceGroups/MyResourceGroup/providers/Microsoft.Network/azureFirewalls/MyFirewall --labels label1 label2
 """
 
 helps['network vhub route-table update'] = """
     type: command
     short-summary: Update a route table in the virtual hub.
     examples:
-    - name: Create a route table in the virtual hub.
+    - name: Update the connections for a v2 route table in the virtual hub.
       text: |
           az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets All_Branches
+    - name: Update the labels for a v3 route table in the virtual hub.
+      text: |
+          az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --labels label1 label2
 """
 
 helps['network vhub route-table delete'] = """
@@ -124,6 +130,14 @@ helps['network vhub route-table list'] = """
     short-summary: List all route tables in the virtual hub.
 """
 
+helps['network vhub route-table wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vhub route-table is met.
+    examples:
+      - name: Pause executing next line of CLI script until the route table is successfully provisioned.
+        text: az network vhub route-table wait -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --created
+"""
+
 helps['network vhub route-table route'] = """
     type: group
     short-summary: Manage routes of route table in the virtual hub.
@@ -133,12 +147,15 @@ helps['network vhub route-table route add'] = """
     type: command
     short-summary: Add a route into route table of the virtual hub.
     examples:
-      - name: Add a route with CIDR destination into route table of the virtual hub.
+      - name: Add a route with CIDR destination into route table of the virtual hub (route table v2).
         text: |
             az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
-      - name: Add a route with Service destination into route table of the virtual hub.
+      - name: Add a route with Service destination into route table of the virtual hub (route table v2).
         text: |
             az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type Service --destinations Skype Sharepoint --next-hop-type IPAddress --next-hops "10.0.0.68"
+      - name: Add a route with firewall as next hop into route table of the virtual hub (route table v3).
+        text: |
+            az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type ResourceId --next-hop /subscriptions/MySub/resourceGroups/MyResourceGroup/providers/Microsoft.Network/azureFirewalls/MyFirewall
 """
 
 helps['network vhub route-table route list'] = """
@@ -295,5 +312,116 @@ helps['network vpn-site delete'] = """
 helps['network vpn-site download'] = """
     type: command
     short-summary: Provide a SAS-URL to download the configuration for a VPN site.
+"""
+# endregion
+
+# region VpnServerConfig
+helps['network vpn-server-config'] = """
+    type: group
+    short-summary: Manage VPN server configuration.
+"""
+
+helps['network vpn-server-config create'] = """
+    type: command
+    short-summary: Create a VPN server configuration.
+    examples:
+      - name: Create a VPN server configuration with VPN auth type
+        text: |
+            az network vpn-server-config create -n MyVPNServerConfig -g MyRG --vpn-client-root-certs "ApplicationGatewayAuthCert.cer" --vpn-client-revoked-certs "ApplicationGatewayAuthCert.pem"
+"""
+
+helps['network vpn-server-config list'] = """
+    type: command
+    short-summary: List all VPN server configuration.
+"""
+
+helps['network vpn-server-config show'] = """
+    type: command
+    short-summary: Show the details of a VPN server configuration.
+"""
+
+helps['network vpn-server-config set'] = """
+    type: command
+    short-summary: Set settings of a VPN server configuration.
+    examples:
+      - name: Set a VPN server configuration with Radius auth type
+        text: |
+            az network vpn-server-config set -n MyVPNServerConfig -g MyRG --radius-client-root-certs "ApplicationGatewayAuthCert.cer" --radius-server-root-certs "ApplicationGatewayAuthCert.pem" --radius-servers address=test1 secret=clitest score=10 --radius-servers address=test2 secret=clitest score=10
+"""
+
+helps['network vpn-server-config delete'] = """
+    type: command
+    short-summary: Delete a VPN server configuration.
+"""
+
+helps['network vpn-server-config wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the VPN server configuration is met.
+"""
+
+helps['network vpn-server-config ipsec-policy'] = """
+    type: group
+    short-summary: Manage VPN server configuration IPSec policies.
+"""
+
+helps['network vpn-server-config ipsec-policy add'] = """
+    type: command
+    short-summary: Add an IPSec policy to a VPN server configuration.
+"""
+
+helps['network vpn-server-config ipsec-policy list'] = """
+    type: command
+    short-summary: List VPN server configuration IPSec policies.
+"""
+
+helps['network vpn-server-config ipsec-policy remove'] = """
+    type: command
+    short-summary: Remove an IPSec policy from a VPN server configuration.
+"""
+
+helps['network vpn-server-config ipsec-policy wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the IPSec policy of a VPN server configuration is met.
+"""
+# endregion
+
+# region VpnServerConfig
+helps['network p2s-vpn-gateway'] = """
+    type: group
+    short-summary: Manage point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway create'] = """
+    type: command
+    short-summary: Create a point-to-site VPN gateway.
+    examples:
+      - name: Create a point-to-site VPN gateway.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24
+"""
+
+helps['network p2s-vpn-gateway list'] = """
+    type: command
+    short-summary: List all point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway show'] = """
+    type: command
+    short-summary: Show the details of a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway update'] = """
+    type: command
+    short-summary: Update settings of a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway delete'] = """
+    type: command
+    short-summary: Delete a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the point-to-site VPN gateway is met.
 """
 # endregion

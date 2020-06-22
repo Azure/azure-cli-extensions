@@ -28,6 +28,33 @@ az databricks update \
     --tags key=value
 ```
 
+##### Assign identity for managed storage account to prepare for CMK encryption
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --prepare-encryption
+```
+
+##### Configure CMK encryption
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --key-source Microsoft.Keyvault \
+    --key-name my-key \
+    --key-version 00000000000000000000000000000000 \
+    --key-vault https://myKeyVault.vault.azure.net/
+```
+
+##### Revert encryption to Microsoft Managed Keys
+```
+az databricks update \
+    --name my-workspace \
+    --resource-group my-rg \
+    --key-source Default
+```
+
 ##### Show workspace
 ```
 az databricks show \

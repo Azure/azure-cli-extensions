@@ -18,6 +18,9 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('https_proxy', options_list=['--https-proxy'], help='Https proxy url to be used.')
+        c.argument('http_proxy', options_list=['--http-proxy'], help='Http proxy url to be used.')
+        c.argument('no_proxy', options_list=['--no-proxy'], help='List of urls/CIDRs for which proxy should not to be used.')
 
     with self.argument_context('connectedk8s list') as c:
         pass
