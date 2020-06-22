@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.53
++++++
+* Add --ppg for "az aks create" and "az aks nodepool add"
+
 0.4.52
 +++++
 * Add --uptime-sla for az aks update
