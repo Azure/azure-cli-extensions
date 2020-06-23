@@ -9,20 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+VERSION = "2020-06-01"
 
-
-class VSOnlineAccountInfo(Model):
-    """VS Online Account properties. Holds properties that describe the account.
-
-    :param sku: SKU of the service.
-    :type sku: ~microsoft.vsonline.models.Sku
-    """
-
-    _attribute_map = {
-        'sku': {'key': 'sku', 'type': 'Sku'},
-    }
-
-    def __init__(self, **kwargs):
-        super(VSOnlineAccountInfo, self).__init__(**kwargs)
-        self.sku = kwargs.get('sku', None)

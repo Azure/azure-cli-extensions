@@ -11,8 +11,6 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
-from msrest.polling import LROPoller, NoPolling
-from msrestazure.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -24,7 +22,7 @@ class PlanOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to be used with the HTTP request. Constant value: "2019-07-01-preview".
+    :ivar api_version: The API version to be used with the HTTP request. Constant value: "2020-05-26-preview".
     """
 
     models = models
@@ -34,7 +32,7 @@ class PlanOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-07-01-preview"
+        self.api_version = config.api_version or "2020-05-26-preview"
 
         self.config = config
 
@@ -101,9 +99,26 @@ class PlanOperations(object):
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VSOnline/plans/{planName}'}
 
-
-    def _delete_initial(
+    def delete(
             self, resource_group_name, plan_name, custom_headers=None, raw=False, **operation_config):
+        """Deletes a VS Online Plan resource.
+
+        Deletes an existing VS Online Plan.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :param plan_name: Name of the VS Online Plan
+        :type plan_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: None or ClientRawResponse if raw=true
+        :rtype: None or ~msrest.pipeline.ClientRawResponse
+        :raises:
+         :class:`VSOPlanErrorResponseException<microsoft.vsonline.models.VSOPlanErrorResponseException>`
+        """
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
@@ -136,49 +151,6 @@ class PlanOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-
-    def delete(
-            self, resource_group_name, plan_name, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Deletes a VS Online Plan resource.
-
-        Deletes an existing VS Online Plan.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param plan_name: Name of the VS Online Plan
-        :type plan_name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: The poller return type is ClientRawResponse, the
-         direct response alongside the deserialized response
-        :param polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :return: An instance of LROPoller that returns None or
-         ClientRawResponse<None> if raw==True
-        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
-        :raises:
-         :class:`VSOPlanErrorResponseException<microsoft.vsonline.models.VSOPlanErrorResponseException>`
-        """
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            plan_name=plan_name,
-            custom_headers=custom_headers,
-            raw=True,
-            **operation_config
-        )
-
-        def get_long_running_output(response):
-            if raw:
-                client_raw_response = ClientRawResponse(None, response)
-                return client_raw_response
-
-        lro_delay = operation_config.get(
-            'long_running_operation_timeout',
-            self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VSOnline/plans/{planName}'}
 
     def create(
@@ -251,7 +223,7 @@ class PlanOperations(object):
     create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VSOnline/plans/{planName}'}
 
     def update(
-            self, resource_group_name, plan_name, tags=None, sku=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, plan_name, vsonline_plan_update_parameters, custom_headers=None, raw=False, **operation_config):
         """Updates a VS Online Plan.
 
         Updates the properties of an existing VS Online Plan with the specified
@@ -261,10 +233,10 @@ class PlanOperations(object):
         :type resource_group_name: str
         :param plan_name: Name of the VS Online Plan
         :type plan_name: str
-        :param tags: Tags for the VS Online Plan.
-        :type tags: dict[str, str]
-        :param sku: SKU of the service.
-        :type sku: ~microsoft.vsonline.models.Sku
+        :param vsonline_plan_update_parameters: Parameters for updating the VS
+         Online Plan.
+        :type vsonline_plan_update_parameters:
+         ~microsoft.vsonline.models.VSOPlanUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -276,8 +248,6 @@ class PlanOperations(object):
         :raises:
          :class:`VSOPlanErrorResponseException<microsoft.vsonline.models.VSOPlanErrorResponseException>`
         """
-        vsonline_plan_update_parameters = models.VSOPlanUpdateParameters(tags=tags, sku=sku)
-
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -670,7 +640,7 @@ class PlanOperations(object):
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VSOnline/plans/'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VSOnline/plans'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -736,4 +706,4 @@ class PlanOperations(object):
             return client_raw_response
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.VSOnline/plans/'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.VSOnline/plans'}
