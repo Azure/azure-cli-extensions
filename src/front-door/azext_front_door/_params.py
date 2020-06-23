@@ -99,7 +99,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door frontend-endpoint') as c:
         c.argument('host_name', help='Domain name of the frontend endpoint.')
-        c.argument('session_affinity_enabled', arg_type=get_three_state_flag(), help='Whether to allow session affinity on this host.')
+        c.argument('session_affinity_enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to allow session affinity on this host.')
         c.argument('session_affinity_ttl', help='The TTL to use in seconds for session affinity.', type=int)
         c.argument('waf_policy', help='Name or ID of a web application firewall policy.', validator=validate_waf_policy)
 
