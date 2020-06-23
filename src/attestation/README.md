@@ -26,6 +26,8 @@ az attestation delete -h
 
 ### Included features ###
 #### Create an attestation ####
+The parameter `certs_input_path` is a path to your certificates pem file, it conforms to x5c in [RFC7517](https://tools.ietf.org/html/rfc7517#section-4.7).
+
 Example:
 ```
 az attestation create \
@@ -34,7 +36,7 @@ az attestation create \
 --resource-group "MyResourceGroup"
 ```
 Notice:
-Not all the values from `az account list-locations` are supported to create an attetation right now. List of available regions is: eastus2, centralus and uksouth.
+May not all the values from `az account list-locations` are supported to create an attetation right now, more regions will be added in the future.
 
 #### List all attestations ####
 Example:
