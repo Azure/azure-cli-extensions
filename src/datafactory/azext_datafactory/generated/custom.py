@@ -405,10 +405,14 @@ def datafactory_linked_service_update(instance,
                                       description=None,
                                       parameters=None,
                                       annotations=None):
-    instance.connect_via = connect_via
-    instance.description = description
-    instance.parameters = parameters
-    instance.annotations = annotations
+    if connect_via is not None:
+        instance.connect_via = connect_via
+    if description is not None:
+        instance.description = description
+    if parameters is not None:
+        instance.parameters = parameters
+    if annotations is not None:
+        instance.annotations = annotations
     return instance
 
 
@@ -464,13 +468,20 @@ def datafactory_dataset_update(instance,
                                parameters=None,
                                annotations=None,
                                folder=None):
-    instance.description = description
-    instance.structure = structure
-    instance.schema = schema
-    instance.linked_service_name = linked_service_name
-    instance.parameters = parameters
-    instance.annotations = annotations
-    instance.folder = folder
+    if description is not None:
+        instance.description = description
+    if structure is not None:
+        instance.structure = structure
+    if schema is not None:
+        instance.schema = schema
+    if linked_service_name is not None:
+        instance.linked_service_name = linked_service_name
+    if parameters is not None:
+        instance.parameters = parameters
+    if annotations is not None:
+        instance.annotations = annotations
+    if folder is not None:
+        instance.folder = folder
     return instance
 
 
@@ -527,14 +538,22 @@ def datafactory_pipeline_update(instance,
                                 annotations=None,
                                 run_dimensions=None,
                                 folder_name=None):
-    instance.description = description
-    instance.activities = activities
-    instance.parameters = parameters
-    instance.variables = variables
-    instance.concurrency = concurrency
-    instance.annotations = annotations
-    instance.run_dimensions = run_dimensions
-    instance.name_properties_folder_name = folder_name
+    if description is not None:
+        instance.description = description
+    if activities is not None:
+        instance.activities = activities
+    if parameters is not None:
+        instance.parameters = parameters
+    if variables is not None:
+        instance.variables = variables
+    if concurrency is not None:
+        instance.concurrency = concurrency
+    if annotations is not None:
+        instance.annotations = annotations
+    if run_dimensions is not None:
+        instance.run_dimensions = run_dimensions
+    if name_properties_folder_name is not None:
+        instance.name_properties_folder_name = folder_name
     return instance
 
 
@@ -660,8 +679,10 @@ def datafactory_trigger_update(instance,
                                if_match=None,
                                description=None,
                                annotations=None):
-    instance.description = description
-    instance.annotations = annotations
+    if description is not None:
+        instance.description = description
+    if annotations is not None:
+        instance.annotations = annotations
     return instance
 
 
