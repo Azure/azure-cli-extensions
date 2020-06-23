@@ -31,11 +31,15 @@ def step_attestationproviders_create(test, rg):
     test.cmd('az attestation create '
              '--name "{myattestation}" '
              '--resource-group "{rg}" '
-             '--location "eastus2"',
+             '--location "eastus2" '
+             '--tags aKey=aValue anotherKey=anotherValue '
+             '--certs-input-path "src/attestation/azext_attestation/tests/latest/policySigningCerts.pem"',
              checks=[
                  JMESPathCheck('name', test.kwargs.get('myattestation', '')),
                  JMESPathCheck('resourceGroup', rg),
-                 JMESPathCheck('location', 'eastus2')])
+                 JMESPathCheck('location', 'eastus2'),
+                 JMESPathCheck(
+                     'tags', '{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}')])
 
 
 # EXAMPLE: AttestationProviders_Get
