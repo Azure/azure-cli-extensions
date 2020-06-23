@@ -10,13 +10,14 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    file_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_attestation.action import AddPolicySigningCertificatesKeys
 
 
 def load_arguments(self, _):
@@ -33,14 +34,11 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
-                   validator=get_default_location_from_resource_group,
-                   help='List of available regions for the resource type is \'eastus2,centralus,uksouth\'')
+                   validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('attestation_policy', help='Name of attestation policy.')
-        c.argument('policy_signing_certificates_keys', action=AddPolicySigningCertificatesKeys, nargs='+', help='The va'
-                   'lue of the "keys" parameter is an array of JWK values.  By default, the order of the JWK values wit'
-                   'hin the array does not imply an order of preference among them, although applications of JWK Sets c'
-                   'an choose to assign a meaning to the order for their purposes, if desired.')
+        c.argument('certs_input_path', type=file_type, help='The path to the policy signing certificates PEM file.',
+                   completer=FilesCompleter())
 
     with self.argument_context('attestation delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

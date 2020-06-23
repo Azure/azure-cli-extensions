@@ -9,6 +9,8 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+from knack.util import CLIError
+
 
 def attestation_attestation_provider_list(cmd, client,
                                           resource_group_name=None):
@@ -30,13 +32,14 @@ def attestation_attestation_provider_create(cmd, client,
                                             location=None,
                                             tags=None,
                                             attestation_policy=None,
-                                            policy_signing_certificates_keys=None):
+                                            certs_input_path=None):
+    certs = parse_pem(certs_input_path)
     return client.create(resource_group_name=resource_group_name,
                          provider_name=provider_name,
                          location=location,
                          tags=tags,
                          attestation_policy=attestation_policy,
-                         keys=policy_signing_certificates_keys)
+                         keys=certs)
 
 
 def attestation_attestation_provider_delete(cmd, client,
@@ -44,3 +47,44 @@ def attestation_attestation_provider_delete(cmd, client,
                                             provider_name):
     return client.delete(resource_group_name=resource_group_name,
                          provider_name=provider_name)
+
+
+def parse_pem(input_file):
+    try:
+        with open(input_file, 'r') as pem_file:
+            pem_data = pem_file.readlines()
+            header = '-----BEGIN CERTIFICATE-----\n'
+            footer = '-----END CERTIFICATE-----\n'
+            certs = []
+            start = 0
+            end = 0
+            while True:
+                try:
+                    start = pem_data.index(header, start)
+                except ValueError:
+                    start = -1
+                if start < 0:
+                    break
+                try:
+                    end = pem_data.index(footer, end)
+                except ValueError:
+                    try:
+                        end = pem_data.index(footer[:-1], end)
+                    except ValueError:
+                        end = -1
+                if end < 0:
+                    raise CLIError('Footer is missing in the input pem file')
+                if end - start == 1:
+                    raise CLIError('Certificate not found in the input pem file')
+                cert = ''
+                for i in range(start + 1, end):
+                    if pem_data[i].endswith('\n'):
+                        pem_data[i] = pem_data[i][:-1]
+                    cert += pem_data[i]
+                print(cert)
+                certs.append(cert)
+                start = end + 1
+                end = start
+            return certs
+    except FileNotFoundError as ex:
+        raise CLIError('File not Found: {}'.format(str(ex)))

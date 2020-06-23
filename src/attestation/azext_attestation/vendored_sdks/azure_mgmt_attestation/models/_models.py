@@ -258,7 +258,7 @@ class JsonWebKey(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param alg: Required. The "alg" (algorithm) parameter identifies the algorithm intended for
+    :param alg: The "alg" (algorithm) parameter identifies the algorithm intended for
      use with the key.  The values used should either be registered in the
      IANA "JSON Web Signature and Encryption Algorithms" registry
      established by [JWA] or be a value that contains a Collision-
@@ -276,7 +276,7 @@ class JsonWebKey(msrest.serialization.Model):
     :type e: str
     :param k: Symmetric key.
     :type k: str
-    :param kid: Required. The "kid" (key ID) parameter is used to match a specific key.  This
+    :param kid: The "kid" (key ID) parameter is used to match a specific key.  This
      is used, for instance, to choose among a set of keys within a JWK Set
      during key rollover.  The structure of the "kid" value is
      unspecified.  When "kid" values are used within a JWK Set, different
@@ -300,7 +300,7 @@ class JsonWebKey(msrest.serialization.Model):
     :type q: str
     :param qi: RSA Private Key Parameter.
     :type qi: str
-    :param use: Required. Use ("public key use") identifies the intended use of
+    :param use: Use ("public key use") identifies the intended use of
      the public key. The "use" parameter is employed to indicate whether
      a public key is used for encrypting data or verifying the signature
      on data. Values are commonly "sig" (signature) or "enc" (encryption).
@@ -320,10 +320,7 @@ class JsonWebKey(msrest.serialization.Model):
     """
 
     _validation = {
-        'alg': {'required': True},
-        'kid': {'required': True},
         'kty': {'required': True},
-        'use': {'required': True},
     }
 
     _attribute_map = {
@@ -351,20 +348,20 @@ class JsonWebKey(msrest.serialization.Model):
         **kwargs
     ):
         super(JsonWebKey, self).__init__(**kwargs)
-        self.alg = kwargs['alg']
+        self.alg = kwargs.get('alg', None)
         self.crv = kwargs.get('crv', None)
         self.d = kwargs.get('d', None)
         self.dp = kwargs.get('dp', None)
         self.dq = kwargs.get('dq', None)
         self.e = kwargs.get('e', None)
         self.k = kwargs.get('k', None)
-        self.kid = kwargs['kid']
+        self.kid = kwargs.get('kid', None)
         self.kty = kwargs['kty']
         self.n = kwargs.get('n', None)
         self.p = kwargs.get('p', None)
         self.q = kwargs.get('q', None)
         self.qi = kwargs.get('qi', None)
-        self.use = kwargs['use']
+        self.use = kwargs.get('use', None)
         self.x = kwargs.get('x', None)
         self.x5_c = kwargs.get('x5_c', None)
         self.y = kwargs.get('y', None)

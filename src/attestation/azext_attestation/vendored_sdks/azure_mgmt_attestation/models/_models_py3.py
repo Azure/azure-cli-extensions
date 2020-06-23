@@ -283,7 +283,7 @@ class JsonWebKey(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param alg: Required. The "alg" (algorithm) parameter identifies the algorithm intended for
+    :param alg: The "alg" (algorithm) parameter identifies the algorithm intended for
      use with the key.  The values used should either be registered in the
      IANA "JSON Web Signature and Encryption Algorithms" registry
      established by [JWA] or be a value that contains a Collision-
@@ -301,7 +301,7 @@ class JsonWebKey(msrest.serialization.Model):
     :type e: str
     :param k: Symmetric key.
     :type k: str
-    :param kid: Required. The "kid" (key ID) parameter is used to match a specific key.  This
+    :param kid: The "kid" (key ID) parameter is used to match a specific key.  This
      is used, for instance, to choose among a set of keys within a JWK Set
      during key rollover.  The structure of the "kid" value is
      unspecified.  When "kid" values are used within a JWK Set, different
@@ -325,7 +325,7 @@ class JsonWebKey(msrest.serialization.Model):
     :type q: str
     :param qi: RSA Private Key Parameter.
     :type qi: str
-    :param use: Required. Use ("public key use") identifies the intended use of
+    :param use: Use ("public key use") identifies the intended use of
      the public key. The "use" parameter is employed to indicate whether
      a public key is used for encrypting data or verifying the signature
      on data. Values are commonly "sig" (signature) or "enc" (encryption).
@@ -345,10 +345,7 @@ class JsonWebKey(msrest.serialization.Model):
     """
 
     _validation = {
-        'alg': {'required': True},
-        'kid': {'required': True},
         'kty': {'required': True},
-        'use': {'required': True},
     }
 
     _attribute_map = {
@@ -374,20 +371,20 @@ class JsonWebKey(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        alg: str,
-        kid: str,
         kty: str,
-        use: str,
+        alg: Optional[str] = None,
         crv: Optional[str] = None,
         d: Optional[str] = None,
         dp: Optional[str] = None,
         dq: Optional[str] = None,
         e: Optional[str] = None,
         k: Optional[str] = None,
+        kid: Optional[str] = None,
         n: Optional[str] = None,
         p: Optional[str] = None,
         q: Optional[str] = None,
         qi: Optional[str] = None,
+        use: Optional[str] = None,
         x: Optional[str] = None,
         x5_c: Optional[List[str]] = None,
         y: Optional[str] = None,

@@ -140,7 +140,13 @@ class AttestationProviderOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _creation_params = models.AttestationServiceCreationParams(location=location, tags=tags, attestation_policy=attestation_policy, keys=keys)
+        # Construct JSONWebKey list
+        jwks = []
+        for key in keys:
+            jwk = models.JsonWebKey(kty = 'RSA', x5_c = [key])
+            jwks.append(jwk)
+        
+        _creation_params = models.AttestationServiceCreationParams(location=location, tags=tags, attestation_policy=attestation_policy, keys=jwks)
         api_version = "2018-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
