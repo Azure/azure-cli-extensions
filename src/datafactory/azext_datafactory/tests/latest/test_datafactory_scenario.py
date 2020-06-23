@@ -68,14 +68,8 @@ def step_linkedservices_create(test, rg):
 # EXAMPLE: LinkedServices_Update
 @try_manual
 def step_linkedservices_update(test, rg):
-    test.cmd('az datafactory linked-service create '
-             '--factory-name "{myFactoryName}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example '
-             'description\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":\\"SecureString\\",\\"value\\":'
-             '\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}}}}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=[])
+    # EXAMPLE NOT FOUND!
+    pass
 
 
 # EXAMPLE: Datasets_Create
@@ -98,17 +92,8 @@ def step_datasets_create(test, rg):
 # EXAMPLE: Datasets_Update
 @try_manual
 def step_datasets_update(test, rg):
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example description\\",\\"linkedServiceNa'
-             'me\\":{{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}},\\"parameters'
-             '\\":{{\\"MyFileName\\":{{\\"type\\":\\"String\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"ty'
-             'peProperties\\":{{\\"format\\":{{\\"type\\":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression'
-             '\\",\\"value\\":\\"@dataset().MyFileName\\"}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":'
-             '\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}"',
-             checks=[])
+    # EXAMPLE NOT FOUND!
+    pass
 
 
 # EXAMPLE: Pipelines_Create
@@ -138,18 +123,9 @@ def step_pipelines_create(test, rg):
 # EXAMPLE: Pipelines_Update
 @try_manual
 def step_pipelines_update(test, rg):
-    test.cmd('az datafactory pipeline create '
+    test.cmd('az datafactory pipeline update '
              '--factory-name "{myFactoryName}" '
-             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
-             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
-             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
-             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"myDataset\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileNam'
-             'e\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}'
-             '},\\"referenceName\\":\\"myDataset\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":'
-             '{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,'
-             '\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}'
-             '}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
+             '--description "Example description" '
              '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -175,17 +151,8 @@ def step_triggers_create(test, rg):
 # EXAMPLE: Triggers_Update
 @try_manual
 def step_triggers_update(test, rg):
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactoryName}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example '
-             'description\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}'
-             ',\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"{myPipeline}\\"}}}}],'
-             '\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"{myEndTime}\\",\\"frequency\\"'
-             ':\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":\\"UTC\\"'
-             '}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=[])
+    # EXAMPLE NOT FOUND!
+    pass
 
 
 # EXAMPLE: IntegrationRuntimes_Create

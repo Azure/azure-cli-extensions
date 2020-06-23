@@ -43,13 +43,6 @@ az datafactory dataset create \
     --name datasetName \
     --factory-name factoryName \
     --resource-group groupName
-
-az datafactory dataset update \
-    --linked-service-name @{linkedServiceReferenceJsonPath} \
-    --parameters @{parameterJsonPath} \
-    --name datasetName \
-    --factory-name factoryName \
-    --resource-group groupName
 ```
 
 #### Pipeline

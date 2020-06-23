@@ -442,26 +442,6 @@ helps['datafactory linked-service create'] = """
 "{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\"\
 :\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name \
 "myLinkedService" --resource-group "myResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service create --factory-name "myFactoryName" --properties \
-"{\\"type\\":\\"AzureStorage\\",\\"description\\":\\"Example description\\",\\"typeProperties\\":{\\"connectionString\\\
-":{\\"type\\":\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun\
-tKey=<storage key>\\"}}}" --name "myLinkedService" --resource-group "myResourceGroup"
-"""
-
-helps['datafactory linked-service update'] = """
-    type: command
-    short-summary: Creates or updates a linked service.
-    examples:
-      - name: LinkedServices_Create
-        text: |-
-               az datafactory linked-service update --factory-name "myFactoryName" --name "myLinkedService" \
---resource-group "myResourceGroup"
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service update --factory-name "myFactoryName" --description "Example description" \
---name "myLinkedService" --resource-group "myResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -510,38 +490,6 @@ helps['datafactory dataset create'] = """
 ormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"typ\
 e\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "myDataset" --factory-name "myFactoryName" \
 --resource-group "myResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"description\\":\\"Example \
-description\\",\\"linkedServiceName\\":{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\
-\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"type\
-Properties\\":{\\"format\\":{\\"type\\":\\"TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@d\
-ataset().MyFileName\\"},\\"folderPath\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" \
---name "myDataset" --factory-name "myFactoryName" --resource-group "myResourceGroup"
-"""
-
-helps['datafactory dataset update'] = """
-    type: command
-    short-summary: Creates or updates a dataset.
-    parameters:
-      - name: --folder
-        short-summary: The folder that this Dataset is in. If not specified, Dataset will appear at the root level.
-        long-summary: |
-            Usage: --folder name=XX
-
-            name: The name of the folder that this Dataset is in.
-    examples:
-      - name: Datasets_Create
-        text: |-
-               az datafactory dataset update --linked-service-name "{\\"type\\":\\"LinkedServiceReference\\",\\"referen\
-ceName\\":\\"myLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\
-\\":\\"String\\"}}" --name "myDataset" --factory-name "myFactoryName" --resource-group "myResourceGroup"
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset update --description "Example description" --linked-service-name \
-"{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "myDataset" \
---factory-name "myFactoryName" --resource-group "myResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -595,38 +543,12 @@ uential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipelin
 ],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}},\\"variabl\
 es\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\\"Expression\\",\
 \\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "myPipeline" --resource-group "myResourceGroup"
-      - name: Pipelines_Update
-        text: |-
-               az datafactory pipeline create --factory-name "myFactoryName" --pipeline "{\\"description\\":\\"Example \
-description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\"\
-:{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetRef\
-erence\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"r\
-eferenceName\\":\\"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\
-{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\
-\\"myDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\
-\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@p\
-ipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}}" \
---name "myPipeline" --resource-group "myResourceGroup"
 """
 
 helps['datafactory pipeline update'] = """
     type: command
     short-summary: Creates or updates a pipeline.
     examples:
-      - name: Pipelines_Create
-        text: |-
-               az datafactory pipeline update --factory-name "myFactoryName" --activities \
-"[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\"\
-:\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"\
-MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"myDataset\\"\
-}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\\
-"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\"typeProper\
-ties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"\
-}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobN\
-ameList\\"}}}]" --parameters "{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}\
-" --run-dimensions "{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}" \
---variables "{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}}" --name "myPipeline" --resource-group \
-"myResourceGroup"
       - name: Pipelines_Update
         text: |-
                az datafactory pipeline update --factory-name "myFactoryName" --description "Example description" \
@@ -796,28 +718,6 @@ helps['datafactory trigger create'] = """
 eoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}],\\\
 "typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"\
 interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "myTrigger"
-      - name: Triggers_Update
-        text: |-
-               az datafactory trigger create --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---properties "{\\"type\\":\\"ScheduleTrigger\\",\\"description\\":\\"Example description\\",\\"pipelines\\":[{\\"parame\
-ters\\":{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\\
-",\\"referenceName\\":\\"myPipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:14.\
-905167Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:14.905167Z\\",\\"timeZone\
-\\":\\"UTC\\"}}}" --name "myTrigger"
-"""
-
-helps['datafactory trigger update'] = """
-    type: command
-    short-summary: Creates or updates a trigger.
-    examples:
-      - name: Triggers_Create
-        text: |-
-               az datafactory trigger update --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger"
-      - name: Triggers_Update
-        text: |-
-               az datafactory trigger update --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---description "Example description" --name "myTrigger"
 """
 
 helps['datafactory trigger delete'] = """

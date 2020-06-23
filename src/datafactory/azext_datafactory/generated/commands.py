@@ -80,8 +80,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')
-        g.generic_update_command('update', setter_arg_name='properties', custom_func_name=''
-                                 'datafactory_linked_service_update')
         g.custom_command('delete', 'datafactory_linked_service_delete')
 
     from azext_datafactory.generated._client_factory import cf_dataset
@@ -94,8 +92,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_dataset_list')
         g.custom_show_command('show', 'datafactory_dataset_show')
         g.custom_command('create', 'datafactory_dataset_create')
-        g.generic_update_command('update', setter_arg_name='properties',
-                                 custom_func_name='datafactory_dataset_update')
         g.custom_command('delete', 'datafactory_dataset_delete')
 
     from azext_datafactory.generated._client_factory import cf_pipeline
@@ -142,8 +138,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_trigger_list')
         g.custom_show_command('show', 'datafactory_trigger_show')
         g.custom_command('create', 'datafactory_trigger_create')
-        g.generic_update_command('update', setter_arg_name='properties',
-                                 custom_func_name='datafactory_trigger_update')
         g.custom_command('delete', 'datafactory_trigger_delete')
         g.custom_command('get-event-subscription-status', 'datafactory_trigger_get_event_subscription_status')
         g.custom_command('query-by-factory', 'datafactory_trigger_query_by_factory')

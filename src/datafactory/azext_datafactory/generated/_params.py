@@ -24,7 +24,6 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
-    AddFolder,
     AddFilters,
     AddOrderBy
 )
@@ -273,22 +272,6 @@ def load_arguments(self, _):
         c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: '
                    'json-string/@json-file.')
 
-    with self.argument_context('datafactory linked-service update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('linked_service_name', options_list=['--name', '-n'], help='The linked service name.', id_part=''
-                   'child_name_1')
-        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
-                   'it should match existing entity or can be * for unconditional update.')
-        c.argument('connect_via', type=validate_file_or_dict, help='The integration runtime reference. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('description', help='Linked service description.')
-        c.argument('parameters', type=validate_file_or_dict, help='Parameters for linked service. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'linked service. Expected value: json-string/@json-file.')
-        c.ignore('properties')
-
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
@@ -314,29 +297,6 @@ def load_arguments(self, _):
                    'should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: '
                    'json-string/@json-file.')
-
-    with self.argument_context('datafactory dataset update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('dataset_name', options_list=['--name', '-n'], help='The dataset name.', id_part='child_name_1')
-        c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it '
-                   'should match existing entity or can be * for unconditional update.')
-        c.argument('description', help='Dataset description.')
-        c.argument('structure', type=validate_file_or_dict, help='Columns that define the structure of the dataset. '
-                   'Type: array (or Expression with resultType array), itemType: DatasetDataElement. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('schema', type=validate_file_or_dict, help='Columns that define the physical type schema of the '
-                   'dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement. '
-                   'Expected value: json-string/@json-file.')
-        c.argument('linked_service_name', type=validate_file_or_dict, help='Linked service reference. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('parameters', type=validate_file_or_dict, help='Parameters for dataset. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'Dataset. Expected value: json-string/@json-file.')
-        c.argument('folder', action=AddFolder, nargs='*', help='The folder that this Dataset is in. If not specified, '
-                   'Dataset will appear at the root level.')
-        c.ignore('properties')
 
     with self.argument_context('datafactory dataset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -462,17 +422,6 @@ def load_arguments(self, _):
                    'should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: '
                    'json-string/@json-file.')
-
-    with self.argument_context('datafactory trigger update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('factory_name', help='The factory name.', id_part='name')
-        c.argument('trigger_name', options_list=['--name', '-n'], help='The trigger name.', id_part='child_name_1')
-        c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it '
-                   'should match existing entity or can be * for unconditional update.')
-        c.argument('description', help='Trigger description.')
-        c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'trigger. Expected value: json-string/@json-file.')
-        c.ignore('properties')
 
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

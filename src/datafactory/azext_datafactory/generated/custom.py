@@ -396,26 +396,6 @@ def datafactory_linked_service_create(client,
                                    properties=properties)
 
 
-def datafactory_linked_service_update(instance,
-                                      resource_group_name,
-                                      factory_name,
-                                      linked_service_name,
-                                      if_match=None,
-                                      connect_via=None,
-                                      description=None,
-                                      parameters=None,
-                                      annotations=None):
-    if connect_via is not None:
-        instance.connect_via = connect_via
-    if description is not None:
-        instance.description = description
-    if parameters is not None:
-        instance.parameters = parameters
-    if annotations is not None:
-        instance.annotations = annotations
-    return instance
-
-
 def datafactory_linked_service_delete(client,
                                       resource_group_name,
                                       factory_name,
@@ -454,35 +434,6 @@ def datafactory_dataset_create(client,
                                    dataset_name=dataset_name,
                                    if_match=if_match,
                                    properties=properties)
-
-
-def datafactory_dataset_update(instance,
-                               resource_group_name,
-                               factory_name,
-                               dataset_name,
-                               linked_service_name,
-                               if_match=None,
-                               description=None,
-                               structure=None,
-                               schema=None,
-                               parameters=None,
-                               annotations=None,
-                               folder=None):
-    if description is not None:
-        instance.description = description
-    if structure is not None:
-        instance.structure = structure
-    if schema is not None:
-        instance.schema = schema
-    if linked_service_name is not None:
-        instance.linked_service_name = linked_service_name
-    if parameters is not None:
-        instance.parameters = parameters
-    if annotations is not None:
-        instance.annotations = annotations
-    if folder is not None:
-        instance.folder = folder
-    return instance
 
 
 def datafactory_dataset_delete(client,
@@ -552,7 +503,7 @@ def datafactory_pipeline_update(instance,
         instance.annotations = annotations
     if run_dimensions is not None:
         instance.run_dimensions = run_dimensions
-    if name_properties_folder_name is not None:
+    if folder_name is not None:
         instance.name_properties_folder_name = folder_name
     return instance
 
@@ -670,20 +621,6 @@ def datafactory_trigger_create(client,
                                    trigger_name=trigger_name,
                                    if_match=if_match,
                                    properties=properties)
-
-
-def datafactory_trigger_update(instance,
-                               resource_group_name,
-                               factory_name,
-                               trigger_name,
-                               if_match=None,
-                               description=None,
-                               annotations=None):
-    if description is not None:
-        instance.description = description
-    if annotations is not None:
-        instance.annotations = annotations
-    return instance
 
 
 def datafactory_trigger_delete(client,

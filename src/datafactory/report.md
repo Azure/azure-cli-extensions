@@ -112,35 +112,6 @@ show a datafactory dataset.
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
 |**--if-none-match**|string|ETag of the dataset entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
 
-### datafactory dataset update
-
-update a datafactory dataset.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|datafactory dataset|Datasets|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|CreateOrUpdate#Update|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--factory-name**|string|The factory name.|factory_name|factoryName|
-|**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
-|**--linked-service-name**|object|Linked service reference.|properties_linked_service_name|linkedServiceName|
-|**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
-|**--description**|string|Dataset description.|properties_description|description|
-|**--structure**|any|Columns that define the structure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataElement.|properties_structure|structure|
-|**--schema**|any|Columns that define the physical type schema of the dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement.|properties_schema|schema|
-|**--parameters**|dictionary|Parameters for dataset.|properties_parameters|parameters|
-|**--annotations**|array|List of tags that can be used for describing the Dataset.|properties_annotations|annotations|
-|**--folder**|object|The folder that this Dataset is in. If not specified, Dataset will appear at the root level.|properties_folder|folder|
-
 ### datafactory factory configure-factory-repo
 
 configure-factory-repo a datafactory factory.
@@ -866,32 +837,6 @@ show a datafactory linked-service.
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
 |**--if-none-match**|string|ETag of the linked service entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
 
-### datafactory linked-service update
-
-update a datafactory linked-service.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|datafactory linked-service|LinkedServices|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|CreateOrUpdate#Update|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--factory-name**|string|The factory name.|factory_name|factoryName|
-|**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
-|**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
-|**--connect-via**|object|The integration runtime reference.|properties_connect_via|connectVia|
-|**--description**|string|Linked service description.|properties_description|description|
-|**--parameters**|dictionary|Parameters for linked service.|properties_parameters|parameters|
-|**--annotations**|array|List of tags that can be used for describing the linked service.|properties_annotations|annotations|
-
 ### datafactory pipeline create
 
 create a datafactory pipeline.
@@ -1314,30 +1259,6 @@ unsubscribe-from-event a datafactory trigger.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
-
-### datafactory trigger update
-
-update a datafactory trigger.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|datafactory trigger|Triggers|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|CreateOrUpdate#Update|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--factory-name**|string|The factory name.|factory_name|factoryName|
-|**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
-|**--if-match**|string|ETag of the trigger entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
-|**--description**|string|Trigger description.|properties_description|description|
-|**--annotations**|array|List of tags that can be used for describing the trigger.|properties_annotations|annotations|
 
 ### datafactory trigger-run query-by-factory
 
