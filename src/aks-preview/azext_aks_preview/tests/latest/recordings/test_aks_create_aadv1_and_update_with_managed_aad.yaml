@@ -14,15 +14,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-resource/9.0.0 Azure-SDK-For-Python AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-resource/10.0.0 Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","tags":{"product":"azurecli","cause":"automation","date":"2020-06-20T11:38:55Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","tags":{"product":"azurecli","cause":"automation","date":"2020-06-23T10:58:05Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Jun 2020 11:38:57 GMT
+      - Tue, 23 Jun 2020 10:58:08 GMT
       expires:
       - '-1'
       pragma:
@@ -47,7 +47,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
-      "cliakstest-clitestk2in5hptv-8ecadf", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "cliakstest-clitestcojnsmdi7-8ecadf", "agentPoolProfiles": [{"count": 1, "vmSize":
       "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
       "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
       "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
@@ -77,21 +77,21 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-06-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
         ,\n  \"location\": \"canadacentral\",\n  \"name\": \"cliakstest000002\",\n\
         \  \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\"\
         : {\n   \"provisioningState\": \"Creating\",\n   \"kubernetesVersion\": \"\
-        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestk2in5hptv-8ecadf\",\n  \
-        \ \"fqdn\": \"cliakstest-clitestk2in5hptv-8ecadf-1ae94b14.hcp.canadacentral.azmk8s.io\"\
+        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestcojnsmdi7-8ecadf\",\n  \
+        \ \"fqdn\": \"cliakstest-clitestcojnsmdi7-8ecadf-c6fd27c8.hcp.canadacentral.azmk8s.io\"\
         ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
         \  \"count\": 1,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
         : 128,\n     \"maxPods\": 110,\n     \"type\": \"VirtualMachineScaleSets\"\
@@ -118,7 +118,7 @@ interactions:
         \ }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -126,7 +126,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:39:04 GMT
+      - Tue, 23 Jun 2020 10:58:16 GMT
       expires:
       - '-1'
       pragma:
@@ -157,15 +157,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -174,7 +174,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:39:34 GMT
+      - Tue, 23 Jun 2020 10:58:46 GMT
       expires:
       - '-1'
       pragma:
@@ -207,15 +207,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -224,7 +224,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:40:05 GMT
+      - Tue, 23 Jun 2020 10:59:16 GMT
       expires:
       - '-1'
       pragma:
@@ -257,15 +257,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -274,7 +274,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:40:35 GMT
+      - Tue, 23 Jun 2020 10:59:46 GMT
       expires:
       - '-1'
       pragma:
@@ -307,15 +307,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -324,7 +324,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:41:05 GMT
+      - Tue, 23 Jun 2020 11:00:17 GMT
       expires:
       - '-1'
       pragma:
@@ -357,15 +357,15 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -374,7 +374,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:41:35 GMT
+      - Tue, 23 Jun 2020 11:00:47 GMT
       expires:
       - '-1'
       pragma:
@@ -407,16 +407,66 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/2a206004-ac90-4899-b749-9df6bf33ffca?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"0460202a-90ac-9948-b749-9df6bf33ffca\",\n  \"status\"\
-        : \"Succeeded\",\n  \"startTime\": \"2020-06-20T11:39:04.2937992Z\",\n  \"\
-        endTime\": \"2020-06-20T11:42:06.5485641Z\"\n }"
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Tue, 23 Jun 2020 11:01:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/44b9270e-b276-43c7-ae9a-a51cb0dfe62a?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"0e27b944-76b2-c743-ae9a-a51cb0dfe62a\",\n  \"status\"\
+        : \"Succeeded\",\n  \"startTime\": \"2020-06-23T10:58:15.9171802Z\",\n  \"\
+        endTime\": \"2020-06-23T11:01:34.2489102Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -425,7 +475,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:42:06 GMT
+      - Tue, 23 Jun 2020 11:01:48 GMT
       expires:
       - '-1'
       pragma:
@@ -458,19 +508,19 @@ interactions:
       - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
         --aad-client-app-id --aad-tenant-id -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-06-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
         ,\n  \"location\": \"canadacentral\",\n  \"name\": \"cliakstest000002\",\n\
         \  \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\"\
         : {\n   \"provisioningState\": \"Succeeded\",\n   \"kubernetesVersion\": \"\
-        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestk2in5hptv-8ecadf\",\n  \
-        \ \"fqdn\": \"cliakstest-clitestk2in5hptv-8ecadf-1ae94b14.hcp.canadacentral.azmk8s.io\"\
+        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestcojnsmdi7-8ecadf\",\n  \
+        \ \"fqdn\": \"cliakstest-clitestcojnsmdi7-8ecadf-c6fd27c8.hcp.canadacentral.azmk8s.io\"\
         ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
         \  \"count\": 1,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
         : 128,\n     \"maxPods\": 110,\n     \"type\": \"VirtualMachineScaleSets\"\
@@ -488,7 +538,7 @@ interactions:
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
         : \"Standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
         : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
-        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/b29ef30d-7b11-40ef-8729-6893c317dd1c\"\
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/04c8253c-6e60-4927-ab53-b991759a418f\"\
         \n      }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\"\
         : \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\"\
         : \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"\
@@ -505,7 +555,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:42:06 GMT
+      - Tue, 23 Jun 2020 11:01:48 GMT
       expires:
       - '-1'
       pragma:
@@ -538,21 +588,21 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-06-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
         ,\n  \"location\": \"canadacentral\",\n  \"name\": \"cliakstest000002\",\n\
         \  \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\"\
         : {\n   \"provisioningState\": \"Succeeded\",\n   \"kubernetesVersion\": \"\
-        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestk2in5hptv-8ecadf\",\n  \
-        \ \"fqdn\": \"cliakstest-clitestk2in5hptv-8ecadf-1ae94b14.hcp.canadacentral.azmk8s.io\"\
+        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestcojnsmdi7-8ecadf\",\n  \
+        \ \"fqdn\": \"cliakstest-clitestcojnsmdi7-8ecadf-c6fd27c8.hcp.canadacentral.azmk8s.io\"\
         ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
         \  \"count\": 1,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
         : 128,\n     \"maxPods\": 110,\n     \"type\": \"VirtualMachineScaleSets\"\
@@ -570,7 +620,7 @@ interactions:
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
         : \"Standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
         : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
-        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/b29ef30d-7b11-40ef-8729-6893c317dd1c\"\
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/04c8253c-6e60-4927-ab53-b991759a418f\"\
         \n      }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\"\
         : \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\"\
         : \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"\
@@ -587,7 +637,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:42:10 GMT
+      - Tue, 23 Jun 2020 11:01:49 GMT
       expires:
       - '-1'
       pragma:
@@ -607,7 +657,7 @@ interactions:
       message: OK
 - request:
     body: 'b''{"location": "canadacentral", "properties": {"kubernetesVersion": "1.15.11",
-      "dnsPrefix": "cliakstest-clitestk2in5hptv-8ecadf", "agentPoolProfiles": [{"count":
+      "dnsPrefix": "cliakstest-clitestcojnsmdi7-8ecadf", "agentPoolProfiles": [{"count":
       1, "vmSize": "Standard_DS2_v2", "osDiskSizeGB": 128, "maxPods": 110, "osType":
       "Linux", "type": "VirtualMachineScaleSets", "mode": "System", "orchestratorVersion":
       "1.15.11", "nodeImageVersion": "AKSUbuntu-1604-2020.06.10", "enableNodePublicIP":
@@ -620,7 +670,7 @@ interactions:
       "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr":
       "172.17.0.1/16", "outboundType": "loadBalancer", "loadBalancerSku": "Standard",
       "loadBalancerProfile": {"managedOutboundIPs": {"count": 1}, "effectiveOutboundIPs":
-      [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/b29ef30d-7b11-40ef-8729-6893c317dd1c"}]}},
+      [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/04c8253c-6e60-4927-ab53-b991759a418f"}]}},
       "aadProfile": {"managed": true, "adminGroupObjectIDs": ["00000000-0000-0000-0000-000000000003"],
       "tenantID": "00000000-0000-0000-0000-000000000004"}}, "sku": {"name": "Basic",
       "tier": "Free"}}'''
@@ -641,21 +691,21 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-06-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
         ,\n  \"location\": \"canadacentral\",\n  \"name\": \"cliakstest000002\",\n\
         \  \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\"\
         : {\n   \"provisioningState\": \"Updating\",\n   \"kubernetesVersion\": \"\
-        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestk2in5hptv-8ecadf\",\n  \
-        \ \"fqdn\": \"cliakstest-clitestk2in5hptv-8ecadf-1ae94b14.hcp.canadacentral.azmk8s.io\"\
+        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestcojnsmdi7-8ecadf\",\n  \
+        \ \"fqdn\": \"cliakstest-clitestcojnsmdi7-8ecadf-c6fd27c8.hcp.canadacentral.azmk8s.io\"\
         ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
         \  \"count\": 1,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
         : 128,\n     \"maxPods\": 110,\n     \"type\": \"VirtualMachineScaleSets\"\
@@ -673,7 +723,7 @@ interactions:
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
         : \"Standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
         : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
-        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/b29ef30d-7b11-40ef-8729-6893c317dd1c\"\
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/04c8253c-6e60-4927-ab53-b991759a418f\"\
         \n      }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\"\
         : \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\"\
         : \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"\
@@ -684,7 +734,7 @@ interactions:
         \ }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/46712567-0b64-4e88-836a-206a7b462e22?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/04ba4021-d2ac-4dbd-919c-b771fb091d0a?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -692,7 +742,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:42:14 GMT
+      - Tue, 23 Jun 2020 11:01:54 GMT
       expires:
       - '-1'
       pragma:
@@ -727,24 +777,24 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/46712567-0b64-4e88-836a-206a7b462e22?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/04ba4021-d2ac-4dbd-919c-b771fb091d0a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"67257146-640b-884e-836a-206a7b462e22\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:42:13.940534Z\"\n }"
+      string: "{\n  \"name\": \"2140ba04-acd2-bd4d-919c-b771fb091d0a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T11:01:54.2995652Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '125'
+      - '126'
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:42:44 GMT
+      - Tue, 23 Jun 2020 11:02:25 GMT
       expires:
       - '-1'
       pragma:
@@ -777,24 +827,24 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/46712567-0b64-4e88-836a-206a7b462e22?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/04ba4021-d2ac-4dbd-919c-b771fb091d0a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"67257146-640b-884e-836a-206a7b462e22\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-06-20T11:42:13.940534Z\"\n }"
+      string: "{\n  \"name\": \"2140ba04-acd2-bd4d-919c-b771fb091d0a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T11:01:54.2995652Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '125'
+      - '126'
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:43:14 GMT
+      - Tue, 23 Jun 2020 11:02:55 GMT
       expires:
       - '-1'
       pragma:
@@ -827,25 +877,24 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/46712567-0b64-4e88-836a-206a7b462e22?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/04ba4021-d2ac-4dbd-919c-b771fb091d0a?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"67257146-640b-884e-836a-206a7b462e22\",\n  \"status\"\
-        : \"Succeeded\",\n  \"startTime\": \"2020-06-20T11:42:13.940534Z\",\n  \"\
-        endTime\": \"2020-06-20T11:43:40.8523709Z\"\n }"
+      string: "{\n  \"name\": \"2140ba04-acd2-bd4d-919c-b771fb091d0a\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2020-06-23T11:01:54.2995652Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '169'
+      - '126'
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:43:45 GMT
+      - Tue, 23 Jun 2020 11:03:25 GMT
       expires:
       - '-1'
       pragma:
@@ -878,19 +927,70 @@ interactions:
       - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
         -o
       User-Agent:
-      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.16
-        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.3 Azure-SDK-For-Python
-        AZURECLI/2.7.0
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/canadacentral/operations/04ba4021-d2ac-4dbd-919c-b771fb091d0a?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"2140ba04-acd2-bd4d-919c-b771fb091d0a\",\n  \"status\"\
+        : \"Succeeded\",\n  \"startTime\": \"2020-06-23T11:01:54.2995652Z\",\n  \"\
+        endTime\": \"2020-06-23T11:03:40.43908Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '168'
+      content-type:
+      - application/json
+      date:
+      - Tue, 23 Jun 2020 11:03:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-aad --aad-admin-group-object-ids --aad-tenant-id
+        -o
+      User-Agent:
+      - python/3.7.5 (Linux-5.3.0-1028-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.9
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.8.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-06-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
         ,\n  \"location\": \"canadacentral\",\n  \"name\": \"cliakstest000002\",\n\
         \  \"type\": \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\"\
         : {\n   \"provisioningState\": \"Succeeded\",\n   \"kubernetesVersion\": \"\
-        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestk2in5hptv-8ecadf\",\n  \
-        \ \"fqdn\": \"cliakstest-clitestk2in5hptv-8ecadf-1ae94b14.hcp.canadacentral.azmk8s.io\"\
+        1.15.11\",\n   \"dnsPrefix\": \"cliakstest-clitestcojnsmdi7-8ecadf\",\n  \
+        \ \"fqdn\": \"cliakstest-clitestcojnsmdi7-8ecadf-c6fd27c8.hcp.canadacentral.azmk8s.io\"\
         ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
         \  \"count\": 1,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
         : 128,\n     \"maxPods\": 110,\n     \"type\": \"VirtualMachineScaleSets\"\
@@ -908,7 +1008,7 @@ interactions:
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
         : \"Standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
         : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
-        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/b29ef30d-7b11-40ef-8729-6893c317dd1c\"\
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_canadacentral/providers/Microsoft.Network/publicIPAddresses/04c8253c-6e60-4927-ab53-b991759a418f\"\
         \n      }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\"\
         : \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\"\
         : \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"\
@@ -925,7 +1025,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 20 Jun 2020 11:43:46 GMT
+      - Tue, 23 Jun 2020 11:03:56 GMT
       expires:
       - '-1'
       pragma:
