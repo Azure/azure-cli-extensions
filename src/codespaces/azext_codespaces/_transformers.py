@@ -19,7 +19,7 @@ def transform_codespace_item_output(item):
                               ('created', item['created']),
                               ('updated', item['updated']),
                               ('lastUsed', item['lastUsed']),
-                              ('autoShutdownDelayMinutes', item['autoShutdownDelayMinutes'])])
+                              ('autoShutdownDelayMinutes', item.get('autoShutdownDelayMinutes', None))])
     return new_result
 
 
@@ -42,4 +42,21 @@ def transform_location_detail_output(result):
                                  ('os', item['os']),
                                  ('defaultAutoSuspendDelayMinutes', defaultAutoSuspendDelayMinutes)])
         new_result.append(new_entry)
+    return new_result
+
+
+def transform_plan_secret_list_output(result):
+    new_result = [transform_plan_secret_item_output(item) for item in result]
+    return new_result
+
+
+def transform_plan_secret_item_output(item):
+    from collections import OrderedDict
+    new_result = OrderedDict([('secretId', item['id']),
+                              ('secretName', item['secretName']),
+                              ('secretType', item['type']),
+                              ('scope', item['scope']),
+                              ('lastModified', item['lastModified']),
+                              ('filters', ' '.join(f"{v['type']}={v['value']}" for v in item.get('filters', []))),
+                              ('notes', item.get('notes', None))])
     return new_result

@@ -172,6 +172,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -311,6 +314,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --uptime-sla
+          type: bool
+          short-summary: Enable a paid managed cluster service with a financially backed SLA.
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -481,6 +487,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.

@@ -1,0 +1,674 @@
+operationGroups:
+  all:
+    - operationGroupName: Operations
+      operations:
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+    - operationGroupName: Workspaces
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: workspaceName(string^string)
+      - operationName: CreateOrUpdate
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: workspaceName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: workspace(Workspace^object)
+          bodySchema: Workspace
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: workspaceName(string^string)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: workspaceName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: workspace(WorkspacePatch^object)
+          bodySchema: WorkspacePatch
+      - operationName: ListByResourceGroup
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+      - operationName: ListBySubscription
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+    - operationGroupName: ApplicationGroupAssignments
+      operations:
+      - operationName: WorkspaceLevelList
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: workspaceName(string^string)
+        - parameterName: $filter(string^string)
+    - operationGroupName: ApplicationGroups
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+      - operationName: CreateOrUpdate
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: applicationGroup(ApplicationGroup^object)
+          bodySchema: ApplicationGroup
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: applicationGroup(ApplicationGroupPatch^object)
+          bodySchema: ApplicationGroupPatch
+      - operationName: ListByResourceGroup
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: $filter(string^string)
+      - operationName: ListBySubscription
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: $filter(string^string)
+    - operationGroupName: StartMenuItems
+      operations:
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+    - operationGroupName: Applications
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: applicationName(string^string)
+      - operationName: CreateOrUpdate
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: applicationName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: application(Application^object)
+          bodySchema: Application
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: applicationName(string^string)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: applicationName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: application(ApplicationPatch^object)
+          bodySchema: ApplicationPatch
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+    - operationGroupName: Desktops
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: desktopName(string^string)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+        - parameterName: desktopName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: desktop(DesktopPatch^object)
+          bodySchema: DesktopPatch
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: applicationGroupName(string^string)
+    - operationGroupName: HostPools
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+      - operationName: CreateOrUpdate
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: hostPool(HostPool^object)
+          bodySchema: HostPool
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: force(boolean^boolean)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: hostPool(HostPoolPatch^object)
+          bodySchema: HostPoolPatch
+      - operationName: ListByResourceGroup
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+    - operationGroupName: UserSessions
+      operations:
+      - operationName: ListByHostPool
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: $filter(string^string)
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: userSessionId(string^string)
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: userSessionId(string^string)
+        - parameterName: force(boolean^boolean)
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+      - operationName: Disconnect
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: userSessionId(string^string)
+      - operationName: SendMessage
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: userSessionId(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: sendMessage(SendMessage^object)
+          bodySchema: SendMessage
+    - operationGroupName: SessionHosts
+      operations:
+      - operationName: Get
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+      - operationName: Delete
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: force(boolean^boolean)
+      - operationName: Update
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName[0]: content-type(application/json^constant)
+        - parameterName[0]: sessionHost(SessionHostPatch^object)
+          bodySchema: SessionHostPatch
+      - operationName: List
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+    - operationGroupName: ActiveApplications
+      operations:
+      - operationName: ListBySessionHost
+        parameters:
+        - parameterName: $host(string^string)
+        - parameterName: ApiVersion(ApiVersion-2019-12-10-preview^constant)
+        - parameterName: subscriptionId(string^string)
+        - parameterName: resourceGroupName(string^string)
+        - parameterName: hostPoolName(string^string)
+        - parameterName: sessionHostName(string^string)
+        - parameterName: $filter(string^string)
+schemas:
+  objects:
+    all:
+      - schemaName: ResourceProviderOperationList
+        properties:
+          - propertyName: value(ResourceProviderOperationList-value^array) 
+      - schemaName: ResourceProviderOperation
+        properties:
+          - propertyName: name(ResourceProviderOperation-name^string) 
+          - propertyName: display(ResourceProviderOperation-display^object) 
+      - schemaName: ResourceProviderOperation-display
+        properties:
+          - propertyName: provider(ResourceProviderOperation-display-provider^string) 
+          - propertyName: resource(ResourceProviderOperation-display-resource^string) 
+          - propertyName: operation(ResourceProviderOperation-display-operation^string) 
+          - propertyName: description(ResourceProviderOperation-display-description^string) 
+      - schemaName: Resource
+        properties:
+          - propertyName: id(Resource-id^string)
+            readOnly: true 
+          - propertyName: name(Resource-name^string)
+            readOnly: true 
+          - propertyName: type(Resource-type^string)
+            readOnly: true 
+      - schemaName: TrackedResource
+        properties:
+          - propertyName: tags(TrackedResource-tags^dictionary) 
+          - propertyName: location(TrackedResource-location^string) 
+      - schemaName: Workspace
+        properties:
+          - propertyName: properties(WorkspaceProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: WorkspaceProperties
+        properties:
+          - propertyName: description(WorkspaceProperties-description^string) 
+          - propertyName: friendlyName(WorkspaceProperties-friendlyName^string) 
+          - propertyName: applicationGroupReferences(WorkspaceProperties-applicationGroupReferences^array) 
+      - schemaName: CloudError
+        properties:
+          - propertyName: code(CloudError-code^string) 
+          - propertyName: message(CloudError-message^string) 
+      - schemaName: WorkspacePatch
+        properties:
+          - propertyName: tags(any^any) 
+          - propertyName: properties(WorkspacePatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: WorkspacePatchProperties
+        properties:
+          - propertyName: description(WorkspacePatchProperties-description^string) 
+          - propertyName: friendlyName(WorkspacePatchProperties-friendlyName^string) 
+          - propertyName: applicationGroupReferences(WorkspacePatchProperties-applicationGroupReferences^array) 
+      - schemaName: WorkspaceList
+        properties:
+          - propertyName: value(WorkspaceList-value^array) 
+          - propertyName: nextLink(WorkspaceList-nextLink^string)
+            readOnly: true 
+      - schemaName: ApplicationGroupList
+        properties:
+          - propertyName: value(ApplicationGroupList-value^array) 
+          - propertyName: nextLink(ApplicationGroupList-nextLink^string)
+            readOnly: true 
+      - schemaName: ApplicationGroup
+        properties:
+          - propertyName: properties(ApplicationGroupProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: ApplicationGroupProperties
+        properties:
+          - propertyName: description(ApplicationGroupProperties-description^string) 
+          - propertyName: friendlyName(ApplicationGroupProperties-friendlyName^string) 
+          - propertyName: hostPoolArmPath(ApplicationGroupProperties-hostPoolArmPath^string) 
+          - propertyName: workspaceArmPath(ApplicationGroupProperties-workspaceArmPath^string)
+            readOnly: true 
+          - propertyName: applicationGroupType(ApplicationGroupType^choice) 
+      - schemaName: ApplicationGroupPatch
+        properties:
+          - propertyName: tags(any^any) 
+          - propertyName: properties(ApplicationGroupPatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: ApplicationGroupPatchProperties
+        properties:
+          - propertyName: description(ApplicationGroupPatchProperties-description^string) 
+          - propertyName: friendlyName(ApplicationGroupPatchProperties-friendlyName^string) 
+      - schemaName: StartMenuItemList
+        properties:
+          - propertyName: value(StartMenuItemList-value^array) 
+          - propertyName: nextLink(StartMenuItemList-nextLink^string)
+            readOnly: true 
+      - schemaName: StartMenuItem
+        properties:
+          - propertyName: properties(StartMenuItemProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: StartMenuItemProperties
+        properties:
+          - propertyName: appAlias(StartMenuItemProperties-appAlias^string) 
+          - propertyName: friendlyName(StartMenuItemProperties-friendlyName^string) 
+          - propertyName: filePath(StartMenuItemProperties-filePath^string) 
+          - propertyName: commandLineArguments(StartMenuItemProperties-commandLineArguments^string) 
+          - propertyName: iconPath(StartMenuItemProperties-iconPath^string) 
+          - propertyName: iconIndex(integer^integer) 
+      - schemaName: Application
+        properties:
+          - propertyName: properties(ApplicationProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: ApplicationProperties
+        properties:
+          - propertyName: description(ApplicationProperties-description^string) 
+          - propertyName: friendlyName(ApplicationProperties-friendlyName^string) 
+          - propertyName: filePath(ApplicationProperties-filePath^string) 
+          - propertyName: commandLineSetting(CommandLineSetting^choice) 
+          - propertyName: commandLineArguments(ApplicationProperties-commandLineArguments^string) 
+          - propertyName: showInPortal(boolean^boolean) 
+          - propertyName: iconPath(ApplicationProperties-iconPath^string) 
+          - propertyName: iconIndex(integer^integer) 
+          - propertyName: iconHash(ApplicationProperties-iconHash^string)
+            readOnly: true 
+          - propertyName: iconContent(ApplicationProperties-iconContent^byte-array)
+            readOnly: true 
+      - schemaName: ApplicationPatch
+        properties:
+          - propertyName: tags(any^any) 
+          - propertyName: properties(ApplicationPatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: ApplicationPatchProperties
+        properties:
+          - propertyName: description(ApplicationPatchProperties-description^string) 
+          - propertyName: friendlyName(ApplicationPatchProperties-friendlyName^string) 
+          - propertyName: filePath(ApplicationPatchProperties-filePath^string) 
+          - propertyName: commandLineSetting(CommandLineSetting^choice) 
+          - propertyName: commandLineArguments(ApplicationPatchProperties-commandLineArguments^string) 
+          - propertyName: showInPortal(boolean^boolean) 
+          - propertyName: iconPath(ApplicationPatchProperties-iconPath^string) 
+          - propertyName: iconIndex(integer^integer) 
+      - schemaName: ApplicationList
+        properties:
+          - propertyName: value(ApplicationList-value^array) 
+          - propertyName: nextLink(ApplicationList-nextLink^string)
+            readOnly: true 
+      - schemaName: Desktop
+        properties:
+          - propertyName: properties(DesktopProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: DesktopProperties
+        properties:
+          - propertyName: description(DesktopProperties-description^string) 
+          - propertyName: friendlyName(DesktopProperties-friendlyName^string) 
+          - propertyName: iconHash(DesktopProperties-iconHash^string)
+            readOnly: true 
+          - propertyName: iconContent(DesktopProperties-iconContent^byte-array)
+            readOnly: true 
+      - schemaName: DesktopPatch
+        properties:
+          - propertyName: tags(any^any) 
+          - propertyName: properties(DesktopPatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: DesktopPatchProperties
+        properties:
+          - propertyName: description(DesktopPatchProperties-description^string) 
+          - propertyName: friendlyName(DesktopPatchProperties-friendlyName^string) 
+      - schemaName: DesktopList
+        properties:
+          - propertyName: value(DesktopList-value^array) 
+          - propertyName: nextLink(DesktopList-nextLink^string)
+            readOnly: true 
+      - schemaName: HostPool
+        properties:
+          - propertyName: properties(HostPoolProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: HostPoolProperties
+        properties:
+          - propertyName: friendlyName(HostPoolProperties-friendlyName^string) 
+          - propertyName: description(HostPoolProperties-description^string) 
+          - propertyName: hostPoolType(HostPoolType^choice) 
+          - propertyName: personalDesktopAssignmentType(PersonalDesktopAssignmentType^choice) 
+          - propertyName: customRdpProperty(HostPoolProperties-customRdpProperty^string) 
+          - propertyName: maxSessionLimit(integer^integer) 
+          - propertyName: loadBalancerType(LoadBalancerType^choice) 
+          - propertyName: ring(integer^integer) 
+          - propertyName: validationEnvironment(boolean^boolean) 
+          - propertyName: registrationInfo(RegistrationInfo^object) 
+          - propertyName: vmTemplate(HostPoolProperties-vmTemplate^string) 
+          - propertyName: applicationGroupReferences(HostPoolProperties-applicationGroupReferences^array)
+            readOnly: true 
+          - propertyName: ssoContext(HostPoolProperties-ssoContext^string) 
+      - schemaName: RegistrationInfo
+        properties:
+          - propertyName: expirationTime(RegistrationInfo-expirationTime^date-time) 
+          - propertyName: token(RegistrationInfo-token^string) 
+          - propertyName: registrationTokenOperation(RegistrationTokenOperation^choice) 
+      - schemaName: HostPoolPatch
+        properties:
+          - propertyName: tags(any^any) 
+          - propertyName: properties(HostPoolPatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: HostPoolPatchProperties
+        properties:
+          - propertyName: friendlyName(HostPoolPatchProperties-friendlyName^string) 
+          - propertyName: description(HostPoolPatchProperties-description^string) 
+          - propertyName: customRdpProperty(HostPoolPatchProperties-customRdpProperty^string) 
+          - propertyName: maxSessionLimit(integer^integer) 
+          - propertyName: personalDesktopAssignmentType(PersonalDesktopAssignmentType^choice) 
+          - propertyName: loadBalancerType(LoadBalancerType^choice) 
+          - propertyName: ring(integer^integer) 
+          - propertyName: validationEnvironment(boolean^boolean) 
+          - propertyName: registrationInfo(RegistrationInfoPatch^object) 
+          - propertyName: ssoContext(HostPoolPatchProperties-ssoContext^string) 
+      - schemaName: RegistrationInfoPatch
+        properties:
+          - propertyName: registrationTokenOperation(RegistrationTokenOperation^choice) 
+      - schemaName: HostPoolList
+        properties:
+          - propertyName: value(HostPoolList-value^array) 
+          - propertyName: nextLink(HostPoolList-nextLink^string)
+            readOnly: true 
+      - schemaName: UserSessionList
+        properties:
+          - propertyName: value(UserSessionList-value^array) 
+          - propertyName: nextLink(UserSessionList-nextLink^string)
+            readOnly: true 
+      - schemaName: UserSession
+        properties:
+          - propertyName: properties(UserSessionProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: UserSessionProperties
+        properties:
+          - propertyName: userPrincipalName(UserSessionProperties-userPrincipalName^string) 
+          - propertyName: applicationType(ApplicationType^choice) 
+          - propertyName: sessionState(SessionState^choice) 
+          - propertyName: activeDirectoryUserName(UserSessionProperties-activeDirectoryUserName^string) 
+          - propertyName: createTime(UserSessionProperties-createTime^date-time) 
+      - schemaName: SessionHost
+        properties:
+          - propertyName: properties(SessionHostProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: SessionHostProperties
+        properties:
+          - propertyName: lastHeartBeat(SessionHostProperties-lastHeartBeat^date-time) 
+          - propertyName: sessions(integer^integer) 
+          - propertyName: agentVersion(SessionHostProperties-agentVersion^string) 
+          - propertyName: allowNewSession(boolean^boolean) 
+          - propertyName: assignedUser(SessionHostProperties-assignedUser^string) 
+          - propertyName: status(Status^choice) 
+          - propertyName: statusTimestamp(SessionHostProperties-statusTimestamp^date-time)
+            readOnly: true 
+          - propertyName: osVersion(SessionHostProperties-osVersion^string) 
+          - propertyName: sxSStackVersion(SessionHostProperties-sxSStackVersion^string) 
+          - propertyName: updateState(UpdateState^choice) 
+          - propertyName: lastUpdateTime(SessionHostProperties-lastUpdateTime^date-time)
+            readOnly: true 
+          - propertyName: updateErrorMessage(SessionHostProperties-updateErrorMessage^string) 
+      - schemaName: SessionHostPatch
+        properties:
+          - propertyName: properties(SessionHostPatchProperties^object)
+            x-ms-client-flatten: true 
+      - schemaName: SessionHostPatchProperties
+        properties:
+          - propertyName: allowNewSession(boolean^boolean) 
+          - propertyName: assignedUser(SessionHostPatchProperties-assignedUser^string) 
+      - schemaName: SessionHostList
+        properties:
+          - propertyName: value(SessionHostList-value^array) 
+          - propertyName: nextLink(SessionHostList-nextLink^string)
+            readOnly: true 
+      - schemaName: SendMessage
+        properties:
+          - propertyName: messageTitle(SendMessage-messageTitle^string) 
+          - propertyName: messageBody(SendMessage-messageBody^string) 
+  choices:
+    all:
+      - choiceName: ApplicationGroupType
+        choiceValues:
+          - choiceValue: RemoteApp
+          - choiceValue: Desktop
+      - choiceName: CommandLineSetting
+        choiceValues:
+          - choiceValue: DoNotAllow
+          - choiceValue: Allow
+          - choiceValue: Require
+      - choiceName: HostPoolType
+        choiceValues:
+          - choiceValue: Personal
+          - choiceValue: Pooled
+      - choiceName: PersonalDesktopAssignmentType
+        choiceValues:
+          - choiceValue: Automatic
+          - choiceValue: Direct
+      - choiceName: LoadBalancerType
+        choiceValues:
+          - choiceValue: BreadthFirst
+          - choiceValue: DepthFirst
+          - choiceValue: Persistent
+      - choiceName: RegistrationTokenOperation
+        choiceValues:
+          - choiceValue: Delete
+          - choiceValue: None
+          - choiceValue: Update
+      - choiceName: ApplicationType
+        choiceValues:
+          - choiceValue: RemoteApp
+          - choiceValue: Desktop
+      - choiceName: SessionState
+        choiceValues:
+          - choiceValue: Unknown
+          - choiceValue: Active
+          - choiceValue: Disconnected
+          - choiceValue: Pending
+          - choiceValue: LogOff
+          - choiceValue: UserProfileDiskMounted
+      - choiceName: Status
+        choiceValues:
+          - choiceValue: Available
+          - choiceValue: Unavailable
+          - choiceValue: Shutdown
+          - choiceValue: Disconnected
+          - choiceValue: Upgrading
+          - choiceValue: UpgradeFailed
+      - choiceName: UpdateState
+        choiceValues:
+          - choiceValue: Initial
+          - choiceValue: Pending
+          - choiceValue: Started
+          - choiceValue: Succeeded
+          - choiceValue: Failed

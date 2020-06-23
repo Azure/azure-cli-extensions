@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 import random
 import string
@@ -37,3 +38,14 @@ def validate_workspace_values(cmd, namespace):
             namespace='Microsoft.Network',
             type='virtualNetworks',
             name=namespace.custom_virtual_network_id)
+
+
+def validate_encryption_values(namespace):
+    from knack.util import CLIError
+    if namespace.encryption_key_source:
+        if namespace.encryption_key_source == 'Default' and any(v is not None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
+            raise CLIError('--key-name, --key-version, --key-vault should not be provided when --key-source is Default')
+        if namespace.encryption_key_source == 'Microsoft.Keyvault' and any(v is None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
+            raise CLIError('--key-name, --key-version, --key-vault are required when --key-source is Microsoft.Keyvault')
+    elif any(v is not None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
+        raise CLIError('please specify --key-source for encryption')

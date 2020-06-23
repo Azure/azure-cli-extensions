@@ -49,22 +49,22 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPoolUpgradeSettings
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAPIServerAccessProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterSKU
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import AgentPoolUpgradeSettings
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterSKU
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -785,6 +785,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                min_count=None,
                max_count=None,
                vnet_subnet_id=None,
+               ppg=None,
                max_pods=0,
                aad_client_app_id=None,
                aad_server_app_id=None,
@@ -849,6 +850,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         os_type="Linux",
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
+        proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
         max_pods=int(max_pods) if max_pods else None,
@@ -1131,6 +1133,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_security_policy=False,
                attach_acr=None,
                detach_acr=None,
+               uptime_sla=False,
                aad_tenant_id=None,
                aad_admin_group_object_ids=None,
                aks_custom_headers=None):
@@ -1151,6 +1154,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
        not update_lb_profile and \
+       not uptime_sla and \
        not update_aad_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
@@ -1161,6 +1165,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--api-server-authorized-ip-ranges" or '
                        '"--attach-acr" or '
                        '"--detach-acr" or '
+                       '"--uptime-sla" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
@@ -1239,6 +1244,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
+
+    if uptime_sla:
+        instance.sku = ManagedClusterSKU(
+            name="Basic",
+            tier="Paid"
+        )
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     client_id = ""
@@ -1562,10 +1573,11 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
         raise CLIError('There are more than one node pool in the cluster. '
                        'Please specify nodepool name or use az aks nodepool command to scale node pool')
 
-    if node_count == 0:
-        raise CLIError("Can't scale down to 0 nodes.")
     for agent_profile in instance.agent_pool_profiles:
         if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
+            if agent_profile.enable_auto_scaling:
+                raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
+
             agent_profile.count = int(node_count)  # pylint: disable=no-member
             # null out the SP and AAD profile because otherwise validation complains
             instance.service_principal_profile = None
@@ -2121,6 +2133,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
+                      ppg=None,
                       max_pods=0,
                       os_type="Linux",
                       min_count=None,
@@ -2170,6 +2183,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         os_type=os_type,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
+        proximity_placement_group_id=ppg,
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
@@ -2205,8 +2219,8 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     new_node_count = int(node_count)
-    if new_node_count == 0:
-        raise CLIError("Can't scale down to 0 nodes.")
+    if instance.enable_auto_scaling:
+        raise CLIError("Cannot scale cluster autoscaler enabled node pool.")
     if new_node_count == instance.count:
         raise CLIError("The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member

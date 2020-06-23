@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "isodate~=0.6.0"
+]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

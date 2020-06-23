@@ -1,0 +1,2383 @@
+operationGroups:
+  all:
+    - operationGroupName: Operation
+      cli:
+        cliKey: Operations
+      operations:
+      - operationName: list
+        cli:
+          cliKey: List
+          hidden: true
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+    - operationGroupName: Workspace
+      cli:
+        cliKey: Workspaces
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: workspace_name(String^string)
+          cli:
+            cliKey: workspaceName
+            name: workspaceName
+      - operationName: create_or_update
+        cli:
+          cliKey: CreateOrUpdate
+          name: CreateOrUpdate
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: workspace_name(String^string)
+          cli:
+            cliKey: workspaceName
+            name: workspaceName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _workspace(Workspace^object)
+          cli:
+            cliKey: workspace
+          x-ms-client-flatten: true
+          bodySchema: Workspace
+        - parameterName[0]: tags(TrackedResourceTags^dictionary)
+          cli:
+            cliKey: tags
+        - parameterName[0]: location(TrackedResourceLocation^string)
+          cli:
+            cliKey: location
+        - parameterName[0]: description(WorkspacePropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(WorkspacePropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: application_group_references(WorkspacePropertiesApplicationGroupReferences^array)
+          cli:
+            cliKey: applicationGroupReferences
+            name: applicationGroupReferences
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: workspace_name(String^string)
+          cli:
+            cliKey: workspaceName
+            name: workspaceName
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: workspace_name(String^string)
+          cli:
+            cliKey: workspaceName
+            name: workspaceName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _workspace(WorkspacePatch^object)
+          cli:
+            cliKey: workspace
+          x-ms-client-flatten: true
+          bodySchema: WorkspacePatch
+        - parameterName[0]: tags(any^any)
+          cli:
+            cliKey: tags
+        - parameterName[0]: description(WorkspacePatchPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(WorkspacePatchPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: application_group_references(WorkspacePatchPropertiesApplicationGroupReferences^array)
+          cli:
+            cliKey: applicationGroupReferences
+            name: applicationGroupReferences
+      - operationName: list_by_resource_group
+        cli:
+          cliKey: ListByResourceGroup
+          name: ListByResourceGroup
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+      - operationName: list_by_subscription
+        cli:
+          cliKey: ListBySubscription
+          name: ListBySubscription
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+    - operationGroupName: ApplicationGroupAssignment
+      cli:
+        cliKey: ApplicationGroupAssignments
+        hidden: true
+      operations:
+      - operationName: workspace_level_list
+        cli:
+          cliKey: WorkspaceLevelList
+          name: WorkspaceLevelList
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: workspace_name(String^string)
+          cli:
+            cliKey: workspaceName
+            name: workspaceName
+        - parameterName: filter(String^string)
+          cli:
+            cliKey: $filter
+    - operationGroupName: ApplicationGroup
+      cli:
+        cliKey: ApplicationGroups
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+      - operationName: create_or_update
+        cli:
+          cliKey: CreateOrUpdate
+          name: CreateOrUpdate
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _application_group(ApplicationGroup^object)
+          cli:
+            cliKey: applicationGroup
+          x-ms-client-flatten: true
+          bodySchema: ApplicationGroup
+        - parameterName[0]: tags(TrackedResourceTags^dictionary)
+          cli:
+            cliKey: tags
+        - parameterName[0]: location(TrackedResourceLocation^string)
+          cli:
+            cliKey: location
+        - parameterName[0]: description(ApplicationGroupPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(ApplicationGroupPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: host_pool_arm_path(ApplicationGroupPropertiesHostPoolArmPath^string)
+          cli:
+            cliKey: hostPoolArmPath
+            name: hostPoolArmPath
+        - parameterName[0]: application_group_type(ApplicationGroupType^choice)
+          cli:
+            cliKey: applicationGroupType
+            name: applicationGroupType
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _application_group(ApplicationGroupPatch^object)
+          cli:
+            cliKey: applicationGroup
+          x-ms-client-flatten: true
+          bodySchema: ApplicationGroupPatch
+        - parameterName[0]: tags(any^any)
+          cli:
+            cliKey: tags
+        - parameterName[0]: description(ApplicationGroupPatchPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(ApplicationGroupPatchPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+      - operationName: list_by_resource_group
+        cli:
+          cliKey: ListByResourceGroup
+          name: ListByResourceGroup
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: filter(String^string)
+          cli:
+            cliKey: $filter
+      - operationName: list_by_subscription
+        cli:
+          cliKey: ListBySubscription
+          name: ListBySubscription
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: filter(String^string)
+          cli:
+            cliKey: $filter
+    - operationGroupName: StartMenuItem
+      cli:
+        cliKey: StartMenuItems
+        hidden: true
+      operations:
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+    - operationGroupName: Application
+      cli:
+        cliKey: Applications
+        hidden: true
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: application_name(String^string)
+          cli:
+            cliKey: applicationName
+            name: applicationName
+      - operationName: create_or_update
+        cli:
+          cliKey: CreateOrUpdate
+          name: CreateOrUpdate
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: application_name(String^string)
+          cli:
+            cliKey: applicationName
+            name: applicationName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _application(Application^object)
+          cli:
+            cliKey: application
+          x-ms-client-flatten: true
+          bodySchema: Application
+        - parameterName[0]: description(ApplicationPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(ApplicationPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: file_path(ApplicationPropertiesFilePath^string)
+          cli:
+            cliKey: filePath
+            name: filePath
+        - parameterName[0]: command_line_setting(CommandLineSetting^choice)
+          cli:
+            cliKey: commandLineSetting
+            name: commandLineSetting
+        - parameterName[0]: command_line_arguments(ApplicationPropertiesCommandLineArguments^string)
+          cli:
+            cliKey: commandLineArguments
+            name: commandLineArguments
+        - parameterName[0]: show_in_portal(boolean^boolean)
+          cli:
+            cliKey: showInPortal
+            name: showInPortal
+        - parameterName[0]: icon_path(ApplicationPropertiesIconPath^string)
+          cli:
+            cliKey: iconPath
+            name: iconPath
+        - parameterName[0]: icon_index(Integer^integer)
+          cli:
+            cliKey: iconIndex
+            name: iconIndex
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: application_name(String^string)
+          cli:
+            cliKey: applicationName
+            name: applicationName
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: application_name(String^string)
+          cli:
+            cliKey: applicationName
+            name: applicationName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _application(ApplicationPatch^object)
+          cli:
+            cliKey: application
+          x-ms-client-flatten: true
+          bodySchema: ApplicationPatch
+        - parameterName[0]: tags(any^any)
+          cli:
+            cliKey: tags
+        - parameterName[0]: description(ApplicationPatchPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(ApplicationPatchPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: file_path(ApplicationPatchPropertiesFilePath^string)
+          cli:
+            cliKey: filePath
+            name: filePath
+        - parameterName[0]: command_line_setting(CommandLineSetting^choice)
+          cli:
+            cliKey: commandLineSetting
+            name: commandLineSetting
+        - parameterName[0]: command_line_arguments(ApplicationPatchPropertiesCommandLineArguments^string)
+          cli:
+            cliKey: commandLineArguments
+            name: commandLineArguments
+        - parameterName[0]: show_in_portal(boolean^boolean)
+          cli:
+            cliKey: showInPortal
+            name: showInPortal
+        - parameterName[0]: icon_path(ApplicationPatchPropertiesIconPath^string)
+          cli:
+            cliKey: iconPath
+            name: iconPath
+        - parameterName[0]: icon_index(Integer^integer)
+          cli:
+            cliKey: iconIndex
+            name: iconIndex
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+    - operationGroupName: Desktop
+      cli:
+        cliKey: Desktops
+        hidden: true
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: desktop_name(String^string)
+          cli:
+            cliKey: desktopName
+            name: desktopName
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+        - parameterName: desktop_name(String^string)
+          cli:
+            cliKey: desktopName
+            name: desktopName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _desktop(DesktopPatch^object)
+          cli:
+            cliKey: desktop
+          x-ms-client-flatten: true
+          bodySchema: DesktopPatch
+        - parameterName[0]: tags(any^any)
+          cli:
+            cliKey: tags
+        - parameterName[0]: description(DesktopPatchPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: friendly_name(DesktopPatchPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: application_group_name(String^string)
+          cli:
+            cliKey: applicationGroupName
+            name: applicationGroupName
+    - operationGroupName: HostPool
+      cli:
+        cliKey: HostPools
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+      - operationName: create_or_update
+        cli:
+          cliKey: CreateOrUpdate
+          name: CreateOrUpdate
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _host_pool(HostPool^object)
+          cli:
+            cliKey: hostPool
+          x-ms-client-flatten: true
+          bodySchema: HostPool
+        - parameterName[0]: tags(TrackedResourceTags^dictionary)
+          cli:
+            cliKey: tags
+        - parameterName[0]: location(TrackedResourceLocation^string)
+          cli:
+            cliKey: location
+        - parameterName[0]: friendly_name(HostPoolPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: description(HostPoolPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: host_pool_type(HostPoolType^choice)
+          cli:
+            cliKey: hostPoolType
+            name: hostPoolType
+        - parameterName[0]: personal_desktop_assignment_type(PersonalDesktopAssignmentType^choice)
+          cli:
+            cliKey: personalDesktopAssignmentType
+            name: personalDesktopAssignmentType
+        - parameterName[0]: custom_rdp_property(HostPoolPropertiesCustomRdpProperty^string)
+          cli:
+            cliKey: customRdpProperty
+            name: customRdpProperty
+        - parameterName[0]: max_session_limit(Integer^integer)
+          cli:
+            cliKey: maxSessionLimit
+            name: maxSessionLimit
+        - parameterName[0]: load_balancer_type(LoadBalancerType^choice)
+          cli:
+            cliKey: loadBalancerType
+            name: loadBalancerType
+        - parameterName[0]: ring(Integer^integer)
+          cli:
+            cliKey: ring
+        - parameterName[0]: validation_environment(boolean^boolean)
+          cli:
+            cliKey: validationEnvironment
+            name: validationEnvironment
+        - parameterName[0]: registration_info(RegistrationInfo^object)
+          cli:
+            cliKey: registrationInfo
+            name: registrationInfo
+        - parameterName[0]: vm_template(HostPoolPropertiesVmTemplate^string)
+          cli:
+            cliKey: vmTemplate
+            name: vmTemplate
+        - parameterName[0]: sso_context(HostPoolPropertiesSsoContext^string)
+          cli:
+            cliKey: ssoContext
+            name: ssoContext
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: force(boolean^boolean)
+          cli:
+            cliKey: force
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _host_pool(HostPoolPatch^object)
+          cli:
+            cliKey: hostPool
+          x-ms-client-flatten: true
+          bodySchema: HostPoolPatch
+        - parameterName[0]: tags(any^any)
+          cli:
+            cliKey: tags
+        - parameterName[0]: friendly_name(HostPoolPatchPropertiesFriendlyName^string)
+          cli:
+            cliKey: friendlyName
+            name: friendlyName
+        - parameterName[0]: description(HostPoolPatchPropertiesDescription^string)
+          cli:
+            cliKey: description
+        - parameterName[0]: custom_rdp_property(HostPoolPatchPropertiesCustomRdpProperty^string)
+          cli:
+            cliKey: customRdpProperty
+            name: customRdpProperty
+        - parameterName[0]: max_session_limit(Integer^integer)
+          cli:
+            cliKey: maxSessionLimit
+            name: maxSessionLimit
+        - parameterName[0]: personal_desktop_assignment_type(PersonalDesktopAssignmentType^choice)
+          cli:
+            cliKey: personalDesktopAssignmentType
+            name: personalDesktopAssignmentType
+        - parameterName[0]: load_balancer_type(LoadBalancerType^choice)
+          cli:
+            cliKey: loadBalancerType
+            name: loadBalancerType
+        - parameterName[0]: ring(Integer^integer)
+          cli:
+            cliKey: ring
+        - parameterName[0]: validation_environment(boolean^boolean)
+          cli:
+            cliKey: validationEnvironment
+            name: validationEnvironment
+        - parameterName[0]: registration_info(RegistrationInfoPatch^object)
+          cli:
+            cliKey: registrationInfo
+            name: registrationInfo
+        - parameterName[0]: sso_context(HostPoolPatchPropertiesSsoContext^string)
+          cli:
+            cliKey: ssoContext
+            name: ssoContext
+      - operationName: list_by_resource_group
+        cli:
+          cliKey: ListByResourceGroup
+          name: ListByResourceGroup
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+    - operationGroupName: UserSession
+      cli:
+        cliKey: UserSessions
+        hidden: true
+      operations:
+      - operationName: list_by_host_pool
+        cli:
+          cliKey: ListByHostPool
+          name: ListByHostPool
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: filter(String^string)
+          cli:
+            cliKey: $filter
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: user_session_id(String^string)
+          cli:
+            cliKey: userSessionId
+            name: userSessionId
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: user_session_id(String^string)
+          cli:
+            cliKey: userSessionId
+            name: userSessionId
+        - parameterName: force(boolean^boolean)
+          cli:
+            cliKey: force
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+      - operationName: disconnect
+        cli:
+          cliKey: Disconnect
+          name: Disconnect
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: user_session_id(String^string)
+          cli:
+            cliKey: userSessionId
+            name: userSessionId
+      - operationName: send_message
+        cli:
+          cliKey: SendMessage
+          name: SendMessage
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: user_session_id(String^string)
+          cli:
+            cliKey: userSessionId
+            name: userSessionId
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _send_message(SendMessage^object)
+          cli:
+            cliKey: sendMessage
+          x-ms-client-flatten: true
+          bodySchema: SendMessage
+        - parameterName[0]: message_title(SendMessageTitle^string)
+          cli:
+            cliKey: messageTitle
+            name: messageTitle
+        - parameterName[0]: message_body(SendMessageBody^string)
+          cli:
+            cliKey: messageBody
+            name: messageBody
+    - operationGroupName: SessionHost
+      cli:
+        cliKey: SessionHosts
+        hidden: true
+      operations:
+      - operationName: get
+        cli:
+          cliKey: Get
+          name: Get
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+      - operationName: delete
+        cli:
+          cliKey: Delete
+          name: Delete
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: force(boolean^boolean)
+          cli:
+            cliKey: force
+      - operationName: update
+        cli:
+          cliKey: Update
+          name: Update
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName[0]: content_type(application_json^constant)
+          cli:
+            cliKey: content-type
+            name: ContentType
+        - parameterName[0]: _session_host(SessionHostPatch^object)
+          cli:
+            cliKey: sessionHost
+          x-ms-client-flatten: true
+          bodySchema: SessionHostPatch
+        - parameterName[0]: allow_new_session(boolean^boolean)
+          cli:
+            cliKey: allowNewSession
+            name: allowNewSession
+        - parameterName[0]: assigned_user(SessionHostPatchPropertiesAssignedUser^string)
+          cli:
+            cliKey: assignedUser
+            name: assignedUser
+      - operationName: list
+        cli:
+          cliKey: List
+          name: List
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+    - operationGroupName: ActiveApplication
+      cli:
+        cliKey: ActiveApplications
+        hidden: true
+      operations:
+      - operationName: list_by_session_host
+        cli:
+          cliKey: ListBySessionHost
+          name: ListBySessionHost
+        parameters:
+        - parameterName: $host(String^string)
+          cli:
+            cliKey: $host
+        - parameterName: api_version(api_version2019_12_10_preview^constant)
+          cli:
+            cliKey: ApiVersion
+            name: ApiVersion
+        - parameterName: subscription_id(String^string)
+          cli:
+            cliKey: subscriptionId
+            name: subscriptionId
+        - parameterName: resource_group_name(String^string)
+          cli:
+            cliKey: resourceGroupName
+            name: resourceGroupName
+        - parameterName: host_pool_name(String^string)
+          cli:
+            cliKey: hostPoolName
+            name: hostPoolName
+        - parameterName: session_host_name(String^string)
+          cli:
+            cliKey: sessionHostName
+            name: sessionHostName
+        - parameterName: filter(String^string)
+          cli:
+            cliKey: $filter
+schemas:
+  objects:
+    all:
+      - schemaName: ResourceProviderOperationList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ResourceProviderOperationList
+        properties:
+          - propertyName: value(ResourceProviderOperationListValue^array)
+            cli:
+              cliKey: value 
+      - schemaName: ResourceProviderOperation
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 5
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: ResourceProviderOperation
+        properties:
+          - propertyName: name(ResourceProviderOperationName^string)
+            cli:
+              cliKey: name 
+          - propertyName: display(ResourceProviderOperationDisplay^object)
+            cli:
+              cliKey: display 
+      - schemaName: ResourceProviderOperationDisplay
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 4
+            propertyCountIfSimplifyWithoutSimpleObject: 4
+            simplifiable: true
+          cliKey: ResourceProviderOperation-display
+        properties:
+          - propertyName: provider(ResourceProviderOperationDisplayProvider^string)
+            cli:
+              cliKey: provider 
+          - propertyName: resource(ResourceProviderOperationDisplayResource^string)
+            cli:
+              cliKey: resource 
+          - propertyName: operation(ResourceProviderOperationDisplayOperation^string)
+            cli:
+              cliKey: operation 
+          - propertyName: description(ResourceProviderOperationDisplayDescription^string)
+            cli:
+              cliKey: description 
+      - schemaName: Resource
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: Resource
+        properties:
+          - propertyName: id(ResourceId^string)
+            cli:
+              cliKey: id
+            readOnly: true 
+          - propertyName: name(ResourceName^string)
+            cli:
+              cliKey: name
+            readOnly: true 
+          - propertyName: type(ResourceType^string)
+            cli:
+              cliKey: type
+            readOnly: true 
+      - schemaName: TrackedResource
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: TrackedResource
+        properties:
+          - propertyName: tags(TrackedResourceTags^dictionary)
+            cli:
+              cliKey: tags 
+          - propertyName: location(TrackedResourceLocation^string)
+            cli:
+              cliKey: location 
+      - schemaName: Workspace
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: Workspace
+        properties:
+          - propertyName: description(WorkspacePropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(WorkspacePropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: application_group_references(WorkspacePropertiesApplicationGroupReferences^array)
+            cli:
+              cliKey: applicationGroupReferences
+              name: applicationGroupReferences 
+      - schemaName: CloudError
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: CloudError
+        properties:
+          - propertyName: code(CloudErrorCode^string)
+            cli:
+              cliKey: code 
+          - propertyName: message(CloudErrorMessage^string)
+            cli:
+              cliKey: message 
+      - schemaName: WorkspacePatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: WorkspacePatch
+        properties:
+          - propertyName: tags(any^any)
+            cli:
+              cliKey: tags 
+          - propertyName: description(WorkspacePatchPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(WorkspacePatchPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: application_group_references(WorkspacePatchPropertiesApplicationGroupReferences^array)
+            cli:
+              cliKey: applicationGroupReferences
+              name: applicationGroupReferences 
+      - schemaName: WorkspaceList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: WorkspaceList
+        properties:
+          - propertyName: value(WorkspaceListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(WorkspaceListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: ApplicationGroupList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ApplicationGroupList
+        properties:
+          - propertyName: value(ApplicationGroupListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(ApplicationGroupListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: ApplicationGroup
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ApplicationGroup
+        properties:
+          - propertyName: description(ApplicationGroupPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(ApplicationGroupPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: host_pool_arm_path(ApplicationGroupPropertiesHostPoolArmPath^string)
+            cli:
+              cliKey: hostPoolArmPath
+              name: hostPoolArmPath 
+          - propertyName: workspace_arm_path(ApplicationGroupPropertiesWorkspaceArmPath^string)
+            cli:
+              cliKey: workspaceArmPath
+              name: workspaceArmPath
+            readOnly: true 
+          - propertyName: application_group_type(ApplicationGroupType^choice)
+            cli:
+              cliKey: applicationGroupType
+              name: applicationGroupType 
+      - schemaName: ApplicationGroupPatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ApplicationGroupPatch
+        properties:
+          - propertyName: tags(any^any)
+            cli:
+              cliKey: tags 
+          - propertyName: description(ApplicationGroupPatchPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(ApplicationGroupPatchPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+      - schemaName: StartMenuItemList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: StartMenuItemList
+        properties:
+          - propertyName: value(StartMenuItemListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(StartMenuItemListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: StartMenuItem
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 6
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: StartMenuItem
+        properties:
+          - propertyName: app_alias(StartMenuItemPropertiesAppAlias^string)
+            cli:
+              cliKey: appAlias
+              name: appAlias 
+          - propertyName: friendly_name(StartMenuItemPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: file_path(StartMenuItemPropertiesFilePath^string)
+            cli:
+              cliKey: filePath
+              name: filePath 
+          - propertyName: command_line_arguments(StartMenuItemPropertiesCommandLineArguments^string)
+            cli:
+              cliKey: commandLineArguments
+              name: commandLineArguments 
+          - propertyName: icon_path(StartMenuItemPropertiesIconPath^string)
+            cli:
+              cliKey: iconPath
+              name: iconPath 
+          - propertyName: icon_index(Integer^integer)
+            cli:
+              cliKey: iconIndex
+              name: iconIndex 
+      - schemaName: Application
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 8
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: Application
+        properties:
+          - propertyName: description(ApplicationPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(ApplicationPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: file_path(ApplicationPropertiesFilePath^string)
+            cli:
+              cliKey: filePath
+              name: filePath 
+          - propertyName: command_line_setting(CommandLineSetting^choice)
+            cli:
+              cliKey: commandLineSetting
+              name: commandLineSetting 
+          - propertyName: command_line_arguments(ApplicationPropertiesCommandLineArguments^string)
+            cli:
+              cliKey: commandLineArguments
+              name: commandLineArguments 
+          - propertyName: show_in_portal(boolean^boolean)
+            cli:
+              cliKey: showInPortal
+              name: showInPortal 
+          - propertyName: icon_path(ApplicationPropertiesIconPath^string)
+            cli:
+              cliKey: iconPath
+              name: iconPath 
+          - propertyName: icon_index(Integer^integer)
+            cli:
+              cliKey: iconIndex
+              name: iconIndex 
+          - propertyName: icon_hash(ApplicationPropertiesIconHash^string)
+            cli:
+              cliKey: iconHash
+              name: iconHash
+            readOnly: true 
+          - propertyName: icon_content(application_properties_icon_content^byte-array)
+            cli:
+              cliKey: iconContent
+              name: iconContent
+            readOnly: true 
+      - schemaName: ApplicationPatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ApplicationPatch
+        properties:
+          - propertyName: tags(any^any)
+            cli:
+              cliKey: tags 
+          - propertyName: description(ApplicationPatchPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(ApplicationPatchPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: file_path(ApplicationPatchPropertiesFilePath^string)
+            cli:
+              cliKey: filePath
+              name: filePath 
+          - propertyName: command_line_setting(CommandLineSetting^choice)
+            cli:
+              cliKey: commandLineSetting
+              name: commandLineSetting 
+          - propertyName: command_line_arguments(ApplicationPatchPropertiesCommandLineArguments^string)
+            cli:
+              cliKey: commandLineArguments
+              name: commandLineArguments 
+          - propertyName: show_in_portal(boolean^boolean)
+            cli:
+              cliKey: showInPortal
+              name: showInPortal 
+          - propertyName: icon_path(ApplicationPatchPropertiesIconPath^string)
+            cli:
+              cliKey: iconPath
+              name: iconPath 
+          - propertyName: icon_index(Integer^integer)
+            cli:
+              cliKey: iconIndex
+              name: iconIndex 
+      - schemaName: ApplicationList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ApplicationList
+        properties:
+          - propertyName: value(ApplicationListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(ApplicationListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: Desktop
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: Desktop
+        properties:
+          - propertyName: description(DesktopPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(DesktopPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: icon_hash(DesktopPropertiesIconHash^string)
+            cli:
+              cliKey: iconHash
+              name: iconHash
+            readOnly: true 
+          - propertyName: icon_content(desktop_properties_icon_content^byte-array)
+            cli:
+              cliKey: iconContent
+              name: iconContent
+            readOnly: true 
+      - schemaName: DesktopPatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DesktopPatch
+        properties:
+          - propertyName: tags(any^any)
+            cli:
+              cliKey: tags 
+          - propertyName: description(DesktopPatchPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: friendly_name(DesktopPatchPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+      - schemaName: DesktopList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DesktopList
+        properties:
+          - propertyName: value(DesktopListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(DesktopListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: HostPool
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: HostPool
+        properties:
+          - propertyName: friendly_name(HostPoolPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: description(HostPoolPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: host_pool_type(HostPoolType^choice)
+            cli:
+              cliKey: hostPoolType
+              name: hostPoolType 
+          - propertyName: personal_desktop_assignment_type(PersonalDesktopAssignmentType^choice)
+            cli:
+              cliKey: personalDesktopAssignmentType
+              name: personalDesktopAssignmentType 
+          - propertyName: custom_rdp_property(HostPoolPropertiesCustomRdpProperty^string)
+            cli:
+              cliKey: customRdpProperty
+              name: customRdpProperty 
+          - propertyName: max_session_limit(Integer^integer)
+            cli:
+              cliKey: maxSessionLimit
+              name: maxSessionLimit 
+          - propertyName: load_balancer_type(LoadBalancerType^choice)
+            cli:
+              cliKey: loadBalancerType
+              name: loadBalancerType 
+          - propertyName: ring(Integer^integer)
+            cli:
+              cliKey: ring 
+          - propertyName: validation_environment(boolean^boolean)
+            cli:
+              cliKey: validationEnvironment
+              name: validationEnvironment 
+          - propertyName: registration_info(RegistrationInfo^object)
+            cli:
+              cliKey: registrationInfo
+              name: registrationInfo 
+          - propertyName: vm_template(HostPoolPropertiesVmTemplate^string)
+            cli:
+              cliKey: vmTemplate
+              name: vmTemplate 
+          - propertyName: application_group_references(HostPoolPropertiesApplicationGroupReferences^array)
+            cli:
+              cliKey: applicationGroupReferences
+              name: applicationGroupReferences
+            readOnly: true 
+          - propertyName: sso_context(HostPoolPropertiesSsoContext^string)
+            cli:
+              cliKey: ssoContext
+              name: ssoContext 
+      - schemaName: RegistrationInfo
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 3
+            propertyCountIfSimplifyWithoutSimpleObject: 3
+            simplifiable: true
+          cliKey: RegistrationInfo
+        properties:
+          - propertyName: expiration_time(registration_info_expiration_time^date-time)
+            cli:
+              cliKey: expirationTime
+              name: expirationTime 
+          - propertyName: token(RegistrationInfoToken^string)
+            cli:
+              cliKey: token 
+          - propertyName: registration_token_operation(RegistrationTokenOperation^choice)
+            cli:
+              cliKey: registrationTokenOperation
+              name: registrationTokenOperation 
+      - schemaName: HostPoolPatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: HostPoolPatch
+        properties:
+          - propertyName: tags(any^any)
+            cli:
+              cliKey: tags 
+          - propertyName: friendly_name(HostPoolPatchPropertiesFriendlyName^string)
+            cli:
+              cliKey: friendlyName
+              name: friendlyName 
+          - propertyName: description(HostPoolPatchPropertiesDescription^string)
+            cli:
+              cliKey: description 
+          - propertyName: custom_rdp_property(HostPoolPatchPropertiesCustomRdpProperty^string)
+            cli:
+              cliKey: customRdpProperty
+              name: customRdpProperty 
+          - propertyName: max_session_limit(Integer^integer)
+            cli:
+              cliKey: maxSessionLimit
+              name: maxSessionLimit 
+          - propertyName: personal_desktop_assignment_type(PersonalDesktopAssignmentType^choice)
+            cli:
+              cliKey: personalDesktopAssignmentType
+              name: personalDesktopAssignmentType 
+          - propertyName: load_balancer_type(LoadBalancerType^choice)
+            cli:
+              cliKey: loadBalancerType
+              name: loadBalancerType 
+          - propertyName: ring(Integer^integer)
+            cli:
+              cliKey: ring 
+          - propertyName: validation_environment(boolean^boolean)
+            cli:
+              cliKey: validationEnvironment
+              name: validationEnvironment 
+          - propertyName: registration_info(RegistrationInfoPatch^object)
+            cli:
+              cliKey: registrationInfo
+              name: registrationInfo 
+          - propertyName: sso_context(HostPoolPatchPropertiesSsoContext^string)
+            cli:
+              cliKey: ssoContext
+              name: ssoContext 
+      - schemaName: RegistrationInfoPatch
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 1
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: RegistrationInfoPatch
+        properties:
+          - propertyName: registration_token_operation(RegistrationTokenOperation^choice)
+            cli:
+              cliKey: registrationTokenOperation
+              name: registrationTokenOperation 
+      - schemaName: HostPoolList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: HostPoolList
+        properties:
+          - propertyName: value(HostPoolListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(HostPoolListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: UserSessionList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: UserSessionList
+        properties:
+          - propertyName: value(UserSessionListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(UserSessionListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: UserSession
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 5
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: UserSession
+        properties:
+          - propertyName: user_principal_name(UserSessionPropertiesUserPrincipalName^string)
+            cli:
+              cliKey: userPrincipalName
+              name: userPrincipalName 
+          - propertyName: application_type(ApplicationType^choice)
+            cli:
+              cliKey: applicationType
+              name: applicationType 
+          - propertyName: session_state(SessionState^choice)
+            cli:
+              cliKey: sessionState
+              name: sessionState 
+          - propertyName: active_directory_user_name(UserSessionPropertiesActiveDirectoryUserName^string)
+            cli:
+              cliKey: activeDirectoryUserName
+              name: activeDirectoryUserName 
+          - propertyName: create_time(user_session_properties_create_time^date-time)
+            cli:
+              cliKey: createTime
+              name: createTime 
+      - schemaName: SessionHost
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: SessionHost
+        properties:
+          - propertyName: last_heart_beat(session_host_properties_last_heart_beat^date-time)
+            cli:
+              cliKey: lastHeartBeat
+              name: lastHeartBeat 
+          - propertyName: sessions(Integer^integer)
+            cli:
+              cliKey: sessions 
+          - propertyName: agent_version(SessionHostPropertiesAgentVersion^string)
+            cli:
+              cliKey: agentVersion
+              name: agentVersion 
+          - propertyName: allow_new_session(boolean^boolean)
+            cli:
+              cliKey: allowNewSession
+              name: allowNewSession 
+          - propertyName: assigned_user(SessionHostPropertiesAssignedUser^string)
+            cli:
+              cliKey: assignedUser
+              name: assignedUser 
+          - propertyName: status(Status^choice)
+            cli:
+              cliKey: status 
+          - propertyName: status_timestamp(session_host_properties_status_timestamp^date-time)
+            cli:
+              cliKey: statusTimestamp
+              name: statusTimestamp
+            readOnly: true 
+          - propertyName: os_version(SessionHostPropertiesOsVersion^string)
+            cli:
+              cliKey: osVersion
+              name: osVersion 
+          - propertyName: sx_s_stack_version(SessionHostPropertiesSxSStackVersion^string)
+            cli:
+              cliKey: sxSStackVersion
+              name: sxSStackVersion 
+          - propertyName: update_state(UpdateState^choice)
+            cli:
+              cliKey: updateState
+              name: updateState 
+          - propertyName: last_update_time(session_host_properties_last_update_time^date-time)
+            cli:
+              cliKey: lastUpdateTime
+              name: lastUpdateTime
+            readOnly: true 
+          - propertyName: update_error_message(SessionHostPropertiesUpdateErrorMessage^string)
+            cli:
+              cliKey: updateErrorMessage
+              name: updateErrorMessage 
+      - schemaName: SessionHostPatch
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: SessionHostPatch
+        properties:
+          - propertyName: allow_new_session(boolean^boolean)
+            cli:
+              cliKey: allowNewSession
+              name: allowNewSession 
+          - propertyName: assigned_user(SessionHostPatchPropertiesAssignedUser^string)
+            cli:
+              cliKey: assignedUser
+              name: assignedUser 
+      - schemaName: SessionHostList
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: SessionHostList
+        properties:
+          - propertyName: value(SessionHostListValue^array)
+            cli:
+              cliKey: value 
+          - propertyName: next_link(SessionHostListNextLink^string)
+            cli:
+              cliKey: nextLink
+              name: nextLink
+            readOnly: true 
+      - schemaName: SendMessage
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: SendMessage
+        properties:
+          - propertyName: message_title(SendMessageTitle^string)
+            cli:
+              cliKey: messageTitle
+              name: messageTitle 
+          - propertyName: message_body(SendMessageBody^string)
+            cli:
+              cliKey: messageBody
+              name: messageBody 
+  choices:
+    all:
+      - choiceName: ApplicationGroupType
+        cli:
+          cliKey: ApplicationGroupType
+        choiceValues:
+          - choiceValue: remote_app
+            cli:
+              cliKey: RemoteApp
+              name: RemoteApp
+          - choiceValue: desktop
+            cli:
+              cliKey: Desktop
+              name: Desktop
+      - choiceName: CommandLineSetting
+        cli:
+          cliKey: CommandLineSetting
+        choiceValues:
+          - choiceValue: do_not_allow
+            cli:
+              cliKey: DoNotAllow
+              name: DoNotAllow
+          - choiceValue: allow
+            cli:
+              cliKey: Allow
+              name: Allow
+          - choiceValue: require
+            cli:
+              cliKey: Require
+              name: Require
+      - choiceName: HostPoolType
+        cli:
+          cliKey: HostPoolType
+        choiceValues:
+          - choiceValue: personal
+            cli:
+              cliKey: Personal
+              name: Personal
+          - choiceValue: pooled
+            cli:
+              cliKey: Pooled
+              name: Pooled
+      - choiceName: PersonalDesktopAssignmentType
+        cli:
+          cliKey: PersonalDesktopAssignmentType
+        choiceValues:
+          - choiceValue: automatic
+            cli:
+              cliKey: Automatic
+              name: Automatic
+          - choiceValue: direct
+            cli:
+              cliKey: Direct
+              name: Direct
+      - choiceName: LoadBalancerType
+        cli:
+          cliKey: LoadBalancerType
+        choiceValues:
+          - choiceValue: breadth_first
+            cli:
+              cliKey: BreadthFirst
+              name: BreadthFirst
+          - choiceValue: depth_first
+            cli:
+              cliKey: DepthFirst
+              name: DepthFirst
+          - choiceValue: persistent
+            cli:
+              cliKey: Persistent
+              name: Persistent
+      - choiceName: RegistrationTokenOperation
+        cli:
+          cliKey: RegistrationTokenOperation
+        choiceValues:
+          - choiceValue: delete
+            cli:
+              cliKey: Delete
+              name: Delete
+          - choiceValue: none
+            cli:
+              cliKey: None
+              name: None
+          - choiceValue: update
+            cli:
+              cliKey: Update
+              name: Update
+      - choiceName: ApplicationType
+        cli:
+          cliKey: ApplicationType
+        choiceValues:
+          - choiceValue: remote_app
+            cli:
+              cliKey: RemoteApp
+              name: RemoteApp
+          - choiceValue: desktop
+            cli:
+              cliKey: Desktop
+              name: Desktop
+      - choiceName: SessionState
+        cli:
+          cliKey: SessionState
+        choiceValues:
+          - choiceValue: unknown
+            cli:
+              cliKey: Unknown
+              name: Unknown
+          - choiceValue: active
+            cli:
+              cliKey: Active
+              name: Active
+          - choiceValue: disconnected
+            cli:
+              cliKey: Disconnected
+              name: Disconnected
+          - choiceValue: pending
+            cli:
+              cliKey: Pending
+              name: Pending
+          - choiceValue: log_off
+            cli:
+              cliKey: LogOff
+              name: LogOff
+          - choiceValue: user_profile_disk_mounted
+            cli:
+              cliKey: UserProfileDiskMounted
+              name: UserProfileDiskMounted
+      - choiceName: Status
+        cli:
+          cliKey: Status
+        choiceValues:
+          - choiceValue: available
+            cli:
+              cliKey: Available
+              name: Available
+          - choiceValue: unavailable
+            cli:
+              cliKey: Unavailable
+              name: Unavailable
+          - choiceValue: shutdown
+            cli:
+              cliKey: Shutdown
+              name: Shutdown
+          - choiceValue: disconnected
+            cli:
+              cliKey: Disconnected
+              name: Disconnected
+          - choiceValue: upgrading
+            cli:
+              cliKey: Upgrading
+              name: Upgrading
+          - choiceValue: upgrade_failed
+            cli:
+              cliKey: UpgradeFailed
+              name: UpgradeFailed
+      - choiceName: UpdateState
+        cli:
+          cliKey: UpdateState
+        choiceValues:
+          - choiceValue: initial
+            cli:
+              cliKey: Initial
+              name: Initial
+          - choiceValue: pending
+            cli:
+              cliKey: Pending
+              name: Pending
+          - choiceValue: started
+            cli:
+              cliKey: Started
+              name: Started
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+              name: Succeeded
+          - choiceValue: failed
+            cli:
+              cliKey: Failed
+              name: Failed

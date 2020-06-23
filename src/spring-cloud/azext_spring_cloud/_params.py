@@ -5,11 +5,11 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
-                          validate_name, validate_app_name, validate_deployment_name, validate_nodes_count,
-                          validate_log_lines, validate_log_limit, validate_log_since)
+                          validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
+                          validate_log_limit, validate_log_since, validate_sku)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -31,8 +31,22 @@ def load_arguments(self, _):
             '--name', '-n'], help='Name of Azure Spring Cloud.')
 
     with self.argument_context('spring-cloud create') as c:
-        c.argument('location', arg_type=get_location_type(
-            self.cli_ctx), validator=validate_location)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
+        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+
+    with self.argument_context('spring-cloud update') as c:
+        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+
+    for scope in ['spring-cloud create', 'spring-cloud update']:
+        with self.argument_context(scope) as c:
+            c.argument('app_insights_key',
+                       help="Instrumentation key of the existing Application Insights to be added for the distributed tracing")
+            c.argument('app_insights',
+                       help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.")
+            c.argument('disable_distributed_tracing',
+                       arg_type=get_three_state_flag(),
+                       help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.")
+            c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
@@ -82,7 +96,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
-                       help='If true, mount a 50G disk with default path.')
+                       help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
@@ -103,12 +117,9 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app scale']:
         with self.argument_context(scope) as c:
-            c.argument('cpu', type=int,
-                       help='Number of virtual cpu cores per instance.', validator=validate_nodes_count)
-            c.argument('memory', type=int,
-                       help='Number of GB of memory per instance.', validator=validate_nodes_count)
-            c.argument('instance_count', type=int,
-                       help='Number of instance.', validator=validate_nodes_count)
+            c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+            c.argument('memory', type=int, help='Number of GB of memory per instance.')
+            c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:

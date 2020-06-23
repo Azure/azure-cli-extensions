@@ -83,6 +83,7 @@ def load_arguments(self, _):
         c.argument('pod_cidr')
         c.argument('service_cidr')
         c.argument('vnet_subnet_id', type=str, validator=validate_vnet_subnet_id)
+        c.argument('ppg')
         c.argument('workspace_resource_id')
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
@@ -109,6 +110,7 @@ def load_arguments(self, _):
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
+        c.argument('uptime_sla', action='store_true')
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
@@ -149,6 +151,7 @@ def load_arguments(self, _):
             c.argument('labels', nargs='*', validator=validate_nodepool_labels)
             c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
             c.argument('aks_custom_headers')
+            c.argument('ppg')
             c.argument('max_surge', type=str, validator=validate_max_surge)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:

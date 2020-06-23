@@ -295,6 +295,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob directory list') as c:
         c.argument('include', validator=validate_included_datasets, default='mc')
+        c.argument('num_results', arg_type=num_results_type)
 
     with self.argument_context('storage blob directory metadata') as c:
         c.argument('blob_name', directory_path_type)

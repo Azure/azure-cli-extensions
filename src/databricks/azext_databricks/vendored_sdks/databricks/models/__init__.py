@@ -10,9 +10,12 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import CreatedBy
+    from ._models_py3 import Encryption
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorInfo
     from ._models_py3 import ErrorResponse, ErrorResponseException
+    from ._models_py3 import ManagedIdentityConfiguration
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import Resource
@@ -23,12 +26,16 @@ try:
     from ._models_py3 import WorkspaceCustomObjectParameter
     from ._models_py3 import WorkspaceCustomParameters
     from ._models_py3 import WorkspaceCustomStringParameter
+    from ._models_py3 import WorkspaceEncryptionParameter
     from ._models_py3 import WorkspaceProviderAuthorization
     from ._models_py3 import WorkspaceUpdate
 except (SyntaxError, ImportError):
+    from ._models import CreatedBy
+    from ._models import Encryption
     from ._models import ErrorDetail
     from ._models import ErrorInfo
     from ._models import ErrorResponse, ErrorResponseException
+    from ._models import ManagedIdentityConfiguration
     from ._models import Operation
     from ._models import OperationDisplay
     from ._models import Resource
@@ -39,19 +46,24 @@ except (SyntaxError, ImportError):
     from ._models import WorkspaceCustomObjectParameter
     from ._models import WorkspaceCustomParameters
     from ._models import WorkspaceCustomStringParameter
+    from ._models import WorkspaceEncryptionParameter
     from ._models import WorkspaceProviderAuthorization
     from ._models import WorkspaceUpdate
 from ._paged_models import OperationPaged
 from ._paged_models import WorkspacePaged
 from ._databricks_client_enums import (
     CustomParameterType,
+    KeySource,
     ProvisioningState,
 )
 
 __all__ = [
+    'CreatedBy',
+    'Encryption',
     'ErrorDetail',
     'ErrorInfo',
     'ErrorResponse', 'ErrorResponseException',
+    'ManagedIdentityConfiguration',
     'Operation',
     'OperationDisplay',
     'Resource',
@@ -62,10 +74,12 @@ __all__ = [
     'WorkspaceCustomObjectParameter',
     'WorkspaceCustomParameters',
     'WorkspaceCustomStringParameter',
+    'WorkspaceEncryptionParameter',
     'WorkspaceProviderAuthorization',
     'WorkspaceUpdate',
     'WorkspacePaged',
     'OperationPaged',
     'CustomParameterType',
+    'KeySource',
     'ProvisioningState',
 ]

@@ -3,6 +3,13 @@
 Release History
 ===============
 
+
+0.4.0
+++++++
+* `az network firewall create/update`: add --dns-servers, --enable-dns-proxy, --require-dns-proxy-for-network-rules to configure DNS proxy settings.
+* `az network firewall policy create/update`: add --dns-servers, --enable-dns-proxy, --require-dns-proxy-for-network-rules to configure DNS proxy settings.
+* `az network firewall policy create`: support threat white list arguments.
+* `az network firewall create/update`: support --threat-intel-model argument.
 0.3.1
 ++++++
 * `az network firewall network-rule/nat-rule`: Bug fixes.

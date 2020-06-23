@@ -26,6 +26,21 @@ devops wiki page update:
     encoding:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+dt endpoint create servicebus:
+  parameters:
+    servicebus_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventgrid:
+  parameters:
+    eventgrid_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventhub:
+  parameters:
+    eventhub_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 eventgrid event-subscription update:
   parameters:
     endpoint_type:

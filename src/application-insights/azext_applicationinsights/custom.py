@@ -5,6 +5,8 @@
 
 # pylint: disable=line-too-long, protected-access
 
+import datetime
+import isodate
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
@@ -19,6 +21,8 @@ def execute_query(cmd, client, application, analytics_query, start_time=None, en
     """Executes a query against the provided Application Insights application."""
     from .vendored_sdks.applicationinsights.models import QueryBody
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
+    if not isinstance(offset, datetime.timedelta):
+        offset = isodate.parse_duration(offset)
     try:
         return client.query.execute(targets[0], QueryBody(query=analytics_query, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), applications=targets[1:]))
     except ErrorResponseException as ex:
@@ -44,14 +48,18 @@ def get_metrics_metadata(cmd, client, application, resource_group_name=None):
 
 def create_or_update_component(cmd, client, application, resource_group_name, location, tags=None,
                                kind="web", application_type='web', workspace_resource_id=None,
-                               public_network_access_for_ingestion=None, public_network_access_for_query=None):
+                               public_network_access_for_ingestion=None, public_network_access_for_query=None, retention_in_days=None):
     # due to service limitation, we have to do such a hack. We must refract the logic later.
     if workspace_resource_id is None:
         from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
         component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type, tags=tags,
                                                  public_network_access_for_ingestion=public_network_access_for_ingestion,
-                                                 public_network_access_for_query=public_network_access_for_query)
+                                                 public_network_access_for_query=public_network_access_for_query,
+                                                 retention_in_days=retention_in_days)
         return client.create_or_update(resource_group_name, application, component)
+
+    if retention_in_days is not None:
+        raise CLIError("Retention time can be set only when Application Insights is not connected to a Log Analytics workspace.")
 
     from .vendored_sdks.mgmt_applicationinsights.v2020_02_02_preview.models import ApplicationInsightsComponent
     component = ApplicationInsightsComponent(location=location, kind=kind, application_type=application_type,
@@ -68,10 +76,11 @@ def create_or_update_component(cmd, client, application, resource_group_name, lo
 
 
 def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
-                     public_network_access_for_ingestion=None, public_network_access_for_query=None):
+                     public_network_access_for_ingestion=None, public_network_access_for_query=None, retention_in_days=None):
     from ._client_factory import applicationinsights_mgmt_plane_client
-    existing_component = None
     if workspace_resource_id is not None:
+        if retention_in_days is not None:
+            raise CLIError("Retention time can be set only when Application Insights is not connected to a Log Analytics workspace.")
         latest_client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
         try:
             existing_component = latest_client.get(resource_group_name, application)
@@ -93,6 +102,8 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
         return client.create_or_update(resource_group_name, application, existing_component)
 
     from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
+    if retention_in_days is not None:
+        existing_component.retention_in_days = retention_in_days
     component = ApplicationInsightsComponent(**(vars(existing_component)))
     return client.create_or_update(resource_group_name, application, component)
 

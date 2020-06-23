@@ -2,6 +2,20 @@
 
 Release History
 ===============
+0.4.53
++++++
+* Add --ppg for "az aks create" and "az aks nodepool add"
+
+0.4.52
++++++
+* Add --uptime-sla for az aks update
+
+0.4.51
++++++
+* Remove --appgw-shared flag from AGIC addon
+* Handle role assignments for AGIC addon post-cluster creation
+* Support --yes for "az aks upgrade"
+* Revert default VM SKU to Standard_DS2_v2
 
 0.4.50
 +++++
