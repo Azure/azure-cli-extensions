@@ -1171,6 +1171,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--enable-aad" or '
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids"')
 
