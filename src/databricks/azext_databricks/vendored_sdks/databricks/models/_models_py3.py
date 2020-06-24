@@ -73,7 +73,6 @@ class CreatedBy(Model):
         self.application_id = None
 
 
-<<<<<<< HEAD
 class Encryption(Model):
     """The object that contains details of encryption used on the workspace.
 
@@ -104,8 +103,6 @@ class Encryption(Model):
         self.key_vault_uri = key_vault_uri
 
 
-=======
->>>>>>> Init
 class ErrorDetail(Model):
     """Error details.
 
@@ -577,13 +574,10 @@ class Workspace(TrackedResource):
     :ivar workspace_url: The workspace URL which is of the format
      'adb-{workspaceId}.{random}.azuredatabricks.net'
     :vartype workspace_url: str
-<<<<<<< HEAD
     :param storage_account_identity: The details of Managed Identity of
      Storage Account
     :type storage_account_identity:
      ~azure.mgmt.databricks.models.ManagedIdentityConfiguration
-=======
->>>>>>> Init
     :param sku: The SKU of the resource.
     :type sku: ~azure.mgmt.databricks.models.Sku
     """
@@ -615,18 +609,11 @@ class Workspace(TrackedResource):
         'created_date_time': {'key': 'properties.createdDateTime', 'type': 'iso-8601'},
         'workspace_id': {'key': 'properties.workspaceId', 'type': 'str'},
         'workspace_url': {'key': 'properties.workspaceUrl', 'type': 'str'},
-<<<<<<< HEAD
         'storage_account_identity': {'key': 'properties.storageAccountIdentity', 'type': 'ManagedIdentityConfiguration'},
         'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
     def __init__(self, *, location: str, managed_resource_group_id: str, tags=None, parameters=None, ui_definition_uri: str=None, authorizations=None, created_by=None, updated_by=None, created_date_time=None, storage_account_identity=None, sku=None, **kwargs) -> None:
-=======
-        'sku': {'key': 'sku', 'type': 'Sku'},
-    }
-
-    def __init__(self, *, location: str, managed_resource_group_id: str, tags=None, parameters=None, ui_definition_uri: str=None, authorizations=None, created_by=None, updated_by=None, created_date_time=None, sku=None, **kwargs) -> None:
->>>>>>> Init
         super(Workspace, self).__init__(tags=tags, location=location, **kwargs)
         self.managed_resource_group_id = managed_resource_group_id
         self.parameters = parameters
@@ -638,10 +625,7 @@ class Workspace(TrackedResource):
         self.created_date_time = created_date_time
         self.workspace_id = None
         self.workspace_url = None
-<<<<<<< HEAD
         self.storage_account_identity = storage_account_identity
-=======
->>>>>>> Init
         self.sku = sku
 
 
@@ -717,7 +701,6 @@ class WorkspaceCustomParameters(Model):
     :param enable_no_public_ip: Should the Public IP be Disabled?
     :type enable_no_public_ip:
      ~azure.mgmt.databricks.models.WorkspaceCustomBooleanParameter
-<<<<<<< HEAD
     :param prepare_encryption: Prepare the workspace for encryption. Enables
      the Managed Identity for managed storage account.
     :type prepare_encryption:
@@ -726,8 +709,6 @@ class WorkspaceCustomParameters(Model):
      Key (CMK) enabled workspace.
     :type encryption:
      ~azure.mgmt.databricks.models.WorkspaceEncryptionParameter
-=======
->>>>>>> Init
     """
 
     _attribute_map = {
@@ -735,27 +716,18 @@ class WorkspaceCustomParameters(Model):
         'custom_public_subnet_name': {'key': 'customPublicSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'custom_private_subnet_name': {'key': 'customPrivateSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'enable_no_public_ip': {'key': 'enableNoPublicIp', 'type': 'WorkspaceCustomBooleanParameter'},
-<<<<<<< HEAD
         'prepare_encryption': {'key': 'prepareEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
         'encryption': {'key': 'encryption', 'type': 'WorkspaceEncryptionParameter'},
     }
 
     def __init__(self, *, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, prepare_encryption=None, encryption=None, **kwargs) -> None:
-=======
-    }
-
-    def __init__(self, *, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, **kwargs) -> None:
->>>>>>> Init
         super(WorkspaceCustomParameters, self).__init__(**kwargs)
         self.custom_virtual_network_id = custom_virtual_network_id
         self.custom_public_subnet_name = custom_public_subnet_name
         self.custom_private_subnet_name = custom_private_subnet_name
         self.enable_no_public_ip = enable_no_public_ip
-<<<<<<< HEAD
         self.prepare_encryption = prepare_encryption
         self.encryption = encryption
-=======
->>>>>>> Init
 
 
 class WorkspaceCustomStringParameter(Model):

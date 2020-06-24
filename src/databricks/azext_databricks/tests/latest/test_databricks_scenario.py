@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class DatabricksClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_databricks')
-    @KeyVaultPreparer(location='eastus2euap')
+    @KeyVaultPreparer(location='eastus')
     def test_databricks(self, resource_group, key_vault):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
@@ -30,7 +30,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--location "eastus2euap" '
+                 '--location "eastus" '
                  '--sku premium',
                  checks=[self.check('name', '{workspace_name}'),
                          self.check('sku.name', 'premium')])
@@ -154,8 +154,6 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('remoteVirtualNetwork.id', '{vnet_id}')
         ]).get_output_in_json()
 
-        if self.is_live:
-            time.sleep(10)
         self.kwargs['peering_id'] = peering['id']
 
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[

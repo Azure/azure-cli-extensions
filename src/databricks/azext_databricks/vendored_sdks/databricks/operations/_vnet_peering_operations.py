@@ -187,32 +187,9 @@ class VNetPeeringOperations(object):
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings/{peeringName}'}
 
-    def create_or_update(
-            self, virtual_network_peering_parameters, resource_group_name, workspace_name, peering_name, custom_headers=None, raw=False, **operation_config):
-        """Creates vNet Peering for workspace.
 
-        :param virtual_network_peering_parameters: Parameters supplied to the
-         create workspace vNet Peering.
-        :type virtual_network_peering_parameters:
-         ~azure.mgmt.databricks.models.VirtualNetworkPeering
-        :param resource_group_name: The name of the resource group. The name
-         is case insensitive.
-        :type resource_group_name: str
-        :param workspace_name: The name of the workspace.
-        :type workspace_name: str
-        :param peering_name: The name of the workspace vNet peering.
-        :type peering_name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: VirtualNetworkPeering or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.databricks.models.VirtualNetworkPeering or
-         ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`ErrorResponseException<azure.mgmt.databricks.models.ErrorResponseException>`
-        """
+    def _create_or_update_initial(
+            self, virtual_network_peering_parameters, resource_group_name, workspace_name, peering_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
@@ -249,6 +226,7 @@ class VNetPeeringOperations(object):
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
+
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualNetworkPeering', response)
         if response.status_code == 201:
@@ -259,6 +237,62 @@ class VNetPeeringOperations(object):
             return client_raw_response
 
         return deserialized
+
+    def create_or_update(
+            self, virtual_network_peering_parameters, resource_group_name, workspace_name, peering_name, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Creates vNet Peering for workspace.
+
+        :param virtual_network_peering_parameters: Parameters supplied to the
+         create workspace vNet Peering.
+        :type virtual_network_peering_parameters:
+         ~azure.mgmt.databricks.models.VirtualNetworkPeering
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
+        :type resource_group_name: str
+        :param workspace_name: The name of the workspace.
+        :type workspace_name: str
+        :param peering_name: The name of the workspace vNet peering.
+        :type peering_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns VirtualNetworkPeering
+         or ClientRawResponse<VirtualNetworkPeering> if raw==True
+        :rtype:
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.databricks.models.VirtualNetworkPeering]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.databricks.models.VirtualNetworkPeering]]
+        :raises:
+         :class:`ErrorResponseException<azure.mgmt.databricks.models.ErrorResponseException>`
+        """
+        raw_result = self._create_or_update_initial(
+            virtual_network_peering_parameters=virtual_network_peering_parameters,
+            resource_group_name=resource_group_name,
+            workspace_name=workspace_name,
+            peering_name=peering_name,
+            custom_headers=custom_headers,
+            raw=True,
+            **operation_config
+        )
+
+        def get_long_running_output(response):
+            deserialized = self._deserialize('VirtualNetworkPeering', response)
+
+            if raw:
+                client_raw_response = ClientRawResponse(deserialized, response)
+                return client_raw_response
+
+            return deserialized
+
+        lro_delay = operation_config.get(
+            'long_running_operation_timeout',
+            self.config.long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Databricks/workspaces/{workspaceName}/virtualNetworkPeerings/{peeringName}'}
 
     def list_by_workspace(

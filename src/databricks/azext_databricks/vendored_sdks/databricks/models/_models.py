@@ -73,7 +73,6 @@ class CreatedBy(Model):
         self.application_id = None
 
 
-<<<<<<< HEAD
 class Encryption(Model):
     """The object that contains details of encryption used on the workspace.
 
@@ -104,8 +103,6 @@ class Encryption(Model):
         self.key_vault_uri = kwargs.get('key_vault_uri', None)
 
 
-=======
->>>>>>> Init
 class ErrorDetail(Model):
     """Error details.
 
@@ -577,13 +574,10 @@ class Workspace(TrackedResource):
     :ivar workspace_url: The workspace URL which is of the format
      'adb-{workspaceId}.{random}.azuredatabricks.net'
     :vartype workspace_url: str
-<<<<<<< HEAD
     :param storage_account_identity: The details of Managed Identity of
      Storage Account
     :type storage_account_identity:
      ~azure.mgmt.databricks.models.ManagedIdentityConfiguration
-=======
->>>>>>> Init
     :param sku: The SKU of the resource.
     :type sku: ~azure.mgmt.databricks.models.Sku
     """
@@ -615,10 +609,7 @@ class Workspace(TrackedResource):
         'created_date_time': {'key': 'properties.createdDateTime', 'type': 'iso-8601'},
         'workspace_id': {'key': 'properties.workspaceId', 'type': 'str'},
         'workspace_url': {'key': 'properties.workspaceUrl', 'type': 'str'},
-<<<<<<< HEAD
         'storage_account_identity': {'key': 'properties.storageAccountIdentity', 'type': 'ManagedIdentityConfiguration'},
-=======
->>>>>>> Init
         'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
@@ -634,10 +625,7 @@ class Workspace(TrackedResource):
         self.created_date_time = kwargs.get('created_date_time', None)
         self.workspace_id = None
         self.workspace_url = None
-<<<<<<< HEAD
         self.storage_account_identity = kwargs.get('storage_account_identity', None)
-=======
->>>>>>> Init
         self.sku = kwargs.get('sku', None)
 
 
@@ -713,7 +701,6 @@ class WorkspaceCustomParameters(Model):
     :param enable_no_public_ip: Should the Public IP be Disabled?
     :type enable_no_public_ip:
      ~azure.mgmt.databricks.models.WorkspaceCustomBooleanParameter
-<<<<<<< HEAD
     :param prepare_encryption: Prepare the workspace for encryption. Enables
      the Managed Identity for managed storage account.
     :type prepare_encryption:
@@ -722,8 +709,6 @@ class WorkspaceCustomParameters(Model):
      Key (CMK) enabled workspace.
     :type encryption:
      ~azure.mgmt.databricks.models.WorkspaceEncryptionParameter
-=======
->>>>>>> Init
     """
 
     _attribute_map = {
@@ -731,11 +716,8 @@ class WorkspaceCustomParameters(Model):
         'custom_public_subnet_name': {'key': 'customPublicSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'custom_private_subnet_name': {'key': 'customPrivateSubnetName', 'type': 'WorkspaceCustomStringParameter'},
         'enable_no_public_ip': {'key': 'enableNoPublicIp', 'type': 'WorkspaceCustomBooleanParameter'},
-<<<<<<< HEAD
         'prepare_encryption': {'key': 'prepareEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
         'encryption': {'key': 'encryption', 'type': 'WorkspaceEncryptionParameter'},
-=======
->>>>>>> Init
     }
 
     def __init__(self, **kwargs):
@@ -744,11 +726,8 @@ class WorkspaceCustomParameters(Model):
         self.custom_public_subnet_name = kwargs.get('custom_public_subnet_name', None)
         self.custom_private_subnet_name = kwargs.get('custom_private_subnet_name', None)
         self.enable_no_public_ip = kwargs.get('enable_no_public_ip', None)
-<<<<<<< HEAD
         self.prepare_encryption = kwargs.get('prepare_encryption', None)
         self.encryption = kwargs.get('encryption', None)
-=======
->>>>>>> Init
 
 
 class WorkspaceCustomStringParameter(Model):

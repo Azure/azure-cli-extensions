@@ -10,13 +10,9 @@
 # --------------------------------------------------------------------------
 
 try:
-<<<<<<< HEAD
-    from ._models_py3 import CreatedBy
-    from ._models_py3 import Encryption
-=======
     from ._models_py3 import AddressSpace
     from ._models_py3 import CreatedBy
->>>>>>> Init
+    from ._models_py3 import Encryption
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorInfo
     from ._models_py3 import ErrorResponse, ErrorResponseException
@@ -38,13 +34,9 @@ try:
     from ._models_py3 import WorkspaceProviderAuthorization
     from ._models_py3 import WorkspaceUpdate
 except (SyntaxError, ImportError):
-<<<<<<< HEAD
-    from ._models import CreatedBy
-    from ._models import Encryption
-=======
     from ._models import AddressSpace
     from ._models import CreatedBy
->>>>>>> Init
+    from ._models import Encryption
     from ._models import ErrorDetail
     from ._models import ErrorInfo
     from ._models import ErrorResponse, ErrorResponseException
@@ -77,13 +69,9 @@ from ._databricks_client_enums import (
 )
 
 __all__ = [
-<<<<<<< HEAD
-    'CreatedBy',
-    'Encryption',
-=======
     'AddressSpace',
     'CreatedBy',
->>>>>>> Init
+    'Encryption',
     'ErrorDetail',
     'ErrorInfo',
     'ErrorResponse', 'ErrorResponseException',
