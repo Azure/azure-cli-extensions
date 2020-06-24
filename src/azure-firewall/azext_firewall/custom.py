@@ -79,7 +79,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                                             'HubIPAddresses',
                                             'HubPublicIPAddresses')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
-    if sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
+    if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     firewall = AzureFirewall(location=location,
                              tags=tags,
@@ -99,12 +99,12 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
         firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
-
-    firewall.additional_properties['Network.DNS.EnableProxy'] = \
-        enable_dns_proxy if enable_dns_proxy is not None else False
-    firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-        require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
-    firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+    if sku is None or sku.lower() == 'azfw_vnet':
+        firewall.additional_properties['Network.DNS.EnableProxy'] = \
+            enable_dns_proxy if enable_dns_proxy is not None else False
+        firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
+            require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
+        firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
