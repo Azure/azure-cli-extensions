@@ -558,6 +558,11 @@ class HostPool(TrackedResource):
     :vartype application_group_references: list[str]
     :param sso_context: Path to keyvault containing ssoContext secret.
     :type sso_context: str
+    :param preferred_app_group_type: Required. The type of preferred application group type,
+     default to Desktop Application Group. Possible values include: "None", "Desktop",
+     "RailApplications".
+    :type preferred_app_group_type: str or
+     ~desktop_virtualization_api_client.models.PreferredAppGroupType
     """
 
     _validation = {
@@ -569,6 +574,7 @@ class HostPool(TrackedResource):
         'personal_desktop_assignment_type': {'required': True},
         'load_balancer_type': {'required': True},
         'application_group_references': {'readonly': True},
+        'preferred_app_group_type': {'required': True},
     }
 
     _attribute_map = {
@@ -590,6 +596,7 @@ class HostPool(TrackedResource):
         'vm_template': {'key': 'properties.vmTemplate', 'type': 'str'},
         'application_group_references': {'key': 'properties.applicationGroupReferences', 'type': '[str]'},
         'sso_context': {'key': 'properties.ssoContext', 'type': 'str'},
+        'preferred_app_group_type': {'key': 'properties.preferredAppGroupType', 'type': 'str'},
     }
 
     def __init__(
@@ -610,6 +617,7 @@ class HostPool(TrackedResource):
         self.vm_template = kwargs.get('vm_template', None)
         self.application_group_references = None
         self.sso_context = kwargs.get('sso_context', None)
+        self.preferred_app_group_type = kwargs['preferred_app_group_type']
 
 
 class HostPoolList(msrest.serialization.Model):
@@ -679,6 +687,10 @@ class HostPoolPatch(Resource):
     :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
     :param sso_context: Path to keyvault containing ssoContext secret.
     :type sso_context: str
+    :param preferred_app_group_type: The type of preferred application group type, default to
+     Desktop Application Group. Possible values include: "None", "Desktop", "RailApplications".
+    :type preferred_app_group_type: str or
+     ~desktop_virtualization_api_client.models.PreferredAppGroupType
     """
 
     _validation = {
@@ -702,6 +714,7 @@ class HostPoolPatch(Resource):
         'validation_environment': {'key': 'properties.validationEnvironment', 'type': 'bool'},
         'registration_info': {'key': 'properties.registrationInfo', 'type': 'RegistrationInfoPatch'},
         'sso_context': {'key': 'properties.ssoContext', 'type': 'str'},
+        'preferred_app_group_type': {'key': 'properties.preferredAppGroupType', 'type': 'str'},
     }
 
     def __init__(
@@ -720,6 +733,7 @@ class HostPoolPatch(Resource):
         self.validation_environment = kwargs.get('validation_environment', None)
         self.registration_info = kwargs.get('registration_info', None)
         self.sso_context = kwargs.get('sso_context', None)
+        self.preferred_app_group_type = kwargs.get('preferred_app_group_type', None)
 
 
 class RegistrationInfo(msrest.serialization.Model):
@@ -893,6 +907,8 @@ class SessionHost(Resource):
     :type agent_version: str
     :param allow_new_session: Allow a new session.
     :type allow_new_session: bool
+    :ivar virtual_machine_id: Resource Id of SessionHost's underlying virtual machine.
+    :vartype virtual_machine_id: str
     :param assigned_user: User assigned to SessionHost.
     :type assigned_user: str
     :param status: Status for a SessionHost. Possible values include: "Available", "Unavailable",
@@ -917,6 +933,7 @@ class SessionHost(Resource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'virtual_machine_id': {'readonly': True},
         'status_timestamp': {'readonly': True},
         'last_update_time': {'readonly': True},
     }
@@ -929,6 +946,7 @@ class SessionHost(Resource):
         'sessions': {'key': 'properties.sessions', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
         'allow_new_session': {'key': 'properties.allowNewSession', 'type': 'bool'},
+        'virtual_machine_id': {'key': 'properties.virtualMachineId', 'type': 'str'},
         'assigned_user': {'key': 'properties.assignedUser', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'status_timestamp': {'key': 'properties.statusTimestamp', 'type': 'iso-8601'},
@@ -948,6 +966,7 @@ class SessionHost(Resource):
         self.sessions = kwargs.get('sessions', None)
         self.agent_version = kwargs.get('agent_version', None)
         self.allow_new_session = kwargs.get('allow_new_session', None)
+        self.virtual_machine_id = None
         self.assigned_user = kwargs.get('assigned_user', None)
         self.status = kwargs.get('status', None)
         self.status_timestamp = None

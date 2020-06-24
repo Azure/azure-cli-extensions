@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 from ._configuration_async import DesktopVirtualizationAPIClientConfiguration
 from .operations_async import OperationOperations
 from .operations_async import WorkspaceOperations
-from .operations_async import ApplicationGroupAssignmentOperations
 from .operations_async import ApplicationGroupOperations
 from .operations_async import StartMenuItemOperations
 from .operations_async import ApplicationOperations
@@ -26,7 +25,6 @@ from .operations_async import DesktopOperations
 from .operations_async import HostPoolOperations
 from .operations_async import UserSessionOperations
 from .operations_async import SessionHostOperations
-from .operations_async import ActiveApplicationOperations
 from .. import models
 
 
@@ -37,8 +35,6 @@ class DesktopVirtualizationAPIClient(object):
     :vartype operation: desktop_virtualization_api_client.aio.operations_async.OperationOperations
     :ivar workspace: WorkspaceOperations operations
     :vartype workspace: desktop_virtualization_api_client.aio.operations_async.WorkspaceOperations
-    :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupAssignmentOperations
     :ivar application_group: ApplicationGroupOperations operations
     :vartype application_group: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
@@ -53,8 +49,6 @@ class DesktopVirtualizationAPIClient(object):
     :vartype user_session: desktop_virtualization_api_client.aio.operations_async.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
     :vartype session_host: desktop_virtualization_api_client.aio.operations_async.SessionHostOperations
-    :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: desktop_virtualization_api_client.aio.operations_async.ActiveApplicationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -83,8 +77,6 @@ class DesktopVirtualizationAPIClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.workspace = WorkspaceOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.application_group_assignment = ApplicationGroupAssignmentOperations(
-            self._client, self._config, self._serialize, self._deserialize)
         self.application_group = ApplicationGroupOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.start_menu_item = StartMenuItemOperations(
@@ -98,8 +90,6 @@ class DesktopVirtualizationAPIClient(object):
         self.user_session = UserSessionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.session_host = SessionHostOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.active_application = ActiveApplicationOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
