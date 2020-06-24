@@ -239,8 +239,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
-        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub')
-        self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub}')
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
@@ -304,7 +303,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
-        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
+        self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
 
         self.kwargs.update({'location': 'eastus2euap'})
 

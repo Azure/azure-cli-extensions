@@ -79,6 +79,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                                             'HubIPAddresses',
                                             'HubPublicIPAddresses')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
+    if sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
+        raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     firewall = AzureFirewall(location=location,
                              tags=tags,
                              zones=zones,
