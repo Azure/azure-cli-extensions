@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.54
++++++
+* Support "--enable-aad" for "az aks update" to update an existing AAD-Integrated cluster to the new AKS-managed AAD experience
+
 0.4.53
 +++++
 * Add --ppg for "az aks create" and "az aks nodepool add"

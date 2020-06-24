@@ -265,6 +265,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
+        - name: Create a kubernetes cluster with managed AAD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -355,6 +357,9 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+        - name: --enable-aad
+          type: bool
+          short-summary: Enable managed AAD feature for cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -389,6 +394,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges ""
       - name: Restrict apiserver traffic in a kubernetes cluster to agentpool nodes.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
+      - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+      - name: Update an existing AKS AAD-Integrated cluster to the new AKS-managed AAD experience.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad
 """
 
 helps['aks kollect'] = """

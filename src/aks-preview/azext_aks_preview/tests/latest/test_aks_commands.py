@@ -31,7 +31,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--vm-set-type  AvailabilitySet -c 1 ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
                      '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -48,6 +48,66 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000002'),
             self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000003')
         ])
+
+    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
+    def test_aks_create_aadv1_and_update_with_managed_aad(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--aad-server-app-id 00000000-0000-0000-0000-000000000001 ' \
+                     '--aad-server-app-secret fake-secret ' \
+                     '--aad-client-app-id 00000000-0000-0000-0000-000000000002 ' \
+                     '--aad-tenant-id d5b55040-0c14-48cc-a028-91457fc190d9 ' \
+                     '-o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', None),
+            self.check('aadProfile.serverAppId', '00000000-0000-0000-0000-000000000001'),
+            self.check('aadProfile.clientAppId', '00000000-0000-0000-0000-000000000002'),
+            self.check('aadProfile.tenantId', 'd5b55040-0c14-48cc-a028-91457fc190d9')
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--enable-aad ' \
+                     '--aad-admin-group-object-ids 00000000-0000-0000-0000-000000000003 ' \
+                     '--aad-tenant-id 00000000-0000-0000-0000-000000000004 -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000003'),
+            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000004')
+        ])
+
+    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
+    def test_aks_create_nonaad_and_update_with_managed_aad(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '-o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile', None)
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--enable-aad ' \
+                     '--aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
+                     '--aad-tenant-id 00000000-0000-0000-0000-000000000002 -o json'
+        self.cmd(update_cmd, expect_failure=True)
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
