@@ -7,7 +7,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.command_modules.appservice.commands import ex_handler_factory
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import (get_resource_name_completion_list)
+from azure.cli.core.commands.parameters import (resource_group_name_type, get_resource_name_completion_list)
 import azext_webapp._help
 
 
@@ -33,6 +33,9 @@ class WebappExtCommandLoader(AzCommandsLoader):
             g.custom_command('track', 'track_scan')
             g.custom_command('list-result', 'get_all_scan_result')
             g.custom_command('stop', 'stop_scan')
+
+        with self.command_group('webapp deployment github-actions') as g:
+            g.custom_command('add', 'add_github_actions')
 
         return self.command_table
 
@@ -76,6 +79,16 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('ignore_stack', options_list=['--ignore-stack'], help='should override the default stack check', choices=['true', 'false'])
             c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
             c.argument('slot', help="Name of the deployment slot to use")
+
+        with self.argument_context('webapp deployment github-actions')as c:
+            c.argument('name', arg_type=webapp_name_arg_type)
+            c.argument('resource_group', arg_type=resource_group_name_type)
+            c.argument('repo', help='The GitHub repository to which the workflow file will be added. In the format: <owner>/<repository-name>')
+            c.argument('runtime', options_list=['--runtime', '-r'], help='Canonicalized web runtime in the format of Framework|Version, e.g. "PHP|5.6". Use "az webapp list-runtimes" for available list.')
+            c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
+            c.argument('slot', options_list=['--slot', '-s'], help='The name of the slot. Default to the production slot if not specified.')
+            c.argument('branch', options_list=['--branch', '-b'], help='The branch to which the workflow file will be added. Defaults to "master" if not specified.')
+            c.argument('force', options_list=['--force', '-f'], help='When true, the command will overwrite any workflow file with a conflicting name.')
 
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader

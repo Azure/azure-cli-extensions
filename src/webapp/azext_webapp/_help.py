@@ -69,3 +69,8 @@ helps['webapp deploy'] = """
     - name: Deploy a static text file to wwwroot/staticfiles/test.txt
       text: az webapp deploy --resource-group ResouceGroup --name AppName --src-path SourcePath --type static --target-path staticfiles/test.txt
 """
+
+helps['webapp deployment github-actions add'] = """
+    type: command
+    short-summary: Adds a GitHub Actions workflow file to the specified repository. The workflow will build and deploy your app to the specified webapp.
+"""
