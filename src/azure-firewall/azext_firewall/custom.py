@@ -7,13 +7,13 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_policy_factory
+from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
 
 
 def _generic_list(cli_ctx, operation_name, resource_group_name):
-    ncf = network_client_policy_factory(cli_ctx)
+    ncf = network_client_factory(cli_ctx)
     operation_group = getattr(ncf, operation_name)
     if resource_group_name:
         return operation_group.list(resource_group_name)
@@ -68,7 +68,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
                           threat_intel_mode=None, hub_public_ip_count=None):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
      AzureFirewallSku,
@@ -182,7 +182,7 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
                                management_item_name=None, management_public_ip_address=None,
                                management_virtual_network_name=None, management_subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
@@ -205,7 +205,7 @@ def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
                                           public_ip_address, virtual_network_name,  # pylint: disable=unused-argument
                                           subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     config = AzureFirewallIPConfiguration(
         name=item_name,
@@ -228,19 +228,19 @@ def update_af_management_ip_configuration(cmd, instance, public_ip_address=None,
 
 
 def set_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name, parameters):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     poller = client.create_or_update(resource_group_name, azure_firewall_name, parameters)
     return poller.result().management_ip_configuration
 
 
 def show_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     return af.management_ip_configuration
 
 
 def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     af.management_ip_configuration = None
     poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
@@ -248,7 +248,7 @@ def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
 
 
 def delete_af_ip_configuration(cmd, resource_group_name, resource_name, item_name, no_wait=False):  # pylint: disable=unused-argument
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, resource_name)
     keep_items = \
         [x for x in af.ip_configurations if x.name.lower() != item_name.lower()]
@@ -269,7 +269,7 @@ def build_af_rule_list(item_param_name, collection_param_name):
     import sys
 
     def list_func(cmd, resource_group_name, firewall_name, collection_name):
-        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         return _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
 
@@ -282,7 +282,7 @@ def build_af_rule_show(item_param_name, collection_param_name):
     import sys
 
     def show_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
-        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         return _find_item_at_path(af, '{}.{}.rules.{}'.format(collection_param_name, collection_name, item_name))
 
@@ -295,7 +295,7 @@ def build_af_rule_delete(item_param_name, collection_param_name):
     import sys
 
     def delete_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
-        client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+        client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
         collection = _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
         collection.rules = [rule for rule in collection.rules if rule.name != item_name]
@@ -308,7 +308,7 @@ def build_af_rule_delete(item_param_name, collection_param_name):
 
 def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_name, collection_class,
                     item_class, item_name, params, collection_params):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, firewall_name)
     collection = getattr(af, collection_param_name, [])
 
@@ -420,7 +420,7 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
 
 def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name,
                                                  ip_addresses=None, fqdns=None):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if ip_addresses is not None:
         if firewall.additional_properties is None:
@@ -446,7 +446,7 @@ def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fq
 
 
 def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is None:
         firewall.additional_properties = {}
@@ -454,7 +454,7 @@ def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_f
 
 
 def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
-    client = network_client_policy_factory(cmd.cli_ctx).azure_firewalls
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is not None:
         firewall.additional_properties.pop('ThreatIntel.Whitelist.IpAddresses', None)
@@ -468,7 +468,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
      FirewallPolicyThreatIntelWhitelist,
@@ -528,7 +528,7 @@ def update_azure_firewall_policies(cmd,
 
 
 def list_azure_firewall_policies(cmd, resource_group_name=None):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
     if resource_group_name is not None:
         return client.list(resource_group_name)
     return client.list_all()
@@ -536,7 +536,7 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
 
 def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name, firewall_policy_name,
                                                        rule_collection_group_name, priority):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     FirewallPolicyRuleCollectionGroup = cmd.get_models('FirewallPolicyRuleCollectionGroup')
     rule_group = FirewallPolicyRuleCollectionGroup(priority=priority,
                                                    name=rule_collection_group_name)
@@ -562,7 +562,7 @@ def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, fire
         NatRule, FirewallPolicyRuleNetworkProtocol = \
         cmd.get_models('FirewallPolicyNatRuleCollection', 'FirewallPolicyNatRuleCollectionAction',
                        'NatRule', 'FirewallPolicyRuleNetworkProtocol')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     ip_protocols = list(map(FirewallPolicyRuleNetworkProtocol, ip_protocols))
     nat_rule = NatRule(name=condition_name,
@@ -600,7 +600,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
                        'ApplicationRule', 'FirewallPolicyFilterRuleCollectionAction',
                        'FirewallPolicyFilterRuleCollection')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     rule = None
     if condition_type == "NetworkRule":
@@ -639,7 +639,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
 
 def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firewall_policy_name,
                                                  rule_collection_group_name, rule_collection_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     for rule_collection in rule_collection_group.rule_collections:
         if rule_collection.name == rule_collection_name:
@@ -650,7 +650,7 @@ def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firew
 
 def list_azure_firewall_policy_rule_collection(cmd, resource_group_name,
                                                firewall_policy_name, rule_collection_group_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     return rule_collection_group.rule_collections
 
@@ -665,7 +665,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
     NetworkRule, FirewallPolicyRuleApplicationProtocol, ApplicationRule = \
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
                        'ApplicationRule')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     target_rule_collection = None
     for rule_collection in rule_collection_group.rule_collections:
@@ -707,7 +707,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
 def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name,
                                              rule_collection_group_name,
                                              rule_collection_name, condition_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     target_rule_collection = None
     for rule_collection in rule_collection_group.rule_collections:
