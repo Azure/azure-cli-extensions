@@ -104,7 +104,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             enable_dns_proxy if enable_dns_proxy is not None else False
         firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
             require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
-        firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+        if dns_servers is not None:
+            firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
