@@ -17,11 +17,11 @@ helps['quantum job'] = """
     examples:
       - name: Get the list of jobs from an Azure Quantum workspace
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace  
+            az quantum job list -g MyResourceGroup -w MyWorkspace
       - name: Submit the Q# program from the current folder
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace \\
-               --job-name MyJob 
+               --job-name MyJob
       - name: Get the status of an Azure Quantum job
         text: |-
             az quantum job show -g MyResourceGroup -w MyWorkspace \\

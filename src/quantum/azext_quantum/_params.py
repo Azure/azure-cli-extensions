@@ -15,6 +15,7 @@ def load_arguments(self, _):
     job_name_type = CLIArgumentType(help='A friendly name to give to this execution of the program.')
     shots_type = CLIArgumentType(help='The number of times to execute the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
+    storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage to use to store job data and results.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -30,6 +31,7 @@ def load_arguments(self, _):
         c.argument('project', project_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
+        c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
 
     with self.argument_context('quantum job submit') as c:
@@ -41,5 +43,6 @@ def load_arguments(self, _):
         c.argument('project', project_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
+        c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.positional('program_args', program_args_type)

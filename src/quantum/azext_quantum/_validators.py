@@ -5,8 +5,6 @@
 
 # pylint: disable=line-too-long
 
-import os
-
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
 

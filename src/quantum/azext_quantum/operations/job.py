@@ -60,9 +60,8 @@ def build(cmd, target_id=None, project=None):
     raise CLIError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage):
     """ Generates the list of arguments for calling submit on a Q# project """
-    import os
 
     args = ["dotnet", "run", "--no-build"]
 
@@ -85,6 +84,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--target")
     args.append(target.target_id)
 
+    args.append("--output")
+    args.append("Id")
+
     if job_name:
         args.append("--job-name")
         args.append(job_name)
@@ -93,12 +95,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
         args.append("--shots")
         args.append(shots)
 
-    args.append("--output")
-    args.append("Id")
-
-    if 'AZURE_QUANTUM_STORAGE' in os.environ:
+    if storage:
         args.append("--storage")
-        args.append(os.environ['AZURE_QUANTUM_STORAGE'])
+        args.append(storage)
 
     args.append("--aad-token")
     args.append(token)
@@ -115,7 +114,7 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
-           job_name=None, shots=None, no_build=False):
+           job_name=None, shots=None, storage=None, no_build=False):
     """
     Submit a Q# project for execution to Azure Quantum.
     """
@@ -132,7 +131,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, tar
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -162,7 +161,7 @@ def _parse_blob_url(url):
 
 
 def output(cmd, job_id, resource_group_name=None, workspace_name=None):
-    """ 
+    """
     Get the results of a Q# execution.
     """
     import tempfile
@@ -224,11 +223,11 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wa
 
 
 def execute(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
-            job_name=None, shots=None, no_build=False):
+            job_name=None, shots=None, storage=None, no_build=False):
     """
     Submit a job for quantum execution on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, target_id, project, job_name, shots, no_build)
+    job = submit(cmd, program_args, resource_group_name, workspace_name, target_id, project, job_name, shots, storage, no_build)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
