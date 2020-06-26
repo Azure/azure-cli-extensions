@@ -33,11 +33,12 @@ def step__hostpools_put_hostpool_create(test, rg):
              '--load-balancer-type "BreadthFirst" '
              '--max-session-limit 999999 '
              '--personal-desktop-assignment-type "Automatic" '
-             '--registration-info expiration-time="2020-07-01T14:01:54.9571247Z" registration-token-operation="Update" '
+             '--preferred-app-group-type "Desktop" '
+             '--registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" '
              ''
              '--sso-context "KeyVaultPath" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyHostPool}" '
+             '--name "{hostPool1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -46,7 +47,7 @@ def step__hostpools_put_hostpool_create(test, rg):
 @try_manual
 def step__hostpools_get_hostpool_get(test, rg):
     test.cmd('az desktopvirtualization hostpool show '
-             '--name "{MyHostPool}" '
+             '--name "{hostPool1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -76,11 +77,11 @@ def step__hostpools_patch_hostpool_update(test, rg):
              '--load-balancer-type "BreadthFirst" '
              '--max-session-limit 999999 '
              '--personal-desktop-assignment-type "Automatic" '
-             '--registration-info expiration-time="2020-07-01T15:01:54.9571247Z" registration-token-operation="Update" '
+             '--registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" '
              ''
              '--sso-context "KeyVaultPath" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyHostPool}" '
+             '--name "{hostPool1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -94,9 +95,9 @@ def step__applicationgroups_put_applicationgroup_create(test, rg):
              '--application-group-type "RemoteApp" '
              '--friendly-name "friendly" '
              '--host-pool-arm-path "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DesktopVir'
-             'tualization/hostPools/{MyHostPool}" '
+             'tualization/hostPools/{hostPool1}" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyApplicationGroup}" '
+             '--name "{applicationGroup1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -105,7 +106,7 @@ def step__applicationgroups_put_applicationgroup_create(test, rg):
 @try_manual
 def step__applicationgroups_get_applicationgroup_get(test, rg):
     test.cmd('az desktopvirtualization applicationgroup show '
-             '--name "{MyApplicationGroup}" '
+             '--name "{applicationGroup1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -135,7 +136,7 @@ def step__applicationgroups_patch_applicationgroups_update(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyApplicationGroup}" '
+             '--name "{applicationGroup1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -144,7 +145,7 @@ def step__applicationgroups_patch_applicationgroups_update(test, rg):
 @try_manual
 def step__applicationgroups_delete_applicationgroup_delete(test, rg):
     test.cmd('az desktopvirtualization applicationgroup delete '
-             '--name "{MyApplicationGroup}" '
+             '--name "{applicationGroup1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -158,7 +159,7 @@ def step__workspaces_put_workspace_create(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyWorkspace}"',
+             '--name "{workspace1}"',
              checks=[])
 
 
@@ -167,7 +168,7 @@ def step__workspaces_put_workspace_create(test, rg):
 def step__workspaces_get_workspace_get(test, rg):
     test.cmd('az desktopvirtualization workspace show '
              '--resource-group "{rg}" '
-             '--name "{MyWorkspace}"',
+             '--name "{workspace1}"',
              checks=[])
 
 
@@ -195,7 +196,7 @@ def step__workspaces_patch_workspace_update(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyWorkspace}"',
+             '--name "{workspace1}"',
              checks=[])
 
 
@@ -204,7 +205,7 @@ def step__workspaces_patch_workspace_update(test, rg):
 def step__hostpools_delete_hostpool_delete(test, rg):
     test.cmd('az desktopvirtualization hostpool delete '
              '--force true '
-             '--name "{MyHostPool}" '
+             '--name "{hostPool1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -214,7 +215,7 @@ def step__hostpools_delete_hostpool_delete(test, rg):
 def step__workspaces_delete_workspace_delete(test, rg):
     test.cmd('az desktopvirtualization workspace delete '
              '--resource-group "{rg}" '
-             '--name "{MyWorkspace}"',
+             '--name "{workspace1}"',
              checks=[])
 
 
@@ -250,8 +251,8 @@ def call_scenario(test, rg):
 @try_manual
 class DesktopVirtualizationAPIClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestdesktopvirtualization_MyResourceGroup'[:7], key='rg', parameter_name=''
-                           'rg')
+    @ResourceGroupPreparer(name_prefix='clitestdesktopvirtualization_resourceGroup1'[:7], key='rg',
+                           parameter_name='rg')
     def test_desktopvirtualization(self, rg):
 
         self.kwargs.update({
@@ -259,9 +260,9 @@ class DesktopVirtualizationAPIClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'MyWorkspace': 'MyWorkspace',
-            'MyHostPool': 'MyHostPool',
-            'MyApplicationGroup': 'MyApplicationGroup',
+            'workspace1': 'workspace1',
+            'hostPool1': 'hostPool1',
+            'applicationGroup1': 'applicationGroup1',
         })
 
         call_scenario(self, rg)

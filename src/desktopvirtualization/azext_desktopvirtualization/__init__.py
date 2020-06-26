@@ -16,10 +16,10 @@ class DesktopVirtualizationAPIClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_desktopvirtualization.generated._client_factory import cf_desktopvirtualization_cl
+        from azext_desktopvirtualization.generated._client_factory import cf_desktopvirtualization
         desktopvirtualization_custom = CliCommandType(
             operations_tmpl='azext_desktopvirtualization.custom#{}',
-            client_factory=cf_desktopvirtualization_cl)
+            client_factory=cf_desktopvirtualization)
         parent = super(DesktopVirtualizationAPIClientCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=desktopvirtualization_custom)
 

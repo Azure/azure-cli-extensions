@@ -54,6 +54,14 @@ class PersonalDesktopAssignmentType(str, Enum):
     automatic = "Automatic"
     direct = "Direct"
 
+class PreferredAppGroupType(str, Enum):
+    """The type of preferred application group type, default to Desktop Application Group
+    """
+
+    none = "None"
+    desktop = "Desktop"
+    rail_applications = "RailApplications"
+
 class RegistrationTokenOperation(str, Enum):
     """The type of resetting the token.
     """
