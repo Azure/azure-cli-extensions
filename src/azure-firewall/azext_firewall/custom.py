@@ -95,8 +95,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                                  public_ips=HubPublicIPAddresses(
                                      count=hub_public_ip_count
                                  )
-                             ) if hub_public_ip_count is not None else None
-                             )
+                             ) if hub_public_ip_count is not None else None)
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
