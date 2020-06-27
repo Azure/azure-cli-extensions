@@ -135,6 +135,7 @@ def update_kube_environment(cmd,
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                             app_service_environment=None, kube_environment=None, sku='B1', kube_sku=KUBE_DEFAULT_SKU,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
+    debugpy.breakpoint()                            
     HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile = cmd.get_models(
         'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile')
     sku = _normalize_sku(sku)
@@ -268,6 +269,10 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
         if max_worker_count is not None:
             site_config.app_settings.append(NameValuePair(name='K8SE_APP_MAX_INSTANCE_COUNT', value=max_worker_count))
 
+        if deployment_container_image_name:    
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
     helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
 
     if is_linux or is_kube:
@@ -628,7 +633,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                            '--functions-version. Dotnet version will be %s for this function app.',
                            FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime])
 
-    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
+    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)    
 
     if is_linux:
         functionapp_def.kind = 'functionapp,linux'
@@ -667,6 +672,9 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             function_triggers_json = retrieve_update_function_triggers(deployment_container_image_name, site_config, docker_registry_server_user, docker_registry_server_password)
             site_config.app_settings.append(NameValuePair(name='K8SE_FUNCTIONS_TRIGGERS', value=function_triggers_json))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
@@ -1724,20 +1732,32 @@ def retrieve_update_function_triggers(container_image_name,
         dockerHelper.docker_login(image_registry_url, docker_registry_user_name, docker_registry_password)
 
     dockerHelper.pull_container_image(container_image_name)
-    container_id = dockerHelper.run_container(container_image_name, "/bin/sh") 
+    container_id = dockerHelper.run_container(container_image_name, "/bin/sh")
 
     #copy the getfunctionsjson.sh in the function image container
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    get_function_sh_script_file_path = os.path.join(dir_path, "getfunctionsjson.sh")
-    dockerHelper.copy_file_folder_to_container(container_id, get_function_sh_script_file_path, '/getfunctionsjson.sh')
-
-    dockerHelper.exec_container(container_id, ["chmod", "+x", "/getfunctionsjson.sh"])
-    functionJson = dockerHelper.exec_container(container_id, ["/getfunctionsjson.sh"])
-    functionJson = functionJson.replace("\r", "").replace("\n", "").replace(" ", "").replace(",}}", "}}")
-    dockerHelper.remove_container(container_id)
-    dockerHelper.remove_image(container_image_name)
+    get_function_sh_script_file_path = os.path.join(dir_path, "getfunctionsjson.sh")    
     try:
+        tmp_dir = tempfile.mkdtemp()
+        temp_filename = "getfunctionsjson.sh"
+        temp_file_path = os.path.join(tmp_dir, temp_filename)
+
+        with open(get_function_sh_script_file_path, 'rb') as open_file:
+            content = open_file.read()
+        content = content.replace(b'\r\n', b'\n')
+       
+        with open(temp_file_path, 'wb') as open_file:
+            open_file.write(content)
+
+        dockerHelper.copy_file_folder_to_container(container_id, temp_file_path, '/getfunctionsjson.sh')
+        dockerHelper.exec_container(container_id, ["chmod", "+x", "/getfunctionsjson.sh"])
+        functionJson = dockerHelper.exec_container(container_id, ["/getfunctionsjson.sh"])
+        functionJson = functionJson.replace("\r", "").replace("\n", "").replace(" ", "").replace(",}}", "}}")         
         json.loads(functionJson)
     except ValueError as e: 
-        raise CLIError("No function in the image: " + container_image_name + ",error: " + e)
+        raise CLIError('No function in the image: ' + container_image_name + ' ,functionjson: ' + functionJson + ' ,error: ' + e.__doc__)
+    finally:
+        shutil.rmtree(tmp_dir)
+        dockerHelper.remove_container(container_id)
+        dockerHelper.remove_image(container_image_name)       
     return functionJson
