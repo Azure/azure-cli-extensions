@@ -68,6 +68,10 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
                           threat_intel_mode=None, hub_public_ip_count=None):
+    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+        raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
+    if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
+        raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
@@ -79,8 +83,6 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                                             'HubIPAddresses',
                                             'HubPublicIPAddresses')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
-    if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
-        raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     firewall = AzureFirewall(location=location,
                              tags=tags,
                              zones=zones,
@@ -100,12 +102,13 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             firewall.additional_properties = {}
         firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
     if sku is None or sku.lower() == 'azfw_vnet':
-        firewall.additional_properties['Network.DNS.EnableProxy'] = \
-            enable_dns_proxy if enable_dns_proxy is not None else False
-        firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-            require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
-        if dns_servers is not None:
-            firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+        if firewall_policy is None:
+            firewall.additional_properties['Network.DNS.EnableProxy'] = \
+                enable_dns_proxy if enable_dns_proxy is not None else False
+            firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
+                require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
+            if dns_servers is not None:
+                firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
@@ -116,6 +119,8 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
                           hub_public_ip_count=None):
+    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+        raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     (SubResource,
      AzureFirewallPublicIPAddress,
      HubIPAddresses,

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def network_client_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_FIREWALL
