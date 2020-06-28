@@ -696,7 +696,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
 
     if target_rule_collection.rule_collection_type == "FirewallPolicyNatRule" and rule_type in ['NetworkRule',
                                                                                                 'ApplicationRule']:
-        raise CLIError("FirewallPolicyNatRule doesn't support Network rule and Application rule.")
+        raise CLIError("FirewallPolicyNatRule supports neither Network rule nor Application rule.")
 
     rule = None
     if rule_type == "NetworkRule":
