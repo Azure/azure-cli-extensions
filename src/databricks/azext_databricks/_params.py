@@ -53,6 +53,7 @@ def load_arguments(self, _):
 
     for scope in ['create', 'show', 'delete', 'update']:
         with self.argument_context('databricks workspace vnet-peering {}'.format(scope)) as c:
+            c.argument('workspace_name', help='The name of the workspace.')
             c.argument('peering_name', options_list=['--name', '-n'], help='The name of the vnet peering.')
 
     with self.argument_context('databricks workspace vnet-peering create') as c:
@@ -60,7 +61,6 @@ def load_arguments(self, _):
 
     for scope in ['create', 'update']:
         with self.argument_context('databricks workspace vnet-peering {}'.format(scope)) as c:
-            c.argument('workspace_name', help='The name of the workspace.')
             c.argument('allow_virtual_network_access', arg_type=get_three_state_flag(), help='Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space.')
             c.argument('allow_forwarded_traffic', arg_type=get_three_state_flag(), help='Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network.')
             c.argument('allow_gateway_transit', arg_type=get_three_state_flag(), help='If gateway links can be used in remote virtual networking to link to this virtual network.')
