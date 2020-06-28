@@ -172,7 +172,7 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
     if hub_public_ip_addresses is not None:
         try:
             if len(hub_public_ip_addresses) > instance.hub_ip_addresses.public_ips.count:
-                raise CLIError('Number of public ip addresses must be less than existing ones.')
+                raise CLIError('Number of public ip addresses must be less than or equal to existing ones.')
             instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]  # pylint: disable=line-too-long
             instance.hub_ip_addresses.public_ips.count = len(hub_public_ip_addresses)
         except AttributeError:
