@@ -353,7 +353,6 @@ class AzureFirewallScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
-        from knack.util import CLIError
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
             'policy': 'myclipolicy',
@@ -535,6 +534,129 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], False)
 
         self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
+    def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'collectiongroup': 'myclirulecollectiongroup',
+            'policy': 'myclipolicy',
+            'rg': resource_group,
+            'location': resource_group_location,
+            'collection_group_priority': 10000,
+            'source_ip_group': 'sourceipgroup',
+            'destination_ip_group': 'destinationipgroup'
+        })
+
+        self.cmd('network ip-group create -n {source_ip_group} -g {rg} --ip-addresses 10.0.0.0 10.0.0.1')
+        self.cmd('network ip-group create -n {destination_ip_group} -g {rg} --ip-addresses 10.0.0.2 10.0.0.3')
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy}')
+        ])
+
+        self.cmd(
+            'network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}',
+            checks=[
+                self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+                self.check('name', '{collectiongroup}')
+            ])
+
+        self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection '
+                 '--policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 10005 '
+                 '--action DNAT --rule-name nat-rule --description "test" '
+                 '--destination-addresses "202.120.36.15" --source-ip-groups {source_ip_group} '
+                 '--translated-address 128.1.1.1 --translated-port 1234 '
+                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 checks=[
+                     self.check('length(ruleCollections)', 1),
+                     self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+                     self.check('ruleCollections[0].name', "nat-collection"),
+                     self.check('length(ruleCollections[0].rules)', 1)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 13000 '
+                 '--action Allow --rule-name network-rule --rule-type NetworkRule '
+                 '--description "test" --destination-ip-groups {destination_ip_group} --source-ip-groups {source_ip_group} '
+                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 checks=[
+                     self.check('length(ruleCollections)', 2),
+                     self.check('ruleCollections[1].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[1].name', "filter-collection-1")
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} -n filter-collection-2 --collection-priority 14000 '
+                 '--action Allow --rule-name application-rule --rule-type ApplicationRule '
+                 '--description "test" --destination-addresses "202.120.36.15" "202.120.36.16" '
+                 '--source-ip-groups {source_ip_group} --protocols Http=12800 Https=12801 '
+                 '--fqdn-tags AzureBackup HDInsight',
+                 checks=[
+                     self.check('length(ruleCollections)', 3),
+                     self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[2].name', "filter-collection-2")
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection list -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup}',
+                 checks=[
+                     self.check('length(@)', 3)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
+                 '--rule-type ApplicationRule --description "test" --source-ip-groups {source_ip_group} '
+                 '--destination-addresses 202.120.36.15 202.120.36.16 --protocols Http=12800 Https=12801 --target-fqdns www.bing.com',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 2)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 '
+                 '--name network-rule-2 --rule-type NetworkRule '
+                 '--description "test" --destination-ip-groups {destination_ip_group} --source-ip-groups {source_ip_group} '
+                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 checks=[
+                     self.check('length(ruleCollections[1].rules)', 2)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name nat-collection '
+                 '--name nat-rule-2 --rule-type NatRule --description "test" '
+                 '--destination-addresses "202.120.36.16" --source-ip-groups {source_ip_group} '
+                 '--translated-address 128.1.1.1 --translated-port 1234 '
+                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 checks=[
+                     self.check('length(ruleCollections[0].rules)', 2)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule remove -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 --name network-rule-2',
+                 checks=[
+                     self.check('length(ruleCollections[1].rules)', 1),
+                     self.check('ruleCollections[1].rules[0].name', 'network-rule')
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule remove -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name nat-collection --name nat-rule-2',
+                 checks=[
+                     self.check('length(ruleCollections[0].rules)', 1),
+                     self.check('ruleCollections[0].rules[0].name', 'nat-rule')
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --name filter-collection-1',
+                 checks=[
+                     self.check('length(ruleCollections)', 2)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
+
+        self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
+            self.check('length(@)', 0)
+        ])
+
+        self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy')
     def test_firewall_with_dns_proxy(self, resource_group):
