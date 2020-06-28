@@ -273,7 +273,7 @@ class AzureFirewallScenario(ScenarioTest):
             'ip2': result['hubIpAddresses']['publicIps']['addresses'][1]['address'],
             'ip3': result['hubIpAddresses']['publicIps']['addresses'][2]['address']
         })
-        self.cmd('network firewall update -g {rg} -n {af} --count 3 --public-ips {ip1} {ip2} {ip3}', checks=[
+        self.cmd('network firewall update -g {rg} -n {af} --public-ips {ip1} {ip2} {ip3}', checks=[
             self.check('length(hubIpAddresses.publicIps.addresses)', 3)
         ])
         self.cmd('network firewall show -g {rg} -n {af}')

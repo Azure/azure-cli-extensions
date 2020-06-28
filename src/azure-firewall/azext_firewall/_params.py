@@ -65,8 +65,7 @@ def load_arguments(self, _):
                         "It's used to add public ip addresses into this firewall.")
         c.argument('hub_public_ip_addresses', nargs='+', options_list=['--public-ips'],
                    help="Space-separated list of Public IP addresses associated with azure firewall. "
-                        "It's used to delete public ip addresses from this firewall. "
-                        "The number of this argument should be same with --count.")
+                        "It's used to delete public ip addresses from this firewall. ")
 
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
