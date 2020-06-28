@@ -742,7 +742,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
 
 def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name,
                                              rule_collection_group_name,
-                                             rule_collection_name, condition_name):
+                                             rule_collection_name, rule_name):
     client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
 
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
