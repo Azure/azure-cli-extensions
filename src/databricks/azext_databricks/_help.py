@@ -98,8 +98,8 @@ helps['databricks workspace vnet-peering create'] = """
     examples:
       - name: Create a vnet peering for a workspace
         text: |-
-               az databricks workspace vnet-peering create --resource-group MyResourceGroup --name MyWorkspace \\
-               --location westus --remote-vnet /subscriptions/000000-0000-0000/resourceGroups/MyRG/providers/Microsoft.Network/virtualNetworks/MyVNet
+               az databricks workspace vnet-peering create --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+               -n MyPeering --location westus --remote-vnet /subscriptions/000000-0000-0000/resourceGroups/MyRG/providers/Microsoft.Network/virtualNetworks/MyVNet
 """
 
 helps['databricks workspace vnet-peering update'] = """
@@ -108,8 +108,8 @@ helps['databricks workspace vnet-peering update'] = """
     examples:
       - name: Update the vnet peering (enable gateway transit and disable virtual network access).
         text: |-
-               az databricks workspace vnet-peering update --resource-group MyResourceGroup --name MyWorkspace \\
-               --allow-gateway-transit --allow-virtual-network-access false
+               az databricks workspace vnet-peering update --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+               -n MyPeering --allow-gateway-transit --allow-virtual-network-access false
 """
 
 helps['databricks workspace vnet-peering list'] = """
@@ -127,7 +127,7 @@ helps['databricks workspace vnet-peering delete'] = """
     examples:
       - name: Delete the vnet peering.
         text: |-
-               az databricks workspace vnet-peering delete --resource-group MyResourceGroup --name MyWorkspace -n MyPeering
+               az databricks workspace vnet-peering delete --resource-group MyResourceGroup --workspace-name MyWorkspace -n MyPeering
 """
 
 helps['databricks workspace vnet-peering show'] = """
@@ -136,7 +136,7 @@ helps['databricks workspace vnet-peering show'] = """
     examples:
       - name: Show the vnet peering
         text: |-
-               az databricks workspace vnet-peering show --resource-group MyResourceGroup --name MyWorkspace -n MyPeering
+               az databricks workspace vnet-peering show --resource-group MyResourceGroup --workspace-name MyWorkspace -n MyPeering
 """
 
 helps['databricks workspace vnet-peering wait'] = """
@@ -144,6 +144,6 @@ helps['databricks workspace vnet-peering wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the Databricks workspace vnet peering is met.
     examples:
         - name: Pause executing next line of CLI script until the Databricks workspace vnet peering is successfully provisioned.
-          text: az databricks workspace vnet-peering wait --resource-group MyResourceGroup --name MyWorkspace -n MyPeering \\
-                --created
+          text: az databricks workspace vnet-peering wait --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+                -n MyPeering --created
 """
