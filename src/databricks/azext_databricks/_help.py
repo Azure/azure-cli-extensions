@@ -118,7 +118,7 @@ helps['databricks workspace vnet-peering list'] = """
     examples:
       - name: List vnet peerings under a workspace.
         text: |-
-               az databricks workspace vnet-peering list --resource-group MyResourceGroup --name MyWorkspace
+               az databricks workspace vnet-peering list --resource-group MyResourceGroup --workspace-name MyWorkspace
 """
 
 helps['databricks workspace vnet-peering delete'] = """

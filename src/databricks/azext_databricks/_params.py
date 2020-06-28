@@ -51,7 +51,7 @@ def load_arguments(self, _):
     with self.argument_context('databricks workspace wait') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], id_part='name', help='The name of the workspace.')
 
-    for scope in ['create', 'show', 'delete', 'update']:
+    for scope in ['create', 'show', 'delete', 'update', 'wait']:
         with self.argument_context('databricks workspace vnet-peering {}'.format(scope)) as c:
             c.argument('workspace_name', help='The name of the workspace.')
             c.argument('peering_name', options_list=['--name', '-n'], help='The name of the vnet peering.')
