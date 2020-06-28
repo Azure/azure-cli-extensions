@@ -180,12 +180,12 @@ def load_arguments(self, _):
         c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.")
         c.argument('ip_protocols', nargs='+', arg_type=get_enum_type(["TCP", "UDP", "Any", "ICMP"]),
                    help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule.")
-        c.argument('source_ip_groups', nargs='+', arg_group='Common Rule', validator=validate_ip_groups,
+        c.argument('source_ip_groups', nargs='+', validator=validate_ip_groups,
                    help='Space-separated list of name or resource id of source IpGroups.')
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Nat Rule') as c:
-        c.argument('translated_address', arg_group='Nat Rule', help='Translated address for this NAT rule collection.')
-        c.argument('translated_port', arg_group='Nat Rule', help='Translated port for this NAT rule collection.')
+        c.argument('translated_address', help='Translated address for this NAT rule collection.')
+        c.argument('translated_port', help='Translated port for this NAT rule collection.')
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
