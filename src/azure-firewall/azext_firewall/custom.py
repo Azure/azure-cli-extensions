@@ -7,7 +7,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory, network_client_policy_factory
+from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
 
@@ -67,9 +67,21 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
-                          threat_intel_mode=None):
+                          threat_intel_mode=None, hub_public_ip_count=None):
+    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+        raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
+    if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
+        raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
-    AzureFirewall, SubResource, AzureFirewallSku = cmd.get_models('AzureFirewall', 'SubResource', 'AzureFirewallSku')
+    (AzureFirewall,
+     SubResource,
+     AzureFirewallSku,
+     HubIPAddresses,
+     HubPublicIPAddresses) = cmd.get_models('AzureFirewall',
+                                            'SubResource',
+                                            'AzureFirewallSku',
+                                            'HubIPAddresses',
+                                            'HubPublicIPAddresses')
     sku_instance = AzureFirewallSku(name=sku, tier='Standard')
     firewall = AzureFirewall(location=location,
                              tags=tags,
@@ -78,26 +90,45 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                              virtual_hub=SubResource(id=virtual_hub) if virtual_hub is not None else None,
                              firewall_policy=SubResource(id=firewall_policy) if firewall_policy is not None else None,
                              sku=sku_instance if sku is not None else None,
-                             threat_intel_mode=threat_intel_mode)
+                             threat_intel_mode=threat_intel_mode,
+                             hub_ip_addresses=HubIPAddresses(
+                                 public_ips=HubPublicIPAddresses(
+                                     count=hub_public_ip_count
+                                 )
+                             ) if hub_public_ip_count is not None else None)
     if private_ranges is not None:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
         firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
-
-    firewall.additional_properties['Network.DNS.EnableProxy'] = \
-        enable_dns_proxy if enable_dns_proxy is not None else False
-    firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-        require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
-    firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+    if sku is None or sku.lower() == 'azfw_vnet':
+        if firewall_policy is None:
+            firewall.additional_properties['Network.DNS.EnableProxy'] = \
+                enable_dns_proxy if enable_dns_proxy is not None else False
+            firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
+                require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
+            if dns_servers is not None:
+                firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
+# pylint: disable=too-many-branches
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
-                          threat_intel_mode=None):
-    SubResource = cmd.get_models('SubResource')
+                          threat_intel_mode=None, hub_public_ip_addresses=None,
+                          hub_public_ip_count=None):
+    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+        raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
+    if all([hub_public_ip_addresses, hub_public_ip_count]):
+        raise CLIError('Cannot add and remove public ip addresses at same time.')
+    (SubResource,
+     AzureFirewallPublicIPAddress,
+     HubIPAddresses,
+     HubPublicIPAddresses) = cmd.get_models('SubResource',
+                                            'AzureFirewallPublicIPAddress',
+                                            'HubIPAddresses',
+                                            'HubPublicIPAddresses')
     if tags is not None:
         instance.tags = tags
     if zones is not None:
@@ -122,6 +153,31 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         instance.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
     if threat_intel_mode is not None:
         instance.threat_intel_mode = threat_intel_mode
+
+    if instance.hub_ip_addresses is None and hub_public_ip_addresses is not None:
+        raise CLIError('Cannot delete public ip addresses from vhub without creation.')
+    if hub_public_ip_count is not None:
+        try:
+            if instance.hub_ip_addresses.public_ips.count is not None and hub_public_ip_count > instance.hub_ip_addresses.public_ips.count:  # pylint: disable=line-too-long
+                instance.hub_ip_addresses.public_ips.count = hub_public_ip_count
+            else:
+                raise CLIError('Cannot decrease the count of hub ip addresses through --count.')
+        except AttributeError:
+            instance.hub_ip_addresses = HubIPAddresses(
+                public_ips=HubPublicIPAddresses(
+                    count=hub_public_ip_count
+                )
+            )
+
+    if hub_public_ip_addresses is not None:
+        try:
+            if len(hub_public_ip_addresses) > instance.hub_ip_addresses.public_ips.count:
+                raise CLIError('Number of public ip addresses must be less than or equal to existing ones.')
+            instance.hub_ip_addresses.public_ips.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]  # pylint: disable=line-too-long
+            instance.hub_ip_addresses.public_ips.count = len(hub_public_ip_addresses)
+        except AttributeError:
+            raise CLIError('Public Ip addresses must exist before deleting them.')
+
     return instance
 
 
@@ -421,7 +477,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
      FirewallPolicyThreatIntelWhitelist,
@@ -481,7 +537,7 @@ def update_azure_firewall_policies(cmd,
 
 
 def list_azure_firewall_policies(cmd, resource_group_name=None):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
     if resource_group_name is not None:
         return client.list(resource_group_name)
     return client.list_all()
@@ -489,7 +545,7 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
 
 def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name, firewall_policy_name,
                                                        rule_collection_group_name, priority):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     FirewallPolicyRuleCollectionGroup = cmd.get_models('FirewallPolicyRuleCollectionGroup')
     rule_group = FirewallPolicyRuleCollectionGroup(priority=priority,
                                                    name=rule_collection_group_name)
@@ -515,7 +571,7 @@ def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, fire
         NatRule, FirewallPolicyRuleNetworkProtocol = \
         cmd.get_models('FirewallPolicyNatRuleCollection', 'FirewallPolicyNatRuleCollectionAction',
                        'NatRule', 'FirewallPolicyRuleNetworkProtocol')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     ip_protocols = list(map(FirewallPolicyRuleNetworkProtocol, ip_protocols))
     nat_rule = NatRule(name=condition_name,
@@ -553,7 +609,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
                        'ApplicationRule', 'FirewallPolicyFilterRuleCollectionAction',
                        'FirewallPolicyFilterRuleCollection')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     rule = None
     if condition_type == "NetworkRule":
@@ -592,7 +648,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
 
 def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firewall_policy_name,
                                                  rule_collection_group_name, rule_collection_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     for rule_collection in rule_collection_group.rule_collections:
         if rule_collection.name == rule_collection_name:
@@ -603,7 +659,7 @@ def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firew
 
 def list_azure_firewall_policy_rule_collection(cmd, resource_group_name,
                                                firewall_policy_name, rule_collection_group_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     return rule_collection_group.rule_collections
 
@@ -618,7 +674,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
     NetworkRule, FirewallPolicyRuleApplicationProtocol, ApplicationRule = \
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
                        'ApplicationRule')
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     target_rule_collection = None
     for rule_collection in rule_collection_group.rule_collections:
@@ -660,7 +716,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
 def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name,
                                              rule_collection_group_name,
                                              rule_collection_name, condition_name):
-    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
+    client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups
     rule_collection_group = client.get(resource_group_name, firewall_policy_name, rule_collection_group_name)
     target_rule_collection = None
     for rule_collection in rule_collection_group.rule_collections:

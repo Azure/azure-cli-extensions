@@ -59,6 +59,14 @@ def load_arguments(self, _):
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
+    with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
+        c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,
+                   help="Number of Public IP Address associated with azure firewall. "
+                        "It's used to add public ip addresses into this firewall.")
+        c.argument('hub_public_ip_addresses', nargs='+', options_list=['--public-ips'],
+                   help="Space-separated list of Public IP addresses associated with azure firewall. "
+                        "It's used to delete public ip addresses from this firewall. ")
+
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')

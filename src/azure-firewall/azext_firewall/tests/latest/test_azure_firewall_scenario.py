@@ -224,7 +224,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
         self.cmd('network firewall update -g {rg} -n {af} --zones 1')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2euap')
     def test_azure_firewall_virtual_hub(self, resource_group):
 
         self.kwargs.update({
@@ -238,18 +238,48 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
-        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub')
-        self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
         self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='eastus2')
-    def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2euap')
+    def test_azure_firewall_virtual_hub_with_public_ips(self, resource_group):
 
+        self.kwargs.update({
+            'af': 'af1',
+            'af2': 'af2',
+            'coll': 'rc1',
+            'vwan': 'clitestvwan',
+            'vhub': 'clitestvhub',
+            'vwan2': 'clitestvwan2',
+            'vhub2': 'clitestvhub2',
+            'rg': resource_group
+        })
+        # self.cmd('extension add -n virtual-wan')
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 4 --vhub {vhub}', checks=[
+            self.check('length(hubIpAddresses.publicIps.addresses)', 4)
+        ])
+        result = self.cmd('network firewall update -g {rg} -n {af} --count 5', checks=[
+            self.check('length(hubIpAddresses.publicIps.addresses)', 5)
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'ip1': result['hubIpAddresses']['publicIps']['addresses'][0]['address'],
+            'ip2': result['hubIpAddresses']['publicIps']['addresses'][1]['address'],
+            'ip3': result['hubIpAddresses']['publicIps']['addresses'][2]['address']
+        })
+        self.cmd('network firewall update -g {rg} -n {af} --public-ips {ip1} {ip2} {ip3}', checks=[
+            self.check('length(hubIpAddresses.publicIps.addresses)', 3)
+        ])
+        self.cmd('network firewall show -g {rg} -n {af}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westus2')
+    def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'af': 'af1',
             'af2': 'af2',
@@ -265,7 +295,7 @@ class AzureFirewallScenario(ScenarioTest):
             'location': resource_group_location
         })
         # test firewall policy with vhub firewall
-        # self.cmd('extension add -n virtual-wan')
+        self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
 
@@ -273,12 +303,12 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
-        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
+        self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
 
-        self.kwargs.update({'location': 'centraluseuap'})
+        self.kwargs.update({'location': 'westus2'})
 
         # test firewall policy with vnet firewall
-        self.cmd('network firewall create -g {rg} -n {af2} -l {location}')
+        self.cmd('network firewall create -g {rg} -n {af2} -l {location} --firewall-policy {policy}')
         self.cmd('network public-ip create -g {rg} -n {pubip} -l {location} --sku standard')
         vnet_instance = self.cmd(
             'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
