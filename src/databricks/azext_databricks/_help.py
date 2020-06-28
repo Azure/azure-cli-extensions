@@ -99,7 +99,7 @@ helps['databricks workspace vnet-peering create'] = """
       - name: Create a vnet peering for a workspace
         text: |-
                az databricks workspace vnet-peering create --resource-group MyResourceGroup --workspace-name MyWorkspace \\
-               -n MyPeering --location westus --remote-vnet /subscriptions/000000-0000-0000/resourceGroups/MyRG/providers/Microsoft.Network/virtualNetworks/MyVNet
+               -n MyPeering --remote-vnet /subscriptions/000000-0000-0000/resourceGroups/MyRG/providers/Microsoft.Network/virtualNetworks/MyVNet
 """
 
 helps['databricks workspace vnet-peering update'] = """
