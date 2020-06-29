@@ -11,12 +11,11 @@ from typing import Any, TYPE_CHECKING
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-from .._version import VERSION
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
+VERSION = "unknown"
 
 class AzureDedicatedHSMResourceProviderConfiguration(Configuration):
     """Configuration for AzureDedicatedHSMResourceProvider.
@@ -46,7 +45,8 @@ class AzureDedicatedHSMResourceProviderConfiguration(Configuration):
         self.subscription_id = subscription_id
         self.api_version = "2018-10-31-preview"
         self.credential_scopes = ['https://management.azure.com/.default']
-        kwargs.setdefault('sdk_moniker', 'mgmt-hardwaresecuritymodules/{}'.format(VERSION))
+        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
+        kwargs.setdefault('sdk_moniker', 'azurededicatedhsmresourceprovider/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
