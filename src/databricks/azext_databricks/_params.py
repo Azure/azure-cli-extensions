@@ -57,7 +57,7 @@ def load_arguments(self, _):
             c.argument('peering_name', options_list=['--name', '-n'], help='The name of the vnet peering.')
 
     with self.argument_context('databricks workspace vnet-peering create') as c:
-        c.argument('remote_virtual_network', options_list=['--remote-vnet'], help='The Id of the remote virtual network.')
+        c.argument('remote_virtual_network', options_list=['--remote-vnet'], help='The remote virtual network name or Resource ID.')
 
     for scope in ['create', 'update']:
         with self.argument_context('databricks workspace vnet-peering {}'.format(scope)) as c:

@@ -145,6 +145,18 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
+        # use vnet name to create
+        self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_name}', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', False),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', True),
+            self.check('name', '{peering_name}'),
+            self.check('remoteVirtualNetwork.id', '{vnet_id}')
+        ])
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+
+        # user vnet id to create
         peering = self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_id}', checks=[
             self.check('allowForwardedTraffic', False),
             self.check('allowGatewayTransit', False),
