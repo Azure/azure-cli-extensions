@@ -750,15 +750,29 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
 
 def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                            scale_unit, location=None, tags=None, p2s_conn_config_name='P2SConnectionConfigDefault',
-                           vpn_server_config=None, address_space=None, no_wait=False):
+                           vpn_server_config=None, address_space=None, associated_route_table=None,
+                               propagated_route_tables=None, labels=None, no_wait=False):
     client = network_client_route_table_factory(cmd.cli_ctx).p2s_vpn_gateways
     (P2SVpnGateway,
      SubResource,
      P2SConnectionConfiguration,
-     AddressSpace) = cmd.get_models('P2SVpnGateway',
+     AddressSpace,
+     RoutingConfiguration,
+     PropagatedRouteTable) = cmd.get_models('P2SVpnGateway',
                                     'SubResource',
                                     'P2SConnectionConfiguration',
-                                    'AddressSpace')
+                                    'AddressSpace',
+                                    'RoutingConfiguration',
+                                    'PropagatedRouteTable')
+
+    propagated_route_tables = PropagatedRouteTable(
+        labels=labels,
+        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables]
+    )
+    routing_configuration = RoutingConfiguration(
+        associated_route_table=SubResource(id=associated_route_table),
+        propagated_route_tables=propagated_route_tables
+    )
     gateway = P2SVpnGateway(
         location=location,
         tags=tags,
@@ -770,7 +784,8 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                 vpn_client_address_pool=AddressSpace(
                     address_prefixes=address_space
                 ),
-                name=p2s_conn_config_name
+                name=p2s_conn_config_name,
+                routing_configuration=routing_configuration
             )
         ]
     )

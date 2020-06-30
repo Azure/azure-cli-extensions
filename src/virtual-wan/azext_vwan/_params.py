@@ -207,4 +207,7 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
         c.argument('vpn_server_config', help='Name or ID of a vpn server configuration.', validator=get_network_resource_name_or_id('vpn_server_config', 'vpnServerConfigurations'))
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
+        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
+        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
     # endregion
