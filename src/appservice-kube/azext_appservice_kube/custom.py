@@ -134,8 +134,7 @@ def update_kube_environment(cmd,
 
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                             app_service_environment=None, kube_environment=None, sku='B1', kube_sku=KUBE_DEFAULT_SKU,
-                            number_of_workers=None, location=None, tags=None, no_wait=False):
-    debugpy.breakpoint()                            
+                            number_of_workers=None, location=None, tags=None, no_wait=False):                          
     HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile = cmd.get_models(
         'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile')
     sku = _normalize_sku(sku)
@@ -633,7 +632,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                            '--functions-version. Dotnet version will be %s for this function app.',
                            FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime])
 
-    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)    
+    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)   
 
     if is_linux:
         functionapp_def.kind = 'functionapp,linux'
