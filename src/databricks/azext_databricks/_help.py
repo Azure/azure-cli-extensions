@@ -9,6 +9,11 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
+helps['databricks'] = """
+    type: group
+    short-summary: Manage databricks workspaces.
+"""
+
 helps['databricks workspace'] = """
     type: group
     short-summary: Commands to manage databricks workspace.
