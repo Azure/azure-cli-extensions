@@ -145,5 +145,5 @@ helps['databricks workspace vnet-peering wait'] = """
     examples:
         - name: Pause executing next line of CLI script until the Databricks workspace vnet peering is successfully provisioned.
           text: az databricks workspace vnet-peering wait --resource-group MyResourceGroup --workspace-name MyWorkspace \\
-                -n MyPeering --created
+                --name MyPeering --created
 """
