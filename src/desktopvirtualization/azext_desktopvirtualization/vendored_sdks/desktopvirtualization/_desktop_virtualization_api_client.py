@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 from ._configuration import DesktopVirtualizationAPIClientConfiguration
 from .operations import OperationOperations
 from .operations import WorkspaceOperations
-from .operations import ApplicationGroupAssignmentOperations
 from .operations import ApplicationGroupOperations
 from .operations import StartMenuItemOperations
 from .operations import ApplicationOperations
@@ -28,7 +27,6 @@ from .operations import DesktopOperations
 from .operations import HostPoolOperations
 from .operations import UserSessionOperations
 from .operations import SessionHostOperations
-from .operations import ActiveApplicationOperations
 from . import models
 
 
@@ -39,8 +37,6 @@ class DesktopVirtualizationAPIClient(object):
     :vartype operation: desktop_virtualization_api_client.operations.OperationOperations
     :ivar workspace: WorkspaceOperations operations
     :vartype workspace: desktop_virtualization_api_client.operations.WorkspaceOperations
-    :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: desktop_virtualization_api_client.operations.ApplicationGroupAssignmentOperations
     :ivar application_group: ApplicationGroupOperations operations
     :vartype application_group: desktop_virtualization_api_client.operations.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
@@ -55,8 +51,6 @@ class DesktopVirtualizationAPIClient(object):
     :vartype user_session: desktop_virtualization_api_client.operations.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
     :vartype session_host: desktop_virtualization_api_client.operations.SessionHostOperations
-    :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: desktop_virtualization_api_client.operations.ActiveApplicationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -86,8 +80,6 @@ class DesktopVirtualizationAPIClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.workspace = WorkspaceOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.application_group_assignment = ApplicationGroupAssignmentOperations(
-            self._client, self._config, self._serialize, self._deserialize)
         self.application_group = ApplicationGroupOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.start_menu_item = StartMenuItemOperations(
@@ -101,8 +93,6 @@ class DesktopVirtualizationAPIClient(object):
         self.user_session = UserSessionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.session_host = SessionHostOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.active_application = ActiveApplicationOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

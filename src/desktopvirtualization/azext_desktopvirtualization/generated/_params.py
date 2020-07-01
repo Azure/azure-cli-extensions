@@ -73,8 +73,8 @@ def load_arguments(self, _):
         c.argument('description', help='Description of ApplicationGroup.')
         c.argument('friendly_name', help='Friendly name of ApplicationGroup.')
         c.argument('host_pool_arm_path', help='HostPool arm path of ApplicationGroup.')
-        c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']), help='Resource Type of '
-                   'ApplicationGroup.')
+        c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']), help='Resource Type of A'
+                   'pplicationGroup.')
 
     with self.argument_context('desktopvirtualization applicationgroup update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -94,13 +94,13 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization hostpool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the specifie'
+                   'd resource group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group')
+        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the specifie'
+                   'd resource group')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -108,40 +108,44 @@ def load_arguments(self, _):
         c.argument('description', help='Description of HostPool.')
         c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled']),
                    help='HostPool type for desktop.')
-        c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help=''
-                   'PersonalDesktopAssignment type for HostPool.')
+        c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help='PersonalD'
+                   'esktopAssignment type for HostPool.')
         c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
         c.argument('max_session_limit', help='The max session limit of HostPool.')
-        c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help=''
-                   'The type of the load balancer.')
+        c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help='Th'
+                   'e type of the load balancer.')
         c.argument('ring', help='The ring number of HostPool.')
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
         c.argument('registration_info', action=AddDesktopvirtualizationHostpoolCreateRegistrationInfo, nargs='+',
                    help='The registration info of HostPool.')
         c.argument('vm_template', help='VM template for sessionhosts configuration within hostpool.')
         c.argument('sso_context', help='Path to keyvault containing ssoContext secret.')
+        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']), help='T'
+                   'he type of preferred application group type, default to Desktop Application Group')
 
     with self.argument_context('desktopvirtualization hostpool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the specifie'
+                   'd resource group', id_part='name')
         c.argument('tags', tags_type)
         c.argument('friendly_name', help='Friendly name of HostPool.')
         c.argument('description', help='Description of HostPool.')
         c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
         c.argument('max_session_limit', help='The max session limit of HostPool.')
-        c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help=''
-                   'PersonalDesktopAssignment type for HostPool.')
-        c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help=''
-                   'The type of the load balancer.')
+        c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help='PersonalD'
+                   'esktopAssignment type for HostPool.')
+        c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help='Th'
+                   'e type of the load balancer.')
         c.argument('ring', help='The ring number of HostPool.')
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
         c.argument('registration_info', action=AddDesktopvirtualizationHostpoolUpdateRegistrationInfo, nargs='+',
                    help='The registration info of HostPool.')
         c.argument('sso_context', help='Path to keyvault containing ssoContext secret.')
+        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']), help='T'
+                   'he type of preferred application group type, default to Desktop Application Group')
 
     with self.argument_context('desktopvirtualization hostpool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the specifie'
+                   'd resource group', id_part='name')
         c.argument('force', arg_type=get_three_state_flag(), help='Force flag to delete sessionHost.')
