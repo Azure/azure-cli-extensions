@@ -6,7 +6,7 @@
 import unittest
 from enum import Enum, auto
 
-from azure.cli.core.mock import DummyCli
+from azure.cli.core.mock_cli import DummyCli
 from azure.cli.core import MainCommandsLoader
 
 from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
