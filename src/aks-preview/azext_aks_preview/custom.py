@@ -827,6 +827,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if location is None:
         location = rg_location
 
+    if client.get(resource_group_name, name):
+        raise CLIError('Cluster {} already exists in {}'.format(name, resource_group_name))
+
     # Flag to be removed, kept for back-compatibility only. Remove the below section
     # when we deprecate the enable-vmss flag
     if enable_vmss:
