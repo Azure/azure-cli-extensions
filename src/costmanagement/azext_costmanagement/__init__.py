@@ -9,8 +9,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-# from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
-from azext_costmanagement.manual._help import helps  # pylint: disable=unused-import
+from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
 
 
 class CostManagementClientCommandsLoader(AzCommandsLoader):
@@ -21,8 +20,8 @@ class CostManagementClientCommandsLoader(AzCommandsLoader):
         costmanagement_custom = CliCommandType(
             operations_tmpl='azext_costmanagement.custom#{}',
             client_factory=cf_costmanagement)
-        super(CostManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                 custom_command_type=costmanagement_custom)
+        parent = super(CostManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=costmanagement_custom)
 
     def load_command_table(self, args):
         from azext_costmanagement.generated.commands import load_command_table
