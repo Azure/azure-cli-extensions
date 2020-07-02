@@ -32,7 +32,7 @@ setup(
     license='MIT',
     author='Abhishek Kumar',
     author_email='abkmr@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/maintenance',
     classifiers=CLASSIFIERS,
     package_data={'azext_maintenance': ['azext_metadata.json']},
     packages=find_packages(exclude=['tests']),

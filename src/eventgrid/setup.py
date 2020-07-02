@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Ashraf Hamad.',
     author_email='ahamad@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/eventgrid',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_eventgrid': ['azext_metadata.json']},
