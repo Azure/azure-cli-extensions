@@ -128,6 +128,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
         self.kwargs.update({
             'workspace_name': self.create_random_name(prefix='databricks', length=24),
             'peering_name': self.create_random_name(prefix='peering', length=24),
+            'peering_name_network': self.create_random_name(prefix='peering_n', length=24),
             'vnet_name': self.create_random_name(prefix='vnet', length=24),
             'loc': 'westus'
         })
@@ -152,7 +153,8 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('useRemoteGateways', False),
             self.check('allowVirtualNetworkAccess', True),
             self.check('name', '{peering_name}'),
-            self.check('remoteVirtualNetwork.id', '{vnet_id}')
+            self.check('remoteVirtualNetwork.id', '{vnet_id}'),
+            self.check('peeringState', 'Initiated')
         ])
         self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
 
@@ -163,10 +165,12 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('useRemoteGateways', False),
             self.check('allowVirtualNetworkAccess', True),
             self.check('name', '{peering_name}'),
-            self.check('remoteVirtualNetwork.id', '{vnet_id}')
+            self.check('remoteVirtualNetwork.id', '{vnet_id}'),
+            self.check('peeringState', 'Initiated')
         ]).get_output_in_json()
 
         self.kwargs['peering_id'] = peering['id']
+        self.kwargs['databricks_vnet_id'] = peering['databricksVirtualNetwork']['id']
 
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
             self.check('length(@)', 1),
@@ -197,6 +201,23 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('name', '{peering_name}')
         ])
 
+        # network side init
+        self.cmd('az network vnet peering create -g {rg} -n {peering_name_network} --vnet-name {vnet_name} --remote-vnet {databricks_vnet_id}', checks=[
+            self.check('name', '{peering_name_network}'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('peeringState', 'Connected')
+        ])
+
+        self.cmd('az databricks workspace vnet-peering show -n {peering_name} --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('peeringState', 'Connected')  # peering established
+        ])
+
+        self.cmd('az network vnet peering delete -g {rg} -n {peering_name_network} --vnet-name {vnet_name}')
+        self.cmd('az databricks workspace vnet-peering show -n {peering_name} --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('peeringState', 'Disconnected')  # peering disconnected
+        ])
+
+        # delete the peering
         self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
             self.check('length(@)', 0)
