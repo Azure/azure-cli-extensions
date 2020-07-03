@@ -1292,9 +1292,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
 
     if enable_aad:
-        if instance.aad_profile is None:
-            raise CLIError('Cannot specify "--enable-aad" for a non-AAD cluster')
-        if instance.aad_profile.managed:
+        if instance.aad_profile is not None and instance.aad_profile.managed:
             raise CLIError('Cannot specify "--enable-aad" if managed AAD is already enabled')
         instance.aad_profile = ManagedClusterAADProfile(
             managed=True

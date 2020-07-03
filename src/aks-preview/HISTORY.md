@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.56
++++++
+* Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
+
 0.4.55
 +++++
 * Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization
