@@ -390,7 +390,14 @@ def _v3_route_table_client(cli_ctx):
 def create_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                        location=None, tags=None, scale_unit=None,
                        asn=None, bgp_peering_address=None, peer_weight=None, no_wait=False):
+    from msrestazure.azure_exceptions import CloudError
+    from .vendored_sdks.v2018_08_01.v2018_08_01.models.error_py3 import ErrorException
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
+    try:
+        client.get(resource_group_name, gateway_name)
+        raise CLIError('{} VPN gateway already exist. Please delete it first.'.format(gateway_name))
+    except (CloudError, ErrorException):
+        pass
     VpnGateway, SubResource = cmd.get_models('VpnGateway', 'SubResource')
     gateway = VpnGateway(
         location=location,
