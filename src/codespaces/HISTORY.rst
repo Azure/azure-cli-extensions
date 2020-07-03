@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* Added 60 minute auto-suspend timeout option
+
 0.2.0
 ++++++
 * Update to latest resource provider API version, 2020-05-26.

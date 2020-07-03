@@ -109,6 +109,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--aad-tenant-id 00000000-0000-0000-0000-000000000002 -o json'
         self.cmd(update_cmd, expect_failure=True)
 
+    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_and_update_with_managed_aad_enable_azure_rbac(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--vm-set-type VirtualMachineScaleSets  AvailabilitySet -c 1 ' \
+                     '--enable-aad --enable-azure-rbac --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.enableAzureRBAC', True),
+            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+        ])
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ingress_appgw_addon(self, resource_group, resource_group_location):
