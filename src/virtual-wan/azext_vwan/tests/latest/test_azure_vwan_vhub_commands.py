@@ -184,7 +184,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
 
-
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway', location='westus')
     def test_azure_vwan_vpn_gateway(self, resource_group):
         from knack.util import CLIError
