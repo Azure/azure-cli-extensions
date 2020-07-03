@@ -19,7 +19,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --location --tags --certs-input-path
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/clitestat000002?api-version=2018-09-01-preview
   response:
@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Jun 2020 18:03:18 GMT
+      - Thu, 02 Jul 2020 08:17:31 GMT
       expires:
       - '-1'
       location:
@@ -47,7 +47,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -65,7 +65,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/clitestat000002?api-version=2018-09-01-preview
   response:
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Jun 2020 18:03:19 GMT
+      - Thu, 02 Jul 2020 08:17:32 GMT
       expires:
       - '-1'
       pragma:
@@ -111,57 +111,9 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/ap1","name":"ap1","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://ap1.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/ap2","name":"ap2","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://ap2.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/ap4","name":"ap4","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://ap4.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/clitestat000002","name":"clitestat000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestat000002.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/pshtest3","name":"pshtest3","type":"Microsoft.Attestation/attestationProviders","location":"East
-        US2","tags":null,"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://pshtest3.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/pshtest4","name":"pshtest4","type":"Microsoft.Attestation/attestationProviders","location":"East
-        US2","tags":{"Test":"true","CreationYear":"2020"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://pshtest4.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Attestation/attestationProviders/pshtest5","name":"pshtest5","type":"Microsoft.Attestation/attestationProviders","location":"East
-        US2","tags":null,"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://pshtest5.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg-east/providers/Microsoft.Attestation/attestationProviders/ap2","name":"ap2","type":"Microsoft.Attestation/attestationProviders","location":"centralus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://ap2.cus.attest.azure.net"}}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3042'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 23 Jun 2020 18:03:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-original-request-ids:
-      - ''
-      - ''
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - attestation list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group
-      User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/clitestat000002","name":"clitestat000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestat000002.eus2.attest.azure.net"}}]}'
@@ -173,7 +125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Jun 2020 18:03:20 GMT
+      - Thu, 02 Jul 2020 08:17:34 GMT
       expires:
       - '-1'
       pragma:
@@ -191,6 +143,182 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '0'
+      date:
+      - Thu, 02 Jul 2020 08:17:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '0'
+      date:
+      - Thu, 02 Jul 2020 08:17:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '0'
+      date:
+      - Thu, 02 Jul 2020 08:17:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '0'
+      date:
+      - Thu, 02 Jul 2020 08:17:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+    status:
+      code: 500
+      message: Internal Server Error
 - request:
     body: null
     headers:
@@ -207,7 +335,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --yes
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/clitestat000002?api-version=2018-09-01-preview
   response:
@@ -219,7 +347,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 23 Jun 2020 18:03:24 GMT
+      - Thu, 02 Jul 2020 08:17:50 GMT
       expires:
       - '-1'
       pragma:
@@ -249,7 +377,7 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.3.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.8.1 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.8.0 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
   response:
@@ -263,7 +391,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Jun 2020 18:03:24 GMT
+      - Thu, 02 Jul 2020 08:17:50 GMT
       expires:
       - '-1'
       pragma:

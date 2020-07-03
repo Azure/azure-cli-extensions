@@ -28,12 +28,14 @@ def setup(test, rg):
 # EXAMPLE: AttestationProviders_Create
 @try_manual
 def step_attestationproviders_create(test, rg):
+    test.kwargs['cert_path'] = os.path.join(TEST_DIR, 'policySigningCerts.pem')
+
     test.cmd('az attestation create '
              '--name "{myattestation}" '
              '--resource-group "{rg}" '
              '--location "eastus2" '
              '--tags aKey=aValue anotherKey=anotherValue '
-             '--certs-input-path "src/attestation/azext_attestation/tests/latest/policySigningCerts.pem"',
+             '--certs-input-path "{cert_path}"',
              checks=[
                  JMESPathCheck('name', test.kwargs.get('myattestation', '')),
                  JMESPathCheck('resourceGroup', rg),

@@ -15,8 +15,8 @@ from knack.util import CLIError
 def attestation_attestation_provider_list(cmd, client,
                                           resource_group_name=None):
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list()
+        return client.list_by_resource_group(resource_group_name=resource_group_name).value
+    return client.list().value
 
 
 def attestation_attestation_provider_show(cmd, client,
@@ -33,7 +33,9 @@ def attestation_attestation_provider_create(cmd, client,
                                             tags=None,
                                             attestation_policy=None,
                                             certs_input_path=None):
-    certs = parse_pem(certs_input_path)
+    certs = []
+    if certs_input_path:
+        certs = parse_pem(certs_input_path)
     return client.create(resource_group_name=resource_group_name,
                          provider_name=provider_name,
                          location=location,
