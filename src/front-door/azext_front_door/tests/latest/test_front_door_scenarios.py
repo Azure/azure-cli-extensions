@@ -16,7 +16,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
             'rule2': 'rule2'
         })
         self.cmd('network front-door create -g {rg} -n {front_door} --backend-address 202.120.2.3')
-        self.cmd('network dns zone create -g {rg} -n {front_door}.azurefd.net')
-        self.cmd('network dns record-set cname set-record -g {rg} -z {front_door}.azurefd.net -n MyRecordSet -c {frontend_endpoint}')
+        self.cmd('network dns zone create -g {rg} -n {frontend_endpoint}')
+        self.cmd('network dns record-set cname set-record -g {rg} -c {front_door}.azurefd.net -n MyRecordSet -z {frontend_endpoint}')
         self.cmd('network front-door frontend-endpoint create -g {rg} -f {front_door} -n myclitest '
                  '--host-name {frontend_endpoint} --session-affinity-enabled')
