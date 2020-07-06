@@ -2454,7 +2454,11 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
-        addon = ADDONS[addon_arg]
+        if addon_arg in ADDONS:
+            addon = ADDONS[addon_arg]
+        else:
+            raise KeyError(f"Key {addon_arg} not in ADDONS dict.")
+        
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag
             addon += os_type
