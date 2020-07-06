@@ -395,9 +395,10 @@ def create_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     try:
         client.get(resource_group_name, gateway_name)
-        raise CLIError('{} VPN gateway already exist. Please delete it first.'.format(gateway_name))
     except (CloudError, ErrorException):
         pass
+    else:
+        raise CLIError('{} VPN gateway already exist. Please delete it first.'.format(gateway_name))
     VpnGateway, SubResource = cmd.get_models('VpnGateway', 'SubResource')
     gateway = VpnGateway(
         location=location,
