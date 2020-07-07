@@ -61,30 +61,17 @@ export data_parts=`fdisk -l ${data_disk} | grep ^/  | awk '{print $1}'`
 echo "Your data partitions are: ${data_parts}"
 
 #create mountpoints for all the data parts
-for i in ${data_parts} ; do echo "Creating mountpoint for ${i}" ; mkdir -p /tmp${i}; done
+for i in ${data_parts} ; do mkdir /tmp${i}; done
 
 #mount all partitions
-for i in ${data_parts} ; do echo "Mounting ${i} on /tmp/${i}" ; mount ${i} /tmp${i}; done
-export luksheaderpath=`find /tmp -name osluksheader` 
-echo "The luksheader part is ${luksheaderpath}"
-export boot_part=`df -h $luksheaderpath | grep ^/ |awk '{print $1}'`
-echo "The boot partition on the data disk is ${boot_part}"
-}
+for i in ${data_parts} ; do mount ${i} /tmp${i}; done
 
-mount_cmd ()
-{
-mount_cmd=`mount -o nouuid 2> /dev/null`
-if [ $? -gt 0 ]
-then
-        export mount_cmd="mount"
-else
-        export mount_cmd="mount -o nouuid"
-fi
+export luksheaderpath=`find /tmp -name osluksheader` 
+export boot_part=`df -h $luksheaderpath | grep ^/ |awk '{print $1}'`
 }
 
 mount_lvm ()
 {
-echo "Mounting LVM structures found on ${root_part}"
 ${mount_cmd} /dev/rootvg/rootlv /investigateroot
 ${mount_cmd} /dev/rootvg/varlv /investigateroot/var/
 ${mount_cmd} /dev/rootvg/homelv /investigateroot/home
@@ -93,30 +80,27 @@ ${mount_cmd} /dev/rootvg/usrlv /investigateroot/usr
 ${mount_cmd} /dev/rootvg/tmplv /investigateroot/tmp
 }
 
-unlock_root ()
+mount_cmd ()
 {
-echo "unlocking root with command: cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${root_part} osencrypt"
-cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${root_part} osencrypt
-}
-
-verify_root_unlock ()
-{
-lsblk -f  | grep osencrypt
+export mount_cmd=`mount -o nouuid 2> /dev/null`
 if [ $? -gt 0 ]
 then
-        echo "device osencrypt was not found"
-		exit
+        export mount_cmd="mount"
 else
-        echo "device osencrypt found"
+        export mount_cmd="mount -o nouuid"
 fi
+}
+
+unlock_root ()
+{
+cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName_1_0 --header /investigateboot/luks/osluksheader ${root_part} osencrypt
 }
 
 mount_encrypted ()
 {
 if [ -z ${lvm_part} ]
 then
-echo "The data disk doesn't have LVM"
-echo "Mounting /dev/mapper/osencrypt on /investigateroot"
+
 ${mount_cmd} /dev/mapper/osencrypt /investigateroot
 else
         sleep 5
@@ -124,22 +108,11 @@ else
 fi
 }
 
-mount_boot ()
-{
-echo "Unmounting the boot partition ${boot_part} on the data drive from the temp mount"
-umount -l ${boot_part}
-echo "Mounting the boot partition ${boot_part} on /investigateboot"
-${mount_cmd} ${boot_part} /investigateboot/
-}
-
 remount_boot ()
 {
-echo "Unmounting the boot partition ${boot_part} on the data drive from the temp mount"
 umount -l ${boot_part}
-echo "Mounting the boot partition ${boot_part} on /investigateroot/boot"
 ${mount_cmd} ${boot_part} /investigateroot/boot
 }
-
 
 duplication_validation
 create_mountpoints
@@ -148,8 +121,6 @@ check_local_lvm
 data_os_lvm_check
 mount_cmd
 locate_mount_data_boot
-mount_boot
 unlock_root
-verify_root_unlock
 mount_encrypted
 remount_boot

@@ -214,10 +214,10 @@ def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, re
 
     try:
         if encryption_type is Encryption.SINGLE_WITH_KEK:
-            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume} --encrypt-format-all' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
         elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
-            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume} --encrypt-format-all' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
         logger.info('Unlocking attached copied disk...')
         _call_az_command(install_ade_extension_command)
