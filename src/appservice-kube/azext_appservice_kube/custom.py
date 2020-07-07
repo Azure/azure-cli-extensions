@@ -134,7 +134,7 @@ def update_kube_environment(cmd,
 
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                             app_service_environment=None, kube_environment=None, sku='B1', kube_sku=KUBE_DEFAULT_SKU,
-                            number_of_workers=None, location=None, tags=None, no_wait=False):                          
+                            number_of_workers=None, location=None, tags=None, no_wait=False):
     HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile = cmd.get_models(
         'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile')
     sku = _normalize_sku(sku)
