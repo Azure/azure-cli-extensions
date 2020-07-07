@@ -9,7 +9,7 @@ Updating the vendored SDK
 -------------------------
 
 ```
-cd /specification/vsonline/resource-manager
+cd specification/codespaces/resource-manager
 autorest --python readme.md
 ```
 
