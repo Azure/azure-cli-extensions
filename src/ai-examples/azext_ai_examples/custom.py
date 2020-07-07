@@ -13,8 +13,6 @@ from azure.cli.core import telemetry as telemetry_core
 from azure.cli.core import __version__ as core_version
 from azure.cli.core._help import HelpExample
 
-DEFAULT_GUID = "00000000-0000-0000-0000-000000000000"
-
 
 # Commands
 def check_connection_aladdin():
@@ -81,18 +79,19 @@ def ping_aladdin_service():
 
 def call_aladdin_service(query):
     version = str(parse_version(core_version))
-
-    # Only pull in the contextual values if we have consent
-    telemetry_consent = telemetry_core.is_telemetry_enabled()
-    correlation_id = telemetry_core._session.correlation_id if telemetry_consent else DEFAULT_GUID  # pylint: disable=protected-access
-    subscription_id = telemetry_core._get_azure_subscription_id() if telemetry_consent else DEFAULT_GUID  # pylint: disable=protected-access
+    correlation_id = telemetry_core._session.correlation_id   # pylint: disable=protected-access
+    subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
 
     context = {
         "versionNumber": version,
-        "correlationId": correlation_id,
-        # In case the user is not logged in
-        "subscriptionId": subscription_id if subscription_id is not None else DEFAULT_GUID
     }
+
+    # Only pull in the contextual values if we have consent
+    if telemetry_core.is_telemetry_enabled():
+        context['correlationId'] = correlation_id
+
+    if telemetry_core.is_telemetry_enabled() and subscription_id is not None:
+        context['subscriptionId'] = subscription_id
 
     api_url = 'https://app.aladdin.microsoft.com/api/v1.0/examples'
     headers = {'Content-Type': 'application/json'}
