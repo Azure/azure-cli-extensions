@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.0
++++++
+* az databricks workspace vnet-peering: support vnet peering operations for workspaces
+
 0.3.0
 +++++
 * az databricks workspace create/update: add customer-managed key feature

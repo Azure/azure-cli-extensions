@@ -22,7 +22,7 @@ def load_arguments(self, _):
                    validator=validate_codespace_name_or_id)
         c.argument('sku_name', options_list=['--instance-type'], help='Instance Type')
         c.argument('autoshutdown_delay', options_list=['--suspend-after'],
-                   arg_type=get_enum_type(['5', '30', '120']),
+                   arg_type=get_enum_type(['5', '30', '60', '120']),
                    help="Automatically suspend the inactive Codespace after this many minutes.")
 
     with self.argument_context('codespace plan') as c:
@@ -30,7 +30,7 @@ def load_arguments(self, _):
         c.argument('subnet_id', arg_group="Network", options_list=['--subnet'],
                    help="Resource ID of an existing subnet. If specified, all Codespaces in this plan will be created in this subnet. The subnet must be in the same region as the plan.")
         c.argument('default_autoshutdown_delay', arg_group="Plan Default", options_list=['--default-suspend-after'],
-                   arg_type=get_enum_type(['5', '30', '120']),
+                   arg_type=get_enum_type(['5', '30', '60', '120']),
                    help="Default minutes Codespaces in this plan should suspend after.")
         c.argument('default_sku_name', arg_group="Plan Default", options_list=['--default-instance-type'], help="Default Instance Type for Codespaces in this plan.")
 

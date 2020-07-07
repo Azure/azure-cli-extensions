@@ -38,3 +38,18 @@ class ProvisioningState(str, Enum):
     failed = "Failed"
     succeeded = "Succeeded"
     updating = "Updating"
+
+
+class PeeringProvisioningState(str, Enum):
+
+    succeeded = "Succeeded"
+    updating = "Updating"
+    deleting = "Deleting"
+    failed = "Failed"
+
+
+class PeeringState(str, Enum):
+
+    initiated = "Initiated"
+    connected = "Connected"
+    disconnected = "Disconnected"

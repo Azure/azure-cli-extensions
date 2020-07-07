@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.0
+++++++
+* `az network firewall create/update`: support multiple ip addresses for vhub firewall.
+* `az network firewall policy rule-collection-group rule-collection`: support multiple DNAT rules and ip groups.
 
 0.4.0
 ++++++

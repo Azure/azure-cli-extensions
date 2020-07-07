@@ -13,6 +13,24 @@ from msrest.serialization import Model
 from msrest.exceptions import HttpOperationError
 
 
+class AddressSpace(Model):
+    """AddressSpace contains an array of IP address ranges that can be used by
+    subnets of the virtual network.
+
+    :param address_prefixes: A list of address blocks reserved for this
+     virtual network in CIDR notation.
+    :type address_prefixes: list[str]
+    """
+
+    _attribute_map = {
+        'address_prefixes': {'key': 'addressPrefixes', 'type': '[str]'},
+    }
+
+    def __init__(self, **kwargs):
+        super(AddressSpace, self).__init__(**kwargs)
+        self.address_prefixes = kwargs.get('address_prefixes', None)
+
+
 class CloudError(Model):
     """CloudError.
     """
@@ -369,6 +387,141 @@ class TrackedResource(Resource):
         super(TrackedResource, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
         self.location = kwargs.get('location', None)
+
+
+class VirtualNetworkPeering(Model):
+    """Peerings in a VirtualNetwork resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param allow_virtual_network_access: Whether the VMs in the local virtual
+     network space would be able to access the VMs in remote virtual network
+     space.
+    :type allow_virtual_network_access: bool
+    :param allow_forwarded_traffic: Whether the forwarded traffic from the VMs
+     in the local virtual network will be allowed/disallowed in remote virtual
+     network.
+    :type allow_forwarded_traffic: bool
+    :param allow_gateway_transit: If gateway links can be used in remote
+     virtual networking to link to this virtual network.
+    :type allow_gateway_transit: bool
+    :param use_remote_gateways: If remote gateways can be used on this virtual
+     network. If the flag is set to true, and allowGatewayTransit on remote
+     peering is also true, virtual network will use gateways of remote virtual
+     network for transit. Only one peering can have this flag set to true. This
+     flag cannot be set if virtual network already has a gateway.
+    :type use_remote_gateways: bool
+    :param databricks_virtual_network:  The remote virtual network should be
+     in the same region. See here to learn more
+     (https://docs.microsoft.com/en-us/azure/databricks/administration-guide/cloud-configurations/azure/vnet-peering).
+    :type databricks_virtual_network:
+     ~azure.mgmt.databricks.models.VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork
+    :param databricks_address_space: The reference to the databricks virtual
+     network address space.
+    :type databricks_address_space: ~azure.mgmt.databricks.models.AddressSpace
+    :param remote_virtual_network: Required.  The remote virtual network
+     should be in the same region. See here to learn more
+     (https://docs.microsoft.com/en-us/azure/databricks/administration-guide/cloud-configurations/azure/vnet-peering).
+    :type remote_virtual_network:
+     ~azure.mgmt.databricks.models.VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork
+    :param remote_address_space: The reference to the remote virtual network
+     address space.
+    :type remote_address_space: ~azure.mgmt.databricks.models.AddressSpace
+    :ivar peering_state: The status of the virtual network peering. Possible
+     values include: 'Initiated', 'Connected', 'Disconnected'
+    :vartype peering_state: str or ~azure.mgmt.databricks.models.PeeringState
+    :ivar provisioning_state: The provisioning state of the virtual network
+     peering resource. Possible values include: 'Succeeded', 'Updating',
+     'Deleting', 'Failed'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.databricks.models.PeeringProvisioningState
+    :ivar name: Name of the virtual network peering resource
+    :vartype name: str
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar type: type of the virtual network peering resource
+    :vartype type: str
+    """
+
+    _validation = {
+        'remote_virtual_network': {'required': True},
+        'peering_state': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'name': {'readonly': True},
+        'id': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'allow_virtual_network_access': {'key': 'properties.allowVirtualNetworkAccess', 'type': 'bool'},
+        'allow_forwarded_traffic': {'key': 'properties.allowForwardedTraffic', 'type': 'bool'},
+        'allow_gateway_transit': {'key': 'properties.allowGatewayTransit', 'type': 'bool'},
+        'use_remote_gateways': {'key': 'properties.useRemoteGateways', 'type': 'bool'},
+        'databricks_virtual_network': {'key': 'properties.databricksVirtualNetwork', 'type': 'VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork'},
+        'databricks_address_space': {'key': 'properties.databricksAddressSpace', 'type': 'AddressSpace'},
+        'remote_virtual_network': {'key': 'properties.remoteVirtualNetwork', 'type': 'VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork'},
+        'remote_address_space': {'key': 'properties.remoteAddressSpace', 'type': 'AddressSpace'},
+        'peering_state': {'key': 'properties.peeringState', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(VirtualNetworkPeering, self).__init__(**kwargs)
+        self.allow_virtual_network_access = kwargs.get('allow_virtual_network_access', None)
+        self.allow_forwarded_traffic = kwargs.get('allow_forwarded_traffic', None)
+        self.allow_gateway_transit = kwargs.get('allow_gateway_transit', None)
+        self.use_remote_gateways = kwargs.get('use_remote_gateways', None)
+        self.databricks_virtual_network = kwargs.get('databricks_virtual_network', None)
+        self.databricks_address_space = kwargs.get('databricks_address_space', None)
+        self.remote_virtual_network = kwargs.get('remote_virtual_network', None)
+        self.remote_address_space = kwargs.get('remote_address_space', None)
+        self.peering_state = None
+        self.provisioning_state = None
+        self.name = None
+        self.id = None
+        self.type = None
+
+
+class VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork(Model):
+    """The remote virtual network should be in the same region. See here to learn
+    more
+    (https://docs.microsoft.com/en-us/azure/databricks/administration-guide/cloud-configurations/azure/vnet-peering).
+
+    :param id: The Id of the databricks virtual network.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(VirtualNetworkPeeringPropertiesFormatDatabricksVirtualNetwork, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+
+
+class VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork(Model):
+    """The remote virtual network should be in the same region. See here to learn
+    more
+    (https://docs.microsoft.com/en-us/azure/databricks/administration-guide/cloud-configurations/azure/vnet-peering).
+
+    :param id: The Id of the remote virtual network.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
 
 
 class Workspace(TrackedResource):

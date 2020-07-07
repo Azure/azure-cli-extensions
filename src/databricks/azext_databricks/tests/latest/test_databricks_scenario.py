@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer)
 from msrestazure.tools import resource_id
-
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class DatabricksClientScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_databricks')
-    @KeyVaultPreparer(location='eastus2euap')
+    @KeyVaultPreparer(location='eastus')
     def test_databricks(self, resource_group, key_vault):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
@@ -30,7 +30,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--location "eastus2euap" '
+                 '--location "eastus" '
                  '--sku premium',
                  checks=[self.check('name', '{workspace_name}'),
                          self.check('sku.name', 'premium')])
@@ -119,3 +119,106 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {custom_workspace_name} '
                  '-y',
                  checks=[])
+
+
+class DatabricksVNetPeeringScenarioTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_vnet')
+    def test_databricks_vnet_peering(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='databricks', length=24),
+            'peering_name': self.create_random_name(prefix='peering', length=24),
+            'peering_name_network': self.create_random_name(prefix='peering_n', length=24),
+            'vnet_name': self.create_random_name(prefix='vnet', length=24),
+            'loc': 'westus'
+        })
+
+        vnet = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc}', checks=[
+            self.check('newVNet.location', '{loc}'),
+            self.check('newVNet.name', '{vnet_name}'),
+            self.check('newVNet.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+        self.kwargs['vnet_id'] = vnet['newVNet']['id']
+
+        self.cmd('az databricks workspace create -l {loc} -n {workspace_name} -g {rg} --sku standard', checks=[
+            self.check('location', '{loc}'),
+            self.check('name', '{workspace_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # use vnet name to create
+        self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_name}', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', False),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', True),
+            self.check('name', '{peering_name}'),
+            self.check('remoteVirtualNetwork.id', '{vnet_id}'),
+            self.check('peeringState', 'Initiated')
+        ])
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+
+        # user vnet id to create
+        peering = self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_id}', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', False),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', True),
+            self.check('name', '{peering_name}'),
+            self.check('remoteVirtualNetwork.id', '{vnet_id}'),
+            self.check('peeringState', 'Initiated')
+        ]).get_output_in_json()
+
+        self.kwargs['peering_id'] = peering['id']
+        self.kwargs['databricks_vnet_id'] = peering['databricksVirtualNetwork']['id']
+
+        self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('length(@)', 1),
+            self.check('[0].name', '{peering_name}')
+        ])
+        self.cmd('az databricks workspace vnet-peering show -n {peering_name} --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', False),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', True),
+            self.check('name', '{peering_name}'),
+            self.check('remoteVirtualNetwork.id', '{vnet_id}')
+        ])
+
+        self.cmd('az databricks workspace vnet-peering update -n {peering_name} --workspace-name {workspace_name} -g {rg} --allow-gateway-transit --allow-virtual-network-access false', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', True),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', False),
+            self.check('name', '{peering_name}')
+        ])
+
+        self.cmd('az databricks workspace vnet-peering update -n {peering_name} --workspace-name {workspace_name} -g {rg} --allow-gateway-transit false', checks=[
+            self.check('allowForwardedTraffic', False),
+            self.check('allowGatewayTransit', False),
+            self.check('useRemoteGateways', False),
+            self.check('allowVirtualNetworkAccess', False),
+            self.check('name', '{peering_name}')
+        ])
+
+        # network side init
+        self.cmd('az network vnet peering create -g {rg} -n {peering_name_network} --vnet-name {vnet_name} --remote-vnet {databricks_vnet_id}', checks=[
+            self.check('name', '{peering_name_network}'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('peeringState', 'Connected')
+        ])
+
+        self.cmd('az databricks workspace vnet-peering show -n {peering_name} --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('peeringState', 'Connected')  # peering established
+        ])
+
+        self.cmd('az network vnet peering delete -g {rg} -n {peering_name_network} --vnet-name {vnet_name}')
+        self.cmd('az databricks workspace vnet-peering show -n {peering_name} --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('peeringState', 'Disconnected')  # peering disconnected
+        ])
+
+        # delete the peering
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+        self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('length(@)', 0)
+        ])
