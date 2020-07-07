@@ -14,21 +14,20 @@ import jwt
 from knack.util import CLIError
 
 
-def attestation_attestation_provider_list(cmd, client,
-                                          resource_group_name=None):
+def attestation_attestation_provider_list(client, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name).value
     return client.list().value
 
 
-def attestation_attestation_provider_show(cmd, client,
+def attestation_attestation_provider_show(client,
                                           resource_group_name,
                                           provider_name):
     return client.get(resource_group_name=resource_group_name,
                       provider_name=provider_name)
 
 
-def attestation_attestation_provider_create(cmd, client,
+def attestation_attestation_provider_create(client,
                                             resource_group_name,
                                             provider_name,
                                             location=None,
@@ -46,7 +45,7 @@ def attestation_attestation_provider_create(cmd, client,
                          keys=certs)
 
 
-def attestation_attestation_provider_delete(cmd, client,
+def attestation_attestation_provider_delete(client,
                                             resource_group_name,
                                             provider_name):
     return client.delete(resource_group_name=resource_group_name,
