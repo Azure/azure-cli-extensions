@@ -58,3 +58,13 @@ helps['attestation delete'] = """
         text: |-
                az attestation delete --name "myattestationprovider" --resource-group "MyResourceGroup"
 """
+
+helps['attestation policy'] = """
+    type: group
+    short-summary: Manage the policies
+"""
+
+helps['attestation signer'] = """
+    type: group
+    short-summary: Manage the trusted policy signers
+"""
