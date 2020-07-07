@@ -22,8 +22,7 @@ from azext_ai_did_you_mean_this._const import (
     TELEMETRY_IS_DISABLED_STR,
     TELEMETRY_IS_ENABLED_STR,
     TELEMETRY_MISSING_SUBSCRIPTION_ID_STR,
-    TELEMETRY_MISSING_CORRELATION_ID_STR,
-    UNABLE_TO_CALL_SERVICE_STR
+    TELEMETRY_MISSING_CORRELATION_ID_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 
