@@ -632,7 +632,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                            '--functions-version. Dotnet version will be %s for this function app.',
                            FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime])
 
-    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)   
+    con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
     if is_linux:
         functionapp_def.kind = 'functionapp,linux'
