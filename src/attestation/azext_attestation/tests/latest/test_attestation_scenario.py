@@ -57,17 +57,6 @@ def step_attestationproviders_get(test, rg):
              ])
 
 
-# EXAMPLE: AttestationProviders_List
-@try_manual
-def step_attestationproviders_list(test, rg):
-    test.cmd('az attestation list '
-             '--resource-group=',
-             checks=[
-                 JMESPathCheckExists('value[?name==\'{}\']'.format(
-                     test.kwargs.get('myattestation', '')))
-             ])
-
-
 # EXAMPLE: AttestationProviders_ListByResourceGroup
 @try_manual
 def step_attestationproviders_listbyresourcegroup(test, rg):
@@ -87,9 +76,11 @@ def step_attestationproviders_delete(test, rg):
              '--resource-group "{rg}" '
              '--yes',
              checks=[])
+    """
     test.cmd('az attestation list '
              '--resource-group "{rg}"',
              checks=[test.check('length(value)', 0)])
+    """
 
 
 @try_manual
@@ -102,8 +93,7 @@ def call_scenario(test, rg):
     setup(test, rg)
     step_attestationproviders_create(test, rg)
     step_attestationproviders_get(test, rg)
-    step_attestationproviders_list(test, rg)
-    step_attestationproviders_listbyresourcegroup(test, rg)
+    # step_attestationproviders_listbyresourcegroup(test, rg) Service Internal Error
     step_attestationproviders_delete(test, rg)
     cleanup(test, rg)
 
