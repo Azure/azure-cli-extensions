@@ -15,11 +15,10 @@ try:
     from .error_definition_py3 import ErrorDefinition
     from .vso_account_error_response_py3 import VSOAccountErrorResponse, VSOAccountErrorResponseException
     from .resource_py3 import Resource
-    from .vs_online_account_properties_py3 import VSOnlineAccountProperties
-    from .vs_online_account_py3 import VSOnlineAccount
-    from .vs_online_account_info_py3 import VSOnlineAccountInfo
+    from .vnet_properties_py3 import VnetProperties
     from .resource_provider_operation_display_py3 import ResourceProviderOperationDisplay
     from .resource_provider_operation_definition_py3 import ResourceProviderOperationDefinition
+    from .vso_plan_update_parameters_properties_py3 import VSOPlanUpdateParametersProperties
     from .vso_plan_update_parameters_py3 import VSOPlanUpdateParameters
     from .vso_plan_error_response_py3 import VSOPlanErrorResponse, VSOPlanErrorResponseException
     from .vs_online_plan_properties_py3 import VSOnlinePlanProperties
@@ -34,11 +33,10 @@ except (SyntaxError, ImportError):
     from .error_definition import ErrorDefinition
     from .vso_account_error_response import VSOAccountErrorResponse, VSOAccountErrorResponseException
     from .resource import Resource
-    from .vs_online_account_properties import VSOnlineAccountProperties
-    from .vs_online_account import VSOnlineAccount
-    from .vs_online_account_info import VSOnlineAccountInfo
+    from .vnet_properties import VnetProperties
     from .resource_provider_operation_display import ResourceProviderOperationDisplay
     from .resource_provider_operation_definition import ResourceProviderOperationDefinition
+    from .vso_plan_update_parameters_properties import VSOPlanUpdateParametersProperties
     from .vso_plan_update_parameters import VSOPlanUpdateParameters
     from .vso_plan_error_response import VSOPlanErrorResponse, VSOPlanErrorResponseException
     from .vs_online_plan_properties import VSOnlinePlanProperties
@@ -48,7 +46,6 @@ except (SyntaxError, ImportError):
     from .vs_online_delegate_identity import VSOnlineDelegateIdentity
     from .vs_online_delegate_access_token_request_body import VSOnlineDelegateAccessTokenRequestBody
 from .resource_provider_operation_definition_paged import ResourceProviderOperationDefinitionPaged
-from .vs_online_account_paged import VSOnlineAccountPaged
 from .vs_online_plan_paged import VSOnlinePlanPaged
 from .vs_online_client_enums import (
     SkuTier,
@@ -60,11 +57,10 @@ __all__ = [
     'ErrorDefinition',
     'VSOAccountErrorResponse', 'VSOAccountErrorResponseException',
     'Resource',
-    'VSOnlineAccountProperties',
-    'VSOnlineAccount',
-    'VSOnlineAccountInfo',
+    'VnetProperties',
     'ResourceProviderOperationDisplay',
     'ResourceProviderOperationDefinition',
+    'VSOPlanUpdateParametersProperties',
     'VSOPlanUpdateParameters',
     'VSOPlanErrorResponse', 'VSOPlanErrorResponseException',
     'VSOnlinePlanProperties',
@@ -74,7 +70,6 @@ __all__ = [
     'VSOnlineDelegateIdentity',
     'VSOnlineDelegateAccessTokenRequestBody',
     'ResourceProviderOperationDefinitionPaged',
-    'VSOnlineAccountPaged',
     'VSOnlinePlanPaged',
     'SkuTier',
 ]

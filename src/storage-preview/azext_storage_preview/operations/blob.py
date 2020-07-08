@@ -5,6 +5,7 @@
 
 from __future__ import print_function
 
+from urllib.parse import quote
 from knack.util import CLIError
 from knack.log import get_logger
 
@@ -177,6 +178,10 @@ def rename_directory(client, container_name, new_path, source_path,
          The timeout parameter is expressed in seconds.
 
      """
+
+    # In order to find the required blob, `x-ms-rename-source` in header needs to encode the special character in URL.
+    source_path = quote(source_path)
+
     marker = client.rename_path(container_name, new_path, source_path,
                                 mode=mode, lease_id=lease_id, source_lease_id=source_lease_id,
                                 source_if_modified_since=source_if_modified_since,

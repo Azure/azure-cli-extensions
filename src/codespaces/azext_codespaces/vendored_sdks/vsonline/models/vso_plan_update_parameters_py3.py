@@ -19,14 +19,19 @@ class VSOPlanUpdateParameters(Model):
     :type tags: dict[str, str]
     :param sku: SKU of the service.
     :type sku: ~microsoft.vsonline.models.Sku
+    :param properties: Additional VS Online Plan properties.
+    :type properties:
+     ~microsoft.vsonline.models.VSOPlanUpdateParametersProperties
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'sku': {'key': 'sku', 'type': 'Sku'},
+        'properties': {'key': 'properties', 'type': 'VSOPlanUpdateParametersProperties'},
     }
 
-    def __init__(self, *, tags=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, tags=None, sku=None, properties=None, **kwargs) -> None:
         super(VSOPlanUpdateParameters, self).__init__(**kwargs)
         self.tags = tags
         self.sku = sku
+        self.properties = properties

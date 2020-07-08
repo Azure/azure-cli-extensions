@@ -38,6 +38,32 @@ class ApplicationGatewaySslPredefinedPolicyPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(ApplicationGatewaySslPredefinedPolicyPaged, self).__init__(*args, **kwargs)
+class ApplicationGatewayPrivateLinkResourcePaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`ApplicationGatewayPrivateLinkResource <azure.mgmt.network.v2020_05_01.models.ApplicationGatewayPrivateLinkResource>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[ApplicationGatewayPrivateLinkResource]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ApplicationGatewayPrivateLinkResourcePaged, self).__init__(*args, **kwargs)
+class ApplicationGatewayPrivateEndpointConnectionPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`ApplicationGatewayPrivateEndpointConnection <azure.mgmt.network.v2020_05_01.models.ApplicationGatewayPrivateEndpointConnection>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[ApplicationGatewayPrivateEndpointConnection]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ApplicationGatewayPrivateEndpointConnectionPaged, self).__init__(*args, **kwargs)
 class ApplicationSecurityGroupPaged(Paged):
     """
     A paging container for iterating over a list of :class:`ApplicationSecurityGroup <azure.mgmt.network.v2020_05_01.models.ApplicationSecurityGroup>` object

@@ -8,7 +8,9 @@ from azure.cli.core.commands import CliCommandType
 from .profiles import CUSTOM_VHUB_ROUTE_TABLE
 
 from ._client_factory import (
-    cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs, cf_vpn_gateways, cf_virtual_hub_route_table_v2s)
+    cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs,
+    cf_vpn_gateways, cf_virtual_hub_route_table_v2s, cf_vpn_server_config,
+    cf_p2s_vpn_gateways)
 from ._util import (
     list_network_resource_property, delete_network_resource_property_entry, get_network_resource_property_entry)
 
@@ -53,6 +55,20 @@ def load_command_table(self, _):
         operations_tmpl='azext_vwan.vendored_sdks.v2018_08_01.operations#VpnSitesConfigurationOperations.{}',
         client_factory=cf_vpn_site_configs,
         min_api='2018-08-01'
+    )
+
+    network_vpn_server_config_sdk = CliCommandType(
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_04_01.operations#VpnServerConfigurationsOperations.{}',
+        client_factory=cf_vpn_server_config,
+        resource_type=CUSTOM_VHUB_ROUTE_TABLE,
+        min_api='2020-03-01'
+    )
+
+    network_p2s_vpn_gateway_sdk = CliCommandType(
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_04_01.operations#P2sVpnGatewaysOperations.{}',
+        client_factory=cf_p2s_vpn_gateways,
+        resource_type=CUSTOM_VHUB_ROUTE_TABLE,
+        min_api='2020-03-01'
     )
 
     network_util = CliCommandType(
@@ -140,4 +156,30 @@ def load_command_table(self, _):
 
     with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
         g.command('download', 'download')
+    # endregion
+
+    # region VpnServer
+    with self.command_group('network vpn-server-config', network_vpn_server_config_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
+        g.custom_command('create', 'create_vpn_server_config', supports_no_wait=True)
+        g.custom_command('set', 'create_vpn_server_config', supports_no_wait=True)
+        # due to service limitation, we cannot support update command right now.
+        # g.generic_update_command('update', custom_func_name='update_vpn_server_config', supports_no_wait=True, setter_arg_name='vpn_server_configuration_parameters')
+        g.show_command('show')
+        g.command('delete', 'delete', confirmation=True)
+        g.custom_command('list', 'list_vpn_server_config')
+        g.wait_command('wait')
+
+    with self.command_group('network vpn-server-config ipsec-policy', network_vpn_server_config_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
+        g.custom_command('add', 'add_vpn_server_config_ipsec_policy', supports_no_wait=True)
+        g.custom_command('list', 'list_vpn_server_config_ipsec_policies')
+        g.custom_command('remove', 'remove_vpn_server_config_ipsec_policy', supports_no_wait=True)
+        g.wait_command('wait')
+
+    with self.command_group('network p2s-vpn-gateway', network_p2s_vpn_gateway_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
+        g.custom_command('create', 'create_p2s_vpn_gateway', supports_no_wait=True)
+        g.command('delete', 'delete', confirmation=True)
+        g.custom_command('list', 'list_p2s_vpn_gateways')
+        g.show_command('show')
+        g.generic_update_command('update', custom_func_name='update_p2s_vpn_gateway', supports_no_wait=True, setter_arg_name='p2_svpn_gateway_parameters')
+        g.wait_command('wait')
     # endregion
