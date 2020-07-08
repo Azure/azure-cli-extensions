@@ -44,8 +44,7 @@ setup(
     # TODO: Update author and email, if applicable
     author="Christopher O'Toole",
     author_email='chotool@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions/ai-did-you-mean-this',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ai-did-you-mean-this',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
