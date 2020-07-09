@@ -14,8 +14,8 @@ helps['storage account create'] = """
     long-summary: >
         The SKU of the storage account defaults to 'Standard_RAGRS'.
     examples:
-        - name: Create a storage account 'MyStorageAccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
-          text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
+        - name: Create a storage account 'mystorageaccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
+          text: az storage account create -n mystorageaccount -g MyResourceGroup -l westus --sku Standard_LRS
 """
 
 helps['storage account keys list'] = """

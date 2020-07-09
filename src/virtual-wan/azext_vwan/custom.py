@@ -217,8 +217,8 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
 
 
 # pylint: disable=inconsistent-return-statements
-def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, destination_type,
-                            destinations, next_hop_type, next_hops=None, attached_connections=None, next_hop=None,
+def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, destination_type=None,
+                            destinations=None, next_hop_type=None, next_hops=None, attached_connections=None, next_hop=None,
                             route_name=None, labels=None, no_wait=False):
     if attached_connections:  # route table v2
         if next_hops is None:
@@ -229,27 +229,28 @@ def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
             )
 
         VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
-        client = _v2_route_table_client(cmd.cli_ctx)
         route = VirtualHubRouteV2(destination_type=destination_type,
                                   destinations=destinations,
                                   next_hop_type=next_hop_type,
                                   next_hops=next_hops)
         route_table = VirtualHubRouteTableV2(attached_connections=attached_connections, routes=[route])
+        client = _v2_route_table_client(cmd.cli_ctx)
     else:  # route table v3
-        if next_hop is None or route_name is None:
-            raise CLIError(
-                'Usage error: --next-hop and --route-name must be provided when --connections is not provided.')
         if next_hops is not None:
             raise CLIError('Usage error: --next-hops is not supported when --connections is not provided.')
 
         HubRouteTable, HubRoute = cmd.get_models('HubRouteTable', 'HubRoute')
+        route_table = HubRouteTable(labels=labels)
+
+        if route_name is not None:
+            route = HubRoute(name=route_name,
+                             destination_type=destination_type,
+                             destinations=destinations,
+                             next_hop_type=next_hop_type,
+                             next_hop=next_hop)
+            route_table.routes = [route]
+
         client = _v3_route_table_client(cmd.cli_ctx)
-        route = HubRoute(name=route_name,
-                         destination_type=destination_type,
-                         destinations=destinations,
-                         next_hop_type=next_hop_type,
-                         next_hop=next_hop)
-        route_table = HubRouteTable(routes=[route], labels=labels)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name,
                        virtual_hub_name, route_table_name, route_table)

@@ -278,6 +278,8 @@ helps['datashare invitation delete'] = """
 helps['datashare'] = """
     type: group
     short-summary: Commands to manage datashare
+    long-summary: |
+                  For a summary of CLI commands for Data Share, see https://docs.microsoft.com/azure/data-share/azure-cli-references-for-data-share
 """
 
 helps['datashare list'] = """
