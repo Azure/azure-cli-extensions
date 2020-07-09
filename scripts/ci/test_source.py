@@ -68,7 +68,7 @@ class TestExtensionSourceMeta(type):
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 env = os.environ.copy()
                 env['PYTHONPATH'] = ext_install_dir
-                env['AZURE_CORE_USE_COMMAND_INDEX'] = False
+                os.environ['AZURE_CORE_USE_COMMAND_INDEX'] = False
                 check_call(unittest_args, env=env)
             return test
 
