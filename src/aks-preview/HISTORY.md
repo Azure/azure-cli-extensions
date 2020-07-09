@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.56
++++++
+* Added clearer error message for invalid addon names
+
 0.4.55
 +++++
 * Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization

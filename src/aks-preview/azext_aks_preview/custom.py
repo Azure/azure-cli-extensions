@@ -2618,8 +2618,12 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
         else:
             matches = fuzzy_match(addon_arg, list(ADDONS))
             matches = str(matches)[1:-1]
-            raise KeyError(
-                f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: \n\t{matches}")
+            if len(matches) > 0:
+                raise KeyError(
+                    f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {matches}")
+            else:
+                raise KeyError(
+                    f"The addon \"{addon_arg}\" is not a recognized addon option.")
 
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag
