@@ -187,6 +187,19 @@ def validate_vnet(cmd, namespace):
             vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
             else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
 
+    graph_client = get_graph_rbac_management_client(cmd.cli_ctx)
+    target_service_principals = list(graph_client.service_principals.list(
+        filter="appId eq 'e8de9221-a19c-4c81-b814-fd37c6caf9d2'"))
+    if not target_service_principals:
+        raise CLIError('cannot find Azure Spring Cloud Resource Provider service principal.')
+    assignments = _get_authorization_client(cmd.cli_ctx).role_assignments.list_for_scope(vnet_id)
+    vnet_permission_ready = any(assignment.principal_id.lower() == target_service_principals[0].object_id and
+                                "8e3af657-a8ff-443c-a75c-2fe8c4bcb635" in assignment.role_definition_id for assignment
+                                in assignments)
+    if not vnet_permission_ready:
+        logger.warning("Please make sure to grant Azure Spring Cloud service permission to the virtual network. Refer "
+                       "to https://aka.ms/asc/vnet-permission-help for more details.")
+
 
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
@@ -199,6 +212,27 @@ def _get_network_client(cli_ctx):
     return get_mgmt_service_client(cli_ctx,
                                    ResourceType.MGMT_NETWORK,
                                    api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+
+
+def _get_authorization_client(cli_ctx):
+    from azure.cli.core.profiles import ResourceType
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION)
+
+
+def get_graph_rbac_management_client(cli_ctx, **_):
+    from azure.cli.core.commands.client_factory import configure_common_settings
+    from azure.cli.core._profile import Profile
+    from azure.graphrbac import GraphRbacManagementClient
+
+    profile = Profile(cli_ctx=cli_ctx)
+    cred, _, tenant_id = profile.get_login_credentials(
+        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
+    client = GraphRbacManagementClient(
+        cred, tenant_id,
+        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
+    configure_common_settings(cli_ctx, client)
+    return client
 
 
 def _set_default_cidr_range(address_prefixes):
