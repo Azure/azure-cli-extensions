@@ -68,13 +68,13 @@ class TestExtensionSourceMeta(type):
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 env = os.environ.copy()
                 env['PYTHONPATH'] = ext_install_dir
+                env['AZURE_CORE_USE_COMMAND_INDEX'] = False
                 check_call(unittest_args, env=env)
             return test
 
         for tname, ext_path in ALL_TESTS:
             test_name = "test_%s" % tname
             _dict[test_name] = gen_test(ext_path)
-            shutil.remove(os.path.join('~', '.azure', 'commandIndex.json'))
         return type.__new__(mcs, name, bases, _dict)
 
 
