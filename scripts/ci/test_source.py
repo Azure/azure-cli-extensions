@@ -65,8 +65,11 @@ class TestExtensionSourceMeta(type):
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
                             ext_install_dir, ext_path]
                 check_call(pip_args)
-                purge_command_index_args = [sys.executable, '-m', 'rm', '~/.azure/commandIndex.json']
-                check_call(purge_command_index_args)
+                try:
+                    os.remove(os.path.join('~', '.azure', 'commandIndex.json'))
+                    print('remove command index success')
+                except:
+                    print('remove command index fail')
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 env = os.environ.copy()
                 env['PYTHONPATH'] = ext_install_dir
