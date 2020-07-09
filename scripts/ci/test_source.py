@@ -65,7 +65,6 @@ class TestExtensionSourceMeta(type):
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
                             ext_install_dir, ext_path]
                 check_call(pip_args)
-                check_call(['rm', os.path.join('~', '.azure', 'commandIndex.json')])
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 env = os.environ.copy()
                 env['PYTHONPATH'] = ext_install_dir
@@ -75,6 +74,7 @@ class TestExtensionSourceMeta(type):
         for tname, ext_path in ALL_TESTS:
             test_name = "test_%s" % tname
             _dict[test_name] = gen_test(ext_path)
+            shutil.remove(os.path.join('~', '.azure', 'commandIndex.json'))
         return type.__new__(mcs, name, bases, _dict)
 
 
