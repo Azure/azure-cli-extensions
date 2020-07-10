@@ -22,7 +22,7 @@ TELEMETRY_IS_DISABLED_STR = (
 )
 
 TELEMETRY_IS_ENABLED_STR = (
-    'User has opted into telemtry.'
+    'User has opted into telemetry.'
 )
 
 TELEMETRY_MISSING_SUBSCRIPTION_ID_STR = (
