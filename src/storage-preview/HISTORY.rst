@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.2.12 (2020-06-23)
+++++++++++++++++
+* Fix the storage account name in examples
+
 0.2.11 (2020-06-04)
 ++++++++++++++++
 * Fix the bug of `--num-results` for command `az storage blob directory list`

@@ -9,6 +9,11 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
+helps['databricks'] = """
+    type: group
+    short-summary: Manage databricks workspaces.
+"""
+
 helps['databricks workspace'] = """
     type: group
     short-summary: Commands to manage databricks workspace.
@@ -85,4 +90,65 @@ helps['databricks workspace wait'] = """
         - name: Pause executing next line of CLI script until the Databricks workspace is successfully provisioned.
           text: az databricks workspace wait --resource-group MyResourceGroup --name MyWorkspace \\
                 --created
+"""
+
+helps['databricks workspace vnet-peering'] = """
+    type: group
+    short-summary: Commands to manage databricks workspace vnet peering.
+"""
+
+helps['databricks workspace vnet-peering create'] = """
+    type: command
+    short-summary: Create a vnet peering for a workspace.
+    examples:
+      - name: Create a vnet peering for a workspace
+        text: |-
+               az databricks workspace vnet-peering create --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+               -n MyPeering --remote-vnet /subscriptions/000000-0000-0000/resourceGroups/MyRG/providers/Microsoft.Network/virtualNetworks/MyVNet
+"""
+
+helps['databricks workspace vnet-peering update'] = """
+    type: command
+    short-summary: Update the vnet peering.
+    examples:
+      - name: Update the vnet peering (enable gateway transit and disable virtual network access).
+        text: |-
+               az databricks workspace vnet-peering update --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+               -n MyPeering --allow-gateway-transit --allow-virtual-network-access false
+"""
+
+helps['databricks workspace vnet-peering list'] = """
+    type: command
+    short-summary: List vnet peerings under a workspace.
+    examples:
+      - name: List vnet peerings under a workspace.
+        text: |-
+               az databricks workspace vnet-peering list --resource-group MyResourceGroup --workspace-name MyWorkspace
+"""
+
+helps['databricks workspace vnet-peering delete'] = """
+    type: command
+    short-summary: Delete the vnet peering.
+    examples:
+      - name: Delete the vnet peering.
+        text: |-
+               az databricks workspace vnet-peering delete --resource-group MyResourceGroup --workspace-name MyWorkspace -n MyPeering
+"""
+
+helps['databricks workspace vnet-peering show'] = """
+    type: command
+    short-summary: Show the vnet peering.
+    examples:
+      - name: Show the vnet peering
+        text: |-
+               az databricks workspace vnet-peering show --resource-group MyResourceGroup --workspace-name MyWorkspace -n MyPeering
+"""
+
+helps['databricks workspace vnet-peering wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the Databricks workspace vnet peering is met.
+    examples:
+        - name: Pause executing next line of CLI script until the Databricks workspace vnet peering is successfully provisioned.
+          text: az databricks workspace vnet-peering wait --resource-group MyResourceGroup --workspace-name MyWorkspace \\
+                --name MyPeering --created
 """

@@ -183,3 +183,25 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway', location='westus')
+    def test_azure_vwan_vpn_gateway(self, resource_group):
+        from knack.util import CLIError
+        self.kwargs.update({
+            'vwan': 'testvwan',
+            'vhub': 'myclitestvhub',
+            'vpngateway': 'mycligateway',
+            'routetable': 'testroutetable',
+            'rg': resource_group
+        })
+
+        # workaround due to service limitation. It should be fixed in the future.
+        self.cmd('network vwan create -n {vwan} -g {rg}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus')
+        self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
+        with self.assertRaisesRegexp(CLIError, 'VPN gateway already exist'):
+            self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
+        self.cmd('network vpn-gateway show -n {vpngateway} -g {rg}')
+        self.cmd('network vpn-gateway list -g {rg}')
+        self.cmd('network vpn-gateway list')
+        self.cmd('network vpn-gateway delete -n {vpngateway} -g {rg}')
