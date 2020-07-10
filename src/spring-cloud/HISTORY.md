@@ -1,6 +1,10 @@
 Release History
 ===============
 
+0.3.1
+-----
+* Remove azure-storage-blob dependency
+
 0.3.0
 -----
 * Enable distributed tracing by default when creating the service
