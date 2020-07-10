@@ -2548,27 +2548,38 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
+'''
+will compare all elements in @arr against the @query to see if they are similar
+
+similar implies one is a substring of the other or the two words are 1 change apart
+
+Ex. bird and bord are similar
+Ex. bird and birdwaj are similar
+Ex. bird and bead are not similar
+'''
+
+
 def fuzzy_match(query, arr):
-    def similarWord(a, b):
-        aLen = len(a)
-        bLen = len(b)
-        if aLen > bLen:
-            return similarWord(b, a)
+    def similar_word(a, b):
+        a_len = len(a)
+        b_len = len(b)
+        if a_len > b_len:  # @a should always be the shorter string
+            return similar_word(b, a)
         if a == b:
             return True
         if a in b:
             return True
-        if bLen - aLen > 1:
+        if b_len - a_len > 1:
             return False
         i = 0
         j = 0
-        foundDifference = False
-        while i < aLen:
+        found_difference = False
+        while i < a_len:
             if a[i] != b[j]:
-                if foundDifference:
+                if found_difference:
                     return False
-                foundDifference = True
-                if aLen == bLen:
+                found_difference = True
+                if a_len == b_len:
                     i += 1
                 j += 1
             else:
@@ -2579,7 +2590,7 @@ def fuzzy_match(query, arr):
     matches = []
 
     for word in arr:
-        if similarWord(query, word):
+        if similar_word(query, word):
             matches.append(word)
 
     return matches
@@ -2619,10 +2630,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             matches = fuzzy_match(addon_arg, list(ADDONS))
             matches = str(matches)[1:-1]
             if len(matches) > 0:
-                raise KeyError(
+                raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {matches}")
             else:
-                raise KeyError(
+                raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option.")
 
         if addon == 'aciConnector':
