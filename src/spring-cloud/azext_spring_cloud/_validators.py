@@ -178,16 +178,21 @@ def validate_vnet(cmd, namespace):
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
         raise CLIError('--app-subnet and --service-runtime-subnet should not be same.')
+    vnet_obj = _get_vnet(cmd, vnet_id)
+    for subnet in vnet_obj.subnets:
+        if subnet.id.lower() == namespace.app_subnet.lower() and subnet.route_table:
+            raise CLIError('--app-subnet should not associate with any route tables.')
+        if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
+            raise CLIError('--service-runtime-subnet should not associate with any route tables.')
 
     if namespace.reserved_cidr_range:
         _validate_cidr_range(namespace)
     else:
-        vnet_obj = _get_vnet(cmd, vnet_id)
         namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj.address_space.address_prefixes) if \
             vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
             else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
 
-    graph_client = get_graph_rbac_management_client(cmd.cli_ctx)
+    graph_client = _get_graph_rbac_management_client(cmd.cli_ctx)
     target_service_principals = list(graph_client.service_principals.list(
         filter="appId eq 'e8de9221-a19c-4c81-b814-fd37c6caf9d2'"))
     if not target_service_principals:
@@ -220,7 +225,7 @@ def _get_authorization_client(cli_ctx):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION)
 
 
-def get_graph_rbac_management_client(cli_ctx, **_):
+def _get_graph_rbac_management_client(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import configure_common_settings
     from azure.cli.core._profile import Profile
     from azure.graphrbac import GraphRbacManagementClient
