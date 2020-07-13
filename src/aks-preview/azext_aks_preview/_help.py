@@ -136,6 +136,7 @@ helps['aks create'] = """
                 virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
                 azure-policy              - enable Azure policy (PREVIEW).
                 ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
+                gitops                    - enable GitOps (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -601,6 +602,7 @@ long-summary: |-
         virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy              - enable Azure policy (PREVIEW).
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
+        gitops                    - Enable GitOps (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
