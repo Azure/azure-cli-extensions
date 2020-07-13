@@ -1378,7 +1378,8 @@ ADDONS = {
     'virtual-node': 'aciConnector',
     'azure-policy': 'azurepolicy',
     'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
+    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
+    'gitOps': 'gitOps'
 }
 
 
@@ -1720,6 +1721,9 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'azure-policy' in addons:
         addon_profiles['azurepolicy'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('azure-policy')
+    if 'gitops' in addons:
+        addon_profiles['gitops'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('gitops')
     if 'ingress-appgw' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         if appgw_name is not None:
