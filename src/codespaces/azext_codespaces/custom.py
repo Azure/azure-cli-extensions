@@ -47,7 +47,7 @@ def create_plan(cmd,
     vnet_props = VnetProperties(subnet_id=subnet_id) if subnet_id else None
     plan_props = CodespacesPlanProperties(
         default_auto_suspend_delay_minutes=default_autoshutdown_delay,
-        default_environment_sku=default_sku_name,
+        default_codespace_sku=default_sku_name,
         vnet_properties=vnet_props)
     codespaces_plan = CodespacesPlan(location=location, properties=plan_props, tags=tags)
     return client.create(resource_group_name, plan_name, codespaces_plan)
@@ -61,7 +61,7 @@ def update_plan(cmd,
                 default_autoshutdown_delay=None):
     codespaces_plan_update_parameters = CodespacesPlanUpdateParametersProperties(
         default_auto_suspend_delay_minutes=default_autoshutdown_delay,
-        default_environment_sku=default_sku_name)
+        default_codespace_sku=default_sku_name)
     return client.update(resource_group_name,
                          plan_name,
                          codespaces_plan_update_parameters)
@@ -101,7 +101,7 @@ def create_codespace(cmd,
     token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     # Use plan defaults if needed and available
     missing_args = []
-    sku_name = sku_name or plan.properties.default_environment_sku
+    sku_name = sku_name or plan.properties.default_codespace_sku
     if not sku_name:
         logger.warning("No default instance type specified for plan and no instance type specified in command.")
         missing_args.append("--instance-type")
