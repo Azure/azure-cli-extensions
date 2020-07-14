@@ -1379,7 +1379,7 @@ ADDONS = {
     'azure-policy': 'azurepolicy',
     'kube-dashboard': 'kubeDashboard',
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
-    'gitOps': 'gitOps'
+    'gitops': 'gitops'
 }
 
 
