@@ -2955,9 +2955,9 @@ class BaseBlobService(StorageClient):
             or must be authenticated via a shared access signature. If the source 
             is public, no authentication is required.
             Examples:
-            https://myaccount.blob.core.windows.net/mycontainer/myblob
-            https://myaccount.blob.core.windows.net/mycontainer/myblob?snapshot=<DateTime>
-            https://otheraccount.blob.core.windows.net/mycontainer/myblob?sastoken
+            `https://myaccount.blob.core.windows.net/mycontainer/myblob`
+            `https://myaccount.blob.core.windows.net/mycontainer/myblob?snapshot=<DateTime>`
+            `https://otheraccount.blob.core.windows.net/mycontainer/myblob?sastoken`
         :param metadata:
             Name-value pairs associated with the blob as metadata. If no name-value 
             pairs are specified, the operation will copy the metadata from the 
