@@ -182,7 +182,7 @@ class TestAssignIdentity(unittest.TestCase):
         err = ("--assign-identity is not a valid Azure resource ID.")
 
         with self.assertRaises(CLIError) as cm:
-            validators.AssignIdentityNamespace(namespace)
+            validators.validate_assign_identity(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_identity_id(self):
