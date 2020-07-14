@@ -230,7 +230,7 @@ class PageBlobService(BaseBlobService):
             The value should be URL-encoded as it would appear in a request URI.
             The copy source must be a snapshot and include a valid SAS token or be public.
             Example:
-            https://myaccount.blob.core.windows.net/mycontainer/myblob?snapshot=<DateTime>&sastoken
+            `https://myaccount.blob.core.windows.net/mycontainer/myblob?snapshot=<DateTime>&sastoken`
         :param metadata:
             Name-value pairs associated with the blob as metadata. If no name-value
             pairs are specified, the operation will copy the metadata from the
