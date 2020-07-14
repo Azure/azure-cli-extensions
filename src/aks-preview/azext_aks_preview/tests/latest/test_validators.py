@@ -169,9 +169,11 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
 
+
 class AssignIdentityNamespace:
     def __init__(self, assign_identity):
         self.assign_identity = assign_identity
+
 
 class TestAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
