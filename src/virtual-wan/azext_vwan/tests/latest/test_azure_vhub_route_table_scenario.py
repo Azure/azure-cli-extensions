@@ -66,7 +66,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         # workaround due to service limitation. It should be fixed in the future.
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus')
-        firewall = self.cmd('network firewall create -g {rg} -n {firewall} --vhub {vhub} --sku AZFW_Hub').get_output_in_json()
+        firewall = self.cmd('network firewall create -g {rg} -n {firewall} --vhub {vhub} --sku AZFW_Hub --count 1').get_output_in_json()
         self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l eastus')
 
         self.kwargs['firewall_id'] = firewall['id']
