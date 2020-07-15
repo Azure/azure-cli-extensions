@@ -95,6 +95,7 @@ def load_command_table(self, _):
 
     with self.command_group('network vhub connection', network_vhub_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
         g.custom_command('create', 'create_hub_vnet_connection', supports_no_wait=True)
+        g.wait_command('wait')
 
     resource = 'virtual_hubs'
     prop = 'virtual_network_connections'
@@ -132,6 +133,7 @@ def load_command_table(self, _):
 
     with self.command_group('network vpn-gateway connection', network_vpn_gateway_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
+        g.wait_command('wait')
 
     resource = 'vpn_gateways'
     prop = 'connections'
@@ -182,4 +184,10 @@ def load_command_table(self, _):
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_p2s_vpn_gateway', supports_no_wait=True, setter_arg_name='p2_svpn_gateway_parameters')
         g.wait_command('wait')
+
+    resource = 'p2s_vpn_gateways'
+    prop = 'p2_sconnection_configurations'
+    with self.command_group('network p2s-vpn-gateway connection', network_util, resource_type=CUSTOM_VHUB_ROUTE_TABLE, min_api='2020-04-01', is_preview=True) as g:
+        g.command('list', list_network_resource_property(resource, prop))
+        g.show_command('show', get_network_resource_property_entry(resource, prop))
     # endregion

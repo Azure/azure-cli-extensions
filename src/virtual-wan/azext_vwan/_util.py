@@ -8,7 +8,7 @@ from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
-from ._client_factory import network_client_factory, network_client_route_table_factory
+from ._client_factory import network_client_route_table_factory
 
 
 def _get_property(items, name):
@@ -74,4 +74,3 @@ def delete_network_resource_property_entry(resource, prop):
     func_name = 'delete_network_resource_property_entry_{}_{}'.format(resource, prop)
     setattr(sys.modules[__name__], func_name, delete_func)
     return func_name
-

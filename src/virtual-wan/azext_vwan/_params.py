@@ -30,6 +30,10 @@ def load_arguments(self, _):
     vhub_name_type = CLIArgumentType(options_list='--vhub-name', metavar='NAME', help='Name of the virtual hub.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/networkHubs'))
     vpn_gateway_name_type = CLIArgumentType(options_list='--gateway-name', metavar='NAME', help='Name of the VPN gateway.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/vpnGateways'))
     vpn_site_name_type = CLIArgumentType(options_list='--site-name', metavar='NAME', help='Name of the VPN site config.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/vpnSites'))
+    p2s_vpn_gateway_name_type = CLIArgumentType(options_list='--gateway-name', metavar='NAME', help='Name of the P2S VPN gateway.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/p2svpnGateways'))
+    associated_route_table_type = CLIArgumentType(options_list=['--associated', '--associated-route-table'], help='The resource id of route table associated with this routing configuration.')
+    propagated_route_tables_type = CLIArgumentType(options_list=['--propagated', '--propagated-route-tables'], nargs='+', help='Space-separated list of resource id of propagated route tables.')
+    propagated_route_tables_label_type = CLIArgumentType(nargs='+', help='Space-separated list of labels for propagated route tables.')
 
     with self.argument_context('network') as c:
         c.argument('tags', tags_type)
@@ -67,14 +71,6 @@ def load_arguments(self, _):
         c.argument('allow_hub_to_remote_vnet_transit', arg_type=get_three_state_flag(), options_list='--remote-vnet-transit', help='Enable hub to remote VNet transit.')
         c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', help='Allow remote VNet to use hub\'s VNet gateways.')
         c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
-
-    with self.argument_context('network vhub connection', arg_group='Routing Configuration', resource_type=CUSTOM_VHUB_ROUTE_TABLE, min_api='2020-04-01') as c:
-        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
-        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
-        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
-        c.argument('address_prefixes', nargs='+', help='Space-separated list of all address prefixes.')
-        c.argument('next_hop_ip_address', options_list='--next-hop', help='TThe ip address of the next hop.',  min_api='2020-04-01')
-        c.argument('route_name', help='The name of the StaticRoute that is unique within a VnetRoute.', min_api='2020-04-01')
 
     with self.argument_context('network vhub connection list') as c:
         c.argument('resource_name', vhub_name_type, id_part=None)
@@ -119,9 +115,6 @@ def load_arguments(self, _):
         c.argument('protocol_type', arg_type=get_enum_type(VirtualNetworkGatewayConnectionProtocol), help='Connection protocol.')
         c.argument('routing_weight', type=int, help='Routing weight.')
         c.argument('shared_key', help='Shared key.')
-        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
-        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
-        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
 
     with self.argument_context('network vpn-gateway connection list') as c:
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
@@ -207,7 +200,20 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
         c.argument('vpn_server_config', help='Name or ID of a vpn server configuration.', validator=get_network_resource_name_or_id('vpn_server_config', 'vpnServerConfigurations'))
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('associated_route_table', help='The resource id of route table associated with this RoutingConfiguration.')
-        c.argument('propagated_route_tables', nargs='+', help='Space-separated list of resource id of propagated route tables.')
-        c.argument('labels', nargs='+', help='Space-separated list of labels for propagated route tables.')
+
+    with self.argument_context('network p2s-vpn-gateway connection') as c:
+        for dest in ['gateway_name', 'resource_name']:
+            c.argument(dest, p2s_vpn_gateway_name_type)
+        c.argument('item_name', help='Name of the P2S VPN gateway connection.', options_list=['--name', '-n'], id_part='child_name_1')
+
+    with self.argument_context('network p2s-vpn-gateway connection list') as c:
+        c.argument('resource_name', p2s_vpn_gateway_name_type, id_part=None)
+    # endregion
+
+    # region Routing Configuration
+    for item in ['vpn-gateway connection', 'p2s-vpn-gateway']:
+        with self.argument_context('network {}'.format(item), arg_group='Routing Configuration', min_api='2020-04-01', is_preview=True) as c:
+            c.argument('associated_route_table', associated_route_table_type)
+            c.argument('propagated_route_tables', propagated_route_tables_type)
+            c.argument('labels', propagated_route_tables_label_type)
     # endregion
