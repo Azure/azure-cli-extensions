@@ -35,8 +35,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check("contains(keys(@), 'dataVolumeCap')", True)
         ])
 
-        self.cmd('monitor app-insights component billing update --app {name_a} -g {resource_group} --cap 200 -s', checks=[
-            self.check('dataVolumeCap.cap', 200),
+        self.cmd('monitor app-insights component billing update --app {name_a} -g {resource_group} --cap 200.5 -s', checks=[
+            self.check('dataVolumeCap.cap', 200.5),
             self.check('dataVolumeCap.stopSendNotificationWhenHitCap', True),
         ])
 
