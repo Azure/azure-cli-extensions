@@ -107,7 +107,7 @@ helps['codespace list'] = """
         - name: List Codespaces
           text: az codespace list -g my-rg --plan my-plan
         - name: List Codespaces given plan id
-          text: az codespace list --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan
+          text: az codespace list --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan
 """
 
 helps['codespace delete'] = """
@@ -119,7 +119,7 @@ helps['codespace delete'] = """
         - name: Delete a Codespace given id
           text: az codespace delete -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Delete a Codespace given plan id and Codespace name
-          text: az codespace delete --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+          text: az codespace delete --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan --name my-codespace
 """
 
 helps['codespace update'] = """
@@ -141,7 +141,7 @@ helps['codespace show'] = """
         - name: Show details of a Codespace given id
           text: az codespace show -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Show details of a Codespace given plan id and Codespace name
-          text: az codespace show --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+          text: az codespace show --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan --name my-codespace
 """
 
 helps['codespace resume'] = """
@@ -153,7 +153,7 @@ helps['codespace resume'] = """
         - name: Resume a Codespace given id
           text: az codespace resume -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Resume a Codespace given plan id and Codespace name
-          text: az codespace resume --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+          text: az codespace resume --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan --name my-codespace
 """
 
 helps['codespace suspend'] = """
@@ -165,7 +165,7 @@ helps['codespace suspend'] = """
         - name: Suspend a Codespace given id
           text: az codespace suspend -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Suspend a Codespace given plan id and Codespace name
-          text: az codespace suspend --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+          text: az codespace suspend --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan --name my-codespace
 """
 
 helps['codespace open'] = """
@@ -179,7 +179,7 @@ helps['codespace open'] = """
         - name: Open a Codespace given id
           text: az codespace open -g my-rg --plan my-plan --id 00000000-0000-0000-0000-000000000000
         - name: Open a Codespace given plan id and Codespace name
-          text: az codespace open --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.VSOnline/plans/my-plan --name my-codespace
+          text: az codespace open --plan /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Codespaces/plans/my-plan --name my-codespace
 """
 
 helps['codespace secret create'] = """
