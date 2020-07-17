@@ -30,32 +30,34 @@ def _get_test_cmd():
 
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
-        def _get_mock_vnet(id, route_table):
+        def _get_subnet(vnet_id, name, address_prefix=None, route_table=None, ip_configurations=None):
+            subnet = mock.MagicMock()
+            subnet.id = '{0}/subnets/{1}'.format(vnet_id, name)
+            subnet.name = name
+            subnet.route_table = route_table
+            subnet.address_prefix = address_prefix
+            subnet.ip_configurations = ip_configurations
+            return subnet
+
+        def _get_mock_vnet(id, **kwargs):
             vnet = mock.MagicMock()
             vnet.id = id
-            vnet.subnets = mock.MagicMock()
-            subnet1 = mock.MagicMock()
-            subnet1.id = "{}/subnets/app".format(id)
-            subnet1.route_table = route_table
-            subnet2 = mock.MagicMock()
-            subnet2.id = "{}/subnets/svc".format(id)
-            subnet2.route_table = route_table
-            vnet.subnets = [subnet1, subnet2]
+            vnet.subnets = [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
             return vnet
 
         all_mocks = [
             _get_mock_vnet(
                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet",
-                None),
+                address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
-                None),
+                address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
-                mock.MagicMock()),
+                route_table=mock.MagicMock(), address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/33333333-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
-                None),
+                address_prefix='10.0.0.0/24'),
         ]
         for x in all_mocks:
             if x.id == id:
@@ -65,7 +67,7 @@ def _mock_get_vnet(cmd, vnet_id):
     return _mock_get(vnet_id)
 
 
-def _mock_get_graph_rbac_management_client(cli_ctx, **_):
+def _mock_get_graph_rbac_management_client(cli_ctx, subscription_id=None, **_):
     client = mock.MagicMock()
 
     def _mock_list(filter):
@@ -77,7 +79,7 @@ def _mock_get_graph_rbac_management_client(cli_ctx, **_):
     return client
 
 
-def _mock_get_authorization_client(cli_ctx):
+def _mock_get_authorization_client(cli_ctx, subscription_id=None):
     client = mock.MagicMock()
 
     def _mock_list_for_scope(scope):
