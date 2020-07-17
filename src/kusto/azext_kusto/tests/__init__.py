@@ -10,9 +10,14 @@
 # --------------------------------------------------------------------------
 import inspect
 import os
+import sys
+import traceback
+from azure.core.exceptions import AzureError
+from azure.cli.testsdk.exceptions import CliTestError, CliExecutionError, JMESPathCheckAssertionError
 
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
+exceptions = []
 
 
 def try_manual(func):
@@ -34,6 +39,7 @@ def try_manual(func):
         func_to_call = func
         try:
             func_to_call = import_manual_function(func)
+            print("Found manual override for {}(...)".format(func.__name__))
         except (ImportError, AttributeError):
             pass
         return func_to_call
@@ -41,8 +47,25 @@ def try_manual(func):
     def wrapper(*args, **kwargs):
         func_to_call = get_func_to_call()
         print("running {}()...".format(func.__name__))
-        return func_to_call(*args, **kwargs)
+        try:
+            return func_to_call(*args, **kwargs)
+        except (AssertionError, AzureError, CliTestError, CliExecutionError, JMESPathCheckAssertionError) as e:
+            print("--------------------------------------")
+            print("step exception: ", e)
+            print("--------------------------------------", file=sys.stderr)
+            print("step exception in {}: {}".format(func.__name__, e), file=sys.stderr)
+            traceback.print_exc()
+            exceptions.append((func.__name__, sys.exc_info()))
 
     if inspect.isclass(func):
         return get_func_to_call()
     return wrapper
+
+
+def raise_if():
+    if exceptions:
+        if len(exceptions) <= 1:
+            raise exceptions[0][1][1]
+        message = "{}\nFollowed with exceptions in other steps:\n".format(str(exceptions[0][1][1]))
+        message += "\n".join(["{}: {}".format(h[0], h[1][1]) for h in exceptions[1:]])
+        raise exceptions[0][1][0](message).with_traceback(exceptions[0][1][2])
