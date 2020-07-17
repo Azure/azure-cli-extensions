@@ -59,8 +59,7 @@ class VirtualHubIpConfigurationOperations(object):
         :return: HubIpConfiguration or ClientRawResponse if raw=true
         :rtype: ~azure.mgmt.network.v2020_05_01.models.HubIpConfiguration or
          ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`ErrorException<azure.mgmt.network.v2020_05_01.models.ErrorException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -91,7 +90,9 @@ class VirtualHubIpConfigurationOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
-            raise models.ErrorException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         deserialized = None
         if response.status_code == 200:
@@ -140,7 +141,9 @@ class VirtualHubIpConfigurationOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
-            raise models.ErrorException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         deserialized = None
 
@@ -180,8 +183,7 @@ class VirtualHubIpConfigurationOperations(object):
          ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.network.v2020_05_01.models.HubIpConfiguration]
          or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.network.v2020_05_01.models.HubIpConfiguration]]
-        :raises:
-         :class:`ErrorException<azure.mgmt.network.v2020_05_01.models.ErrorException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
@@ -242,7 +244,9 @@ class VirtualHubIpConfigurationOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 202, 204]:
-            raise models.ErrorException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
@@ -268,8 +272,7 @@ class VirtualHubIpConfigurationOperations(object):
          ClientRawResponse<None> if raw==True
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
-        :raises:
-         :class:`ErrorException<azure.mgmt.network.v2020_05_01.models.ErrorException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,

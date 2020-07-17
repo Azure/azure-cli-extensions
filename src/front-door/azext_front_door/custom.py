@@ -382,7 +382,8 @@ def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settin
 
 def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, address,
                    http_port=80, https_port=443, disabled=None, priority=1, weight=50,
-                   backend_host_header=None):
+                   backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                   private_link_location=None, private_link_approval_message=None):
     from azext_front_door.vendored_sdks.models import Backend
     backend = Backend(
         address=address,
@@ -391,7 +392,11 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         enabled_state='Disabled' if disabled else 'Enabled',
         priority=priority,
         weight=weight,
-        backend_host_header=backend_host_header or address
+        backend_host_header=backend_host_header or address,
+        private_link_alias=private_link_alias,
+        private_link_resource_id=private_link_resource_id,
+        private_link_location=private_link_location,
+        private_link_approval_message=private_link_approval_message
     )
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)

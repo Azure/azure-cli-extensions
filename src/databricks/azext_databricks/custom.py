@@ -99,3 +99,70 @@ def list_databricks_workspace(cmd, client, resource_group_name=None):
     if not resource_group_name:
         return client.list_by_subscription()  # todo service 502
     return client.list_by_resource_group(resource_group_name=resource_group_name)
+
+
+def create_databricks_vnet_peering(client, resource_group_name, workspace_name, peering_name,
+                                   remote_virtual_network,
+                                   allow_virtual_network_access=None,
+                                   allow_forwarded_traffic=None,
+                                   allow_gateway_transit=None,
+                                   use_remote_gateways=None,
+                                   no_wait=False):
+    from .vendored_sdks.databricks.models._models_py3 import \
+        VirtualNetworkPeering, VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork
+
+    peering = VirtualNetworkPeering(
+        remote_virtual_network=VirtualNetworkPeeringPropertiesFormatRemoteVirtualNetwork(id=remote_virtual_network)
+    )
+
+    if allow_virtual_network_access is None:
+        allow_virtual_network_access = True
+    peering.allow_virtual_network_access = allow_virtual_network_access
+
+    if allow_forwarded_traffic is not None:
+        peering.allow_forwarded_traffic = allow_forwarded_traffic
+    if allow_gateway_transit is not None:
+        peering.allow_gateway_transit = allow_gateway_transit
+    if use_remote_gateways is not None:
+        peering.use_remote_gateways = use_remote_gateways
+
+    return sdk_no_wait(no_wait, client.create_or_update,
+                       virtual_network_peering_parameters=peering,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name,
+                       peering_name=peering_name)
+
+
+def update_databricks_vnet_peering(client, resource_group_name, workspace_name, peering_name,
+                                   allow_virtual_network_access=None,
+                                   allow_forwarded_traffic=None,
+                                   allow_gateway_transit=None,
+                                   use_remote_gateways=None,
+                                   no_wait=False):
+    peering = client.get(
+        resource_group_name=resource_group_name,
+        workspace_name=workspace_name,
+        peering_name=peering_name
+    )
+
+    if allow_virtual_network_access is not None:
+        peering.allow_virtual_network_access = allow_virtual_network_access
+    if allow_forwarded_traffic is not None:
+        peering.allow_forwarded_traffic = allow_forwarded_traffic
+    if allow_gateway_transit is not None:
+        peering.allow_gateway_transit = allow_gateway_transit
+    if use_remote_gateways is not None:
+        peering.use_remote_gateways = use_remote_gateways
+
+    return sdk_no_wait(no_wait, client.create_or_update,
+                       virtual_network_peering_parameters=peering,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name,
+                       peering_name=peering_name)
+
+
+def delete_databricks_vnet_peering(client, resource_group_name, workspace_name, peering_name, no_wait=False):
+    return sdk_no_wait(no_wait, client.delete,
+                       resource_group_name=resource_group_name,
+                       workspace_name=workspace_name,
+                       peering_name=peering_name)

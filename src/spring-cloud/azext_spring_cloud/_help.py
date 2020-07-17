@@ -17,14 +17,22 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
+    - name: Create a new Azure Spring Cloud with distributed tracing disabled.
+      text: az spring-cloud create -n MyService -g MyResourceGroup --disable-distributed-tracing
 """
 
 helps['spring-cloud update'] = """
     type: command
-    short-summary: Update pricing tier of an Azure Spring Cloud.
+    short-summary: Update an Azure Spring Cloud.
     examples:
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
+    - name: Enable the distributed tracing of the existing Azure Spring Cloud.
+      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-distributed-tracing false
+    - name: Update the tags of the existing Azure Spring Cloud.
+      text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
 
 helps['spring-cloud delete'] = """
@@ -227,7 +235,7 @@ helps['spring-cloud app deployment delete'] = """
 
 helps['spring-cloud app deployment create'] = """
     type: command
-    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use az spring-cloud app deploy/update --deployment <staging deployment>.
+    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use `az spring-cloud app deploy/update --deployment <staging deployment>`.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup

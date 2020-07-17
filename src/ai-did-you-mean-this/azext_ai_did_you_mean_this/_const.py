@@ -17,8 +17,12 @@ RECOMMENDATION_HEADER_FMT_STR = (
     '\nHere are the most common ways users succeeded after [{command}] failed:'
 )
 
-TELEMETRY_MUST_BE_ENABLED_STR = (
-    'User must agree to telemetry before failure recovery recommendations can be presented.'
+TELEMETRY_IS_DISABLED_STR = (
+    'User has not opted into telemetry.'
+)
+
+TELEMETRY_IS_ENABLED_STR = (
+    'User has opted into telemetry.'
 )
 
 TELEMETRY_MISSING_SUBSCRIPTION_ID_STR = (

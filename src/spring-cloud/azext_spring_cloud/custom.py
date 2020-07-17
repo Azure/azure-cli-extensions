@@ -9,14 +9,16 @@ import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import parse_resource_id
-from ._utils import _get_upload_local_file
+from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from ._utils import _get_upload_local_file, _get_persistent_disk_size
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from knack.log import get_logger
 from .azure_storage_file import FileService
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
+from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
@@ -39,30 +41,78 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, sku=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
+                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
 
     if sku is None:
         sku = "Standard"
-    full_sku = models.Sku(
-        name=_get_sku_name(sku),
-        tier=sku
-    )
-    resource = models.ServiceResource(location=location, sku=full_sku)
+    full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
+    properties = models.ClusterResourceProperties()
+
+    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
+    update_tracing_config(cmd, resource_group, name, location, properties,
+                          app_insights_key, app_insights, disable_distributed_tracing)
+
+    resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group, service_name=name, resource=resource)
 
 
-def spring_cloud_update(cmd, client, resource_group, name, sku=None, no_wait=False):
-    full_sku = models.Sku(
-        name=_get_sku_name(sku),
-        tier=sku
-    )
-    resource = models.ServiceResource(sku=full_sku)
+def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
+                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
+    updated_resource = models.ServiceResource()
+    update_app_insights = False
+    update_service_tags = False
+    update_service_sku = False
 
-    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group, service_name=name, resource=resource)
+    # update service sku
+    if sku is not None:
+        full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
+        updated_resource.sku = full_sku
+        update_service_sku = True
+
+    resource = client.get(resource_group, name)
+    location = resource.location
+    resource_properties = resource.properties
+    updated_resource_properties = models.ClusterResourceProperties()
+
+    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
+    app_insights_target_status = False
+    if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
+        app_insights_target_status = True
+        if resource_properties.trace.enabled is False:
+            update_app_insights = True
+    elif disable_distributed_tracing is True:
+        app_insights_target_status = False
+        if resource_properties.trace.enabled is True:
+            update_app_insights = True
+
+    # update application insights
+    if update_app_insights is True:
+        if app_insights_target_status is False:
+            resource_properties.trace.enabled = app_insights_target_status
+        elif resource_properties.trace.app_insight_instrumentation_key is not None \
+                and app_insights is None and app_insights_key is None:
+            resource_properties.trace.enabled = app_insights_target_status
+        else:
+            update_tracing_config(cmd, resource_group, name, location, resource_properties, app_insights_key,
+                                  app_insights, disable_distributed_tracing)
+        updated_resource_properties.trace = resource_properties.trace
+
+    # update service tags
+    if tags is not None:
+        updated_resource.tags = tags
+        update_service_tags = True
+
+    if update_app_insights is False and update_service_tags is False and update_service_sku is False:
+        return resource
+
+    updated_resource.properties = updated_resource_properties
+    return sdk_no_wait(no_wait, client.update,
+                       resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
@@ -124,13 +174,6 @@ def app_create(cmd, client, resource_group, service, name,
         raise CLIError("App '{}' already exists.".format(name))
     logger.warning("[1/4] Creating app with name '{}'".format(name))
     properties = models.AppResourceProperties()
-    if enable_persistent_storage:
-        properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=50, mount_path="/persistent")
-    else:
-        properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=0, mount_path="/persistent")
-
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
 
@@ -171,6 +214,13 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
 
+    if enable_persistent_storage:
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
+    else:
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=0, mount_path="/persistent")
+
     app_resource.properties = properties
     app_resource.location = location
 
@@ -196,15 +246,15 @@ def app_update(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                https_only=None):
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
     properties = models.AppResourceProperties(public=is_public, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
-            size_in_gb=50, mount_path="/persistent")
+            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
-
-    resource = client.services.get(resource_group, service)
-    location = resource.location
 
     app_resource = models.AppResource()
     app_resource.properties = properties
@@ -474,7 +524,6 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
 
         from azure.cli.core.commands import arm as _arm
         identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
-        from azure.cli.core.commands.client_factory import get_mgmt_service_client
         assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
         RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                                  'RoleAssignmentCreateParameters', mod='models',
@@ -1246,3 +1295,82 @@ def domain_update(cmd, client, resource_group, service, app,
 def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     client.custom_domains.get(resource_group, service, app, domain_name)
     return client.custom_domains.delete(resource_group, service, app, domain_name)
+
+
+def get_app_insights_key(cli_ctx, resource_group, name):
+    appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
+    appinsights = appinsights_client.components.get(resource_group, name)
+    if appinsights is None or appinsights.instrumentation_key is None:
+        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return appinsights.instrumentation_key
+
+
+def check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing):
+    if (app_insights is not None or app_insights_key is not None) and disable_distributed_tracing is True:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' can not be set with '--disable-distributed-tracing true'.")
+    if app_insights is not None and app_insights_key is not None:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+
+
+def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
+                          app_insights, disable_distributed_tracing):
+    create_app_insights = False
+
+    if app_insights_key is not None:
+        resource_properties.trace = models.TraceProperties(
+            enabled=True, app_insight_instrumentation_key=app_insights_key)
+    elif app_insights is not None:
+        if is_valid_resource_id(app_insights):
+            resource_id_dict = parse_resource_id(app_insights)
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                       resource_id_dict['resource_name'])
+            resource_properties.trace = models.TraceProperties(
+                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+        else:
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            resource_properties.trace = models.TraceProperties(
+                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+    elif disable_distributed_tracing is not True:
+        create_app_insights = True
+
+    if create_app_insights is True:
+        try:
+            instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
+            if instrumentation_key is not None:
+                resource_properties.trace = models.TraceProperties(
+                    enabled=True, app_insight_instrumentation_key=instrumentation_key)
+        except Exception:  # pylint: disable=broad-except
+            logger.warning(
+                'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
+                'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+
+
+def try_create_application_insights(cmd, resource_group, name, location):
+    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
+                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
+                           'if needed.'
+
+    ai_resource_group_name = resource_group
+    ai_name = name
+    ai_location = location
+
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
+    ai_properties = {
+        "name": ai_name,
+        "location": ai_location,
+        "kind": "web",
+        "properties": {
+            "Application_Type": "web"
+        }
+    }
+    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+    if appinsights is None or appinsights.instrumentation_key is None:
+        logger.warning(creation_failed_warn)
+        return None
+
+    # We make this success message as a warning to no interfere with regular JSON output in stdout
+    logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
+                   'You can visit https://portal.azure.com/#resource%s/overview to view your '
+                   'Application Insights component', appinsights.name, appinsights.id)
+
+    return appinsights.instrumentation_key

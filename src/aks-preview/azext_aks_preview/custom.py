@@ -49,22 +49,22 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import AgentPoolUpgradeSettings
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterAPIServerAccessProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_04_01.models import ManagedClusterSKU
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerServiceLinuxProfile,
+                                                                      ManagedClusterWindowsProfile,
+                                                                      ContainerServiceNetworkProfile,
+                                                                      ManagedClusterServicePrincipalProfile,
+                                                                      ContainerServiceSshConfiguration,
+                                                                      ContainerServiceSshPublicKey,
+                                                                      ManagedCluster,
+                                                                      ManagedClusterAADProfile,
+                                                                      ManagedClusterAddonProfile,
+                                                                      ManagedClusterAgentPoolProfile,
+                                                                      AgentPool,
+                                                                      AgentPoolUpgradeSettings,
+                                                                      ContainerServiceStorageProfileTypes,
+                                                                      ManagedClusterIdentity,
+                                                                      ManagedClusterAPIServerAccessProfile,
+                                                                      ManagedClusterSKU)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -785,6 +785,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                min_count=None,
                max_count=None,
                vnet_subnet_id=None,
+               ppg=None,
                max_pods=0,
                aad_client_app_id=None,
                aad_server_app_id=None,
@@ -808,6 +809,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                appgw_subnet_id=None,
                appgw_watch_namespace=None,
                enable_aad=False,
+               enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                no_wait=False):
     if not no_ssh_key:
@@ -849,6 +851,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         os_type="Linux",
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
+        proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
         max_pods=int(max_pods) if max_pods else None,
@@ -980,12 +983,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
         aad_profile = ManagedClusterAADProfile(
             managed=True,
+            enable_azure_rbac=enable_azure_rbac,
             admin_group_object_ids=_parse_comma_separated_list(aad_admin_group_object_ids),
             tenant_id=aad_tenant_id
         )
     else:
         if aad_admin_group_object_ids is not None:
             raise CLIError('"--admin-aad-object-id" can only be used together with "--enable-aad"')
+
+        if enable_azure_rbac is True:
+            raise CLIError('"--enable-azure-rbac" can only be used together with "--enable-aad"')
 
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
             aad_profile = ManagedClusterAADProfile(
@@ -1132,6 +1139,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                attach_acr=None,
                detach_acr=None,
                uptime_sla=False,
+               enable_aad=False,
                aad_tenant_id=None,
                aad_admin_group_object_ids=None,
                aks_custom_headers=None):
@@ -1153,6 +1161,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_pod_security and \
        not update_lb_profile and \
        not uptime_sla and \
+       not enable_aad and \
        not update_aad_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
@@ -1167,6 +1176,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--enable-aad" or '
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids"')
 
@@ -1281,10 +1291,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.api_server_access_profile = \
             _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
 
+    if enable_aad:
+        if instance.aad_profile is not None and instance.aad_profile.managed:
+            raise CLIError('Cannot specify "--enable-aad" if managed AAD is already enabled')
+        instance.aad_profile = ManagedClusterAADProfile(
+            managed=True
+        )
     if update_aad_profile:
         if instance.aad_profile is None or not instance.aad_profile.managed:
             raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
-                           ' if managed aad not is enabled')
+                           ' if managed AAD is not enabled')
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
@@ -2131,6 +2147,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
+                      ppg=None,
                       max_pods=0,
                       os_type="Linux",
                       min_count=None,
@@ -2180,6 +2197,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         os_type=os_type,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
+        proximity_placement_group_id=ppg,
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,

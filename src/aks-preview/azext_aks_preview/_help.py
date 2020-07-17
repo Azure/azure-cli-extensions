@@ -70,6 +70,9 @@ helps['aks create'] = """
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -172,6 +175,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -262,6 +268,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
+        - name: Create a kubernetes cluster with managed AAD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -352,6 +360,9 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+        - name: --enable-aad
+          type: bool
+          short-summary: Enable managed AAD feature for cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -386,6 +397,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges ""
       - name: Restrict apiserver traffic in a kubernetes cluster to agentpool nodes.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
+      - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+      - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 """
 
 helps['aks kollect'] = """
@@ -484,6 +499,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.

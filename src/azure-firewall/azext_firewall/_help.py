@@ -373,8 +373,8 @@ helps['network firewall policy rule-collection-group collection'] = """
     type: group
     short-summary: Manage and configure Azure firewall policy rule collections in the rule collection group.
     long-summary: |
-        Currently, Azure Firewall policy support two kinds of rule collections which are Filter collection and NAT collection. There are also two kinds of rules which are application rule and network rule.
-        NAT collection only support having one network rule. Filter collection support including a list of rules in it. But all of rules should be the same type.
+        Currently, Azure Firewall policy support two kinds of rule collections which are Filter collection and NAT collection. There are three kinds of rules which are application rule, network rule and nat rule.
+        NAT collection support having a list of nat rule. Filter collection support including a list of rules(network rule or application rule) in it. But all of rules should be the same type.
 """
 
 helps['network firewall policy rule-collection-group collection add-filter-collection'] = """
@@ -421,20 +421,23 @@ helps['network firewall policy rule-collection-group collection rule'] = """
     type: group
     short-summary: Manage and configure the rule of a filter collection in the rule collection group of Azure firewall policy.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 
 helps['network firewall policy rule-collection-group collection rule add'] = """
     type: command
     short-summary: Add a rule into an Azure firewall policy rule collection.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 
 helps['network firewall policy rule-collection-group collection rule remove'] = """
     type: command
     short-summary: Remove a rule from an Azure firewall policy rule collection.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 # endregion

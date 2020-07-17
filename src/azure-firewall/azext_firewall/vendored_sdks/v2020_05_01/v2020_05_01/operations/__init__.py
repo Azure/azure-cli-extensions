@@ -10,6 +10,8 @@
 # --------------------------------------------------------------------------
 
 from ._application_gateways_operations import ApplicationGatewaysOperations
+from ._application_gateway_private_link_resources_operations import ApplicationGatewayPrivateLinkResourcesOperations
+from ._application_gateway_private_endpoint_connections_operations import ApplicationGatewayPrivateEndpointConnectionsOperations
 from ._application_security_groups_operations import ApplicationSecurityGroupsOperations
 from ._available_delegations_operations import AvailableDelegationsOperations
 from ._available_resource_group_delegations_operations import AvailableResourceGroupDelegationsOperations
@@ -112,6 +114,8 @@ from ._network_management_client_operations import NetworkManagementClientOperat
 
 __all__ = [
     'ApplicationGatewaysOperations',
+    'ApplicationGatewayPrivateLinkResourcesOperations',
+    'ApplicationGatewayPrivateEndpointConnectionsOperations',
     'ApplicationSecurityGroupsOperations',
     'AvailableDelegationsOperations',
     'AvailableResourceGroupDelegationsOperations',
