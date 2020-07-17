@@ -64,7 +64,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerS
                                                                       ContainerServiceStorageProfileTypes,
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
-                                                                      ManagedClusterSKU)
+                                                                      ManagedClusterSKU,
+                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -811,6 +812,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_aad=False,
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
+               assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -1011,9 +1013,19 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         api_server_access_profile = _populate_api_server_access_profile(api_server_authorized_ip_ranges)
 
     identity = None
-    if enable_managed_identity:
+    if not enable_managed_identity and assign_identity:
+        raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
+    if enable_managed_identity and not assign_identity:
         identity = ManagedClusterIdentity(
             type="SystemAssigned"
+        )
+    elif enable_managed_identity and assign_identity:
+        user_assigned_identity = {
+            assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+        }
+        identity = ManagedClusterIdentity(
+            type="UserAssigned",
+            user_assigned_identities=user_assigned_identity
         )
 
     enable_rbac = True
