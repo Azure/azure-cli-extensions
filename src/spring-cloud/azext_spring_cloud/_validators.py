@@ -215,8 +215,8 @@ def _check_spring_cloud_rp_permission(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
     auth_client = _get_authorization_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
     assignments = auth_client.role_assignments.list_for_scope(vnet_id)
-    objectIds = [x.principal_id for x in assignments if \
-        x.principal_type == 'ServicePrincipal' and '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' in x.role_definition_id]
+    objectIds = [x.principal_id for x in assignments if x.principal_type == 'ServicePrincipal' and
+                 '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' in x.role_definition_id]
     objectId = _look_up_spring_cloud_rp(cmd, objectIds, subscription_id=vnet['subscription'])
     if not objectId:
         logger.warning("Please make sure to grant Azure Spring Cloud service permission to the virtual network. Refer "
