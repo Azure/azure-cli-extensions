@@ -25,6 +25,7 @@ from azext_ai_did_you_mean_this._const import (
     TELEMETRY_MISSING_CORRELATION_ID_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
+from azext_ai_did_you_mean_this.version import VERSION
 
 logger = get_logger(__name__)
 
@@ -32,7 +33,7 @@ logger = get_logger(__name__)
 # Commands
 # note: at least one command is required in order for the CLI to load the extension.
 def show_extension_version():
-    print('Current version: 0.2.1')
+    print(f'Current version: {VERSION}')
 
 
 def _log_debug(msg, *args, **kwargs):
@@ -228,7 +229,7 @@ def call_aladdin_service(command, parameters, version):
         "parameters": parameters
     }
 
-    api_url = 'https://app.aladdin.microsoft.com/api/v1.0/suggestions'
+    api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
     headers = {'Content-Type': 'application/json'}
 
     try:
@@ -240,6 +241,7 @@ def call_aladdin_service(command, parameters, version):
                 'context': json.dumps(context)
             },
             headers=headers)
+        print(response.text)
     except RequestException as ex:
         _log_debug('requests.get() exception: %s', ex)
 
