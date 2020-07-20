@@ -18,6 +18,11 @@ import azure.cli.core.keys as keys
 
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
 
+from ._helpers import (_fuzzy_match)
+
+from ._consts import ADDONS
+
+
 logger = get_logger(__name__)
 
 
@@ -40,7 +45,8 @@ def validate_ssh_key(namespace):
                 private_key_filepath = public_key_filepath[:-4]
             else:
                 private_key_filepath = public_key_filepath + '.private'
-            content = keys.generate_ssh_keys(private_key_filepath, public_key_filepath)
+            content = keys.generate_ssh_keys(
+                private_key_filepath, public_key_filepath)
             logger.warning("SSH key files '%s' and '%s' have been generated under ~/.ssh to "
                            "allow SSH access to the VM. If using machines without "
                            "permanent storage like Azure Cloud Shell without an attached "
@@ -92,7 +98,8 @@ def validate_max_pods(namespace):
     """Validates that max_pods is set to a reasonable minimum number."""
     # kube-proxy and kube-svc reside each nodes,
     # 2 kube-proxy pods, 1 azureproxy/heapster/dashboard/tunnelfront are in kube-system
-    minimum_pods_required = ceil((namespace.node_count * 2 + 6 + 1) / namespace.node_count)
+    minimum_pods_required = ceil(
+        (namespace.node_count * 2 + 6 + 1) / namespace.node_count)
     if namespace.max_pods != 0 and namespace.max_pods < minimum_pods_required:
         raise CLIError('--max-pods must be at least {} for a managed Kubernetes cluster to function.'
                        .format(minimum_pods_required))
@@ -114,14 +121,16 @@ def validate_ip_ranges(namespace):
 
     restrict_traffic_to_agentnodes = "0.0.0.0/32"
     allow_all_traffic = ""
-    ip_ranges = [ip.strip() for ip in namespace.api_server_authorized_ip_ranges.split(",")]
+    ip_ranges = [ip.strip()
+                 for ip in namespace.api_server_authorized_ip_ranges.split(",")]
 
     if restrict_traffic_to_agentnodes in ip_ranges and len(ip_ranges) > 1:
         raise CLIError(("Setting --api-server-authorized-ip-ranges to 0.0.0.0/32 is not allowed with other IP ranges."
                         "Refer to https://aka.ms/aks/whitelist for more details"))
 
     if allow_all_traffic in ip_ranges and len(ip_ranges) > 1:
-        raise CLIError("--api-server-authorized-ip-ranges cannot be disabled and simultaneously enabled")
+        raise CLIError(
+            "--api-server-authorized-ip-ranges cannot be disabled and simultaneously enabled")
 
     for ip in ip_ranges:
         if ip in [restrict_traffic_to_agentnodes, allow_all_traffic]:
@@ -129,11 +138,14 @@ def validate_ip_ranges(namespace):
         try:
             ip = ip_network(ip)
             if not ip.is_global:
-                raise CLIError("--api-server-authorized-ip-ranges must be global non-reserved addresses or CIDRs")
+                raise CLIError(
+                    "--api-server-authorized-ip-ranges must be global non-reserved addresses or CIDRs")
             if ip.version == 6:
-                raise CLIError("--api-server-authorized-ip-ranges cannot be IPv6 addresses")
+                raise CLIError(
+                    "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
-            raise CLIError("--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
+            raise CLIError(
+                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
 
 def validate_nodepool_name(namespace):
@@ -142,7 +154,8 @@ def validate_nodepool_name(namespace):
         if len(namespace.nodepool_name) > 12:
             raise CLIError('--nodepool-name can contain atmost 12 characters')
         if not namespace.nodepool_name.isalnum():
-            raise CLIError('--nodepool-name should only contain alphanumeric characters')
+            raise CLIError(
+                '--nodepool-name should only contain alphanumeric characters')
 
 
 def validate_vm_set_type(namespace):
@@ -152,7 +165,8 @@ def validate_vm_set_type(namespace):
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
-            raise CLIError("--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+            raise CLIError(
+                "--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
 
 
 def validate_load_balancer_sku(namespace):
@@ -167,17 +181,21 @@ def validate_load_balancer_sku(namespace):
 def validate_load_balancer_outbound_ips(namespace):
     """validate load balancer profile outbound IP ids"""
     if namespace.load_balancer_outbound_ips is not None:
-        ip_id_list = [x.strip() for x in namespace.load_balancer_outbound_ips.split(',')]
+        ip_id_list = [x.strip()
+                      for x in namespace.load_balancer_outbound_ips.split(',')]
         if not all(ip_id_list):
-            raise CLIError("--load-balancer-outbound-ips cannot contain whitespace")
+            raise CLIError(
+                "--load-balancer-outbound-ips cannot contain whitespace")
 
 
 def validate_load_balancer_outbound_ip_prefixes(namespace):
     """validate load balancer profile outbound IP prefix ids"""
     if namespace.load_balancer_outbound_ip_prefixes is not None:
-        ip_prefix_id_list = [x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
+        ip_prefix_id_list = [
+            x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
         if not all(ip_prefix_id_list):
-            raise CLIError("--load-balancer-outbound-ip-prefixes cannot contain whitespace")
+            raise CLIError(
+                "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
 
 
 def validate_taints(namespace):
@@ -212,16 +230,19 @@ def validate_eviction_policy(namespace):
             return
         if namespace.eviction_policy != "Delete" and \
                 namespace.eviction_policy != "Deallocate":
-            raise CLIError("--eviction-policy can only be Delete or Deallocate")
+            raise CLIError(
+                "--eviction-policy can only be Delete or Deallocate")
 
 
 def validate_spot_max_price(namespace):
     """Validates the spot node pool max price."""
     if not isnan(namespace.spot_max_price):
         if namespace.priority != "Spot":
-            raise CLIError("--spot_max_price can only be set when --priority is Spot")
+            raise CLIError(
+                "--spot_max_price can only be set when --priority is Spot")
         if namespace.spot_max_price * 100000 % 1 != 0:
-            raise CLIError("--spot_max_price can only include up to 5 decimal places")
+            raise CLIError(
+                "--spot_max_price can only include up to 5 decimal places")
         if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
             raise CLIError(
                 "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
@@ -230,13 +251,15 @@ def validate_spot_max_price(namespace):
 
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
-        raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
+        raise CLIError(
+            'Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
 
 def validate_user(namespace):
     if namespace.user.lower() != "clusteruser" and \
             namespace.user.lower() != "clustermonitoringuser":
-        raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
+        raise CLIError(
+            "--user can only be clusterUser or clusterMonitoringUser")
 
 
 def validate_vnet_subnet_id(namespace):
@@ -245,23 +268,27 @@ def validate_vnet_subnet_id(namespace):
             return
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.vnet_subnet_id):
-            raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+            raise CLIError(
+                "--vnet-subnet-id is not a valid Azure resource ID.")
 
 
 def validate_load_balancer_outbound_ports(namespace):
     """validate load balancer profile outbound allocated ports"""
     if namespace.load_balancer_outbound_ports is not None:
         if namespace.load_balancer_outbound_ports % 8 != 0:
-            raise CLIError("--load-balancer-allocated-ports must be a multiple of 8")
+            raise CLIError(
+                "--load-balancer-allocated-ports must be a multiple of 8")
         if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
-            raise CLIError("--load-balancer-allocated-ports must be in the range [0,64000]")
+            raise CLIError(
+                "--load-balancer-allocated-ports must be in the range [0,64000]")
 
 
 def validate_load_balancer_idle_timeout(namespace):
     """validate load balancer profile idle timeout"""
     if namespace.load_balancer_idle_timeout is not None:
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
-            raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
+            raise CLIError(
+                "--load-balancer-idle-timeout must be in the range [4,120]")
 
 
 def validate_nodepool_tags(ns):
@@ -288,9 +315,11 @@ def validate_cluster_autoscaler_profile(namespace):
 def _validate_cluster_autoscaler_key(key):
     if not key:
         raise CLIError('Empty key specified for cluster-autoscaler-profile')
-    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
+    valid_keys = list(k.replace("_", "-")
+                      for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
     if key not in valid_keys:
-        raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
+        raise CLIError(
+            'Invalid key specified for cluster-autoscaler-profile: %s' % key)
 
 
 def _extract_cluster_autoscaler_params(namespace):
@@ -329,7 +358,8 @@ def validate_nodepool_labels(namespace):
 
 def validate_label(label):
     """Validates that provided label is a valid format"""
-    prefix_regex = re.compile(r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$")
+    prefix_regex = re.compile(
+        r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$")
     name_regex = re.compile(r"^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$")
     value_regex = re.compile(r"^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$")
 
@@ -337,14 +367,16 @@ def validate_label(label):
         return {}
     kv = label.split('=')
     if len(kv) != 2:
-        raise CLIError("Invalid label: %s. Label definition must be of format name=value." % label)
+        raise CLIError(
+            "Invalid label: %s. Label definition must be of format name=value." % label)
     name_parts = kv[0].split('/')
     if len(name_parts) == 1:
         name = name_parts[0]
     elif len(name_parts) == 2:
         prefix = name_parts[0]
         if not prefix or len(prefix) > 253:
-            raise CLIError("Invalid label: %s. Label prefix can't be empty or more than 253 chars." % label)
+            raise CLIError(
+                "Invalid label: %s. Label prefix can't be empty or more than 253 chars." % label)
         if not prefix_regex.match(prefix):
             raise CLIError("Invalid label: %s. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
                            "characters or '-', and must start and end with an alphanumeric character" % label)
@@ -357,7 +389,8 @@ def validate_label(label):
 
     # validate label name
     if not name or len(name) > 63:
-        raise CLIError("Invalid label: %s. Label name can't be empty or more than 63 chars." % label)
+        raise CLIError(
+            "Invalid label: %s. Label name can't be empty or more than 63 chars." % label)
     if not name_regex.match(name):
         raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
                        "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
@@ -366,7 +399,8 @@ def validate_label(label):
 
     # validate label value
     if len(kv[1]) > 63:
-        raise CLIError("Invalid label: %s. Label must be more than 63 chars." % label)
+        raise CLIError(
+            "Invalid label: %s. Label must be more than 63 chars." % label)
     if not value_regex.match(kv[1]):
         raise CLIError("Invalid label: %s. A valid label must be an empty string or consist of alphanumeric "
                        "characters, '-', '_' or '.', and must start and end with an alphanumeric character" % label)
@@ -387,3 +421,22 @@ def validate_max_surge(namespace):
             raise CLIError("--max-surge must be positive")
     except ValueError:
         raise CLIError("--max-surge should be an int or percentage")
+
+
+def validate_addons(namespace):
+    addons = namespace["addons"]
+    addon_args = addons.split(',')
+
+    for addon_arg in addon_args:
+        if addon_arg not in ADDONS:
+            matches = _fuzzy_match(addon_arg, list(ADDONS))
+            matches = str(matches)[1:-1]
+            all_addons = list(ADDONS)
+            all_addons = str(all_addons)[1:-1]
+            if len(matches) == 0:
+                raise CLIError(
+                    f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
+            else:
+                raise CLIError(
+                    f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+

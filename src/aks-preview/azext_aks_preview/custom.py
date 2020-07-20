@@ -85,7 +85,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
-
+from ._consts import ADDONS
 logger = get_logger(__name__)
 
 
@@ -1438,16 +1438,6 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
         raise CLIError("Fail to find kubeconfig file.")
 
 
-ADDONS = {
-    'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent',
-    'virtual-node': 'aciConnector',
-    'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
-}
-
-
 # pylint: disable=line-too-long
 def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                 client,
@@ -2548,54 +2538,6 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
-'''
-will compare all elements in @arr against the @query to see if they are similar
-
-similar implies one is a substring of the other or the two words are 1 change apart
-
-Ex. bird and bord are similar
-Ex. bird and birdwaj are similar
-Ex. bird and bead are not similar
-'''
-
-
-def fuzzy_match(query, arr):
-    def similar_word(a, b):
-        a_len = len(a)
-        b_len = len(b)
-        if a_len > b_len:  # @a should always be the shorter string
-            return similar_word(b, a)
-        if a == b:
-            return True
-        if a in b:
-            return True
-        if b_len - a_len > 1:
-            return False
-        i = 0
-        j = 0
-        found_difference = False
-        while i < a_len:
-            if a[i] != b[j]:
-                if found_difference:
-                    return False
-                found_difference = True
-                if a_len == b_len:
-                    i += 1
-                j += 1
-            else:
-                i += 1
-                j += 1
-        return True
-
-    matches = []
-
-    for word in arr:
-        if similar_word(query, word):
-            matches.append(word)
-
-    return matches
-
-
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    instance,
                    subscription_id,
@@ -2624,19 +2566,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
-        if addon_arg in ADDONS:
-            addon = ADDONS[addon_arg]
-        else:
-            matches = fuzzy_match(addon_arg, list(ADDONS))
-            matches = str(matches)[1:-1]
-            all_addons = list(ADDONS)
-            all_addons = str(all_addons)[1:-1]
-            if len(matches) == 0:
-                raise CLIError(
-                    f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
-            else:
-                raise CLIError(
-                    f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+        addon = ADDONS[addon_arg]
 
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag

@@ -5,6 +5,7 @@
 import unittest
 from azure.cli.core.util import CLIError
 import azext_aks_preview._validators as validators
+from azext_aks_preview._consts import ADDONS
 
 
 class TestValidateIPRanges(unittest.TestCase):
@@ -64,7 +65,8 @@ class TestValidateIPRanges(unittest.TestCase):
 class TestClusterAutoscalerParamsValidators(unittest.TestCase):
     def test_empty_key_empty_value(self):
         cluster_autoscaler_profile = ["="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
         err = "Empty key specified for cluster-autoscaler-profile"
 
         with self.assertRaises(CLIError) as cm:
@@ -73,13 +75,15 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
 
     def test_non_empty_key_empty_value(self):
         cluster_autoscaler_profile = ["scan-interval="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
 
         validators.validate_cluster_autoscaler_profile(namespace)
 
     def test_two_empty_keys_empty_value(self):
         cluster_autoscaler_profile = ["=", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
         err = "Empty key specified for cluster-autoscaler-profile"
 
         with self.assertRaises(CLIError) as cm:
@@ -88,7 +92,8 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
 
     def test_one_empty_key_in_pair_one_non_empty(self):
         cluster_autoscaler_profile = ["scan-interval=20s", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
         err = "Empty key specified for cluster-autoscaler-profile"
 
         with self.assertRaises(CLIError) as cm:
@@ -97,7 +102,8 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
 
     def test_invalid_key(self):
         cluster_autoscaler_profile = ["bad-key=val"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
         err = "Invalid key specified for cluster-autoscaler-profile: bad-key"
 
         with self.assertRaises(CLIError) as cm:
@@ -105,8 +111,10 @@ class TestClusterAutoscalerParamsValidators(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_parameters(self):
-        cluster_autoscaler_profile = ["scan-interval=20s", "scale-down-delay-after-add=15m"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
+        cluster_autoscaler_profile = [
+            "scan-interval=20s", "scale-down-delay-after-add=15m"]
+        namespace = Namespace(
+            cluster_autoscaler_profile=cluster_autoscaler_profile)
 
         validators.validate_cluster_autoscaler_profile(namespace)
 
@@ -162,9 +170,42 @@ class TestMaxSurge(unittest.TestCase):
     def test_throws_on_string(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("foobar"))
-        self.assertTrue('int or percentage' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue('int or percentage' in str(
+            cm.exception), msg=str(cm.exception))
 
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestValidateAddons(unittest.TestCase):
+    def test_validate_addons(self):
+        addons = list(ADDONS)
+        if len(addons) > 0:
+            first_addon = addons[0]
+            namespace1 = {
+                "addons": first_addon
+            }
+
+            try:
+                validators.validate_addons(namespace1)
+            except CLIError:
+                self.fail("validate_addons failed unexpectedly with CLIError")
+
+            midlen = int(len(first_addon)/2)
+
+            namespace2 = {
+                "addons": first_addon[:midlen] + first_addon[midlen+1:]
+            }
+            self.assertRaises(CLIError, validators.validate_addons, namespace2)
+
+        namespace3 = {
+            "addons": "qfrnmjk"
+        }
+
+        self.assertRaises(CLIError, validators.validate_addons, namespace3)
+
+
+if __name__ == "__main__":
+    unittest.main()

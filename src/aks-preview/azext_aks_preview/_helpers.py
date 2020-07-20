@@ -22,7 +22,8 @@ def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instanc
     if api_server_authorized_ip_ranges == "":
         authorized_ip_ranges = []
     else:
-        authorized_ip_ranges = [ip.strip() for ip in api_server_authorized_ip_ranges.split(",")]
+        authorized_ip_ranges = [
+            ip.strip() for ip in api_server_authorized_ip_ranges.split(",")]
 
     profile.authorized_ip_ranges = authorized_ip_ranges
     return profile
@@ -57,13 +58,15 @@ def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_ba
         be pre-configured with a route table with egress rules")
 
     if load_balancer_sku == "basic":
-        raise CLIError("userDefinedRouting doesn't support basic load balancer sku")
+        raise CLIError(
+            "userDefinedRouting doesn't support basic load balancer sku")
 
     if load_balancer_profile:
         if (load_balancer_profile.managed_outbound_ips or
                 load_balancer_profile.outbound_ips or
                 load_balancer_profile.outbound_ip_prefixes):
-            raise CLIError("userDefinedRouting doesn't support customizing a standard load balancer with IP addresses")
+            raise CLIError(
+                "userDefinedRouting doesn't support customizing a standard load balancer with IP addresses")
 
     return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
@@ -92,3 +95,51 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     if len(storage_name_without_hcp) > CONST_CONTAINER_NAME_MAX_LENGTH:
         storage_name_without_hcp = storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
     return storage_name_without_hcp.rstrip('-')
+
+
+'''
+will compare all elements in @arr against the @query to see if they are similar
+
+similar implies one is a substring of the other or the two words are 1 change apart
+
+Ex. bird and bord are similar
+Ex. bird and birdwaj are similar
+Ex. bird and bead are not similar
+'''
+
+
+def _fuzzy_match(query, arr):
+    def similar_word(a, b):
+        a_len = len(a)
+        b_len = len(b)
+        if a_len > b_len:  # @a should always be the shorter string
+            return similar_word(b, a)
+        if a == b:
+            return True
+        if a in b:
+            return True
+        if b_len - a_len > 1:
+            return False
+        i = 0
+        j = 0
+        found_difference = False
+        while i < a_len:
+            if a[i] != b[j]:
+                if found_difference:
+                    return False
+                found_difference = True
+                if a_len == b_len:
+                    i += 1
+                j += 1
+            else:
+                i += 1
+                j += 1
+        return True
+
+    matches = []
+
+    for word in arr:
+        if similar_word(query, word):
+            matches.append(word)
+
+    return matches
