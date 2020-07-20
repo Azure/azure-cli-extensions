@@ -53,6 +53,13 @@ class Backend(Model):
     :param private_link_alias: The Alias of the Private Link resource.
      Populating this optional field indicates that this backend is 'Private'
     :type private_link_alias: str
+    :param private_link_resource_id: The Resource Id of the Private Link
+     resource. Populating this optional field indicates that this backend is
+     'Private'
+    :type private_link_resource_id: str
+    :param private_link_location: The location of the Private Link resource.
+     Required only if 'privateLinkResourceId' is populated
+    :type private_link_location: str
     :ivar private_endpoint_status: The Approval status for the connection to
      the Private Link. Possible values include: 'Pending', 'Approved',
      'Rejected', 'Disconnected', 'Timeout'
@@ -92,7 +99,9 @@ class Backend(Model):
     _attribute_map = {
         'address': {'key': 'address', 'type': 'str'},
         'private_link_alias': {'key': 'privateLinkAlias', 'type': 'str'},
-        'private_endpoint_status': {'key': 'privateEndpointStatus', 'type': 'PrivateEndpointStatus'},
+        'private_link_resource_id': {'key': 'privateLinkResourceId', 'type': 'str'},
+        'private_link_location': {'key': 'privateLinkLocation', 'type': 'str'},
+        'private_endpoint_status': {'key': 'privateEndpointStatus', 'type': 'str'},
         'private_link_approval_message': {'key': 'privateLinkApprovalMessage', 'type': 'str'},
         'http_port': {'key': 'httpPort', 'type': 'int'},
         'https_port': {'key': 'httpsPort', 'type': 'int'},
@@ -106,6 +115,8 @@ class Backend(Model):
         super(Backend, self).__init__(**kwargs)
         self.address = kwargs.get('address', None)
         self.private_link_alias = kwargs.get('private_link_alias', None)
+        self.private_link_resource_id = kwargs.get('private_link_resource_id', None)
+        self.private_link_location = kwargs.get('private_link_location', None)
         self.private_endpoint_status = None
         self.private_link_approval_message = kwargs.get('private_link_approval_message', None)
         self.http_port = kwargs.get('http_port', None)
@@ -2243,6 +2254,10 @@ class RoutingRule(SubResource):
     :param rules_engine: A reference to a specific Rules Engine Configuration
      to apply to this route.
     :type rules_engine: ~azure.mgmt.frontdoor.models.SubResource
+    :param web_application_firewall_policy_link: Defines the Web Application
+     Firewall policy for each routing rule (if applicable)
+    :type web_application_firewall_policy_link:
+     ~azure.mgmt.frontdoor.models.RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     :param resource_state: Resource status. Possible values include:
      'Creating', 'Enabling', 'Enabled', 'Disabling', 'Disabled', 'Deleting'
     :type resource_state: str or
@@ -2265,6 +2280,7 @@ class RoutingRule(SubResource):
         'enabled_state': {'key': 'properties.enabledState', 'type': 'str'},
         'route_configuration': {'key': 'properties.routeConfiguration', 'type': 'RouteConfiguration'},
         'rules_engine': {'key': 'properties.rulesEngine', 'type': 'SubResource'},
+        'web_application_firewall_policy_link': {'key': 'properties.webApplicationFirewallPolicyLink', 'type': 'RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink'},
         'resource_state': {'key': 'properties.resourceState', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
@@ -2278,9 +2294,26 @@ class RoutingRule(SubResource):
         self.enabled_state = kwargs.get('enabled_state', None)
         self.route_configuration = kwargs.get('route_configuration', None)
         self.rules_engine = kwargs.get('rules_engine', None)
+        self.web_application_firewall_policy_link = kwargs.get('web_application_firewall_policy_link', None)
         self.resource_state = kwargs.get('resource_state', None)
         self.name = kwargs.get('name', None)
         self.type = None
+
+
+class RoutingRuleLink(Model):
+    """Defines the Resource ID for a Routing Rule.
+
+    :param id: Resource ID.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(RoutingRuleLink, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
 
 
 class RoutingRuleListResult(Model):
@@ -2332,6 +2365,10 @@ class RoutingRuleUpdateParameters(Model):
     :param rules_engine: A reference to a specific Rules Engine Configuration
      to apply to this route.
     :type rules_engine: ~azure.mgmt.frontdoor.models.SubResource
+    :param web_application_firewall_policy_link: Defines the Web Application
+     Firewall policy for each routing rule (if applicable)
+    :type web_application_firewall_policy_link:
+     ~azure.mgmt.frontdoor.models.RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     """
 
     _attribute_map = {
@@ -2341,6 +2378,7 @@ class RoutingRuleUpdateParameters(Model):
         'enabled_state': {'key': 'enabledState', 'type': 'str'},
         'route_configuration': {'key': 'routeConfiguration', 'type': 'RouteConfiguration'},
         'rules_engine': {'key': 'rulesEngine', 'type': 'SubResource'},
+        'web_application_firewall_policy_link': {'key': 'webApplicationFirewallPolicyLink', 'type': 'RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink'},
     }
 
     def __init__(self, **kwargs):
@@ -2351,6 +2389,24 @@ class RoutingRuleUpdateParameters(Model):
         self.enabled_state = kwargs.get('enabled_state', None)
         self.route_configuration = kwargs.get('route_configuration', None)
         self.rules_engine = kwargs.get('rules_engine', None)
+        self.web_application_firewall_policy_link = kwargs.get('web_application_firewall_policy_link', None)
+
+
+class RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink(Model):
+    """Defines the Web Application Firewall policy for each routing rule (if
+    applicable).
+
+    :param id: Resource ID.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
 
 
 class RulesEngine(Model):
@@ -2742,6 +2798,10 @@ class WebApplicationFirewallPolicy(Resource):
      with this Web Application Firewall policy.
     :vartype frontend_endpoint_links:
      list[~azure.mgmt.frontdoor.models.FrontendEndpointLink]
+    :ivar routing_rule_links: Describes Routing Rules associated with this Web
+     Application Firewall policy.
+    :vartype routing_rule_links:
+     list[~azure.mgmt.frontdoor.models.RoutingRuleLink]
     :ivar provisioning_state: Provisioning state of the policy.
     :vartype provisioning_state: str
     :ivar resource_state: Resource status of the policy. Possible values
@@ -2759,6 +2819,7 @@ class WebApplicationFirewallPolicy(Resource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'frontend_endpoint_links': {'readonly': True},
+        'routing_rule_links': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'resource_state': {'readonly': True},
     }
@@ -2773,6 +2834,7 @@ class WebApplicationFirewallPolicy(Resource):
         'custom_rules': {'key': 'properties.customRules', 'type': 'CustomRuleList'},
         'managed_rules': {'key': 'properties.managedRules', 'type': 'ManagedRuleSetList'},
         'frontend_endpoint_links': {'key': 'properties.frontendEndpointLinks', 'type': '[FrontendEndpointLink]'},
+        'routing_rule_links': {'key': 'properties.routingRuleLinks', 'type': '[RoutingRuleLink]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'resource_state': {'key': 'properties.resourceState', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
@@ -2784,6 +2846,7 @@ class WebApplicationFirewallPolicy(Resource):
         self.custom_rules = kwargs.get('custom_rules', None)
         self.managed_rules = kwargs.get('managed_rules', None)
         self.frontend_endpoint_links = None
+        self.routing_rule_links = None
         self.provisioning_state = None
         self.resource_state = None
         self.etag = kwargs.get('etag', None)

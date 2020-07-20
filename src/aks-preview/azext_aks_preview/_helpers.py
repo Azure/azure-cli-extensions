@@ -97,18 +97,16 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     return storage_name_without_hcp.rstrip('-')
 
 
-'''
-will compare all elements in @arr against the @query to see if they are similar
-
-similar implies one is a substring of the other or the two words are 1 change apart
-
-Ex. bird and bord are similar
-Ex. bird and birdwaj are similar
-Ex. bird and bead are not similar
-'''
-
-
 def _fuzzy_match(query, arr):
+    """
+    will compare all elements in @arr against the @query to see if they are similar
+
+    similar implies one is a substring of the other or the two words are 1 change apart
+
+    Ex. bird and bord are similar
+    Ex. bird and birdwaj are similar
+    Ex. bird and bead are not similar
+    """
     def similar_word(a, b):
         a_len = len(a)
         b_len = len(b)

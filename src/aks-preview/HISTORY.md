@@ -2,9 +2,17 @@
 
 Release History
 ===============
-0.4.56
+0.4.58
 +++++
 * Added clearer error message for invalid addon names
+
+0.4.57
++++++
+* Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.
+
+0.4.56
++++++
+* Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
 
 0.4.55
 +++++

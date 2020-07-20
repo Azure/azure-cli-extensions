@@ -424,7 +424,7 @@ def validate_max_surge(namespace):
 
 
 def validate_addons(namespace):
-    addons = namespace["addons"]
+    addons = namespace.addons
     addon_args = addons.split(',')
 
     for addon_arg in addon_args:
@@ -440,3 +440,12 @@ def validate_addons(namespace):
                 raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
 
+
+def validate_assign_identity(namespace):
+    if namespace.assign_identity is not None:
+        if namespace.assign_identity == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.assign_identity):
+            raise CLIError(
+                "--assign-identity is not a valid Azure resource ID.")

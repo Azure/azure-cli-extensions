@@ -62,6 +62,11 @@ helps['network vhub connection delete'] = """
     short-summary: Delete a virtual hub VNet connection.
 """
 
+helps['network vhub connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of virtual hub VNet connection is met.
+"""
+
 helps['network vhub route'] = """
     type: group
     short-summary: Manage entries in the virtual hub route table.
@@ -240,21 +245,42 @@ helps['network vpn-gateway connection'] = """
 helps['network vpn-gateway connection create'] = """
     type: command
     short-summary: Create a VPN gateway connection.
+    examples:
+      - name: Create a VPN gateway connection
+        text: |
+            az network vpn-gateway connection create -g MyRG -n MyConnection --gateway-name MyGateway --remote-vpn-site /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable2 --labels label1 label2
 """
 
 helps['network vpn-gateway connection list'] = """
     type: command
     short-summary: List VPN gateway connections.
+    examples:
+      - name: List all connections for a given VPN gateway
+        text: |
+            az network vpn-gateway connection list -g MyRG --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection show'] = """
     type: command
     short-summary: Get the details of a VPN gateway connection.
+    examples:
+      - name: Get the details of a VPN gateway connection
+        text: |
+            az network vpn-gateway connection show -g MyRG -n MyConnection --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection delete'] = """
     type: command
     short-summary: Delete a VPN gateway connection.
+    examples:
+      - name: Delete a VPN gateway connection
+        text: |
+            az network vpn-gateway connection delete -g MyRG -n MyConnection --gateway-name MyGateway
+"""
+
+helps['network vpn-gateway connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the VPN gateway connection is met.
 """
 
 helps['network vpn-gateway connection ipsec-policy'] = """
@@ -398,6 +424,9 @@ helps['network p2s-vpn-gateway create'] = """
       - name: Create a point-to-site VPN gateway.
         text: |
             az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24
+      - name: Create a point-to-site VPN gateway with routing configuration.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24 --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable2 --labels label1 label2
 """
 
 helps['network p2s-vpn-gateway list'] = """
@@ -423,5 +452,28 @@ helps['network p2s-vpn-gateway delete'] = """
 helps['network p2s-vpn-gateway wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the point-to-site VPN gateway is met.
+"""
+
+helps['network p2s-vpn-gateway connection'] = """
+    type: group
+    short-summary: Manage point-to-site VPN gateway connections.
+"""
+
+helps['network p2s-vpn-gateway connection list'] = """
+    type: command
+    short-summary: List all connections for a given point-to-site VPN gateway.
+    examples:
+      - name: List all connections for a given point-to-site VPN gateway
+        text: |
+            az network p2s-vpn-gateway connection list -g MyRG --gateway-name MyP2SVPNGateway
+"""
+
+helps['network p2s-vpn-gateway connection show'] = """
+    type: command
+    short-summary: Show the details of a point-to-site VPN gateway connection.
+    examples:
+      - name: Show the details of a point-to-site VPN gateway connection
+        text: |
+            az network p2s-vpn-gateway connection show -g MyRG -n connection --gateway-name MyP2SVPNGateway
 """
 # endregion
