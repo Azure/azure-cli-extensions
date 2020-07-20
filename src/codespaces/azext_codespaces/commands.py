@@ -21,7 +21,7 @@ def advanced_usage_message(_):
 def load_command_table(self, _):
 
     plan_operations = CliCommandType(
-        operations_tmpl='azext_codespaces.vendored_sdks.vsonline.operations.plan_operations#PlanOperations.{}',
+        operations_tmpl='azext_codespaces.vendored_sdks.codespaces.operations.plan_operations#PlanOperations.{}',
         client_factory=cf_codespaces)
 
     with self.command_group('codespace plan', plan_operations, client_factory=cf_codespaces_plan) as g:
