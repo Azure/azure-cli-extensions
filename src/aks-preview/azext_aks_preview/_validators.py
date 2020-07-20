@@ -424,8 +424,8 @@ def validate_max_surge(namespace):
 
 
 def validate_addons(namespace):
-    if hasattr(namespace, "addons"):
-        return
+    if not hasattr(namespace, "addons"):
+        raise CLIError("Did not specify any addons.")
     addons = namespace.addons
     addon_args = addons.split(',')
 

@@ -185,7 +185,7 @@ class ValidateAddonsNamespace:
 
 
 class TestValidateAddons(unittest.TestCase):
-    def test_validate_addons(self):
+    def test_correct_addon(self):
         addons = list(ADDONS)
         if len(addons) > 0:
             first_addon = addons[0]
@@ -196,15 +196,25 @@ class TestValidateAddons(unittest.TestCase):
             except CLIError:
                 self.fail("validate_addons failed unexpectedly with CLIError")
 
+    def test_validate_addons(self):
+        addons = list(ADDONS)
+        if len(addons) > 0:
+            first_addon = addons[0]
             midlen = int(len(first_addon) / 2)
 
-            namespace2 = ValidateAddonsNamespace(
+            namespace = ValidateAddonsNamespace(
                 first_addon[:midlen] + first_addon[midlen + 1:])
-            self.assertRaises(CLIError, validators.validate_addons, namespace2)
+            self.assertRaises(CLIError, validators.validate_addons, namespace)
 
-        namespace3 = ValidateAddonsNamespace("qfrnmjk")
+    def test_no_addon_match(self):
+        namespace = ValidateAddonsNamespace("qfrnmjk")
 
-        self.assertRaises(CLIError, validators.validate_addons, namespace3)
+        self.assertRaises(CLIError, validators.validate_addons, namespace)
+
+    def test_no_addons(self):
+        namespace = Namespace()
+
+        self.assertRaises(CLIError, validators.validate_addons, namespace)
 
 
 class AssignIdentityNamespace:
