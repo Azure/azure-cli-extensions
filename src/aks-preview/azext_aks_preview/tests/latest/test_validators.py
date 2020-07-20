@@ -196,10 +196,10 @@ class TestValidateAddons(unittest.TestCase):
             except CLIError:
                 self.fail("validate_addons failed unexpectedly with CLIError")
 
-            midlen = int(len(first_addon)/2)
+            midlen = int(len(first_addon) / 2)
 
             namespace2 = ValidateAddonsNamespace(
-                first_addon[:midlen] + first_addon[midlen+1:])
+                first_addon[:midlen] + first_addon[midlen + 1:])
             self.assertRaises(CLIError, validators.validate_addons, namespace2)
 
         namespace3 = ValidateAddonsNamespace("qfrnmjk")
