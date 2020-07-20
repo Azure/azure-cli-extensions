@@ -211,11 +211,6 @@ class TestValidateAddons(unittest.TestCase):
 
         self.assertRaises(CLIError, validators.validate_addons, namespace)
 
-    def test_no_addons(self):
-        namespace = Namespace()
-
-        self.assertRaises(CLIError, validators.validate_addons, namespace)
-
 
 class AssignIdentityNamespace:
     def __init__(self, assign_identity):
