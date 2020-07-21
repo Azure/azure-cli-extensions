@@ -29,7 +29,7 @@ def setup(test, rg):
 @try_manual
 def step_kustoclusterscreateorupdate2(test, rg):
     test.cmd('az kusto cluster create '
-             '--cluster-name "{Clusters_2}" '
+             '--name "{Clusters_2}" '
              '--identity-type "SystemAssigned" '
              '--location "westus" '
              '--enable-purge true '
@@ -44,7 +44,7 @@ def step_kustoclusterscreateorupdate2(test, rg):
 @try_manual
 def step_kustoclusterscreateorupdate(test, rg):
     test.cmd('az kusto cluster create '
-             '--cluster-name "{Clusters_3}" '
+             '--name "{Clusters_3}" '
              '--identity-type "SystemAssigned" '
              '--location "westus" '
              '--enable-purge true '
@@ -70,7 +70,7 @@ def step_kustoclusterschecknameavailability(test, rg):
 @try_manual
 def step_kustoclustersget(test, rg):
     test.cmd('az kusto cluster show '
-             '--cluster-name "{Clusters_3}" '
+             '--name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -94,7 +94,7 @@ def step_kustoclusterslistbyresourcegroup(test, rg):
 @try_manual
 def step_kustoclustersstop(test, rg):
     test.cmd('az kusto cluster stop '
-             '--cluster-name "{Clusters_3}" '
+             '--name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -103,7 +103,7 @@ def step_kustoclustersstop(test, rg):
 @try_manual
 def step_kustoclustersstart(test, rg):
     test.cmd('az kusto cluster start '
-             '--cluster-name "{Clusters_3}" '
+             '--name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -112,7 +112,7 @@ def step_kustoclustersstart(test, rg):
 @try_manual
 def step_kustoclusterslistresourceskus(test, rg):
     test.cmd('az kusto cluster list-sku '
-             '--cluster-name "{Clusters_3}" '
+             '--name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
