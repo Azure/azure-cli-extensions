@@ -2,6 +2,7 @@
 ++++++++++++++++++
 
 * Argument `--cap` in `az monitor app-insights component billing update` supports float value.
+* [Incoming Breaking Change] Default write permission would be removed for `az monitor app-insights api-key` in the future.
 
 0.1.8
 ++++++++++++++++++
