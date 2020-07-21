@@ -1,3 +1,8 @@
+0.1.9
+++++++++++++++++++
+
+* Argument `--cap` in `az monitor app-insights component billing update` supports float value.
+
 0.1.8
 ++++++++++++++++++
 
