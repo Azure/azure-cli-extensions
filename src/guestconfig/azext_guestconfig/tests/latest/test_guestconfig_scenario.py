@@ -84,7 +84,6 @@ def step__guestconfigurationhcrpassignmentreports_get_list_all_guest_configurati
              checks=[])
 
 
-
 # EXAMPLE: /GuestConfigurationHCRPAssignments/get/Get a guest configuration assignment
 @try_manual
 def step__guestconfigurationhcrpassignments_get_get_a_guest_configuration_assignment(test, rg):
@@ -131,12 +130,10 @@ class GuestConfigurationClientScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'WhitelistedApplication': 'WhitelistedApplication',
-            
             'RGroup': 'geTestResourceGroup002',
             'VMName': 'geubuntu18.04-20200722',
             'GuestConfigurationAssignments': 'linux-password-baseline',
             'GuestConfigurationReportId': '8ed6b155-3627-41ee-a96c-bcb9b026eec0',
-
             'HybridRGroup': 'geTestResourceGroup002',
             'HybridMName': 'MSFT-LMR',
             'HybridGuestConfigurationAssignments': 'WindowsTimeZone',
