@@ -135,7 +135,7 @@ class AzureVWanVHubScenario(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('network vpn-server-config show -n {vserverconfig} -g {rg}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_p2s_vpn_gateway', location='westcentralus')
     def test_azure_p2s_vpn_gateway_basic_scenario(self, resource_group):
         self.kwargs.update({
             'vwan': 'clitestvwan',
@@ -151,7 +151,7 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westcentralus --sku Standard')
         self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} '
                  '--vpn-client-root-certs "{cert_file}" '
                  '--vpn-client-revoked-certs "{pem_file}"')
@@ -170,10 +170,9 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
         ])
-        # Temporary disable the two commands below before service team fixes the "delete" issue.
-        # self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
-        # with self.assertRaisesRegexp(SystemExit, '3'):
-        #     self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
+        self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway', location='westus')
     def test_azure_vwan_vpn_gateway(self, resource_group):
