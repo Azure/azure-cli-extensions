@@ -91,10 +91,6 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('length(@)', 1)
         ])
 
-        self.cmd('network vpn-server-config list', checks=[
-            self.check('length(@)', 1)
-        ])
-
         self.cmd('network vpn-server-config ipsec-policy add -n {vserverconfig} -g {rg} '
                  '--ipsec-encryption AES256 --ipsec-integrity SHA256 '
                  '--sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
@@ -170,16 +166,14 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
-        self.cmd('az network p2s-vpn-gateway list', checks=[
-            self.check('length(@)', 1)
-        ])
         self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}', checks=[
             self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
         ])
-        self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
-        with self.assertRaisesRegexp(SystemExit, '3'):
-            self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
+        # Temporary disable the two commands below before service team fixes the "delete" issue.
+        # self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
+        # with self.assertRaisesRegexp(SystemExit, '3'):
+        #     self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway', location='westus')
     def test_azure_vwan_vpn_gateway(self, resource_group):

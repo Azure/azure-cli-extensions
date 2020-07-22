@@ -11,7 +11,6 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import get_network_resource_name_or_id
-from .profiles import CUSTOM_VHUB_ROUTE_TABLE
 from .action import RadiusServerAddAction
 
 
@@ -23,7 +22,7 @@ def load_arguments(self, _):
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
          'VirtualNetworkGatewayConnectionProtocol')
 
-    (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType', resource_type=CUSTOM_VHUB_ROUTE_TABLE)
+    (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
     # region VirtualWAN
     vwan_name_type = CLIArgumentType(options_list='--vwan-name', metavar='NAME', help='Name of the virtual WAN.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/virtualWANs'))
@@ -63,17 +62,15 @@ def load_arguments(self, _):
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub connection') as c:
-        for dest in ['virtual_hub_name', 'resource_name']:
-            c.argument(dest, vhub_name_type)
-        for dest in ['item_name', 'connection_name']:
-            c.argument(dest, help='Name of the connection.', options_list=['--name', '-n'], id_part='child_name_1')
+        c.argument('virtual_hub_name', vhub_name_type)
+        c.argument('connection_name', help='Name of the connection.', options_list=['--name', '-n'], id_part='child_name_1')
         c.argument('remote_virtual_network', options_list='--remote-vnet', help='Name of ID of the remote VNet to connect to.', validator=get_network_resource_name_or_id('remote_virtual_network', 'virtualNetworks'))
-        c.argument('allow_hub_to_remote_vnet_transit', arg_type=get_three_state_flag(), options_list='--remote-vnet-transit', help='Enable hub to remote VNet transit.')
-        c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', help='Allow remote VNet to use hub\'s VNet gateways.')
+        c.argument('allow_hub_to_remote_vnet_transit', arg_type=get_three_state_flag(), options_list='--remote-vnet-transit', deprecate_info=c.deprecate(target='--remote-vnet-transit'), help='Enable hub to remote VNet transit.')
+        c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', deprecate_info=c.deprecate(target='--use-hub-vnet-gateways'), help='Allow remote VNet to use hub\'s VNet gateways.')
         c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
 
     with self.argument_context('network vhub connection list') as c:
-        c.argument('resource_name', vhub_name_type, id_part=None)
+        c.argument('virtual_hub_name', vhub_name_type, id_part=None)
 
     with self.argument_context('network vhub route') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
@@ -81,7 +78,7 @@ def load_arguments(self, _):
         c.argument('next_hop_ip_address', options_list='--next-hop', help='IP address of the next hop.')
         c.argument('index', type=int, help='List index of the item (starting with 1).')
 
-    with self.argument_context('network vhub route-table', resource_type=CUSTOM_VHUB_ROUTE_TABLE) as c:
+    with self.argument_context('network vhub route-table') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
         c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2")
