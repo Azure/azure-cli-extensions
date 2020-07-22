@@ -9,7 +9,7 @@ def cf_account(cli_ctx, *_):
     from ..vendored_sdks.subscription import SubscriptionClient
     return _get_mgmt_service_client(cli_ctx, SubscriptionClient,
                                     subscription_bound=False,
-                                    base_url_bound=False)[0]
+                                    base_url_bound=True)[0]
 
 
 def cf_subscription(cli_ctx, *_):
