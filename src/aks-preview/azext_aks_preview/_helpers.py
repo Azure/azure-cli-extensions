@@ -118,8 +118,7 @@ def _fuzzy_match(query, arr):
             return True
         if b_len - a_len > 1:
             return False
-        i = 0
-        j = 0
+        i, j = 0
         found_difference = False
         while i < a_len:
             if a[i] != b[j]:

@@ -438,9 +438,9 @@ def validate_addons(namespace):
             if len(matches) == 0:
                 raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
-            else:
-                raise CLIError(
-                    f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+
+            raise CLIError(
+                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
 
 
 def validate_assign_identity(namespace):
