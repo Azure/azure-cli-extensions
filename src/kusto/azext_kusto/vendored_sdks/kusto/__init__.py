@@ -7,13 +7,10 @@
 # --------------------------------------------------------------------------
 
 from ._kusto_management_client import KustoManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['KustoManagementClient']
 
 try:
-    from .patch import patch_sdk
+    from ._patch import patch_sdk
     patch_sdk()
 except ImportError:
     pass
