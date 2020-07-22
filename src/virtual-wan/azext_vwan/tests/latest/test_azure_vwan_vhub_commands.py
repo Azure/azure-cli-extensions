@@ -37,7 +37,10 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard')
 
         self.cmd('network vhub route add -g {rg} --vhub-name {vhub} --next-hop 10.0.0.7 --address-prefixes 10.3.3.0/28')
-        self.cmd('network vhub route reset -g {rg} --vhub-name {vhub}')
+        self.cmd('network vhub route reset -g {rg} --vhub-name {vhub}', checks=[
+            self.check('@[0].addressPrefixes[0]', '10.3.3.0/28'),
+            self.check('@[0].nextHopIpAddress', '10.0.0.7')
+        ])
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection')
     def test_azure_vhub_connection_basic_scenario(self, resource_group):
