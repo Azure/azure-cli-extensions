@@ -93,7 +93,6 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     return storage_name_without_hcp.rstrip('-')
 
 
-
 def _fuzzy_match(query, arr):
     """
     will compare all elements in @arr against the @query to see if they are similar
