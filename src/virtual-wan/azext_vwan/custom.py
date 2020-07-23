@@ -196,6 +196,20 @@ def list_hub_routes(cmd, resource_group_name, virtual_hub_name):
     return hub.route_table.routes
 
 
+def reset_hub_routes(cmd, resource_group_name, virtual_hub_name, no_wait=False):
+    client = network_client_factory(cmd.cli_ctx).virtual_hubs
+    hub = client.get(resource_group_name, virtual_hub_name)
+    if hub.routing_state == 'Failed':
+        logger.warning('Reset virtual hub')
+        poller = sdk_no_wait(no_wait, client.create_or_update,
+                             resource_group_name, virtual_hub_name, hub)
+        try:
+            return poller.result().route_table.routes
+        except AttributeError:
+            return
+    logger.warning("Virtual Hub's routing state is not `failed`. Skip this command")
+
+
 # pylint: disable=inconsistent-return-statements
 def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).virtual_hubs

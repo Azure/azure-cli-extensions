@@ -87,6 +87,11 @@ helps['network vhub route remove'] = """
     short-summary: Remove a route from the virtual hub route table.
 """
 
+helps['network vhub route reset'] = """
+    type: command
+    short-summary: Reset virtual hub route when the route state is failed.
+"""
+
 helps['network vhub route-table'] = """
     type: group
     short-summary: Manage route table in the virtual hub.
