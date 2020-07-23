@@ -97,6 +97,7 @@ def step_attacheddatabaseconfigurationsget(test, rg):
 
 # EXAMPLE: KustoDataConnectionsGet
 
+
 @try_manual
 def step_kustodataconnectionsget(test, rg):
     test.cmd('az kusto data-connection show '
@@ -393,7 +394,6 @@ def step_kustodatabaseprincipalassignmentsget(test, rg):
              '--principal-assignment-name "kustoprincipal1" '
              '--resource-group "{rg}"',
              checks=[])
-             
 
 
 # EXAMPLE: KustoDatabasePrincipalAssignmentsCreateOrUpdate
