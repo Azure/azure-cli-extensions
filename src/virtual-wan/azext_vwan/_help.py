@@ -89,7 +89,7 @@ helps['network vhub route remove'] = """
 
 helps['network vhub route reset'] = """
     type: command
-    short-summary: Reset virtual hub route when the route state is set to failed.
+    short-summary: Reset virtual hub route when the route state is failed.
 """
 
 helps['network vhub route-table'] = """

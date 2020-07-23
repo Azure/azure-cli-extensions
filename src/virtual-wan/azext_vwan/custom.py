@@ -207,8 +207,7 @@ def reset_hub_routes(cmd, resource_group_name, virtual_hub_name, no_wait=False):
             return poller.result().route_table.routes
         except AttributeError:
             return
-    logger.warning("Virtual Hub's state is not `failed`. Skip this command")
-    return
+    logger.warning("Virtual Hub's routing state is not `failed`. Skip this command")
 
 
 # pylint: disable=inconsistent-return-statements
