@@ -270,8 +270,9 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
 
         if deployment_container_image_name:    
             site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
+            if docker_registry_server_user is not None and docker_registry_server_password is not None:
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
     helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
 
     if is_linux or is_kube:
@@ -672,8 +673,9 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
             function_triggers_json = retrieve_update_function_triggers(deployment_container_image_name, site_config, docker_registry_server_user, docker_registry_server_password)
             site_config.app_settings.append(NameValuePair(name='K8SE_FUNCTIONS_TRIGGERS', value=function_triggers_json))
             site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
+            if docker_registry_server_user is not None and docker_registry_server_password is not None:
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
