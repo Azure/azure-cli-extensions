@@ -111,3 +111,8 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
         raise CLIError(
             "More than one resources with type '{}' are found with name '{}'.".format(
                 resource_type, resource_name))
+
+def get_msi_client(cli_ctx, **_):
+    from azure.mgmt.msi import ManagedServiceIdentityClient
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient)
