@@ -549,6 +549,7 @@ def subnet_role_assignment_exists(cli_ctx, scope):
             return True
     return False
 
+
 def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
     msi_client = get_msi_client(cli_ctx)
     pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/Microsoft.ManagedIdentity/userAssignedIdentities/(.*)'
@@ -557,14 +558,15 @@ def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
         resource_group_name = match.group(1)
         identity_name = match.group(2)
         try:
-            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name, resource_name=identity_name)
+            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
+                                                               resource_name=identity_name)
         except CloudError as ex:
             if 'was not found' in ex.message:
-                raise CLIError("Identity {} not found. Have you provided the right identity resource id?".format(resource_id))
+                raise CLIError("Identity {} not found.".format(resource_id))
             raise CLIError(ex.message)
         return identity.client_id
-    else:
-        raise CLIError("Cannot parse identity name from provided resource id {}. Have you provided the right identity resource id?".format(resource_id))
+    raise CLIError("Cannot parse identity name from provided resource id {}.".format(resource_id))
+
 
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
