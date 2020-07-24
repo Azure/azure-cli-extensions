@@ -347,6 +347,7 @@ class AzureVWanVHubScenario(ScenarioTest):
             'address_prefixes': '10.80.0.0/16 10.90.0.0/16'
         })
 
+        # You need to create a virtual hub and a vnet before running the following commands.
         self.cmd('network vhub connection create '
                  '-g {rg} '
                  '-n {connection} '
@@ -420,6 +421,7 @@ class AzureVWanVHubScenario(ScenarioTest):
             'resource_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/p2sVpnGateways/p2svpngateway/p2sConnectionConfigurations/myconnectionconfig'
         })
 
+        # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
         self.cmd('network vhub get-effective-routes '
                  '-g {rg} '
                  '-n {vhub} '
