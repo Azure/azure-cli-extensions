@@ -45,7 +45,7 @@ type: command
 short-summary: Create or update a Cache.
 examples:
   - name: Caches_CreateOrUpdate
-    text: az hpc-cache create --resource-group "scgroup" --name "sc1" --location "eastus" --cache-size-gb "3072" -subnet "/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{virtual_network_name}/subnets/{subnet_name}" --sku-name "Standard_2G"
+    text: az hpc-cache create --resource-group "scgroup" --name "sc1" --location "eastus" --cache-size-gb "3072" --subnet "/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{virtual_network_name}/subnets/{subnet_name}" --sku-name "Standard_2G"
 """
 
 helps['hpc-cache update'] = """

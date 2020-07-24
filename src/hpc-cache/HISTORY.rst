@@ -5,7 +5,7 @@ Release History
 
 0.1.1
 ++++++
-* Refine examples.
+* Remove line breaks from examples.
 
 0.1.0
 ++++++
