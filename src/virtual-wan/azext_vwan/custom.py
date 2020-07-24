@@ -156,18 +156,50 @@ def list_virtual_hubs(cmd, resource_group_name=None):
     return _generic_list(cmd.cli_ctx, 'virtual_hubs', resource_group_name)
 
 
+# pylint: disable=too-many-locals
 def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name,
                                remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
-                               allow_remote_vnet_to_use_hub_vnet_gateways=None,
-                               enable_internet_security=None, no_wait=False):
-    HubVirtualNetworkConnection, SubResource = cmd.get_models(
-        'HubVirtualNetworkConnection', 'SubResource')
+                               allow_remote_vnet_to_use_hub_vnet_gateways=None, enable_internet_security=None,
+                               associated_route_table=None, propagated_route_tables=None, labels=None,
+                               route_name=None, address_prefixes=None, next_hop_ip_address=None, no_wait=False):
+    (HubVirtualNetworkConnection,
+     SubResource,
+     RoutingConfiguration,
+     PropagatedRouteTable,
+     VnetRoute,
+     StaticRoute) = cmd.get_models('HubVirtualNetworkConnection',
+                                   'SubResource',
+                                   'RoutingConfiguration',
+                                   'PropagatedRouteTable',
+                                   'VnetRoute',
+                                   'StaticRoute')
+
+    propagated_route_tables = PropagatedRouteTable(
+        labels=labels,
+        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
+    )
+
+    routing_configuration = RoutingConfiguration(
+        associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
+        propagated_route_tables=propagated_route_tables
+    )
+
+    if route_name is not None:
+        static_route = StaticRoute(
+            name=route_name,
+            address_prefixes=address_prefixes,
+            next_hop_ip_address=next_hop_ip_address
+        )
+        vnet_routes = VnetRoute(static_routes=[static_route])
+        routing_configuration.vnet_routes = vnet_routes
+
     connection = HubVirtualNetworkConnection(
         name=connection_name,
         remote_virtual_network=SubResource(id=remote_virtual_network),
         allow_hub_to_remote_vnet_transit=allow_hub_to_remote_vnet_transit,
         allow_remote_vnet_to_use_hub_vnet_gateway=allow_remote_vnet_to_use_hub_vnet_gateways,
-        enable_internet_security=enable_internet_security
+        enable_internet_security=enable_internet_security,
+        routing_configuration=routing_configuration
     )
 
     client = network_client_factory(cmd.cli_ctx).hub_virtual_network_connections

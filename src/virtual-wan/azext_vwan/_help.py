@@ -37,6 +37,18 @@ helps['network vhub delete'] = """
     short-summary: Delete a virtual hub.
 """
 
+helps['network vhub get-effective-routes'] = """
+    type: command
+    short-summary: Get the effective routes configured for the Virtual Hub resource or the specified resource.
+    examples:
+    - name: Get the effective routes configured for route table in the virtual hub.
+      text: |
+          az network vhub get-effective-routes --resource-type RouteTable --resource-id /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable -g MyRG -n MyHub
+    - name: Get the effective routes configured for P2S connection in the virtual hub.
+      text: |
+          az network vhub get-effective-routes --resource-type P2SConnection --resource-id /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/p2sVpnGateways/MyGateway/p2sConnectionConfigurations/MyConnection -g MyRG -n MyHub
+"""
+
 helps['network vhub connection'] = """
     type: group
     short-summary: Manage virtual hub VNet connections.
@@ -45,21 +57,40 @@ helps['network vhub connection'] = """
 helps['network vhub connection create'] = """
     type: command
     short-summary: Create a virtual hub VNet connection.
+    examples:
+    - name: Create a virtual hub VNet connection without routing configuration.
+      text: |
+          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet
+    - name: Create a virtual hub VNet connection with routing configuration.
+      text: |
+          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable2 --labels label1 label2 --route-name route1 --next-hop 70.0.0.2 --address-prefixes 10.80.0.0/16 10.90.0.0/16
 """
 
 helps['network vhub connection list'] = """
     type: command
     short-summary: List virtual hub VNet connections.
+    examples:
+    - name: List VNet connections in a given virtual hub.
+      text: |
+          az network vhub connection list --vhub-name MyHub -g MyRG
 """
 
 helps['network vhub connection show'] = """
     type: command
     short-summary: Get the details of a virtual hub VNet connection.
+    examples:
+    - name: Get the details of a virtual hub VNet connection.
+      text: |
+          az network vhub connection show -n MyConnection --vhub-name MyHub -g MyRG
 """
 
 helps['network vhub connection delete'] = """
     type: command
     short-summary: Delete a virtual hub VNet connection.
+    examples:
+    - name: Delete a virtual hub VNet connection.
+      text: |
+          az network vhub connection delete -n MyConnection --vhub-name MyHub -g MyRG
 """
 
 helps['network vhub connection wait'] = """

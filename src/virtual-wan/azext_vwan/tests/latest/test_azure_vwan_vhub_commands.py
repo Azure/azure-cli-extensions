@@ -108,6 +108,8 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('length(@)', 1)
         ])
 
+        self.cmd('network vpn-server-config list', checks=[])
+
         self.cmd('network vpn-server-config ipsec-policy add -n {vserverconfig} -g {rg} '
                  '--ipsec-encryption AES256 --ipsec-integrity SHA256 '
                  '--sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
@@ -183,6 +185,7 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
+        self.cmd('az network p2s-vpn-gateway list', checks=[])
         self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}', checks=[
             self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
@@ -344,4 +347,103 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--gateway-name {gateway}',
                  checks=[
                      self.check('length(@)', 1)
+                 ])
+
+    @record_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_connection_routing_configuration', location='westus')
+    def test_azure_vwan_vhub_connection_routing_configuration(self):
+        self.kwargs.update({
+            'rg': 'azure-cli-test-rg',
+            'connection': 'my-connection',
+            'vhub': 'yu-vhub',
+            'vnet': 'test-vnet',
+            'route_table1': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/virtualHubs/yu-vhub/hubRouteTables/yu-routetable-no-route',
+            'route_table2': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/virtualHubs/yu-vhub/hubRouteTables/yu-routetable-no-route1',
+            'route': 'route1',
+            'next_hop': '70.0.0.2',
+            'address_prefixes': '10.80.0.0/16 10.90.0.0/16'
+        })
+
+        # You need to create a virtual hub and a vnet before running the following commands.
+        self.cmd('network vhub connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--vhub-name {vhub} '
+                 '--remote-vnet {vnet} '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 '
+                 '--route-name {route} '
+                 '--next-hop {next_hop} '
+                 '--address-prefixes {address_prefixes}',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('name', self.kwargs['connection']),
+                     self.check('routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
+                     self.check('length(routingConfiguration.propagatedRouteTables.ids)', 2),
+                     self.check('routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
+                     self.check('routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
+                     self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2),
+                     self.check('routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
+                     self.check('routingConfiguration.propagatedRouteTables.labels[1]', 'label2'),
+                     self.check('routingConfiguration.vnetRoutes.staticRoutes[0].name', self.kwargs['route']),
+                     self.check('routingConfiguration.vnetRoutes.staticRoutes[0].nextHopIpAddress', self.kwargs['next_hop'])
+                 ])
+
+        self.cmd('network vhub connection show '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--vhub-name {vhub}',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('name', self.kwargs['connection']),
+                     self.check('routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
+                     self.check('length(routingConfiguration.propagatedRouteTables.ids)', 2),
+                     self.check('routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
+                     self.check('routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
+                     self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2),
+                     self.check('routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
+                     self.check('routingConfiguration.propagatedRouteTables.labels[1]', 'label2'),
+                     self.check('routingConfiguration.vnetRoutes.staticRoutes[0].name', self.kwargs['route']),
+                     self.check('routingConfiguration.vnetRoutes.staticRoutes[0].nextHopIpAddress', self.kwargs['next_hop'])
+                 ])
+
+        self.cmd('network vhub connection list '
+                 '-g {rg} '
+                 '--vhub-name {vhub}',
+                 checks=[
+                     self.check('length(@)', 1)
+                 ])
+
+        self.cmd('network vhub connection delete '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--vhub-name {vhub} '
+                 '-y',
+                 checks=[])
+
+        with self.assertRaisesRegexp(SystemExit, '3'):
+            self.cmd('network vhub connection show '
+                     '-g {rg} '
+                     '-n {connection} '
+                     '--vhub-name {vhub}')
+
+    @record_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_get_effective_routes')
+    def test_azure_vwan_vhub_get_effective_routes(self):
+        self.kwargs.update({
+            'rg': 'azure-cli-test-rg',
+            'vhub': 'yu-vhub1',
+            'resource_type': 'P2SConnection',
+            'resource_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/p2sVpnGateways/p2svpngateway/p2sConnectionConfigurations/myconnectionconfig'
+        })
+
+        # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
+        self.cmd('network vhub get-effective-routes '
+                 '-g {rg} '
+                 '-n {vhub} '
+                 '--resource-type {resource_type} '
+                 '--resource-id {resource_id}',
+                 checks=[
+                     self.check('length(value)', 5)
                  ])
