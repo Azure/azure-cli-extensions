@@ -17,7 +17,7 @@ from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list)
 from ._validators import (
     validate_cluster_autoscaler_profile, validate_create_parameters, validate_k8s_version, validate_linux_host_name,
-    validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
+    validate_ssh_key, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
@@ -76,7 +76,7 @@ def load_arguments(self, _):
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
                    deprecate_info=c.deprecate(redirect="--disable-rbac", hide="2.0.45"))
-        c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
+        c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('network_plugin', arg_type=get_enum_type(['azure', 'kubenet']))
         c.argument('network_policy')
         c.argument('no_ssh_key', options_list=['--no-ssh-key', '-x'])
@@ -142,7 +142,7 @@ def load_arguments(self, _):
             c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.')
             c.argument('enable_node_public_ip', action='store_true', is_preview=True)
             c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-            c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
+            c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
             c.argument('os_type', type=str)
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
             c.argument('node_taints', type=str, validator=validate_taints)
