@@ -53,6 +53,13 @@ class Backend(Model):
     :param private_link_alias: The Alias of the Private Link resource.
      Populating this optional field indicates that this backend is 'Private'
     :type private_link_alias: str
+    :param private_link_resource_id: The Resource Id of the Private Link
+     resource. Populating this optional field indicates that this backend is
+     'Private'
+    :type private_link_resource_id: str
+    :param private_link_location: The location of the Private Link resource.
+     Required only if 'privateLinkResourceId' is populated
+    :type private_link_location: str
     :ivar private_endpoint_status: The Approval status for the connection to
      the Private Link. Possible values include: 'Pending', 'Approved',
      'Rejected', 'Disconnected', 'Timeout'
@@ -92,7 +99,9 @@ class Backend(Model):
     _attribute_map = {
         'address': {'key': 'address', 'type': 'str'},
         'private_link_alias': {'key': 'privateLinkAlias', 'type': 'str'},
-        'private_endpoint_status': {'key': 'privateEndpointStatus', 'type': 'PrivateEndpointStatus'},
+        'private_link_resource_id': {'key': 'privateLinkResourceId', 'type': 'str'},
+        'private_link_location': {'key': 'privateLinkLocation', 'type': 'str'},
+        'private_endpoint_status': {'key': 'privateEndpointStatus', 'type': 'str'},
         'private_link_approval_message': {'key': 'privateLinkApprovalMessage', 'type': 'str'},
         'http_port': {'key': 'httpPort', 'type': 'int'},
         'https_port': {'key': 'httpsPort', 'type': 'int'},
@@ -102,10 +111,12 @@ class Backend(Model):
         'backend_host_header': {'key': 'backendHostHeader', 'type': 'str'},
     }
 
-    def __init__(self, *, address: str=None, private_link_alias: str=None, private_link_approval_message: str=None, http_port: int=None, https_port: int=None, enabled_state=None, priority: int=None, weight: int=None, backend_host_header: str=None, **kwargs) -> None:
+    def __init__(self, *, address: str=None, private_link_alias: str=None, private_link_resource_id: str=None, private_link_location: str=None, private_link_approval_message: str=None, http_port: int=None, https_port: int=None, enabled_state=None, priority: int=None, weight: int=None, backend_host_header: str=None, **kwargs) -> None:
         super(Backend, self).__init__(**kwargs)
         self.address = address
         self.private_link_alias = private_link_alias
+        self.private_link_resource_id = private_link_resource_id
+        self.private_link_location = private_link_location
         self.private_endpoint_status = None
         self.private_link_approval_message = private_link_approval_message
         self.http_port = http_port
@@ -2243,6 +2254,10 @@ class RoutingRule(SubResource):
     :param rules_engine: A reference to a specific Rules Engine Configuration
      to apply to this route.
     :type rules_engine: ~azure.mgmt.frontdoor.models.SubResource
+    :param web_application_firewall_policy_link: Defines the Web Application
+     Firewall policy for each routing rule (if applicable)
+    :type web_application_firewall_policy_link:
+     ~azure.mgmt.frontdoor.models.RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     :param resource_state: Resource status. Possible values include:
      'Creating', 'Enabling', 'Enabled', 'Disabling', 'Disabled', 'Deleting'
     :type resource_state: str or
@@ -2265,12 +2280,13 @@ class RoutingRule(SubResource):
         'enabled_state': {'key': 'properties.enabledState', 'type': 'str'},
         'route_configuration': {'key': 'properties.routeConfiguration', 'type': 'RouteConfiguration'},
         'rules_engine': {'key': 'properties.rulesEngine', 'type': 'SubResource'},
+        'web_application_firewall_policy_link': {'key': 'properties.webApplicationFirewallPolicyLink', 'type': 'RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink'},
         'resource_state': {'key': 'properties.resourceState', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, *, id: str=None, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None, enabled_state=None, route_configuration=None, rules_engine=None, resource_state=None, name: str=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None, enabled_state=None, route_configuration=None, rules_engine=None, web_application_firewall_policy_link=None, resource_state=None, name: str=None, **kwargs) -> None:
         super(RoutingRule, self).__init__(id=id, **kwargs)
         self.frontend_endpoints = frontend_endpoints
         self.accepted_protocols = accepted_protocols
@@ -2278,9 +2294,26 @@ class RoutingRule(SubResource):
         self.enabled_state = enabled_state
         self.route_configuration = route_configuration
         self.rules_engine = rules_engine
+        self.web_application_firewall_policy_link = web_application_firewall_policy_link
         self.resource_state = resource_state
         self.name = name
         self.type = None
+
+
+class RoutingRuleLink(Model):
+    """Defines the Resource ID for a Routing Rule.
+
+    :param id: Resource ID.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, **kwargs) -> None:
+        super(RoutingRuleLink, self).__init__(**kwargs)
+        self.id = id
 
 
 class RoutingRuleListResult(Model):
@@ -2332,6 +2365,10 @@ class RoutingRuleUpdateParameters(Model):
     :param rules_engine: A reference to a specific Rules Engine Configuration
      to apply to this route.
     :type rules_engine: ~azure.mgmt.frontdoor.models.SubResource
+    :param web_application_firewall_policy_link: Defines the Web Application
+     Firewall policy for each routing rule (if applicable)
+    :type web_application_firewall_policy_link:
+     ~azure.mgmt.frontdoor.models.RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     """
 
     _attribute_map = {
@@ -2341,9 +2378,10 @@ class RoutingRuleUpdateParameters(Model):
         'enabled_state': {'key': 'enabledState', 'type': 'str'},
         'route_configuration': {'key': 'routeConfiguration', 'type': 'RouteConfiguration'},
         'rules_engine': {'key': 'rulesEngine', 'type': 'SubResource'},
+        'web_application_firewall_policy_link': {'key': 'webApplicationFirewallPolicyLink', 'type': 'RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink'},
     }
 
-    def __init__(self, *, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None, enabled_state=None, route_configuration=None, rules_engine=None, **kwargs) -> None:
+    def __init__(self, *, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None, enabled_state=None, route_configuration=None, rules_engine=None, web_application_firewall_policy_link=None, **kwargs) -> None:
         super(RoutingRuleUpdateParameters, self).__init__(**kwargs)
         self.frontend_endpoints = frontend_endpoints
         self.accepted_protocols = accepted_protocols
@@ -2351,6 +2389,24 @@ class RoutingRuleUpdateParameters(Model):
         self.enabled_state = enabled_state
         self.route_configuration = route_configuration
         self.rules_engine = rules_engine
+        self.web_application_firewall_policy_link = web_application_firewall_policy_link
+
+
+class RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink(Model):
+    """Defines the Web Application Firewall policy for each routing rule (if
+    applicable).
+
+    :param id: Resource ID.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, **kwargs) -> None:
+        super(RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink, self).__init__(**kwargs)
+        self.id = id
 
 
 class RulesEngine(Model):
@@ -2742,6 +2798,10 @@ class WebApplicationFirewallPolicy(Resource):
      with this Web Application Firewall policy.
     :vartype frontend_endpoint_links:
      list[~azure.mgmt.frontdoor.models.FrontendEndpointLink]
+    :ivar routing_rule_links: Describes Routing Rules associated with this Web
+     Application Firewall policy.
+    :vartype routing_rule_links:
+     list[~azure.mgmt.frontdoor.models.RoutingRuleLink]
     :ivar provisioning_state: Provisioning state of the policy.
     :vartype provisioning_state: str
     :ivar resource_state: Resource status of the policy. Possible values
@@ -2759,6 +2819,7 @@ class WebApplicationFirewallPolicy(Resource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'frontend_endpoint_links': {'readonly': True},
+        'routing_rule_links': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'resource_state': {'readonly': True},
     }
@@ -2773,6 +2834,7 @@ class WebApplicationFirewallPolicy(Resource):
         'custom_rules': {'key': 'properties.customRules', 'type': 'CustomRuleList'},
         'managed_rules': {'key': 'properties.managedRules', 'type': 'ManagedRuleSetList'},
         'frontend_endpoint_links': {'key': 'properties.frontendEndpointLinks', 'type': '[FrontendEndpointLink]'},
+        'routing_rule_links': {'key': 'properties.routingRuleLinks', 'type': '[RoutingRuleLink]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'resource_state': {'key': 'properties.resourceState', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
@@ -2784,6 +2846,7 @@ class WebApplicationFirewallPolicy(Resource):
         self.custom_rules = custom_rules
         self.managed_rules = managed_rules
         self.frontend_endpoint_links = None
+        self.routing_rule_links = None
         self.provisioning_state = None
         self.resource_state = None
         self.etag = etag

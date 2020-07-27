@@ -12,7 +12,7 @@ from random import uniform
 from knack.util import CLIError
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
-from azure.storage.blob import AppendBlobService
+from azure.multiapi.storage.v2018_11_09.blob import AppendBlobService
 from azure.common import AzureHttpError
 from ._utils import get_blob_info
 

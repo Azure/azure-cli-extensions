@@ -19,10 +19,10 @@ from azext_ai_did_you_mean_this._style import style_message
 from azext_ai_did_you_mean_this._const import (
     RECOMMENDATION_HEADER_FMT_STR,
     UNABLE_TO_HELP_FMT_STR,
-    TELEMETRY_MUST_BE_ENABLED_STR,
+    TELEMETRY_IS_DISABLED_STR,
+    TELEMETRY_IS_ENABLED_STR,
     TELEMETRY_MISSING_SUBSCRIPTION_ID_STR,
-    TELEMETRY_MISSING_CORRELATION_ID_STR,
-    UNABLE_TO_CALL_SERVICE_STR
+    TELEMETRY_MISSING_CORRELATION_ID_STR
 )
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 
@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 # Commands
 # note: at least one command is required in order for the CLI to load the extension.
 def show_extension_version():
-    print('Current version: 0.2.0')
+    print('Current version: 0.2.1')
 
 
 def _log_debug(msg, *args, **kwargs):
@@ -128,11 +128,6 @@ def recommend_recovery_options(version, command, parameters, extension):
     _log_debug('recommend_recovery_options: version: "%s", command: "%s", parameters: "%s", extension: "%s"',
                version, command, parameters, extension)
 
-    # if the user doesn't agree to telemetry...
-    if not telemetry.is_telemetry_enabled():
-        _log_debug(TELEMETRY_MUST_BE_ENABLED_STR)
-        return result
-
     # if the command is empty...
     if not command:
         # try to get the raw command field from telemetry.
@@ -204,39 +199,48 @@ def call_aladdin_service(command, parameters, version):
 
     correlation_id = telemetry._session.correlation_id  # pylint: disable=protected-access
     subscription_id = telemetry._get_azure_subscription_id()  # pylint: disable=protected-access
+    is_telemetry_enabled = telemetry.is_telemetry_enabled()
 
-    if subscription_id and correlation_id:
-        context = {
-            "correlationId": correlation_id,
-            "subscriptionId": subscription_id,
-            "versionNumber": version
-        }
+    telemetry_context = {
+        'correlationId': correlation_id,
+        'subscriptionId': subscription_id
+    }
 
-        query = {
-            "command": command,
-            "parameters": parameters
-        }
+    telemetry_context = {k: v for k, v in telemetry_context.items() if v is not None and is_telemetry_enabled}
 
-        api_url = 'https://app.aladdin.microsoft.com/api/v1.0/suggestions'
-        headers = {'Content-Type': 'application/json'}
-
-        try:
-            response = requests.get(
-                api_url,
-                params={
-                    'query': json.dumps(query),
-                    'clientType': 'AzureCli',
-                    'context': json.dumps(context)
-                },
-                headers=headers)
-        except RequestException as ex:
-            _log_debug('requests.get() exception: %s', ex)
+    if not is_telemetry_enabled:
+        _log_debug(TELEMETRY_IS_DISABLED_STR)
     else:
+        _log_debug(TELEMETRY_IS_ENABLED_STR)
+
         if subscription_id is None:
             _log_debug(TELEMETRY_MISSING_SUBSCRIPTION_ID_STR)
         if correlation_id is None:
             _log_debug(TELEMETRY_MISSING_CORRELATION_ID_STR)
 
-        _log_debug(UNABLE_TO_CALL_SERVICE_STR)
+    context = {
+        **telemetry_context,
+        "versionNumber": version
+    }
+
+    query = {
+        "command": command,
+        "parameters": parameters
+    }
+
+    api_url = 'https://app.aladdin.microsoft.com/api/v1.0/suggestions'
+    headers = {'Content-Type': 'application/json'}
+
+    try:
+        response = requests.get(
+            api_url,
+            params={
+                'query': json.dumps(query),
+                'clientType': 'AzureCli',
+                'context': json.dumps(context)
+            },
+            headers=headers)
+    except RequestException as ex:
+        _log_debug('requests.get() exception: %s', ex)
 
     return response
