@@ -1,29 +1,35 @@
-# --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
+from azure.cli.command_modules.storage._client_factory import (cf_blob_client, cf_blob_lease_client)
 
-# pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_storage-blob-preview._client_factory import cf_storage-blob-preview
+from azure.cli.core.commands.arm import show_exception_handler
+from azure.cli.core.profiles import ResourceType
 
 
-def load_command_table(self, _):
+def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
 
-    # TODO: Add command type here
-    # storage-blob-preview_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_storage-blob-preview)
+    def get_custom_sdk(custom_module, client_factory, resource_type=ResourceType.DATA_STORAGE):
+        """Returns a CliCommandType instance with specified operation template based on the given custom module name.
+        This is useful when the command is not defined in the default 'custom' module but instead in a module under
+        'operations' package."""
+        return CliCommandType(
+            operations_tmpl='azure.cli.command_modules.storage.operations.{}#'.format(
+                custom_module) + '{}',
+            client_factory=client_factory,
+            resource_type=resource_type
+        )
 
+    blob_client_sdk = CliCommandType(
+        operations_tmpl='azure.multiapi.storagev2.blob._blob_client#BlobClient.{}',
+        client_factory=cf_blob_client,
+        resource_type=ResourceType.DATA_STORAGE_BLOB
+    )
 
-    with self.command_group('storage-blob-preview') as g:
-        g.custom_command('create', 'create_storage-blob-preview')
-        # g.command('delete', 'delete')
-        g.custom_command('list', 'list_storage-blob-preview')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_storage-blob-preview')
-
-
-    with self.command_group('storage-blob-preview', is_preview=True):
-        pass
+    with self.command_group('storage blob tag', blob_client_sdk, resource_type=ResourceType.DATA_STORAGE_BLOB,
+                            min_api='2019-12-12',
+                            custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_client,
+                                                               resource_type=ResourceType.DATA_STORAGE_BLOB)) as g:
+        from azure.cli.command_modules.storage._transformers import transform_blob_json_output
+        from azure.cli.command_modules.storage._format import transform_blob_output
+        g.storage_custom_command_oauth('show', 'show_blob_v2', transform=transform_blob_json_output,
+                                       table_transformer=transform_blob_output)
 
