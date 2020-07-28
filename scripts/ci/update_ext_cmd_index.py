@@ -20,7 +20,7 @@ extension_command_table, extension_group_table = _load_extension_command_loader(
 from azure.cli.core._session import Session
 EXT_CMD_INDEX = Session()
 import os
-EXT_CMD_INDEX.load(os.path.join(az_cli.config.config_dir, 'extCmdIndex.json'))
+EXT_CMD_INDEX.load(os.path.expanduser(os.path.join('~', '.azure', 'extCmdIndexToUpload.json')))
 root = {}
 for cmd_name, cmd in extension_command_table.items():
     parts = cmd_name.split()
