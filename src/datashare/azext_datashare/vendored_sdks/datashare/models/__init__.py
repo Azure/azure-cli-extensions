@@ -7,17 +7,17 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import ADLSGen1FileDataSet
+    from ._models_py3 import ADLSGen1FolderDataSet
+    from ._models_py3 import ADLSGen2FileDataSet
+    from ._models_py3 import ADLSGen2FileDataSetMapping
+    from ._models_py3 import ADLSGen2FileSystemDataSet
+    from ._models_py3 import ADLSGen2FileSystemDataSetMapping
+    from ._models_py3 import ADLSGen2FolderDataSet
+    from ._models_py3 import ADLSGen2FolderDataSetMapping
     from ._models_py3 import Account
     from ._models_py3 import AccountList
     from ._models_py3 import AccountUpdateParameters
-    from ._models_py3 import AdlsGen1FileDataSet
-    from ._models_py3 import AdlsGen1FolderDataSet
-    from ._models_py3 import AdlsGen2FileDataSet
-    from ._models_py3 import AdlsGen2FileDataSetMapping
-    from ._models_py3 import AdlsGen2FileSystemDataSet
-    from ._models_py3 import AdlsGen2FileSystemDataSetMapping
-    from ._models_py3 import AdlsGen2FolderDataSet
-    from ._models_py3 import AdlsGen2FolderDataSetMapping
     from ._models_py3 import BlobContainerDataSet
     from ._models_py3 import BlobContainerDataSetMapping
     from ._models_py3 import BlobDataSet
@@ -68,8 +68,8 @@ try:
     from ._models_py3 import SourceShareSynchronizationSettingList
     from ._models_py3 import SqlDBTableDataSet
     from ._models_py3 import SqlDBTableDataSetMapping
-    from ._models_py3 import SqlDwTableDataSet
-    from ._models_py3 import SqlDwTableDataSetMapping
+    from ._models_py3 import SqlDWTableDataSet
+    from ._models_py3 import SqlDWTableDataSetMapping
     from ._models_py3 import SynchronizationDetails
     from ._models_py3 import SynchronizationDetailsList
     from ._models_py3 import SynchronizationSetting
@@ -78,17 +78,17 @@ try:
     from ._models_py3 import Trigger
     from ._models_py3 import TriggerList
 except (SyntaxError, ImportError):
+    from ._models import ADLSGen1FileDataSet  # type: ignore
+    from ._models import ADLSGen1FolderDataSet  # type: ignore
+    from ._models import ADLSGen2FileDataSet  # type: ignore
+    from ._models import ADLSGen2FileDataSetMapping  # type: ignore
+    from ._models import ADLSGen2FileSystemDataSet  # type: ignore
+    from ._models import ADLSGen2FileSystemDataSetMapping  # type: ignore
+    from ._models import ADLSGen2FolderDataSet  # type: ignore
+    from ._models import ADLSGen2FolderDataSetMapping  # type: ignore
     from ._models import Account  # type: ignore
     from ._models import AccountList  # type: ignore
     from ._models import AccountUpdateParameters  # type: ignore
-    from ._models import AdlsGen1FileDataSet  # type: ignore
-    from ._models import AdlsGen1FolderDataSet  # type: ignore
-    from ._models import AdlsGen2FileDataSet  # type: ignore
-    from ._models import AdlsGen2FileDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FileSystemDataSet  # type: ignore
-    from ._models import AdlsGen2FileSystemDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FolderDataSet  # type: ignore
-    from ._models import AdlsGen2FolderDataSetMapping  # type: ignore
     from ._models import BlobContainerDataSet  # type: ignore
     from ._models import BlobContainerDataSetMapping  # type: ignore
     from ._models import BlobDataSet  # type: ignore
@@ -139,8 +139,8 @@ except (SyntaxError, ImportError):
     from ._models import SourceShareSynchronizationSettingList  # type: ignore
     from ._models import SqlDBTableDataSet  # type: ignore
     from ._models import SqlDBTableDataSetMapping  # type: ignore
-    from ._models import SqlDwTableDataSet  # type: ignore
-    from ._models import SqlDwTableDataSetMapping  # type: ignore
+    from ._models import SqlDWTableDataSet  # type: ignore
+    from ._models import SqlDWTableDataSetMapping  # type: ignore
     from ._models import SynchronizationDetails  # type: ignore
     from ._models import SynchronizationDetailsList  # type: ignore
     from ._models import SynchronizationSetting  # type: ignore
@@ -165,17 +165,17 @@ from ._data_share_management_client_enums import (
 )
 
 __all__ = [
+    'ADLSGen1FileDataSet',
+    'ADLSGen1FolderDataSet',
+    'ADLSGen2FileDataSet',
+    'ADLSGen2FileDataSetMapping',
+    'ADLSGen2FileSystemDataSet',
+    'ADLSGen2FileSystemDataSetMapping',
+    'ADLSGen2FolderDataSet',
+    'ADLSGen2FolderDataSetMapping',
     'Account',
     'AccountList',
     'AccountUpdateParameters',
-    'AdlsGen1FileDataSet',
-    'AdlsGen1FolderDataSet',
-    'AdlsGen2FileDataSet',
-    'AdlsGen2FileDataSetMapping',
-    'AdlsGen2FileSystemDataSet',
-    'AdlsGen2FileSystemDataSetMapping',
-    'AdlsGen2FolderDataSet',
-    'AdlsGen2FolderDataSetMapping',
     'BlobContainerDataSet',
     'BlobContainerDataSetMapping',
     'BlobDataSet',
@@ -226,8 +226,8 @@ __all__ = [
     'SourceShareSynchronizationSettingList',
     'SqlDBTableDataSet',
     'SqlDBTableDataSetMapping',
-    'SqlDwTableDataSet',
-    'SqlDwTableDataSetMapping',
+    'SqlDWTableDataSet',
+    'SqlDWTableDataSetMapping',
     'SynchronizationDetails',
     'SynchronizationDetailsList',
     'SynchronizationSetting',
