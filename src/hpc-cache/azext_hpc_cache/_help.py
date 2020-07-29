@@ -58,7 +58,7 @@ examples:
 
 helps['hpc-cache delete'] = """
 type: command
-short-summary: Schedules a Cache for deletion.
+short-summary: Schedule a Cache for deletion.
 examples:
   - name: Caches_Delete
     text: az hpc-cache delete --resource-group "scgroup" --name "sc"
@@ -66,7 +66,7 @@ examples:
 
 helps['hpc-cache show'] = """
 type: command
-short-summary: Returns a Cache.
+short-summary: Return a Cache.
 examples:
   - name: Caches_Get
     text: az hpc-cache show --resource-group "scgroup" --name "sc1"
@@ -74,7 +74,7 @@ examples:
 
 helps['hpc-cache list'] = """
 type: command
-short-summary: Returns all Caches the user has access to under a resource group.
+short-summary: Return all Caches the user has access to under a resource group.
 examples:
   - name: Caches_List
     text: az hpc-cache list
@@ -84,7 +84,7 @@ examples:
 
 helps['hpc-cache start'] = """
 type: command
-short-summary: Tells a Stopped state Cache to transition to Active state.
+short-summary: Tell a Stopped state Cache to transition to Active state.
 examples:
   - name: Caches_Start
     text: az hpc-cache start --resource-group "scgroup" --name "sc"
@@ -92,7 +92,7 @@ examples:
 
 helps['hpc-cache stop'] = """
 type: command
-short-summary: Tells an Active Cache to transition to Stopped state.
+short-summary: Tell an Active Cache to transition to Stopped state.
 examples:
   - name: Caches_Stop
     text: az hpc-cache stop --resource-group "scgroup" --name "sc"
@@ -100,7 +100,7 @@ examples:
 
 helps['hpc-cache flush'] = """
 type: command
-short-summary: Tells a Cache to write all dirty data to the Storage Target(s). During the flush, clients will see errors returned until the flush is complete.
+short-summary: Tell a Cache to write all dirty data to the Storage Target(s). During the flush, clients will see errors returned until the flush is complete.
 examples:
   - name: Caches_Flush
     text: az hpc-cache flush --resource-group "scgroup" --name "sc"
@@ -116,7 +116,7 @@ examples:
 
 helps['hpc-cache wait'] = """
 type: command
-short-summary: Waits a hpc Cache to specified state.
+short-summary: Wait a hpc Cache to specified state.
 examples:
   - name: Caches_Wait
     text: az hpc-cache wait --resource-group "scgroup" --name "sc" --created
@@ -165,7 +165,7 @@ short-summary: Create or update a nfs Storage Target. This operation is allowed 
 
 helps['hpc-cache storage-target remove'] = """
 type: command
-short-summary: Removes a Storage Target from a Cache. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual removal of the Storage Target may be delayed until the Cache is healthy again. Note that if the Cache has data to flush to the Storage Target, the data will be flushed before the Storage Target will be deleted.
+short-summary: Remove a Storage Target from a Cache. This operation is allowed at any time, but if the Cache is down or unhealthy, the actual removal of the Storage Target may be delayed until the Cache is healthy again. Note that if the Cache has data to flush to the Storage Target, the data will be flushed before the Storage Target will be deleted.
 examples:
   - name: StorageTargets_Delete
     text: az hpc-cache storage-target remove --resource-group "scgroup" --cache-name "sc1" --name "st1"
@@ -173,7 +173,7 @@ examples:
 
 helps['hpc-cache storage-target show'] = """
 type: command
-short-summary: Returns a Storage Target from a Cache.
+short-summary: Return a Storage Target from a Cache.
 examples:
   - name: StorageTargets_Get
     text: az hpc-cache storage-target show --resource-group "scgroup" --cache-name "sc1" --name "st1"
@@ -181,7 +181,7 @@ examples:
 
 helps['hpc-cache storage-target list'] = """
 type: command
-short-summary: Returns a list of Storage Targets for the specified Cache.
+short-summary: Return a list of Storage Targets for the specified Cache.
 examples:
   - name: StorageTargets_List
     text: az hpc-cache storage-target list --resource-group "scgroup" --cache-name "sc1"
