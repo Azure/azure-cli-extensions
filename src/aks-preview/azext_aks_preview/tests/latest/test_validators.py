@@ -201,6 +201,7 @@ class TestAssignIdentity(unittest.TestCase):
         namespace = AssignIdentityNamespace(empty_identity_id)
         validators.validate_assign_identity(namespace)
 
+
 class ValidateAddonsNamespace:
     def __init__(self, addons):
         self.addons = addons
