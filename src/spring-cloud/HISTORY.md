@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.4.0
+-----
+* Remove 'cpu', 'memory' and 'instance-count' from 'az spring-cloud app deploy' command
+* Fix log streaming feature proxy issues
+
 0.3.1
 -----
 * Remove azure-storage-blob dependency
