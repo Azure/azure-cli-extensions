@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 
 def create_storage_account(cmd, storage_account):
-    resource_group = prompt(msg="Please specify resource group name to host storage account: ")
+    resource_group = prompt(msg="[unicode] Please specify resource group name to host storage account: ")
     #resource_group = 'zuhtest'
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).resource_groups
     if resource_client.check_existence(resource_group_name=resource_group):
