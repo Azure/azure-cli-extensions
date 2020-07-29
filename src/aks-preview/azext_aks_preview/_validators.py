@@ -79,6 +79,7 @@ def validate_k8s_version(namespace):
 
 def validate_linux_host_name(namespace):
     """Validates a string as a legal host name component.
+
     This validation will also occur server-side in the ARM API, but that may take
     a minute or two before the user sees it. So it's more user-friendly to validate
     in the CLI pre-flight.
