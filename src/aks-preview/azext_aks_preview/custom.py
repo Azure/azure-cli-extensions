@@ -552,7 +552,8 @@ def subnet_role_assignment_exists(cli_ctx, scope):
 
 def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
     msi_client = get_msi_client(cli_ctx)
-    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/Microsoft.ManagedIdentity/userAssignedIdentities/(.*)'
+    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)'
+    resource_id = resource_id.lower()
     match = re.search(pattern, resource_id)
     if match:
         resource_group_name = match.group(1)
