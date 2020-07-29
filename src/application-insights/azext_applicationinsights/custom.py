@@ -143,6 +143,7 @@ def create_api_key(cmd, client, application, resource_group_name, api_key, read_
         read_properties = ['ReadTelemetry', 'AuthenticateSDKControlChannel']
     if write_properties is None:
         write_properties = ['WriteAnnotations']
+        logger.warning('Set write permission to "WriteAnnotations". This default permission will be removed in the future.')
     linked_read_properties, linked_write_properties = get_linked_properties(cmd.cli_ctx, application, resource_group_name, read_properties, write_properties)
     api_key_request = APIKeyRequest(name=api_key,
                                     linked_read_properties=linked_read_properties,

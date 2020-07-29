@@ -27,7 +27,7 @@ class PoliciesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client API version. Constant value: "2019-10-01".
+    :ivar api_version: Client API version. Constant value: "2020-04-01".
     """
 
     models = models
@@ -37,7 +37,7 @@ class PoliciesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-10-01"
+        self.api_version = "2020-04-01"
 
         self.config = config
 
@@ -108,7 +108,7 @@ class PoliciesOperations(object):
         deserialized = models.WebApplicationFirewallPolicyPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/frontDoorWebApplicationFirewallPolicies'}
 
     def get(
             self, resource_group_name, policy_name, custom_headers=None, raw=False, **operation_config):

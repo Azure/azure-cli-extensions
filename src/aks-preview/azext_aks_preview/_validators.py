@@ -88,16 +88,6 @@ def validate_linux_host_name(namespace):
                        'letters, numbers, or dashes (-).')
 
 
-def validate_max_pods(namespace):
-    """Validates that max_pods is set to a reasonable minimum number."""
-    # kube-proxy and kube-svc reside each nodes,
-    # 2 kube-proxy pods, 1 azureproxy/heapster/dashboard/tunnelfront are in kube-system
-    minimum_pods_required = ceil((namespace.node_count * 2 + 6 + 1) / namespace.node_count)
-    if namespace.max_pods != 0 and namespace.max_pods < minimum_pods_required:
-        raise CLIError('--max-pods must be at least {} for a managed Kubernetes cluster to function.'
-                       .format(minimum_pods_required))
-
-
 def validate_nodes_count(namespace):
     """Validate that min_count and max_count is set to 1-100"""
     if namespace.min_count is not None:
@@ -387,3 +377,12 @@ def validate_max_surge(namespace):
             raise CLIError("--max-surge must be positive")
     except ValueError:
         raise CLIError("--max-surge should be an int or percentage")
+
+
+def validate_assign_identity(namespace):
+    if namespace.assign_identity is not None:
+        if namespace.assign_identity == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.assign_identity):
+            raise CLIError("--assign-identity is not a valid Azure resource ID.")

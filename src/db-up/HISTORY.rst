@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.1.15 (2020-7-20)
+++++++++++++++++
+* `az mysql up`: Refine error message for error PasswordNotComplex
+
 0.1.14 (2020-5-9)
 ++++++++++++++++
 * Bump Cython, psycopg2-binary
