@@ -1381,16 +1381,6 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
         raise CLIError("Fail to find kubeconfig file.")
 
 
-ADDONS = {
-    'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent',
-    'virtual-node': 'aciConnector',
-    'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
-}
-
-
 # pylint: disable=line-too-long
 def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                 client,
