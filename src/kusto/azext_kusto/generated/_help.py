@@ -368,54 +368,16 @@ group "kustorptest"
 helps['kusto database create'] = """
     type: command
     short-summary: Creates or updates a database.
-    parameters:
-      - name: --read-write-database
-        short-summary: Class representing a read write database.
-        long-summary: |
-            Usage: --read-write-database soft-delete-period=XX hot-cache-period=XX location=XX kind=XX
-
-            soft-delete-period: The time the data should be kept before it stops being accessible to queries in TimeSpa\
-n.
-            hot-cache-period: The time the data should be kept in cache for fast queries in TimeSpan.
-            location: Resource location.
-            kind: Required. Kind of the database
-      - name: --read-only-following-database
-        short-summary: Class representing a read only following database.
-        long-summary: |
-            Usage: --read-only-following-database hot-cache-period=XX location=XX kind=XX
-
-            hot-cache-period: The time the data should be kept in cache for fast queries in TimeSpan.
-            location: Resource location.
-            kind: Required. Kind of the database
     examples:
       - name: KustoDatabasesCreateOrUpdate
         text: |-
-               az kusto database update --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
-ite-database soft-delete-period="P1D" --resource-group "kustorptest"
+               az kusto database create --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
+ite-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database update'] = """
     type: command
     short-summary: Updates a database.
-    parameters:
-      - name: --read-write-database
-        short-summary: Class representing a read write database.
-        long-summary: |
-            Usage: --read-write-database soft-delete-period=XX hot-cache-period=XX location=XX kind=XX
-
-            soft-delete-period: The time the data should be kept before it stops being accessible to queries in TimeSpa\
-n.
-            hot-cache-period: The time the data should be kept in cache for fast queries in TimeSpan.
-            location: Resource location.
-            kind: Required. Kind of the database
-      - name: --read-only-following-database
-        short-summary: Class representing a read only following database.
-        long-summary: |
-            Usage: --read-only-following-database hot-cache-period=XX location=XX kind=XX
-
-            hot-cache-period: The time the data should be kept in cache for fast queries in TimeSpan.
-            location: Resource location.
-            kind: Required. Kind of the database
     examples:
       - name: KustoDatabasesUpdate
         text: |-
