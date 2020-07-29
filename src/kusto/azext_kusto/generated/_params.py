@@ -127,7 +127,7 @@ def load_arguments(self, _):
 
     with self.argument_context('kusto cluster list-language-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name',  help='The name of the Kusto cluster.')
+        c.argument('cluster_name', help='The name of the Kusto cluster.')
 
     with self.argument_context('kusto cluster list-sku') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -325,8 +325,7 @@ def load_arguments(self, _):
                    ' follow all current and future databases.')
         c.argument('cluster_resource_id', help='The resource id of the cluster where the databases you would like to at'
                    'tach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=
-                   'The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help='The default principals modification kind')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
