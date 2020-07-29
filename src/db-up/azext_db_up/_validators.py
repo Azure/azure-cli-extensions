@@ -97,7 +97,6 @@ def _process_db_down_namespace(namespace, db_type=None):
         remove_config_value(db_type, 'database')
         remove_config_value(db_type, 'location')
 
-
     # put resource group info back in config if user does not want to delete it
     if not namespace.delete_group and namespace.resource_group_name:
         _set_value(db_type, namespace, 'resource_group_name', 'group')
