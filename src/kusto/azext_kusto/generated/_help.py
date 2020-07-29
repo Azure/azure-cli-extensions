@@ -195,7 +195,7 @@ helps['kusto cluster list-follower-database'] = """
     examples:
       - name: KustoClusterListFollowerDatabases
         text: |-
-               az kusto cluster list-follower-database --name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-follower-database --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
 """
 
 helps['kusto cluster list-language-extension'] = """
@@ -390,9 +390,8 @@ n.
     examples:
       - name: KustoDatabasesCreateOrUpdate
         text: |-
-               az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --paramet\
-ers "{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
-"""
+               az kusto database create --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
+ite-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 
 helps['kusto database update'] = """
     type: command
@@ -419,8 +418,8 @@ n.
     examples:
       - name: KustoDatabasesUpdate
         text: |-
-               az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --paramet\
-ers "{\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+               az kusto database create --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
+ite-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database delete'] = """
