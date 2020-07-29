@@ -83,6 +83,7 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     following limitation:
     https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
     error-storage-account-name
+
     :param normalized_fqdn: storage blob name
     :return: storage_name_without_hcp: Storage name without the hcp value
     attached
