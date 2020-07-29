@@ -1,6 +1,7 @@
 
 # Extensions for Azure CLI 2.0
 
+lol a change don't commit
 This repository serves two purposes and they are independent:
 
 1. A source code directory, `src`, to host your extension source code.
