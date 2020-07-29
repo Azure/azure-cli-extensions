@@ -24,12 +24,13 @@ blocklist=("azure-cli-iot-ext")
 
 rm -f ~/.azure/extCmdIndexToUpload.json
 
+filter_exts=""
 for ext in $output; do
     ext=${ext%$'\r'}   # Remove a trailing newline when running on Windows.
     if [[ " ${blocklist[@]} " =~ " ${ext} " ]]; then
         continue
     fi
-
+    filter_exts="${filter_exts} ${ext}"
     echo "Adding extension:" $ext
     az extension add -n $ext
     if [ $? != 0 ]
@@ -39,4 +40,4 @@ for ext in $output; do
     fi
 done
 
-python $(cd $(dirname $0); pwd)/update_ext_cmd_index.py $output
+python $(cd $(dirname $0); pwd)/update_ext_cmd_index.py $filter_exts
