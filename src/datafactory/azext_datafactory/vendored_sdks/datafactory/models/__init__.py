@@ -31,6 +31,7 @@ try:
     from ._models_py3 import AvroSink
     from ._models_py3 import AvroSource
     from ._models_py3 import AvroWriteSettings
+    from ._models_py3 import AzPowerShellSetup
     from ._models_py3 import AzureBatchLinkedService
     from ._models_py3 import AzureBlobDataset
     from ._models_py3 import AzureBlobFsDataset
@@ -450,6 +451,7 @@ try:
     from ._models_py3 import ResponsysSource
     from ._models_py3 import RestResourceDataset
     from ._models_py3 import RestServiceLinkedService
+    from ._models_py3 import RestSink
     from ._models_py3 import RestSource
     from ._models_py3 import RetryPolicy
     from ._models_py3 import RunFilterParameters
@@ -641,6 +643,7 @@ except (SyntaxError, ImportError):
     from ._models import AvroSink  # type: ignore
     from ._models import AvroSource  # type: ignore
     from ._models import AvroWriteSettings  # type: ignore
+    from ._models import AzPowerShellSetup  # type: ignore
     from ._models import AzureBatchLinkedService  # type: ignore
     from ._models import AzureBlobDataset  # type: ignore
     from ._models import AzureBlobFsDataset  # type: ignore
@@ -1060,6 +1063,7 @@ except (SyntaxError, ImportError):
     from ._models import ResponsysSource  # type: ignore
     from ._models import RestResourceDataset  # type: ignore
     from ._models import RestServiceLinkedService  # type: ignore
+    from ._models import RestSink  # type: ignore
     from ._models import RestSource  # type: ignore
     from ._models import RetryPolicy  # type: ignore
     from ._models import RunFilterParameters  # type: ignore
@@ -1338,6 +1342,7 @@ __all__ = [
     'AvroSink',
     'AvroSource',
     'AvroWriteSettings',
+    'AzPowerShellSetup',
     'AzureBatchLinkedService',
     'AzureBlobDataset',
     'AzureBlobFsDataset',
@@ -1757,6 +1762,7 @@ __all__ = [
     'ResponsysSource',
     'RestResourceDataset',
     'RestServiceLinkedService',
+    'RestSink',
     'RestSource',
     'RetryPolicy',
     'RunFilterParameters',

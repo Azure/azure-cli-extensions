@@ -267,7 +267,7 @@ class DataFlowDebugSessionOperations(object):
         source_settings=None,  # type: Optional[List["models.DataFlowSourceSetting"]]
         parameters=None,  # type: Optional[Dict[str, object]]
         dataset_parameters=None,  # type: Optional[object]
-        folder_path=None,  # type: Optional[str]
+        folder_path=None,  # type: Optional[object]
         reference_name=None,  # type: Optional[str]
         parameter_value_specification_parameters=None,  # type: Optional[Dict[str, object]]
         name=None,  # type: Optional[str]
@@ -293,8 +293,9 @@ class DataFlowDebugSessionOperations(object):
         :type parameters: dict[str, object]
         :param dataset_parameters: Parameters for dataset.
         :type dataset_parameters: object
-        :param folder_path: Folder path for staging blob.
-        :type folder_path: str
+        :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
+         string).
+        :type folder_path: object
         :param reference_name: Reference LinkedService name.
         :type reference_name: str
         :param parameter_value_specification_parameters: Arguments for LinkedService.

@@ -10,6 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
+import json
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
@@ -53,7 +54,7 @@ def datafactory_factory_create(client,
                                    if_match=if_match,
                                    location=location,
                                    tags=tags,
-                                   identity={"type": "SystemAssigned"},
+                                   identity=json.loads("{\"type\": \"SystemAssigned\"}"),
                                    repo_configuration=repo_configuration)
 
 
@@ -64,7 +65,7 @@ def datafactory_factory_update(client,
     return client.update(resource_group_name=resource_group_name,
                          factory_name=factory_name,
                          tags=tags,
-                         identity={"type": "SystemAssigned"})
+                         identity=json.loads("{\"type\": \"SystemAssigned\"}"))
 
 
 def datafactory_factory_delete(client,
@@ -395,6 +396,14 @@ def datafactory_linked_service_create(client,
                                    properties=properties)
 
 
+def datafactory_linked_service_update(instance,
+                                      resource_group_name,
+                                      factory_name,
+                                      linked_service_name,
+                                      if_match=None):
+    return instance
+
+
 def datafactory_linked_service_delete(client,
                                       resource_group_name,
                                       factory_name,
@@ -433,6 +442,14 @@ def datafactory_dataset_create(client,
                                    dataset_name=dataset_name,
                                    if_match=if_match,
                                    properties=properties)
+
+
+def datafactory_dataset_update(instance,
+                               resource_group_name,
+                               factory_name,
+                               dataset_name,
+                               if_match=None):
+    return instance
 
 
 def datafactory_dataset_delete(client,
@@ -622,6 +639,14 @@ def datafactory_trigger_create(client,
                                    properties=properties)
 
 
+def datafactory_trigger_update(instance,
+                               resource_group_name,
+                               factory_name,
+                               trigger_name,
+                               if_match=None):
+    return instance
+
+
 def datafactory_trigger_delete(client,
                                resource_group_name,
                                factory_name,
@@ -697,6 +722,17 @@ def datafactory_trigger_unsubscribe_from_event(client,
                        resource_group_name=resource_group_name,
                        factory_name=factory_name,
                        trigger_name=trigger_name)
+
+
+def datafactory_trigger_run_cancel(client,
+                                   resource_group_name,
+                                   factory_name,
+                                   trigger_name,
+                                   run_id):
+    return client.cancel(resource_group_name=resource_group_name,
+                         factory_name=factory_name,
+                         trigger_name=trigger_name,
+                         run_id=run_id)
 
 
 def datafactory_trigger_run_query_by_factory(client,

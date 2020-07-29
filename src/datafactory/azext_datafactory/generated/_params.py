@@ -272,6 +272,16 @@ def load_arguments(self, _):
         c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: '
                    'json-string/@json-file.')
 
+    with self.argument_context('datafactory linked-service update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.', id_part='name')
+        c.argument('linked_service_name', options_list=['--name', '-n'], help='The linked service name.', id_part=''
+                   'child_name_1')
+        c.argument('if_match', help='ETag of the linkedService entity.  Should only be specified for update, for which '
+                   'it should match existing entity or can be * for unconditional update.')
+        c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: '
+                   'json-string/@json-file.')
+
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
@@ -293,6 +303,15 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.')
         c.argument('dataset_name', options_list=['--name', '-n'], help='The dataset name.')
+        c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it '
+                   'should match existing entity or can be * for unconditional update.')
+        c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: '
+                   'json-string/@json-file.')
+
+    with self.argument_context('datafactory dataset update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.', id_part='name')
+        c.argument('dataset_name', options_list=['--name', '-n'], help='The dataset name.', id_part='child_name_1')
         c.argument('if_match', help='ETag of the dataset entity.  Should only be specified for update, for which it '
                    'should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: '
@@ -423,6 +442,15 @@ def load_arguments(self, _):
         c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: '
                    'json-string/@json-file.')
 
+    with self.argument_context('datafactory trigger update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.', id_part='name')
+        c.argument('trigger_name', options_list=['--name', '-n'], help='The trigger name.', id_part='child_name_1')
+        c.argument('if_match', help='ETag of the trigger entity.  Should only be specified for update, for which it '
+                   'should match existing entity or can be * for unconditional update.')
+        c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: '
+                   'json-string/@json-file.')
+
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', help='The factory name.', id_part='name')
@@ -467,6 +495,12 @@ def load_arguments(self, _):
         c.argument('trigger_name', options_list=['--name', '-n'], help='The trigger name.', id_part='child_name_1')
         c.argument('if_none_match', help='ETag of the trigger entity. Should only be specified for get. If the ETag '
                    'matches the existing entity tag, or if * was provided, then no content will be returned.')
+
+    with self.argument_context('datafactory trigger-run cancel') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', help='The factory name.', id_part='name')
+        c.argument('trigger_name', help='The trigger name.', id_part='child_name_1')
+        c.argument('run_id', help='The pipeline run identifier.', id_part='child_name_2')
 
     with self.argument_context('datafactory trigger-run query-by-factory') as c:
         c.argument('resource_group_name', resource_group_name_type)

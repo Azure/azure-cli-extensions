@@ -112,6 +112,29 @@ show a datafactory dataset.
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
 |**--if-none-match**|string|ETag of the dataset entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
 
+### datafactory dataset update
+
+update a datafactory dataset.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|datafactory dataset|Datasets|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|update|CreateOrUpdate#Update|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
+|**--properties**|object|Dataset properties.|properties|properties|
+|**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+
 ### datafactory factory configure-factory-repo
 
 configure-factory-repo a datafactory factory.
@@ -837,6 +860,29 @@ show a datafactory linked-service.
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
 |**--if-none-match**|string|ETag of the linked service entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
 
+### datafactory linked-service update
+
+update a datafactory linked-service.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|datafactory linked-service|LinkedServices|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|update|CreateOrUpdate#Update|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
+|**--properties**|object|Properties of linked service.|properties|properties|
+|**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+
 ### datafactory pipeline create
 
 create a datafactory pipeline.
@@ -1259,6 +1305,51 @@ unsubscribe-from-event a datafactory trigger.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
+
+### datafactory trigger update
+
+update a datafactory trigger.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|datafactory trigger|Triggers|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|update|CreateOrUpdate#Update|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
+|**--properties**|object|Properties of the trigger.|properties|properties|
+|**--if-match**|string|ETag of the trigger entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+
+### datafactory trigger-run cancel
+
+cancel a datafactory trigger-run.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|datafactory trigger-run|TriggerRuns|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|cancel|Cancel|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
+|**--run-id**|string|The pipeline run identifier.|run_id|runId|
 
 ### datafactory trigger-run query-by-factory
 
