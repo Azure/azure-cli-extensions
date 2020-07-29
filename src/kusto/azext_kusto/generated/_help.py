@@ -259,10 +259,10 @@ helps['kusto cluster wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the kusto cluster is successfully created.
         text: |-
-               az kusto cluster wait --name "kustoclusterrptest4" --resource-group "kustorptest" --created
+               az kusto cluster wait --cluster-name "kustoclusterrptest4" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto cluster is successfully updated.
         text: |-
-               az kusto cluster wait --name "kustoclusterrptest4" --resource-group "kustorptest" --updated
+               az kusto cluster wait --cluster-name "kustoclusterrptest4" --resource-group "kustorptest" --updated
       - name: Pause executing next line of CLI script until the kusto cluster is successfully deleted.
         text: |-
                az kusto cluster wait --cluster-name "kustoclusterrptest4" --resource-group "kustorptest" --deleted
@@ -390,8 +390,8 @@ n.
     examples:
       - name: KustoDatabasesCreateOrUpdate
         text: |-
-               az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --paramet\
-ers "{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+               az kusto database update --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
+ite-database soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database update'] = """
@@ -419,8 +419,8 @@ n.
     examples:
       - name: KustoDatabasesUpdate
         text: |-
-               az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --paramet\
-ers "{\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+               az kusto database update --cluster-name "KustoClusterRPTest4" --database-name "KustoDatabase8" --read-wr\
+ite-database soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database delete'] = """
@@ -610,7 +610,7 @@ helps['kusto attached-database-configuration show'] = """
     examples:
       - name: AttachedDatabaseConfigurationsGet
         text: |-
-               az kusto attached-database-configuration show --name "attachedDatabaseConfigurations1" --cluster-name "k\
+               az kusto attached-database-configuration show --attached-database-configuration-name "attachedDatabaseConfigurations1" --cluster-name "k\
 ustoclusterrptest4" --resource-group "kustorptest"
 """
 
@@ -656,7 +656,7 @@ et.
       - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully c\
 reated.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name "k\
+               az kusto attached-database-configuration wait --attached-database-configuration-name "attachedDatabaseConfigurations1" --cluster-name "k\
 ustoclusterrptest4" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully d\
 eleted.
@@ -787,7 +787,7 @@ helps['kusto data-connection wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the kusto data-connection is successfully created.
         text: |-
-               az kusto data-connection wait --cluster-name "kustoclusterrptest4" --name "DataConnections8" --database-\
+               az kusto data-connection wait --cluster-name "kustoclusterrptest4" --data-connection-name "DataConnections8" --database-\
 name "KustoDatabase8" --resource-group "kustorptest" --created
       - name: Pause executing next line of CLI script until the kusto data-connection is successfully deleted.
         text: |-
