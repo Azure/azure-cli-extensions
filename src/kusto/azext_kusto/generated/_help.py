@@ -204,7 +204,7 @@ helps['kusto cluster list-language-extension'] = """
     examples:
       - name: KustoClusterListLanguageExtensions
         text: |-
-               az kusto cluster list-language-extension -cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-language-extension --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
 """
 
 helps['kusto cluster list-sku'] = """
@@ -213,7 +213,7 @@ helps['kusto cluster list-sku'] = """
     examples:
       - name: KustoClustersListResourceSkus
         text: |-
-               az kusto cluster list-sku -cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto cluster list-sku --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
 """
 
 helps['kusto cluster remove-language-extension'] = """
@@ -755,7 +755,7 @@ helps['kusto data-connection delete'] = """
     examples:
       - name: KustoDataConnectionsDelete
         text: |-
-               az kusto data-connection delete --cluster-name "kustoclusterrptest4" ---data-connection-name "kustoeventhubconnection1" -\
+               az kusto data-connection delete --cluster-name "kustoclusterrptest4" --data-connection-name "kustoeventhubconnection1" -\
 -database-name "KustoDatabase8" --resource-group "kustorptest"
 """
 
