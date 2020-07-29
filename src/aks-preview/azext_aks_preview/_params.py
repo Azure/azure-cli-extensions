@@ -198,4 +198,3 @@ def _get_default_install_location(exe_name):
     else:
         install_location = None
     return install_location
-    
