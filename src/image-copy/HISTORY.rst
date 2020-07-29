@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.6
+++++++
+* Add validation on temporary resource group.
+
 0.2.5
 ++++++
 * Fix a bug of --tags.
