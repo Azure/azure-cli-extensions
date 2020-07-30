@@ -22,7 +22,7 @@ output=$(az extension list-available --query [].name -otsv)
 # azure-cli-iot-ext is the deprecated old versions of the renamed azure-iot extension
 blocklist=("azure-cli-iot-ext")
 
-rm -f ~/.azure/extCmdIndexToUpload.json
+rm -f ~/.azure/extCmdTreeToUpload.json
 
 filter_exts=""
 for ext in $output; do
@@ -40,4 +40,4 @@ for ext in $output; do
     fi
 done
 
-python $(cd $(dirname $0); pwd)/update_ext_cmd_index.py $filter_exts
+python $(cd $(dirname $0); pwd)/update_ext_cmd_tree.py $filter_exts

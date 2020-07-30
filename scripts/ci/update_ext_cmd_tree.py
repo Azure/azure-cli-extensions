@@ -13,18 +13,18 @@ from azure.cli.core.extension import get_extension_modname, get_extension_path
 from azure.storage.blob import BlockBlobService
 from sync_extensions import download_file
 
-STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_CMD_INDEX_STORAGE_ACCOUNT_KEY')
-STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_INDEX_STORAGE_ACCOUNT')
-STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_INDEX_STORAGE_CONTAINER')
+STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT_KEY')
+STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
+STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
 
 az_cli = get_default_cli()
-file_name = 'extCmdIndexToUpload.json'
+file_name = 'extCmdTreeToUpload.json'
 
 
 def merge(data, key, value):
     if isinstance(value, str):
         if key in data:
-            raise Exception(f"{key} already in index")
+            raise Exception(f"Key: {key} already exists. 2 extensions cannot have the same command!")
         data[key] = value
     else:
         data.setdefault(key, {})
@@ -32,7 +32,7 @@ def merge(data, key, value):
             merge(data[key], k, v)
 
 
-def update_cmd_index(ext_name):
+def update_cmd_tree(ext_name):
     print(f"Processing {ext_name}")
 
     ext_dir = get_extension_path(ext_name)
@@ -46,8 +46,8 @@ def update_cmd_index(ext_name):
     extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader,
                                                                 "", ext_mod)
 
-    EXT_CMD_INDEX = Session()
-    EXT_CMD_INDEX.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
+    EXT_CMD_TREE_TO_UPLOAD = Session()
+    EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
     root = {}
     for cmd_name, _ in extension_command_table.items():
         parts = cmd_name.split()
@@ -62,13 +62,13 @@ def update_cmd_index(ext_name):
             parent = parent[part]
     print(root)
     for k, v in root.items():
-        merge(EXT_CMD_INDEX.data, k, v)
-    EXT_CMD_INDEX.save_with_retry()
+        merge(EXT_CMD_TREE_TO_UPLOAD.data, k, v)
+    EXT_CMD_TREE_TO_UPLOAD.save_with_retry()
 
 
-def upload_cmd_index():
-    blob_file_name = 'extCmdIndex.json'
-    downloaded_file_name = 'extCmdIndexDownloaded.json'
+def upload_cmd_tree():
+    blob_file_name = 'extensionCommandTree.json'
+    downloaded_file_name = 'extCmdTreeDownloaded.json'
     file_path = os.path.expanduser(os.path.join('~', '.azure', file_name))
 
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
@@ -80,12 +80,12 @@ def upload_cmd_index():
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)
     if filecmp.cmp(file_path, download_file_path):
-        print("extCmdIndex.json uploaded successfully. URL: {}".format(url))
+        print("extensionCommandTree.json uploaded successfully. URL: {}".format(url))
     else:
-        raise Exception("Failed to update extCmdIndex.json in storage account")
+        raise Exception("Failed to update extensionCommandTree.json in storage account")
 
 
 if __name__ == '__main__':
     for ext in sys.argv[1:]:
-        update_cmd_index(ext)
-    upload_cmd_index()
+        update_cmd_tree(ext)
+    upload_cmd_tree()
