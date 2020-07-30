@@ -82,7 +82,7 @@ def upload_cmd_tree():
     if filecmp.cmp(file_path, download_file_path):
         print("extensionCommandTree.json uploaded successfully. URL: {}".format(url))
     else:
-        raise Exception("Failed to update extensionCommandTree.json in storage account")
+        raise Exception("Failed to update extensionCommandTree.json in the storage account")
 
 
 if __name__ == '__main__':
