@@ -9,15 +9,15 @@ def assert_has_split_method(field, value):
         raise TypeError(f'value assigned to `{field}` must contain split method')
 
 
-class FailureRecoveryRecommendation():
-    def __init__(self, data):
-        data['SuccessCommand'] = data.get('SuccessCommand', '')
-        data['SuccessCommand_Parameters'] = data.get('SuccessCommand_Parameters', '')
-        data['SuccessCommand_ArgumentPlaceholders'] = data.get('SuccessCommand_ArgumentPlaceholders', '')
+class Suggestion():
+    COMNMAND_FIELD = 'command'
+    PARAMETERS_FIELD = 'parameters'
+    PLACEHOLDERS_FIELD = 'placeholders'
 
-        self._command = data['SuccessCommand']
-        self._parameters = data['SuccessCommand_Parameters']
-        self._placeholders = data['SuccessCommand_ArgumentPlaceholders']
+    def __init__(self, data):
+        self._command = data[self.COMNMAND_FIELD]
+        self._parameters = data[self.PARAMETERS_FIELD]
+        self._placeholders = data[self.PLACEHOLDERS_FIELD]
 
         for attr in ('_parameters', '_placeholders'):
             value = getattr(self, attr)

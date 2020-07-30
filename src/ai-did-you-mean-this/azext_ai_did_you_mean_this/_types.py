@@ -3,4 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-VERSION = '0.2.2'
+from typing import Dict, List, Union
+
+from knack.arguments import CLICommandArgument
+from knack.deprecation import Deprecated
+
+ParameterTableType = Dict[str, CLICommandArgument]
+OptionListType = List[Union[str, Deprecated]]

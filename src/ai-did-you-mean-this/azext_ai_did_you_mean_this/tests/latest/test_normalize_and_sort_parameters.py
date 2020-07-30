@@ -12,6 +12,10 @@ from azure.cli.core import MainCommandsLoader
 from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
 from azext_ai_did_you_mean_this.tests.latest._commands import get_commands, AzCommandType
 
+from azext_ai_did_you_mean_this.tests.latest.extension_telemetry_hook import ExtensionTelemetryMockSession
+from azext_ai_did_you_mean_this.telemetry import TelemetryProperty, get_property, _extension_telemetry_manager
+from azext_ai_did_you_mean_this._parameter import GLOBAL_PARAM_BLOCKLIST
+
 
 class TestNormalizeAndSortParameters(unittest.TestCase):
     @classmethod
@@ -54,28 +58,91 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
 
         cls.cmd_tbl = cmd_loader.command_table
 
+    def setUp(self):
+        super().setUp()
+
+        self.telemetry_properties = [
+            TelemetryProperty.RawCommand,
+            TelemetryProperty.Command,
+            TelemetryProperty.RawParameters,
+            TelemetryProperty.Parameters,
+            TelemetryProperty.UnrecognizedParameters
+        ]
+
+    def _assert_telemetry_properties_are_set(self, raw_command: str, command: str, raw_parameters: list, parameters: str):
+        self.assertEqual(get_property(TelemetryProperty.RawCommand), raw_command)
+        self.assertEqual(get_property(TelemetryProperty.Command), command)
+        self.assertEqual(get_property(TelemetryProperty.RawParameters), ','.join(raw_parameters))
+        self.assertEqual(get_property(TelemetryProperty.Parameters), parameters)
+        raw_parameter_set = set(sorted(param for param in raw_parameters if param.startswith('--')))
+        raw_parameter_set.difference_update(GLOBAL_PARAM_BLOCKLIST)
+        normalized_parameters = set(parameters.split(','))
+        unrecognized_parameters = list(sorted(raw_parameter_set - normalized_parameters))
+
+        def is_prefix(token, parameters):
+            number_of_matches = len([p for p in parameters if token != p and p.startswith(token)])
+            return number_of_matches == 1
+
+        unrecognized_parameters = ','.join([p for p in unrecognized_parameters if not is_prefix(p, normalized_parameters)])
+        self.assertEqual(get_property(TelemetryProperty.UnrecognizedParameters), unrecognized_parameters)
+
+        for telemetry_property in self.telemetry_properties:
+            prop = _extension_telemetry_manager.get_property_name(telemetry_property)
+            self.assertIn(prop, _extension_telemetry_manager.properties)
+
+    def _assert_session_telemetry_properties_are_set(self, session: ExtensionTelemetryMockSession):
+        for telemetry_property in self.telemetry_properties:
+            prop = _extension_telemetry_manager.get_property_name(telemetry_property)
+            self.assertIn(prop, session.extension_event.properties)
+            self.assertDictContainsSubset(
+                _extension_telemetry_manager.properties,
+                session.extension_event.properties
+            )
+
     def test_custom_normalize_and_sort_parameters(self):
         for cmd in AzCommandType:
-            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
-            self.assertEqual(parameters, cmd.expected_parameters)
-            self.assertEqual(command, cmd.command)
+            with ExtensionTelemetryMockSession() as session:
+                command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
+                self.assertEqual(parameters, cmd.expected_parameters)
+                self.assertEqual(command, cmd.command)
+
+                self._assert_telemetry_properties_are_set(cmd.command, command, cmd.parameters, parameters)
+
+            self._assert_session_telemetry_properties_are_set(session)
 
     def test_custom_normalize_and_sort_parameters_remove_invalid_command_token(self):
         for cmd in AzCommandType:
-            cmd_with_invalid_token = f'{cmd.command} oops'
-            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
-            self.assertEqual(parameters, cmd.expected_parameters)
-            self.assertEqual(command, cmd.command)
+            with ExtensionTelemetryMockSession() as session:
+                cmd_with_invalid_token = f'{cmd.command} oops'
+                command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
+                self.assertEqual(parameters, cmd.expected_parameters)
+                self.assertEqual(command, cmd.command)
+
+                self._assert_telemetry_properties_are_set(cmd_with_invalid_token, command, cmd.parameters, parameters)
+
+            self._assert_session_telemetry_properties_are_set(session)
 
     def test_custom_normalize_and_sort_parameters_empty_parameter_list(self):
-        cmd = AzCommandType.ACCOUNT_SET
-        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, '')
-        self.assertEqual(parameters, '')
-        self.assertEqual(command, cmd.command)
+        with ExtensionTelemetryMockSession() as session:
+            cmd = AzCommandType.ACCOUNT_SET
+            params = ['']
+            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, params)
+            self.assertEqual(parameters, '')
+            self.assertEqual(command, cmd.command)
+
+            self._assert_telemetry_properties_are_set(cmd.command, command, params, '')
+
+        self._assert_session_telemetry_properties_are_set(session)
 
     def test_custom_normalize_and_sort_parameters_invalid_command(self):
-        invalid_cmd = 'Lorem ipsum.'
-        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
-        self.assertEqual(parameters, '')
-        # verify that recursive parsing removes the last invalid whitespace delimited token.
-        self.assertEqual(command, 'Lorem')
+        with ExtensionTelemetryMockSession() as session:
+            invalid_cmd = 'Lorem ipsum.'
+            invalid_params = ['--foo', '--baz']
+            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, invalid_params)
+            self.assertEqual(parameters, '')
+            # verify that recursive parsing removes the last invalid whitespace delimited token.
+            self.assertEqual(command, 'Lorem')
+
+            self._assert_telemetry_properties_are_set(invalid_cmd, 'Lorem', invalid_params, '')
+
+        self._assert_session_telemetry_properties_are_set(session)

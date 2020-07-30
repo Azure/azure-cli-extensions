@@ -2,19 +2,19 @@
     "account": {
         "recommendations": [
             {
-                "SuccessCommand": "account list",
-                "SuccessCommand_Parameters": "",
-                "SuccessCommand_ArgumentPlaceholders": ""
+                "command": "account list",
+                "parameters": "",
+                "placeholders": ""
             },
             {
-                "SuccessCommand": "account show",
-                "SuccessCommand_Parameters": "",
-                "SuccessCommand_ArgumentPlaceholders": ""
+                "command": "account show",
+                "parameters": "",
+                "placeholders": ""
             },
             {
-                "SuccessCommand": "account set",
-                "SuccessCommand_Parameters": "--subscription",
-                "SuccessCommand_ArgumentPlaceholders": "Subscription"
+                "command": "account set",
+                "parameters": "--subscription",
+                "placeholders": "Subscription"
             }
         ],
         "user_fault_type": "missing_required_subcommand"
@@ -39,9 +39,9 @@
     "extension": {
         "recommendations": [
             {
-                "SuccessCommand": "extension list",
-                "SuccessCommand_Parameters": "",
-                "SuccessCommand_ArgumentPlaceholders": ""
+                "command": "extension list",
+                "parameters": "",
+                "placeholders": ""
             }
         ],
         "user_fault_type": "missing_required_subcommand"
@@ -49,9 +49,9 @@
     "vm": {
         "recommendations": [
             {
-                "SuccessCommand": "vm list",
-                "SuccessCommand_Parameters": "",
-                "SuccessCommand_ArgumentPlaceholders": ""
+                "command": "vm list",
+                "parameters": "",
+                "placeholders": ""
             }
         ],
         "user_fault_type": "missing_required_subcommand",
@@ -64,9 +64,9 @@
     "vm list": {
         "recommendations": [
             {
-                "SuccessCommand": "vm list",
-                "SuccessCommand_Parameters": "--output,--query",
-                "SuccessCommand_ArgumentPlaceholders": "json,\"[].id\""
+                "command": "vm list",
+                "parameters": "--output,--query",
+                "placeholders": "json,\"[].id\""
             }
         ],
         "arguments": "--query \".id\"",

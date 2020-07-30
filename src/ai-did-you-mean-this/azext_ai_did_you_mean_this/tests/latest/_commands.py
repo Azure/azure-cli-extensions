@@ -6,11 +6,15 @@
 from collections import namedtuple
 from enum import Enum
 
-GLOBAL_ARGS = set(('--debug', '--verbose', '--help', '--only-show-errors', '--output', '--query'))
-GLOBAL_ARG_BLACKLIST = set(('--debug', '--verbose'))
-GLOBAL_ARG_WHITELIST = GLOBAL_ARGS.difference(GLOBAL_ARG_BLACKLIST)
-GLOBAL_ARGS_SHORTHAND_MAP = {'-h': '--help', '-o': '--output'}
-GLOBAL_ARG_LIST = tuple(GLOBAL_ARGS) + tuple(GLOBAL_ARGS_SHORTHAND_MAP.keys())
+from azext_ai_did_you_mean_this._parameter import (
+    GLOBAL_PARAM_SHORTHAND_LOOKUP_TBL,
+    GLOBAL_PARAM_LOOKUP_TBL,
+    GLOBAL_PARAM_BLOCKLIST
+)
+
+GLOBAL_PARAMS = set(param for param in GLOBAL_PARAM_LOOKUP_TBL if param.startswith('--'))
+GLOBAL_PARAM_WHITELIST = GLOBAL_PARAMS.difference(GLOBAL_PARAM_BLOCKLIST)
+GLOBAL_PARAM_LIST = tuple(GLOBAL_PARAMS) + tuple(GLOBAL_PARAM_SHORTHAND_LOOKUP_TBL.keys())
 
 Arguments = namedtuple('Arguments', ['actual', 'expected'])
 CliCommand = namedtuple('CliCommand', ['module', 'command', 'args'])
@@ -60,9 +64,14 @@ KUSTO_CLUSTER_CREATE_ARGS = Arguments(
     expected=['--location', '--resource-group', '--no-wait']
 )
 
+GROUP_CREATE_ARGS = Arguments(
+    actual=['-l', '-n', '--manag', '--tag', '--s'],
+    expected=['--location', '--resource-group', '--managed-by', '--tags', '--subscription']
+)
 
-def add_global_args(args, global_args=GLOBAL_ARG_LIST):
-    expected_global_args = list(GLOBAL_ARG_WHITELIST)
+
+def add_global_args(args, global_args=GLOBAL_PARAM_LIST):
+    expected_global_args = list(GLOBAL_PARAM_WHITELIST)
     args.actual.extend(global_args)
     args.expected.extend(expected_global_args)
     return args
@@ -103,6 +112,11 @@ class AzCommandType(Enum):
         module='kusto',
         command='kusto cluster create',
         args=add_global_args(KUSTO_CLUSTER_CREATE_ARGS)
+    )
+    GROUP_CREATE = CliCommand(
+        module='group',
+        command='group create',
+        args=add_global_args(GROUP_CREATE_ARGS)
     )
 
     def __init__(self, module, command, args):

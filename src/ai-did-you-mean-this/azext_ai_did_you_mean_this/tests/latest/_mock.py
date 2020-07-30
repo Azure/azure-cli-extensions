@@ -13,7 +13,7 @@ from contextlib import contextmanager
 
 import requests
 
-from azext_ai_did_you_mean_this.failure_recovery_recommendation import FailureRecoveryRecommendation
+from azext_ai_did_you_mean_this.suggestion import Suggestion
 
 # mock service call context attributes
 MOCK_UUID = '00000000-0000-0000-0000-000000000000'
@@ -82,7 +82,7 @@ class MockRecommendationModel():
     @classmethod
     def get_recommendations(cls, command):
         data = cls.get_recommendation_data(command)
-        recommendations = [FailureRecoveryRecommendation(recommendation) for recommendation in data.recommendations]
+        recommendations = [Suggestion(recommendation) for recommendation in data.recommendations]
         return recommendations
 
     @classmethod
