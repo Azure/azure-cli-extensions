@@ -68,11 +68,49 @@ t_access_tier = [
     {'name': 'Hot',
      'desc': 'Optimized for storing data that is accessed frequently.'},
     {'name': 'Cool',
-     'desc': 'Optimized for storing data that is infrequently accessed and stored for at least 30 days.'}]
+     'desc': 'Optimized for storing data that is infrequently accessed and stored for at least 30 days.'}
+]
+
+t_service = [
+    {'name': 'Container',
+     'desc': 'Scalable, cost-effective storage for unstructured data'},
+    {'name': 'File System',
+     'desc': 'Massively scalable data lake storage, only for ADLS Gen2 account'},
+    {'name': 'FileShare',
+     'desc': 'Serverless SMB file shares'},
+    {'name': 'Table',
+     'desc': 'Tabular data storage'},
+    {'name': 'Queue',
+     'desc': 'Effectively scale apps according to traffic'},
+]
+
+quit = {'name': 'q', 'desc': 'Quit'}
+
+def get_output_in_json(result):
+    import json
+    return json.loads(result)
+
+
+def get_service(storage_account, resource_group):
+    output = az("storage account show -n {} -g {} --query primaryEndpoints".format(
+        storage_account, resource_group)).out
+    properties = get_output_in_json(output)
+    result = []
+    if properties['blob']:
+        result.append(t_service[0])
+    if properties['dfs']:
+        result.append(t_service[1])
+    if properties['file']:
+        result.append(t_service[2])
+    if properties['table']:
+        result.append(t_service[3])
+    if properties['queue']:
+        result.append(t_service[4])
+    return result
 
 
 def get_location(default_location=None):
-    location_list = az('account list-locations --query [].name').out.strip('[]\n').split(',\n ')
+    location_list = az('account list-locations --query [].name -o tsv').out.split('\n')
     recommend = []
     if default_location:
         recommend.append(default_location)
@@ -165,7 +203,7 @@ def create_storage_account(cmd, storage_account):
         cmd = cmd + ' --hns ' + str(ans)
 
     print("Running the following CLI command to create specified storage account: \n"
-                "{} \n".format(cmd))
+          "az {} \n".format(cmd))
     az(cmd)
 
     return resource_group
@@ -174,24 +212,73 @@ def create_storage_account(cmd, storage_account):
 def check_storage_account(cmd):
     storage_account = prompt(msg="Please specify the storage account name to create or existing storage account name: ",
                              level='Question')
-    #storage_account ='tckftakf'
+    #storage_account ='zuhdefault'
     storage_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE).storage_accounts
+    ans = 'y'
     try:
         resource_group, _ = _query_account_rg(cmd.cli_ctx, storage_account)
         properties = storage_client.get_properties(account_name=storage_account, resource_group_name=resource_group)
+        p, r = properties.sku.name.split('_')
         ans = prompt("""
-Do you want use existing storage account '{}' in resource group '{}' with the following properties: \n
-- Kind: {} \n
-- Sku: {} \n
-- Hierarchical namespace (ADLS Gen2): {} \n
-- Location: {} \n
-If yes, input 'y'. If not, enter 'n' to input new storage account name or enter 'q' to quit: 
-""".format(storage_account, resource_group, properties.kind, properties.sku.name,
-           True if properties.is_hns_enabled else False, properties.location))
-        return storage_account, ans
+The storage account '{}' already exists in resource group '{}' with the following properties: 
+- Location: {} 
+- Account type: {} 
+- Performance tier: {} 
+- Replication type: {} 
+- Hierarchical namespace (ADLS Gen2): {} 
+- Access tier: {} 
+If you want to use the existing storage account, please enter 'y' to confirm; 
+If you want to create a new one, please input a new storage account name;
+Enter 'q' to quit the process:
+""".format(storage_account, resource_group, properties.location, properties.kind, p, r,
+           True if properties.is_hns_enabled else False, properties.access_tier))
+        if ans.lower() == 'y':
+            return storage_account, resource_group, True
+        if ans.lower() == 'q':
+            return None, None, None
+        return storage_account, None, False
     except ValueError:
-        ans = create_storage_account(cmd, storage_account)
-        return storage_account, ans
+        return storage_account, None, False
+
+
+def create_container(storage_account, account_key):
+    #container = prompt(msg="Please specify container name to create: ", level='Question')
+    container = "test"
+    cmd = "storage container create -n {} --account-name {} --account-key {} ".format(
+        container, storage_account, account_key)
+
+    print("Running the following CLI command to create specified container in storage account: \n"
+          "az {}".format(cmd))
+    result = az(cmd + '--query "created"').out.strip('\n')
+    while result == 'false':
+        ans = prompt(msg="The specified container name already exists. \n"
+                         "If you want to use existing container, please enter 'y'; \n"
+                         "If you still want to create new container, please enter a new container name; \n"
+                         "Enter 'q' to quit the process: ", level="Question")
+        if ans.lower() == 'y':
+            break
+        if ans.lower() == 'q':
+            return None
+        cmd = "storage container create -n {} --account-name {} --account-key {} ".format(
+            ans, storage_account, account_key)
+        result = az(cmd + '--query "created"')
+
+    return container
+
+
+def upload_blob(storage_account, account_key, container):
+    import os
+    # file = prompt(msg="Please specify file path to upload: ", level='Question')
+    file = "C:\Users\zuh\Desktop\clear.xml"
+    blob = os.path.basename(file)
+    cmd = 'storage blob upload -n {} -f "{}" -c {} --account-name {} --account-key {} '.format(
+        blob, file, container, storage_account, account_key)
+
+    print("Running the following CLI command to upload file to container in storage account: \n"
+          "az {}".format(cmd))
+    az(cmd)
+
+    return blob
 
 
 def storage_init(cmd):
@@ -199,14 +286,32 @@ def storage_init(cmd):
     # Start creating storage account
     logger.warning("To init with storage module, we will start from creating storage account.")
 
-    # Check existence of storage account
-    storage_account, ans = check_storage_account(cmd)
-    while ans is 'n':
-        storage_account, ans = check_storage_account(cmd)
-        if ans.lower() in ["q", "quit"]:
-            break
+    # Prepare storage account
+    storage_account, resource_group, ans = check_storage_account(cmd)
+    if storage_account and not ans:
+        resource_group = create_storage_account(cmd, storage_account)
 
-    # Check existence of storage account
-
-
-
+    # Container, Share, Queue, Table
+    service_list = get_service(storage_account, resource_group)
+    options = '\n'.join([' [{}] {}{}'
+                        .format(i + 1,
+                                x['name'] if isinstance(x, dict) and 'name' in x else x,
+                                ' - ' + x['desc'] if isinstance(x, dict) and 'desc' in x else '')
+                         for i, x in enumerate(service_list)])
+    ans = prompt_y_n(msg="Do you want to manage one of the following resources in storage account? \n"
+                     "{}".format(options))
+    # ans = True
+    if ans:
+        account_key = az("storage account keys list -n {} -g {} --query [0].value -o tsv".format(
+            storage_account, resource_group)).out.strip("\n")
+        ans = prompt_choice_list(
+            msg="Please specify the resource to manage in your storage account:", a_list=service_list.append(quit))
+        # ans = 0
+        if ans == 0:
+            logger.warning("Start creating container in storage account ...")
+            container = create_container(storage_account, account_key)
+            if container:
+                logger.warning("Start uploading blob to container in storage account ...")
+                blob = upload_blob(storage_account, account_key, container)
+    logger.warning("All steps are done in init process. \n"
+                   "You could use `az storage -h` to see more storage related commands.")
