@@ -87,7 +87,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
-
+from ._consts import ADDONS
 logger = get_logger(__name__)
 
 
@@ -1403,16 +1403,6 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
         _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
-
-
-ADDONS = {
-    'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent',
-    'virtual-node': 'aciConnector',
-    'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
-}
 
 
 # pylint: disable=line-too-long

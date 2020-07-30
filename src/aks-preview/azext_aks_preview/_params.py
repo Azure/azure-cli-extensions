@@ -22,7 +22,7 @@ from ._validators import (
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
-    validate_nodepool_labels, validate_vnet_subnet_id, validate_max_surge, validate_assign_identity)
+    validate_nodepool_labels, validate_vnet_subnet_id, validate_max_surge, validate_assign_identity, validate_addons)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -72,7 +72,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type([CONST_OUTBOUND_TYPE_LOAD_BALANCER,
                                                             CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]))
-        c.argument('enable_addons', options_list=['--enable-addons', '-a'])
+        c.argument('enable_addons', options_list=['--enable-addons', '-a'], validator=validate_addons)
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
                    deprecate_info=c.deprecate(redirect="--disable-rbac", hide="2.0.45"))
@@ -171,10 +171,10 @@ def load_arguments(self, _):
         c.argument('max_surge', type=str, validator=validate_max_surge)
 
     with self.argument_context('aks disable-addons') as c:
-        c.argument('addons', options_list=['--addons', '-a'])
+        c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
 
     with self.argument_context('aks enable-addons') as c:
-        c.argument('addons', options_list=['--addons', '-a'])
+        c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
 
     with self.argument_context('aks get-credentials') as c:

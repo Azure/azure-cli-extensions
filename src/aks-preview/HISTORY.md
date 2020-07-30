@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.58
++++++
+* Added clearer error message for invalid addon names
+
 0.4.57
 +++++
 * Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.

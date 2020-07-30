@@ -5,6 +5,7 @@
 import unittest
 from azure.cli.core.util import CLIError
 import azext_aks_preview._validators as validators
+from azext_aks_preview._consts import ADDONS
 
 
 class TestValidateIPRanges(unittest.TestCase):
@@ -170,6 +171,39 @@ class TestMaxSurge(unittest.TestCase):
         self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
 
 
+class ValidateAddonsNamespace:
+    def __init__(self, addons):
+        self.addons = addons
+
+
+class TestValidateAddons(unittest.TestCase):
+    def test_correct_addon(self):
+        addons = list(ADDONS)
+        if len(addons) > 0:
+            first_addon = addons[0]
+            namespace1 = ValidateAddonsNamespace(first_addon)
+
+            try:
+                validators.validate_addons(namespace1)
+            except CLIError:
+                self.fail("validate_addons failed unexpectedly with CLIError")
+
+    def test_validate_addons(self):
+        addons = list(ADDONS)
+        if len(addons) > 0:
+            first_addon = addons[0]
+            midlen = int(len(first_addon) / 2)
+
+            namespace = ValidateAddonsNamespace(
+                first_addon[:midlen] + first_addon[midlen + 1:])
+            self.assertRaises(CLIError, validators.validate_addons, namespace)
+
+    def test_no_addon_match(self):
+        namespace = ValidateAddonsNamespace("qfrnmjk")
+
+        self.assertRaises(CLIError, validators.validate_addons, namespace)
+
+
 class AssignIdentityNamespace:
     def __init__(self, assign_identity):
         self.assign_identity = assign_identity
@@ -199,3 +233,7 @@ class TestAssignIdentity(unittest.TestCase):
         empty_identity_id = ""
         namespace = AssignIdentityNamespace(empty_identity_id)
         validators.validate_assign_identity(namespace)
+
+
+if __name__ == "__main__":
+    unittest.main()
