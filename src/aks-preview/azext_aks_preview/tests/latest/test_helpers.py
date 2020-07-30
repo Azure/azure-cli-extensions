@@ -79,5 +79,5 @@ class TestFuzzyMatch(unittest.TestCase):
         self.assertListEqual(result, self.expected)
 
 
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+#     unittest.main()
