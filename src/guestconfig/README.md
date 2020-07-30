@@ -4,10 +4,16 @@ Microsoft Azure CLI 'guestconfig' Extension
 This package is for the 'guestconfig' extension.
 i.e. 'az guestconfig'
 
-# Azure CLI GuestConfiguration Extension #
-Microsoft Azure CLI - Guest Configuration for Azure Resource Manager. Allows querying VM and ARC machines compliance statuses for initiatives (part of Azure Policy) of category "Guest configuration", compliance reasons, compliance status history. For more information, please visit: https://aka.ms/guestconfigcmdlets
+## Azure CLI Guest Configuration Extension ##
+
+Azure Policy Guest Configuration provides auditing Azure virtual machines
+and Arc connected servers.
+The commands below return compliance status, detailed compliance reasons,
+and compliance status history.
+For more information, please visit: https://aka.ms/gcpol.
 
 ### How to use ###
+
 Install this extension using the below CLI command
 ```
 az extension add --name guestconfig
@@ -15,10 +21,14 @@ az extension add --name guestconfig
 
 ### Included Features
 
-#### Azure VM Guestconfiguration assignments:
-    Query Azure VM guestconfiguration policy assignment information.
+#### Azure Policy Guest Configuration assignments:
+
+Provide details about the Guest Configuration assignments that have been created.
+These Azure resources represent each of the scenarios
+that will be audited inside the Azure virtual machine.
 
 *Examples:*
+
 ```
 az guestconfig guest-configuration-assignment show
     --name "{GuestConfigurationAssignment}"
@@ -32,10 +42,16 @@ az guestconfig guest-configuration-assignment list
     --vm-name "{VMName}"
 ```
 
-#### Azure VM Guestconfiguration reports:
-    Query Azure VM guestconfiguration policy reports information.
+#### Azure Policy Guest Configuration reports:
+
+Returns detailed compliance reports
+from Guest Configuration for Azure virtual machines.
+The detailed reports include setting-by-setting information collected
+inside the machine that determines whether
+the Azure Policy is compliant or not-compliant.
 
 *Examples:*
+
 ```
 az guestconfig guest-configuration-assignment-report show
     --guest-configuration-assignment-name "{GuestConfigurationAssignment}"
@@ -51,8 +67,11 @@ az guestconfig guest-configuration-assignment-report list
     --vm-name "{VMName}"
 ```
 
-#### ARC Hybrid Machine Guestconfiguration assignments:
-    Query ARC Hybrid Machine guestconfiguration policy assignment information.
+#### ARC Hybrid Machine Guest Configuration assignments:
+
+Provide details about the Guest Configuration assignments that have been created.
+These Azure resources represent each of the scenarios
+that will be audited inside the Arc connected server.
 
 *Examples:*
 ```
@@ -68,10 +87,16 @@ az guestconfig guest-configuration-hcrp-assignment list
     --machine-name "{MachineName}"
 ```
 
-#### ARC Hybrid Machine Guestconfiguration reports:
-    Query ARC Hybrid Machine guestconfiguration policy reports information.
+#### ARC Hybrid Machine Guest Configuration reports:
+
+Returns detailed compliance reports
+from Guest Configuration for Arc connected servers.
+The detailed reports include setting-by-setting information collected
+inside the machine that determines whether
+the Azure Policy is compliant or not-compliant.
 
 *Examples:*
+
 ```
 az guestconfig guest-configuration-hcrp-assignment-report show
     --guest-configuration-assignment-name "{GuestConfigurationAssignment}"
