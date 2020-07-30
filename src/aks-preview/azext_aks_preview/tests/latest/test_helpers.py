@@ -67,16 +67,16 @@ class TestTrimContainerName(unittest.TestCase):
         self.assertEqual(expected_container_name, trim_container_name)
 
 
-class TestFuzzyMatch(unittest.TestCase):
-    def setUp(self):
-        self.expected = ['bord', 'birdy', 'fbird', 'bir', 'ird', 'birdwaj']
+# class TestFuzzyMatch(unittest.TestCase):
+#     def setUp(self):
+#         self.expected = ['bord', 'birdy', 'fbird', 'bir', 'ird', 'birdwaj']
 
-    def test_fuzzy_match(self):
-        result = helpers._fuzzy_match(
-            "bird", ["plane", "bord", "birdy", "fbird", "bir", "ird", "birdwaj", "bored", "biron", "bead"])
+#     def test_fuzzy_match(self):
+#         result = helpers._fuzzy_match(
+#             "bird", ["plane", "bord", "birdy", "fbird", "bir", "ird", "birdwaj", "bored", "biron", "bead"])
 
-        self.assertCountEqual(result, self.expected)
-        self.assertListEqual(result, self.expected)
+#         self.assertCountEqual(result, self.expected)
+#         self.assertListEqual(result, self.expected)
 
 
 if __name__ == "__main__":

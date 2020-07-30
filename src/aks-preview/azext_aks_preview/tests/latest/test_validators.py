@@ -202,37 +202,37 @@ class TestAssignIdentity(unittest.TestCase):
         validators.validate_assign_identity(namespace)
 
 
-class ValidateAddonsNamespace:
-    def __init__(self, addons):
-        self.addons = addons
+# class ValidateAddonsNamespace:
+#     def __init__(self, addons):
+#         self.addons = addons
 
 
-class TestValidateAddons(unittest.TestCase):
-    def test_correct_addon(self):
-        addons = list(ADDONS)
-        if len(addons) > 0:
-            first_addon = addons[0]
-            namespace1 = ValidateAddonsNamespace(first_addon)
+# class TestValidateAddons(unittest.TestCase):
+#     def test_correct_addon(self):
+#         addons = list(ADDONS)
+#         if len(addons) > 0:
+#             first_addon = addons[0]
+#             namespace1 = ValidateAddonsNamespace(first_addon)
 
-            try:
-                validators.validate_addons(namespace1)
-            except CLIError:
-                self.fail("validate_addons failed unexpectedly with CLIError")
+#             try:
+#                 validators.validate_addons(namespace1)
+#             except CLIError:
+#                 self.fail("validate_addons failed unexpectedly with CLIError")
 
-    def test_validate_addons(self):
-        addons = list(ADDONS)
-        if len(addons) > 0:
-            first_addon = addons[0]
-            midlen = int(len(first_addon) / 2)
+#     def test_validate_addons(self):
+#         addons = list(ADDONS)
+#         if len(addons) > 0:
+#             first_addon = addons[0]
+#             midlen = int(len(first_addon) / 2)
 
-            namespace = ValidateAddonsNamespace(
-                first_addon[:midlen] + first_addon[midlen + 1:])
-            self.assertRaises(CLIError, validators.validate_addons, namespace)
+#             namespace = ValidateAddonsNamespace(
+#                 first_addon[:midlen] + first_addon[midlen + 1:])
+#             self.assertRaises(CLIError, validators.validate_addons, namespace)
 
-    def test_no_addon_match(self):
-        namespace = ValidateAddonsNamespace("qfrnmjk")
+#     def test_no_addon_match(self):
+#         namespace = ValidateAddonsNamespace("qfrnmjk")
 
-        self.assertRaises(CLIError, validators.validate_addons, namespace)
+#         self.assertRaises(CLIError, validators.validate_addons, namespace)
 
 
 if __name__ == "__main__":
