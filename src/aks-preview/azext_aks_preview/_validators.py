@@ -394,7 +394,6 @@ def validate_assign_identity(namespace):
 
 
 def validate_addons(namespace):
-    return
     if not hasattr(namespace, 'addons'):
         return
     addons = namespace.addons
