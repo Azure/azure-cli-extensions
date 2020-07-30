@@ -46,7 +46,7 @@ def create_storage_account(cmd, storage_account):
 def check_storage_account(cmd):
 
     #storage_account = prompt(msg="Please specify the storage account name to create or existing storage account name: ")
-    storage_account ='ddddd'
+    storage_account ='dssfd'
     storage_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE).storage_accounts
     try:
         resource_group, _ = _query_account_rg(cmd.cli_ctx, storage_account)
@@ -96,10 +96,10 @@ Y88b  d88P Y88b. Y88..88P 888    888  888 Y88b 888 Y8b.
                                           Y8b d88P          
                                            "Y88P"
 '''
-    msg = "{}{}{}".format(colorama.Fore.CYAN, header, colorama.Style.RESET_ALL)
+    msg = "{}{}{}".format(colorama.Fore.LIGHTWHITE_EX, header, colorama.Style.RESET_ALL)
     print(msg)
 
 def red_color_wrapper(msg):
     import colorama
-    return '{}{}{}'.format(colorama.Fore.LIGHTRED_EX, msg, colorama.Style.RESET_ALL)
+    return '{}{}{}'.format(colorama.Fore.BLACK+ colorama.Back.LIGHTRED_EX, msg, colorama.Style.RESET_ALL)
 
