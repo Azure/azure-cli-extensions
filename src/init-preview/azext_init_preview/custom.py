@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 
 def create_storage_account(cmd, storage_account):
-    resource_group = prompt(msg="[unicode] Please specify resource group name to host storage account: ")
+    resource_group = prompt(msg="[unicode] Please specify resource group name to host storage account: ", level='Question')
     #resource_group = 'zuhtest'
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).resource_groups
     if resource_client.check_existence(resource_group_name=resource_group):
@@ -39,13 +39,14 @@ def create_storage_account(cmd, storage_account):
 
     #storage_client.create(resource_group_name=resource_group, account_name=storage_account, paramsters=storage_account_parameters)
 
+    print(red_color_wrapper("command is dsdfsdfsadfsadfasf"))
     return resource_group
 
 
 def check_storage_account(cmd):
 
     #storage_account = prompt(msg="Please specify the storage account name to create or existing storage account name: ")
-    storage_account ='tckftakf'
+    storage_account ='ddddd'
     storage_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE).storage_accounts
     try:
         resource_group, _ = _query_account_rg(cmd.cli_ctx, storage_account)
@@ -66,7 +67,7 @@ If yes, input 'y'. If not, enter 'n' to input new storage account name or enter 
 
 
 def storage_init(cmd):
-
+    output_header()
     # Start creating storage account
     logger.warning("To init with storage module, we will start from creating storage account.")
 
@@ -80,4 +81,25 @@ def storage_init(cmd):
     # Check existence of storage account
 
 
+def output_header():
+    import colorama
+    header = '''
+ .d8888b.  888                                              
+d88P  Y88b 888                                              
+Y88b.      888                                              
+ "Y888b.   888888 .d88b.  888d888 8888b.   .d88b.   .d88b.  
+    "Y88b. 888   d88""88b 888P"      "88b d88P"88b d8P  Y8b 
+      "888 888   888  888 888    .d888888 888  888 88888888 
+Y88b  d88P Y88b. Y88..88P 888    888  888 Y88b 888 Y8b.     
+ "Y8888P"   "Y888 "Y88P"  888    "Y888888  "Y88888  "Y8888  
+                                               888          
+                                          Y8b d88P          
+                                           "Y88P"
+'''
+    msg = "{}{}{}".format(colorama.Fore.CYAN, header, colorama.Style.RESET_ALL)
+    print(msg)
+
+def red_color_wrapper(msg):
+    import colorama
+    return '{}{}{}'.format(colorama.Fore.LIGHTRED_EX, msg, colorama.Style.RESET_ALL)
 
