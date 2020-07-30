@@ -11,7 +11,7 @@ from knack.prompting import prompt, prompt_y_n, prompt_choice_list
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.command_modules.storage._validators import _query_account_rg
-from azure.cli.core.commands.parameters import get_subscription_locations
+import colorama
 
 logger = get_logger(__name__)
 
@@ -19,7 +19,7 @@ info_unicode = "\U00002757"
 choice_unicode = "\U0001F609"
 question_unicode = "\U00002753"
 complete_unicode = "\U00002705"
-running_unicode = "\U00002B55"
+running_unicode = "\U0000231B"
 arrow_unicode = "\U0001F449"
 
 t_kind = [
@@ -156,29 +156,35 @@ def get_replication(kind, performance):
 
 
 def create_storage_account(cmd, storage_account):
-    #resource_group = prompt(msg="Please specify resource group name to host storage account: ", level='Question')
-    resource_group = 'zuh'
+    resource_group = prompt(msg="\n{} Please specify resource group name to host storage account: "
+                            .format(choice_unicode), level='Question')
+    #resource_group = 'zuh'
+
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).resource_groups
     if resource_client.check_existence(resource_group_name=resource_group):
-        print("{} Existing resource group '{}' will be used... ".format(info_unicode, resource_group))
+        print("{} Existing resource group '{}' will be used... \n".format(info_unicode, resource_group))
         rg_location = resource_client.get(resource_group).location
     else:
-        rg_location = prompt_choice_list(
+        location_list = get_location()
+        ans = prompt_choice_list(
             msg="{} Please specify the location for your resource group: ".format(choice_unicode),
-            a_list=get_location(), default=1)
-        print("{} Creating resource group '{}' in location '{}'...".format(running_unicode,
-                                                                            resource_group, rg_location))
-        resource_client.create_or_update(resource_group_name=resource_group, parameters={'location': rg_location})
+            a_list=location_list, default=1, level='Question')
+        rg_location = location_list[ans]
+        print("{} Creating resource group '{}' in location '{}' with the following CLI command...\n".format(
+            running_unicode, resource_group, rg_location))
+        cmd = "group create -n {} -l {}".format(resource_group, rg_location)
+        print(arrow_unicode + red_color_wrapper("az " + cmd))
+        az(cmd)
 
     # Create storage account
     location_list = get_location(rg_location)
-    ans = prompt_choice_list(msg="{} Please specify the location of your storage account: ".format(choice_unicode),
+    ans = prompt_choice_list(msg="\n{} Please specify the location of your storage account: ".format(choice_unicode),
                              a_list=location_list, default=1,
                              level='Question')
     location = location_list[ans]
 
     ans = prompt_choice_list(
-        msg="{} Please specify the type of your storage account. Each type supports different "
+        msg="\n{} Please specify the type of your storage account. Each type supports different "
         "features and has its own pricing model. For more information, please see "
         "https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview#types-of-storage-accounts. "
         "The types of storage accounts are: ".format(choice_unicode), a_list=t_kind, default=1, level="Question")
@@ -186,13 +192,13 @@ def create_storage_account(cmd, storage_account):
 
     performace_list = get_performance(kind)
     ans = prompt_choice_list(
-        msg="{} Depending on the type of storage account you create, you can choose performance tiers: ".format(
+        msg="\n{} Depending on the type of storage account you create, you can choose performance tiers: ".format(
             choice_unicode), a_list=performace_list, default=1, level="Question")
     performance = performace_list[ans]['name']
 
     replication_list = get_replication(kind, performance)
     ans = prompt_choice_list(
-        msg="{} Please choose a replication strategy that matches your durability requirements: ".format(
+        msg="\n{} Please choose a replication strategy that matches your durability requirements: ".format(
             choice_unicode), a_list=replication_list, default=1, level="Question")
     replication = replication_list[ans]['name']
     import re
@@ -220,9 +226,9 @@ def create_storage_account(cmd, storage_account):
         ans = prompt_y_n(msg="{} Do you want to create ADLS Gen2 account? ".format(question_unicode), level='Question')
         cmd = cmd + ' --hns ' + str(ans)
         summary += " - Hierachical namespace (ADLS Gen2) Enabled: {}\n".format(str(ans))
-        print('\n')
 
-    ans = prompt_y_n(msg="""{} Please confirm all your options for the storage account to be created:
+    ans = prompt_y_n(msg="""
+{} Please confirm all your options for the storage account to be created:
 {}
 If yes, the following CLI command will be run to create storage account as required:
 {} {}
@@ -240,7 +246,7 @@ If yes, the following CLI command will be run to create storage account as requi
 
 def check_storage_account(cmd):
     storage_account = prompt(
-        msg="{} Please specify the storage account name to create: "
+        msg="\n{} Please specify the storage account name to create: "
             .format(choice_unicode), level='Question')
     #storage_account ='zuhdefault'
 
@@ -249,42 +255,49 @@ def check_storage_account(cmd):
         resource_group, _ = _query_account_rg(cmd.cli_ctx, storage_account)
         properties = storage_client.get_properties(account_name=storage_account, resource_group_name=resource_group)
         p, r = properties.sku.name.split('_')
-        ans = prompt("""
-{} The storage account '{}' already exists in resource group '{}' with the following properties: 
-- Location: {} 
-- Account type: {} 
-- Performance tier: {} 
-- Replication type: {} 
-- Hierarchical namespace (ADLS Gen2): {} 
-- Access tier: {} 
+        summary = summary_color_wrapper("""
+ - Location: {} 
+ - Resource group: {}
+ - Account type: {} 
+ - Performance tier: {} 
+ - Replication type: {} 
+ - Hierarchical namespace (ADLS Gen2): {} 
+ - Access tier: {} 
+""".format(properties.location, resource_group, properties.kind, p, r,
+           True if properties.is_hns_enabled else False, properties.access_tier))
+        ans = prompt(msg="""
+{} The storage account '{}' already exists with the following information: 
+{}
 If you want to use the existing storage account, please enter 'y' to confirm; 
 If you want to create a new one, please input a new storage account name;
-Enter 'q' to quit the process:
-""".format(info_unicode, storage_account, resource_group, properties.location, properties.kind, p, r,
-           True if properties.is_hns_enabled else False, properties.access_tier))
+Enter 'q' to quit the process: """.format(info_unicode, storage_account, summary), level='Question')
+
         if ans.lower() == 'y':
             return storage_account, resource_group, True
         if ans.lower() == 'q':
             return None, None, None
-        return storage_account, None, False
+        return ans, None, False
     except ValueError:
         return storage_account, None, False
 
 
 def create_container(storage_account, account_key):
-    #container = prompt(msg="Please specify container name to create: ", level='Question')
-    container = "test"
+    container = prompt(msg="\n{} Please specify container name to create: ".format(choice_unicode),
+                       level='Question')
+    # container = "test"
     cmd = "storage container create -n {} --account-name {} --account-key {} ".format(
         container, storage_account, account_key)
 
-    print("Running the following CLI command to create specified container in storage account: \n"
-          "az {}".format(cmd))
+    print("{} Running the following CLI command to create specified container in storage account: \n"
+          .format(running_unicode))
+    print(arrow_unicode + red_color_wrapper("az {}".format(cmd)))
+
     result = az(cmd + '--query "created"').out.strip('\n')
     while result == 'false':
-        ans = prompt(msg="The specified container name already exists. \n"
+        ans = prompt(msg="{} The specified container name already exists. \n"
                          "If you want to use existing container, please enter 'y'; \n"
                          "If you still want to create new container, please enter a new container name; \n"
-                         "Enter 'q' to quit the process: ", level="Question")
+                         "Enter 'q' to quit the process: ".format(info_unicode), level="Question")
         if ans.lower() == 'y':
             break
         if ans.lower() == 'q':
@@ -298,14 +311,16 @@ def create_container(storage_account, account_key):
 
 def upload_blob(storage_account, account_key, container):
     import os
-    file = prompt(msg="Please specify file path to upload: ", level='Question')
-    #file = "C:\Users\zuh\Desktop\clear.xml"
+    file = prompt(msg="\n{} Please specify file path to upload: ".format(choice_unicode),
+                  level='Question')
+    # file = "C:\Users\zuh\Desktop\clear.xml"
     blob = os.path.basename(file)
     cmd = 'storage blob upload -n {} -f "{}" -c {} --account-name {} --account-key {} '.format(
         blob, file, container, storage_account, account_key)
 
-    print("Running the following CLI command to upload file to container in storage account: \n"
-          "{} az {}".format(arrow_unicode, cmd))
+    print("{} Running the following CLI command to upload file to container in storage account: \n"
+          .format(running_unicode))
+    print(arrow_unicode + red_color_wrapper(" az " + cmd))
     az(cmd)
 
     return blob
@@ -325,33 +340,38 @@ def storage_init(cmd):
     if resource_group:
         # Container, Share, Queue, Table
         service_list = get_service(storage_account, resource_group)
-        options = '\n'.join([' [{}] {}{}'
-                            .format(i + 1,
-                                    x['name'] if isinstance(x, dict) and 'name' in x else x,
+        options = '\n'.join([' \U000027A4 {}{}'
+                            .format(x['name'] if isinstance(x, dict) and 'name' in x else x,
                                     ' - ' + x['desc'] if isinstance(x, dict) and 'desc' in x else '')
                              for i, x in enumerate(service_list)])
-        ans = prompt_y_n(msg="{} Do you want to manage one of the following resources in storage account? \n"
-                         "{}".format(question_unicode, options))
+        ans = prompt_y_n(msg="\n{} Do you want to manage one of the following resources in storage account? \n"
+                         "{}".format(question_unicode, summary_color_wrapper(options)))
         # ans = True
         if ans:
             account_key = az("storage account keys list -n {} -g {} --query [0].value -o tsv".format(
                 storage_account, resource_group)).out.strip("\n")
             ans = prompt_choice_list(
-                msg="{} Please specify the resource to manage in your storage account:".format(choice_unicode),
-                a_list=service_list.append(quit))
+                msg="\n{} Please specify the resource to manage in your storage account:".format(choice_unicode),
+                a_list=service_list, default=1)
             # ans = 0
             if ans == 0:
-                logger.warning("Start creating container in storage account ...")
+                logger.warning("Start managing blob service in storage account ...")
                 container = create_container(storage_account, account_key)
                 if container:
-                    logger.warning("Start uploading blob to container in storage account ...")
+                    logger.warning("\nStart uploading blob to container in storage account ...")
                     blob = upload_blob(storage_account, account_key, container)
-        print("{} All steps are done in init process. \n"
-              "You could use `az storage -h` to see more storage related commands.".format(complete_unicode))
+        print("\n{} All steps are done in init process.".format(complete_unicode))
+        ans = prompt_y_n("{} Do you want to save all related commands as script?".format(question_unicode))
+        print("\n")
+        
+        print(info_unicode + "{}{}{}".format(
+            colorama.Fore.BLACK + colorama.Back.YELLOW,
+            "You could use `az storage -h` to see more storage related commands.",
+            colorama.Style.RESET_ALL))
+        print("\n")
 
 
 def output_header():
-    import colorama
     header = '''
  .d8888b.  888                                              
 d88P  Y88b 888                                              
@@ -377,7 +397,6 @@ Here is to guide you use Azure CLI tool for storage resource. After the initiali
 
     print("{}{}{}".format(colorama.Fore.LIGHTWHITE_EX, welcome, colorama.Style.RESET_ALL))
     print("{}{}{}".format(colorama.Fore.BLACK + colorama.Back.YELLOW, info, colorama.Style.RESET_ALL))
-    print("\n")
 
 
 def red_color_wrapper(msg):
