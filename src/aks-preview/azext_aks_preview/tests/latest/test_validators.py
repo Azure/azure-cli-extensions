@@ -235,5 +235,5 @@ class TestValidateAddons(unittest.TestCase):
         self.assertRaises(CLIError, validators.validate_addons, namespace)
 
 
-# if __name__ == "__main__":
-#     unittest.main()
+if __name__ == "__main__":
+    unittest.main()
