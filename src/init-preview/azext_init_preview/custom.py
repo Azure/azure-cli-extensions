@@ -86,6 +86,7 @@ t_service = [
 
 quit = {'name': 'q', 'desc': 'Quit'}
 
+
 def get_output_in_json(result):
     import json
     return json.loads(result)
@@ -206,6 +207,7 @@ def create_storage_account(cmd, storage_account):
           "az {} \n".format(cmd))
     az(cmd)
 
+    print(red_color_wrapper("command is dsdfsdfsadfsadfasf"))
     return resource_group
 
 
@@ -282,7 +284,7 @@ def upload_blob(storage_account, account_key, container):
 
 
 def storage_init(cmd):
-
+    output_header()
     # Start creating storage account
     logger.warning("To init with storage module, we will start from creating storage account.")
 
@@ -315,3 +317,27 @@ def storage_init(cmd):
                 blob = upload_blob(storage_account, account_key, container)
     logger.warning("All steps are done in init process. \n"
                    "You could use `az storage -h` to see more storage related commands.")
+
+
+def output_header():
+    import colorama
+    header = '''
+ .d8888b.  888                                              
+d88P  Y88b 888                                              
+Y88b.      888                                              
+ "Y888b.   888888 .d88b.  888d888 8888b.   .d88b.   .d88b.  
+    "Y88b. 888   d88""88b 888P"      "88b d88P"88b d8P  Y8b 
+      "888 888   888  888 888    .d888888 888  888 88888888 
+Y88b  d88P Y88b. Y88..88P 888    888  888 Y88b 888 Y8b.     
+ "Y8888P"   "Y888 "Y88P"  888    "Y888888  "Y88888  "Y8888  
+                                               888          
+                                          Y8b d88P          
+                                           "Y88P"
+'''
+    msg = "{}{}{}".format(colorama.Fore.LIGHTWHITE_EX, header, colorama.Style.RESET_ALL)
+    print(msg)
+
+
+def red_color_wrapper(msg):
+    import colorama
+    return '{}{}{}'.format(colorama.Fore.BLACK+ colorama.Back.LIGHTRED_EX, msg, colorama.Style.RESET_ALL)
