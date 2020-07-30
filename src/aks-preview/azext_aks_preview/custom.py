@@ -69,6 +69,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerS
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
+from ._client_factory import get_msi_client
 from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
@@ -549,6 +550,25 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+    msi_client = get_msi_client(cli_ctx)
+    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)'
+    resource_id = resource_id.lower()
+    match = re.search(pattern, resource_id)
+    if match:
+        resource_group_name = match.group(1)
+        identity_name = match.group(2)
+        try:
+            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
+                                                               resource_name=identity_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise CLIError("Identity {} not found.".format(resource_id))
+            raise CLIError(ex.message)
+        return identity.client_id
+    raise CLIError("Cannot parse identity name from provided resource id {}.".format(resource_id))
+
+
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
     cp.update(dict2)
@@ -907,10 +927,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
+        identity_client_id = service_principal_profile.client_id
+        if enable_managed_identity and assign_identity:
+            identity_client_id = _get_user_assigned_identity_client_id(cmd.cli_ctx, assign_identity)
         if not _add_role_assignment(
                 cmd.cli_ctx,
                 'Network Contributor',
-                service_principal_profile.client_id,
+                identity_client_id,
                 scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
