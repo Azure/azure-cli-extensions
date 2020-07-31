@@ -19,11 +19,20 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 def imagecopy(cmd, source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name='image-copy-rg',
-              source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
+              source_type='image', cleanup=False, parallel_degree=-1, tags=None, target_name=None,
               target_subscription=None, export_as_snapshot='false', timeout=3600):
+    if cleanup:
+        # If --cleanup is set, forbid using an existing temporary resource group name.
+        # It is dangerous to clean up an existing resource group.
+        cli_cmd = prepare_cli_command(['group', 'exists', '-n', temporary_resource_group_name],
+                                      output_as_json=False)
+        cmd_output = run_cli_command(cli_cmd)
+        if 'true' in cmd_output:
+            raise CLIError('Don\'t specify an existing resource group in --temporary-resource-group-name '
+                           'when --cleanup is set')
 
     # get the os disk id from source vm/image
-    logger.warning("Getting os disk id of the source vm/image")
+    logger.warning("Getting OS disk ID of the source VM/image")
     cli_cmd = prepare_cli_command([source_type, 'show',
                                    '--name', source_object_name,
                                    '--resource-group', source_resource_group_name])
@@ -64,7 +73,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
 
     if source_os_disk_type is None or source_os_disk_id is None:
         logger.error(
-            'Unable to locate a supported os disk type in the provided source object')
+            'Unable to locate a supported OS disk type in the provided source object')
         raise CLIError('Invalid OS Disk Source Type')
 
     source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']

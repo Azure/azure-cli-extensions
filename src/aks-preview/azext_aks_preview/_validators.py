@@ -18,6 +18,11 @@ import azure.cli.core.keys as keys
 
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
 
+from ._helpers import (_fuzzy_match)
+
+from ._consts import ADDONS
+
+
 logger = get_logger(__name__)
 
 
@@ -86,16 +91,6 @@ def validate_linux_host_name(namespace):
     if not found:
         raise CLIError('--name cannot exceed 63 characters and can only contain '
                        'letters, numbers, or dashes (-).')
-
-
-def validate_max_pods(namespace):
-    """Validates that max_pods is set to a reasonable minimum number."""
-    # kube-proxy and kube-svc reside each nodes,
-    # 2 kube-proxy pods, 1 azureproxy/heapster/dashboard/tunnelfront are in kube-system
-    minimum_pods_required = ceil((namespace.node_count * 2 + 6 + 1) / namespace.node_count)
-    if namespace.max_pods != 0 and namespace.max_pods < minimum_pods_required:
-        raise CLIError('--max-pods must be at least {} for a managed Kubernetes cluster to function.'
-                       .format(minimum_pods_required))
 
 
 def validate_nodes_count(namespace):
@@ -387,3 +382,32 @@ def validate_max_surge(namespace):
             raise CLIError("--max-surge must be positive")
     except ValueError:
         raise CLIError("--max-surge should be an int or percentage")
+
+
+def validate_assign_identity(namespace):
+    if namespace.assign_identity is not None:
+        if namespace.assign_identity == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.assign_identity):
+            raise CLIError("--assign-identity is not a valid Azure resource ID.")
+
+
+def validate_addons(namespace):
+    if not hasattr(namespace, 'addons'):
+        return
+    addons = namespace.addons
+    addon_args = addons.split(',')
+
+    for addon_arg in addon_args:
+        if addon_arg not in ADDONS:
+            matches = _fuzzy_match(addon_arg, list(ADDONS))
+            matches = str(matches)[1:-1]
+            all_addons = list(ADDONS)
+            all_addons = str(all_addons)[1:-1]
+            if len(matches) == 0:
+                raise CLIError(
+                    f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
+
+            raise CLIError(
+                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")

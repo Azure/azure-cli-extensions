@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks get-versions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - python/3.6.9 (Linux-5.0.0-1035-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.11
+        msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.4 Azure-SDK-For-Python
+        AZURECLI/2.9.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/orchestrators?api-version=2019-04-01&resource-type=managedClusters
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/orchestrators\"\
+        ,\n  \"name\": \"default\",\n  \"type\": \"Microsoft.ContainerService/locations/orchestrators\"\
+        ,\n  \"properties\": {\n   \"orchestrators\": [\n    {\n     \"orchestratorType\"\
+        : \"Kubernetes\",\n     \"orchestratorVersion\": \"1.15.11\",\n     \"upgrades\"\
+        : [\n      {\n       \"orchestratorType\": \"Kubernetes\",\n       \"orchestratorVersion\"\
+        : \"1.15.12\"\n      },\n      {\n       \"orchestratorType\": \"Kubernetes\"\
+        ,\n       \"orchestratorVersion\": \"1.16.10\"\n      }\n     ]\n    },\n\
+        \    {\n     \"orchestratorType\": \"Kubernetes\",\n     \"orchestratorVersion\"\
+        : \"1.15.12\",\n     \"upgrades\": [\n      {\n       \"orchestratorType\"\
+        : \"Kubernetes\",\n       \"orchestratorVersion\": \"1.16.10\"\n      }\n\
+        \     ]\n    },\n    {\n     \"orchestratorType\": \"Kubernetes\",\n     \"\
+        orchestratorVersion\": \"1.16.10\",\n     \"default\": true,\n     \"upgrades\"\
+        : [\n      {\n       \"orchestratorType\": \"Kubernetes\",\n       \"orchestratorVersion\"\
+        : \"1.17.7\"\n      }\n     ]\n    },\n    {\n     \"orchestratorType\": \"\
+        Kubernetes\",\n     \"orchestratorVersion\": \"1.17.7\",\n     \"upgrades\"\
+        : [\n      {\n       \"orchestratorType\": \"Kubernetes\",\n       \"orchestratorVersion\"\
+        : \"1.18.2\",\n       \"isPreview\": true\n      },\n      {\n       \"orchestratorType\"\
+        : \"Kubernetes\",\n       \"orchestratorVersion\": \"1.18.4\",\n       \"\
+        isPreview\": true\n      }\n     ]\n    },\n    {\n     \"orchestratorType\"\
+        : \"Kubernetes\",\n     \"orchestratorVersion\": \"1.18.2\",\n     \"isPreview\"\
+        : true,\n     \"upgrades\": [\n      {\n       \"orchestratorType\": \"Kubernetes\"\
+        ,\n       \"orchestratorVersion\": \"1.18.4\",\n       \"isPreview\": true\n\
+        \      }\n     ]\n    },\n    {\n     \"orchestratorType\": \"Kubernetes\"\
+        ,\n     \"orchestratorVersion\": \"1.18.4\",\n     \"isPreview\": true\n \
+        \   }\n   ]\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1766'
+      content-type:
+      - application/json
+      date:
+      - Wed, 29 Jul 2020 08:34:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
