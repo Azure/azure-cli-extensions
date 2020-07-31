@@ -114,7 +114,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: aka.ms/springclouddeletesurvey")
+    logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
     return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, service_name=name)
 
 
