@@ -8,11 +8,11 @@
 # pylint: disable=line-too-long
 from enum import Enum
 
-from knack.arguments import CLIArgumentType
-
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, tags_type, get_location_type, get_three_state_flag, get_enum_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+
+from knack.arguments import CLIArgumentType
 
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
