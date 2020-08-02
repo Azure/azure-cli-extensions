@@ -29,7 +29,7 @@ def setup(test, rg):
 @try_manual
 def step_kustoclusterscreateorupdate2(test, rg):
     test.cmd('az kusto cluster create '
-             '--name "{Clusters_2}" '
+             '--cluster-name "{Clusters_2}" '
              '--identity-type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
@@ -44,7 +44,7 @@ def step_kustoclusterscreateorupdate2(test, rg):
 @try_manual
 def step_kustoclusterscreateorupdate(test, rg):
     test.cmd('az kusto cluster create '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--identity-type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
@@ -54,7 +54,7 @@ def step_kustoclusterscreateorupdate(test, rg):
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az kusto cluster wait --created '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -70,7 +70,7 @@ def step_kustoclusterschecknameavailability(test, rg):
 @try_manual
 def step_kustoclustersget(test, rg):
     test.cmd('az kusto cluster show '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -94,7 +94,7 @@ def step_kustoclusterslistbyresourcegroup(test, rg):
 @try_manual
 def step_kustoclustersstop(test, rg):
     test.cmd('az kusto cluster stop '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -103,7 +103,7 @@ def step_kustoclustersstop(test, rg):
 @try_manual
 def step_kustoclustersstart(test, rg):
     test.cmd('az kusto cluster start '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -112,7 +112,7 @@ def step_kustoclustersstart(test, rg):
 @try_manual
 def step_kustoclusterslistresourceskus(test, rg):
     test.cmd('az kusto cluster list-sku '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -258,7 +258,7 @@ def step_kustoclusterprincipalassignmentsget(test, rg):
 @try_manual
 def step_attacheddatabaseconfigurationscreateorupdate(test, rg):
     test.cmd('az kusto attached-database-configuration create '
-             '--name "{attachedDatabaseConfigurations_1}" '
+             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
              '--cluster-name "{Clusters_2}" '
              '--location "southcentralus" '
              '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/Clu'
@@ -269,7 +269,7 @@ def step_attacheddatabaseconfigurationscreateorupdate(test, rg):
              checks=[])
     test.cmd('az kusto attached-database-configuration wait --created '
              '--cluster-name "{Clusters_2}" '
-             '--name "{attachedDatabaseConfigurations_1}" '
+             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -278,7 +278,7 @@ def step_attacheddatabaseconfigurationscreateorupdate(test, rg):
 @try_manual
 def step_attacheddatabaseconfigurationsget(test, rg):
     test.cmd('az kusto attached-database-configuration show '
-             '--name "{attachedDatabaseConfigurations_1}" '
+             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
              '--cluster-name "{Clusters_2}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -297,7 +297,7 @@ def step_kustoattacheddatabaseconfigurationslistbycluster(test, rg):
 @try_manual
 def step_kustoclusterlistfollowerdatabases(test, rg):
     test.cmd('az kusto cluster list-follower-database '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -306,7 +306,7 @@ def step_kustoclusterlistfollowerdatabases(test, rg):
 @try_manual
 def step_kustoclusterdetachfollowerdatabases(test, rg):
     test.cmd('az kusto cluster detach-follower-database '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
              '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/clu'
              'sters/{Clusters_2}" '
@@ -335,7 +335,7 @@ def step_kustodatabasesdelete(test, rg):
 @try_manual
 def step_kustoclustersdelete(test, rg):
     test.cmd('az kusto cluster delete '
-             '--name "{Clusters_3}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -346,7 +346,7 @@ def step_kustodataconnectionvalidation(test, rg):
     test.cmd('az kusto data-connection event-hub data-connection-validation '
              '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
-             '--name "{DataConnections8}" '
+             '--data-connection-name "{DataConnections8}" '
              '--consumer-group "$Default" '
              '--event-hub-resource-id "/subscriptions/11d5f159-a21d-4a6c-8053-c3aae30057cf/resourceGroups/RPTestResourceGroupDoNotDelete/providers/Microsoft.EventHub/namespaces/RpTestEventHubNamespaceDoNotDelete/eventhubs/rptesteventhub" '
              '--resource-group "{rg}"',
@@ -358,7 +358,7 @@ def step_kustodataconnectionvalidation(test, rg):
 def step_kustodataconnectionscreateorupdate(test, rg):
     test.cmd('az kusto data-connection event-hub create '
              '--cluster-name "{Clusters_3}" '
-             '--name "{DataConnections8}" '
+             '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--location "southcentralus" '
              '--consumer-group "$Default" '
@@ -372,7 +372,7 @@ def step_kustodataconnectionscreateorupdate(test, rg):
 def step_kustodataconnectionsget(test, rg):
     test.cmd('az kusto data-connection show '
              '--cluster-name "{Clusters_3}" '
-             '--name "{DataConnections8}" '
+             '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
@@ -383,7 +383,7 @@ def step_kustodataconnectionsget(test, rg):
 def step_kustodataconnectionsupdate(test, rg):
     test.cmd('az kusto data-connection event-hub update '
              '--cluster-name "{Clusters_3}" '
-             '--name "{DataConnections8}" '
+             '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--location "southcentralus" '
              '--consumer-group "$Default" '
@@ -397,7 +397,7 @@ def step_kustodataconnectionsupdate(test, rg):
 def step_kustodataconnectionsdelete(test, rg):
     test.cmd('az kusto data-connection delete '
              '--cluster-name "{Clusters_3}" '
-             '--name "{DataConnections8}" '
+             '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
@@ -413,6 +413,7 @@ def call_scenario(test, rg):
     setup(test, rg)
     step_kustoclusterscreateorupdate2(test, rg)
     step_kustoclusterscreateorupdate(test, rg)
+    step_kustodatabasescreateorupdate(test, rg)
     step_kustoclusterschecknameavailability(test, rg)
     step_kustoclustersget(test, rg)
     step_kustoclusterslist(test, rg)
@@ -435,6 +436,7 @@ def call_scenario(test, rg):
     step_kustoattacheddatabaseconfigurationslistbycluster(test, rg)
     step_kustoclusterlistfollowerdatabases(test, rg)
     step_kustoclusterdetachfollowerdatabases(test, rg)
+    step_kustodataconnectionvalidation(test, rg)
     step_kustodataconnectionscreateorupdate(test, rg)
     step_kustodataconnectionsget(test, rg)
     step_kustodataconnectionsupdate(test, rg)
@@ -456,8 +458,8 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'Clusters_2': 'followercluster00',
-            'Clusters_3': 'leadercluster00',
+            'Clusters_2': 'followercluster100',
+            'Clusters_3': 'leadercluster100',
             'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
             'DataConnections8': 'DataConnections8',
         })
