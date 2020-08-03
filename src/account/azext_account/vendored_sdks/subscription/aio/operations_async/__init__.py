@@ -6,11 +6,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._subscription_operations import SubscriptionOperations
-from ._tenant_operations import TenantOperations
-from ._subscription_operations import SubscriptionOperations
-from ._subscription_operation_operations import SubscriptionOperationOperations
-from ._operation_operations import OperationOperations
+from ._subscription_operations_async import SubscriptionOperations
+from ._tenant_operations_async import TenantOperations
+from ._subscription_operations_async import SubscriptionOperations
+from ._subscription_operation_operations_async import SubscriptionOperationOperations
+from ._operation_operations_async import OperationOperations
 
 __all__ = [
     'SubscriptionOperations',
