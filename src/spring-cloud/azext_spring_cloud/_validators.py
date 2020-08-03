@@ -133,3 +133,8 @@ def validate_log_since(namespace):
         namespace.since *= 3600 if last == "h" else 1
         if namespace.since > 3600:
             raise CLIError("--since can not be more than 1h")
+
+
+def validate_jvm_options(namespace):
+    if namespace.jvm_options is not None:
+        namespace.jvm_options = namespace.jvm_options.strip('\'')
