@@ -73,9 +73,13 @@ class Command():
                             recurse: bool = True) -> Tuple[ParameterTableType, str]:
         az_cli_command: Union[AzCliCommand, None] = command_table.get(command, None)
         parameter_table: ParameterTableType = az_cli_command.arguments if az_cli_command else {}
+        partial_match = True
 
-        # if the specified command was not found and recursive search is enabled...
-        if not az_cli_command and recurse:
+        if not az_cli_command:
+            partial_match = any(cmd for cmd in command_table if cmd.startswith(command))
+
+        # if the specified command was not found and no similar command exists and recursive search is enabled...
+        if not az_cli_command and not partial_match and recurse:
             # if there are at least two tokens separated by whitespace, remove the last token
             last_delim_idx = command.rfind(' ')
             if last_delim_idx != -1:
