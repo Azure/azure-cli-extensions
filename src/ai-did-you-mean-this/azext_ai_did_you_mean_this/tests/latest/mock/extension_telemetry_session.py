@@ -7,12 +7,14 @@ import unittest.mock as mock
 
 import azure.cli.core.telemetry as telemetry
 
-from azext_ai_did_you_mean_this.tests.latest._fault import Fault
+from azext_ai_did_you_mean_this.tests.latest.data.fault import Fault
 from azext_ai_did_you_mean_this.telemetry import ExtensionTelemterySession
-
-SET_EXCEPTION_PATCH = 'azure.cli.core.telemetry.set_exception'
-ADD_EXTENSION_EVENT_PATCH = 'azure.cli.core.telemetry.add_extension_event'
-TELEMETRY_ENABLED_PATCH = 'azext_ai_did_you_mean_this.telemetry.IS_TELEMETRY_ENABLED'
+from azext_ai_did_you_mean_this.tests.latest.data.telemetry_property import CoreTelemetryProperty
+from azext_ai_did_you_mean_this.tests.latest.mock.const import (
+    TELEMETRY_ADD_EXTESNION_EVENT_PATCH_TARGET,
+    TELEMETRY_SET_EXCETION_PATCH_TARGET,
+    TELEMETRY_IS_ENABLED_PATCH_TARGET
+)
 
 
 class UnknownException(Exception):
@@ -20,13 +22,11 @@ class UnknownException(Exception):
 
 
 class ExtensionTelemetryEvent():
-    EXTENSION_NAME_PROPERTY = 'Context.Default.AzureCLI.ExtensionName'
-
     def __init__(self, event: dict):
         super().__init__()
         self._name = event.get('name', None)
         self._properties = event.get('properties', {})
-        self._extension_name = self._properties.get(self.EXTENSION_NAME_PROPERTY, None)
+        self._extension_name = self._properties.get(CoreTelemetryProperty.EXTENSION_NAME, None)
 
     @property
     def name(self):
@@ -48,9 +48,7 @@ class ExtensionTelemetryMockSession():
         self._fault = None
         self._extension_event = None
         self._session = ExtensionTelemterySession()
-        self.patches = [
-            mock.patch(TELEMETRY_ENABLED_PATCH, self._enable_telemetry)
-        ]
+        self.patches = []
         self._add_telemetry_patches()
 
     def _add_telemetry_patches(self):
@@ -70,8 +68,24 @@ class ExtensionTelemetryMockSession():
             self._extension_event = ExtensionTelemetryEvent(event)
             return result
 
-        self.patches.append(mock.patch(SET_EXCEPTION_PATCH, wraps=_set_exception_hook))
-        self.patches.append(mock.patch(ADD_EXTENSION_EVENT_PATCH, wraps=_add_extension_event_hook))
+        self.patches.append(
+            mock.patch(
+                TELEMETRY_IS_ENABLED_PATCH_TARGET,
+                lambda: self._enable_telemetry
+            )
+        )
+        self.patches.append(
+            mock.patch(
+                TELEMETRY_SET_EXCETION_PATCH_TARGET,
+                wraps=_set_exception_hook
+            )
+        )
+        self.patches.append(
+            mock.patch(
+                TELEMETRY_ADD_EXTESNION_EVENT_PATCH_TARGET,
+                wraps=_add_extension_event_hook
+            )
+        )
 
     def __enter__(self):
         for patch in self.patches:

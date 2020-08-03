@@ -7,8 +7,8 @@ import logging
 
 from knack.log import get_logger as get_knack_logger
 
-EXTENSION_NICKNAME = 'Thoth'
-LOG_PREFIX = f'[{EXTENSION_NICKNAME}]'
+from azext_ai_did_you_mean_this._const import THOTH_LOG_PREFIX
+
 LOG_PREFIX_KEY = 'extension_log_prefix'
 
 
@@ -24,5 +24,5 @@ class ExtensionLoggerAdapter(logging.LoggerAdapter):
 
 def get_logger(module_name: str) -> logging.LoggerAdapter:
     logger = get_knack_logger(module_name)
-    adapter = ExtensionLoggerAdapter(logger, {LOG_PREFIX_KEY: LOG_PREFIX})
+    adapter = ExtensionLoggerAdapter(logger, {LOG_PREFIX_KEY: THOTH_LOG_PREFIX})
     return adapter

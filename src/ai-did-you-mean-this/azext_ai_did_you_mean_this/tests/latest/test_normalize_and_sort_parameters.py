@@ -12,7 +12,7 @@ from azure.cli.core import MainCommandsLoader
 from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
 from azext_ai_did_you_mean_this.tests.latest._commands import get_commands, AzCommandType
 
-from azext_ai_did_you_mean_this.tests.latest.extension_telemetry_hook import ExtensionTelemetryMockSession
+from azext_ai_did_you_mean_this.tests.latest.mock.extension_telemetry_session import ExtensionTelemetryMockSession
 from azext_ai_did_you_mean_this.telemetry import TelemetryProperty, get_property, _extension_telemetry_manager
 from azext_ai_did_you_mean_this._parameter import GLOBAL_PARAM_BLOCKLIST
 
@@ -64,16 +64,16 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
         self.telemetry_properties = [
             TelemetryProperty.RawCommand,
             TelemetryProperty.Command,
-            TelemetryProperty.RawParameters,
-            TelemetryProperty.Parameters,
-            TelemetryProperty.UnrecognizedParameters
+            TelemetryProperty.RawParams,
+            TelemetryProperty.Params,
+            TelemetryProperty.UnrecognizedParams
         ]
 
     def _assert_telemetry_properties_are_set(self, raw_command: str, command: str, raw_parameters: list, parameters: str):
         self.assertEqual(get_property(TelemetryProperty.RawCommand), raw_command)
         self.assertEqual(get_property(TelemetryProperty.Command), command)
-        self.assertEqual(get_property(TelemetryProperty.RawParameters), ','.join(raw_parameters))
-        self.assertEqual(get_property(TelemetryProperty.Parameters), parameters)
+        self.assertEqual(get_property(TelemetryProperty.RawParams), ','.join(raw_parameters))
+        self.assertEqual(get_property(TelemetryProperty.Params), parameters)
         raw_parameter_set = set(sorted(param for param in raw_parameters if param.startswith('--')))
         raw_parameter_set.difference_update(GLOBAL_PARAM_BLOCKLIST)
         normalized_parameters = set(parameters.split(','))
@@ -84,16 +84,14 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
             return number_of_matches == 1
 
         unrecognized_parameters = ','.join([p for p in unrecognized_parameters if not is_prefix(p, normalized_parameters)])
-        self.assertEqual(get_property(TelemetryProperty.UnrecognizedParameters), unrecognized_parameters)
+        self.assertEqual(get_property(TelemetryProperty.UnrecognizedParams), unrecognized_parameters)
 
         for telemetry_property in self.telemetry_properties:
-            prop = _extension_telemetry_manager.get_property_name(telemetry_property)
-            self.assertIn(prop, _extension_telemetry_manager.properties)
+            self.assertIn(telemetry_property, _extension_telemetry_manager.properties)
 
     def _assert_session_telemetry_properties_are_set(self, session: ExtensionTelemetryMockSession):
         for telemetry_property in self.telemetry_properties:
-            prop = _extension_telemetry_manager.get_property_name(telemetry_property)
-            self.assertIn(prop, session.extension_event.properties)
+            self.assertIn(telemetry_property, session.extension_event.properties)
             self.assertDictContainsSubset(
                 _extension_telemetry_manager.properties,
                 session.extension_event.properties

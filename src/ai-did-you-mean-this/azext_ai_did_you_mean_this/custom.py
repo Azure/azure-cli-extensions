@@ -13,22 +13,30 @@ from requests import RequestException
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
 from azext_ai_did_you_mean_this._command import Command
 from azext_ai_did_you_mean_this._const import (
-    RECOMMEND_RECOVERY_OPTIONS_LOG_FMT_STR, RECOMMENDATION_HEADER_FMT_STR,
-    RECOMMENDATION_PROCESSING_TIME_FMT_STR, SERVICE_CONNECTION_TIMEOUT,
-    TELEMETRY_IS_DISABLED_STR, TELEMETRY_IS_ENABLED_STR,
+    RECOMMEND_RECOVERY_OPTIONS_LOG_FMT_STR,
+    RECOMMENDATION_HEADER_FMT_STR,
+    RECOMMENDATION_PROCESSING_TIME_FMT_STR,
+    SERVICE_CONNECTION_TIMEOUT,
+    TELEMETRY_IS_DISABLED_STR,
+    TELEMETRY_IS_ENABLED_STR,
     TELEMETRY_MISSING_CORRELATION_ID_STR,
-    TELEMETRY_MISSING_SUBSCRIPTION_ID_STR, UNABLE_TO_HELP_FMT_STR)
+    TELEMETRY_MISSING_SUBSCRIPTION_ID_STR,
+    UNABLE_TO_HELP_FMT_STR)
 from azext_ai_did_you_mean_this._logging import get_logger
 from azext_ai_did_you_mean_this._style import style_message
-from azext_ai_did_you_mean_this.suggestion import Suggestion
-from azext_ai_did_you_mean_this.telemetry import (FaultType,
-                                                  NoRecommendationReason,
-                                                  TelemetryProperty,
-                                                  extension_telemetry_session,
-                                                  get_correlation_id,
-                                                  get_subscription_id,
-                                                  set_exception,
-                                                  set_properties, set_property)
+from azext_ai_did_you_mean_this.suggestion import Suggestion, SuggestionParseError
+from azext_ai_did_you_mean_this.suggestion_encoder import SuggestionEncoder
+from azext_ai_did_you_mean_this.telemetry import (
+    FaultType,
+    NoRecommendationReason,
+    TelemetryProperty,
+    extension_telemetry_session,
+    get_correlation_id,
+    get_subscription_id,
+    set_exception,
+    set_properties,
+    set_property
+)
 from azext_ai_did_you_mean_this.timer import Timer
 from azext_ai_did_you_mean_this.version import VERSION
 
@@ -47,13 +55,14 @@ def normalize_and_sort_parameters(command_table, command, parameters):
     _command, parsed_command = Command.parse(command_table, command)
     _parameteters, unrecognized_parameters = Command.normalize(_command, *parameters)
     normalized_parameters = ','.join(sorted(set(_parameteters)))
+    unrecognized_parameters = ','.join(sorted(set(unrecognized_parameters)))
 
     set_properties({
         TelemetryProperty.RawCommand: command,
         TelemetryProperty.Command: parsed_command,
-        TelemetryProperty.RawParameters: ','.join(parameters),
-        TelemetryProperty.Parameters: normalized_parameters,
-        TelemetryProperty.UnrecognizedParameters: ','.join(sorted(set(unrecognized_parameters)))
+        TelemetryProperty.RawParams: ','.join(parameters),
+        TelemetryProperty.Params: normalized_parameters,
+        TelemetryProperty.UnrecognizedParams: unrecognized_parameters
     })
 
     return parsed_command, normalized_parameters
@@ -72,7 +81,6 @@ def recommend_recovery_options(version, command, parameters, extension):
             set_properties({
                 TelemetryProperty.CoreVersion: version,
                 TelemetryProperty.ExtensionVersion: VERSION,
-                TelemetryProperty.InferredExtension: extension
             })
 
             # if the command is empty...
@@ -98,14 +106,14 @@ def recommend_recovery_options(version, command, parameters, extension):
             if extension:
                 reason = NoRecommendationReason.CommandFromExtension.value
                 set_properties({
-                    TelemetryProperty.NoRecommendationReason: reason,
+                    TelemetryProperty.ResultSummary: reason,
                     TelemetryProperty.InferredExtension: extension
                 })
                 logger.debug('Detected extension. No action to perform.')
             if not command:
                 reason = NoRecommendationReason.EmptyCommand.value
                 set_property(
-                    TelemetryProperty.NoRecommendationReason, reason
+                    TelemetryProperty.ResultSummary, reason
                 )
                 logger.debug('Command is empty. No action to perform.')
 
@@ -134,7 +142,7 @@ def recommend_recovery_options(version, command, parameters, extension):
                     unable_to_help(command)
             else:
                 set_property(
-                    TelemetryProperty.NoRecommendationReason,
+                    TelemetryProperty.ResultSummary,
                     NoRecommendationReason.ServiceRequestFailure.value
                 )
 
@@ -148,25 +156,26 @@ def get_recommendations_from_http_response(response, command_table):
     suggestions = []
     _suggestions = response.json()
     suggestion_count = len(_suggestions)
-    invalid_suggestion_count = 0
 
     for suggestion in _suggestions:
-        suggestion = Suggestion(suggestion)
-        if suggestion.command not in command_table:
-            invalid_suggestion_count += 1
-        else:
-            suggestions.append(suggestion)
+        try:
+            suggestion = Suggestion.parse(suggestion)
+            if suggestion.command in command_table:
+                suggestions.append(suggestion)
+        except SuggestionParseError as ex:
+            logger.debug('Failed to parse suggestion field: %s', ex)
+            set_exception(exception=ex,
+                          fault_type=FaultType.ParseError.value,
+                          summary='Unexpected error while parsing suggestions from HTTP response body.')
 
     valid_suggestion_count = len(suggestions)
 
     set_properties({
-        TelemetryProperty.ValidSuggestionCount: valid_suggestion_count,
-        TelemetryProperty.InvalidSuggestionCount: invalid_suggestion_count,
-        TelemetryProperty.TotalSuggestionCount: suggestion_count
+        TelemetryProperty.NumberOfValidSuggestions: valid_suggestion_count,
+        TelemetryProperty.NumberOfSuggestions: suggestion_count
     })
 
-    if invalid_suggestion_count > 0:
-        set_property(TelemetryProperty.PrunedSuggestions, json.dumps(suggestions))
+    set_property(TelemetryProperty.Suggestions, json.dumps(suggestions, cls=SuggestionEncoder))
 
     return suggestions
 
@@ -200,10 +209,10 @@ def call_aladdin_service(command, parameters, version):
         logger.debug(TELEMETRY_IS_ENABLED_STR)
 
         if subscription_id is None:
-            set_property(TelemetryProperty.MissingSubscriptionId, True)
+            set_property(TelemetryProperty.NoSubscriptionId, True)
             logger.debug(TELEMETRY_MISSING_SUBSCRIPTION_ID_STR)
         if correlation_id is None:
-            set_property(TelemetryProperty.MissingCorrelationId, True)
+            set_property(TelemetryProperty.NoCorrelationId, True)
             logger.debug(TELEMETRY_MISSING_CORRELATION_ID_STR)
 
     context = {
@@ -241,7 +250,7 @@ def call_aladdin_service(command, parameters, version):
 
         logger.debug('requests.get() exception: %s', ex)
         set_exception(exception=ex,
-                      fault_type=FaultType.RequestException.value,
+                      fault_type=FaultType.RequestError.value,
                       summary='HTTP Get Request to Aladdin suggestions endpoint failed.')
 
     return response

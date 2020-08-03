@@ -6,26 +6,40 @@
 import unittest
 import unittest.mock as mock
 from contextlib import contextmanager
-from typing import Callable, Iterator
 
 import azure.cli.core.telemetry as telemetry
 
-from azext_ai_did_you_mean_this._const import (EXTENSION_NAME,
-                                               UNEXPECTED_ERROR_STR)
+from azext_ai_did_you_mean_this._const import (
+    EXTENSION_NAME,
+    UNEXPECTED_ERROR_STR
+)
 from azext_ai_did_you_mean_this.telemetry import (
-    FaultType, TelemetryProperty, _extension_telemetry_manager,
-    extension_telemetry_session, get_correlation_id, get_property,
-    get_subscription_id, set_properties, set_property)
-from azext_ai_did_you_mean_this.tests.latest._mock import MOCK_UUID
-from azext_ai_did_you_mean_this.tests.latest.aladdin_scenario_test_base import \
-    patch_ids
-from azext_ai_did_you_mean_this.tests.latest.extension_telemetry_hook import (
-    ExtensionTelemetryEvent, ExtensionTelemetryMockSession, Fault, UnknownException)
+    FaultType,
+    TelemetryProperty,
+    _extension_telemetry_manager,
+    get_correlation_id,
+    get_property,
+    get_subscription_id,
+    set_properties,
+    set_property)
+from azext_ai_did_you_mean_this.tests.latest.aladdin_scenario_test_base import patch_ids
+from azext_ai_did_you_mean_this.tests.latest.data.telemetry_property import CoreTelemetryProperty
+from azext_ai_did_you_mean_this.tests.latest.mock.const import (
+    MOCK_INVALID_CORE_CLI_VERSION,
+    MOCK_UUID,
+    TELEMETRY_EXTENSION_EVENT_NAME,
+    TELEMETRY_FAULT_EVENT_NAME,
+    TELEMETRY_IS_ENABLED_PATCH_TARGET
+)
+from azext_ai_did_you_mean_this.tests.latest.mock.extension_telemetry_session import (
+    ExtensionTelemetryMockSession,
+    UnknownException
+)
 
 
 @contextmanager
 def patch_is_telemetry_enabled(value: bool):
-    with mock.patch('azext_ai_did_you_mean_this.telemetry.IS_TELEMETRY_ENABLED', value):
+    with mock.patch(TELEMETRY_IS_ENABLED_PATCH_TARGET, lambda: value):
         yield None
 
 
@@ -37,7 +51,7 @@ class TestExtensionTelemetry(unittest.TestCase):
             patch(self)
 
         self.test_command = 'vm create'
-        self.test_version = '0.0.0'
+        self.test_version = MOCK_INVALID_CORE_CLI_VERSION
         self.default_exception_msg = 'foo'
 
     def test_telemetry_is_disabled_if_consent_is_not_given(self):
@@ -47,7 +61,7 @@ class TestExtensionTelemetry(unittest.TestCase):
             self.assertIsNone(set_property(TelemetryProperty.Command, self.test_command))
             self.assertIsNone(get_property(TelemetryProperty.Command))
             # verify that data is not set internally when we do not have the consent to do so
-            self.assertNotIn(TelemetryProperty.Command.value, _extension_telemetry_manager.properties)
+            self.assertNotIn(TelemetryProperty.Command, _extension_telemetry_manager.properties)
 
     def test_telemetry_properties_are_set_if_consent_is_given(self):
         with patch_is_telemetry_enabled(True):
@@ -57,7 +71,7 @@ class TestExtensionTelemetry(unittest.TestCase):
             set_property(TelemetryProperty.Command, self.test_command)
             self.assertEqual(get_property(TelemetryProperty.Command), self.test_command)
 
-            self.assertIn('Context.Default.AzureCLI.Command', _extension_telemetry_manager.properties)
+            self.assertIn(TelemetryProperty.Command, _extension_telemetry_manager.properties)
 
     def test_can_set_multiple_properties_with_and_without_consent(self):
         props = {
@@ -65,16 +79,13 @@ class TestExtensionTelemetry(unittest.TestCase):
             TelemetryProperty.CoreVersion: self.test_version
         }
 
-        def _set_properties_helper(props: dict):
-            set_properties(props)
-
         with patch_is_telemetry_enabled(True):
-            _set_properties_helper(props)
+            set_properties(props)
             for prop, value in props.items():
                 self.assertEqual(get_property(prop), value)
 
         with patch_is_telemetry_enabled(False):
-            _set_properties_helper(props)
+            set_properties(props)
             for prop in props:
                 self.assertIsNone(get_property(prop))
 
@@ -83,11 +94,11 @@ class TestExtensionTelemetry(unittest.TestCase):
             with ExtensionTelemetryMockSession() as session:
                 raise UnknownException(self.default_exception_msg)
 
-        expected_fault_type = FaultType.UnknownFaultType.value
+        expected_fault_type = FaultType.UnexpectedError
 
         # test that the fault information was set correctly
         self.assertIsNotNone(session.fault)
-        self.assertEqual(session.fault.name, 'azurecli/fault')
+        self.assertEqual(session.fault.name, TELEMETRY_FAULT_EVENT_NAME)
         self.assertEqual(session.fault.fault_type, expected_fault_type)
         self.assertEqual(session.fault.summary, UNEXPECTED_ERROR_STR)
         self.assertIsInstance(session.fault.exception, UnknownException)
@@ -102,13 +113,13 @@ class TestExtensionTelemetry(unittest.TestCase):
 
         # test that an extension event is added to CLI telemetry
         self.assertIsNotNone(session.extension_event)
-        self.assertEqual(session.extension_event.name, 'azurecli/extension')
+        self.assertEqual(session.extension_event.name, TELEMETRY_EXTENSION_EVENT_NAME)
         self.assertEqual(session.extension_event.extension_name, EXTENSION_NAME)
         self.assertDictEqual(
             session.extension_event.properties,
             {
-                'Context.Default.AzureCLI.ExtensionName': EXTENSION_NAME,
-                'Reserved.DataModel.CorrelationId': MOCK_UUID
+                CoreTelemetryProperty.EXTENSION_NAME: EXTENSION_NAME,
+                CoreTelemetryProperty.CORRELATION_ID: MOCK_UUID
             }
         )
 

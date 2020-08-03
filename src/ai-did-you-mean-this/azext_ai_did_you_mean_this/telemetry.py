@@ -4,23 +4,22 @@
 # --------------------------------------------------------------------------------------------
 
 from functools import wraps
-from typing import Dict, Any
+from typing import Dict, Union, Any
 from contextlib import contextmanager
 from enum import Enum, auto
 import azure.cli.core.telemetry as telemetry
 
 from azext_ai_did_you_mean_this._const import (
     UNEXPECTED_ERROR_STR,
-    EXTENSION_NAME
+    EXTENSION_NAME,
+    TELEMETRY_PROPERTY_PREFIX
 )
-
-IS_TELEMETRY_ENABLED = telemetry.is_telemetry_enabled()
 
 
 def _user_agrees_to_telemetry(func):
     @wraps(func)
     def _wrapper(*args, **kwargs):
-        if not IS_TELEMETRY_ENABLED:
+        if not telemetry.is_telemetry_enabled():
             return None
 
         return func(*args, **kwargs)
@@ -29,8 +28,18 @@ def _user_agrees_to_telemetry(func):
 
 
 class FaultType(Enum):
-    RequestException = 'did-you-mean-request-exception'
-    UnknownFaultType = 'unknown-fault-type'
+    RequestError = 'thoth-aladdin-request-error'
+    ParseError = 'thoth-aladdin-response-parse-error'
+    UnexpectedError = 'thoth-unexpected-error'
+
+    def __eq__(self, value: Union['FaultType', str]):
+        if hasattr(value, 'value'):
+            value = value.value
+        # pylint: disable=comparison-with-callable
+        return self.value == value
+
+    def __hash__(self):
+        return hash(self.value)
 
 
 class NoRecommendationReason(Enum):
@@ -38,63 +47,82 @@ class NoRecommendationReason(Enum):
     CommandFromExtension = 'command-from-extension'
     EmptyCommand = 'empty-command'
 
+    def __eq__(self, value: Union['NoRecommendationReason', str]):
+        if hasattr(value, 'value'):
+            value = value.value
+        # pylint: disable=comparison-with-callable
+        return self.value == value
+
+    def __hash__(self):
+        return hash(self.value)
+
 
 class TelemetryProperty(Enum):
-    # azure-cli-core version
+    # The "azure-cli-core" version.
     CoreVersion = auto()
-    # 'ai-did-you-mean-this' extension version.
+    # The "ai-did-you-mean-this" extension version.
     ExtensionVersion = auto()
     # The command passed to the extension.
     RawCommand = auto()
-    # The possibly reduced command used in the service query.
+    # The command used by the service query. May differ from the original command if an unrecognized token is removed.
     Command = auto()
     # The parameters passed to the extension.
-    RawParameters = auto()
+    RawParams = auto()
     # The normalized and sorted set of parameters as a list of comma-separated values.
-    Parameters = auto()
-    # The sorted set of unrecognized parameters
-    UnrecognizedParameters = auto()
-    # Time in milliseconds that it took to retrieve the user's subscription ID and correlation ID if applicable.
+    Params = auto()
+    # The sorted set of unrecognized parameters obtained by normalizing the passed parameters.
+    UnrecognizedParams = auto()
+    # Time in milliseconds that it took to retrieve the user's subscription ID and correlation ID if applicable.
     TimeToRetrieveUserInfoMs = auto()
-    # Time in milliseconds that it took to get recommendations from the Aladdin service.
+    # Time in milliseconds that it took to send a request and receive a response from the Aladdin service.
     RoundTripRequestTimeMs = auto()
-    # Time in milliseconds that it took to provide recommendations for the user's query (excludes display time).
+    # The total time in milliseconds that it took to retrieve recovery suggestions for specified failure.
     ExecutionTimeMs = auto()
-    # True if the Aladdin service did not respond within the amount of time alotted, False otherwise.
+    # True if the Aladdin service did not respond within the amount of time alotted, false otherwise.
     RequestTimedOut = auto()
-    # Describes why recommendations weren't available for the specified query if applicable.
-    NoRecommendationReason = auto()
-    # A "pruned" list of recommendations which differs from that returned by the service. Only applicable when
-    # one or more recommendations are invalid for the user's current CLI installation.
-    PrunedSuggestions = auto()
-    # The number of valid suggestions returned by the service.
-    ValidSuggestionCount = auto()
-    # The number of invalid suggestions returned by the service.
-    InvalidSuggestionCount = auto()
-    # The total number of suggestions received from the service.
-    TotalSuggestionCount = auto()
-    # Extension inferred by the azure-cli-core parser hook
+    # Describes why suggestions weren't available where applicable.
+    ResultSummary = auto()
+    # JSON list of suggestions. Contains only the suggestions which passed client-side validation.
+    Suggestions = auto()
+    # The number of valid suggestions received from the service.
+    NumberOfValidSuggestions = auto()
+    # The number of suggestions received from the service.
+    NumberOfSuggestions = auto()
+    # The inferred name of the extension the command was sourced from if applicable.
     InferredExtension = auto()
-    # True if "az find" was suggested, false otherwise.
+    # True if "az find" was suggested to the user, alse otherwise.
     SuggestedAzFind = auto()
-    # True if the correlation ID was missing, false otherwise.
-    MissingCorrelationId = auto()
-    # True if the Azure subscription ID was missing, false otherwise.
-    MissingSubscriptionId = auto()
+    # True if the correlation ID could not be retrieved, false otherwise.
+    NoCorrelationId = auto()
+    # True if the Azure subscription ID could not be retrieved, false otherwise.
+    NoSubscriptionId = auto()
+
+    def __init__(self, _: int):
+        super().__init__()
+        self._property_name = f'{TELEMETRY_PROPERTY_PREFIX}.{self.name}'
+
+    @property
+    def property_name(self) -> str:
+        return self._property_name
+
+    def __eq__(self, value: Union['TelemetryProperty', str]):
+        if hasattr(value, 'property_name'):
+            value = value.property_name
+        return self.property_name == value
+
+    def __hash__(self):
+        return hash(self.property_name)
 
 
 class ExtensionTelemetryManager():
     def __init__(self):
         super().__init__()
         self._props: Dict[str, str] = {}
-        self._prefix: str = telemetry.AZURE_CLI_PREFIX
+        self._prefix: str = TELEMETRY_PROPERTY_PREFIX
 
     def _get_property(self, name: str):
         prefix = self._prefix
-        return name if name.startswith(prefix) else f'{prefix}{name}'
-
-    def get_property_name(self, prop: TelemetryProperty):
-        return self._get_property(prop.name)
+        return name if name.startswith(prefix) else f'{prefix}.{name}'
 
     def __setitem__(self, key: str, value: Any):
         self._props[self._get_property(key)] = str(value)
@@ -173,7 +201,7 @@ class ExtensionTelemterySession():
         if exc_type and exc_val:
             set_exception(
                 exception=exc_val,
-                fault_type=FaultType.UnknownFaultType.value,
+                fault_type=FaultType.UnexpectedError.value,
                 summary=UNEXPECTED_ERROR_STR
             )
 

@@ -3,62 +3,30 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from typing import Dict
+from azext_ai_did_you_mean_this.cli_command import CliCommand
+from azext_ai_did_you_mean_this._types import ArgumentsType
 
-def assert_has_split_method(field, value):
-    if not getattr(value, 'split') or not callable(value.split):
-        raise TypeError(f'value assigned to `{field}` must contain split method')
+
+class SuggestionParseError(KeyError):
+    pass
 
 
-class Suggestion():
-    COMNMAND_FIELD = 'command'
-    PARAMETERS_FIELD = 'parameters'
-    PLACEHOLDERS_FIELD = 'placeholders'
-
-    def __init__(self, data):
-        self._command = data[self.COMNMAND_FIELD]
-        self._parameters = data[self.PARAMETERS_FIELD]
-        self._placeholders = data[self.PLACEHOLDERS_FIELD]
-
-        for attr in ('_parameters', '_placeholders'):
-            value = getattr(self, attr)
-            value = '' if value == '{}' else value
-            setattr(self, attr, value)
-
-    @property
-    def command(self):
-        return self._command
-
-    @command.setter
-    def command(self, value):
-        self._command = value
-
-    @property
-    def parameters(self):
-        return self._parameters.split(',')
-
-    @parameters.setter
-    def parameters(self, value):
-        assert_has_split_method('parameters', value)
-        self._parameters = value
-
-    @property
-    def placeholders(self):
-        return self._placeholders.split(',')
-
-    @placeholders.setter
-    def placeholders(self, value):
-        assert_has_split_method('placeholders', value)
-        self._placeholders = value
+class Suggestion(CliCommand):
+    # pylint: disable=useless-super-delegation
+    def __init__(self, command: str, parameters: ArgumentsType = '', placeholders: ArgumentsType = ''):
+        super().__init__(command, parameters, placeholders)
 
     def __str__(self):
-        parameter_and_argument_buffer = []
+        return f"az {super().__str__()}"
 
-        for pair in zip(self.parameters, self.placeholders):
-            parameter_and_argument_buffer.append(' '.join(pair))
+    @classmethod
+    def parse(cls, data: Dict[str, str]):
+        try:
+            command = data['command']
+            parameters = data['parameters']
+            placeholders = data['placeholders']
+        except KeyError as e:
+            raise SuggestionParseError(*e.args)
 
-        return f"az {self.command} {' '.join(parameter_and_argument_buffer)}"
-
-    def __eq__(self, value):
-        return (self.command == value.command and
-                self.parameters == value.parameters and
-                self.placeholders == value.placeholders)
+        return Suggestion(command, parameters, placeholders)

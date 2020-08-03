@@ -3,16 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-THOTH_LOG_PREFIX = '[Thoth]'
-
 # time to wait for connection to aladdin service in seconds.
 SERVICE_CONNECTION_TIMEOUT = 10
 
 EXTENSION_NAME = 'ai-did-you-mean-this'
 
+EXTENSION_NICKNAME = 'Thoth'
+
+THOTH_LOG_PREFIX = f'[{EXTENSION_NICKNAME}]'
+
 UNEXPECTED_ERROR_STR = (
-    f'{THOTH_LOG_PREFIX}: An unexpected error occurred.'
+    'An unexpected error occurred.'
 )
+
+TELEMETRY_PROPERTY_PREFIX = 'Context.Default.Extension.Thoth'
 
 UPDATE_RECOMMENDATION_STR = (
     "Better failure recovery recommendations are available from the latest version of the CLI. "

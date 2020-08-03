@@ -8,7 +8,8 @@ import unittest
 
 from knack.log import CLI_LOGGER_NAME
 
-from azext_ai_did_you_mean_this._logging import LOG_PREFIX, get_logger
+from azext_ai_did_you_mean_this._const import THOTH_LOG_PREFIX
+from azext_ai_did_you_mean_this._logging import get_logger
 
 LOGGER_NAME = __name__
 logger = get_logger(LOGGER_NAME)
@@ -25,4 +26,4 @@ class TestExtensionLogging(unittest.TestCase):
             logger.debug(TEST_MSG)
 
             logs = '\n'.join(extension_logs.output)
-            self.assertIn(LOG_PREFIX, logs)
+            self.assertIn(THOTH_LOG_PREFIX, logs)

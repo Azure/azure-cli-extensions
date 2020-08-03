@@ -58,7 +58,7 @@ class Parameter():
         self.state.update(**kwargs)
         self.alias = alias
 
-        self.options = self.state['options_list']
+        self.options = self.state.get('options_list', [])
 
         sorted_options = sorted(self.options, key=len, reverse=True)
         self.standard_form = next(iter(sorted_options), None)
