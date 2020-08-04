@@ -25,6 +25,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
         with self.command_group('webapp') as g:
             g.custom_command('container up', 'create_deploy_container_app', exception_handler=ex_handler_factory())
             g.custom_command('remote-connection create', 'create_tunnel')
+            g.custom_command('deploy', 'enable_one_deploy')
 
         with self.command_group('webapp scan') as g:
             g.custom_command('start', 'start_scan')

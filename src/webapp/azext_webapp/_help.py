@@ -59,3 +59,8 @@ helps['webapp container up'] = """
         - name: Upload files from the current directory to an Azure Container Registry, then build a container image and deploy it to a web app. The Azure Container Registry must already exist.
           text: az webapp container up -n AppName --registry-rg ContainerRegistryResourceGroup --registry-name ContainerRegistryName
 """
+
+helps['webapp deploy'] = """
+    type: command
+    short-summary: Deploys a given artifact to Azure Web Apps through OneDeploy.
+"""
