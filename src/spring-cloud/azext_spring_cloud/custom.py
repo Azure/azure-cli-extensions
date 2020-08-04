@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
-
+import requests
+from requests.auth import HTTPBasicAuth
 import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
@@ -26,10 +27,7 @@ from ._utils import _get_sku_name
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
-import certifi
-import urllib3
 import sys
-import urllib3.contrib.pyopenssl
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -116,6 +114,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
+    logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
     return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, service_name=name)
 
 
@@ -387,9 +386,6 @@ def app_deploy(cmd, client, resource_group, service, name,
                target_module=None,
                runtime_version=None,
                jvm_options=None,
-               cpu=None,
-               memory=None,
-               instance_count=None,
                env=None,
                no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
@@ -412,9 +408,9 @@ def app_deploy(cmd, client, resource_group, service, name,
                        file_path,
                        runtime_version,
                        jvm_options,
-                       cpu,
-                       memory,
-                       instance_count,
+                       None,
+                       None,
+                       None,
                        env,
                        target_module,
                        no_wait,
@@ -620,6 +616,10 @@ def deployment_create(cmd, client, resource_group, service, app, name,
             instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
+    else:
+        cpu = cpu or 1
+        memory = memory or 1
+        instance_count = instance_count or 1
 
     file_type, file_path = _get_upload_local_file(jar_path)
     return _app_deploy(client, resource_group, service, app, name, version, file_path,
@@ -1192,49 +1192,19 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
 
 def _get_app_log(url, user_name, password, exceptions):
-    try:
-        urllib3.contrib.pyopenssl.inject_into_urllib3()
-    except ImportError:
-        pass
-
-    def stream(self, amt=2 ** 16, decode_content=None):
-        if self.chunked and self.supports_chunked_reads():
-            try:
-                for line in self.read_chunked(amt, decode_content=decode_content):
-                    yield line
-            except urllib3.exceptions.ProtocolError:
-                return
-        else:
-            while not self.is_fp_closed(self._fp):
-                data = self.read(amt=amt, decode_content=decode_content)
-
-                if data:
-                    yield data
-
-    http = urllib3.PoolManager(
-        cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-    headers = urllib3.util.make_headers(
-        basic_auth='{0}:{1}'.format(user_name, password))
-    response = http.request(
-        'GET',
-        url,
-        headers=headers,
-        preload_content=False
-    )
-    try:
-        if response.status != 200:
-            raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                response.status, response.reason))
-        std_encoding = sys.stdout.encoding
-
-        for chunk in stream(response):
-            if chunk:
-                sys.stdout.write(chunk.decode(encoding='utf-8', errors='replace')
-                                 .encode(std_encoding, errors='replace')
-                                 .decode(std_encoding, errors='replace'))
-        response.release_conn()
-    except CLIError as e:
-        exceptions.append(e)
+    with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
+        try:
+            if response.status_code != 200:
+                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
+                    response.status_code, response.reason))
+            std_encoding = sys.stdout.encoding
+            for content in response.iter_content():
+                if content:
+                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
+                                     .encode(std_encoding, errors='replace')
+                                     .decode(std_encoding, errors='replace'))
+        except CLIError as e:
+            exceptions.append(e)
 
 
 def certificate_add(cmd, client, resource_group, service, name, vault_uri, vault_certificate_name):

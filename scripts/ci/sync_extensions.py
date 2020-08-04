@@ -26,7 +26,7 @@ def _get_updated_extension_filenames():
     return added_ext_filenames, deleted_ext_filenames
 
 
-def _download_file(url, file_path):
+def download_file(url, file_path):
     import requests
     count = 3
     the_ex = None
@@ -54,7 +54,7 @@ def _sync_wheel(ext, updated_indexes, failed_urls, client, overwrite, temp_dir):
     whl_file = download_url.split('/')[-1]
     whl_path = os.path.join(temp_dir, whl_file)
     try:
-        _download_file(download_url, whl_path)
+        download_file(download_url, whl_path)
     except Exception:
         failed_urls.append(download_url)
         return
@@ -119,7 +119,7 @@ def main():
     target_index = DEFAULT_TARGET_INDEX_URL
     os.mkdir(os.path.join(temp_dir, 'target'))
     target_index_path = os.path.join(temp_dir, 'target', 'index.json')
-    _download_file(target_index, target_index_path)
+    download_file(target_index, target_index_path)
 
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
     updated_indexes = []
