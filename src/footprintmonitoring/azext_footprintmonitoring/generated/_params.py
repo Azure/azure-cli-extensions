@@ -27,206 +27,172 @@ def load_arguments(self, _):
     with self.argument_context('footprintmonitoring profile show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource. Swagger name=profileName', id_part='name')
+                   'resource.', id_part='name')
 
     with self.argument_context('footprintmonitoring profile create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource. Swagger name=profileName')
+                   'resource.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('provisioning_state',
                    arg_type=get_enum_type(['Succeeded', 'Failed', 'Cancelled', 'Updating', 'Deleting']),
                    help='The provisioned state of the resource. Swagger name=provisioningState')
-        c.argument('description', type=str, help='The description of the Footprint profile. Swagger name=description')
+        c.argument('description', type=str, help='The description of the Footprint profile.')
         c.argument('start_delay_milliseconds', type=int, help='The delay in milliseconds that the clients should wait '
-                   'for until they start performing measurements. Swagger name=startDelayMilliseconds')
-        c.argument('measurement_count', type=int, help='The number of measurements to perform. Swagger '
-                   'name=measurementCount')
+                   'for until they start performing measurements.')
+        c.argument('measurement_count', type=int, help='The number of measurements to perform.')
         c.argument('cold_path_sampling_percentage_rate', type=float, help='The default sampling percentage for cold '
-                   'path measurement storage. Swagger name=coldPathSamplingPercentageRate')
-        c.argument('reporting_endpoints', nargs='*', help='The endpoints which to upload measurements to. Swagger '
-                   'name=reportingEndpoints')
+                   'path measurement storage.')
+        c.argument('reporting_endpoints', nargs='*', help='The endpoints which to upload measurements to.')
 
     with self.argument_context('footprintmonitoring profile update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource. Swagger name=profileName', id_part='name')
+                   'resource.', id_part='name')
         c.argument('tags', tags_type)
 
     with self.argument_context('footprintmonitoring profile delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource. Swagger name=profileName', id_part='name')
+                   'resource.', id_part='name')
 
     with self.argument_context('footprintmonitoring measurement-endpoint list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource. Swagger name=measurementEndpointName', id_part='child_name_1')
+                   'measurement endpoint resource.', id_part='child_name_1')
 
     with self.argument_context('footprintmonitoring measurement-endpoint create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
         c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource. Swagger name=measurementEndpointName')
-        c.argument('description', type=str,
-                   help='The description of a measurement endpoint. Swagger name=description')
-        c.argument('endpoint', type=str, help='The value of a measurement endpoint. Swagger name=endpoint')
-        c.argument('measurement_type', type=int, help='The type of a measurement endpoint. Swagger '
-                   'name=measurementType')
+                   'measurement endpoint resource.')
+        c.argument('description', type=str, help='The description of a measurement endpoint.')
+        c.argument('endpoint', type=str, help='The value of a measurement endpoint.')
+        c.argument('measurement_type', type=int, help='The type of a measurement endpoint.')
         c.argument('weight', type=int, help='The weight of a measurement endpoint, higher weight means higher '
-                   'priority. Swagger name=weight')
-        c.argument('experiment_id', type=str, help='The id of an experiment that a measurement endpoint is part of. '
-                   'Swagger name=experimentId')
-        c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to. '
-                   'Swagger name=objectPath')
-        c.argument('start_time_utc', help='The start time that a measurement endpoint should be served. Swagger '
-                   'name=startTimeUTC')
-        c.argument('end_time_utc', help='The end time that a measurement endpoint should be served. Swagger '
-                   'name=endTimeUTC')
+                   'priority.')
+        c.argument('experiment_id', type=str, help='The id of an experiment that a measurement endpoint is part of.')
+        c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to.')
+        c.argument('start_time_utc', help='The start time that a measurement endpoint should be served.')
+        c.argument('end_time_utc', help='The end time that a measurement endpoint should be served.')
         c.argument('hot_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the hot '
-                   'path logging of a measurement endpoint. Swagger name=hotPathSamplingPercentageRate')
+                   'path logging of a measurement endpoint.')
         c.argument('warm_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the warm '
-                   'path logging of a measurement endpoint. Swagger name=warmPathSamplingPercentageRate')
+                   'path logging of a measurement endpoint.')
         c.argument('cold_path_sampling_percentage_rate_override', type=float, help='The percentual sampling rate for '
-                   'the cold path logging of a measurement endpoint. Swagger name=coldPathSamplingPercentageRateOverrid'
-                   'e')
-        c.argument('metadata', type=str, help='The metadata of a measurement endpoint. Swagger name=metadata')
+                   'the cold path logging of a measurement endpoint.')
+        c.argument('metadata', type=str, help='The metadata of a measurement endpoint.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource. Swagger name=measurementEndpointName', id_part='child_name_1')
-        c.argument('description', type=str,
-                   help='The description of a measurement endpoint. Swagger name=description')
-        c.argument('endpoint', type=str, help='The value of a measurement endpoint. Swagger name=endpoint')
-        c.argument('measurement_type', type=int, help='The type of a measurement endpoint. Swagger '
-                   'name=measurementType')
+                   'measurement endpoint resource.', id_part='child_name_1')
+        c.argument('description', type=str, help='The description of a measurement endpoint.')
+        c.argument('endpoint', type=str, help='The value of a measurement endpoint.')
+        c.argument('measurement_type', type=int, help='The type of a measurement endpoint.')
         c.argument('weight', type=int, help='The weight of a measurement endpoint, higher weight means higher '
-                   'priority. Swagger name=weight')
-        c.argument('experiment_id', type=str, help='The id of an experiment that a measurement endpoint is part of. '
-                   'Swagger name=experimentId')
-        c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to. '
-                   'Swagger name=objectPath')
-        c.argument('start_time_utc', help='The start time that a measurement endpoint should be served. Swagger '
-                   'name=startTimeUTC')
-        c.argument('end_time_utc', help='The end time that a measurement endpoint should be served. Swagger '
-                   'name=endTimeUTC')
+                   'priority.')
+        c.argument('experiment_id', type=str, help='The id of an experiment that a measurement endpoint is part of.')
+        c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to.')
+        c.argument('start_time_utc', help='The start time that a measurement endpoint should be served.')
+        c.argument('end_time_utc', help='The end time that a measurement endpoint should be served.')
         c.argument('hot_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the hot '
-                   'path logging of a measurement endpoint. Swagger name=hotPathSamplingPercentageRate')
+                   'path logging of a measurement endpoint.')
         c.argument('warm_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the warm '
-                   'path logging of a measurement endpoint. Swagger name=warmPathSamplingPercentageRate')
+                   'path logging of a measurement endpoint.')
         c.argument('cold_path_sampling_percentage_rate_override', type=float, help='The percentual sampling rate for '
-                   'the cold path logging of a measurement endpoint. Swagger name=coldPathSamplingPercentageRateOverrid'
-                   'e')
-        c.argument('metadata', type=str, help='The metadata of a measurement endpoint. Swagger name=metadata')
+                   'the cold path logging of a measurement endpoint.')
+        c.argument('metadata', type=str, help='The metadata of a measurement endpoint.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource. Swagger name=measurementEndpointName', id_part='child_name_1')
+                   'measurement endpoint resource.', id_part='child_name_1')
 
     with self.argument_context('footprintmonitoring measurement-endpoint-condition list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource. '
-                   'Swagger name=measurementEndpointName')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
+        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint-condition show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource. '
-                   'Swagger name=measurementEndpointName', id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource. '
-                   'Swagger name=conditionName', id_part='child_name_2')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
+        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
+                   id_part='child_name_1')
+        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
+                   id_part='child_name_2')
 
     with self.argument_context('footprintmonitoring measurement-endpoint-condition create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource. '
-                   'Swagger name=measurementEndpointName')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource. '
-                   'Swagger name=conditionName')
-        c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition. Swagger '
-                   'name=variable')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
+        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.')
+        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.')
+        c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition.')
         c.argument('operator',
                    arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue',
                                            'ContainsValueIgnoreCasing', 'DoesNotContainValue',
                                            'DoesNotContainValueIgnoreCasing']),
-                   help='The operator of a Footprint measurement endpoint condition. Swagger name=operator')
-        c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition. Swagger '
-                   'name=constant')
+                   help='The operator of a Footprint measurement endpoint condition.')
+        c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint-condition update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource. '
-                   'Swagger name=measurementEndpointName', id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource. '
-                   'Swagger name=conditionName', id_part='child_name_2')
-        c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition. Swagger '
-                   'name=variable')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
+        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
+                   id_part='child_name_1')
+        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
+                   id_part='child_name_2')
+        c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition.')
         c.argument('operator',
                    arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue',
                                            'ContainsValueIgnoreCasing', 'DoesNotContainValue',
                                            'DoesNotContainValueIgnoreCasing']),
                    help='The operator of a Footprint measurement endpoint condition. Swagger name=operator')
-        c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition. Swagger '
-                   'name=constant')
+        c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition.')
 
     with self.argument_context('footprintmonitoring measurement-endpoint-condition delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource. '
-                   'Swagger name=measurementEndpointName', id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource. '
-                   'Swagger name=conditionName', id_part='child_name_2')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
+        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
+                   id_part='child_name_1')
+        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
+                   id_part='child_name_2')
 
     with self.argument_context('footprintmonitoring experiment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
 
     with self.argument_context('footprintmonitoring experiment show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource. Swagger name=experimentName', id_part='child_name_1')
+                   'resource.', id_part='child_name_1')
 
     with self.argument_context('footprintmonitoring experiment create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
         c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource. Swagger name=experimentName')
-        c.argument('description', type=str,
-                   help='The description of a Footprint experiment. Swagger name=description')
+                   'resource.')
+        c.argument('description', type=str, help='The description of a Footprint experiment.')
 
     with self.argument_context('footprintmonitoring experiment update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource. Swagger name=experimentName', id_part='child_name_1')
-        c.argument('description', type=str,
-                   help='The description of a Footprint experiment. Swagger name=description')
+                   'resource.', id_part='child_name_1')
+        c.argument('description', type=str, help='The description of a Footprint experiment.')
 
     with self.argument_context('footprintmonitoring experiment delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', type=str, help='Name of the Footprint profile resource. Swagger name=profileName',
-                   id_part='name')
+        c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
         c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource. Swagger name=experimentName', id_part='child_name_1')
+                   'resource.', id_part='child_name_1')

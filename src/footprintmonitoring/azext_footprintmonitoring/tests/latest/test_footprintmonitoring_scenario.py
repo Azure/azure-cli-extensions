@@ -288,9 +288,9 @@ class FootprintMonitoringManagementClientScenarioTest(ScenarioTest):
     def test_footprintmonitoring(self, rg):
 
         self.kwargs.update({
-            'myProfile': 'fpProfile1',
-            'myMeasurementEndpoint': 'endpoint1',
-            'myExperiment': 'fpExp1',
+            'myProfile': self.create_random_name(prefix='fpProfile1'[:5], length=10),
+            'myMeasurementEndpoint': self.create_random_name(prefix='endpoint1'[:4], length=9),
+            'myExperiment': self.create_random_name(prefix='fpExp1'[:3], length=9),
         })
 
         call_scenario(self, rg)

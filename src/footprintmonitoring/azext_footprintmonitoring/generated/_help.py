@@ -14,13 +14,12 @@ from knack.help_files import helps
 
 helps['footprintmonitoring profile'] = """
     type: group
-    short-summary: footprintmonitoring profile. Command group swagger name=profiles
+    short-summary: footprintmonitoring profile
 """
 
 helps['footprintmonitoring profile list'] = """
     type: command
-    short-summary: Retrieves the information about all Footprint profiles under a subscription. Command group swagger \
-name=profiles, Command swagger name=ListByResourceGroup
+    short-summary: Retrieves the information about all Footprint profiles under a subscription.
     examples:
       - name: List Footprint profiles in a Resource Group
         text: |-
@@ -29,8 +28,7 @@ name=profiles, Command swagger name=ListByResourceGroup
 
 helps['footprintmonitoring profile show'] = """
     type: command
-    short-summary: Retrieves the information about a single Footprint profile. Command group swagger name=profiles, \
-Command swagger name=Get
+    short-summary: Retrieves the information about a single Footprint profile.
     examples:
       - name: profilesGet
         text: |-
@@ -39,8 +37,7 @@ Command swagger name=Get
 
 helps['footprintmonitoring profile create'] = """
     type: command
-    short-summary: Creates or updates a Footprint profile with the specified properties. Command group swagger \
-name=profiles, Command swagger name=CreateOrUpdate#Create
+    short-summary: Creates or updates a Footprint profile with the specified properties.
     examples:
       - name: profilesCreateOrUpdate
         text: |-
@@ -50,8 +47,7 @@ name=profiles, Command swagger name=CreateOrUpdate#Create
 
 helps['footprintmonitoring profile update'] = """
     type: command
-    short-summary: Updates an existing Footprint profile resource. Command group swagger name=profiles, Command \
-swagger name=Update
+    short-summary: Updates an existing Footprint profile resource.
     examples:
       - name: profilesUpdate
         text: |-
@@ -61,8 +57,7 @@ swagger name=Update
 
 helps['footprintmonitoring profile delete'] = """
     type: command
-    short-summary: Deletes an existing Footprint profile. Command group swagger name=profiles, Command swagger \
-name=Delete
+    short-summary: Deletes an existing Footprint profile.
     examples:
       - name: profilesDelete
         text: |-
@@ -71,13 +66,12 @@ name=Delete
 
 helps['footprintmonitoring measurement-endpoint'] = """
     type: group
-    short-summary: footprintmonitoring measurement-endpoint. Command group swagger name=measurementEndpoints
+    short-summary: footprintmonitoring measurement-endpoint
 """
 
 helps['footprintmonitoring measurement-endpoint list'] = """
     type: command
-    short-summary: Retrieves the information about all measurement endpoints under a Footprint profile. Command group \
-swagger name=measurementEndpoints, Command swagger name=ListByProfile
+    short-summary: Retrieves the information about all measurement endpoints under a Footprint profile.
     examples:
       - name: measurementEndpointsListByProfile
         text: |-
@@ -86,8 +80,7 @@ swagger name=measurementEndpoints, Command swagger name=ListByProfile
 
 helps['footprintmonitoring measurement-endpoint show'] = """
     type: command
-    short-summary: Retrieves the information about a single measurement endpoint under a Footprint profile. Command \
-group swagger name=measurementEndpoints, Command swagger name=Get
+    short-summary: Retrieves the information about a single measurement endpoint under a Footprint profile.
     examples:
       - name: measurementEndpointsGet
         text: |-
@@ -98,7 +91,7 @@ group swagger name=measurementEndpoints, Command swagger name=Get
 helps['footprintmonitoring measurement-endpoint create'] = """
     type: command
     short-summary: Creates or updates a single measurement endpoint under a Footprint profile with the specified \
-properties. Command group swagger name=measurementEndpoints, Command swagger name=CreateOrUpdate#Create
+properties.
     examples:
       - name: measurementEndpointsCreateOrUpdate
         text: |-
@@ -110,7 +103,7 @@ properties. Command group swagger name=measurementEndpoints, Command swagger nam
 helps['footprintmonitoring measurement-endpoint update'] = """
     type: command
     short-summary: Creates or updates a single measurement endpoint under a Footprint profile with the specified \
-properties. Command group swagger name=measurementEndpoints, Command swagger name=CreateOrUpdate#Update
+properties.
     examples:
       - name: measurementEndpointsCreateOrUpdate
         text: |-
@@ -121,8 +114,7 @@ properties. Command group swagger name=measurementEndpoints, Command swagger nam
 
 helps['footprintmonitoring measurement-endpoint delete'] = """
     type: command
-    short-summary: Deletes an existing measurement endpoint under a Footprint profile. Command group swagger \
-name=measurementEndpoints, Command swagger name=Delete
+    short-summary: Deletes an existing measurement endpoint under a Footprint profile.
     examples:
       - name: measurementEndpointsDelete
         text: |-
@@ -132,14 +124,13 @@ name=measurementEndpoints, Command swagger name=Delete
 
 helps['footprintmonitoring measurement-endpoint-condition'] = """
     type: group
-    short-summary: footprintmonitoring measurement-endpoint-condition. Command group swagger \
-name=measurementEndpointConditions
+    short-summary: footprintmonitoring measurement-endpoint-condition
 """
 
 helps['footprintmonitoring measurement-endpoint-condition list'] = """
     type: command
     short-summary: Retrieves the information about all measurement endpoint conditions under a Footprint measurement \
-endpoint. Command group swagger name=measurementEndpointConditions, Command swagger name=ListByMeasurementEndpoint
+endpoint.
     examples:
       - name: measurementEndpointConditionsListByEndpoint
         text: |-
@@ -150,7 +141,7 @@ endpoint. Command group swagger name=measurementEndpointConditions, Command swag
 helps['footprintmonitoring measurement-endpoint-condition show'] = """
     type: command
     short-summary: Retrieves the information about a single measurement endpoint condition under a Footprint \
-measurement endpoint. Command group swagger name=measurementEndpointConditions, Command swagger name=Get
+measurement endpoint.
     examples:
       - name: measurementEndpointConditionGet
         text: |-
@@ -161,8 +152,7 @@ measurement endpoint. Command group swagger name=measurementEndpointConditions, 
 helps['footprintmonitoring measurement-endpoint-condition create'] = """
     type: command
     short-summary: Creates or updates a measurement endpoint condition under a Footprint measurement with the \
-specified properties. Command group swagger name=measurementEndpointConditions, Command swagger \
-name=CreateOrUpdate#Create
+specified properties.
     examples:
       - name: measurementEndpointConditionCreateOrUpdate
         text: |-
@@ -174,8 +164,7 @@ name=CreateOrUpdate#Create
 helps['footprintmonitoring measurement-endpoint-condition update'] = """
     type: command
     short-summary: Creates or updates a measurement endpoint condition under a Footprint measurement with the \
-specified properties. Command group swagger name=measurementEndpointConditions, Command swagger \
-name=CreateOrUpdate#Update
+specified properties.
     examples:
       - name: measurementEndpointConditionCreateOrUpdate
         text: |-
@@ -186,8 +175,7 @@ name=CreateOrUpdate#Update
 
 helps['footprintmonitoring measurement-endpoint-condition delete'] = """
     type: command
-    short-summary: Deletes an existing measurement endpoint condition under a Footprint measurement. Command group \
-swagger name=measurementEndpointConditions, Command swagger name=Delete
+    short-summary: Deletes an existing measurement endpoint condition under a Footprint measurement.
     examples:
       - name: measurementEndpointConditionDelete
         text: |-
@@ -197,13 +185,12 @@ swagger name=measurementEndpointConditions, Command swagger name=Delete
 
 helps['footprintmonitoring experiment'] = """
     type: group
-    short-summary: footprintmonitoring experiment. Command group swagger name=experiments
+    short-summary: footprintmonitoring experiment
 """
 
 helps['footprintmonitoring experiment list'] = """
     type: command
-    short-summary: Retrieves the information about all experiments under a Footprint profile. Command group swagger \
-name=experiments, Command swagger name=ListByProfile
+    short-summary: Retrieves the information about all experiments under a Footprint profile.
     examples:
       - name: experimentsListByProfile
         text: |-
@@ -212,8 +199,7 @@ name=experiments, Command swagger name=ListByProfile
 
 helps['footprintmonitoring experiment show'] = """
     type: command
-    short-summary: Retrieves the information about a single Footprint experiment. Command group swagger \
-name=experiments, Command swagger name=Get
+    short-summary: Retrieves the information about a single Footprint experiment.
     examples:
       - name: experimentsGet
         text: |-
@@ -223,8 +209,7 @@ name=experiments, Command swagger name=Get
 
 helps['footprintmonitoring experiment create'] = """
     type: command
-    short-summary: Creates or updates a Footprint experiment with the specified properties. Command group swagger \
-name=experiments, Command swagger name=CreateOrUpdate#Create
+    short-summary: Creates or updates a Footprint experiment with the specified properties.
     examples:
       - name: experimentsCreateOrUpdate
         text: |-
@@ -234,8 +219,7 @@ name=experiments, Command swagger name=CreateOrUpdate#Create
 
 helps['footprintmonitoring experiment update'] = """
     type: command
-    short-summary: Creates or updates a Footprint experiment with the specified properties. Command group swagger \
-name=experiments, Command swagger name=CreateOrUpdate#Update
+    short-summary: Creates or updates a Footprint experiment with the specified properties.
     examples:
       - name: experimentsCreateOrUpdate
         text: |-
@@ -245,8 +229,7 @@ name=experiments, Command swagger name=CreateOrUpdate#Update
 
 helps['footprintmonitoring experiment delete'] = """
     type: command
-    short-summary: Deletes an existing Footprint experiment. Command group swagger name=experiments, Command swagger \
-name=Delete
+    short-summary: Deletes an existing Footprint experiment.
     examples:
       - name: experimentsDelete
         text: |-
