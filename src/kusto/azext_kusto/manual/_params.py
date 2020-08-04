@@ -67,7 +67,7 @@ def load_arguments(self, _):
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates if'
                    ' double encryption is enabled.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne''d-identities'], help='The list of user identities associated with the Kusto cluster. The user ident''ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI''d}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i''dentityName}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigned-identities'], help='The list of user identities associated with the Kusto cluster. The user ident''ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI''d}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i''dentityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
