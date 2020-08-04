@@ -596,7 +596,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 # pylint: disable=line-too-long
 
 
-def update_agents(cmd, client, resource_group_name, cluster_name, location=None, https_proxy="", http_proxy="", no_proxy="",
+def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
                   kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -651,9 +651,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, location=None,
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
 
-    # Validate location
-    utils.validate_location(cmd, location)
-
     # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):
         telemetry.set_user_fault()
@@ -661,7 +658,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, location=None,
                                 summary='Connected cluster resource does not exist')
         raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
                        "in the resource group {} ".format(resource_group_name) +
-                       "Please onboard the connected cluster using az connectedk8s command")
+                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -670,16 +667,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, location=None,
     utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, location)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, connected_cluster.location)
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
-        if not utils.is_update_allowed(connected_cluster.agent_version):
-            telemetry.set_user_fault()
-            message = str.format(consts.Update_Not_Allowed, "0.2.5", "0.1.214-dev")
-            telemetry.set_exception(exception=message, fault_type=consts.Update_Not_Allowed_Fault_Type,
-                                    summary='Update not allowed')
-            raise CLIError(message)
         registry_chart_path = registry_path.split(':')[0]
         registry_path = registry_chart_path + ":" + connected_cluster.agent_version
 

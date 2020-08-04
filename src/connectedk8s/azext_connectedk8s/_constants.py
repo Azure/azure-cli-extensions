@@ -32,7 +32,5 @@ Pull_HelmChart_Fault_Type = 'helm-chart-pull-error'
 Export_HelmChart_Fault_Type = 'helm-chart-export-error'
 Get_Kubernetes_Version_Fault_Type = 'kubernetes-get-version-error'
 Get_Kubernetes_Distro_Fault_Type = 'kubernetes-get-distribution-error'
-Update_Not_Allowed_Fault_Type = "update-not-allowed-error"
-Update_Not_Allowed = "Update allowed only for agents with version >= {} in stable and {} in dev release train"
 Update_Agent_Success = 'Agents for Connected Cluster {} have been updated successfully'
 Update_Agent_Failure = 'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'

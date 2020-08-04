@@ -108,14 +108,3 @@ def get_helm_registry(profile, location):
     telemetry.set_exception(exception=str(response.json()), fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                             summary='Error while fetching helm chart registry path')
     raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))
-
-
-def is_update_allowed(agent_version):
-    release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-    if release_train == "stable" and agent_version >= "0.2.5":
-        return True
-
-    if release_train == "dev" and agent_version >= "0.1.214-dev":
-        return True
-
-    return False
