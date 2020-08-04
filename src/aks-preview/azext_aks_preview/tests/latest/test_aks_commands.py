@@ -96,7 +96,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--vm-set-type VirtualMachineScaleSets --node-count=1 ' \
                      '-o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -107,7 +107,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-aad ' \
                      '--aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
                      '--aad-tenant-id 00000000-0000-0000-0000-000000000002 -o json'
-        self.cmd(update_cmd, expect_failure=True)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001'),
+            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000002')
+        ])
 
     @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @AllowLargeResponse()

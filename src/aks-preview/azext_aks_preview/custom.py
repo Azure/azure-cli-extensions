@@ -64,10 +64,12 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerS
                                                                       ContainerServiceStorageProfileTypes,
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
-                                                                      ManagedClusterSKU)
+                                                                      ManagedClusterSKU,
+                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
+from ._client_factory import get_msi_client
 from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
@@ -85,7 +87,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
-
+from ._consts import ADDONS
 logger = get_logger(__name__)
 
 
@@ -548,6 +550,25 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+    msi_client = get_msi_client(cli_ctx)
+    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)'
+    resource_id = resource_id.lower()
+    match = re.search(pattern, resource_id)
+    if match:
+        resource_group_name = match.group(1)
+        identity_name = match.group(2)
+        try:
+            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
+                                                               resource_name=identity_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise CLIError("Identity {} not found.".format(resource_id))
+            raise CLIError(ex.message)
+        return identity.client_id
+    raise CLIError("Cannot parse identity name from provided resource id {}.".format(resource_id))
+
+
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
     cp.update(dict2)
@@ -811,6 +832,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_aad=False,
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
+               assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -905,10 +927,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
+        identity_client_id = service_principal_profile.client_id
+        if enable_managed_identity and assign_identity:
+            identity_client_id = _get_user_assigned_identity_client_id(cmd.cli_ctx, assign_identity)
         if not _add_role_assignment(
                 cmd.cli_ctx,
                 'Network Contributor',
-                service_principal_profile.client_id,
+                identity_client_id,
                 scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
@@ -1011,9 +1036,19 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         api_server_access_profile = _populate_api_server_access_profile(api_server_authorized_ip_ranges)
 
     identity = None
-    if enable_managed_identity:
+    if not enable_managed_identity and assign_identity:
+        raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
+    if enable_managed_identity and not assign_identity:
         identity = ManagedClusterIdentity(
             type="SystemAssigned"
+        )
+    elif enable_managed_identity and assign_identity:
+        user_assigned_identity = {
+            assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+        }
+        identity = ManagedClusterIdentity(
+            type="UserAssigned",
+            user_assigned_identities=user_assigned_identity
         )
 
     enable_rbac = True
@@ -1292,9 +1327,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
 
     if enable_aad:
-        if instance.aad_profile is None:
-            raise CLIError('Cannot specify "--enable-aad" for a non-AAD cluster')
-        if instance.aad_profile.managed:
+        if instance.aad_profile is not None and instance.aad_profile.managed:
             raise CLIError('Cannot specify "--enable-aad" if managed AAD is already enabled')
         instance.aad_profile = ManagedClusterAADProfile(
             managed=True
@@ -1370,16 +1403,6 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
         _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError):
         raise CLIError("Fail to find kubeconfig file.")
-
-
-ADDONS = {
-    'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent',
-    'virtual-node': 'aciConnector',
-    'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard',
-    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME
-}
 
 
 # pylint: disable=line-too-long

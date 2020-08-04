@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* Switch to new Resource Provider - Microsoft.Codespaces
+
 0.2.1
 ++++++
 * Added 60 minute auto-suspend timeout option
