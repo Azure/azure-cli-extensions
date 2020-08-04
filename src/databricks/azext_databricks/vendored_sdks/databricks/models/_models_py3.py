@@ -709,6 +709,11 @@ class WorkspaceCustomParameters(Model):
      Key (CMK) enabled workspace.
     :type encryption:
      ~azure.mgmt.databricks.models.WorkspaceEncryptionParameter
+    :param require_infrastructure_encryption: A boolean indicating whether or not the DBFS root
+     file system will be enabled with secondary layer of encryption with platform managed keys for
+     data at rest.
+    :type require_infrastructure_encryption:
+     ~databricks_client.models.WorkspaceCustomBooleanParameter
     """
 
     _attribute_map = {
@@ -718,9 +723,10 @@ class WorkspaceCustomParameters(Model):
         'enable_no_public_ip': {'key': 'enableNoPublicIp', 'type': 'WorkspaceCustomBooleanParameter'},
         'prepare_encryption': {'key': 'prepareEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
         'encryption': {'key': 'encryption', 'type': 'WorkspaceEncryptionParameter'},
+        'require_infrastructure_encryption': {'key': 'requireInfrastructureEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
     }
 
-    def __init__(self, *, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, prepare_encryption=None, encryption=None, **kwargs) -> None:
+    def __init__(self, *, custom_virtual_network_id=None, custom_public_subnet_name=None, custom_private_subnet_name=None, enable_no_public_ip=None, prepare_encryption=None, encryption=None, require_infrastructure_encryption=None, **kwargs) -> None:
         super(WorkspaceCustomParameters, self).__init__(**kwargs)
         self.custom_virtual_network_id = custom_virtual_network_id
         self.custom_public_subnet_name = custom_public_subnet_name
@@ -728,6 +734,7 @@ class WorkspaceCustomParameters(Model):
         self.enable_no_public_ip = enable_no_public_ip
         self.prepare_encryption = prepare_encryption
         self.encryption = encryption
+        self.require_infrastructure_encryption = require_infrastructure_encryption
 
 
 class WorkspaceCustomStringParameter(Model):
