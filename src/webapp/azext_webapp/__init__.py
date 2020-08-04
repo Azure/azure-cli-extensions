@@ -61,5 +61,13 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('scan_id', options_list=['--scan-id'], help='Unique scan id')
             c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
 
+        with self.argument_context('webapp deploy') as c:
+            c.argument('name', options_list=['--name'], help='Name of the webapp to connect to')
+            c.argument('src', options_list=['--src'], help='Path of the file to be deployed')
+            c.argument('deploy_type', options_list=['--type'], help='Type of deployment requested')
+            c.argument('is_async', options_list=['--async'], help='Asynchronous deployment', type=bool)
+            c.argument('target_path', options_list=['--target-path'], help='Target path to which the file will be deployed to.')
+            c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
+
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader

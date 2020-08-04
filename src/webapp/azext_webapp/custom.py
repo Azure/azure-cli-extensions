@@ -312,9 +312,9 @@ def _should_create_new_asp(cmd, rg_name, asp_name, location):
     return True
 
 
-def enable_one_deploy(cmd, resource_group_name, name, src, type=None, is_async=None, target_path=None, timeout=None, slot=None):
+def enable_one_deploy(cmd, resource_group_name, name, src, deploy_type=None, is_async=None, target_path=None, timeout=None, slot=None):
     import ntpath
-    logger.warning("Preparing for deployment through OneDeploy")
+    logger.warning("Preparing for deployment")
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
 
     try:
@@ -323,18 +323,18 @@ def enable_one_deploy(cmd, resource_group_name, name, src, type=None, is_async=N
         raise CLIError('Failed to fetch scm url for function app')
 
     # Interpret deployment type from the file extension if the type parameter is not passed
-    if type is None:
+    if deploy_type is None:
         fileName = ntpath.basename(src)
         fileExtension = fileName.split(".", 1)[1]
         if fileExtension in ('war', 'jar', 'zip', 'ear'):
-            type = fileExtension
+            deploy_type = fileExtension
         elif fileExtension in ('sh', 'bat'):
-            type = 'startup'
+            deploy_type = 'startup'
         else:
-            type = 'static'
+            deploy_type = 'static'
 
-    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. Possible values: static, zip, war, jar, ear, startup", type)
-    deploy_url = scm_url + '/api/onedeploy?type=' + type
+    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. Possible values: static, zip, war, jar, ear, startup", deploy_type)
+    deploy_url = scm_url + '/api/publish?type=' + deploy_type
 
     if is_async is not None:
         deploy_url = deploy_url + '&async=true'

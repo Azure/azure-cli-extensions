@@ -62,5 +62,5 @@ helps['webapp container up'] = """
 
 helps['webapp deploy'] = """
     type: command
-    short-summary: Deploys a given artifact to Azure Web Apps through OneDeploy.
+    short-summary: Deploys a provided artifact to Azure Web Apps.
 """
