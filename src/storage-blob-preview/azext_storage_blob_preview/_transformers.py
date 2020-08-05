@@ -183,7 +183,11 @@ def _transform_page_ranges(page_ranges):
 
 def transform_blob_list_output(result):
     for i, item in enumerate(result):
-        result[i] = transform_blob_json_output(item)
+        if isinstance(item, dict) and 'next_marker' in item.keys():
+            pass
+        else:
+            result[i] = transform_blob_json_output(item)
+
     return result
 
 

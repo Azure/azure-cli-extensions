@@ -607,15 +607,15 @@ def _get_datetime_from_string(dt_str):
 
 
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,
-               list_with_marker=None, **kwargs):
+               show_next_marker=None, **kwargs):
 
-    generator = client.list_blobs(name_starts_with=prefix, include=include, maxresults=num_results, **kwargs)
+    generator = client.list_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
     pages = generator.by_page(continuation_token=marker)
     result = list(next(pages))
 
-    if list_with_marker is not None:
-        marker = {"next_marker": pages.continuation_token}
-        result.append(marker)
+    if show_next_marker:
+        next_marker = {"next_marker": pages.continuation_token}
+        result.append(next_marker)
     else:
         logger.warning('Next Marker:')
         logger.warning(pages.continuation_token)
