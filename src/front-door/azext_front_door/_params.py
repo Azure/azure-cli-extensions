@@ -8,11 +8,11 @@
 # pylint: disable=line-too-long
 from enum import Enum
 
-from knack.arguments import CLIArgumentType
-
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, tags_type, get_location_type, get_three_state_flag, get_enum_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+
+from knack.arguments import CLIArgumentType
 
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
@@ -99,7 +99,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door frontend-endpoint') as c:
         c.argument('host_name', help='Domain name of the frontend endpoint.')
-        c.argument('session_affinity_enabled', arg_type=get_three_state_flag(), help='Whether to allow session affinity on this host.')
+        c.argument('session_affinity_enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to allow session affinity on this host.')
         c.argument('session_affinity_ttl', help='The TTL to use in seconds for session affinity.', type=int)
         c.argument('waf_policy', help='Name or ID of a web application firewall policy.', validator=validate_waf_policy)
 
@@ -122,6 +122,10 @@ def load_arguments(self, _):
             c.argument('http_port', type=int, help='HTTP TCP port number.')
             c.argument('https_port', type=int, help='HTTPS TCP port number.')
             c.argument('weight', type=int, help='Weight of this endpoint for load balancing purposes.')
+            c.argument('private_link_alias', help='The Alias of the Private Link resource. Populating this optional field indicates that this backend is \'Private\'.')
+            c.argument('private_link_resource_id', help='The Resource Id of the Private Link. Populating this optional field indicates that this backend is \'Private\'.')
+            c.argument('private_link_location', help='The location of the Private Link resource. Required only if \'privateLinkResourceId\' is populated.')
+            c.argument('private_link_approval_message', help='A custom message to be included in the approval request to connect to the Private Link.')
             c.argument('backend_host_header', help='Host header sent to the backend.')
             c.argument('backend_pool_name', options_list='--pool-name', help='Name of the backend pool.')
             c.argument('index', type=int, help='Index of the backend to remove (starting with 1).')
