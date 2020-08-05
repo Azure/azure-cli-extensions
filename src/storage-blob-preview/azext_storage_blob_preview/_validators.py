@@ -569,14 +569,27 @@ def get_file_path_validator(default_file_param=None):
     return validator
 
 
-def validate_included_datasets(cmd, namespace):
+def validate_included_datasets_v2(cmd, namespace):
     if namespace.include:
-        include = namespace.include
-        if set(include) - set('cmsd'):
-            help_string = '(c)opy-info (m)etadata (s)napshots (d)eleted'
+        short_include = namespace.include
+        if set(short_include) - set('cmsdvt'):
+            help_string = '(c)opy-info (m)etadata (s)napshots (d)eleted (v)ersions (t)ags'
             raise ValueError('valid values are {} or a combination thereof.'.format(help_string))
-        t_blob_include = cmd.get_models('blob#Include')
-        namespace.include = t_blob_include('s' in include, 'm' in include, False, 'c' in include, 'd' in include)
+        t_blob_include = cmd.get_models('_generated.models._azure_blob_storage_enums#ListBlobsIncludeItem')
+        include = []
+        if short_include.startswith('s'):
+            include.append(t_blob_include.snapshots)
+        if short_include.startswith('m'):
+            include.append(t_blob_include.metadata)
+        if short_include.startswith('c'):
+            include.append(t_blob_include.copy)
+        if short_include.startswith('d'):
+            include.append(t_blob_include.deleted)
+        if short_include.startswith('v'):
+            include.append(t_blob_include.versions)
+        if short_include.startswith('t'):
+            include.append(t_blob_include.tags)
+        namespace.include = include
 
 
 def validate_key_name(namespace):

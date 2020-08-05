@@ -11,7 +11,7 @@ from azure.cli.core.local_context import LocalContextAttribute, LocalContextActi
 
 from ._validators import (get_datetime_type, validate_metadata, get_permission_validator, get_permission_help_string,
                           resource_type_type, services_type, validate_entity, validate_select, validate_blob_type,
-                          validate_included_datasets, validate_custom_domain, validate_container_public_access,
+                          validate_included_datasets_v2, validate_custom_domain, validate_container_public_access,
                           validate_table_payload_format, add_progress_callback, process_resource_group,
                           storage_account_key_options, process_file_download_namespace, process_metric_update_namespace,
                           get_char_options_validator, validate_bypass, validate_encryption_source, validate_marker,
@@ -186,8 +186,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'up to the appearance of the delimiter character. The delimiter may be a single character or a '
                    'string.')
         c.argument('include', help="Specify one or more additional datasets to include in the response. "
-                   "Options include: '(s)napshots', '(m)etadata', '(u)ncommittedblobs', '(c)opy', '(d)eleted', "
-                   "'(t)ags'.")
+                   "Options include: '(s)napshots', '(m)etadata', '(c)opy', '(d)eleted', '(v)ersions' "
+                   "'(t)ags'.", validator=validate_included_datasets_v2)
         c.argument('marker', arg_type=marker_type)
         c.argument('num_results', arg_type=num_results_type)
         c.argument('prefix',

@@ -7,19 +7,12 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['storage-blob-preview'] = """
-    type: group
-    short-summary: Commands to manage Storage-blob-previews.
-"""
-
-helps['storage-blob-preview create'] = """
-    type: command
-    short-summary: Create a Storage-blob-preview.
-"""
-
-helps['storage-blob-preview list'] = """
-    type: command
-    short-summary: List Storage-blob-previews.
+helps['storage blob list'] = """
+type: command
+short-summary: List blobs in a given container.
+examples:
+  - name: List all storage blobs in a container whose names start with 'foo'; will match names such as 'foo', 'foobar', and 'foo/bar'
+    text: az storage blob list -c MyContainer --prefix foo
 """
 
 # helps['storage-blob-preview delete'] = """
