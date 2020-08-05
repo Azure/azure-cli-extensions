@@ -142,10 +142,10 @@ class AddKeyVaultProperties(argparse.Action):
         return d
 
 
-class AddLanguageExtensionsValue(argparse._AppendAction):
+class AddClustersValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddLanguageExtensionsValue, self).__call__(parser, namespace, action, option_string)
+        super(AddClustersValue, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -216,10 +216,10 @@ class AddReadOnlyFollowingDatabase(argparse.Action):
         return d
 
 
-class AddValue(argparse._AppendAction):
+class AddDatabasesValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddValue, self).__call__(parser, namespace, action, option_string)
+        super(AddDatabasesValue, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
