@@ -45,7 +45,7 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob list -c {} --include {}', account_info, container, 'prefix') \
             .assert_with_checks(JMESPathCheck('length(@', 1))
 
-        self.storage_cmd('storage blob list -c {} --delimiter {}', account_info, container, 'prefix') \
+        self.storage_cmd('storage blob list -c {} --delimiter "/"', account_info, container, 'prefix') \
             .assert_with_checks(JMESPathCheck('length(@', 1))
 
     @ResourceGroupPreparer(name_prefix='clitest')

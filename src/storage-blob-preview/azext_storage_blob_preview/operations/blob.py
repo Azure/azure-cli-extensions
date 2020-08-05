@@ -608,8 +608,11 @@ def _get_datetime_from_string(dt_str):
 
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,
                show_next_marker=None, **kwargs):
+    if delimiter:
+        generator = client.walk_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
+    else:
+        generator = client.list_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
 
-    generator = client.list_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
     pages = generator.by_page(continuation_token=marker)
     result = list(next(pages))
 

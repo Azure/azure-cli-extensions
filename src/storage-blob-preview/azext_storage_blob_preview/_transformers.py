@@ -185,9 +185,10 @@ def transform_blob_list_output(result):
     for i, item in enumerate(result):
         if isinstance(item, dict) and 'next_marker' in item.keys():
             pass
-        else:
+        try:
             result[i] = transform_blob_json_output(item)
-
+        except KeyError:
+            result[i] = {"name": item.name}
     return result
 
 
