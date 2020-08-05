@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.59
++++++
+* Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
+
 0.4.58
 +++++
 * Added clearer error message for invalid addon names
