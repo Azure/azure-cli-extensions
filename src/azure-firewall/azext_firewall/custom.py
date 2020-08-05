@@ -72,6 +72,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
+    if sku and sku.lower() == 'azfw_hub' and allow_active_ftp:
+        raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
