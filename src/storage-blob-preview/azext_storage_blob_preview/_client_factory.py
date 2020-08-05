@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
 from azure.cli.core.profiles import ResourceType, get_sdk
-
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 from azure.cli.command_modules.storage.sdkutil import get_table_data_type
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
@@ -195,7 +195,7 @@ def get_account_url(cli_ctx, account_name, service):
 
 def cf_blob_service(cli_ctx, kwargs):
     from knack.util import CLIError
-    t_blob_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_BLOB,
+    t_blob_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB,
                              '_blob_service_client#BlobServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
@@ -215,8 +215,8 @@ def cf_blob_service(cli_ctx, kwargs):
 
 
 def cf_blob_client(cli_ctx, kwargs):
-    return cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs['container_name'],
-                                                            blob=kwargs['blob_name'],
+    return cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs.pop('container_name'),
+                                                            blob=kwargs.pop('blob_name'),
                                                             snapshot=kwargs.pop('snapshot', None))
 
 
@@ -225,6 +225,10 @@ def cf_blob_lease_client(cli_ctx, kwargs):
     blob_client = cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs.pop('container_name', None),
                                                                    blob=kwargs.pop('blob_name', None))
     return t_lease_service(client=blob_client, lease_id=kwargs.pop('lease_id', None))
+
+
+def cf_container_client(cli_ctx, kwargs):
+    return cf_blob_service(cli_ctx, kwargs).get_container_client(container=kwargs.pop('container_name', None))
 
 
 def cf_adls_service(cli_ctx, kwargs):

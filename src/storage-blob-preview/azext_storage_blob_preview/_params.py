@@ -152,6 +152,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'to retrieve.'
     )
 
+    marker_type = CLIArgumentType(
+        help='A string value that identifies the portion of the list of containers to be '
+             'returned with the next listing operation. The operation returns the NextMarker value within '
+             'the response body if the listing operation did not return all containers remaining to be listed '
+             'with the current page. If specified, this generator will begin returning results from the point '
+             'where the previous generator stopped.')
+
+    num_results_type = CLIArgumentType(
+        type=int, default=5000, help='Specify the maximum number to return. If the request does not specify '
+        'num_results, or specifies a value greater than 5000, the server will return up to 5000 items. Note that '
+        'if the listing operation crosses a partition boundary, then the service will return a continuation token '
+        'for retrieving the remaining of the results. Provide "*" to return all.'
+    )
+
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
         c.argument('directory_name', directory_type)
@@ -164,12 +178,19 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    validator=validate_metadata)
         c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
-
-    for item in ['delete', 'show', 'update', 'show-connection-string', 'keys', 'network-rule', 'revoke-delegation-keys', 'failover']:  # pylint: disable=line-too-long
-        with self.argument_context('storage account {}'.format(item)) as c:
-            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
-            c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account check-name') as c:
-        c.argument('name', options_list=['--name', '-n'])
-
+    with self.argument_context('storage blob list') as c:
+        c.register_container_arguments()
+        c.argument('delimiter',
+                   help='When the request includes this parameter, the operation returns a BlobPrefix element in the '
+                   'result list that acts as a placeholder for all blobs whose names begin with the same substring '
+                   'up to the appearance of the delimiter character. The delimiter may be a single character or a '
+                   'string.')
+        c.argument('include', help="Specify one or more additional datasets to include in the response. "
+                   "Options include: '(s)napshots', '(m)etadata', '(u)ncommittedblobs', '(c)opy', '(d)eleted', "
+                   "'(t)ags'.")
+        c.argument('marker', arg_type=marker_type)
+        c.argument('num_results', arg_type=num_results_type)
+        c.argument('prefix',
+                   help='Filters the results to return only blobs whose name begins with the specified prefix.')
+        c.argument('show_next_marker', action='store_true',
+                   help='Show nextMarker in result when specified.')
