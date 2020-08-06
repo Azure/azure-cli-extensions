@@ -264,17 +264,28 @@ def load_service_principals(config_path):
         return None
 
 
-def _invoke_deployment(cli_ctx, resource_group_name, deployment_name, template, parameters, validate, no_wait,
+def _invoke_deployment(cmd, resource_group_name, deployment_name, template, parameters, validate, no_wait,
                        subscription_id=None):
-    from azure.cli.core.profiles import ResourceType, get_sdk
-    DeploymentProperties = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, 'DeploymentProperties', mod='models')
+    from azure.cli.core.profiles import ResourceType
+    DeploymentProperties = cmd.get_models('DeploymentProperties', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
     properties = DeploymentProperties(template=template, parameters=parameters, mode='incremental')
-    smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+    smc = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                   subscription_id=subscription_id).deployments
     if validate:
         logger.info('==== BEGIN TEMPLATE ====')
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
+
+    if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+        Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        deployment = Deployment(properties=properties)
+
+        if validate:
+            validation_poller = smc.validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, deployment)
+
+    if validate:
         return smc.validate(resource_group_name, deployment_name, properties)
     return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
 
@@ -2016,7 +2027,7 @@ def _ensure_container_insights_for_monitoring(cmd, addon):
 
     deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
     # publish the Container Insights solution to the Log Analytics workspace
-    return _invoke_deployment(cmd.cli_ctx, resource_group, deployment_name, template, params,
+    return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
                               validate=False, no_wait=False, subscription_id=subscription_id)
 
 
