@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.60
++++++
+* Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
+
 0.4.59
 +++++
 * Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
