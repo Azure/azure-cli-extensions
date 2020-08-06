@@ -24,7 +24,6 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
-        c.argument('tags', tags_type)
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('https_proxy', options_list=['--proxy-https'], help='Https proxy URL to be used.')

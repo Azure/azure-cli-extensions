@@ -73,18 +73,17 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 
 
 def add_helm_repo(kube_config, kube_context):
-    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        repo_name = os.getenv('HELMREPONAME')
-        repo_url = os.getenv('HELMREPOURL')
-        cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
-        if kube_context:
-            cmd_helm_repo.extend(["--kube-context", kube_context])
-        response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
-        _, error_helm_repo = response_helm_repo.communicate()
-        if response_helm_repo.returncode != 0:
-            telemetry.set_exception(exception=error_helm_repo.decode("ascii"), fault_type=consts.Add_HelmRepo_Fault_Type,
-                                    summary='Failed to add helm repository')
-            raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
+    repo_name = os.getenv('HELMREPONAME')
+    repo_url = os.getenv('HELMREPOURL')
+    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
+    if kube_context:
+        cmd_helm_repo.extend(["--kube-context", kube_context])
+    response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
+    _, error_helm_repo = response_helm_repo.communicate()
+    if response_helm_repo.returncode != 0:
+        telemetry.set_exception(exception=error_helm_repo.decode("ascii"), fault_type=consts.Add_HelmRepo_Fault_Type,
+                                summary='Failed to add helm repository')
+        raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
 def get_helm_registry(profile, location):

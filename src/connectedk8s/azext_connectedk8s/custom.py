@@ -163,7 +163,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
 
     # Adding helm repo
-    utils.add_helm_repo(kube_config, kube_context)
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, location)
@@ -664,7 +665,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     # Adding helm repo
-    utils.add_helm_repo(kube_config, kube_context)
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, connected_cluster.location)
