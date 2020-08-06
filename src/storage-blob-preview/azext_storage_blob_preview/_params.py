@@ -19,6 +19,7 @@ from ._validators import (get_datetime_type, validate_metadata, get_permission_v
                           validate_azcopy_remove_arguments, as_user_validator, parse_storage_account,
                           validator_delete_retention_days, validate_delete_retention_days,
                           validate_fs_public_access, validate_logging_version)
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
@@ -178,7 +179,14 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    validator=validate_metadata)
         c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
+    with self.argument_context('storage blob') as c:
+        c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
+        c.argument('destination_path', help='The destination path that will be appended to the blob name.')
+
     with self.argument_context('storage blob list') as c:
+        from .track2_util import get_include_help_string
+        t_blob_include = self.get_sdk('_generated.models._azure_blob_storage_enums#ListBlobsIncludeItem',
+                                      resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_container_arguments()
         c.argument('delimiter',
                    help='When the request includes this parameter, the operation returns a BlobPrefix element in the '
@@ -186,11 +194,23 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'up to the appearance of the delimiter character. The delimiter may be a single character or a '
                    'string.')
         c.argument('include', help="Specify one or more additional datasets to include in the response. "
-                   "Options include: '(s)napshots', '(m)etadata', '(c)opy', '(d)eleted', '(v)ersions' "
-                   "'(t)ags'.", validator=validate_included_datasets_v2)
+                   "Options include: {}. Can be combined.".format(get_include_help_string(t_blob_include)),
+                   validator=validate_included_datasets_v2)
         c.argument('marker', arg_type=marker_type)
         c.argument('num_results', arg_type=num_results_type)
         c.argument('prefix',
                    help='Filters the results to return only blobs whose name begins with the specified prefix.')
         c.argument('show_next_marker', action='store_true',
                    help='Show nextMarker in result when specified.')
+
+    with self.argument_context('storage blob show') as c:
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        c.extra('snapshot', help='The snapshot parameter is an opaque DateTime value that, when present, '
+                                 'specifies the blob snapshot to retrieve.')
+        c.argument('lease_id', help='Required if the blob has an active lease.')
+        c.extra('version_id', min_api='2019-12-12',
+                help='The version id parameter is an opaque DateTime value that, when present, '
+                     'specifies the version of the blob to operate on.')
+
+

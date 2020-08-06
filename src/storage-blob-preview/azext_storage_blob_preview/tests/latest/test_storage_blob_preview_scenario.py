@@ -74,6 +74,10 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='version')
     def test_storage_blob_versioning(self, resource_group, storage_account):
+        self.cmd('storage  account blob-service-properties update -n {} -g {} --enable-versioning '.format(
+            storage_account, resource_group), checks=[
+            JMESPathCheck('isVersioningEnabled', True)
+        ])
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info, prefix="con")
 

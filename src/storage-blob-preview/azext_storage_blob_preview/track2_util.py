@@ -58,3 +58,12 @@ def underline_to_hump(underline_str):
     import re
     sub = re.sub(r'(_\w)', lambda x: x.group(1)[1].upper(), underline_str)
     return sub
+
+
+def get_include_help_string(include_list):
+    item = []
+    for include in include_list:
+        if include.value == 'uncommittedblobs':
+            continue
+        item.append('(' + include.value[0] + ')' + include[1:])
+    return ', '.join(item)

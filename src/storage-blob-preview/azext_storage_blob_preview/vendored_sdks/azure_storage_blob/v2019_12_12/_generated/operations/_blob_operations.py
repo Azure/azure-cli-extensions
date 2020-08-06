@@ -355,7 +355,7 @@ class BlobOperations(object):
         if snapshot is not None:
             query_parameters['snapshot'] = self._serialize.query("snapshot", snapshot, 'str')
         if version_id is not None:
-            query_parameters['versionid'] = self._serialize.query("version_id", version_id, 'str')
+            query_parameters['versionId'] = self._serialize.query("version_id", version_id, 'str')
         if timeout is not None:
             query_parameters['timeout'] = self._serialize.query("timeout", timeout, 'int', minimum=0)
 
