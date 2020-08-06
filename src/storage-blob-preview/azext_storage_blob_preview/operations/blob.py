@@ -617,7 +617,7 @@ def list_blobs(client, delimiter=None, include=None, marker=None, num_results=No
     result = list(next(pages))
 
     if show_next_marker:
-        next_marker = {"next_marker": pages.continuation_token}
+        next_marker = {"nextMarker": pages.continuation_token}
         result.append(next_marker)
     else:
         logger.warning('Next Marker:')
