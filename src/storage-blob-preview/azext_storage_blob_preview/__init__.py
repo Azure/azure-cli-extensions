@@ -133,11 +133,13 @@ class StorageArgumentContext(AzArgumentContext):
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
     def register_precondition_options(self):
-        self.extra('if_modified_since')
-        self.extra('if_unmodified_since')
-        self.extra('if_match', help="An ETag value, or the wildcard character (*). Specify this header to perform the "
+        self.extra('if_modified_since', arg_group='Precondition')
+        self.extra('if_unmodified_since', arg_group='Precondition')
+        self.extra('if_match', arg_group='Precondition',
+                   help="An ETag value, or the wildcard character (*). Specify this header to perform the "
                    "operation only if the resource's ETag matches the value specified.")
-        self.extra('if_none_match', help="An ETag value, or the wildcard character (*). Specify this header to perform "
+        self.extra('if_none_match', arg_group='Precondition',
+                   help="An ETag value, or the wildcard character (*). Specify this header to perform "
                    "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
                    "character (*) to perform the operation only if the resource does not exist, and fail the operation "
                    "if it does exist.")
@@ -217,7 +219,7 @@ Authentication failure. This may be caused by either invalid account key, connec
     def _register_data_plane_account_arguments(self, command_name):
         """ Add parameters required to create a storage client """
         from azure.cli.core.commands.parameters import get_resource_name_completion_list
-        from azure.cli.command_modules.storage._validators import validate_client_parameters
+        from ._validators import validate_client_parameters
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
