@@ -29,6 +29,7 @@ def load_arguments(self, _):
         c.argument('custom_private_subnet_name', options_list=['--private-subnet'], arg_group='Custom VNET', help='The name of a Private Subnet within the Virtual Network.')
         c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['standard', 'premium', 'trial']), help='The SKU tier name.')
         c.argument('prepare_encryption', action='store_true', is_preview=True, help='Flag to enable the Managed Identity for managed storage account to prepare for CMK encryption.')
+        c.argument('require_infrastructure_encryption', action='store_true', is_preview=True, help='Flag to enable the DBFS root file system with secondary layer of encryption with platform managed keys for data at rest.')
 
     with self.argument_context('databricks workspace update') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], id_part='name', help='The name of the workspace.')

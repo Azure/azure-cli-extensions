@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku)
+                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -61,6 +61,12 @@ def load_arguments(self, _):
             'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
+        c.argument('cpu', type=int, default=1,
+                   help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, default=1,
+                   help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int,
+                   default=1, help='Number of instance.')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
@@ -102,24 +108,14 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
                        help='Runtime version of used language')
-            c.argument('jvm_options', type=str,
+            c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
 
-    for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:
-        with self.argument_context(scope) as c:
-            c.argument('cpu', type=int, default=1,
-                       help='Number of virtual cpu cores per instance.')
-            c.argument('memory', type=int, default=1,
-                       help='Number of GB of memory per instance.')
-            c.argument('instance_count', type=int,
-                       default=1, help='Number of instance.')
-
-    for scope in ['spring-cloud app deploy', 'spring-cloud app scale']:
-        with self.argument_context(scope) as c:
-            c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-            c.argument('memory', type=int, help='Number of GB of memory per instance.')
-            c.argument('instance_count', type=int, help='Number of instance.')
+    with self.argument_context('spring-cloud app scale') as c:
+        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
@@ -133,6 +129,9 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
+        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int, help='Number of instance.')
 
     with self.argument_context('spring-cloud app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
