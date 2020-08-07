@@ -21,7 +21,7 @@ helps['connectedk8s connect'] = """
     - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
     - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy settings.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-destinations excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
 
 """
 
@@ -30,7 +30,7 @@ helps['connectedk8s update'] = """
     short-summary: Update properties of the onboarded agents.
     examples:
     - name: Update proxy values for the agents
-      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-destinations excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
 """
 
 helps['connectedk8s list'] = """

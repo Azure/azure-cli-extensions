@@ -598,7 +598,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
-                  kube_config=None, kube_context=None, no_wait=False, tags=None):
+                  kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -671,12 +671,14 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, connected_cluster.location)
 
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
-        registry_chart_path = registry_path.split(':')[0]
-        registry_path = registry_chart_path + ":" + connected_cluster.agent_version
+        agent_version = connected_cluster.agent_version
+        registry_path = reg_path_array[0] + ":" + connected_cluster.agent_version
 
-    agent_version = registry_path.split(':')[1]
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
     # Get Helm chart path

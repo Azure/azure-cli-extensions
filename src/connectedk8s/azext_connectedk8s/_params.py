@@ -20,7 +20,7 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('https_proxy', options_list=['--proxy-https'], help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], help='Http proxy URL to be used.')
-        c.argument('no_proxy', options_list=['--proxy-skip-destinations'], help='List of URLs/CIDRs for which proxy should not to be used.')
+        c.argument('no_proxy', options_list=['--proxy-skip-range'], help='List of URLs/CIDRs for which proxy should not to be used.')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -28,7 +28,7 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('https_proxy', options_list=['--proxy-https'], help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], help='Http proxy URL to be used.')
-        c.argument('no_proxy', options_list=['--proxy-skip-destinations'], help='List of URLs/CIDRs for which proxy should not to be used.')
+        c.argument('no_proxy', options_list=['--proxy-skip-range'], help='List of URLs/CIDRs for which proxy should not to be used.')
 
     with self.argument_context('connectedk8s list') as c:
         pass
