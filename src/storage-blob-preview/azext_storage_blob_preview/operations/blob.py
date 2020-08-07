@@ -528,7 +528,7 @@ def set_blob_tier_v2(client, tier, blob_type='block', rehydrate_priority=None, t
 
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, max_connections=2, lease_id=None,
-                tier=None, progress_callback=None, encryption_scope=None, **kwargs):
+                progress_callback=None, encryption_scope=None, **kwargs):
     """Upload a blob to a container."""
 
     upload_args = {
@@ -537,13 +537,6 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
         'max_concurrency': max_connections,
         'overwrite': True
     }
-
-    if blob_type == 'page':
-        if cmd.supported_api_version(min_api='2017-04-17') and tier:
-            upload_args['premium_page_blob_tier'] = tier
-    if blob_type == 'block':
-        if cmd.supported_api_version(min_api='2018-11-09') and tier:
-            upload_args['standard_blob_tier'] = tier
 
     if cmd.supported_api_version(min_api='2016-05-31'):
         upload_args['validate_content'] = validate_content

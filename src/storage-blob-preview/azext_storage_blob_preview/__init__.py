@@ -86,7 +86,7 @@ class StorageArgumentContext(AzArgumentContext):
         self.ignore('directory_name')
 
     def register_source_uri_arguments(self, validator, blob_only=False):
-        self.argument('copy_source', options_list=('--source-uri', '-u'), validator=validator, required=False,
+        self.argument('source_url', options_list=('--source-uri', '-u'), validator=validator, required=False,
                       arg_group='Copy Source')
         self.extra('source_sas', default=None, arg_group='Copy Source',
                    help='The shared access signature for the source storage account.')
@@ -132,13 +132,13 @@ class StorageArgumentContext(AzArgumentContext):
                           resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01', nargs='+',
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
-    def register_precondition_options(self):
-        self.extra('if_modified_since', arg_group='Precondition')
-        self.extra('if_unmodified_since', arg_group='Precondition')
-        self.extra('if_match', arg_group='Precondition',
+    def register_precondition_options(self, prefix=None):
+        self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition')
+        self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition')
+        self.extra('{}if_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform the "
                    "operation only if the resource's ETag matches the value specified.")
-        self.extra('if_none_match', arg_group='Precondition',
+        self.extra('{}if_none_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform "
                    "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
                    "character (*) to perform the operation only if the resource does not exist, and fail the operation "

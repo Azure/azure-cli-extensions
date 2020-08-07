@@ -40,8 +40,8 @@ def get_blob_types():
     return 'block', 'page', 'append'
 
 
-def get_blob_tier_names(cli_ctx, model):
-    t_blob_tier_model = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'blob.models#' + model)
+def get_blob_tier_names(cli_ctx, model, **kwargs):
+    t_blob_tier_model = get_sdk(cli_ctx, attr_args=model, **kwargs)
     return [v for v in dir(t_blob_tier_model) if not v.startswith('_')]
 
 

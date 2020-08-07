@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type,
+from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_tags
+from azure.cli.core.commands.parameters import (file_type, get_location_type, get_enum_type,
                                                 get_three_state_flag)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
 
@@ -153,6 +153,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'to retrieve.'
     )
 
+    tags_type = CLIArgumentType(
+        nargs='*', validator=validate_tags, min_api='2019-12-12',
+        help='space-separated tags: key[=value] [key[=value] ...]. Tags are case-sensitive. The tag set may '
+        'contain at most 10 tags.  Tag keys must be between 1 and 128 characters, and tag values must be '
+        'between 0 and 256 characters. Valid tag key and value characters include: lowercase and uppercase '
+        'letters, digits (0-9), space (` `), plus (+), minus (-), period (.), solidus (/), colon (:), equals '
+        '(=), underscore (_).'
+    )
+
     marker_type = CLIArgumentType(
         help='A string value that identifies the portion of the list of containers to be '
              'returned with the next listing operation. The operation returns the NextMarker value within '
@@ -167,21 +176,33 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'for retrieving the remaining of the results. Provide "*" to return all.'
     )
 
-    with self.argument_context('storage') as c:
-        c.argument('container_name', container_name_type)
-        c.argument('directory_name', directory_type)
-        c.argument('share_name', share_name_type)
-        c.argument('table_name', table_name_type)
-        c.argument('retry_wait', options_list=('--retry-interval',))
-        c.ignore('progress_callback')
-        c.argument('metadata', nargs='+',
-                   help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.',
-                   validator=validate_metadata)
-        c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+    with self.argument_context('storage blob copy start') as c:
+        from ._validators import validate_source_uri
+        t_rehydrate_priority = self.get_sdk('_generated.models._azure_blob_storage_enums#RehydratePriority',
+                                            resource_type=CUSTOM_DATA_STORAGE_BLOB)
 
-    with self.argument_context('storage blob') as c:
-        c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
-        c.argument('destination_path', help='The destination path that will be appended to the blob name.')
+        c.register_precondition_options(prefix='source_')
+        c.register_precondition_options(prefix='destination_')
+        c.register_source_uri_arguments(validator=validate_source_uri, blob_only=True)
+
+        c.ignore('incremental_copy')
+        c.extra('blob_name', options_list=['--destination-blob', '-b'], required=True,
+                help='Name of the destination blob. If the exists, it will be overwritten.')
+        c.extra('container_name', options_list=['--destination-container', '-c'], required=True,
+                help='The container name.')
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        c.extra('destination_lease', options_list='--destination-lease-id',
+                help='The lease ID specified for this header must match the lease ID of the estination blob. '
+                'If the request does not include the lease ID or it is not valid, the operation fails with status '
+                'code 412 (Precondition Failed).')
+        c.extra('source_lease', options_list='--source-lease-id', arg_group='Copy Source',
+                help='Specify this to perform the Copy Blob operation only if the lease ID given matches the '
+                'active lease ID of the source blob.')
+        c.extra('rehydrate_priority', arg_type=get_enum_type(t_rehydrate_priority),
+                help=' Indicate the priority with which to rehydrate an archived blob.')
+        c.extra('requires_sync', arg_type=get_three_state_flag(),
+                help='Enforce that the service will not return a response until the copy is complete.')
+        c.extra('tags', arg_type=tags_type)
 
     with self.argument_context('storage blob list') as c:
         from .track2_util import get_include_help_string
@@ -214,15 +235,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                      'specifies the version of the blob to operate on.')
 
     with self.argument_context('storage blob upload') as c:
-        from ._validators import page_blob_tier_validator, validate_encryption_scope_client_params
+        from ._validators import page_blob_tier_validator, blob_tier_validator, validate_encryption_scope_client_params, \
+            add_progress_callback_v2
         from .sdkutil import get_blob_types, get_blob_tier_names
 
         t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        t_premium_blob_tier = self.get_sdk('_models#PremiumPageBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        t_standard_blob_tier = self.get_sdk('_models#StandardBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
         c.register_blob_arguments()
         c.register_precondition_options()
         c.register_content_settings_argument(t_blob_content_settings, update=False)
 
-        c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter())
+        c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
+                   help='Path of the file to upload as the blob content.')
         c.argument('max_connections', type=int,
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
         c.argument('maxsize_condition', type=int,
@@ -230,16 +256,18 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
                    arg_type=get_enum_type(get_blob_types()))
         c.argument('validate_content', action='store_true', min_api='2016-05-31')
-        c.extra('no_progress', progress_type)
-        c.argument('tier', validator=page_blob_tier_validator,
-                   arg_type=get_enum_type(get_blob_tier_names(self.cli_ctx, 'PremiumPageBlobTier')),
-                   min_api='2017-04-17')
+        c.extra('no_progress', progress_type, validator=add_progress_callback_v2)
+        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
+                   help='The socket timeout(secs), used by the service to regulate data flow.')
+        c.extra('premium_page_blob_tier', options_list=['--premium-page-tier', '--tier'],
+                arg_type=get_enum_type(t_premium_blob_tier), min_api='2017-04-17', validator=page_blob_tier_validator,
+                help='A page blob tier value to set the blob to. The tier correlates to the size of the blob and '
+                'number of allowed IOPS. This is only applicable to page blobs on premium storage accounts.')
+        c.extra('standard_blob_tier', validator=blob_tier_validator,
+                arg_type=get_enum_type(t_standard_blob_tier), min_api='2019-02-02',
+                help='A standard blob tier value to set the blob to. For this version of the '
+                'library, this is only applicable to block blobs on standard storage accounts.')
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.extra('tags', min_api='2019-12-12',
-                help='Name-value pairs associated with the blob as tag. Tags are case-sensitive. The tag set may '
-                'contain at most 10 tags.  Tag keys must be between 1 and 128 characters, and tag values must be '
-                'between 0 and 256 characters. Valid tag key and value characters include: lowercase and uppercase '
-                'letters, digits (0-9), space (` `), plus (+), minus (-), period (.), solidus (/), colon (:), equals '
-                '(=), underscore (_).')
+        c.extra('tags',arg_type=tags_type)
