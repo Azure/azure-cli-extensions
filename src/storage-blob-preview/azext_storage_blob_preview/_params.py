@@ -176,11 +176,14 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'for retrieving the remaining of the results. Provide "*" to return all.'
     )
 
+    with self.argument_context('storage') as c:
+        c.argument('container_name', container_name_type)
+
     with self.argument_context('storage blob copy start') as c:
         from ._validators import validate_source_url
         t_rehydrate_priority = self.get_sdk('_generated.models._azure_blob_storage_enums#RehydratePriority',
                                             resource_type=CUSTOM_DATA_STORAGE_BLOB)
-
+        c.register_blob_arguments()
         c.register_precondition_options(prefix='source_')
         c.register_precondition_options(prefix='destination_')
         c.register_source_uri_arguments(validator=validate_source_url, blob_only=True)
@@ -188,8 +191,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.ignore('incremental_copy')
         c.extra('blob_name', options_list=['--destination-blob', '-b'], required=True,
                 help='Name of the destination blob. If the exists, it will be overwritten.')
-        c.extra('container_name', options_list=['--destination-container', '-c'], required=True,
-                help='The container name.')
+        c.argument('container_name', options_list=['--destination-container', '-c'], required=True,
+                   help='The container name.')
         c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
         c.extra('destination_lease', options_list='--destination-lease-id',
                 help='The lease ID specified for this header must match the lease ID of the estination blob. '
