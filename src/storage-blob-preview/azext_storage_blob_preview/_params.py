@@ -177,13 +177,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     )
 
     with self.argument_context('storage blob copy start') as c:
-        from ._validators import validate_source_uri
+        from ._validators import validate_source_url
         t_rehydrate_priority = self.get_sdk('_generated.models._azure_blob_storage_enums#RehydratePriority',
                                             resource_type=CUSTOM_DATA_STORAGE_BLOB)
 
         c.register_precondition_options(prefix='source_')
         c.register_precondition_options(prefix='destination_')
-        c.register_source_uri_arguments(validator=validate_source_uri, blob_only=True)
+        c.register_source_uri_arguments(validator=validate_source_url, blob_only=True)
 
         c.ignore('incremental_copy')
         c.extra('blob_name', options_list=['--destination-blob', '-b'], required=True,

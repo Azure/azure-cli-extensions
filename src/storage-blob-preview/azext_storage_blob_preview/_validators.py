@@ -261,7 +261,7 @@ def process_blob_source_uri(cmd, namespace):
     namespace.copy_source = uri
 
 
-def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
+def validate_source_url(cmd, namespace):  # pylint: disable=too-many-statements
     from .util import create_short_lived_blob_sas, create_short_lived_file_sas
     usage_string = \
         'Invalid usage: {}. Supply only one of the following argument sets to specify source:' \
@@ -290,7 +290,7 @@ def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
     source_sas = ns.pop('source_sas', None)
 
     # source in the form of an uri
-    uri = ns.get('copy_source', None)
+    uri = ns.get('source_url', None)
     if uri:
         if any([container, blob, snapshot, share, path, file_snapshot, source_account_name,
                 source_account_key]):
@@ -363,7 +363,7 @@ def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
         '&'.join(query_params),
         cmd.cli_ctx.cloud.suffixes.storage_endpoint)
 
-    namespace.copy_source = uri
+    namespace.source_url = uri
 
 
 def validate_blob_type(namespace):
