@@ -562,7 +562,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd(
             'network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}',
             checks=[
-                self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+                self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
                 self.check('name', '{collectiongroup}')
             ])
 
