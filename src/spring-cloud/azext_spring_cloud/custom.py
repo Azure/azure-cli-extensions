@@ -83,6 +83,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         app_insights_target_status = True
         if resource_properties.trace.enabled is False:
             update_app_insights = True
+        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+            update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
         if resource_properties.trace.enabled is True:
