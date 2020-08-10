@@ -67,3 +67,25 @@ def get_include_help_string(include_list):
             continue
         item.append('(' + include.value[0] + ')' + include[1:])
     return ', '.join(item)
+
+
+def list_generator(pages, num_results):
+    result = []
+
+    # get first page items
+    page = list(next(pages))
+    result += page
+
+    while True:
+        if not pages.continuation_token:
+            break
+
+        # handle num results
+        if num_results is not None:
+            if num_results == len(result):
+                break
+
+        page = list(next(pages))
+        result += page
+
+    return result

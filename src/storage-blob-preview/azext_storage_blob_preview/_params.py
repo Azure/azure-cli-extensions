@@ -170,7 +170,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
              'where the previous generator stopped.')
 
     num_results_type = CLIArgumentType(
-        type=int, default=5000, help='Specify the maximum number to return. If the request does not specify '
+        default=5000, validator=validate_storage_data_plane_list,
+        help='Specify the maximum number to return. If the request does not specify '
         'num_results, or specifies a value greater than 5000, the server will return up to 5000 items. Note that '
         'if the listing operation crosses a partition boundary, then the service will return a continuation token '
         'for retrieving the remaining of the results. Provide "*" to return all.'

@@ -486,20 +486,23 @@ def _get_datetime_from_string(dt_str):
 
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,
                show_next_marker=None, **kwargs):
+    from ..track2_util import list_generator
+
     if delimiter:
         generator = client.walk_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
     else:
         generator = client.list_blobs(name_starts_with=prefix, include=include, results_per_page=num_results, **kwargs)
 
-    pages = generator.by_page(continuation_token=marker)
-    result = list(next(pages))
+    pages = generator.by_page(continuation_token=marker)  # BlobPropertiesPaged
+    result = list_generator(pages=pages, num_results=num_results)
 
     if show_next_marker:
         next_marker = {"nextMarker": pages.continuation_token}
         result.append(next_marker)
     else:
-        logger.warning('Next Marker:')
-        logger.warning(pages.continuation_token)
+        if pages.continuation_token:
+            logger.warning('Next Marker:')
+            logger.warning(pages.continuation_token)
 
     return result
 
