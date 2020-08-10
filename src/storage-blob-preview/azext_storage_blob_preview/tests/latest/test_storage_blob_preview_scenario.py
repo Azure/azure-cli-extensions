@@ -14,7 +14,7 @@ from ..storage_test_util import StorageScenarioMixin
 
 class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
-    @StorageAccountPreparer(name_prefix='version')
+    @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', sku='Standard_RAGZRS')
     def test_storage_blob_list_scenarios(self, resource_group, storage_account):
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info, prefix="con")
@@ -70,6 +70,13 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob list -c {} --delimiter "/"', account_info, container) \
             .assert_with_checks(JMESPathCheck('length(@)', 1),
                                 JMESPathCheck('[0].name', 'dir/'))
+
+        # Test secondary location
+        account_name = account_info[0] + '-secondary'
+        account_key = account_info[1]
+        self.cmd('storage blob list -c {} --account-name {} --account-key {} '.format(
+            container, account_name, account_key)).assert_with_checks(
+            JMESPathCheck('length(@)', 2))
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='version')
