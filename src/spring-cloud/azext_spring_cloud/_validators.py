@@ -378,6 +378,8 @@ def validate_vnet_required_parameters(namespace):
        not namespace.reserved_cidr_range and \
        not namespace.vnet:
         return
+    if namespace.sku and namespace.sku.lower() == 'basic':
+        raise CLIError('Virtual Network Injection is not supported for Basic tier.')
     if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
         raise CLIError(
