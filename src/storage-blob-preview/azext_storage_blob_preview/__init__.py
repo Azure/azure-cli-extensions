@@ -132,7 +132,7 @@ class StorageArgumentContext(AzArgumentContext):
                           resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01', nargs='+',
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
-    def register_precondition_options(self, prefix=None):
+    def register_precondition_options(self, prefix=''):
         self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition')
         self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition')
         self.extra('{}if_match'.format(prefix), arg_group='Precondition',

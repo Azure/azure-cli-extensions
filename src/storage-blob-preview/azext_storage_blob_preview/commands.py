@@ -45,4 +45,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=show_exception_handler)
         g.storage_custom_command_oauth('upload', 'upload_blob')
         g.storage_command_oauth('copy start', 'start_copy_from_url')
+        g.storage_command_oauth('delete', 'delete_blob')
+        g.storage_custom_command_oauth('download', 'download_blob')
 

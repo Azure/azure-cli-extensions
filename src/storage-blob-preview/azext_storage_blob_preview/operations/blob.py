@@ -484,6 +484,15 @@ def _get_datetime_from_string(dt_str):
     raise ValueError("datetime string '{}' not valid. Valid example: 2000-12-31T12:59:59Z".format(dt_str))
 
 
+def download_blob(client, file_path, open_mode='wb', progress_callback=None, socket_timeout=None, **kwargs):
+    if progress_callback:
+        kwargs['raw_response_hook'] = progress_callback
+    download_stream = client.download_blob(**kwargs)
+    with open(file_path, open_mode) as stream:
+        blob = download_stream.readinto(stream)
+    return blob
+
+
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,
                show_next_marker=None, **kwargs):
     from ..track2_util import list_generator
@@ -507,13 +516,13 @@ def list_blobs(client, delimiter=None, include=None, marker=None, num_results=No
     return result
 
 
-def show_blob_v2(cmd, client, lease_id=None, **kwargs):
+def show_blob_v2(cmd, client, **kwargs):
 
-    blob = client.get_blob_properties(lease=lease_id, **kwargs)
+    blob = client.get_blob_properties(**kwargs)
 
     page_ranges = None
     if blob.blob_type == cmd.get_models('_models#BlobType', resource_type=ResourceType.DATA_STORAGE_BLOB).PageBlob:
-        page_ranges = client.get_page_ranges(lease=lease_id, **kwargs)
+        page_ranges = client.get_page_ranges(**kwargs)
 
     blob.page_ranges = page_ranges
 

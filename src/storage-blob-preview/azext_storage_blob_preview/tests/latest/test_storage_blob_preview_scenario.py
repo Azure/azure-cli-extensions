@@ -95,5 +95,12 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
                          container, local_file, blob_name)
 
-        self.storage_cmd('storage blob list -c {}  --num-results 1', account_info, container)
+        self.storage_cmd('storage blob show -c {} -n {} --version-id {}', account_info, container)
+
+        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+
+        self.storage_cmd('storage blob delete -c {} -n {} --version-id {}', account_info, container)
+
+
+
 

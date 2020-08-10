@@ -144,8 +144,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
              'and 4-digit octal notation (e.g. 0766) are supported. For more information, please refer to https://'
              'docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control#levels-of-permission.')
 
-    timeout_type = CLIArgumentType(
-        help='Request timeout in seconds. Applies to each call to the service.', type=int
+    lease_type = CLIArgumentType(
+        options_list='--lease-id', help='Required if the blob has an active lease.'
     )
 
     snapshot_type = CLIArgumentType(
@@ -177,8 +177,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         'for retrieving the remaining of the results. Provide "*" to return all.'
     )
 
+    version_id_type = CLIArgumentType(
+        help='The version id parameter is an opaque DateTime value that, when present, specifies the version of '
+        'the blob to delete.', min_api='2019-12-12'
+    )
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
+
+    with self.argument_context('storage blob') as c:
+        c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
 
     with self.argument_context('storage blob copy start') as c:
         from ._validators import validate_source_url
@@ -187,11 +194,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
         c.register_precondition_options(prefix='source_')
         c.register_precondition_options(prefix='destination_')
-        c.register_source_uri_arguments(validator=validate_source_url, blob_only=True)
+        c.register_source_uri_arguments(validator=validate_source_url)
 
         c.ignore('incremental_copy')
-        c.extra('blob_name', options_list=['--destination-blob', '-b'], required=True,
-                help='Name of the destination blob. If the exists, it will be overwritten.')
+        c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
+                   help='Name of the destination blob. If the exists, it will be overwritten.')
         c.argument('container_name', options_list=['--destination-container', '-c'], required=True,
                    help='The container name.')
         c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
@@ -207,6 +214,46 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('requires_sync', arg_type=get_three_state_flag(),
                 help='Enforce that the service will not return a response until the copy is complete.')
         c.extra('tags', arg_type=tags_type)
+
+    with self.argument_context('storage blob delete') as c:
+        c.register_blob_arguments()
+        c.register_precondition_options()
+
+        c.extra('lease', lease_type)
+        c.extra('snapshot', snapshot_type)
+        c.extra('version_id', version_id_type)
+
+    with self.argument_context('storage blob download') as c:
+        from ._validators import add_progress_callback_v2
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        c.argument('file_path',  options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
+                   help='Path of file to write out to.')
+        c.extra('start_range', type=int,
+                help='Start of byte range to use for downloading a section of the blob. If no end_range is given, '
+                'all bytes after the start_range will be downloaded. The start_range and end_range params are '
+                'inclusive. Ex: start_range=0, end_range=511 will download first 512 bytes of blob.')
+        c.extra('end_range', type=int,
+                help='End of byte range to use for downloading a section of the blob. If end_range is given, '
+                'start_range must be provided. The start_range and end_range params are inclusive. Ex: start_range=0, '
+                'end_range=511 will download first 512 bytes of blob.')
+        c.extra('no_progress', progress_type, validator=add_progress_callback_v2)
+        c.extra('snapshot', snapshot_type)
+        c.extra('lease', lease_type)
+        c.extra('version_id', version_id_type)
+        c.extra('max_concurrency', options_list='--max-connections', type=int, default=2,
+                help='The number of parallel connections with which to download.')
+        c.argument('open_mode', help='Mode to use when opening the file. Note that specifying append only open_mode '
+                   'prevents parallel download. So, max_connections must be set to 1 if this open_mode is used.')
+        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
+                   help='The socket timeout(secs), used by the service to regulate data flow.')
+        c.extra('validate_content', action='store_true', min_api='2016-05-31',
+                help='If true, calculates an MD5 hash for each chunk of the blob. The storage service checks the '
+                'hash of the content that has arrived with the hash that was sent. This is primarily valuable for '
+                'detecting bitflips on the wire if using http instead of https, as https (the default), will already '
+                'validate. Note that this MD5 hash is not stored with the blob. Also note that if enabled, the '
+                'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
+                'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
     with self.argument_context('storage blob list') as c:
         from .track2_util import get_include_help_string
@@ -231,12 +278,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob show') as c:
         c.register_blob_arguments()
         c.register_precondition_options()
-        c.extra('snapshot', help='The snapshot parameter is an opaque DateTime value that, when present, '
-                                 'specifies the blob snapshot to retrieve.')
-        c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.extra('version_id', min_api='2019-12-12',
-                help='The version id parameter is an opaque DateTime value that, when present, '
-                     'specifies the version of the blob to operate on.')
+        c.extra('snapshot', snapshot_type)
+        c.extra('lease', lease_type)
+        c.extra('version_id', version_id_type)
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import page_blob_tier_validator, blob_tier_validator, validate_encryption_scope_client_params, \
@@ -274,4 +318,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.extra('tags',arg_type=tags_type)
+        c.extra('tags', arg_type=tags_type)
