@@ -22,7 +22,12 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 @try_manual
 def setup(test, rg):
-    pass
+    import random
+    letters = 'abcdefghigklmnopqrstuvwxyz'
+    eventhub_namespace = ''.join(random.choice(letters) for i in range(20))
+    test.kwargs.update({'eventhub_namespace': eventhub_namespace, 'eventhub_name': 'test'})
+    test.cmd('az eventhubs namespace create --name {eventhub_namespace} -g {rg}')
+    test.cmd('az eventhubs eventhub create --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
 
 
 # EXAMPLE: kustoclusterscreateorupdate
@@ -348,7 +353,7 @@ def step_kustodataconnectionvalidation(test, rg):
              '--database-name "KustoDatabase8" '
              '--data-connection-name "{DataConnections8}" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/11d5f159-a21d-4a6c-8053-c3aae30057cf/resourceGroups/RPTestResourceGroupDoNotDelete/providers/Microsoft.EventHub/namespaces/RpTestEventHubNamespaceDoNotDelete/eventhubs/rptesteventhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -362,7 +367,7 @@ def step_kustodataconnectionscreateorupdate(test, rg):
              '--database-name "KustoDatabase8" '
              '--location "southcentralus" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/11d5f159-a21d-4a6c-8053-c3aae30057cf/resourceGroups/RPTestResourceGroupDoNotDelete/providers/Microsoft.EventHub/namespaces/RpTestEventHubNamespaceDoNotDelete/eventhubs/rptesteventhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -387,7 +392,7 @@ def step_kustodataconnectionsupdate(test, rg):
              '--database-name "KustoDatabase8" '
              '--location "southcentralus" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/11d5f159-a21d-4a6c-8053-c3aae30057cf/resourceGroups/RPTestResourceGroupDoNotDelete/providers/Microsoft.EventHub/namespaces/RpTestEventHubNamespaceDoNotDelete/eventhubs/rptesteventhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
