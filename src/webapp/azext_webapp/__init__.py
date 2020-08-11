@@ -69,7 +69,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('src', options_list=['--src'], help='Path of the file to be deployed')
             c.argument('deploy_type', options_list=['--type'], help='Type of deployment requested')
             c.argument('is_async', options_list=['--async'], help='Asynchronous deployment', type=bool)
-            c.argument('target_path', options_list=['--target-path'], help='Target path to which the file will be deployed to.')
+            c.argument('target_path', options_list=['--target-path'], help='Target path relative to wwwroot to which the file will be deployed to.')
             c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
             c.argument('slot', help="Name of the deployment slot to use")
 

@@ -63,4 +63,9 @@ helps['webapp container up'] = """
 helps['webapp deploy'] = """
     type: command
     short-summary: Deploys a provided artifact to Azure Web Apps.
+    examples:
+    - name: Deploy a war file asynchronously.
+      text: az webapp deploy --resource-group ResouceGroup --name AppName --src SourcePath --type war --async IsAsync
+    - name: Deploy a static text file to wwwroot/staticfiles/test.txt
+      text: az webapp deploy --resource-group ResouceGroup --name AppName --src SourcePath --type static --target-path staticfiles/test.txt 
 """

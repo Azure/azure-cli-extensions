@@ -314,13 +314,13 @@ def _should_create_new_asp(cmd, rg_name, asp_name, location):
 
 def enable_one_deploy(cmd, resource_group_name, name, src, deploy_type=None, is_async=None, target_path=None, timeout=None, slot=None):
     import ntpath
-    logger.warning("Preparing for deployment")
+    logger.info("Preparing for deployment")
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
 
     try:
         scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
     except ValueError:
-        raise CLIError('Failed to fetch scm url for function app')
+        raise CLIError('Failed to fetch scm url for for app {}'.format(name))
 
     # Interpret deployment type from the file extension if the type parameter is not passed
     if deploy_type is None:
