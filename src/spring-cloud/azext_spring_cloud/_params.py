@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options)
+                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options, validate_tracing_parameters)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -40,12 +40,15 @@ def load_arguments(self, _):
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
             c.argument('app_insights_key',
-                       help="Instrumentation key of the existing Application Insights to be added for the distributed tracing")
+                       help="Instrumentation key of the existing Application Insights to be added for the distributed tracing",
+                       validator=validate_tracing_parameters)
             c.argument('app_insights',
-                       help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.")
+                       help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                       validator=validate_tracing_parameters)
             c.argument('disable_distributed_tracing',
                        arg_type=get_three_state_flag(),
-                       help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.")
+                       help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
+                       validator=validate_tracing_parameters)
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
