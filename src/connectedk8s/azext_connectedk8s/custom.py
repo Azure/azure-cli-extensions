@@ -40,7 +40,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None):
+                        kube_config=None, kube_context=None, values_file=None, token_based_onboarding=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -105,69 +105,81 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     utils.validate_location(cmd, location)
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
 
-    # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context)
-    if release_namespace is not None:
-        # Loading config map
-        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
-        try:
-            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
-        except Exception as e:  # pylint: disable=broad-except
-            telemetry.set_exception(exception=e, fault_type=consts.Read_ConfigMap_Fault_Type,
-                                    summary='Unable to read ConfigMap')
-            raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
-        configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
-        configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
-        if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
-            if (configmap_rg_name.lower() == resource_group_name.lower() and
-                    configmap_cluster_name.lower() == cluster_name.lower()):
-                # Re-put connected cluster
-                public_key = client.get(configmap_rg_name,
-                                        configmap_cluster_name).agent_public_key_certificate
-                cc = generate_request_payload(configuration, location, public_key, tags)
-                try:
-                    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
-                                       cluster_name=cluster_name, connected_cluster=cc)
-                except CloudError as ex:
-                    telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
-                                            summary='Unable to create connected cluster resource')
-                    raise CLIError(ex)
+    # If this is direct access token based onboarding, this will be done by connect-agent itself.
+    # Therefore, this is done only if it is not token_based_onboarding.
+    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+        # Check Release Existance
+        release_namespace = get_release_namespace(kube_config, kube_context)
+        if release_namespace is not None:
+            # Loading config map
+            api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+            try:
+                configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+            except Exception as e:  # pylint: disable=broad-except
+                telemetry.set_exception(exception=e, fault_type=consts.Read_ConfigMap_Fault_Type,
+                                        summary='Unable to read ConfigMap')
+                raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
+            configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
+            configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
+            if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+                if (configmap_rg_name.lower() == resource_group_name.lower() and
+                        configmap_cluster_name.lower() == cluster_name.lower()):
+                    # Re-put connected cluster
+                    public_key = client.get(configmap_rg_name,
+                                            configmap_cluster_name).agent_public_key_certificate
+                    cc = generate_request_payload(configuration, location, public_key, tags)
+                    try:
+                        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
+                                        cluster_name=cluster_name, connected_cluster=cc)
+                    except CloudError as ex:
+                        telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
+                                                summary='Unable to create connected cluster resource')
+                        raise CLIError(ex)
+                else:
+                    telemetry.set_user_fault()
+                    telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
+                                            summary='Kubernetes cluster already onboarded')
+                    raise CLIError("The kubernetes cluster you are trying to onboard " +
+                                "is already onboarded to the resource group" +
+                                " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
             else:
-                telemetry.set_user_fault()
-                telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
-                                        summary='Kubernetes cluster already onboarded')
-                raise CLIError("The kubernetes cluster you are trying to onboard " +
-                               "is already onboarded to the resource group" +
-                               " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
+                # Cleanup agents and continue with put
+                delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
         else:
-            # Cleanup agents and continue with put
-            delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
-    else:
-        if connected_cluster_exists(client, resource_group_name, cluster_name):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
-                                    summary='Connected cluster resource already exists')
-            raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
-                           "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
-                           "to Azure, specify different resource name or resource group name.")
+            if connected_cluster_exists(client, resource_group_name, cluster_name):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
+                                        summary='Connected cluster resource already exists')
+                raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
+                            "in the resource group {} ".format(resource_group_name) +
+                            "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                            "to Azure, specify different resource name or resource group name.")
 
-    # Resource group Creation
-    if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
-        resource_group_params = {'location': location}
-        try:
-            resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Create_ResourceGroup_Fault_Type,
-                                    summary='Failed to create the resource group')
-            raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
+        # Resource group Creation
+        if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
+            resource_group_params = {'location': location}
+            try:
+                resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
+            except Exception as e:
+                telemetry.set_exception(exception=e, fault_type=consts.Create_ResourceGroup_Fault_Type,
+                                        summary='Failed to create the resource group')
+                raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
+
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, location)
+    # registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, location)
+    if os.getenv('HELMREGISTRY'):
+        registry_path = os.getenv('HELMREGISTRY')
+    else:
+        if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+            registry_path = utils.get_helm_registry(profile, location)
+        else:
+            # temp = utils.get_helm_registry(profile, location)
+            registry_path = utils.get_helm_registry_using_token(values_file, location)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -176,42 +188,75 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Get helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    # Generate public-private key pair
-    try:
-        key_pair = RSA.generate(4096)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.KeyPair_Generate_Fault_Type,
-                                summary='Failed to generate public-private key pair')
-        raise CLIError("Failed to generate public-private key pair. " + str(e))
-    try:
-        public_key = get_public_key(key_pair)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.PublicKey_Export_Fault_Type,
-                                summary='Failed to export public key')
-        raise CLIError("Failed to export public key." + str(e))
-    try:
-        private_key_pem = get_private_key(key_pair)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.PrivateKey_Export_Fault_Type,
-                                summary='Failed to export private key')
-        raise CLIError("Failed to export private key." + str(e))
 
-    # Helm Install
-    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
-                        "--set", "global.subscriptionId={}".format(subscription_id),
-                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
-                        "--set", "global.resourceGroupName={}".format(resource_group_name),
-                        "--set", "global.resourceName={}".format(cluster_name),
-                        "--set", "global.location={}".format(location),
-                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
-                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
-                        "--set", "systemDefaultValues.spnOnboarding=false",
-                        "--kubeconfig", kube_config, "--output", "json"]
-    if kube_context:
-        cmd_helm_install.extend(["--kube-context", kube_context])
+    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+        # Generate public-private key pair
+        try:
+            key_pair = RSA.generate(4096)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.KeyPair_Generate_Fault_Type,
+                                    summary='Failed to generate public-private key pair')
+            raise CLIError("Failed to generate public-private key pair. " + str(e))
+        try:
+            public_key = get_public_key(key_pair)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.PublicKey_Export_Fault_Type,
+                                    summary='Failed to export public key')
+            raise CLIError("Failed to export public key." + str(e))
+        try:
+            private_key_pem = get_private_key(key_pair)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.PrivateKey_Export_Fault_Type,
+                                    summary='Failed to export private key')
+            raise CLIError("Failed to export private key." + str(e))
+
+        print(chart_path)
+
+        # Helm Install
+        cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                            "--set", "global.subscriptionId={}".format(subscription_id),
+                            "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                            "--set", "global.resourceGroupName={}".format(resource_group_name),
+                            "--set", "global.resourceName={}".format(cluster_name),
+                            "--set", "global.location={}".format(location),
+                            "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                            "--set", "global.httpsProxy={}".format(https_proxy),
+                            "--set", "global.httpProxy={}".format(http_proxy),
+                            "--set", "global.noProxy={}".format(no_proxy),
+                            "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
+                            "--set", "systemDefaultValues.spnOnboarding=false",
+                            "--kubeconfig", kube_config, "--output", "json"]
+        if kube_context:
+            cmd_helm_install.extend(["--kube-context", kube_context])
+    else:
+        # Helm Install directly using msi token
+        # MSI token should be given in globals.clientSecretOrToken
+        # and other required parameters as values in values_file
+
+
+        #replace chart_path_test with chart_path
+        # chart_path_test = os.path.join('C:\\Users\\arpgu\\source\\repos\\ClusterConfigurationAgent\\azure-arc-k8sagents')
+        logger.warning("Doing access token based onboarding...\n")
+        values_file = get_values_file_path(values_file)
+        if values_file is None:
+            raise CLIError("For token based onboarding, please provide access token in a file, and provide file path through --values-file or -f")
+        trim_file_path(values_file)
+        cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                            "--set", "global.subscriptionId={}".format(subscription_id),
+                            "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                            "--set", "global.resourceGroupName={}".format(resource_group_name),
+                            "--set", "global.resourceName={}".format(cluster_name),
+                            "--set", "global.location={}".format(location),
+                            "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                            "--set", "global.httpsProxy={}".format(https_proxy),
+                            "--set", "global.httpProxy={}".format(http_proxy),
+                            "--set", "global.noProxy={}".format(no_proxy),
+                            "--set", "systemDefaultValues.tokenBasedOnboarding={}".format("true"),
+                            "-f", values_file,
+                            "--kubeconfig", kube_config, "--output", "json"]
+        if kube_context:
+            cmd_helm_install.extend(["--kube-context", kube_context])
+
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
@@ -219,18 +264,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                 summary='Unable to install helm release')
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
-    # Create connected cluster resource
-    cc = generate_request_payload(configuration, location, public_key, tags)
-    try:
-        put_cc_response = sdk_no_wait(no_wait, client.create,
-                                      resource_group_name=resource_group_name,
-                                      cluster_name=cluster_name, connected_cluster=cc)
-        if no_wait:
-            return put_cc_response
-    except CloudError as ex:
-        telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
-                                summary='Unable to create connected cluster resource')
-        raise CLIError(ex)
+
+    # Create connected cluster resource if not token base onboarding
+    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+        cc = generate_request_payload(configuration, location, public_key, tags)
+        try:
+            put_cc_response = sdk_no_wait(no_wait, client.create,
+                                          resource_group_name=resource_group_name,
+                                          cluster_name=cluster_name, connected_cluster=cc)
+            if no_wait:
+                return put_cc_response
+        except CloudError as ex:
+            telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
+                                    summary='Unable to create connected cluster resource')
+            raise CLIError(ex)
+
 
     # Getting total number of pods scheduled to run in azure-arc namespace
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
@@ -243,8 +291,23 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_exception(exception=e, fault_type=consts.Check_PodStatus_Fault_Type,
                                 summary='Failed to check arc agent pods statuses')
         logger.warning("Failed to check arc agent pods statuses: %s", e)
+    
+    # Returning response only when it is not token based onboarding, 
+    # Because token based onboarding is done by connect-agent independently. 
+    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+        return put_cc_response
 
-    return put_cc_response
+
+def get_values_file_path(values_file):
+    if values_file is None:
+        values_file = os.getenv('VALUESPATH')
+    return values_file
+
+def trim_file_path(values_file):
+    if (values_file.startswith("'") or values_file.startswith('"')):
+        values_file = values_file[1:]
+    if (values_file.endswith("'") or values_file.endswith('"')):
+        values_file = values_file[:-1]
 
 
 def set_kube_config(kube_config):

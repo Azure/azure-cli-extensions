@@ -7,6 +7,7 @@ import os
 import subprocess
 from subprocess import Popen, PIPE
 import requests
+import yaml
 
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -90,6 +91,8 @@ def get_helm_registry(profile, location):
     cred, _, _ = profile.get_login_credentials(
         resource='https://management.core.windows.net/')
     token = cred._token_retriever()[2].get('accessToken')  # pylint: disable=protected-access
+    print(token)
+    print("\n\n")
 
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     query_parameters = {}
@@ -103,6 +106,40 @@ def get_helm_registry(profile, location):
                                 summary='Error while fetching helm chart registry path')
         raise CLIError("Error while fetching helm chart registry path: " + str(e))
     if response.status_code == 200:
+        return response.json().get('repositoryPath')
+    telemetry.set_exception(exception=str(response.json()), fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
+                            summary='Error while fetching helm chart registry path')
+    raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))
+
+
+def get_helm_registry_using_token(values_file, location):
+    if values_file is None:
+        values_file = os.getenv('VALUESPATH')
+    if values_file is None:
+        raise CLIError("For token based onboarding, please provide access token in a file, and provide file path through --values-file or -f")
+    token = ""
+    with open(values_file) as f:
+        try:
+            docs = yaml.safe_load(f)
+            token = docs['global']['clientSecretOrToken']
+            print(docs)
+            print(token)
+        except Exception as e:
+            raise CLIError("Error while reading values yml file: {}".format(e))
+
+    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    query_parameters = {}
+    query_parameters['releaseTrain'] = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+    header_parameters = {}
+    header_parameters['Authorization'] = "Bearer {}".format(str(token))
+    try:
+        response = requests.post(get_chart_location_url, params=query_parameters, headers=header_parameters)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
+                                summary='Error while fetching helm chart registry path')
+        raise CLIError("Error while fetching helm chart registry path: " + str(e))
+    if response.status_code == 200:
+        print("200")
         return response.json().get('repositoryPath')
     telemetry.set_exception(exception=str(response.json()), fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                             summary='Error while fetching helm chart registry path')
