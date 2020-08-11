@@ -19,6 +19,7 @@ try:
     from ._models_py3 import ClusterResourceProperties
     from ._models_py3 import ConfigServerGitProperty
     from ._models_py3 import ConfigServerProperties
+    from ._models_py3 import ConfigServerResource
     from ._models_py3 import ConfigServerSettings
     from ._models_py3 import CustomDomainProperties
     from ._models_py3 import CustomDomainResource
@@ -35,8 +36,11 @@ try:
     from ._models_py3 import ManagedIdentityProperties
     from ._models_py3 import MetricDimension
     from ._models_py3 import MetricSpecification
+    from ._models_py3 import MonitoringSettingProperties
+    from ._models_py3 import MonitoringSettingResource
     from ._models_py3 import NameAvailability
     from ._models_py3 import NameAvailabilityParameters
+    from ._models_py3 import NetworkProfile
     from ._models_py3 import OperationDetail
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationProperties
@@ -57,7 +61,6 @@ try:
     from ._models_py3 import SkuCapacity
     from ._models_py3 import TemporaryDisk
     from ._models_py3 import TestKeys
-    from ._models_py3 import TraceProperties
     from ._models_py3 import TrackedResource
     from ._models_py3 import UserSourceInfo
 except (SyntaxError, ImportError):
@@ -70,6 +73,7 @@ except (SyntaxError, ImportError):
     from ._models import ClusterResourceProperties
     from ._models import ConfigServerGitProperty
     from ._models import ConfigServerProperties
+    from ._models import ConfigServerResource
     from ._models import ConfigServerSettings
     from ._models import CustomDomainProperties
     from ._models import CustomDomainResource
@@ -86,8 +90,11 @@ except (SyntaxError, ImportError):
     from ._models import ManagedIdentityProperties
     from ._models import MetricDimension
     from ._models import MetricSpecification
+    from ._models import MonitoringSettingProperties
+    from ._models import MonitoringSettingResource
     from ._models import NameAvailability
     from ._models import NameAvailabilityParameters
+    from ._models import NetworkProfile
     from ._models import OperationDetail
     from ._models import OperationDisplay
     from ._models import OperationProperties
@@ -108,7 +115,6 @@ except (SyntaxError, ImportError):
     from ._models import SkuCapacity
     from ._models import TemporaryDisk
     from ._models import TestKeys
-    from ._models import TraceProperties
     from ._models import TrackedResource
     from ._models import UserSourceInfo
 from ._paged_models import AppResourcePaged
@@ -121,9 +127,9 @@ from ._paged_models import ResourceSkuPaged
 from ._paged_models import ServiceResourcePaged
 from ._app_platform_management_client_enums import (
     ProvisioningState,
-    ConfigServerState,
-    TraceProxyState,
     ManagedIdentityType,
+    ConfigServerState,
+    MonitoringSettingState,
     TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
@@ -145,6 +151,7 @@ __all__ = [
     'ClusterResourceProperties',
     'ConfigServerGitProperty',
     'ConfigServerProperties',
+    'ConfigServerResource',
     'ConfigServerSettings',
     'CustomDomainProperties',
     'CustomDomainResource',
@@ -161,8 +168,11 @@ __all__ = [
     'ManagedIdentityProperties',
     'MetricDimension',
     'MetricSpecification',
+    'MonitoringSettingProperties',
+    'MonitoringSettingResource',
     'NameAvailability',
     'NameAvailabilityParameters',
+    'NetworkProfile',
     'OperationDetail',
     'OperationDisplay',
     'OperationProperties',
@@ -183,7 +193,6 @@ __all__ = [
     'SkuCapacity',
     'TemporaryDisk',
     'TestKeys',
-    'TraceProperties',
     'TrackedResource',
     'UserSourceInfo',
     'ServiceResourcePaged',
@@ -195,9 +204,9 @@ __all__ = [
     'OperationDetailPaged',
     'ResourceSkuPaged',
     'ProvisioningState',
-    'ConfigServerState',
-    'TraceProxyState',
     'ManagedIdentityType',
+    'ConfigServerState',
+    'MonitoringSettingState',
     'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',
