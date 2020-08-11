@@ -10,9 +10,9 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 try:
-    from .manual.version import VERSION
+    from azext_desktopvirtualization.manual.version import VERSION
 except ImportError:
     pass
 
