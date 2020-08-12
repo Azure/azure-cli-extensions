@@ -1,5 +1,8 @@
 Release History
 ===============
+0.5.0
+-----
+* Support Virtual Network injection feature.
 
 0.4.0
 -----
