@@ -236,6 +236,23 @@ def cf_container_client(cli_ctx, kwargs):
     return cf_blob_service(cli_ctx, kwargs).get_container_client(container=kwargs.pop('container_name', None))
 
 
+def cf_blob_sas(cli_ctx, kwargs):
+    t_blob_sas = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_shared_access_signature#BlobSharedAccessSignature')
+
+    if kwargs.pop('as_user', None):
+        from .operations.blob import _get_datetime_from_string
+        from datetime import datetime
+        service_client = cf_blob_service(cli_ctx, kwargs)
+        user_delegation_key = service_client.get_user_delegation_key(
+            _get_datetime_from_string(kwargs['start']) if kwargs['start'] else datetime.utcnow(),
+            _get_datetime_from_string(kwargs['expiry']))
+        return t_blob_sas(account_name=kwargs.pop('account_name', None),
+                          user_delegation_key=user_delegation_key)
+    else:
+        return t_blob_sas(account_name=kwargs.pop('account_name', None),
+                          account_key=kwargs.pop('account_key', None))
+
+
 def cf_adls_service(cli_ctx, kwargs):
     t_adls_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_FILEDATALAKE,
                              '_data_lake_service_client#DataLakeServiceClient')

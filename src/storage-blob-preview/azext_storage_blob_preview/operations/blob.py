@@ -20,6 +20,7 @@ from azure.cli.command_modules.storage.util import (create_blob_service_from_sto
                                                     check_precondition_success)
 from knack.log import get_logger
 from knack.util import CLIError
+from ..profiles import CUSTOM_DATA_STORAGE_BLOB
 
 logger = get_logger(__name__)
 
@@ -395,30 +396,6 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
         logger.warning('%s of %s blobs not deleted due to "Failed Precondition"', num_failures, len(source_blobs))
 
 
-def generate_sas_blob_uri(client, container_name, blob_name, permission=None,
-                          expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
-                          protocol=None, cache_control=None, content_disposition=None,
-                          content_encoding=None, content_language=None,
-                          content_type=None, full_uri=False, as_user=False):
-    if as_user:
-        user_delegation_key = client.get_user_delegation_key(
-            _get_datetime_from_string(start) if start else datetime.utcnow(), _get_datetime_from_string(expiry))
-        sas_token = client.generate_blob_shared_access_signature(
-            container_name, blob_name, permission=permission, expiry=expiry, start=start, id=id, ip=ip,
-            protocol=protocol, cache_control=cache_control, content_disposition=content_disposition,
-            content_encoding=content_encoding, content_language=content_language, content_type=content_type,
-            user_delegation_key=user_delegation_key)
-    else:
-        sas_token = client.generate_blob_shared_access_signature(
-            container_name, blob_name, permission=permission, expiry=expiry, start=start, id=id, ip=ip,
-            protocol=protocol, cache_control=cache_control, content_disposition=content_disposition,
-            content_encoding=content_encoding, content_language=content_language, content_type=content_type)
-    if full_uri:
-        from ..url_quote_util import encode_url_path
-        return encode_url_path(client.make_blob_url(container_name, blob_name, protocol=protocol, sas_token=sas_token))
-    return sas_token
-
-
 def generate_container_shared_access_signature(client, container_name, permission=None,
                                                expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                                                protocol=None, cache_control=None, content_disposition=None,
@@ -491,6 +468,33 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     with open(file_path, open_mode) as stream:
         blob = download_stream.readinto(stream)
     return blob
+
+
+def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
+                          expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
+                          protocol=None, cache_control=None, content_disposition=None,
+                          content_encoding=None, content_language=None,
+                          content_type=None, full_uri=False, as_user=False, snapshot=None, version_id=None):
+    generate_blob_sas = cmd.get_models('_shared_access_signature#generate_blob_sas')
+    sas_kwargs = {}
+    if as_user:
+        from datetime import datetime
+        sas_kwargs['user_delegation_key'] = client.get_user_delegation_key(
+            _get_datetime_from_string(start) if start else datetime.utcnow(),
+            _get_datetime_from_string(expiry))
+    sas_token = generate_blob_sas(account_name=client.account_name, container_name=container_name, blob_name=blob_name,
+                                  snapshot=snapshot, version_id=version_id, permission=permission,
+                                  expiry=expiry, start=start, policy_id=id, ip=ip, protocol=protocol,
+                                  cache_control=cache_control, content_disposition=content_disposition,
+                                  content_encoding=content_encoding, content_language=content_language,
+                                  content_type=content_type, **sas_kwargs)
+
+    if full_uri:
+        blob_client = client.get_blob_client(container_name=container_name, blob_name=blob_name,
+                                             credential=sas_token)
+        return blob_client.url
+
+    return sas_token
 
 
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,

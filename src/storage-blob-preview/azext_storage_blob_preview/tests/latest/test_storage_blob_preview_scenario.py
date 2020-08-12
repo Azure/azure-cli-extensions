@@ -14,7 +14,7 @@ from ..storage_test_util import StorageScenarioMixin
 
 class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
-    @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', sku='Standard_RAGZRS')
+    @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', location='eastus2', sku='Standard_RAGZRS')
     def test_storage_blob_list_scenarios(self, resource_group, storage_account):
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info, prefix="con")
@@ -23,20 +23,29 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         blob_name1 = "/".join(["dir", self.create_random_name(prefix='blob', length=24)])
         blob_name2 = "/".join(["dir", self.create_random_name(prefix='blob', length=24)])
 
-        # Prepare
+        # Prepare blob 1
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
                          container, local_file, blob_name1)
 
+        # Test with include snapshot
         result = self.storage_cmd('storage blob snapshot -c {} -n {} ', account_info, container, blob_name1)\
             .get_output_in_json()
         self.assertIsNotNone(result['snapshot'])
         snapshot = result['snapshot']
 
+        self.storage_cmd('storage blob list -c {} --include s', account_info, container) \
+            .assert_with_checks(JMESPathCheck('[0].snapshot', snapshot))
+
+        # Test with include metadata
         self.storage_cmd('storage blob metadata update -c {} -n {} --metadata test=1 ', account_info,
                          container, blob_name1)
         self.storage_cmd('storage blob metadata show -c {} -n {} ', account_info, container, blob_name1)\
             .assert_with_checks(JMESPathCheck('test', '1'))
 
+        self.storage_cmd('storage blob list -c {} --include m', account_info, container) \
+            .assert_with_checks(JMESPathCheck('[0].metadata.test', '1'))
+
+        # Prepare blob 2
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
                          container, local_file, blob_name2)
 

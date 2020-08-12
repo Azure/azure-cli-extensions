@@ -255,6 +255,36 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
+    with self.argument_context('storage blob generate-sas') as c:
+        from .completers import get_storage_acl_name_completion_list
+
+        t_blob_permissions = self.get_sdk('_models#BlobSasPermissions', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        c.register_sas_arguments()
+        c.argument('cache_control', help='Response header value for Cache-Control when resource is accessed'
+                                         'using this shared access signature.')
+        c.argument('content_disposition', help='Response header value for Content-Disposition when resource is accessed'
+                                               'using this shared access signature.')
+        c.argument('content_encoding', help='Response header value for Content-Encoding when resource is accessed'
+                                            'using this shared access signature.')
+        c.argument('content_language', help='Response header value for Content-Language when resource is accessed'
+                                            'using this shared access signature.')
+        c.argument('content_type', help='Response header value for Content-Type when resource is accessed'
+                                        'using this shared access signature.')
+        c.argument('full_uri', action='store_true',
+                   help='Indicates that this command return the full blob URI and the shared access signature token.')
+        c.argument('as_user', min_api='2018-11-09', action='store_true',
+                   validator=as_user_validator,
+                   help="Indicates that this command return the SAS signed with the user delegation key. "
+                        "The expiry parameter and '--auth-mode login' are required if this argument is specified. ")
+        c.argument('id', options_list='--policy-name',
+                   help='The name of a stored access policy within the container\'s ACL.',
+                   completer=get_storage_acl_name_completion_list(t_base_blob_service, 'container_name',
+                                                                  'get_container_acl'))
+        c.argument('permission', options_list='--permissions',
+                   help=sas_help.format(get_permission_help_string(t_blob_permissions)),
+                   validator=get_permission_validator(t_blob_permissions))
+        c.ignore('sas_token')
+
     with self.argument_context('storage blob list') as c:
         from .track2_util import get_include_help_string
         t_blob_include = self.get_sdk('_generated.models._azure_blob_storage_enums#ListBlobsIncludeItem',

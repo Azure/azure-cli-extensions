@@ -1,4 +1,4 @@
-from ._client_factory import cf_blob_client, cf_container_client
+from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
@@ -25,6 +25,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_DATA_STORAGE_BLOB
     )
 
+    blob_service_sdk = CliCommandType(
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._blob_service_client#BlobServiceClient.{}',
+        client_factory=cf_blob_service,
+        resource_type=CUSTOM_DATA_STORAGE_BLOB
+    )
+
     container_client_sdk = CliCommandType(
         operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._container_client#ContainerClient.{}',
         client_factory=cf_container_client,
@@ -47,4 +53,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('copy start', 'start_copy_from_url')
         g.storage_command_oauth('delete', 'delete_blob')
         g.storage_custom_command_oauth('download', 'download_blob')
+        g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
+                                       custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
+                                                                           resource_type=CUSTOM_DATA_STORAGE_BLOB))
 
