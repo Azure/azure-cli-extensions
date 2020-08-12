@@ -177,7 +177,8 @@ def validate_vnet(cmd, namespace):
             raise CLIError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
-        raise CLIError('--app-subnet and --service-runtime-subnet should not be same.')
+        raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
+
     vnet_obj = _get_vnet(cmd, vnet_id)
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
