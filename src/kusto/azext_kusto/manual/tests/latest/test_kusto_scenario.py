@@ -23,11 +23,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @try_manual
 def setup(test, rg):
     test.kwargs.update({'eventhub_namespace': "codegenlivetest", 'eventhub_name': 'livetest'})
-    try:
-        test.cmd('az eventhubs namespace create --name {eventhub_namespace} -g {rg}')
-        test.cmd('az eventhubs eventhub create --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
-    except:
-        pass
+    test.cmd('az eventhubs namespace create --name {eventhub_namespace} -g {rg}')
+    test.cmd('az eventhubs eventhub create --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
 
 
 # EXAMPLE: kustoclusterscreateorupdate
@@ -410,11 +407,8 @@ def step_kustodataconnectionsdelete(test, rg):
 
 @try_manual
 def cleanup(test, rg):
-    try:
-        test.cmd('az eventhubs eventhub delete --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
-        test.cmd('az eventhubs namespace delete --name {eventhub_namespace} -g {rg}')
-    except:
-        pass
+    test.cmd('az eventhubs eventhub delete --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
+    test.cmd('az eventhubs namespace delete --name {eventhub_namespace} -g {rg}')
 
 
 @try_manual
