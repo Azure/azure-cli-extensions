@@ -7,6 +7,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.parameters import get_resources_in_subscription
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.profiles import CustomResourceType
+from azure.mgmt.msi import ManagedServiceIdentityClient
 from knack.util import CLIError
 
 CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
@@ -111,3 +112,7 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
         raise CLIError(
             "More than one resources with type '{}' are found with name '{}'.".format(
                 resource_type, resource_name))
+
+
+def get_msi_client(cli_ctx, **_):
+    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient)

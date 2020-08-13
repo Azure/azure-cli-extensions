@@ -27,11 +27,13 @@ class AzureFirewallScenario(ScenarioTest):
             'rule1': 'rule1',
             'rule2': 'rule2'
         })
-        self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert', checks=[
-            self.check('threatIntelMode', 'Alert')
+        self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert --allow-active-ftp', checks=[
+            self.check('threatIntelMode', 'Alert'),
+            self.check('"Network.FTP.AllowActiveFTP"', 'true')
         ])
-        self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny', checks=[
-            self.check('threatIntelMode', 'Deny')
+        self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny --allow-active-ftp false', checks=[
+            self.check('threatIntelMode', 'Deny'),
+            self.not_exists('"Network.FTP.AllowActiveFTP"')
         ])
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
@@ -226,7 +228,7 @@ class AzureFirewallScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2euap')
     def test_azure_firewall_virtual_hub(self, resource_group):
-
+        from knack.util import CLIError
         self.kwargs.update({
             'af': 'af1',
             'coll': 'rc1',
@@ -241,6 +243,9 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
         self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
+
+        with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
+            self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
@@ -557,7 +562,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd(
             'network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}',
             checks=[
-                self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+                self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
                 self.check('name', '{collectiongroup}')
             ])
 
