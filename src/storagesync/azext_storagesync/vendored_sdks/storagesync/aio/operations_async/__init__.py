@@ -6,16 +6,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations import OperationOperations
-from ._storage_sync_service_operations import StorageSyncServiceOperations
-from ._private_link_resource_operations import PrivateLinkResourceOperations
-from ._private_endpoint_connection_operations import PrivateEndpointConnectionOperations
-from ._sync_group_operations import SyncGroupOperations
-from ._cloud_endpoint_operations import CloudEndpointOperations
-from ._server_endpoint_operations import ServerEndpointOperations
-from ._registered_server_operations import RegisteredServerOperations
-from ._workflow_operations import WorkflowOperations
-from ._operation_status_operations import OperationStatusOperations
+from ._operation_operations_async import OperationOperations
+from ._storage_sync_service_operations_async import StorageSyncServiceOperations
+from ._private_link_resource_operations_async import PrivateLinkResourceOperations
+from ._private_endpoint_connection_operations_async import PrivateEndpointConnectionOperations
+from ._sync_group_operations_async import SyncGroupOperations
+from ._cloud_endpoint_operations_async import CloudEndpointOperations
+from ._server_endpoint_operations_async import ServerEndpointOperations
+from ._registered_server_operations_async import RegisteredServerOperations
+from ._workflow_operations_async import WorkflowOperations
+from ._operation_status_operations_async import OperationStatusOperations
 
 __all__ = [
     'OperationOperations',
