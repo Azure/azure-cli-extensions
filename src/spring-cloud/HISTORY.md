@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.4.1
+-----
+* Stream the build logs when deploying from source code
+* Fix distributed tracing issues
+
 0.4.0
 -----
 * Remove 'cpu', 'memory' and 'instance-count' from 'az spring-cloud app deploy' command

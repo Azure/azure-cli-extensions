@@ -1172,9 +1172,9 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 log_url = get_log_url()
                 sleep(10)
 
-            logger.info("Trying to fetch build logs")
+            logger.warning("Trying to fetch build logs")
             stream_logs(client.deployments, resource_group, service,
-                        app, name, logger_level_func=logger.info)
+                        app, name, logger_level_func=print)
 
         old_log_url = get_log_url()
 
