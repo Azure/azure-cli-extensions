@@ -183,6 +183,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     )
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
+        c.argument('directory_name', directory_type)
+        c.argument('share_name', share_name_type)
+        c.argument('table_name', table_name_type)
+        c.argument('retry_wait', options_list=('--retry-interval',))
+        c.ignore('progress_callback')
+        c.argument('metadata', nargs='+',
+                   help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.',
+                   validator=validate_metadata)
+        c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
@@ -319,7 +328,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('version_id', version_id_type)
 
     with self.argument_context('storage blob upload') as c:
-        from ._validators import page_blob_tier_validator, blob_tier_validator, validate_encryption_scope_client_params, \
+        from ._validators import page_blob_tier_validator, block_blob_tier_validator,\
+            validate_encryption_scope_client_params, \
             add_progress_callback_v2
         from .sdkutil import get_blob_types, get_blob_tier_names
 
@@ -347,7 +357,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 arg_type=get_enum_type(t_premium_blob_tier), min_api='2017-04-17', validator=page_blob_tier_validator,
                 help='A page blob tier value to set the blob to. The tier correlates to the size of the blob and '
                 'number of allowed IOPS. This is only applicable to page blobs on premium storage accounts.')
-        c.extra('standard_blob_tier', validator=blob_tier_validator,
+        c.extra('standard_blob_tier', validator=block_blob_tier_validator,
                 arg_type=get_enum_type(t_standard_blob_tier), min_api='2019-02-02',
                 help='A standard blob tier value to set the blob to. For this version of the '
                 'library, this is only applicable to block blobs on standard storage accounts.')
@@ -355,6 +365,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
         c.extra('tags', arg_type=tags_type)
+
+    with self.argument_context('storage container') as c:
+        from .sdkutil import get_container_access_type_names
+        c.argument('container_name', container_name_type, options_list=('--name', '-n'))
+        c.argument('public_access', validator=validate_container_public_access,
+                   arg_type=get_enum_type(get_container_access_type_names()),
+                   help='Specifies whether data in the container may be accessed publicly.')
 
     with self.argument_context('storage container generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list

@@ -1,0 +1,56 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+import os
+from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
+                               StorageAccountPreparer, api_version_constraint)
+from azure.cli.core.profiles import ResourceType
+from ..storage_test_util import StorageScenarioMixin
+from knack.util import CLIError
+
+
+class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
+    def oauth_cmd(self, cmd, *args, **kwargs):
+        return self.cmd(cmd + ' --auth-mode login', *args, **kwargs)
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_storage_blob_sas_oauth(self, resource_group, storage_account):
+        from datetime import datetime, timedelta
+        expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info)
+        local_file = self.create_temp_file(128, full_random=False)
+        blob_name = self.create_random_name('blob', 16)
+
+        self.kwargs.update({
+            'expiry': expiry,
+            'account': storage_account,
+            'container': container,
+            'local_file': local_file,
+            'blob': blob_name
+        })
+
+        # ----user delegation key----
+        with self.assertRaisesRegexp(CLIError, "incorrect usage: specify --as-user when --auth-mode login"):
+            self.oauth_cmd('storage blob generate-sas --account-name {account} -n {blob} -c {container} '
+                           '--expiry {expiry} --permissions r --https-only ')
+
+        # test sas-token for a container
+        sas = self.oauth_cmd('storage container generate-sas -n {container} --https-only --permissions dlrw '
+                             '--expiry {expiry} --as-user --account-name {account} -otsv').output.strip()
+        self.kwargs['container_sas'] = sas
+        self.cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} '
+                 '--account-name {account} --sas-token "{container_sas}"')
+
+        # test sas-token for a blob
+        sas = self.oauth_cmd('storage blob generate-sas -c {container} -n {blob} --https-only --permissions acdrw '
+                             '--expiry {expiry} --as-user --account-name {account} -otsv').output.strip()
+        self.kwargs['blob_sas'] = sas
+        self.cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} '
+                 '--account-name {account} --sas-token "{blob_sas}"')
+
+        self.cmd('storage blob show -c {container} -n {blob} --account-name {account} --sas-token {blob_sas}') \
+            .assert_with_checks(JMESPathCheck('name', blob_name))

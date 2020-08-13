@@ -1090,14 +1090,16 @@ def get_char_options_validator(types, property_name):
 
 
 def page_blob_tier_validator(cmd, namespace):
-    if not namespace.tier:
+    if not namespace.premium_page_blob_tier:
+        del namespace.premium_page_blob_tier
         return
 
     if namespace.blob_type != 'page' and namespace.tier:
         raise ValueError('Blob tier is only applicable to page blobs on premium storage accounts.')
 
     try:
-        namespace.tier = getattr(cmd.get_models('_models#PremiumPageBlobTier'), namespace.tier)
+        namespace.premium_page_blob_tier = getattr(cmd.get_models('_models#PremiumPageBlobTier'),
+                                                   namespace.premium_page_blob_tier)
     except AttributeError:
         from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
         raise ValueError('Unknown premium page blob tier name. Choose among {}'.format(', '.join(
@@ -1105,14 +1107,15 @@ def page_blob_tier_validator(cmd, namespace):
 
 
 def block_blob_tier_validator(cmd, namespace):
-    if not namespace.tier:
+    if not namespace.standard_blob_tier:
+        del namespace.standard_blob_tier
         return
 
-    if namespace.blob_type != 'block' and namespace.tier:
+    if namespace.blob_type != 'block' and namespace.standard_blob_tier:
         raise ValueError('Blob tier is only applicable to block blobs on standard storage accounts.')
 
     try:
-        namespace.tier = getattr(cmd.get_models('_models#StandardBlobTier'), namespace.tier)
+        namespace.standard_blob_tier = getattr(cmd.get_models('_models#StandardBlobTier'), namespace.standard_blob_tier)
     except AttributeError:
         from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
         raise ValueError('Unknown block blob tier name. Choose among {}'.format(', '.join(
@@ -1120,8 +1123,6 @@ def block_blob_tier_validator(cmd, namespace):
 
 
 def blob_tier_validator(cmd, namespace):
-    if not namespace.tier:
-        return
     if namespace.blob_type == 'page':
         page_blob_tier_validator(cmd, namespace)
     elif namespace.blob_type == 'block':

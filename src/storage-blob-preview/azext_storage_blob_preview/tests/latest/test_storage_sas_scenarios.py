@@ -29,7 +29,7 @@ class StorageSASScenario(StorageScenarioMixin, LiveScenarioTest):
             'blob': blob_name
         })
 
-        # account key
+        # ----account key----
         # test sas-token for a container
         sas = self.storage_cmd('storage container generate-sas -n {} --https-only --permissions dlrw --expiry {} -otsv',
                                account_info, container, expiry).output.strip()
@@ -37,14 +37,14 @@ class StorageSASScenario(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} '
                  '--account-name {account} --sas-token "{container_sas}"')
 
-        # test sas-token for a file
+        # test sas-token for a blob
         sas = self.storage_cmd('storage blob generate-sas -c {} -n {} --https-only --permissions acdrw --expiry {} '
                                '-otsv', account_info, container, blob_name, expiry).output.strip()
         self.kwargs['blob_sas'] = sas
         self.cmd('storage blob show -c {container} -n {blob} --account-name {account} --sas-token {blob_sas}') \
             .assert_with_checks(JMESPathCheck('name', blob_name))
 
-        # connection string
+        # ----connection string----
         connection_str = self.cmd('storage account show-connection-string -n {account}  --query connectionString '
                                   '-otsv').output.strip()
         self.kwargs['con_str'] = connection_str
