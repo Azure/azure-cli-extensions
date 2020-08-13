@@ -385,7 +385,11 @@ def get_kubernetes_distro(configuration):
                 return "openshift"
         return "default"
     except Exception as e:  # pylint: disable=broad-except
+<<<<<<< HEAD
         telemetry.set_exception(exception=e, fault_type=consts.Get_Kubernetes_Distro_Fault_Type,
+=======
+        telemetry.set_exception(exception=e, fault_type=Get_Kubernetes_Distro_Fault_Type,
+>>>>>>> 65e69b80f7f1c3c2dac3dc850905d3ed59ead203
                                 summary='Unable to fetch kubernetes distribution')
         logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
 
