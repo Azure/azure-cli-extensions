@@ -501,6 +501,36 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
     return sas_token
 
 
+def generate_sas_container_uri(client, cmd, container_name, permission=None,
+                               expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
+                               protocol=None, cache_control=None, content_disposition=None,
+                               content_encoding=None, content_language=None,
+                               content_type=None, full_uri=False, as_user=False):
+    generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas')
+
+    sas_kwargs = {}
+    if as_user:
+        from datetime import datetime
+        sas_kwargs['user_delegation_key'] = client.get_user_delegation_key(
+            _get_datetime_from_string(start) if start else datetime.utcnow(),
+            _get_datetime_from_string(expiry))
+    else:
+        sas_kwargs['account_key'] = client.credential.account_key
+    sas_token = generate_container_sas(account_name=client.account_name, container_name=container_name,
+                                       permission=permission, expiry=expiry, start=start, policy_id=id,
+                                       ip=ip, protocol=protocol,
+                                       cache_control=cache_control, content_disposition=content_disposition,
+                                       content_encoding=content_encoding, content_language=content_language,
+                                       content_type=content_type, **sas_kwargs)
+
+    if full_uri:
+        t_container_client = cmd.get_models('_container_client#ContainerClient')
+        container_client = t_container_client(account_url=client.url, container_name=container_name, credential=sas_token)
+        return container_client.url
+
+    return sas_token
+
+
 def list_blobs(client, delimiter=None, include=None, marker=None, num_results=None, prefix=None,
                show_next_marker=None, **kwargs):
     from ..track2_util import list_generator

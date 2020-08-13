@@ -355,3 +355,32 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
         c.extra('tags', arg_type=tags_type)
+
+    with self.argument_context('storage container generate-sas') as c:
+        from .completers import get_storage_acl_name_completion_list
+        t_container_permissions = self.get_sdk('_models#ContainerSasPermissions')
+        c.register_sas_arguments()
+        c.argument('id', options_list='--policy-name',
+                   help='The name of a stored access policy within the container\'s ACL.',
+                   completer=get_storage_acl_name_completion_list(t_container_permissions, 'container_name',
+                                                                  'get_container_acl'))
+        c.argument('permission', options_list='--permissions',
+                   help=sas_help.format(get_permission_help_string(t_container_permissions)),
+                   validator=get_permission_validator(t_container_permissions))
+        c.argument('cache_control', help='Response header value for Cache-Control when resource is accessed'
+                                         'using this shared access signature.')
+        c.argument('content_disposition', help='Response header value for Content-Disposition when resource is accessed'
+                                               'using this shared access signature.')
+        c.argument('content_encoding', help='Response header value for Content-Encoding when resource is accessed'
+                                            'using this shared access signature.')
+        c.argument('content_language', help='Response header value for Content-Language when resource is accessed'
+                                            'using this shared access signature.')
+        c.argument('content_type', help='Response header value for Content-Type when resource is accessed'
+                                        'using this shared access signature.')
+        c.argument('as_user', min_api='2018-11-09', action='store_true',
+                   validator=as_user_validator,
+                   help="Indicates that this command return the SAS signed with the user delegation key. "
+                        "The expiry parameter and '--auth-mode login' are required if this argument is specified. ")
+        c.ignore('sas_token')
+        c.argument('full_uri', action='store_true', is_preview=True,
+                   help='Indicate that this command return the full blob URI and the shared access signature token.')

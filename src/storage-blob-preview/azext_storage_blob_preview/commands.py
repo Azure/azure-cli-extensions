@@ -57,3 +57,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
                                                                            resource_type=CUSTOM_DATA_STORAGE_BLOB))
 
+    with self.command_group('storage container', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
+                            min_api='2019-02-02',
+                            custom_command_type=get_custom_sdk('blob', client_factory=cf_container_client,
+                                                               resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
+        g.storage_custom_command_oauth('generate-sas', 'generate_sas_container_uri',
+                                       custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
+                                                                          resource_type=CUSTOM_DATA_STORAGE_BLOB))
+
+
