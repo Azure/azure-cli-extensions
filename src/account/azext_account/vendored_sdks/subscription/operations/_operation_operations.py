@@ -22,8 +22,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class SubscriptionOperationOperations(object):
-    """SubscriptionOperationOperations operations.
+class OperationOperations(object):
+    """OperationOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -44,33 +44,25 @@ class SubscriptionOperationOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def get(
+    def list(
         self,
-        operation_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.SubscriptionCreationResult"
-        """Get the status of the pending Microsoft.Subscription API operations.
+        # type: (...) -> "models.OperationListResult"
+        """Lists all of the available Microsoft.Subscription API operations.
 
-        :param operation_id: The operation ID, which can be found from the Location field in the
-         generate recommendation response header.
-        :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: SubscriptionCreationResult, or the result of cls(response)
-        :rtype: ~subscription_client.models.SubscriptionCreationResult or None
+        :return: OperationListResult, or the result of cls(response)
+        :rtype: ~subscription_client.models.OperationListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SubscriptionCreationResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-10-01-preview"
 
         # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'operationId': self._serialize.url("operation_id", operation_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        url = self.list.metadata['url']  # type: ignore
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -85,21 +77,15 @@ class SubscriptionOperationOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('SubscriptionCreationResult', pipeline_response)
-
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+        deserialized = self._deserialize('OperationListResult', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/providers/Microsoft.Subscription/subscriptionOperations/{operationId}'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.Subscription/operations'}  # type: ignore
