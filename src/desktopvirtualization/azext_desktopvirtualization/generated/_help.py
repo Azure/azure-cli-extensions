@@ -23,7 +23,7 @@ helps['desktopvirtualization workspace list'] = """
     examples:
       - name: Workspace_ListByResourceGroup
         text: |-
-               az desktopvirtualization workspace list --resource-group "MyResourceGroup"
+               az desktopvirtualization workspace list --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization workspace show'] = """
@@ -32,7 +32,7 @@ helps['desktopvirtualization workspace show'] = """
     examples:
       - name: Workspace_Get
         text: |-
-               az desktopvirtualization workspace show --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace show --resource-group "resourceGroup1" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace create'] = """
@@ -41,8 +41,8 @@ helps['desktopvirtualization workspace create'] = """
     examples:
       - name: Workspace_Create
         text: |-
-               az desktopvirtualization workspace create --resource-group "MyResourceGroup" --location "centralus" \
---description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace create --resource-group "resourceGroup1" --location "centralus" --des\
+cription "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace update'] = """
@@ -51,8 +51,8 @@ helps['desktopvirtualization workspace update'] = """
     examples:
       - name: Workspace_Update
         text: |-
-               az desktopvirtualization workspace update --resource-group "MyResourceGroup" --description "des1" \
---friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace update --resource-group "resourceGroup1" --description "des1" --frien\
+dly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace delete'] = """
@@ -61,7 +61,7 @@ helps['desktopvirtualization workspace delete'] = """
     examples:
       - name: Workspace_Delete
         text: |-
-               az desktopvirtualization workspace delete --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace delete --resource-group "resourceGroup1" --name "workspace1"
 """
 
 helps['desktopvirtualization applicationgroup'] = """
@@ -75,8 +75,8 @@ helps['desktopvirtualization applicationgroup list'] = """
     examples:
       - name: ApplicationGroup_ListByResourceGroup
         text: |-
-               az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'" \
---resource-group "MyResourceGroup"
+               az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'" --\
+resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup show'] = """
@@ -85,8 +85,8 @@ helps['desktopvirtualization applicationgroup show'] = """
     examples:
       - name: ApplicationGroup_Get
         text: |-
-               az desktopvirtualization applicationgroup show --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup show --name "applicationGroup1" --resource-group "resourceGrou\
+p1"
 """
 
 helps['desktopvirtualization applicationgroup create'] = """
@@ -95,10 +95,10 @@ helps['desktopvirtualization applicationgroup create'] = """
     examples:
       - name: ApplicationGroup_Create
         text: |-
-               az desktopvirtualization applicationgroup create --location "centralus" --description "des1" \
---application-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3\
--b645-8a753a63c4fa/resourceGroups/MyResourceGroup/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool" \
---tags tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+               az desktopvirtualization applicationgroup create --location "centralus" --description "des1" --applicati\
+on-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3-b645-8a753\
+a63c4fa/resourceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" --tags tag1="value\
+1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup update'] = """
@@ -108,7 +108,7 @@ helps['desktopvirtualization applicationgroup update'] = """
       - name: ApplicationGroups_Update
         text: |-
                az desktopvirtualization applicationgroup update --description "des1" --friendly-name "friendly" --tags \
-tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup delete'] = """
@@ -117,8 +117,8 @@ helps['desktopvirtualization applicationgroup delete'] = """
     examples:
       - name: ApplicationGroup_Delete
         text: |-
-               az desktopvirtualization applicationgroup delete --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup delete --name "applicationGroup1" --resource-group "resourceGr\
+oup1"
 """
 
 helps['desktopvirtualization hostpool'] = """
@@ -132,7 +132,7 @@ helps['desktopvirtualization hostpool list'] = """
     examples:
       - name: HostPool_ListByResourceGroup
         text: |-
-               az desktopvirtualization hostpool list --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool list --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool show'] = """
@@ -141,7 +141,7 @@ helps['desktopvirtualization hostpool show'] = """
     examples:
       - name: HostPool_Get
         text: |-
-               az desktopvirtualization hostpool show --name "MyHostPool" --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool show --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool create'] = """
@@ -159,11 +159,11 @@ helps['desktopvirtualization hostpool create'] = """
     examples:
       - name: HostPool_Create
         text: |-
-               az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name \
-"friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
---personal-desktop-assignment-type "Automatic" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" \
-registration-token-operation="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name \
-"MyHostPool" --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name "fr\
+iendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-ass\
+ignment-type "Automatic" --preferred-app-group-type "Desktop" --registration-info expiration-time="2020-10-01T14:01:54.\
+9571247Z" registration-token-operation="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name \
+"hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool update'] = """
@@ -180,10 +180,10 @@ helps['desktopvirtualization hostpool update'] = """
     examples:
       - name: HostPool_Update
         text: |-
-               az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" \
---load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" \
---registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context \
-"KeyVaultPath" --tags tag1="value1" tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" --load-balancer\
+-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" --registration-info expi\
+ration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context "KeyVaultPath" --tags ta\
+g1="value1" tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
@@ -192,6 +192,6 @@ helps['desktopvirtualization hostpool delete'] = """
     examples:
       - name: HostPool_Delete
         text: |-
-               az desktopvirtualization hostpool delete --force true --name "MyHostPool" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization hostpool delete --force true --name "hostPool1" --resource-group "resourceGroup\
+1"
 """

@@ -103,11 +103,12 @@ class HostPoolOperations:
         host_pool_name: str,
         location: str,
         host_pool_type: Union[str, "models.HostPoolType"],
-        personal_desktop_assignment_type: Union[str, "models.PersonalDesktopAssignmentType"],
         load_balancer_type: Union[str, "models.LoadBalancerType"],
+        preferred_app_group_type: Union[str, "models.PreferredAppGroupType"],
         tags: Optional[Dict[str, str]] = None,
         friendly_name: Optional[str] = None,
         description: Optional[str] = None,
+        personal_desktop_assignment_type: Optional[Union[str, "models.PersonalDesktopAssignmentType"]] = None,
         custom_rdp_property: Optional[str] = None,
         max_session_limit: Optional[int] = None,
         ring: Optional[int] = None,
@@ -127,16 +128,19 @@ class HostPoolOperations:
         :type location: str
         :param host_pool_type: HostPool type for desktop.
         :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
-        :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
-        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
         :param load_balancer_type: The type of the load balancer.
         :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
+        :param preferred_app_group_type: The type of preferred application group type, default to
+         Desktop Application Group.
+        :type preferred_app_group_type: str or ~desktop_virtualization_api_client.models.PreferredAppGroupType
         :param tags: Resource tags.
         :type tags: dict[str, str]
         :param friendly_name: Friendly name of HostPool.
         :type friendly_name: str
         :param description: Description of HostPool.
         :type description: str
+        :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
+        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
         :param custom_rdp_property: Custom rdp property of HostPool.
         :type custom_rdp_property: str
         :param max_session_limit: The max session limit of HostPool.
@@ -160,7 +164,7 @@ class HostPoolOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _host_pool = models.HostPool(tags=tags, location=location, friendly_name=friendly_name, description=description, host_pool_type=host_pool_type, personal_desktop_assignment_type=personal_desktop_assignment_type, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, vm_template=vm_template, sso_context=sso_context)
+        _host_pool = models.HostPool(tags=tags, location=location, friendly_name=friendly_name, description=description, host_pool_type=host_pool_type, personal_desktop_assignment_type=personal_desktop_assignment_type, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, vm_template=vm_template, sso_context=sso_context, preferred_app_group_type=preferred_app_group_type)
         api_version = "2019-12-10-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -280,6 +284,7 @@ class HostPoolOperations:
         validation_environment: Optional[bool] = None,
         registration_info: Optional["models.RegistrationInfoPatch"] = None,
         sso_context: Optional[str] = None,
+        preferred_app_group_type: Optional[Union[str, "models.PreferredAppGroupType"]] = None,
         **kwargs
     ) -> "models.HostPool":
         """Update a host pool.
@@ -310,6 +315,9 @@ class HostPoolOperations:
         :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
         :param sso_context: Path to keyvault containing ssoContext secret.
         :type sso_context: str
+        :param preferred_app_group_type: The type of preferred application group type, default to
+         Desktop Application Group.
+        :type preferred_app_group_type: str or ~desktop_virtualization_api_client.models.PreferredAppGroupType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HostPool, or the result of cls(response)
         :rtype: ~desktop_virtualization_api_client.models.HostPool
@@ -319,7 +327,7 @@ class HostPoolOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _host_pool = models.HostPoolPatch(tags=tags, friendly_name=friendly_name, description=description, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, personal_desktop_assignment_type=personal_desktop_assignment_type, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, sso_context=sso_context)
+        _host_pool = models.HostPoolPatch(tags=tags, friendly_name=friendly_name, description=description, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, personal_desktop_assignment_type=personal_desktop_assignment_type, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, sso_context=sso_context, preferred_app_group_type=preferred_app_group_type)
         api_version = "2019-12-10-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
