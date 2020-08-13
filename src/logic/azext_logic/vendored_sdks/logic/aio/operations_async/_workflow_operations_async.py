@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
@@ -14,6 +14,8 @@ from azure.core.exceptions import HttpResponseError, ResourceExistsError, Resour
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models
 
@@ -47,7 +49,7 @@ class WorkflowOperations:
         top: Optional[int] = None,
         filter: Optional[str] = None,
         **kwargs
-    ) -> "models.WorkflowListResult":
+    ) -> AsyncIterable["models.WorkflowListResult"]:
         """Gets a list of workflows by subscription.
 
         :param top: The number of items to be included in the result.
@@ -56,33 +58,34 @@ class WorkflowOperations:
      Trigger, and ReferencedResourceId.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: WorkflowListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowListResult
+        :return: An iterator like instance of either WorkflowListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~logic_management_client.models.WorkflowListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_subscription.metadata['url']
+                url = self.list_by_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -107,14 +110,14 @@ class WorkflowOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Logic/workflows'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Logic/workflows'}  # type: ignore
 
     def list_by_resource_group(
         self,
@@ -122,7 +125,7 @@ class WorkflowOperations:
         top: Optional[int] = None,
         filter: Optional[str] = None,
         **kwargs
-    ) -> "models.WorkflowListResult":
+    ) -> AsyncIterable["models.WorkflowListResult"]:
         """Gets a list of workflows by resource group.
 
         :param resource_group_name: The resource group name.
@@ -133,34 +136,35 @@ class WorkflowOperations:
      Trigger, and ReferencedResourceId.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: WorkflowListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.WorkflowListResult
+        :return: An iterator like instance of either WorkflowListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~logic_management_client.models.WorkflowListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_resource_group.metadata['url']
+                url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -185,14 +189,14 @@ class WorkflowOperations:
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows'}  # type: ignore
 
     async def get(
         self,
@@ -207,16 +211,17 @@ class WorkflowOperations:
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workflow or the result of cls(response)
+        :return: Workflow, or the result of cls(response)
         :rtype: ~logic_management_client.models.Workflow
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -240,15 +245,15 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Workflow', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}  # type: ignore
 
     async def create_or_update(
         self,
@@ -257,11 +262,16 @@ class WorkflowOperations:
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         state: Optional[Union[str, "models.WorkflowState"]] = None,
-        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
-        integration_account: Optional["models.ResourceReference"] = None,
-        integration_service_environment: Optional["models.ResourceReference"] = None,
         definition: Optional[object] = None,
-        parameters: Optional[Dict[str, "WorkflowParameter"]] = None,
+        parameters: Optional[Dict[str, "models.WorkflowParameter"]] = None,
+        id: Optional[str] = None,
+        resource_reference_id: Optional[str] = None,
+        triggers: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        contents: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        actions: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow_management: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow: Optional["models.FlowEndpoints"] = None,
+        connector: Optional["models.FlowEndpoints"] = None,
         **kwargs
     ) -> "models.Workflow":
         """Creates or updates a workflow.
@@ -276,30 +286,41 @@ class WorkflowOperations:
         :type tags: dict[str, str]
         :param state: The state.
         :type state: str or ~logic_management_client.models.WorkflowState
-        :param endpoints_configuration: The endpoints configuration.
-        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param integration_account: The integration account.
-        :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.ResourceReference
         :param definition: The definition.
         :type definition: object
         :param parameters: The parameters.
         :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :param id: The resource id.
+        :type id: str
+        :param resource_reference_id: The resource id.
+        :type resource_reference_id: str
+        :param triggers: The access control configuration for invoking workflow triggers.
+        :type triggers: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param contents: The access control configuration for accessing workflow run contents.
+        :type contents: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param actions: The access control configuration for workflow actions.
+        :type actions: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow_management: The access control configuration for workflow management.
+        :type workflow_management: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow: The workflow endpoints.
+        :type workflow: ~logic_management_client.models.FlowEndpoints
+        :param connector: The connector endpoints.
+        :type connector: ~logic_management_client.models.FlowEndpoints
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workflow or the result of cls(response)
-        :rtype: ~logic_management_client.models.Workflow or ~logic_management_client.models.Workflow
+        :return: Workflow, or the result of cls(response)
+        :rtype: ~logic_management_client.models.Workflow
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _workflow = models.Workflow(location=location, tags=tags, state=state, definition=definition, parameters=parameters, id_properties_integration_service_environment_id=id, id_properties_integration_account_id=resource_reference_id, triggers=triggers, contents=contents, actions=actions, workflow_management=workflow_management, workflow=workflow, connector=connector)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update.metadata['url']
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -328,7 +349,7 @@ class WorkflowOperations:
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -338,23 +359,15 @@ class WorkflowOperations:
             deserialized = self._deserialize('Workflow', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}  # type: ignore
 
     async def update(
         self,
         resource_group_name: str,
         workflow_name: str,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        state: Optional[Union[str, "models.WorkflowState"]] = None,
-        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
-        integration_account: Optional["models.ResourceReference"] = None,
-        integration_service_environment: Optional["models.ResourceReference"] = None,
-        definition: Optional[object] = None,
-        parameters: Optional[Dict[str, "WorkflowParameter"]] = None,
         **kwargs
     ) -> "models.Workflow":
         """Updates a workflow.
@@ -363,36 +376,18 @@ class WorkflowOperations:
         :type resource_group_name: str
         :param workflow_name: The workflow name.
         :type workflow_name: str
-        :param location: The resource location.
-        :type location: str
-        :param tags: The resource tags.
-        :type tags: dict[str, str]
-        :param state: The state.
-        :type state: str or ~logic_management_client.models.WorkflowState
-        :param endpoints_configuration: The endpoints configuration.
-        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param integration_account: The integration account.
-        :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.ResourceReference
-        :param definition: The definition.
-        :type definition: object
-        :param parameters: The parameters.
-        :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Workflow or the result of cls(response)
+        :return: Workflow, or the result of cls(response)
         :rtype: ~logic_management_client.models.Workflow
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workflow"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-
-        _workflow = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
-        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.update.metadata['url']
+        url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -406,30 +401,25 @@ class WorkflowOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         # Construct and send request
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_workflow, 'Workflow')
-        body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-
+        request = self._client.patch(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Workflow', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}  # type: ignore
 
     async def delete(
         self,
@@ -444,16 +434,17 @@ class WorkflowOperations:
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -476,12 +467,12 @@ class WorkflowOperations:
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}'}  # type: ignore
 
     async def disable(
         self,
@@ -496,16 +487,17 @@ class WorkflowOperations:
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.disable.metadata['url']
+        url = self.disable.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -528,12 +520,12 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    disable.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/disable'}
+    disable.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/disable'}  # type: ignore
 
     async def enable(
         self,
@@ -548,16 +540,17 @@ class WorkflowOperations:
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.enable.metadata['url']
+        url = self.enable.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -580,12 +573,12 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    enable.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/enable'}
+    enable.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/enable'}  # type: ignore
 
     async def generate_upgraded_definition(
         self,
@@ -603,19 +596,20 @@ class WorkflowOperations:
         :param target_schema_version: The target schema version.
         :type target_schema_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: object or the result of cls(response)
+        :return: object, or the result of cls(response)
         :rtype: object
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[object]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.GenerateUpgradedDefinitionParameters(target_schema_version=target_schema_version)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.generate_upgraded_definition.metadata['url']
+        url = self.generate_upgraded_definition.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -644,15 +638,15 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('object', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    generate_upgraded_definition.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/generateUpgradedDefinition'}
+    generate_upgraded_definition.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/generateUpgradedDefinition'}  # type: ignore
 
     async def list_callback_url(
         self,
@@ -673,19 +667,20 @@ class WorkflowOperations:
         :param key_type: The key type.
         :type key_type: str or ~logic_management_client.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: WorkflowTriggerCallbackUrl or the result of cls(response)
+        :return: WorkflowTriggerCallbackUrl, or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _list_callback_url = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.list_callback_url.metadata['url']
+        url = self.list_callback_url.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -714,15 +709,15 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_callback_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/listCallbackUrl'}
+    list_callback_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/listCallbackUrl'}  # type: ignore
 
     async def list_swagger(
         self,
@@ -737,16 +732,17 @@ class WorkflowOperations:
         :param workflow_name: The workflow name.
         :type workflow_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: object or the result of cls(response)
+        :return: object, or the result of cls(response)
         :rtype: object
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[object]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.list_swagger.metadata['url']
+        url = self.list_swagger.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -770,39 +766,33 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('object', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_swagger.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/listSwagger'}
+    list_swagger.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/listSwagger'}  # type: ignore
 
     async def _move_initial(
         self,
         resource_group_name: str,
         workflow_name: str,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        state: Optional[Union[str, "models.WorkflowState"]] = None,
-        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
-        integration_account: Optional["models.ResourceReference"] = None,
-        integration_service_environment: Optional["models.ResourceReference"] = None,
-        definition: Optional[object] = None,
-        parameters: Optional[Dict[str, "WorkflowParameter"]] = None,
+        id: Optional[str] = None,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _move = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _move = models.WorkflowReference(id=id)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self._move_initial.metadata['url']
+        url = self._move_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -820,7 +810,7 @@ class WorkflowOperations:
 
         # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_move, 'Workflow')
+        body_content = self._serialize.body(_move, 'WorkflowReference')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -830,25 +820,18 @@ class WorkflowOperations:
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    _move_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/move'}
+    _move_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/move'}  # type: ignore
 
     async def move(
         self,
         resource_group_name: str,
         workflow_name: str,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        state: Optional[Union[str, "models.WorkflowState"]] = None,
-        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
-        integration_account: Optional["models.ResourceReference"] = None,
-        integration_service_environment: Optional["models.ResourceReference"] = None,
-        definition: Optional[object] = None,
-        parameters: Optional[Dict[str, "WorkflowParameter"]] = None,
+        id: Optional[str] = None,
         **kwargs
     ) -> None:
         """Moves an existing workflow.
@@ -857,61 +840,43 @@ class WorkflowOperations:
         :type resource_group_name: str
         :param workflow_name: The workflow name.
         :type workflow_name: str
-        :param location: The resource location.
-        :type location: str
-        :param tags: The resource tags.
-        :type tags: dict[str, str]
-        :param state: The state.
-        :type state: str or ~logic_management_client.models.WorkflowState
-        :param endpoints_configuration: The endpoints configuration.
-        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param integration_account: The integration account.
-        :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.ResourceReference
-        :param definition: The definition.
-        :type definition: object
-        :param parameters: The parameters.
-        :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :param id: The resource id.
+        :type id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :return: An instance of LROPoller that returns None
-        :rtype: ~azure.core.polling.LROPoller[None]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: None, or the result of cls(response)
+        :rtype: None
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = await self._move_initial(
             resource_group_name=resource_group_name,
             workflow_name=workflow_name,
-            location=location,
-            tags=tags,
-            state=state,
-            endpoints_configuration=endpoints_configuration,
-            integration_account=integration_account,
-            integration_service_environment=integration_service_environment,
-            definition=definition,
-            parameters=parameters,
+            id=id,
             cls=lambda x,y,z: x,
             **kwargs
         )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        if polling is True: raise ValueError("polling being True is not valid because no default polling implemetation has been defined.")
+        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    move.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/move'}
+    move.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/move'}  # type: ignore
 
     async def regenerate_access_key(
         self,
@@ -929,19 +894,20 @@ class WorkflowOperations:
         :param key_type: The key type.
         :type key_type: str or ~logic_management_client.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _key_type = models.RegenerateActionParameter(key_type=key_type)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.regenerate_access_key.metadata['url']
+        url = self.regenerate_access_key.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -969,12 +935,12 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    regenerate_access_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/regenerateAccessKey'}
+    regenerate_access_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/regenerateAccessKey'}  # type: ignore
 
     async def validate_by_resource_group(
         self,
@@ -983,11 +949,16 @@ class WorkflowOperations:
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         state: Optional[Union[str, "models.WorkflowState"]] = None,
-        endpoints_configuration: Optional["models.FlowEndpointsConfiguration"] = None,
-        integration_account: Optional["models.ResourceReference"] = None,
-        integration_service_environment: Optional["models.ResourceReference"] = None,
         definition: Optional[object] = None,
-        parameters: Optional[Dict[str, "WorkflowParameter"]] = None,
+        parameters: Optional[Dict[str, "models.WorkflowParameter"]] = None,
+        id: Optional[str] = None,
+        resource_reference_id: Optional[str] = None,
+        triggers: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        contents: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        actions: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow_management: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow: Optional["models.FlowEndpoints"] = None,
+        connector: Optional["models.FlowEndpoints"] = None,
         **kwargs
     ) -> None:
         """Validates the workflow.
@@ -1002,30 +973,41 @@ class WorkflowOperations:
         :type tags: dict[str, str]
         :param state: The state.
         :type state: str or ~logic_management_client.models.WorkflowState
-        :param endpoints_configuration: The endpoints configuration.
-        :type endpoints_configuration: ~logic_management_client.models.FlowEndpointsConfiguration
-        :param integration_account: The integration account.
-        :type integration_account: ~logic_management_client.models.ResourceReference
-        :param integration_service_environment: The integration service environment.
-        :type integration_service_environment: ~logic_management_client.models.ResourceReference
         :param definition: The definition.
         :type definition: object
         :param parameters: The parameters.
         :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :param id: The resource id.
+        :type id: str
+        :param resource_reference_id: The resource id.
+        :type resource_reference_id: str
+        :param triggers: The access control configuration for invoking workflow triggers.
+        :type triggers: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param contents: The access control configuration for accessing workflow run contents.
+        :type contents: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param actions: The access control configuration for workflow actions.
+        :type actions: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow_management: The access control configuration for workflow management.
+        :type workflow_management: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow: The workflow endpoints.
+        :type workflow: ~logic_management_client.models.FlowEndpoints
+        :param connector: The connector endpoints.
+        :type connector: ~logic_management_client.models.FlowEndpoints
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _validate = models.Workflow(location=location, tags=tags, state=state, endpoints_configuration=endpoints_configuration, integration_account=integration_account, integration_service_environment=integration_service_environment, definition=definition, parameters=parameters)
+        _validate = models.Workflow(location=location, tags=tags, state=state, definition=definition, parameters=parameters, id_properties_integration_service_environment_id=id, id_properties_integration_account_id=resource_reference_id, triggers=triggers, contents=contents, actions=actions, workflow_management=workflow_management, workflow=workflow, connector=connector)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.validate_by_resource_group.metadata['url']
+        url = self.validate_by_resource_group.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -1053,18 +1035,31 @@ class WorkflowOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    validate_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/validate'}
+    validate_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/validate'}  # type: ignore
 
     async def validate_by_location(
         self,
         resource_group_name: str,
         location: str,
         workflow_name: str,
+        resource_location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        state: Optional[Union[str, "models.WorkflowState"]] = None,
+        definition: Optional[object] = None,
+        parameters: Optional[Dict[str, "models.WorkflowParameter"]] = None,
+        id: Optional[str] = None,
+        resource_reference_id: Optional[str] = None,
+        triggers: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        contents: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        actions: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow_management: Optional["models.FlowAccessControlConfigurationPolicy"] = None,
+        workflow: Optional["models.FlowEndpoints"] = None,
+        connector: Optional["models.FlowEndpoints"] = None,
         **kwargs
     ) -> None:
         """Validates the workflow definition.
@@ -1075,17 +1070,47 @@ class WorkflowOperations:
         :type location: str
         :param workflow_name: The workflow name.
         :type workflow_name: str
+        :param resource_location: The resource location.
+        :type resource_location: str
+        :param tags: The resource tags.
+        :type tags: dict[str, str]
+        :param state: The state.
+        :type state: str or ~logic_management_client.models.WorkflowState
+        :param definition: The definition.
+        :type definition: object
+        :param parameters: The parameters.
+        :type parameters: dict[str, ~logic_management_client.models.WorkflowParameter]
+        :param id: The resource id.
+        :type id: str
+        :param resource_reference_id: The resource id.
+        :type resource_reference_id: str
+        :param triggers: The access control configuration for invoking workflow triggers.
+        :type triggers: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param contents: The access control configuration for accessing workflow run contents.
+        :type contents: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param actions: The access control configuration for workflow actions.
+        :type actions: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow_management: The access control configuration for workflow management.
+        :type workflow_management: ~logic_management_client.models.FlowAccessControlConfigurationPolicy
+        :param workflow: The workflow endpoints.
+        :type workflow: ~logic_management_client.models.FlowEndpoints
+        :param connector: The connector endpoints.
+        :type connector: ~logic_management_client.models.FlowEndpoints
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+
+        _validate = models.Workflow(location=resource_location, tags=tags, state=state, definition=definition, parameters=parameters, id_properties_integration_service_environment_id=id, id_properties_integration_account_id=resource_reference_id, triggers=triggers, contents=contents, actions=actions, workflow_management=workflow_management, workflow=workflow, connector=connector)
         api_version = "2019-05-01"
+        content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.validate_by_location.metadata['url']
+        url = self.validate_by_location.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -1100,18 +1125,23 @@ class WorkflowOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(_validate, 'Workflow')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    validate_by_location.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/locations/{location}/workflows/{workflowName}/validate'}
+    validate_by_location.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/locations/{location}/workflows/{workflowName}/validate'}  # type: ignore

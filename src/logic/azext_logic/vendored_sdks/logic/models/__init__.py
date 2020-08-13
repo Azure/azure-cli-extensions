@@ -37,11 +37,9 @@ try:
     from ._models_py3 import AssemblyDefinition
     from ._models_py3 import AssemblyProperties
     from ._models_py3 import AzureResourceErrorInfo
-    from ._models_py3 import B2BPartnerContent
     from ._models_py3 import BatchConfiguration
     from ._models_py3 import BatchConfigurationCollection
     from ._models_py3 import BatchConfigurationProperties
-    from ._models_py3 import BatchReleaseCriteria
     from ._models_py3 import BusinessIdentity
     from ._models_py3 import CallbackUrl
     from ._models_py3 import ContentHash
@@ -68,6 +66,8 @@ try:
     from ._models_py3 import ExpressionRoot
     from ._models_py3 import ExpressionTraces
     from ._models_py3 import ExtendedErrorInfo
+    from ._models_py3 import FlowAccessControlConfiguration
+    from ._models_py3 import FlowAccessControlConfigurationPolicy
     from ._models_py3 import FlowEndpoints
     from ._models_py3 import FlowEndpointsConfiguration
     from ._models_py3 import GenerateUpgradedDefinitionParameters
@@ -82,7 +82,6 @@ try:
     from ._models_py3 import IntegrationAccountMap
     from ._models_py3 import IntegrationAccountMapFilter
     from ._models_py3 import IntegrationAccountMapListResult
-    from ._models_py3 import IntegrationAccountMapPropertiesParametersSchema
     from ._models_py3 import IntegrationAccountPartner
     from ._models_py3 import IntegrationAccountPartnerFilter
     from ._models_py3 import IntegrationAccountPartnerListResult
@@ -92,14 +91,12 @@ try:
     from ._models_py3 import IntegrationAccountSession
     from ._models_py3 import IntegrationAccountSessionFilter
     from ._models_py3 import IntegrationAccountSessionListResult
-    from ._models_py3 import IntegrationAccountSku
     from ._models_py3 import IntegrationServiceEnvironment
     from ._models_py3 import IntegrationServiceEnvironmentAccessEndpoint
     from ._models_py3 import IntegrationServiceEnvironmentListResult
     from ._models_py3 import IntegrationServiceEnvironmentNetworkDependency
     from ._models_py3 import IntegrationServiceEnvironmentNetworkDependencyHealth
     from ._models_py3 import IntegrationServiceEnvironmentNetworkEndpoint
-    from ._models_py3 import IntegrationServiceEnvironmentProperties
     from ._models_py3 import IntegrationServiceEnvironmentSku
     from ._models_py3 import IntegrationServiceEnvironmentSkuCapacity
     from ._models_py3 import IntegrationServiceEnvironmentSkuDefinition
@@ -107,24 +104,25 @@ try:
     from ._models_py3 import IntegrationServiceEnvironmentSkuList
     from ._models_py3 import IntegrationServiceEnvironmentSubnetNetworkHealth
     from ._models_py3 import IpAddress
+    from ._models_py3 import IpAddressRange
     from ._models_py3 import JsonSchema
     from ._models_py3 import KeyVaultKey
     from ._models_py3 import KeyVaultKeyAttributes
     from ._models_py3 import KeyVaultKeyCollection
-    from ._models_py3 import KeyVaultKeyReference
     from ._models_py3 import KeyVaultKeyReferenceKeyVault
     from ._models_py3 import KeyVaultReference
     from ._models_py3 import ListKeyVaultKeysDefinition
     from ._models_py3 import ManagedApi
     from ._models_py3 import ManagedApiListResult
     from ._models_py3 import NetworkConfiguration
+    from ._models_py3 import OpenAuthenticationAccessPolicies
+    from ._models_py3 import OpenAuthenticationAccessPolicy
+    from ._models_py3 import OpenAuthenticationPolicyClaim
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
     from ._models_py3 import OperationResult
     from ._models_py3 import OperationResultProperties
-    from ._models_py3 import PartnerContent
-    from ._models_py3 import RecurrenceSchedule
     from ._models_py3 import RecurrenceScheduleOccurrence
     from ._models_py3 import RegenerateActionParameter
     from ._models_py3 import RepetitionIndex
@@ -159,6 +157,7 @@ try:
     from ._models_py3 import WorkflowListResult
     from ._models_py3 import WorkflowOutputParameter
     from ._models_py3 import WorkflowParameter
+    from ._models_py3 import WorkflowReference
     from ._models_py3 import WorkflowRun
     from ._models_py3 import WorkflowRunAction
     from ._models_py3 import WorkflowRunActionFilter
@@ -178,6 +177,7 @@ try:
     from ._models_py3 import WorkflowTriggerListCallbackUrlQueries
     from ._models_py3 import WorkflowTriggerListResult
     from ._models_py3 import WorkflowTriggerRecurrence
+    from ._models_py3 import WorkflowTriggerReference
     from ._models_py3 import WorkflowVersion
     from ._models_py3 import WorkflowVersionListResult
     from ._models_py3 import WsdlService
@@ -227,11 +227,9 @@ except (SyntaxError, ImportError):
     from ._models import AssemblyDefinition  # type: ignore
     from ._models import AssemblyProperties  # type: ignore
     from ._models import AzureResourceErrorInfo  # type: ignore
-    from ._models import B2BPartnerContent  # type: ignore
     from ._models import BatchConfiguration  # type: ignore
     from ._models import BatchConfigurationCollection  # type: ignore
     from ._models import BatchConfigurationProperties  # type: ignore
-    from ._models import BatchReleaseCriteria  # type: ignore
     from ._models import BusinessIdentity  # type: ignore
     from ._models import CallbackUrl  # type: ignore
     from ._models import ContentHash  # type: ignore
@@ -258,6 +256,8 @@ except (SyntaxError, ImportError):
     from ._models import ExpressionRoot  # type: ignore
     from ._models import ExpressionTraces  # type: ignore
     from ._models import ExtendedErrorInfo  # type: ignore
+    from ._models import FlowAccessControlConfiguration  # type: ignore
+    from ._models import FlowAccessControlConfigurationPolicy  # type: ignore
     from ._models import FlowEndpoints  # type: ignore
     from ._models import FlowEndpointsConfiguration  # type: ignore
     from ._models import GenerateUpgradedDefinitionParameters  # type: ignore
@@ -272,7 +272,6 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationAccountMap  # type: ignore
     from ._models import IntegrationAccountMapFilter  # type: ignore
     from ._models import IntegrationAccountMapListResult  # type: ignore
-    from ._models import IntegrationAccountMapPropertiesParametersSchema  # type: ignore
     from ._models import IntegrationAccountPartner  # type: ignore
     from ._models import IntegrationAccountPartnerFilter  # type: ignore
     from ._models import IntegrationAccountPartnerListResult  # type: ignore
@@ -282,14 +281,12 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationAccountSession  # type: ignore
     from ._models import IntegrationAccountSessionFilter  # type: ignore
     from ._models import IntegrationAccountSessionListResult  # type: ignore
-    from ._models import IntegrationAccountSku  # type: ignore
     from ._models import IntegrationServiceEnvironment  # type: ignore
     from ._models import IntegrationServiceEnvironmentAccessEndpoint  # type: ignore
     from ._models import IntegrationServiceEnvironmentListResult  # type: ignore
     from ._models import IntegrationServiceEnvironmentNetworkDependency  # type: ignore
     from ._models import IntegrationServiceEnvironmentNetworkDependencyHealth  # type: ignore
     from ._models import IntegrationServiceEnvironmentNetworkEndpoint  # type: ignore
-    from ._models import IntegrationServiceEnvironmentProperties  # type: ignore
     from ._models import IntegrationServiceEnvironmentSku  # type: ignore
     from ._models import IntegrationServiceEnvironmentSkuCapacity  # type: ignore
     from ._models import IntegrationServiceEnvironmentSkuDefinition  # type: ignore
@@ -297,24 +294,25 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationServiceEnvironmentSkuList  # type: ignore
     from ._models import IntegrationServiceEnvironmentSubnetNetworkHealth  # type: ignore
     from ._models import IpAddress  # type: ignore
+    from ._models import IpAddressRange  # type: ignore
     from ._models import JsonSchema  # type: ignore
     from ._models import KeyVaultKey  # type: ignore
     from ._models import KeyVaultKeyAttributes  # type: ignore
     from ._models import KeyVaultKeyCollection  # type: ignore
-    from ._models import KeyVaultKeyReference  # type: ignore
     from ._models import KeyVaultKeyReferenceKeyVault  # type: ignore
     from ._models import KeyVaultReference  # type: ignore
     from ._models import ListKeyVaultKeysDefinition  # type: ignore
     from ._models import ManagedApi  # type: ignore
     from ._models import ManagedApiListResult  # type: ignore
     from ._models import NetworkConfiguration  # type: ignore
+    from ._models import OpenAuthenticationAccessPolicies  # type: ignore
+    from ._models import OpenAuthenticationAccessPolicy  # type: ignore
+    from ._models import OpenAuthenticationPolicyClaim  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
     from ._models import OperationResult  # type: ignore
     from ._models import OperationResultProperties  # type: ignore
-    from ._models import PartnerContent  # type: ignore
-    from ._models import RecurrenceSchedule  # type: ignore
     from ._models import RecurrenceScheduleOccurrence  # type: ignore
     from ._models import RegenerateActionParameter  # type: ignore
     from ._models import RepetitionIndex  # type: ignore
@@ -349,6 +347,7 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowListResult  # type: ignore
     from ._models import WorkflowOutputParameter  # type: ignore
     from ._models import WorkflowParameter  # type: ignore
+    from ._models import WorkflowReference  # type: ignore
     from ._models import WorkflowRun  # type: ignore
     from ._models import WorkflowRunAction  # type: ignore
     from ._models import WorkflowRunActionFilter  # type: ignore
@@ -368,6 +367,7 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowTriggerListCallbackUrlQueries  # type: ignore
     from ._models import WorkflowTriggerListResult  # type: ignore
     from ._models import WorkflowTriggerRecurrence  # type: ignore
+    from ._models import WorkflowTriggerReference  # type: ignore
     from ._models import WorkflowVersion  # type: ignore
     from ._models import WorkflowVersionListResult  # type: ignore
     from ._models import WsdlService  # type: ignore
@@ -465,11 +465,9 @@ __all__ = [
     'AssemblyDefinition',
     'AssemblyProperties',
     'AzureResourceErrorInfo',
-    'B2BPartnerContent',
     'BatchConfiguration',
     'BatchConfigurationCollection',
     'BatchConfigurationProperties',
-    'BatchReleaseCriteria',
     'BusinessIdentity',
     'CallbackUrl',
     'ContentHash',
@@ -496,6 +494,8 @@ __all__ = [
     'ExpressionRoot',
     'ExpressionTraces',
     'ExtendedErrorInfo',
+    'FlowAccessControlConfiguration',
+    'FlowAccessControlConfigurationPolicy',
     'FlowEndpoints',
     'FlowEndpointsConfiguration',
     'GenerateUpgradedDefinitionParameters',
@@ -510,7 +510,6 @@ __all__ = [
     'IntegrationAccountMap',
     'IntegrationAccountMapFilter',
     'IntegrationAccountMapListResult',
-    'IntegrationAccountMapPropertiesParametersSchema',
     'IntegrationAccountPartner',
     'IntegrationAccountPartnerFilter',
     'IntegrationAccountPartnerListResult',
@@ -520,14 +519,12 @@ __all__ = [
     'IntegrationAccountSession',
     'IntegrationAccountSessionFilter',
     'IntegrationAccountSessionListResult',
-    'IntegrationAccountSku',
     'IntegrationServiceEnvironment',
     'IntegrationServiceEnvironmentAccessEndpoint',
     'IntegrationServiceEnvironmentListResult',
     'IntegrationServiceEnvironmentNetworkDependency',
     'IntegrationServiceEnvironmentNetworkDependencyHealth',
     'IntegrationServiceEnvironmentNetworkEndpoint',
-    'IntegrationServiceEnvironmentProperties',
     'IntegrationServiceEnvironmentSku',
     'IntegrationServiceEnvironmentSkuCapacity',
     'IntegrationServiceEnvironmentSkuDefinition',
@@ -535,24 +532,25 @@ __all__ = [
     'IntegrationServiceEnvironmentSkuList',
     'IntegrationServiceEnvironmentSubnetNetworkHealth',
     'IpAddress',
+    'IpAddressRange',
     'JsonSchema',
     'KeyVaultKey',
     'KeyVaultKeyAttributes',
     'KeyVaultKeyCollection',
-    'KeyVaultKeyReference',
     'KeyVaultKeyReferenceKeyVault',
     'KeyVaultReference',
     'ListKeyVaultKeysDefinition',
     'ManagedApi',
     'ManagedApiListResult',
     'NetworkConfiguration',
+    'OpenAuthenticationAccessPolicies',
+    'OpenAuthenticationAccessPolicy',
+    'OpenAuthenticationPolicyClaim',
     'Operation',
     'OperationDisplay',
     'OperationListResult',
     'OperationResult',
     'OperationResultProperties',
-    'PartnerContent',
-    'RecurrenceSchedule',
     'RecurrenceScheduleOccurrence',
     'RegenerateActionParameter',
     'RepetitionIndex',
@@ -587,6 +585,7 @@ __all__ = [
     'WorkflowListResult',
     'WorkflowOutputParameter',
     'WorkflowParameter',
+    'WorkflowReference',
     'WorkflowRun',
     'WorkflowRunAction',
     'WorkflowRunActionFilter',
@@ -606,6 +605,7 @@ __all__ = [
     'WorkflowTriggerListCallbackUrlQueries',
     'WorkflowTriggerListResult',
     'WorkflowTriggerRecurrence',
+    'WorkflowTriggerReference',
     'WorkflowVersion',
     'WorkflowVersionListResult',
     'WsdlService',
