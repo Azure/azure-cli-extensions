@@ -36,7 +36,7 @@ class ApiKeyCollection(msrest.serialization.Model):
     """Collection of the API key payload which is exposed in the response of the resource provider.
 
     :param keys: Gets or sets the collection of API key.
-    :type keys: list[~azure.mgmt.blockchain.models.ApiKey]
+    :type keys: list[~blockchain_management_client.models.ApiKey]
     """
 
     _attribute_map = {
@@ -144,16 +144,16 @@ class BlockchainMember(TrackedResource):
      describes the resource.
     :type tags: dict[str, str]
     :param sku: Gets or sets the blockchain member Sku.
-    :type sku: ~azure.mgmt.blockchain.models.Sku
+    :type sku: ~blockchain_management_client.models.Sku
     :param protocol: Gets or sets the blockchain protocol. Possible values include: "NotSpecified",
      "Parity", "Quorum", "Corda".
-    :type protocol: str or ~azure.mgmt.blockchain.models.BlockchainProtocol
+    :type protocol: str or ~blockchain_management_client.models.BlockchainProtocol
     :param validator_nodes_sku: Gets or sets the blockchain validator nodes Sku.
-    :type validator_nodes_sku: ~azure.mgmt.blockchain.models.BlockchainMemberNodesSku
+    :type validator_nodes_sku: ~blockchain_management_client.models.BlockchainMemberNodesSku
     :ivar provisioning_state: Gets or sets the blockchain member provision state. Possible values
      include: "NotSpecified", "Updating", "Deleting", "Succeeded", "Failed", "Stale".
     :vartype provisioning_state: str or
-     ~azure.mgmt.blockchain.models.BlockchainMemberProvisioningState
+     ~blockchain_management_client.models.BlockchainMemberProvisioningState
     :ivar dns: Gets the dns endpoint of the blockchain member.
     :vartype dns: str
     :ivar user_name: Gets the auth user name of the blockchain member.
@@ -177,7 +177,7 @@ class BlockchainMember(TrackedResource):
     :ivar public_key: Gets the public key of the blockchain member (default transaction node).
     :vartype public_key: str
     :param firewall_rules: Gets or sets firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     """
 
     _validation = {
@@ -241,7 +241,7 @@ class BlockchainMemberCollection(msrest.serialization.Model):
     """Collection of the blockchain member payload which is exposed in the request/response of the resource provider.
 
     :param value: Gets or sets the collection of blockchain members.
-    :type value: list[~azure.mgmt.blockchain.models.BlockchainMember]
+    :type value: list[~blockchain_management_client.models.BlockchainMember]
     :param next_link: Gets or sets the URL, that the client should use to fetch the next page (per
      server side paging).
      It's null for now, added for future use.
@@ -287,7 +287,7 @@ class TransactionNodePropertiesUpdate(msrest.serialization.Model):
     :param password: Sets the transaction node dns endpoint basic auth password.
     :type password: str
     :param firewall_rules: Gets or sets the firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     """
 
     _attribute_map = {
@@ -310,7 +310,7 @@ class BlockchainMemberPropertiesUpdate(TransactionNodePropertiesUpdate):
     :param password: Sets the transaction node dns endpoint basic auth password.
     :type password: str
     :param firewall_rules: Gets or sets the firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     :param consortium_management_account_password: Sets the managed consortium management account
      password.
     :type consortium_management_account_password: str
@@ -339,7 +339,7 @@ class BlockchainMemberUpdate(msrest.serialization.Model):
     :param password: Sets the transaction node dns endpoint basic auth password.
     :type password: str
     :param firewall_rules: Gets or sets the firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     :param consortium_management_account_password: Sets the managed consortium management account
      password.
     :type consortium_management_account_password: str
@@ -370,7 +370,7 @@ class Consortium(msrest.serialization.Model):
     :type name: str
     :param protocol: Gets or sets the protocol for the consortium. Possible values include:
      "NotSpecified", "Parity", "Quorum", "Corda".
-    :type protocol: str or ~azure.mgmt.blockchain.models.BlockchainProtocol
+    :type protocol: str or ~blockchain_management_client.models.BlockchainProtocol
     """
 
     _attribute_map = {
@@ -391,7 +391,7 @@ class ConsortiumCollection(msrest.serialization.Model):
     """Collection of the consortium payload.
 
     :param value: Gets or sets the collection of consortiums.
-    :type value: list[~azure.mgmt.blockchain.models.Consortium]
+    :type value: list[~blockchain_management_client.models.Consortium]
     """
 
     _attribute_map = {
@@ -453,7 +453,7 @@ class ConsortiumMemberCollection(msrest.serialization.Model):
     """Collection of consortium payload.
 
     :param value: Gets or sets the collection of consortiums.
-    :type value: list[~azure.mgmt.blockchain.models.ConsortiumMember]
+    :type value: list[~blockchain_management_client.models.ConsortiumMember]
     :param next_link: Gets or sets the URL, that the client should use to fetch the next page (per
      server side paging).
      It's null for now, added for future use.
@@ -510,7 +510,7 @@ class NameAvailability(msrest.serialization.Model):
     :type message: str
     :param reason: Gets or sets the name availability reason. Possible values include:
      "NotSpecified", "AlreadyExists", "Invalid".
-    :type reason: str or ~azure.mgmt.blockchain.models.NameAvailabilityReason
+    :type reason: str or ~blockchain_management_client.models.NameAvailabilityReason
     """
 
     _attribute_map = {
@@ -590,7 +590,7 @@ class ResourceProviderOperation(msrest.serialization.Model):
      or not.
     :type is_data_action: bool
     :param display: Gets or sets operation display.
-    :type display: ~azure.mgmt.blockchain.models.ResourceProviderOperationDisplay
+    :type display: ~blockchain_management_client.models.ResourceProviderOperationDisplay
     """
 
     _attribute_map = {
@@ -615,7 +615,7 @@ class ResourceProviderOperationCollection(msrest.serialization.Model):
     """Collection of operation payload which is exposed in the response of the resource provider.
 
     :param value: Gets or sets the collection of operations.
-    :type value: list[~azure.mgmt.blockchain.models.ResourceProviderOperation]
+    :type value: list[~blockchain_management_client.models.ResourceProviderOperation]
     :param next_link: Gets or sets the URL, that the client should use to fetch the next page (per
      server side paging).
      It's null for now, added for future use.
@@ -673,7 +673,7 @@ class ResourceTypeSku(msrest.serialization.Model):
     :param resource_type: Gets or sets the resource type.
     :type resource_type: str
     :param skus: Gets or sets the Skus.
-    :type skus: list[~azure.mgmt.blockchain.models.SkuSetting]
+    :type skus: list[~blockchain_management_client.models.SkuSetting]
     """
 
     _attribute_map = {
@@ -694,7 +694,7 @@ class ResourceTypeSkuCollection(msrest.serialization.Model):
     """Collection of the resource type Sku.
 
     :param value: Gets or sets the collection of resource type Sku.
-    :type value: list[~azure.mgmt.blockchain.models.ResourceTypeSku]
+    :type value: list[~blockchain_management_client.models.ResourceTypeSku]
     """
 
     _attribute_map = {
@@ -778,7 +778,7 @@ class TransactionNode(Resource):
     :type location: str
     :ivar provisioning_state: Gets or sets the blockchain member provision state. Possible values
      include: "NotSpecified", "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~azure.mgmt.blockchain.models.NodeProvisioningState
+    :vartype provisioning_state: str or ~blockchain_management_client.models.NodeProvisioningState
     :ivar dns: Gets or sets the transaction node dns endpoint.
     :vartype dns: str
     :ivar public_key: Gets or sets the transaction node public key.
@@ -788,7 +788,7 @@ class TransactionNode(Resource):
     :param password: Sets the transaction node dns endpoint basic auth password.
     :type password: str
     :param firewall_rules: Gets or sets the firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     """
 
     _validation = {
@@ -832,7 +832,7 @@ class TransactionNodeCollection(msrest.serialization.Model):
     """Collection of transaction node payload which is exposed in the request/response of the resource provider.
 
     :param value: Gets or sets the collection of transaction nodes.
-    :type value: list[~azure.mgmt.blockchain.models.TransactionNode]
+    :type value: list[~blockchain_management_client.models.TransactionNode]
     :param next_link: Gets or sets the URL, that the client should use to fetch the next page (per
      server side paging).
      It's null for now, added for future use.
@@ -859,7 +859,7 @@ class TransactionNodeUpdate(msrest.serialization.Model):
     :param password: Sets the transaction node dns endpoint basic auth password.
     :type password: str
     :param firewall_rules: Gets or sets the firewall rules.
-    :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+    :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
     """
 
     _attribute_map = {

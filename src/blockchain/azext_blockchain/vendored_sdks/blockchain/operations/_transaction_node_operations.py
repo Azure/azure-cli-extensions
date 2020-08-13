@@ -20,7 +20,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -32,7 +32,7 @@ class TransactionNodeOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.blockchain.models
+    :type models: ~blockchain_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -65,16 +65,17 @@ class TransactionNodeOperations(object):
          obtain this value from the Azure Resource Manager API or the portal.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: TransactionNode or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.TransactionNode
+        :return: TransactionNode, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.TransactionNode
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TransactionNode"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -103,10 +104,10 @@ class TransactionNodeOperations(object):
         deserialized = self._deserialize('TransactionNode', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def _create_initial(
         self,
@@ -115,19 +116,20 @@ class TransactionNodeOperations(object):
         resource_group_name,  # type: str
         location=None,  # type: Optional[str]
         password=None,  # type: Optional[str]
-        firewall_rules=None,  # type: Optional[List["FirewallRule"]]
+        firewall_rules=None,  # type: Optional[List["models.FirewallRule"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.TransactionNode"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TransactionNode"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _transaction_node = models.TransactionNode(location=location, password=password, firewall_rules=firewall_rules)
         api_version = "2018-06-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self._create_initial.metadata['url']
+        url = self._create_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -169,10 +171,10 @@ class TransactionNodeOperations(object):
             deserialized = self._deserialize('TransactionNode', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def begin_create(
         self,
@@ -181,10 +183,10 @@ class TransactionNodeOperations(object):
         resource_group_name,  # type: str
         location=None,  # type: Optional[str]
         password=None,  # type: Optional[str]
-        firewall_rules=None,  # type: Optional[List["FirewallRule"]]
+        firewall_rules=None,  # type: Optional[List["models.FirewallRule"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.TransactionNode"
+        # type: (...) -> LROPoller
         """Create or update the transaction node.
 
         :param blockchain_member_name: Blockchain member name.
@@ -199,18 +201,22 @@ class TransactionNodeOperations(object):
         :param password: Sets the transaction node dns endpoint basic auth password.
         :type password: str
         :param firewall_rules: Gets or sets the firewall rules.
-        :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+        :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns TransactionNode
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.blockchain.models.TransactionNode]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either TransactionNode or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~blockchain_management_client.models.TransactionNode]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TransactionNode"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = self._create_initial(
             blockchain_member_name=blockchain_member_name,
             transaction_node_name=transaction_node_name,
@@ -222,6 +228,9 @@ class TransactionNodeOperations(object):
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('TransactionNode', pipeline_response)
 
@@ -229,15 +238,11 @@ class TransactionNodeOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def _delete_initial(
         self,
@@ -248,11 +253,12 @@ class TransactionNodeOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self._delete_initial.metadata['url']
+        url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -278,9 +284,9 @@ class TransactionNodeOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def begin_delete(
         self,
@@ -289,7 +295,7 @@ class TransactionNodeOperations(object):
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> None
+        # type: (...) -> LROPoller
         """Delete the transaction node.
 
         :param blockchain_member_name: Blockchain member name.
@@ -303,13 +309,17 @@ class TransactionNodeOperations(object):
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns None
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = self._delete_initial(
             blockchain_member_name=blockchain_member_name,
             transaction_node_name=transaction_node_name,
@@ -318,19 +328,18 @@ class TransactionNodeOperations(object):
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def update(
         self,
@@ -338,7 +347,7 @@ class TransactionNodeOperations(object):
         transaction_node_name,  # type: str
         resource_group_name,  # type: str
         password=None,  # type: Optional[str]
-        firewall_rules=None,  # type: Optional[List["FirewallRule"]]
+        firewall_rules=None,  # type: Optional[List["models.FirewallRule"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.TransactionNode"
@@ -354,21 +363,22 @@ class TransactionNodeOperations(object):
         :param password: Sets the transaction node dns endpoint basic auth password.
         :type password: str
         :param firewall_rules: Gets or sets the firewall rules.
-        :type firewall_rules: list[~azure.mgmt.blockchain.models.FirewallRule]
+        :type firewall_rules: list[~blockchain_management_client.models.FirewallRule]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: TransactionNode or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.TransactionNode
+        :return: TransactionNode, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.TransactionNode
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TransactionNode"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _transaction_node = models.TransactionNodeUpdate(password=password, firewall_rules=firewall_rules)
         api_version = "2018-06-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.update.metadata['url']
+        url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -405,10 +415,10 @@ class TransactionNodeOperations(object):
         deserialized = self._deserialize('TransactionNode', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}'}  # type: ignore
 
     def list(
         self,
@@ -416,7 +426,7 @@ class TransactionNodeOperations(object):
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.TransactionNodeCollection"
+        # type: (...) -> Iterable["models.TransactionNodeCollection"]
         """Lists the transaction nodes for a blockchain member.
 
         :param blockchain_member_name: Blockchain member name.
@@ -425,31 +435,32 @@ class TransactionNodeOperations(object):
      obtain this value from the Azure Resource Manager API or the portal.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: TransactionNodeCollection or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.TransactionNodeCollection
+        :return: An iterator like instance of either TransactionNodeCollection or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~blockchain_management_client.models.TransactionNodeCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TransactionNodeCollection"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -480,7 +491,7 @@ class TransactionNodeOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes'}  # type: ignore
 
     def list_api_key(
         self,
@@ -500,16 +511,17 @@ class TransactionNodeOperations(object):
          obtain this value from the Azure Resource Manager API or the portal.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApiKeyCollection or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.ApiKeyCollection
+        :return: ApiKeyCollection, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.ApiKeyCollection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApiKeyCollection"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self.list_api_key.metadata['url']
+        url = self.list_api_key.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -538,10 +550,10 @@ class TransactionNodeOperations(object):
         deserialized = self._deserialize('ApiKeyCollection', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_api_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}/listApiKeys'}
+    list_api_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}/listApiKeys'}  # type: ignore
 
     def regenerate_api_key(
         self,
@@ -567,19 +579,20 @@ class TransactionNodeOperations(object):
         :param value: Gets or sets the API key value.
         :type value: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ApiKeyCollection or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.ApiKeyCollection
+        :return: ApiKeyCollection, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.ApiKeyCollection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApiKeyCollection"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _api_key = models.ApiKey(key_name=key_name, value=value)
         api_version = "2018-06-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.regenerate_api_key.metadata['url']
+        url = self.regenerate_api_key.metadata['url']  # type: ignore
         path_format_arguments = {
             'blockchainMemberName': self._serialize.url("blockchain_member_name", blockchain_member_name, 'str'),
             'transactionNodeName': self._serialize.url("transaction_node_name", transaction_node_name, 'str'),
@@ -616,7 +629,7 @@ class TransactionNodeOperations(object):
         deserialized = self._deserialize('ApiKeyCollection', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    regenerate_api_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}/regenerateApiKeys'}
+    regenerate_api_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Blockchain/blockchainMembers/{blockchainMemberName}/transactionNodes/{transactionNodeName}/regenerateApiKeys'}  # type: ignore

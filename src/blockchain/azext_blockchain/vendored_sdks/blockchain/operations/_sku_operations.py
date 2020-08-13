@@ -29,7 +29,7 @@ class SkuOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.blockchain.models
+    :type models: ~blockchain_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -52,16 +52,17 @@ class SkuOperations(object):
         """Lists the Skus of the resource type.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ResourceTypeSkuCollection or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.ResourceTypeSkuCollection
+        :return: ResourceTypeSkuCollection, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.ResourceTypeSkuCollection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeSkuCollection"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self.list.metadata['url']
+        url = self.list.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
         }
@@ -87,7 +88,7 @@ class SkuOperations(object):
         deserialized = self._deserialize('ResourceTypeSkuCollection', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/skus'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/skus'}  # type: ignore

@@ -7,13 +7,10 @@
 # --------------------------------------------------------------------------
 
 from ._blockchain_management_client import BlockchainManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['BlockchainManagementClient']
 
 try:
-    from .patch import patch_sdk
+    from ._patch import patch_sdk
     patch_sdk()
 except ImportError:
     pass

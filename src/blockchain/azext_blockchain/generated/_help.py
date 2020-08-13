@@ -12,109 +12,157 @@
 from knack.help_files import helps
 
 
-helps['blockchain member'] = """
+helps['blockchain blockchain-member'] = """
     type: group
-    short-summary: blockchain member
+    short-summary: blockchain blockchain-member
 """
 
-helps['blockchain member list'] = """
+helps['blockchain blockchain-member list'] = """
     type: command
-    short-summary: List the blockchain members.
+    short-summary: Lists the blockchain members for a resource group.
     examples:
-      - name: List the blockchain members in a resource group.
+      - name: BlockchainMembers_List
         text: |-
-               az blockchain member list --resource-group "mygroup"
+               az blockchain blockchain-member list --resource-group "mygroup"
 """
 
-helps['blockchain member show'] = """
+helps['blockchain blockchain-member show'] = """
     type: command
-    short-summary: Show the details about a blockchain member.
+    short-summary: Get details about a blockchain member.
     examples:
-      - name: Show the details about a blockchain member.
+      - name: BlockchainMembers_Get
         text: |-
-               az blockchain member show --name "contosemember1" --resource-group "mygroup"
+               az blockchain blockchain-member show --name "contosemember1" --resource-group "mygroup"
 """
 
-helps['blockchain member create'] = """
+helps['blockchain blockchain-member create'] = """
     type: command
     short-summary: Create a blockchain member.
     parameters:
-      - name: --firewall-rules
-        short-summary: Firewall rules of the blockchian member.
+      - name: --sku
+        short-summary: Gets or sets the blockchain member Sku.
         long-summary: |
-            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+            Usage: --sku name=XX tier=XX
 
-            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
+            name: Gets or sets Sku name
+            tier: Gets or sets Sku tier
+      - name: --validator-nodes-sku
+        short-summary: Gets or sets the blockchain validator nodes Sku.
+        long-summary: |
+            Usage: --validator-nodes-sku capacity=XX
+
+            capacity: Gets or sets the nodes capacity.
+      - name: --firewall-rules
+        short-summary: Gets or sets firewall rules
+        long-summary: |
+            Usage: --firewall-rules rule-name=XX start-ip-address=XX end-ip-address=XX
+
+            rule-name: Gets or sets the name of the firewall rules.
+            start-ip-address: Gets or sets the start IP address of the firewall rule range.
+            end-ip-address: Gets or sets the end IP address of the firewall rule range.
+
+            Multiple actions can be specified by using more than one --firewall-rules argument.
     examples:
-      - name: Create a blockchain member.
+      - name: BlockchainMembers_Create
         text: |-
-               az blockchain member create --location "southeastasia" --consortium "ContoseConsortium" --consortium-man\
-agement-account-password "1234abcdEFG1" --password "1234abcdEFG1" --validator-nodes-sku capacity=2 --protocol "Quorum" \
---name "contosemember1" --resource-group "mygroup"
+               az blockchain blockchain-member create --location "southeastasia" --consortium "ContoseConsortium" --con\
+sortium-management-account-password "1234abcdEFG1" --password "1234abcdEFG1" --validator-nodes-sku capacity=2 --protoco\
+l "Quorum" --name "contosemember1" --resource-group "mygroup"
 """
 
-helps['blockchain member update'] = """
+helps['blockchain blockchain-member update'] = """
     type: command
     short-summary: Update a blockchain member.
     parameters:
       - name: --firewall-rules
-        short-summary: Firewall rules of the blockchian member.
+        short-summary: Gets or sets the firewall rules.
         long-summary: |
-            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+            Usage: --firewall-rules rule-name=XX start-ip-address=XX end-ip-address=XX
 
-            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
+            rule-name: Gets or sets the name of the firewall rules.
+            start-ip-address: Gets or sets the start IP address of the firewall rule range.
+            end-ip-address: Gets or sets the end IP address of the firewall rule range.
+
+            Multiple actions can be specified by using more than one --firewall-rules argument.
     examples:
-      - name: Update a blockchain member.
+      - name: BlockchainMembers_Update
         text: |-
-               az blockchain member update --consortium-management-account-password "1234abcdEFG1" --password "1234abcd\
-EFG1" --name "ContoseMember1" --resource-group "mygroup"
+               az blockchain blockchain-member update --consortium-management-account-password "1234abcdEFG1" --passwor\
+d "1234abcdEFG1" --name "ContoseMember1" --resource-group "mygroup"
 """
 
-helps['blockchain member delete'] = """
+helps['blockchain blockchain-member delete'] = """
     type: command
     short-summary: Delete a blockchain member.
     examples:
-      - name: Delete a blockchain member.
+      - name: BlockchainMembers_Delete
         text: |-
-               az blockchain member delete --name "contosemember1" --resource-group "mygroup"
+               az blockchain blockchain-member delete --name "contosemember1" --resource-group "mygroup"
 """
 
-helps['blockchain member wait'] = """
+helps['blockchain blockchain-member list-all'] = """
     type: command
-    short-summary: Wait until a blockchain member is created or deleted.
+    short-summary: Lists the blockchain members for a subscription.
     examples:
-      - name: Wait until a blockchain member is created.
+      - name: BlockchainMembers_ListAll
         text: |-
-               az blockchain member wait --name "contosemember1" --resource-group "mygroup" --created
+               az blockchain blockchain-member list-all
 """
 
-helps['blockchain member list-api-key'] = """
+helps['blockchain blockchain-member list-api-key'] = """
     type: command
-    short-summary: List the API keys for a blockchain member.
+    short-summary: Lists the API keys for a blockchain member.
     examples:
-      - name: List the API keys for a blockchain member.
+      - name: BlockchainMembers_ListApiKeys
         text: |-
-               az blockchain member list-api-key --name "contosemember1" --resource-group "mygroup"
+               az blockchain blockchain-member list-api-key --name "contosemember1" --resource-group "mygroup"
 """
 
-helps['blockchain member list-consortium-member'] = """
+helps['blockchain blockchain-member list-consortium-member'] = """
     type: command
-    short-summary: List the consortium members for a blockchain member.
+    short-summary: Lists the consortium members for a blockchain member.
     examples:
-      - name: List the consortium members for a blockchain member.
+      - name: BlockchainMembers_ListConsortiumMembers
         text: |-
-               az blockchain member list-consortium-member --name "contosemember1" --resource-group "\
-mygroup"
+               az blockchain blockchain-member list-consortium-member --name "contosemember1" --resource-group "mygroup\
+"
 """
 
-helps['blockchain member regenerate-api-key'] = """
+helps['blockchain blockchain-member regenerate-api-key'] = """
     type: command
     short-summary: Regenerate the API keys for a blockchain member.
     examples:
-      - name: Regenerate the API keys for a blockchain member.
+      - name: BlockchainMembers_ListRegenerateApiKeys
         text: |-
-               az blockchain member regenerate-api-key --key-name "key1" --name "contosemember1" --re\
-source-group "mygroup"
+               az blockchain blockchain-member regenerate-api-key --key-name "key1" --name "contosemember1" --resource-\
+group "mygroup"
+"""
+
+helps['blockchain blockchain-member wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the blockchain blockchain-member is met.
+    examples:
+      - name: Pause executing next line of CLI script until the blockchain blockchain-member is successfully created.
+        text: |-
+               az blockchain blockchain-member wait --name "contosemember1" --resource-group "mygroup" --created
+      - name: Pause executing next line of CLI script until the blockchain blockchain-member is successfully deleted.
+        text: |-
+               az blockchain blockchain-member wait --name "contosemember1" --resource-group "mygroup" --deleted
+"""
+
+helps['blockchain blockchain-member-operation-result'] = """
+    type: group
+    short-summary: blockchain blockchain-member-operation-result
+"""
+
+helps['blockchain blockchain-member-operation-result show'] = """
+    type: command
+    short-summary: Get Async operation result.
+    examples:
+      - name: BlockchainMemberOperationResults_Get
+        text: |-
+               az blockchain blockchain-member-operation-result show --operation-id "12f4b309-01e3-4fcf-bc0b-1cc034ca03\
+f8" --location-name "southeastasia"
 """
 
 helps['blockchain consortium'] = """
@@ -124,11 +172,25 @@ helps['blockchain consortium'] = """
 
 helps['blockchain consortium list'] = """
     type: command
-    short-summary: List the available consortiums for a subscription.
+    short-summary: Lists the available consortiums for a subscription.
     examples:
-      - name: List the available consortiums for a subscription.
+      - name: Locations_ListConsortiums
         text: |-
-               az blockchain consortium list --location "southeastasia"
+               az blockchain consortium list --name "southeastasia"
+"""
+
+helps['blockchain sku'] = """
+    type: group
+    short-summary: blockchain sku
+"""
+
+helps['blockchain sku list'] = """
+    type: command
+    short-summary: Lists the Skus of the resource type.
+    examples:
+      - name: Skus_List
+        text: |-
+               az blockchain sku list
 """
 
 helps['blockchain transaction-node'] = """
@@ -138,37 +200,41 @@ helps['blockchain transaction-node'] = """
 
 helps['blockchain transaction-node list'] = """
     type: command
-    short-summary: List the transaction nodes for a blockchain member.
+    short-summary: Lists the transaction nodes for a blockchain member.
     examples:
-      - name: List the transaction nodes for a blockchain member.
+      - name: TransactionNodes_List
         text: |-
-               az blockchain transaction-node list --member-name "contosemember1" --resource-group "mygroup"
+               az blockchain transaction-node list --blockchain-member-name "contosemember1" --resource-group "mygroup"
 """
 
 helps['blockchain transaction-node show'] = """
     type: command
-    short-summary: Show the details of the transaction node.
+    short-summary: Get the details of the transaction node.
     examples:
-      - name: Show the details of the transaction node.
+      - name: TransactionNodes_Get
         text: |-
-               az blockchain transaction-node show --member-name "contosemember1" --resource-group "mygroup"\
+               az blockchain transaction-node show --blockchain-member-name "contosemember1" --resource-group "mygroup"\
  --name "txnode2"
 """
 
 helps['blockchain transaction-node create'] = """
     type: command
-    short-summary: Create a transaction node.
+    short-summary: Create or update the transaction node.
     parameters:
       - name: --firewall-rules
-        short-summary: Firewall rules of the blockchian transaction node.
+        short-summary: Gets or sets the firewall rules.
         long-summary: |
-            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+            Usage: --firewall-rules rule-name=XX start-ip-address=XX end-ip-address=XX
 
-            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
+            rule-name: Gets or sets the name of the firewall rules.
+            start-ip-address: Gets or sets the start IP address of the firewall rule range.
+            end-ip-address: Gets or sets the end IP address of the firewall rule range.
+
+            Multiple actions can be specified by using more than one --firewall-rules argument.
     examples:
-      - name: Create a transaction node.
+      - name: TransactionNodes_Create
         text: |-
-               az blockchain transaction-node create --member-name "contosemember1" --resource-group "mygrou\
+               az blockchain transaction-node create --blockchain-member-name "contosemember1" --resource-group "mygrou\
 p" --location "southeastasia" --password "1234abcdEFG1" --name "txnode2"
 """
 
@@ -177,15 +243,19 @@ helps['blockchain transaction-node update'] = """
     short-summary: Update the transaction node.
     parameters:
       - name: --firewall-rules
-        short-summary: Firewall rules of the blockchian transaction node.
+        short-summary: Gets or sets the firewall rules.
         long-summary: |
-            Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: rule-name, start-ip-address, end-ip-address.
+            Usage: --firewall-rules rule-name=XX start-ip-address=XX end-ip-address=XX
 
-            Multiple firewall rules can be specified by using more than one `--firewall-rules` argument.
+            rule-name: Gets or sets the name of the firewall rules.
+            start-ip-address: Gets or sets the start IP address of the firewall rule range.
+            end-ip-address: Gets or sets the end IP address of the firewall rule range.
+
+            Multiple actions can be specified by using more than one --firewall-rules argument.
     examples:
-      - name: Update the transaction node.
+      - name: TransactionNodes_Update
         text: |-
-               az blockchain transaction-node update --member-name "contosemember1" --resource-group "mygrou\
+               az blockchain transaction-node update --blockchain-member-name "contosemember1" --resource-group "mygrou\
 p" --password "1234abcdEFG1" --name "txnode2"
 """
 
@@ -193,29 +263,19 @@ helps['blockchain transaction-node delete'] = """
     type: command
     short-summary: Delete the transaction node.
     examples:
-      - name: Delete the transaction node.
+      - name: TransactionNodes_Delete
         text: |-
-               az blockchain transaction-node delete --member-name "contosemember1" --resource-group "mygrou\
+               az blockchain transaction-node delete --blockchain-member-name "contosemember1" --resource-group "mygrou\
 p" --name "txNode2"
-"""
-
-helps['blockchain transaction-node wait'] = """
-    type: command
-    short-summary: Wait until the transaction node is created or deleted.
-    examples:
-      - name: Wait until the transaction node is created.
-        text: |-
-               az blockchain transaction-node wait --member-name "contosemember1" --resource-group "mygrou\
-p" --name "txNode2" --created
 """
 
 helps['blockchain transaction-node list-api-key'] = """
     type: command
     short-summary: List the API keys for the transaction node.
     examples:
-      - name: List the API keys for the transaction node.
+      - name: TransactionNodes_ListApiKeys
         text: |-
-               az blockchain transaction-node list-api-key --member-name "contosemember1" --resource-group "\
+               az blockchain transaction-node list-api-key --blockchain-member-name "contosemember1" --resource-group "\
 mygroup" --name "txnode2"
 """
 
@@ -223,8 +283,22 @@ helps['blockchain transaction-node regenerate-api-key'] = """
     type: command
     short-summary: Regenerate the API keys for the blockchain member.
     examples:
-      - name: Regenerate the API keys for the blockchain member.
+      - name: TransactionNodes_ListRegenerateApiKeys
         text: |-
-               az blockchain transaction-node regenerate-api-key --key-name "key1" --member-name "contosemem\
+               az blockchain transaction-node regenerate-api-key --key-name "key1" --blockchain-member-name "contosemem\
 ber1" --resource-group "mygroup" --name "txnode2"
+"""
+
+helps['blockchain transaction-node wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the blockchain transaction-node is met.
+    examples:
+      - name: Pause executing next line of CLI script until the blockchain transaction-node is successfully created.
+        text: |-
+               az blockchain transaction-node wait --blockchain-member-name "contosemember1" --resource-group "mygroup"\
+ --name "txnode2" --created
+      - name: Pause executing next line of CLI script until the blockchain transaction-node is successfully deleted.
+        text: |-
+               az blockchain transaction-node wait --blockchain-member-name "contosemember1" --resource-group "mygroup"\
+ --name "txnode2" --deleted
 """
