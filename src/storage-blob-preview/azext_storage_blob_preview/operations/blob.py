@@ -567,12 +567,12 @@ def show_blob_v2(cmd, client, **kwargs):
     return blob
 
 
-def set_blob_tier_v2(client, tier, blob_type='block', rehydrate_priority=None, timeout=None):
+def set_blob_tier_v2(client, blob_type='block', rehydrate_priority=None, **kwargs):
     if blob_type == 'block':
-        return client.set_standard_blob_tier(standard_blob_tier=tier, rehydrate_priority=rehydrate_priority,
-                                             timeout=timeout)
+        return client.set_standard_blob_tier(rehydrate_priority=rehydrate_priority,
+                                             **kwargs)
     if blob_type == 'page':
-        return client.set_premium_page_blob_tier(premium_page_blob_tier=tier, timeout=timeout)
+        return client.set_premium_page_blob_tier(**kwargs)
     raise ValueError('Blob tier is only applicable to block or page blob.')
 
 

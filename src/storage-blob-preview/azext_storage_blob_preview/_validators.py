@@ -1124,11 +1124,15 @@ def block_blob_tier_validator(cmd, namespace):
 
 def blob_tier_validator(cmd, namespace):
     if namespace.blob_type == 'page':
+        namespace.premium_page_blob_tier = namespace.tier
         page_blob_tier_validator(cmd, namespace)
+        del namespace.version_id
     elif namespace.blob_type == 'block':
+        namespace.standard_blob_tier = namespace.tier
         block_blob_tier_validator(cmd, namespace)
     else:
         raise ValueError('Blob tier is only applicable to block or page blob.')
+    del namespace.tier
 
 
 def blob_rehydrate_priority_validator(namespace):

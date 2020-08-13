@@ -180,7 +180,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     version_id_type = CLIArgumentType(
         help='An optional blob version ID. This parameter is only for versioning enabled account. ',
         min_api='2019-12-12', is_preview=True
-    )
+    )  # Fix preview display
+
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
         c.argument('directory_name', directory_type)
@@ -319,6 +320,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Filters the results to return only blobs whose name begins with the specified prefix.')
         c.argument('show_next_marker', action='store_true',
                    help='Show nextMarker in result when specified.')
+
+    with self.argument_context('storage blob set-tier', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
+        from ._validators import blob_tier_validator, blob_rehydrate_priority_validator
+        t_premium_blob_tier = self.get_sdk('_models#PremiumPageBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        t_standard_blob_tier = self.get_sdk('_models#StandardBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
+        c.register_blob_arguments()
+        c.argument('blob_type', options_list=('--type', '-t'), arg_type=get_enum_type(('block', 'page')))
+        c.extra('tier', validator=blob_tier_validator)
+        c.argument('rehydrate_priority', options_list=('--rehydrate-priority', '-r'),
+                   arg_type=get_enum_type(('High', 'Standard')), validator=blob_rehydrate_priority_validator,
+                   is_preview=True, help="Indicate the priority with which to rehydrate an archived blob. "
+                                         "The priority can be set on a blob only once, default value is Standard.")
+        c.extra('version_id', version_id_type)
 
     with self.argument_context('storage blob show') as c:
         c.register_blob_arguments()

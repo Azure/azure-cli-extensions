@@ -54,8 +54,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('delete', 'delete_blob')
         g.storage_custom_command_oauth('download', 'download_blob')
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
-                                       custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
-                                                                           resource_type=CUSTOM_DATA_STORAGE_BLOB))
+                                       custom_command_type=get_custom_sdk(
+                                           'blob', client_factory=cf_blob_service,
+                                           resource_type=CUSTOM_DATA_STORAGE_BLOB))
+        g.storage_custom_command_oauth('set-tier', 'set_blob_tier_v2')
 
     with self.command_group('storage container', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-02-02',
