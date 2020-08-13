@@ -58,7 +58,7 @@ class Dashboard(msrest.serialization.Model):
         self.id = None
         self.name = None
         self.type = None
-        self.location = kwargs.get('location', None)
+        self.location = kwargs['location']
         self.tags = kwargs.get('tags', None)
         self.lenses = kwargs.get('lenses', None)
         self.metadata = kwargs.get('metadata', None)
@@ -93,8 +93,8 @@ class DashboardLens(msrest.serialization.Model):
         **kwargs
     ):
         super(DashboardLens, self).__init__(**kwargs)
-        self.order = kwargs.get('order', None)
-        self.parts = kwargs.get('parts', None)
+        self.order = kwargs['order']
+        self.parts = kwargs['parts']
         self.metadata = kwargs.get('metadata', None)
 
 
@@ -146,7 +146,7 @@ class DashboardParts(msrest.serialization.Model):
         **kwargs
     ):
         super(DashboardParts, self).__init__(**kwargs)
-        self.position = kwargs.get('position', None)
+        self.position = kwargs['position']
         self.metadata = kwargs.get('metadata', None)
 
 
@@ -187,33 +187,10 @@ class DashboardPartsPosition(msrest.serialization.Model):
         **kwargs
     ):
         super(DashboardPartsPosition, self).__init__(**kwargs)
-        self.x = kwargs.get('x', None)
-        self.y = kwargs.get('y', None)
-        self.row_span = kwargs.get('row_span', None)
-        self.col_span = kwargs.get('col_span', None)
-        self.metadata = kwargs.get('metadata', None)
-
-
-class DashboardProperties(msrest.serialization.Model):
-    """The shared dashboard properties.
-
-    :param lenses: The dashboard lenses.
-    :type lenses: dict[str, ~portal.models.DashboardLens]
-    :param metadata: The dashboard metadata.
-    :type metadata: dict[str, object]
-    """
-
-    _attribute_map = {
-        'lenses': {'key': 'lenses', 'type': '{DashboardLens}'},
-        'metadata': {'key': 'metadata', 'type': '{object}'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(DashboardProperties, self).__init__(**kwargs)
-        self.lenses = kwargs.get('lenses', None)
+        self.x = kwargs['x']
+        self.y = kwargs['y']
+        self.row_span = kwargs['row_span']
+        self.col_span = kwargs['col_span']
         self.metadata = kwargs.get('metadata', None)
 
 
@@ -252,38 +229,12 @@ class ErrorDefinition(msrest.serialization.Model):
         self.details = None
 
 
-class ErrorResponseException(HttpResponseError):
-    """Server responded with exception of type: 'ErrorResponse'.
-
-    :param response: Server response to be deserialized.
-    :param error_model: A deserialized model of the response body as model.
-    """
-
-    def __init__(self, response, error_model):
-        self.error = error_model
-        super(ErrorResponseException, self).__init__(response=response, error_model=error_model)
-
-    @classmethod
-    def from_response(cls, response, deserialize):
-        """Deserialize this response as this exception, or a subclass of this exception.
-
-        :param response: Server response to be deserialized.
-        :param deserialize: A deserializer
-        """
-        model_name = 'ErrorResponse'
-        error = deserialize(model_name, response)
-        if error is None:
-            error = deserialize.dependencies[model_name]()
-        return error._EXCEPTION_TYPE(response, error)
-
-
 class ErrorResponse(msrest.serialization.Model):
     """Error response.
 
-    :param error: Error definition.
+    :param error: The error details.
     :type error: ~portal.models.ErrorDefinition
     """
-    _EXCEPTION_TYPE = ErrorResponseException
 
     _attribute_map = {
         'error': {'key': 'error', 'type': 'ErrorDefinition'},

@@ -8,3 +8,9 @@
 
 from ._portal import Portal
 __all__ = ['Portal']
+
+try:
+    from ._patch import patch_sdk
+    patch_sdk()
+except ImportError:
+    pass
