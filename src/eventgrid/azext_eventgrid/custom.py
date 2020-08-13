@@ -44,7 +44,8 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     ConnectionState,
     EventSubscriptionIdentity,
     DeliveryWithResourceIdentity,
-    DeadLetterWithResourceIdentity)
+    DeadLetterWithResourceIdentity,
+    EventChannelFilter)
 
 logger = get_logger(__name__)
 
@@ -92,7 +93,12 @@ ID = "id"
 EVENTTIME = "eventtime"
 EVENTTYPE = "eventtype"
 DATAVERSION = "dataversion"
+
+PHONE_NUMBER_REGEX = "^\\+(?:[0-9] ?){6,15}[0-9]$"
+EXTENSION_NUMBER_REGEX = "^(?:[0-9] ?){1,8}[0-9]$"
+
 DEFAULT_TOP = 100
+MAX_LONG_DESCRIPTION_LEN = 2048
 
 
 def cli_topic_list(
@@ -330,10 +336,33 @@ def cli_partner_registration_create_or_update(
         resource_type_name,
         display_name=None,
         description=None,
+        long_description=None,
+        customer_service_number=None,
+        customer_service_extension=None,
+        customer_service_uri=None,
         logo_uri=None,
         setup_uri=None,
         authorized_subscription_ids=None,
         tags=None):
+
+    if long_description is not None and len(long_description) >= MAX_LONG_DESCRIPTION_LEN:
+        raise CLIError('The long description cannot exceed ' + str(MAX_LONG_DESCRIPTION_LEN) + ' characters.')
+
+    if customer_service_number is not None:
+        searchObj = re.search(PHONE_NUMBER_REGEX, customer_service_number)
+        if searchObj is None:
+            raise CLIError('Invalid customer service phone number. The expected phone format should start with'
+                           ' a \'+\' sign followed by the country code. The remaining digits are then followed.'
+                           ' Only digits and spaces are allowed and its length cannot exceed 16 digits including'
+                           ' country code. Examples of valid phone numbers are: +1 515 123 4567 and'
+                           ' +966 7 5115 2471. Examples of invalid phone numbers are: +1 (515) 123-4567,'
+                           ' 1 515 123 4567 and +966 121 5115 24 7 551 1234 43.')
+
+    if customer_service_extension is not None:
+        searchObj = re.search(EXTENSION_NUMBER_REGEX, customer_service_extension)
+        if searchObj is None:
+            raise CLIError('Invalid customer service extension number. Only digits are allowed'
+                           ' and number of digits should not exceed 10.')
 
     partner_registration_info = PartnerRegistration(
         location=GLOBAL,
@@ -343,6 +372,10 @@ def cli_partner_registration_create_or_update(
         setup_uri=setup_uri,
         partner_resource_type_display_name=display_name,
         partner_resource_type_description=description,
+        long_description=long_description,
+        partner_customer_service_number=customer_service_number,
+        partner_customer_service_extension=customer_service_extension,
+        customer_service_uri=customer_service_uri,
         authorized_azure_subscription_ids=authorized_subscription_ids,
         tags=tags)
 
@@ -425,7 +458,10 @@ def cli_event_channel_create_or_update(
         partner_topic_source,
         destination_subscription_id,
         destination_resource_group,
-        desination_topic_name):
+        desination_topic_name,
+        activation_expiration_date=None,
+        partner_topic_description=None,
+        publisher_filter=None):
 
     source_info = EventChannelSource(source=partner_topic_source)
 
@@ -434,7 +470,16 @@ def cli_event_channel_create_or_update(
         resource_group=destination_resource_group,
         partner_topic_name=desination_topic_name)
 
-    event_channel_info = EventChannel(source=source_info, destination=destination_info)
+    event_channel_filter = None
+    if publisher_filter is not None:
+        event_channel_filter = EventChannelFilter(advanced_filters=publisher_filter)
+
+    event_channel_info = EventChannel(
+        source=source_info,
+        destination=destination_info,
+        expiration_time_if_not_activated_utc=activation_expiration_date,
+        partner_topic_friendly_description=partner_topic_description,
+        filter=event_channel_filter)
 
     return client.create_or_update(
         resource_group_name,

@@ -8,10 +8,13 @@ import shlex
 import os
 import re
 from json import loads
+import pkgutil
 import requests
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
+
+from .encryption_types import Encryption
 
 from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 # pylint: disable=line-too-long, deprecated-method
@@ -141,8 +144,10 @@ def _fetch_compatible_sku(source_vm):
     # List available standard SKUs
     # TODO, premium IO only when needed
     list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'4\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
+                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'8\')] && ' \
+                       'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
                        'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
                        .format(loc=location)
@@ -151,6 +156,7 @@ def _fetch_compatible_sku(source_vm):
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
     if sku_list:
+        logger.info('VM size \'%s\' is available. Using it to create repair VM.\n', sku_list[0])
         return sku_list[0]
 
     return None
@@ -177,12 +183,75 @@ def _list_resource_ids_in_rg(resource_group_name):
     return ids
 
 
-def _uses_encrypted_disk(vm):
-    return vm.storage_profile.os_disk.encryption_settings
+def _fetch_encryption_settings(source_vm):
+    key_vault = None
+    kekurl = None
+    if source_vm.storage_profile.os_disk.encryption_settings is not None:
+        return Encryption.DUAL, key_vault, kekurl
+    # Unmanaged disk only support dual
+    if not _uses_managed_disk(source_vm):
+        return Encryption.NONE, key_vault, kekurl
+
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl] -o json'.format(i=disk_id)
+    encryption_type, key_vault, kekurl = loads(_call_az_command(show_disk_command))
+    if [encryption_type, key_vault, kekurl] == [None, None, None]:
+        return Encryption.NONE, key_vault, kekurl
+    if kekurl == []:
+        key_vault = key_vault[0]
+        return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl
+    key_vault, kekurl = key_vault[0], kekurl[0]
+    return Encryption.SINGLE_WITH_KEK, key_vault, kekurl
+
+
+def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name):
+    # Installs the extension on repair VM and mounts the disk after unlocking.
+    encryption_type, key_vault, kekurl = _fetch_encryption_settings(source_vm)
+    if is_linux:
+        volume_type = 'DATA'
+    else:
+        volume_type = 'ALL'
+
+    try:
+        if encryption_type is Encryption.SINGLE_WITH_KEK:
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
+                                            .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
+        elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
+                                            .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+        logger.info('Unlocking attached copied disk...')
+        _call_az_command(install_ade_extension_command)
+        # Linux VM encryption extension has a bug and we need to manually unlock and mount its disk
+        if is_linux:
+            logger.debug("Manually unlocking and mounting disk for Linux VMs.")
+            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
+    except AzCommandError as azCommandError:
+        error_message = str(azCommandError)
+        # Linux VM encryption extension bug where it fails and then continue to mount disk manually
+        if is_linux and "Failed to encrypt data volumes with error" in error_message:
+            logger.debug("Expected bug for linux VMs. Ignoring error.")
+            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
+        else:
+            raise
+
+
+def _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name):
+    # Unlocks the disk using the phasephrase and mounts it on the repair VM.
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
+    command_id = 'RunShellScript'
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
+    mount_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                         '--scripts "@{run_script}" -o json' \
+                         .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+    _call_az_command(mount_disk_command)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
-
     location = source_vm.location
     fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')

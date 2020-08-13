@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -37,5 +37,10 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    install_requires=DEPENDENCIES
+    install_requires=DEPENDENCIES,
+    package_data={
+        'azext_mixed_reality': [
+            'azext_metadata.json'
+        ]
+    }
 )

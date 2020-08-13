@@ -127,11 +127,20 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         result = self.cmd('az eventhubs namespace authorization-rule keys list -g {rg} --namespace-name {ehns} -n RootManageSharedAccessKey').get_output_in_json()
         self.kwargs["shared_access_key"] = result["primaryKey"]
 
+        # Test --timestamp-property-name is not given
         self.cmd('az timeseriesinsights event-source eventhub create -g {rg} --environment-name {env} --name {es} '
                  '--key-name RootManageSharedAccessKey '
                  '--shared-access-key {shared_access_key} '
                  '--event-source-resource-id {es_resource_id} '
-                 '--consumer-group-name $Default --timestamp-property-name DeviceId')
+                 '--consumer-group-name $Default',
+                 checks=[self.check('timestampPropertyName', None)])
+
+        self.cmd('az timeseriesinsights event-source eventhub create -g {rg} --environment-name {env} --name {es} '
+                 '--key-name RootManageSharedAccessKey '
+                 '--shared-access-key {shared_access_key} '
+                 '--event-source-resource-id {es_resource_id} '
+                 '--consumer-group-name $Default --timestamp-property-name timestampProp',
+                 checks=[self.check('timestampPropertyName', 'timestampProp')])
 
         self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name DeviceId1')
@@ -176,10 +185,18 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.kwargs["key_name"] = "iothubowner"
         self.kwargs["shared_access_key"] = self.cmd("az iot hub policy list -g {rg} --hub-name {iothub} --query \"[?keyName=='iothubowner']\".primaryKey --output tsv").output
 
+        # Test --timestamp-property-name is not given
         self.cmd('az timeseriesinsights event-source iothub create -g {rg} --environment-name {env} --name {es} '
                  '--consumer-group-name $Default '
                  '--key-name {key_name} --shared-access-key {shared_access_key} '
-                 '--event-source-resource-id {es_resource_id} --timestamp-property-name DeviceId')
+                 '--event-source-resource-id {es_resource_id}',
+                 checks=[self.check('timestampPropertyName', None)])
+
+        self.cmd('az timeseriesinsights event-source iothub create -g {rg} --environment-name {env} --name {es} '
+                 '--consumer-group-name $Default '
+                 '--key-name {key_name} --shared-access-key {shared_access_key} '
+                 '--event-source-resource-id {es_resource_id} --timestamp-property-name timestampProp',
+                 checks=[self.check('timestampPropertyName', 'timestampProp')])
 
         self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name DeviceId1')

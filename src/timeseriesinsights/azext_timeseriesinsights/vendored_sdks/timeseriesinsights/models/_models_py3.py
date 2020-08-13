@@ -181,7 +181,7 @@ class ResourceProperties(Model):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
     }
 
     def __init__(self, *, provisioning_state=None, **kwargs) -> None:
@@ -216,7 +216,7 @@ class EventSourceCommonProperties(ResourceProperties):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'timestampPropertyName', 'type': 'str'},
     }
 
@@ -258,7 +258,7 @@ class AzureEventSourceProperties(EventSourceCommonProperties):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'eventSourceResourceId', 'type': 'str'},
     }
@@ -555,7 +555,7 @@ class EnvironmentResourceProperties(ResourceProperties):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
         'data_access_id': {'key': 'dataAccessId', 'type': 'str'},
         'data_access_fqdn': {'key': 'dataAccessFqdn', 'type': 'str'},
         'status': {'key': 'status', 'type': 'EnvironmentStatus'},
@@ -679,7 +679,7 @@ class EventHubEventSourceCommonProperties(AzureEventSourceProperties):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'eventSourceResourceId', 'type': 'str'},
         'service_bus_namespace': {'key': 'serviceBusNamespace', 'type': 'str'},
@@ -799,7 +799,7 @@ class EventHubEventSourceCreateOrUpdateParameters(EventSourceCreateOrUpdateParam
         'tags': {'key': 'tags', 'type': '{str}'},
         'kind': {'key': 'kind', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'properties.timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'properties.eventSourceResourceId', 'type': 'str'},
         'service_bus_namespace': {'key': 'properties.serviceBusNamespace', 'type': 'str'},
@@ -868,7 +868,7 @@ class EventSourceResource(TrackedResource):
     }
 
     _subtype_map = {
-        'kind': {'Microsoft.EventHub': 'EventHubEventSourceResource', 'Microsoft.IotHub': 'IoTHubEventSourceResource'}
+        'kind': {'Microsoft.EventHub': 'EventHubEventSourceResource', 'Microsoft.IoTHub': 'IoTHubEventSourceResource'}
     }
 
     def __init__(self, *, location: str, tags=None, **kwargs) -> None:
@@ -948,7 +948,7 @@ class EventHubEventSourceResource(EventSourceResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'kind': {'key': 'kind', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'properties.timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'properties.eventSourceResourceId', 'type': 'str'},
         'service_bus_namespace': {'key': 'properties.serviceBusNamespace', 'type': 'str'},
@@ -1141,7 +1141,7 @@ class IoTHubEventSourceCommonProperties(AzureEventSourceProperties):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'eventSourceResourceId', 'type': 'str'},
         'iot_hub_name': {'key': 'iotHubName', 'type': 'str'},
@@ -1217,7 +1217,7 @@ class IoTHubEventSourceCreateOrUpdateParameters(EventSourceCreateOrUpdateParamet
         'tags': {'key': 'tags', 'type': '{str}'},
         'kind': {'key': 'kind', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'properties.timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'properties.eventSourceResourceId', 'type': 'str'},
         'iot_hub_name': {'key': 'properties.iotHubName', 'type': 'str'},
@@ -1306,7 +1306,7 @@ class IoTHubEventSourceResource(EventSourceResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'kind': {'key': 'kind', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
         'timestamp_property_name': {'key': 'properties.timestampPropertyName', 'type': 'str'},
         'event_source_resource_id': {'key': 'properties.eventSourceResourceId', 'type': 'str'},
         'iot_hub_name': {'key': 'properties.iotHubName', 'type': 'str'},
@@ -1565,7 +1565,7 @@ class LongTermEnvironmentResource(EnvironmentResource):
         'data_access_fqdn': {'key': 'properties.dataAccessFqdn', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'EnvironmentStatus'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'str'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
         'time_series_id_properties': {'key': 'properties.timeSeriesIdProperties', 'type': '[TimeSeriesIdProperty]'},
         'storage_configuration': {'key': 'properties.storageConfiguration', 'type': 'LongTermStorageConfigurationOutput'},
         'data_retention': {'key': 'properties.warmStoreConfiguration.dataRetention', 'type': 'duration'},
@@ -1909,7 +1909,7 @@ class ReferenceDataSetResource(TrackedResource):
         'key_properties': {'key': 'properties.keyProperties', 'type': '[ReferenceDataSetKeyProperty]'},
         'data_string_comparison_behavior': {'key': 'properties.dataStringComparisonBehavior', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'rfc-1123'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
     }
 
     def __init__(self, *, location: str, key_properties, tags=None, data_string_comparison_behavior=None, provisioning_state=None, **kwargs) -> None:
@@ -2122,7 +2122,7 @@ class StandardEnvironmentResource(EnvironmentResource):
         'data_access_fqdn': {'key': 'properties.dataAccessFqdn', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'EnvironmentStatus'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'str'},
+        'creation_time': {'key': 'properties.creationTime', 'type': 'iso-8601'},
     }
 
     def __init__(self, *, location: str, sku, data_retention_time, tags=None, storage_limit_exceeded_behavior=None, partition_key_properties=None, status=None, provisioning_state=None, **kwargs) -> None:

@@ -28,6 +28,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_name', help='Name of repair VM.')
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Repair resource group name.')
+        c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

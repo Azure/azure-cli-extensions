@@ -14,8 +14,8 @@ helps['storage account create'] = """
     long-summary: >
         The SKU of the storage account defaults to 'Standard_RAGRS'.
     examples:
-        - name: Create a storage account 'MyStorageAccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
-          text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
+        - name: Create a storage account 'mystorageaccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
+          text: az storage account create -n mystorageaccount -g MyResourceGroup -l westus --sku Standard_LRS
 """
 
 helps['storage account keys list'] = """
@@ -24,6 +24,21 @@ short-summary: List the access keys or Kerberos keys (if active directory enable
 examples:
   - name: List the access keys for a storage account.
     text: az storage account keys list -g MyResourceGroup -n MyStorageAccount
+"""
+
+helps['storage account keys renew'] = """
+type: command
+short-summary: Regenerate one of the access keys or Kerberos keys (if active directory enabled) for a storage account.
+long-summary: >
+    Kerberos key is generated per storage account for Azure Files identity based authentication either with
+    Azure Active Directory Domain Service (Azure AD DS) or Active Directory Domain Service (AD DS). It is used as the
+    password of the identity registered in the domain service that represents the storage account. Kerberos key does not
+    provide access permission to perform any control or data plane read or write operations against the storage account.
+examples:
+  - name: Regenerate one of the access keys for a storage account.
+    text: az storage account keys renew -g MyResourceGroup -n MyStorageAccount --key primary
+  - name: Regenerate one of the Kerberos keys for a storage account.
+    text: az storage account keys renew -g MyResourceGroup -n MyStorageAccount --key secondary
 """
 
 helps['storage account update'] = """

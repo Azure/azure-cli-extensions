@@ -11,9 +11,16 @@ class LogAnalyticsDataClientTests(ScenarioTest):
     """Test class for Log Analytics data client."""
     def test_query(self):
         """Tests data plane query capabilities for Log Analytics."""
-        self.cmd('az monitor log-analytics query --workspace cab864ad-d0c1-496b-bc5e-4418315621bf --analytics-query "Heartbeat | getschema"', checks=[
-            self.check('tables[0].rows[0][0]', 'TenantId')
-        ])
+
         query_result = self.cmd('az monitor log-analytics query -w cab864ad-d0c1-496b-bc5e-4418315621bf --analytics-query "Heartbeat | getschema"').get_output_in_json()
-        assert len(query_result['tables'][0]['rows']) == 29
-        assert isinstance(query_result['tables'][0]['rows'][0][1], (int, float, complex))
+
+        desired_row = {
+            'ColumnName': 'TenantId',
+            'ColumnOrdinal': '0',
+            'ColumnType': 'string',
+            'DataType': 'System.String',
+            'TableName': 'getschema'
+        }
+
+        assert len(query_result) == 29
+        self.assertDictEqual(query_result[0], desired_row)

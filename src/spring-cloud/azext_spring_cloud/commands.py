@@ -15,14 +15,11 @@ from ._transformers import (transform_spring_cloud_table_output,
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
     with self.command_group('spring-cloud', client_factory=cf_app_services) as g:
-        g.custom_command('create', 'spring_cloud_create',
-                         supports_no_wait=True)
-        g.custom_command('delete', 'spring_cloud_delete',
-                         supports_no_wait=True)
-        g.custom_command('list', 'spring_cloud_list',
-                         table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get',
-                              table_transformer=transform_spring_cloud_table_output)
+        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
+        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
+        g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
+        g.custom_command('list', 'spring_cloud_list', table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud) as g:
         g.custom_command('enable ', 'enable_test_endpoint')
@@ -60,6 +57,11 @@ def load_command_table(self, _):
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
         g.custom_command('logs', 'app_tail_log')
+
+    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud) as g:
+        g.custom_command('assign', 'app_identity_assign')
+        g.custom_command('remove', 'app_identity_remove')
+        g.custom_show_command('show', 'app_identity_show')
 
     with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud,
                             deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True)) as g:
