@@ -43,7 +43,8 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('context', help='The source which initiated the guest configuration assignment. Ex: Azure Policy')
         c.argument('latest_assignment_report_assignment', arg_type=CLIArgumentType(options_list=['--latest-assignment-r'
-                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val' 'ue: json-string/@json-file.'))
+                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val'
+                   'ue: json-string/@json-file.'))
         c.argument('guest_configuration_name', help='Name of the guest configuration.')
         c.argument('guest_configuration_version', help='Version of the guest configuration.')
         c.argument('guest_configuration_configuration_parameter', action=AddGuestConfigurationConfigurationParameter,
@@ -52,7 +53,8 @@ def load_arguments(self, _):
                    nargs='+', help='The configuration setting for the guest configuration.')
 
     with self.argument_context('guestconfig guest-configuration-assignment update') as c:
-        c.argument('guest_configuration_assignment_name', help='Name of the guest configuration assignment.', id_part='child_name_1')
+        c.argument('guest_configuration_assignment_name', help='Name of the guest configuration assignment.', id_part=
+                   'child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vm_name', help='The name of the virtual machine.', id_part='name')
         c.argument('name', help='Name of the guest configuration assignment.')
@@ -60,19 +62,14 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('context', help='The source which initiated the guest configuration assignment. Ex: Azure Policy')
         c.argument('latest_assignment_report_assignment', arg_type=CLIArgumentType(options_list=['--latest-assignment-r'
-                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val' 'ue: json-string/@json-file.'))
+                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val'
+                   'ue: json-string/@json-file.'))
         c.argument('guest_configuration_name', help='Name of the guest configuration.')
         c.argument('guest_configuration_version', help='Version of the guest configuration.')
         c.argument('guest_configuration_configuration_parameter', action=AddGuestConfigurationConfigurationParameter,
                    nargs='+', help='The configuration parameters for the guest configuration.')
         c.argument('guest_configuration_configuration_setting', action=AddGuestConfigurationConfigurationSetting,
                    nargs='+', help='The configuration setting for the guest configuration.')
-
-    with self.argument_context('guestconfig guest-configuration-assignment delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('guest_configuration_assignment_name', options_list=['--name', '-n'], help='Name of the guest config'
-                   'uration assignment', id_part='child_name_1')
-        c.argument('vm_name', help='The name of the virtual machine.', id_part='name')
 
     with self.argument_context('guestconfig guest-configuration-assignment wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -112,7 +109,8 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('context', help='The source which initiated the guest configuration assignment. Ex: Azure Policy')
         c.argument('latest_assignment_report_assignment', arg_type=CLIArgumentType(options_list=['--latest-assignment-r'
-                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val' 'ue: json-string/@json-file.'))
+                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val'
+                   'ue: json-string/@json-file.'))
         c.argument('guest_configuration_name', help='Name of the guest configuration.')
         c.argument('guest_configuration_version', help='Version of the guest configuration.')
         c.argument('guest_configuration_configuration_parameter', action=AddGuestConfigurationConfigurationParameter,
@@ -121,7 +119,8 @@ def load_arguments(self, _):
                    nargs='+', help='The configuration setting for the guest configuration.')
 
     with self.argument_context('guestconfig guest-configuration-hcrp-assignment update') as c:
-        c.argument('guest_configuration_assignment_name', help='Name of the guest configuration assignment.', id_part='child_name_1')
+        c.argument('guest_configuration_assignment_name', help='Name of the guest configuration assignment.', id_part=
+                   'child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', help='The name of the ARC machine.', id_part='name')
         c.argument('name', help='Name of the guest configuration assignment.')
@@ -129,19 +128,14 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('context', help='The source which initiated the guest configuration assignment. Ex: Azure Policy')
         c.argument('latest_assignment_report_assignment', arg_type=CLIArgumentType(options_list=['--latest-assignment-r'
-                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val' 'ue: json-string/@json-file.'))
+                   'eport-assignment'], help='Configuration details of the guest configuration assignment. Expected val'
+                   'ue: json-string/@json-file.'))
         c.argument('guest_configuration_name', help='Name of the guest configuration.')
         c.argument('guest_configuration_version', help='Version of the guest configuration.')
         c.argument('guest_configuration_configuration_parameter', action=AddGuestConfigurationConfigurationParameter,
                    nargs='+', help='The configuration parameters for the guest configuration.')
         c.argument('guest_configuration_configuration_setting', action=AddGuestConfigurationConfigurationSetting,
                    nargs='+', help='The configuration setting for the guest configuration.')
-
-    with self.argument_context('guestconfig guest-configuration-hcrp-assignment delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('guest_configuration_assignment_name', help='Name of the guest configuration assignment', id_part='c'
-                   'hild_name_1')
-        c.argument('machine_name', help='The name of the ARC machine.', id_part='name')
 
     with self.argument_context('guestconfig guest-configuration-hcrp-assignment wait') as c:
         c.argument('resource_group_name', resource_group_name_type)

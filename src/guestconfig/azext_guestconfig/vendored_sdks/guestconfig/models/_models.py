@@ -101,6 +101,8 @@ class AssignmentReportResource(msrest.serialization.Model):
     :ivar compliance_status: A value indicating compliance status of the machine for the assigned
      guest configuration. Possible values include: "Compliant", "NonCompliant", "Pending".
     :vartype compliance_status: str or ~guest_configuration_client.models.ComplianceStatus
+    :ivar resource_id: Name of the guest configuration assignment resource setting.
+    :vartype resource_id: str
     :param reasons: Compliance reason and reason code for a resource.
     :type reasons:
      list[~guest_configuration_client.models.AssignmentReportResourceComplianceReason]
@@ -110,11 +112,13 @@ class AssignmentReportResource(msrest.serialization.Model):
 
     _validation = {
         'compliance_status': {'readonly': True},
+        'resource_id': {'readonly': True},
         'properties': {'readonly': True},
     }
 
     _attribute_map = {
         'compliance_status': {'key': 'complianceStatus', 'type': 'str'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
         'reasons': {'key': 'reasons', 'type': '[AssignmentReportResourceComplianceReason]'},
         'properties': {'key': 'properties', 'type': 'object'},
     }
@@ -125,6 +129,7 @@ class AssignmentReportResource(msrest.serialization.Model):
     ):
         super(AssignmentReportResource, self).__init__(**kwargs)
         self.compliance_status = None
+        self.resource_id = None
         self.reasons = kwargs.get('reasons', None)
         self.properties = None
 

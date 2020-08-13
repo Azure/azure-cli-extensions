@@ -17,15 +17,6 @@ create a guestconfig guest-configuration-assignment.
 |**--guest-configuration-version**|string|Version of the guest configuration.|version|
 |**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
 |**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-assignment delete
-
-delete a guestconfig guest-configuration-assignment.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment|guest_configuration_assignment_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
 ### guestconfig guest-configuration-assignment list
 
 list a guestconfig guest-configuration-assignment.
@@ -96,15 +87,6 @@ create a guestconfig guest-configuration-hcrp-assignment.
 |**--guest-configuration-version**|string|Version of the guest configuration.|version|
 |**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
 |**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-hcrp-assignment delete
-
-delete a guestconfig guest-configuration-hcrp-assignment.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment|guest_configuration_assignment_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
 ### guestconfig guest-configuration-hcrp-assignment list
 
 list a guestconfig guest-configuration-hcrp-assignment.
