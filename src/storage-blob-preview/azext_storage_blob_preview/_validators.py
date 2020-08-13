@@ -603,13 +603,25 @@ def validate_metadata(namespace):
         namespace.metadata = dict(x.split('=', 1) for x in namespace.metadata)
 
 
+def get_permission_allowed_values(permission_class):
+    instance = permission_class()
+
+    allowed_values = [x.lower() for x in dir(instance) if not x.startswith('_')]
+    allowed_values.remove('from_string')
+    for i, item in enumerate(allowed_values):
+        if item == 'delete_previous_version':
+            allowed_values[i] = 'x' + item
+    return allowed_values
+
+
 def get_permission_help_string(permission_class):
-    allowed_values = [x.lower() for x in dir(permission_class) if not x.startswith('__')]
+    allowed_values = get_permission_allowed_values(permission_class)
+
     return ' '.join(['({}){}'.format(x[0], x[1:]) for x in allowed_values])
 
 
 def get_permission_validator(permission_class):
-    allowed_values = [x.lower() for x in dir(permission_class) if not x.startswith('__')]
+    allowed_values = get_permission_allowed_values(permission_class)
     allowed_string = ''.join(x[0] for x in allowed_values)
 
     def validator(namespace):
@@ -618,7 +630,7 @@ def get_permission_validator(permission_class):
                 help_string = get_permission_help_string(permission_class)
                 raise ValueError(
                     'valid values are {} or a combination thereof.'.format(help_string))
-            namespace.permission = permission_class(_str=namespace.permission)
+            namespace.permission = permission_class.from_string(namespace.permission)
 
     return validator
 

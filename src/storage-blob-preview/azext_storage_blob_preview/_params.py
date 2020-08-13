@@ -120,7 +120,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     recursive_type = CLIArgumentType(options_list=['--recursive', '-r'], action='store_true',
                                      help='Look into sub-directories recursively.')
     sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
-               'referenced with --id that specifies this value. Can be combined.'
+               'referenced with --policy-name that specifies this value. Can be combined.'
     t_routing_choice = self.get_models('RoutingChoice', resource_type=ResourceType.MGMT_STORAGE)
     routing_choice_type = CLIArgumentType(
         arg_group='Routing Preference', arg_type=get_enum_type(t_routing_choice),

@@ -476,12 +476,15 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
                           content_encoding=None, content_language=None,
                           content_type=None, full_uri=False, as_user=False, snapshot=None, version_id=None):
     generate_blob_sas = cmd.get_models('_shared_access_signature#generate_blob_sas')
+
     sas_kwargs = {}
     if as_user:
         from datetime import datetime
         sas_kwargs['user_delegation_key'] = client.get_user_delegation_key(
             _get_datetime_from_string(start) if start else datetime.utcnow(),
             _get_datetime_from_string(expiry))
+    else:
+        sas_kwargs['account_key'] = client.credential.account_key
     sas_token = generate_blob_sas(account_name=client.account_name, container_name=container_name, blob_name=blob_name,
                                   snapshot=snapshot, version_id=version_id, permission=permission,
                                   expiry=expiry, start=start, policy_id=id, ip=ip, protocol=protocol,
@@ -490,8 +493,9 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
                                   content_type=content_type, **sas_kwargs)
 
     if full_uri:
-        blob_client = client.get_blob_client(container_name=container_name, blob_name=blob_name,
-                                             credential=sas_token)
+        t_blob_client = cmd.get_models('_blob_client#BlobClient')
+        blob_client = t_blob_client(account_url=client.url, container_name=container_name,
+                                    blob_name=blob_name, snapshot=snapshot, credential=sas_token)
         return blob_client.url
 
     return sas_token
