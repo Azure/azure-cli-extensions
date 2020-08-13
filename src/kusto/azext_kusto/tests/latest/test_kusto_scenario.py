@@ -95,14 +95,13 @@ def step_attacheddatabaseconfigurationsget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
+
 # EXAMPLE: KustoDataConnectionsGet
-
-
 @try_manual
 def step_kustodataconnectionsget(test, rg):
     test.cmd('az kusto data-connection show '
-             '--name "{DataConnections8}" '
              '--cluster-name "{Clusters_3}" '
+             '--name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
