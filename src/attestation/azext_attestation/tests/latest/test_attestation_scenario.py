@@ -57,8 +57,8 @@ class AttestationMgmtScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=self.check('length(value)', 0))
 
-    @ResourceGroupPreparer(name_prefix='cli_test_att_signer')
-    def test_attestation(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_att')
+    def test_attestation_mgmt(self, resource_group):
         self.kwargs.update({
             'myattestation': self.create_random_name(prefix='clitestatt', length=24)
         })
