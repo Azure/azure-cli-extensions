@@ -6,11 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._subscription_client import SubscriptionClient
-__all__ = ['SubscriptionClient']
+from ._subscription_operations_async import SubscriptionOperations
+from ._tenant_operations_async import TenantOperations
+from ._subscription_operations_async import SubscriptionOperations
+from ._operation_operations_async import OperationOperations
 
-try:
-    from ._patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+__all__ = [
+    'SubscriptionOperations',
+    'TenantOperations',
+    'SubscriptionOperations',
+    'OperationOperations',
+]
