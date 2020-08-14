@@ -40,9 +40,10 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
-                        kube_config=None, kube_context=None, values_file=None, token_based_onboarding=None, no_wait=False, tags=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -68,6 +69,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # Checking whether tokenbasedonboarding has been opted from the values file.
+    token_based_onboarding = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        token_based_onboarding = utils.get_flag_from_values_file(values_file)
 
     # Loading the kubeconfig file in kubernetes client configuration
     try:
@@ -178,7 +185,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
             registry_path = utils.get_helm_registry(profile, location)
         else:
-            # temp = utils.get_helm_registry(profile, location)
+            # If token based onboarding, gets the access token from the values file given, then gets helm registry using that token
             registry_path = utils.get_helm_registry_using_token(values_file, location)
 
     # Get azure-arc agent version for telemetry
@@ -229,29 +236,24 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if kube_context:
             cmd_helm_install.extend(["--kube-context", kube_context])
     else:
-        # Helm Install directly using msi token
-        # MSI token should be given in globals.clientSecretOrToken
-        # and other required parameters as values in values_file
-
-
-        #replace chart_path_test with chart_path
-        # chart_path_test = os.path.join('C:\\Users\\arpgu\\source\\repos\\ClusterConfigurationAgent\\azure-arc-k8sagents')
         logger.warning("Doing access token based onboarding...\n")
         values_file = get_values_file_path(values_file)
         if values_file is None:
             raise CLIError("For token based onboarding, please provide access token in a file, and provide file path through --values-file or -f")
         trim_file_path(values_file)
+
+        # subscriptionId, tenantId and clientSecret should be provided in values yaml file,
+        # location of whose is in env variable HELMVALUESPATH. Access token should be provided
+        # in 'clientSecret' param in values file.
         cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
-                            "--set", "global.subscriptionId={}".format(subscription_id),
                             "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                             "--set", "global.resourceGroupName={}".format(resource_group_name),
                             "--set", "global.resourceName={}".format(cluster_name),
                             "--set", "global.location={}".format(location),
-                            "--set", "global.tenantId={}".format(onboarding_tenant_id),
                             "--set", "global.httpsProxy={}".format(https_proxy),
                             "--set", "global.httpProxy={}".format(http_proxy),
                             "--set", "global.noProxy={}".format(no_proxy),
-                            "--set", "systemDefaultValues.tokenBasedOnboarding={}".format("true"),
+                            "--set-string", "systemDefaultValues.isClientSecretAToken={}".format("true"),
                             "-f", values_file,
                             "--kubeconfig", kube_config, "--output", "json"]
         if kube_context:
@@ -291,9 +293,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_exception(exception=e, fault_type=consts.Check_PodStatus_Fault_Type,
                                 summary='Failed to check arc agent pods statuses')
         logger.warning("Failed to check arc agent pods statuses: %s", e)
-    
-    # Returning response only when it is not token based onboarding, 
-    # Because token based onboarding is done by connect-agent independently. 
+
+    # Returning response on the terminal only when it is not token based onboarding,
+    # Because resource creation and connect is done by connect-agent independently in that case.
     if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
         return put_cc_response
 

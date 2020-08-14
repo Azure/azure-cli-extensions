@@ -91,9 +91,6 @@ def get_helm_registry(profile, location):
     cred, _, _ = profile.get_login_credentials(
         resource='https://management.core.windows.net/')
     token = cred._token_retriever()[2].get('accessToken')  # pylint: disable=protected-access
-    print(token)
-    print("\n\n")
-
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     query_parameters = {}
     query_parameters['releaseTrain'] = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
@@ -114,18 +111,21 @@ def get_helm_registry(profile, location):
 
 def get_helm_registry_using_token(values_file, location):
     if values_file is None:
-        values_file = os.getenv('VALUESPATH')
-    if values_file is None:
-        raise CLIError("For token based onboarding, please provide access token in a file, and provide file path through --values-file or -f")
+        raise CLIError("For token based onboarding, please provide access token, and provide file path in env variable HELMVALUESPATH")
+    if not os.path.isfile(values_file):
+        raise CLIError("{} is not a valid file path for the values yml file.".format(values_file))
     token = ""
     with open(values_file) as f:
         try:
             docs = yaml.safe_load(f)
-            token = docs['global']['clientSecretOrToken']
-            print(docs)
-            print(token)
+            if 'global' not in docs:
+                raise CLIError("Incorrect values file format. Provide 'clientSecret' param under 'global' field in .yml file.")
+            if 'clientSecret' in docs['global']:
+                token = docs['global']['clientSecret']
+            else:
+                raise CLIError("Access token not provided in the file. Provide it as 'clientSecret' param under 'global' in values file.")
         except Exception as e:
-            raise CLIError("Error while reading values yml file: {}".format(e))
+            raise CLIError("Error while reading helm values yml file: {}".format(e))
 
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     query_parameters = {}
@@ -139,8 +139,25 @@ def get_helm_registry_using_token(values_file, location):
                                 summary='Error while fetching helm chart registry path')
         raise CLIError("Error while fetching helm chart registry path: " + str(e))
     if response.status_code == 200:
-        print("200")
         return response.json().get('repositoryPath')
     telemetry.set_exception(exception=str(response.json()), fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                             summary='Error while fetching helm chart registry path')
     raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))
+
+
+def get_flag_from_values_file(values_file):
+    isClientSecretATokenFlag = None
+    with open(values_file) as f:
+        try:
+            docs = yaml.safe_load(f)
+            if 'systemDefaultValues' not in docs:
+                raise CLIError("Incorrect values file format. Provide 'isClientSecretAToken' flag under 'systemDefaultValues' .yml file.")
+            else:
+                if 'isClientSecretAToken' not in docs['systemDefaultValues']:
+                    raise CLIError("Please provide flag 'isClientSecretAToken' set to \"true\" if you want token based onboarding.")
+                else:
+                    isClientSecretATokenFlag = docs['systemDefaultValues']['isClientSecretAToken']
+        except Exception as e:
+            raise CLIError("Error while reading helm values yml file: {}".format(e))
+
+    return isClientSecretATokenFlag

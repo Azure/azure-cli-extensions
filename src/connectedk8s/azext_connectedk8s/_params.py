@@ -21,8 +21,6 @@ def load_arguments(self, _):
         c.argument('https_proxy', options_list=['--proxy-https'], help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], help='List of URLs/CIDRs for which proxy should not to be used.')
-        c.argument('values_file', options_list=['--values-file', '-f'], help='Values file to be passed to helm charts.')
-        c.argument('token_based_onboarding', options_list=['--token-based-onboarding'], help='Flag for direct token based onboarding.')
 
 
     with self.argument_context('connectedk8s update') as c:
