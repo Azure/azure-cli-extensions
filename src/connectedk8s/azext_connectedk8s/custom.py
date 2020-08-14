@@ -250,7 +250,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                             "--set", "global.httpsProxy={}".format(https_proxy),
                             "--set", "global.httpProxy={}".format(http_proxy),
                             "--set", "global.noProxy={}".format(no_proxy),
-                            "--set-string", "systemDefaultValues.isClientSecretAToken={}".format("true"),
+                            "--set", "systemDefaultValues.isClientSecretAToken={}".format("true"),
                             "-f", values_file,
                             "--kubeconfig", kube_config, "--output", "json"]
         if kube_context:
