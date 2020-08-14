@@ -110,8 +110,8 @@ helps['attestation signer add'] = """
 
 helps['attestation signer remove'] = """
     type: command
-    short-summary: Removes the specified policy management certificate. Note that the final policy management 
-    certificate cannot be removed.
+    short-summary: Removes the specified policy management certificate. Note that the final policy management
+     certificate cannot be removed.
     examples:
       - name: Removes the specified policy management certificate.
         text: |-
