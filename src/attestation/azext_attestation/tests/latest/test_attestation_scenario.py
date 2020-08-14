@@ -83,11 +83,11 @@ class AttestationSignerScenarioTest(ScenarioTest):
 
         self.cmd('az attestation signer list -n {att_name} -g {rg}', checks=[
             self.exists('jwt'),
-            self.check('iss', '{att_url}')
+            self.exists('iss')
         ])
         self.cmd('az attestation signer list --attestation-base-url {att_url} -g {rg}', checks=[
             self.exists('jwt'),
-            self.check('iss', '{att_url}')
+            self.exists('iss')
         ])
 
 

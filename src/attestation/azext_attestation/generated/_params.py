@@ -75,3 +75,6 @@ def load_arguments(self, _):
                        help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
                             'You can ignore --name and --resource-group if you specified the URL.')
             c.argument('tee', arg_type=get_enum_type(TeeKind))
+
+    with self.argument_context('attestation policy set') as c:
+        c.argument('new_attestation_policy', options_list=['--new-attestation-policy', '-p'])
