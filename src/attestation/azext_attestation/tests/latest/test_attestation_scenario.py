@@ -68,12 +68,46 @@ class AttestationMgmtScenarioTest(ScenarioTest):
         self._list_by_resource_group(resource_group)
         self._delete(resource_group)
 
-"""
+
 class AttestationSignerScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_att_signer')
     def test_attestation_signer(self, resource_group):
         self.kwargs.update({
             'att_name': self.create_random_name(prefix='clitestattsigner', length=24),
-            'loc': 'eastus',
+            'loc': 'eastus2',
         })
-"""
+
+        att_json = self.cmd('az attestation create -n {att_name} -g {rg} -l {loc}').get_output_in_json()
+        self.kwargs['att_url'] = att_json['attestUri']
+
+        self.cmd('az attestation signer list -n {att_name} -g {rg}', checks=[
+            self.exists('jwt'),
+            self.check('iss', '{att_url}')
+        ])
+        self.cmd('az attestation signer list --attestation-base-url {att_url} -g {rg}', checks=[
+            self.exists('jwt'),
+            self.check('iss', '{att_url}')
+        ])
+
+
+class AttestationPolicyScenarioTest(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_att_policy')
+    def test_attestation_policy(self, resource_group):
+        self.kwargs.update({
+            'att_name': self.create_random_name(prefix='clitestattpolicy', length=24),
+            'loc': 'eastus2',
+        })
+
+        att_json = self.cmd('az attestation create -n {att_name} -g {rg} -l {loc}').get_output_in_json()
+        self.kwargs['att_url'] = att_json['attestUri']
+
+        self.cmd('az attestation policy show -n {att_name} -g {rg} --tee CyResComponent', checks=[
+            self.exists('jwt'),
+            self.exists('AttestationPolicy')
+        ])
+        self.cmd('az attestation policy show --attestation-base-url {att_url} -g {rg} --tee CyResComponent', checks=[
+            self.exists('jwt'),
+            self.exists('AttestationPolicy')
+        ])
+        self.cmd('az attestation policy reset -n {att_name} -g {rg} --tee SgxEnclave '
+                 '--policy-jws "eyJhbGciOiJub25lIn0.."')

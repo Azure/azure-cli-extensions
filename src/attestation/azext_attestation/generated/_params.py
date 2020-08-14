@@ -57,7 +57,7 @@ def load_arguments(self, _):
         with self.argument_context('attestation signer {}'.format(item)) as c:
             c.extra('resource_group_name', resource_group_name_type, required=False)
             c.extra('attestation_name', attestation_name_type, required=False)
-            c.argument('tenant_base_url', options_list=['--attestation_base_url', '-u'], required=False,
+            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
                        help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
                             'You can ignore --name and --resource-group if you specified the URL.')
             if item in ['add', 'remove']:
@@ -71,7 +71,7 @@ def load_arguments(self, _):
         with self.argument_context('attestation policy {}'.format(item)) as c:
             c.extra('resource_group_name', resource_group_name_type, required=False)
             c.extra('attestation_name', attestation_name_type, required=False)
-            c.argument('tenant_base_url', options_list=['--attestation_base_url', '-u'], required=False,
+            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
                        help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
                             'You can ignore --name and --resource-group if you specified the URL.')
             c.argument('tee', arg_type=get_enum_type(TeeKind))
