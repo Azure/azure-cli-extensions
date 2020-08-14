@@ -11,14 +11,13 @@ from typing import TYPE_CHECKING
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 
-from ._version import VERSION
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any
 
     from azure.core.credentials import TokenCredential
 
+VERSION = "unknown"
 
 class CostManagementClientConfiguration(Configuration):
     """Configuration for CostManagementClient.
@@ -41,9 +40,10 @@ class CostManagementClientConfiguration(Configuration):
         super(CostManagementClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.api_version = "2019-11-01"
+        self.api_version = "2020-06-01"
         self.credential_scopes = ['https://management.azure.com/.default']
-        kwargs.setdefault('sdk_moniker', 'mgmt-costmanagement/{}'.format(VERSION))
+        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
+        kwargs.setdefault('sdk_moniker', 'costmanagementclient/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
