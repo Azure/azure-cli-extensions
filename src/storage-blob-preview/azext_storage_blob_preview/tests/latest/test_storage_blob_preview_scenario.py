@@ -87,84 +87,48 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             container, account_name, account_key)).assert_with_checks(
             JMESPathCheck('length(@)', 2))
 
-
-    @ResourceGroupPreparer()
-    @StorageAccountPreparer(kind='StorageV2', sku='Premium_LRS')
-    def test_storage_page_blob_set_tier_v2(self, resource_group, storage_account):
-        source_file = self.create_temp_file(16)
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(name_prefix='version')
+    def test_storage_blob_versioning(self, resource_group, storage_account):
+        self.cmd('storage  account blob-service-properties update -n {} -g {} --enable-versioning '.format(
+            storage_account, resource_group), checks=[
+            JMESPathCheck('isVersioningEnabled', True)
+        ])
         account_info = self.get_account_info(resource_group, storage_account)
-        container_name = self.create_container(account_info)
+        container = self.create_container(account_info, prefix="con")
+
+        local_dir = self.create_temp_dir()
+        local_file = self.create_temp_file(128)
         blob_name = self.create_random_name(prefix='blob', length=24)
 
-        self.storage_cmd('storage blob upload -c {} -n {} -f "{}" -t page --tier P10', account_info,
-                         container_name, blob_name, source_file)
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
+                         container, local_file, blob_name)
 
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'P10'))
+        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
 
-        with self.assertRaises(SystemExit):
-            self.storage_cmd('storage blob set-tier -c {} -n {} --tier P20 -r High -t page', account_info,
-                             container_name, blob_name)
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
+                         container, local_file, blob_name)
 
-        self.storage_cmd('storage blob set-tier -c {} -n {} --tier P20 -t page', account_info,
-                         container_name, blob_name)
+        # get versions
+        version_id = self.storage_cmd('storage blob list -c {} --include v', account_info, container)
 
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'P20'))
+        # show with version id
+        self.storage_cmd('storage blob show -c {} -n {} --version-id {}', account_info, container)
 
-    @ResourceGroupPreparer()
-    @StorageAccountPreparer(kind='StorageV2')
-    def test_storage_block_blob_set_tier_v2(self, resource_group, storage_account):
+        # download with version id
+        self.storage_cmd('storage blob download -c {} -n {} --version-id {}', account_info, container)
 
-        source_file = self.create_temp_file(16)
-        account_info = self.get_account_info(resource_group, storage_account)
-        container_name = self.create_container(account_info)
+        # set-tier with version id, not for page blob
+        self.storage_cmd('storage blob set-tier -c {} -n {} --version-id {} --version-id {} ', account_info, container)
 
-        # test rehydrate from Archive to Cool by High priority
-        blob_name = self.create_random_name(prefix='blob', length=24)
+        # generate sas with version id
+        sas_token = self.storage_cmd('storage blob generate-sas -c {} -n {} --version-id {}', account_info, container)
 
-        self.storage_cmd('storage blob upload -c {} -n {} -f "{}"', account_info,
-                         container_name, blob_name, source_file)
+        # delete with version id
+        self.cmd('storage blob delete -c {} -n {} --version-id {} --account-name {} --sas-token {} '.format(
+            container, blob_name, version_id, storage_account, sas_token))
+        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
 
-        with self.assertRaises(SystemExit):
-            self.storage_cmd('storage blob set-tier -c {} -n {} --tier Cool -r Middle', account_info,
-                             container_name, blob_name)
-
-        with self.assertRaises(SystemExit):
-            self.storage_cmd('storage blob set-tier -c {} -n {} --tier Archive -r High', account_info,
-                             container_name, blob_name)
-
-        self.storage_cmd('storage blob set-tier -c {} -n {} --tier Archive', account_info,
-                         container_name, blob_name)
-
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'Archive'))
-
-        self.storage_cmd('storage blob set-tier -c {} -n {} --tier Cool -r High', account_info,
-                         container_name, blob_name)
-
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'Archive'),
-                                JMESPathCheck('properties.rehydrationStatus', 'rehydrate-pending-to-cool'))
-
-        # test rehydrate from Archive to Hot by Standard priority
-        blob_name2 = self.create_random_name(prefix='blob', length=24)
-
-        self.storage_cmd('storage blob upload -c {} -n {} -f "{}"', account_info,
-                         container_name, blob_name2, source_file)
-
-        self.storage_cmd('storage blob set-tier -c {} -n {} --tier Archive', account_info,
-                         container_name, blob_name2)
-
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name2) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'Archive'))
-
-        self.storage_cmd('storage blob set-tier -c {} -n {} --tier Hot', account_info,
-                         container_name, blob_name2)
-
-        self.storage_cmd('az storage blob show -c {} -n {} ', account_info, container_name, blob_name2) \
-            .assert_with_checks(JMESPathCheck('properties.blobTier', 'Archive'),
-                                JMESPathCheck('properties.rehydrationStatus', 'rehydrate-pending-to-hot'))
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='version')
@@ -196,6 +160,9 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
 
         # download with version id
         self.storage_cmd('storage blob download -c {} -n {} --version-id {}', account_info, container)
+
+        # set-tier with version id, not for page blob
+        self.storage_cmd('storage blob set-tier -c {} -n {} --version-id {} --version-id {} ', account_info, container)
 
         # generate sas with version id
         sas_token = self.storage_cmd('storage blob generate-sas -c {} -n {} --version-id {}', account_info, container)

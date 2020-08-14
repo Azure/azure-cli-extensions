@@ -59,6 +59,18 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                            resource_type=CUSTOM_DATA_STORAGE_BLOB))
         g.storage_custom_command_oauth('set-tier', 'set_blob_tier_v2')
 
+    with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
+                            min_api='2019-12-12',
+                            custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
+                                                               resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
+        g.storage_command_oauth('filter', 'find_blobs_by_tags')
+
+    with self.command_group('storage blob tag', command_type=blob_client_sdk,
+                            custom_command_type=get_custom_sdk('blob', cf_blob_client),
+                            is_preview=True, resource_type=CUSTOM_DATA_STORAGE_BLOB, min_api='2019-12-12') as g:
+        g.storage_command_oauth('list', 'get_blob_tags')
+        g.storage_command_oauth('set', 'set_blob_tags')
+
     with self.command_group('storage container', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-02-02',
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_container_client,

@@ -340,6 +340,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_precondition_options()
         c.extra('snapshot', snapshot_type)
         c.extra('lease', lease_type)
+        c.argument('version_id', version_id_type)
+
+    with self.argument_context('storage blob tag list') as c:
+        c.register_blob_arguments()
+        c.extra('version_id', version_id_type)
+        c.extra('snapshot', snapshot_type)
+
+    with self.argument_context('storage blob tag set') as c:
+        c.register_blob_arguments()
         c.extra('version_id', version_id_type)
 
     with self.argument_context('storage blob upload') as c:

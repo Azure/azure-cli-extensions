@@ -554,9 +554,9 @@ def list_blobs(client, delimiter=None, include=None, marker=None, num_results=No
     return result
 
 
-def show_blob_v2(cmd, client, **kwargs):
+def show_blob_v2(cmd, client, version_id=None, **kwargs):
 
-    blob = client.get_blob_properties(**kwargs)
+    blob = client.get_blob_properties(version_id=version_id, **kwargs)
 
     page_ranges = None
     if blob.blob_type == cmd.get_models('_models#BlobType', resource_type=ResourceType.DATA_STORAGE_BLOB).PageBlob:

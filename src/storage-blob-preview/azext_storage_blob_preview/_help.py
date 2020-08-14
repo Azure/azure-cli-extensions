@@ -75,17 +75,21 @@ examples:
     text: az storage blob list -c MyContainer --prefix foo
 """
 
-# helps['storage-blob-preview delete'] = """
-#     type: command
-#     short-summary: Delete a Storage-blob-preview.
-# """
+helps['storage blob tag'] = """
+type: group
+short-summary: Manage blob tags.
+"""
 
-# helps['storage-blob-preview show'] = """
-#     type: command
-#     short-summary: Show details of a Storage-blob-preview.
-# """
+helps['storage blob tag list'] = """
+type: command
+short-summary: Get tags on a blob or specific blob version, or snapshot.
+"""
 
-# helps['storage-blob-preview update'] = """
-#     type: command
-#     short-summary: Update a Storage-blob-preview.
-# """
+helps['storage blob tag set'] = """
+type: command
+short-summary: Set tags on a blob or specific blob version, but not snapshot.
+long-summary: >
+    Each call to this operation replaces all existing tags attached to the blob. To remove all
+    tags from the blob, call this operation with no tags set.
+"""
+
