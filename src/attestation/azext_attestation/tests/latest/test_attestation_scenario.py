@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import unittest
 
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import ScenarioTest
@@ -30,7 +31,7 @@ class AttestationMgmtScenarioTest(ScenarioTest):
                      self.check('name', '{myattestation}'),
                      self.check('resourceGroup', rg),
                      self.check('location', 'eastus2'),
-                     self.check('tags', '{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}')
+                     self.check('tags', '{{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}}')
                  ])
 
     def _get(self, rg):
@@ -46,7 +47,7 @@ class AttestationMgmtScenarioTest(ScenarioTest):
     def _list_by_resource_group(self, rg):
         self.cmd('az attestation list '
                  '--resource-group "{rg}"',
-                 checks=self.check('value[0].name', self.kwargs.get('myattestation', '')))
+                 checks=self.check('[0].name', '{myattestation}'))
 
     def _delete(self, rg):
         self.cmd('az attestation delete '
@@ -55,7 +56,7 @@ class AttestationMgmtScenarioTest(ScenarioTest):
                  '--yes')
         self.cmd('az attestation list '
                  '--resource-group "{rg}"',
-                 checks=self.check('length(value)', 0))
+                 checks=self.check('length(@)', 0))
 
     @ResourceGroupPreparer(name_prefix='cli_test_att')
     def test_attestation_mgmt(self, resource_group):
@@ -111,3 +112,7 @@ class AttestationPolicyScenarioTest(ScenarioTest):
         ])
         self.cmd('az attestation policy reset -n {att_name} -g {rg} --tee SgxEnclave '
                  '--policy-jws "eyJhbGciOiJub25lIn0.."')
+
+
+if __name__ == '__main__':
+    unittest.main()
