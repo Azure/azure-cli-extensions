@@ -127,7 +127,7 @@ def recommend_recovery_options(version, command, parameters, extension):
 
             # only show recommendations when we can contact the service.
             if response and response.status_code == HTTPStatus.OK:
-                recommendations = get_recommendations_from_http_response(response, cmd_tbl)
+                recommendations = get_recommendations_from_http_response(response)
 
                 if recommendations:
                     show_recommendation_header(command)
@@ -152,7 +152,7 @@ def recommend_recovery_options(version, command, parameters, extension):
     return result
 
 
-def get_recommendations_from_http_response(response, command_table):
+def get_recommendations_from_http_response(response):
     suggestions = []
     _suggestions = response.json()
     suggestion_count = len(_suggestions)
@@ -160,8 +160,7 @@ def get_recommendations_from_http_response(response, command_table):
     for suggestion in _suggestions:
         try:
             suggestion = Suggestion.parse(suggestion)
-            if suggestion.command in command_table:
-                suggestions.append(suggestion)
+            suggestions.append(suggestion)
         except SuggestionParseError as ex:
             logger.debug('Failed to parse suggestion field: %s', ex)
             set_exception(exception=ex,
@@ -225,7 +224,7 @@ def call_aladdin_service(command, parameters, version):
         "parameters": parameters
     }
 
-    api_url = 'https://app.aladdindev.microsoft.com/api/v1.0/suggestions'
+    api_url = 'https://app.aladdin.microsoft.com/api/v1.0/suggestions'
     headers = {'Content-Type': 'application/json'}
 
     try:

@@ -11,10 +11,12 @@ class SuggestionEncoder(JSONEncoder):
     # pylint: disable=method-hidden
     def default(self, o):
         if isinstance(o, CliCommand):
+            param_delim: str = CliCommand.PARAMETER_DELIM
+            arg_delim: str = CliCommand.ARGUMENT_DELIM
             return {
                 'command': o.command,
-                'parameters': ','.join(o.parameters),
-                'placeholders': ','.join(o.arguments)
+                'parameters': param_delim.join(o.parameters),
+                'placeholders': arg_delim.join(o.arguments)
             }
 
         return super().default(o)

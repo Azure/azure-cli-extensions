@@ -26,8 +26,7 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
 
             self.assertEqual(HTTPStatus.OK, response.status_code)
             expected_suggestions = scenario.suggestions
-            mock_command_table = {suggestion.command for suggestion in expected_suggestions}
-            recommendations = get_recommendations_from_http_response(response, mock_command_table)
+            recommendations = get_recommendations_from_http_response(response)
             self.assertEquals(recommendations, expected_suggestions)
 
     def test_ai_did_you_mean_this_recommendations_for_user_fault_commands(self):

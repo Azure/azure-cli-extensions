@@ -8,8 +8,10 @@ from azext_ai_did_you_mean_this._types import ArgumentsType
 
 
 class CliCommand():
-    parameters = Arguments('parameters')
-    arguments = Arguments('arguments')
+    PARAMETER_DELIM = ','
+    ARGUMENT_DELIM = '♠'
+    parameters = Arguments('parameters', delim=PARAMETER_DELIM)
+    arguments = Arguments('arguments', delim=ARGUMENT_DELIM)
 
     def __init__(self, command: str, parameters: ArgumentsType = '', arguments: ArgumentsType = ''):
         self.command_only = parameters == '' and arguments == ''
