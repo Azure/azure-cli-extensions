@@ -44,7 +44,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -137,7 +136,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                     cc = generate_request_payload(configuration, location, public_key, tags)
                     try:
                         return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
-                                        cluster_name=cluster_name, connected_cluster=cc)
+                                           cluster_name=cluster_name, connected_cluster=cc)
                     except CloudError as ex:
                         telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
                                                 summary='Unable to create connected cluster resource')
@@ -147,8 +146,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                     telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                             summary='Kubernetes cluster already onboarded')
                     raise CLIError("The kubernetes cluster you are trying to onboard " +
-                                "is already onboarded to the resource group" +
-                                " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
+                                   "is already onboarded to the resource group" +
+                                   " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
             else:
                 # Cleanup agents and continue with put
                 delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
@@ -158,9 +157,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
                                         summary='Connected cluster resource already exists')
                 raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
-                            "in the resource group {} ".format(resource_group_name) +
-                            "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
-                            "to Azure, specify different resource name or resource group name.")
+                               "in the resource group {} ".format(resource_group_name) +
+                               "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                               "to Azure, specify different resource name or resource group name.")
 
         # Resource group Creation
         if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -171,7 +170,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 telemetry.set_exception(exception=e, fault_type=consts.Create_ResourceGroup_Fault_Type,
                                         summary='Failed to create the resource group')
                 raise CLIError("Failed to create the resource group {} :".format(resource_group_name) + str(e))
-
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -194,7 +192,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Get helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
-
 
     if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
         # Generate public-private key pair
@@ -266,7 +263,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                 summary='Unable to install helm release')
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
-
     # Create connected cluster resource if not token base onboarding
     if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
         cc = generate_request_payload(configuration, location, public_key, tags)
@@ -280,7 +276,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
                                     summary='Unable to create connected cluster resource')
             raise CLIError(ex)
-
 
     # Getting total number of pods scheduled to run in azure-arc namespace
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
@@ -304,6 +299,7 @@ def get_values_file_path(values_file):
     if values_file is None:
         values_file = os.getenv('VALUESPATH')
     return values_file
+
 
 def trim_file_path(values_file):
     if (values_file.startswith("'") or values_file.startswith('"')):
