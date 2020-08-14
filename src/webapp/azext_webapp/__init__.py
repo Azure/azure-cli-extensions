@@ -52,7 +52,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('dryrun', help="show summary of the create and deploy operation instead of executing it", default=False, action='store_true')
             c.argument('registry_rg', help="the resource group of the Azure Container Registry")
             c.argument('registry_name', help="the name of the Azure Container Registry")
-            c.argument('slot', help="the deployment slot")
+            c.argument('slot', help="Name of the deployment slot to use")
         with self.argument_context('webapp remote-connection create') as c:
             c.argument('port', options_list=['--port', '-p'],
                        help='Port for the remote connection. Default: Random available port', type=int)
