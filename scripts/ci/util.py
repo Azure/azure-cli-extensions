@@ -4,13 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import re
 import json
 import zipfile
-from wheel.install import WHEEL_INFO_RE
 
 # Dependencies that will not be checked.
 # This is for packages starting with 'azure-' but do not use the 'azure' namespace.
 SKIP_DEP_CHECK = ['azure-batch-extensions']
+
+# copy from wheel==0.30.0
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
+    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
+    \.whl|\.dist-info)$""",
+    re.VERBOSE).match
 
 
 def get_repo_root():
@@ -51,9 +58,14 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
     zip_ref.close()
     metadata = {}
     dist_info_dirs = [f for f in os.listdir(ext_dir) if f.endswith('.dist-info')]
+
     azext_metadata = _get_azext_metadata(ext_dir)
-    if azext_metadata:
-        metadata.update(azext_metadata)
+
+    if not azext_metadata:
+        raise ValueError('azext_metadata.json for Extension "{}" Metadata is missing'.format(ext_name))
+
+    metadata.update(azext_metadata)
+
     for dist_info_dirname in dist_info_dirs:
         parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
         if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):

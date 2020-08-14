@@ -17,33 +17,37 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'name_a': 'demoApp',
             'name_b': 'testApp',
             'kind': 'web',
-            'application_type': 'web'
+            'application_type': 'web',
+            'retention_time': 120
         })
 
-        self.cmd('az monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+        self.cmd('az monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type} --retention-time {retention_time}', checks=[
             self.check('name', '{name_a}'),
             self.check('location', '{loc}'),
             self.check('kind', '{kind}'),
             self.check('applicationType', '{application_type}'),
             self.check('applicationId', '{name_a}'),
             self.check('provisioningState', 'Succeeded'),
+            self.check('retentionInDays', self.kwargs['retention_time'])
         ])
 
         self.cmd('monitor app-insights component billing show --app {name_a} -g {resource_group}', checks=[
             self.check("contains(keys(@), 'dataVolumeCap')", True)
         ])
 
-        self.cmd('monitor app-insights component billing update --app {name_a} -g {resource_group} --cap 200 -s', checks=[
-            self.check('dataVolumeCap.cap', 200),
+        self.cmd('monitor app-insights component billing update --app {name_a} -g {resource_group} --cap 200.5 -s', checks=[
+            self.check('dataVolumeCap.cap', 200.5),
             self.check('dataVolumeCap.stopSendNotificationWhenHitCap', True),
         ])
 
         self.kwargs.update({
-            'kind': 'ios'
+            'kind': 'ios',
+            'retention_time': 180
         })
 
-        self.cmd('az monitor app-insights component update --app {name_a} --kind {kind} -g {resource_group}', checks=[
-            self.check('kind', '{kind}')
+        self.cmd('az monitor app-insights component update --app {name_a} --kind {kind} -g {resource_group} --retention-time {retention_time}', checks=[
+            self.check('kind', '{kind}'),
+            self.check('retentionInDays', self.kwargs['retention_time'])
         ])
 
         self.cmd('az monitor app-insights component create --app {name_b} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
@@ -53,6 +57,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         apps = self.cmd('az monitor app-insights component show -g {resource_group}').get_output_in_json()
         assert len(apps) == 2
+
+        self.cmd('az monitor app-insights component show -g {resource_group} --app {name_b}', checks=[
+            self.check('name', '{name_b}')
+        ])
 
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
@@ -202,11 +210,11 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
             ])
 
-        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Enabled --ingestion-access Enabled -g {resource_group}').get_output_in_json()
-        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --query-access Enabled --ingestion-access Enabled -g {resource_group}').get_output_in_json()
         assert output_json['publicNetworkAccessForIngestion'] == 'Enabled'
         assert output_json['publicNetworkAccessForQuery'] == 'Enabled'
-        output_json = self.cmd('az monitor app-insights component update --app {name_a} --query-access Disabled --ingestion-access Disabled -g {resource_group}').get_output_in_json()
+        output_json = self.cmd('az monitor app-insights component update --app {name_a} --workspace {ws_1} --query-access Disabled --ingestion-access Disabled -g {resource_group}').get_output_in_json()
+        assert self.kwargs['ws_1'] in output_json['workspaceResourceId']
         assert output_json['publicNetworkAccessForIngestion'] == 'Disabled'
         assert output_json['publicNetworkAccessForQuery'] == 'Disabled'
         output_json = self.cmd('az monitor app-insights component create --app {name_b} --workspace {ws_2} --location {loc} --query-access Enabled --ingestion-access Disabled -g {resource_group} --application-type {application_type}').get_output_in_json()
