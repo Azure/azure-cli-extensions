@@ -9,22 +9,96 @@
 # --------------------------------------------------------------------------
 
 
-# EXAMPLE: IntegrationRuntimes_Create
-def step_integrationruntimes_create(test, rg):
-    test.cmd('az datafactory integration-runtime self-hosted create '
-             '--factory-name "{myFactoryName}" '
-             '--description "A selfhosted integration runtime" '
-             '--name "{myIntegrationRuntime}" '
+# EXAMPLE: Triggers_Create
+def step_triggers_create(test, rg):
+    test.cmd('az datafactory trigger create '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
+             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
+             'nceName\\":\\"{myPipeline}\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"{myEndTime}'
+             '\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":'
+             '\\"UTC\\"}}}}}}" '
+             '--name "{myTrigger}"',
+             checks=[])
+
+
+def step_pipelineruns_get(test, rg):
+    test.cmd('az datafactory pipeline-run show '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=[
+                 test.check('runId', "{myRunId}")
+             ])
+
+
+def step_factories_getdataplaneaccess(test, rg):
+    test.cmd('az datafactory factory get-data-plane-access '
+             '--name "{myFactory}" '
+             '--access-resource-path "" '
+             '--expire-time "{myEndTime}" '
+             '--permissions "r" '
+             '--profile-name "DefaultProfile" '
+             '--start-time "{myStartTime}" '
              '--resource-group "{rg}"',
              checks=[
-                 test.check('name', "{myIntegrationRuntime}"),
-                 test.check('properties.type', 'SelfHosted')
+                 test.check('policy.permissions', 'r')
              ])
+
+
+def step_activityruns_querybypipelinerun(test, rg):
+    test.cmd('az datafactory activity-run query-by-pipeline-run '
+             '--factory-name "{myFactory}" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=[
+                 test.check('value[0].pipelineRunId', "{myRunId}")
+             ])
+
+
+def step_pipelineruns_querybyfactory(test, rg):
+    test.cmd('az datafactory pipeline-run query-by-factory '
+             '--factory-name "{myFactory}" '
+             '--filters operand="PipelineName" operator="Equals" values="{myPipeline}" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+def step_pipelineruns_cancel(test, rg):
+    test.cmd('az datafactory pipeline-run cancel '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=[])
+
+
+def step_triggerruns_querybyfactory(test, rg):
+    test.cmd('az datafactory trigger-run query-by-factory '
+             '--factory-name "{myFactory}" '
+             '--filters operand="TriggerName" operator="Equals" values="{myTrigger}" '
+             '--last-updated-after "{myStartTime}" '
+             '--last-updated-before "{myEndTime}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+def step_pipelines_update(test, rg):
+    test.cmd('az datafactory pipeline update '
+             '--factory-name "{myFactory}" '
+             '--description "Update description" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
 def step_triggerruns_rerun(test, rg):
     test.cmd('az datafactory trigger-run rerun '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--resource-group "{rg}" '
              '--trigger-name "{myTrigger}" '
              '--run-id "{myRunId}"',
@@ -33,7 +107,7 @@ def step_triggerruns_rerun(test, rg):
 
 def step_pipelines_createrun(test, rg):
     output = test.cmd('az datafactory pipeline create-run '
-                      '--factory-name "{myFactoryName}" '
+                      '--factory-name "{myFactory}" '
                       '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
                       '--name "{myPipeline}" '
                       '--resource-group "{rg}"',
@@ -43,7 +117,7 @@ def step_pipelines_createrun(test, rg):
 
 def step_triggerruns_querybyfactory(test, rg):
     output = test.cmd('az datafactory trigger-run query-by-factory '
-                      '--factory-name "{myFactoryName}" '
+                      '--factory-name "{myFactory}" '
                       '--last-updated-after "{myStartTime}" '
                       '--last-updated-before "{myEndTime}" '
                       '--resource-group "{rg}"',
@@ -53,7 +127,7 @@ def step_triggerruns_querybyfactory(test, rg):
 
 def step_integrationruntimes_managed_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
              '--description "Managed Integration Runtime" '
@@ -70,7 +144,7 @@ def step_integrationruntimes_managed_create(test, rg):
 
 def step_pipelines_wait_create(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"Wait1\\",'
              '\\"type\\":\\"Wait\\",\\"dependsOn\\":[],\\"userProperties'
              '\\":[],\\"typeProperties\\":{{\\"waitTimeInSeconds\\":5'
@@ -95,7 +169,7 @@ def step_triggers_tumble_create(test, rg):
              '\\"endTime\\":\\"{myEndTime}\\",\\"delay\\":\\"00:00:00\\",'
              '\\"maxConcurrency\\":50,\\"retryPolicy\\":{{\\"intervalInSeconds'
              '\\":30}},\\"dependsOn\\":[]}}}}" '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--name "{myTrigger}"',
              checks=[
                  test.check('name', "{myTrigger}"),
@@ -109,6 +183,7 @@ def call_managed_integrationruntime_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
     g.setup(test, rg)
     g.step_factories_createorupdate(test, rg)
+    test.kwargs.update({'myIntegrationRuntime': test.kwargs.get('myIntegrationRuntime2')})
     step_integrationruntimes_managed_create(test, rg)
     g.step_integrationruntimes_get(test, rg)
     g.step_integrationruntimes_start(test, rg)
@@ -128,6 +203,7 @@ def call_triggerrun_scenario(test, rg):
     time.sleep(5)
     test.kwargs.update({'myRunId': createrun_res.get('runId')})
     g.step_pipelineruns_get(test, rg)
+    g.step_pipelineruns_querybyfactory(test, rg)
     g.step_activityruns_querybypipelinerun(test, rg)
     createrun_res = g.step_pipelines_createrun(test, rg)
     test.kwargs.update({'myRunId': createrun_res.get('runId')})
