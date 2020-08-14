@@ -129,45 +129,42 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             container, blob_name, version_id, storage_account, sas_token))
         self.storage_cmd('storage blob list -c {} --include v', account_info, container)
 
-
     @ResourceGroupPreparer(name_prefix='clitest')
-    @StorageAccountPreparer(name_prefix='version')
-    def test_storage_blob_versioning(self, resource_group, storage_account):
-        self.cmd('storage  account blob-service-properties update -n {} -g {} --enable-versioning '.format(
-            storage_account, resource_group), checks=[
-            JMESPathCheck('isVersioningEnabled', True)
-        ])
+    @StorageAccountPreparer(name_prefix='blobtag')
+    def test_storage_blob_tags_scenario(self, resource_group, storage_account):
         account_info = self.get_account_info(resource_group, storage_account)
-        container = self.create_container(account_info, prefix="con")
+        container1 = self.create_container(account_info, prefix="con")
+        container2 = self.create_container(account_info, prefix="con")
 
-        local_dir = self.create_temp_dir()
         local_file = self.create_temp_file(128)
-        blob_name = self.create_random_name(prefix='blob', length=24)
+        blob_name1 = self.create_random_name(prefix='blob', length=24)
+        blob_name2 = self.create_random_name(prefix='blob', length=24)
 
-        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
-                         container, local_file, blob_name)
+        # upload with tags
+        tags = 'date=2020-01-01 category=test '
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --tags {} ', account_info,
+                         container1, local_file, blob_name1, tags)
+        self.storage_cmd('storage blob tag list -n {} -c {} ', account_info, blob_name1, container1)\
+            .assert_with_checks(JMESPathCheck('date', '2020-01-01'),
+                                JMESPathCheck('category', 'test'))
 
-        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+        # copy with tags
+        self.storage_cmd('storage blob copy start --source-blob {} --source-container {} -c {} -b {} --tags {}',
+                         account_info, blob_name1, container1, container2, local_file, blob_name2, tags)
 
-        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
-                         container, local_file, blob_name)
+        self.storage_cmd('storage blob show -n {} -c {} ', account_info, blob_name1, container1)
+        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)
 
-        # get versions
-        version_id = self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+        # set tags
+        self.storage_cmd('storage blob tag set -c {} --include t', account_info, blob_name1, container1)
 
-        # show with version id
-        self.storage_cmd('storage blob show -c {} -n {} --version-id {}', account_info, container)
+        # list tags
 
-        # download with version id
-        self.storage_cmd('storage blob download -c {} -n {} --version-id {}', account_info, container)
+        # list with tags included
+        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)
 
-        # set-tier with version id, not for page blob
-        self.storage_cmd('storage blob set-tier -c {} -n {} --version-id {} --version-id {} ', account_info, container)
+        # generate sas with tag permission
+        self.storage_cmd('storage blob generate-sas -n {} -c {} --permissions t', account_info, blob_name1, container1)
 
-        # generate sas with version id
-        sas_token = self.storage_cmd('storage blob generate-sas -c {} -n {} --version-id {}', account_info, container)
-
-        # delete with version id
-        self.cmd('storage blob delete -c {} -n {} --version-id {} --account-name {} --sas-token {} '.format(
-            container, blob_name, version_id, storage_account, sas_token))
-        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+        # find blobs cross containers with index tags
+        self.storage_cmd('storage blob filter -c {} --include t', account_info, blob_name1, container1)

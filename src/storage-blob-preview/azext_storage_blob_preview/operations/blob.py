@@ -322,7 +322,7 @@ def transform_blob_type(cmd, blob_type):
     get_blob_types() will get ['block', 'page', 'append']
     transform it to BlobType in track2
     """
-    BlobType = cmd.get_models('_models#BlobType', resource_type=ResourceType.DATA_STORAGE_BLOB)
+    BlobType = cmd.get_models('_models#BlobType', resource_type=CUSTOM_DATA_STORAGE_BLOB)
     if blob_type == 'block':
         return BlobType.BlockBlob
     if blob_type == 'page':
@@ -559,12 +559,17 @@ def show_blob_v2(cmd, client, version_id=None, **kwargs):
     blob = client.get_blob_properties(version_id=version_id, **kwargs)
 
     page_ranges = None
-    if blob.blob_type == cmd.get_models('_models#BlobType', resource_type=ResourceType.DATA_STORAGE_BLOB).PageBlob:
+    if blob.blob_type == cmd.get_models('_models#BlobType', resource_type=CUSTOM_DATA_STORAGE_BLOB).PageBlob:
         page_ranges = client.get_page_ranges(**kwargs)
 
     blob.page_ranges = page_ranges
 
     return blob
+
+
+def set_blob_tags(client, tags=None, **kwargs):
+    client.set_blob_tags(tags=tags, **kwargs)
+    return client.get_blob_tags()
 
 
 def set_blob_tier_v2(client, blob_type='block', rehydrate_priority=None, **kwargs):

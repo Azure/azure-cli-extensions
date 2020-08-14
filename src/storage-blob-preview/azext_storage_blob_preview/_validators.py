@@ -1090,16 +1090,14 @@ def get_char_options_validator(types, property_name):
 
 
 def page_blob_tier_validator(cmd, namespace):
-    if not namespace.premium_page_blob_tier:
-        del namespace.premium_page_blob_tier
+    if not namespace.tier:
         return
 
     if namespace.blob_type != 'page' and namespace.tier:
         raise ValueError('Blob tier is only applicable to page blobs on premium storage accounts.')
 
     try:
-        namespace.premium_page_blob_tier = getattr(cmd.get_models('_models#PremiumPageBlobTier'),
-                                                   namespace.premium_page_blob_tier)
+        namespace.tier = getattr(cmd.get_models('_models#PremiumPageBlobTier'), namespace.tier)
     except AttributeError:
         from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
         raise ValueError('Unknown premium page blob tier name. Choose among {}'.format(', '.join(
@@ -1107,15 +1105,14 @@ def page_blob_tier_validator(cmd, namespace):
 
 
 def block_blob_tier_validator(cmd, namespace):
-    if not namespace.standard_blob_tier:
-        del namespace.standard_blob_tier
+    if not namespace.tier:
         return
 
-    if namespace.blob_type != 'block' and namespace.standard_blob_tier:
+    if namespace.blob_type != 'block' and namespace.tier:
         raise ValueError('Blob tier is only applicable to block blobs on standard storage accounts.')
 
     try:
-        namespace.standard_blob_tier = getattr(cmd.get_models('_models#StandardBlobTier'), namespace.standard_blob_tier)
+        namespace.tier = getattr(cmd.get_models('_models#StandardBlobTier'), namespace.tier)
     except AttributeError:
         from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
         raise ValueError('Unknown block blob tier name. Choose among {}'.format(', '.join(
@@ -1124,15 +1121,11 @@ def block_blob_tier_validator(cmd, namespace):
 
 def blob_tier_validator(cmd, namespace):
     if namespace.blob_type == 'page':
-        namespace.premium_page_blob_tier = namespace.tier
         page_blob_tier_validator(cmd, namespace)
-        del namespace.version_id
     elif namespace.blob_type == 'block':
-        namespace.standard_blob_tier = namespace.tier
         block_blob_tier_validator(cmd, namespace)
     else:
         raise ValueError('Blob tier is only applicable to block or page blob.')
-    del namespace.tier
 
 
 def blob_rehydrate_priority_validator(namespace):

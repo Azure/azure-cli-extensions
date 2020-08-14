@@ -1476,8 +1476,10 @@ class BlobClient(StorageAccountHostsMixin):  # pylint: disable=too-many-public-m
 
         tier = kwargs.pop('premium_page_blob_tier', None) or kwargs.pop('standard_blob_tier', None)
 
-        if kwargs.get('requires_sync'):
-            headers['x-ms-requires-sync'] = str(kwargs.pop('requires_sync'))
+        if 'requires_sync' in kwargs:
+            requires_sync = kwargs.pop('requires_sync')
+            if requires_sync:
+                headers['x-ms-requires-sync'] = str(requires_sync)
 
         timeout = kwargs.pop('timeout', None)
         dest_mod_conditions = get_modify_conditions(kwargs)

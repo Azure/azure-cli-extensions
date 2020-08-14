@@ -63,13 +63,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             min_api='2019-12-12',
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
-        g.storage_command_oauth('filter', 'find_blobs_by_tags')
+        g.storage_command_oauth('filter', 'find_blobs_by_tags', is_preview=True)
 
+    # --auth-mode login need to verify
     with self.command_group('storage blob tag', command_type=blob_client_sdk,
                             custom_command_type=get_custom_sdk('blob', cf_blob_client),
-                            is_preview=True, resource_type=CUSTOM_DATA_STORAGE_BLOB, min_api='2019-12-12') as g:
+                            resource_type=CUSTOM_DATA_STORAGE_BLOB, min_api='2019-12-12', is_preview=True) as g:
         g.storage_command_oauth('list', 'get_blob_tags')
-        g.storage_command_oauth('set', 'set_blob_tags')
+        g.storage_custom_command_oauth('set', 'set_blob_tags')
 
     with self.command_group('storage container', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-02-02',
