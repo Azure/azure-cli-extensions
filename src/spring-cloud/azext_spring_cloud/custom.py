@@ -40,16 +40,27 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
+                        vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
+                        service_runtime_network_resource_group=None, app_network_resource_group=None,
                         disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
+    properties = models.ClusterResourceProperties()
+    resource = models.ServiceResource(location=location, properties=properties)
+
+    if service_runtime_subnet or app_subnet or reserved_cidr_range:
+        properties.network_profile = models.NetworkProfile(
+            service_runtime_subnet_id=service_runtime_subnet,
+            app_subnet_id=app_subnet,
+            service_cidr=reserved_cidr_range,
+            app_network_resource_group=app_network_resource_group,
+            service_runtime_network_resource_group=service_runtime_network_resource_group
+        )
 
     if sku is None:
         sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-
-    properties = models.ClusterResourceProperties()
 
     check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     update_tracing_config(cmd, resource_group, name, location, properties,
@@ -473,6 +484,13 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
             return None
         instance = instances[0].name
 
+    spring_cloud_service = client.services.get(resource_group, service)
+    host_name = service
+    if spring_cloud_service.properties and \
+       spring_cloud_service.properties.network_profile and \
+       spring_cloud_service.properties.network_profile.service_runtime_subnet_id:
+        host_name = '{0}.private'.format(service)
+
     primary_key = client.services.list_test_keys(
         resource_group, service).primary_key
     if not primary_key:
@@ -480,7 +498,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
     base_url = 'azuremicroservices.io' if cmd.cli_ctx.cloud.name == 'AzureCloud' else 'asc-test.net'
     streaming_url = "https://{0}.{1}/api/logstream/apps/{2}/instances/{3}".format(
-        service, base_url, name, instance)
+        host_name, base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
