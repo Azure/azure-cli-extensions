@@ -21,7 +21,7 @@ fi
 get_data_disk ()
 {
 echo "`date` Getting data disk" >> ${logpath}/${logfile} 2>&1
-export data_disk=`ls -la /dev/disk/azure/scsi1/lun0 | awk -F. '{print "/dev"$7}'` >> ${logpath}/${logfile} 2>&1
+export data_disk=`ls -la /dev/disk/azure/scsi1/lun0 | awk -F/ '{print "/dev/"$9}'` >> ${logpath}/${logfile} 2>&1
 if [ -z ${data_disk} ]
 then
 echo "`date` OS disk attached as data disk was not found, cannot continue" >> ${logpath}/${logfile} 2>&1
