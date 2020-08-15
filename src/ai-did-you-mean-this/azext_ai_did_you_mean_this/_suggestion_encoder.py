@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from json import JSONEncoder
-from azext_ai_did_you_mean_this.cli_command import CliCommand
+from azext_ai_did_you_mean_this._cli_command import CliCommand
 
 
 class SuggestionEncoder(JSONEncoder):

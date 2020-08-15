@@ -5,7 +5,6 @@
 
 from functools import wraps
 from typing import Dict, Union, Any
-from contextlib import contextmanager
 from enum import Enum, auto
 import azure.cli.core.telemetry as telemetry
 
@@ -209,9 +208,3 @@ class ExtensionTelemterySession():
             EXTENSION_NAME,
             _extension_telemetry_manager.properties.copy()
         )
-
-
-@contextmanager
-def extension_telemetry_session():
-    with ExtensionTelemterySession():
-        yield None

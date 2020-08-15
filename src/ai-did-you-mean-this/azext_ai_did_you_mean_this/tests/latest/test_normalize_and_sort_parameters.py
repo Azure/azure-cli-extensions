@@ -6,15 +6,17 @@
 import unittest
 from enum import Enum, auto
 
-from azure.cli.core.mock import DummyCli
 from azure.cli.core import MainCommandsLoader
+from azure.cli.core.mock import DummyCli
 
-from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
-from azext_ai_did_you_mean_this.tests.latest._commands import get_commands, AzCommandType
-
-from azext_ai_did_you_mean_this.tests.latest.mock.extension_telemetry_session import ExtensionTelemetryMockSession
-from azext_ai_did_you_mean_this.telemetry import TelemetryProperty, get_property, _extension_telemetry_manager
 from azext_ai_did_you_mean_this._parameter import GLOBAL_PARAM_BLOCKLIST
+from azext_ai_did_you_mean_this._telemetry import (
+    TelemetryProperty, _extension_telemetry_manager, get_property)
+from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
+from azext_ai_did_you_mean_this.tests.latest._commands import (AzCommandType,
+                                                               get_commands)
+from azext_ai_did_you_mean_this.tests.latest.mock.extension_telemetry_session import \
+    ExtensionTelemetryMockSession
 
 
 class TestNormalizeAndSortParameters(unittest.TestCase):

@@ -11,8 +11,8 @@ from typing import List
 
 import requests
 
-from azext_ai_did_you_mean_this.suggestion import Suggestion
-from azext_ai_did_you_mean_this.suggestion_encoder import SuggestionEncoder
+from azext_ai_did_you_mean_this._suggestion import Suggestion
+from azext_ai_did_you_mean_this._suggestion_encoder import SuggestionEncoder
 from azext_ai_did_you_mean_this.tests.latest.data._scenario import (
     DEFAULT_REQUEST_SCENARIO,
     RequestScenario,

@@ -7,14 +7,13 @@ import unittest.mock as mock
 
 import azure.cli.core.telemetry as telemetry
 
+from azext_ai_did_you_mean_this._telemetry import ExtensionTelemterySession
 from azext_ai_did_you_mean_this.tests.latest.data.fault import Fault
-from azext_ai_did_you_mean_this.telemetry import ExtensionTelemterySession
-from azext_ai_did_you_mean_this.tests.latest.data.telemetry_property import CoreTelemetryProperty
+from azext_ai_did_you_mean_this.tests.latest.data.telemetry_property import \
+    CoreTelemetryProperty
 from azext_ai_did_you_mean_this.tests.latest.mock.const import (
     TELEMETRY_ADD_EXTESNION_EVENT_PATCH_TARGET,
-    TELEMETRY_SET_EXCETION_PATCH_TARGET,
-    TELEMETRY_IS_ENABLED_PATCH_TARGET
-)
+    TELEMETRY_IS_ENABLED_PATCH_TARGET, TELEMETRY_SET_EXCETION_PATCH_TARGET)
 
 
 class UnknownException(Exception):

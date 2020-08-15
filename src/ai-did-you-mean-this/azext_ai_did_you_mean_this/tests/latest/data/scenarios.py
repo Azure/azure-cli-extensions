@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from typing import List
-from azext_ai_did_you_mean_this.cli_command import CliCommand
-from azext_ai_did_you_mean_this.suggestion import Suggestion
+from azext_ai_did_you_mean_this._cli_command import CliCommand
+from azext_ai_did_you_mean_this._suggestion import Suggestion
 from azext_ai_did_you_mean_this.tests.latest.data._scenario import Scenario
 from azext_ai_did_you_mean_this.tests.latest.data.user_fault_type import UserFaultType
 

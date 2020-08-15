@@ -13,7 +13,7 @@ from azext_ai_did_you_mean_this._const import (
     EXTENSION_NAME,
     UNEXPECTED_ERROR_STR
 )
-from azext_ai_did_you_mean_this.telemetry import (
+from azext_ai_did_you_mean_this._telemetry import (
     FaultType,
     TelemetryProperty,
     _extension_telemetry_manager,

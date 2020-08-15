@@ -24,20 +24,20 @@ from azext_ai_did_you_mean_this._const import (
     UNABLE_TO_HELP_FMT_STR)
 from azext_ai_did_you_mean_this._logging import get_logger
 from azext_ai_did_you_mean_this._style import style_message
-from azext_ai_did_you_mean_this.suggestion import Suggestion, SuggestionParseError
-from azext_ai_did_you_mean_this.suggestion_encoder import SuggestionEncoder
-from azext_ai_did_you_mean_this.telemetry import (
+from azext_ai_did_you_mean_this._suggestion import Suggestion, SuggestionParseError
+from azext_ai_did_you_mean_this._suggestion_encoder import SuggestionEncoder
+from azext_ai_did_you_mean_this._telemetry import (
     FaultType,
     NoRecommendationReason,
     TelemetryProperty,
-    extension_telemetry_session,
+    ExtensionTelemterySession,
     get_correlation_id,
     get_subscription_id,
     set_exception,
     set_properties,
     set_property
 )
-from azext_ai_did_you_mean_this.timer import Timer
+from azext_ai_did_you_mean_this._timer import Timer
 from azext_ai_did_you_mean_this.version import VERSION
 
 logger = get_logger(__name__)
@@ -72,7 +72,7 @@ def recommend_recovery_options(version, command, parameters, extension):
     result = []
     execution_time = Timer()
 
-    with extension_telemetry_session():
+    with ExtensionTelemterySession():
         with execution_time:
             cmd_tbl = CommandTable.CMD_TBL
             logger.debug(RECOMMEND_RECOVERY_OPTIONS_LOG_FMT_STR,
