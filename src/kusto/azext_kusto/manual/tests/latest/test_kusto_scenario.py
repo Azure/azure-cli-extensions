@@ -407,8 +407,11 @@ def step_kustodataconnectionsdelete(test, rg):
 
 @try_manual
 def cleanup(test, rg):
-    test.cmd('az eventhubs eventhub delete --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
-    test.cmd('az eventhubs namespace delete --name {eventhub_namespace} -g {rg}')
+    try:
+        test.cmd('az eventhubs eventhub delete --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
+        test.cmd('az eventhubs namespace delete --name {eventhub_namespace} -g {rg}')
+    except:
+        pass
 
 
 @try_manual
