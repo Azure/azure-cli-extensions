@@ -89,8 +89,8 @@ class CommandParameterNormalizationScenario():
         command, parsed_command = Command.parse(command_table, self.command)
         parameters, unrecognized_parameters = Command.normalize(command, *self.parameters)
 
-        normalized_parameters = list(sorted(set(parameters)))
-        unrecognized_parameters = list(sorted(set(unrecognized_parameters)))
+        normalized_parameters = list(parameters)
+        unrecognized_parameters = list(unrecognized_parameters)
 
         return parsed_command, normalized_parameters, unrecognized_parameters
 

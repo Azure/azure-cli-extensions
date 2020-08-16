@@ -66,7 +66,7 @@ class Command():
             else:
                 unrecognized_parameters.append(normalized_form)
 
-        return normalized_parameters, unrecognized_parameters
+        return sorted(set(normalized_parameters)), sorted(set(unrecognized_parameters))
 
     @classmethod
     def get_parameter_table(cls, command_table: dict, command: str,

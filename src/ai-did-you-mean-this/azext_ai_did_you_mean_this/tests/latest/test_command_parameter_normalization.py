@@ -70,15 +70,25 @@ class TestCommandParameterNormalization(unittest.TestCase):
         self.assertEqual(normalized_parameters, scenario.normalized_parameters)
         self.assertEqual(normalized_command, scenario.normalized_command)
 
+    def _create_invalid_subcommand_scenario(self,
+                                            scenario: CommandParameterNormalizationScenario,
+                                            invalid_subcommand: str):
+
+        invalid_subcommands = [invalid_subcommand] * (1 if scenario.command else 2)
+        sep = ' ' if scenario.command else ''
+        command_with_invalid_subcommand = scenario.command + sep + ' '.join(invalid_subcommands)
+
+        invalid_subcommand_scenario = deepcopy(scenario)
+        invalid_subcommand_scenario.command = CommandNormalizationScenario(
+            command_with_invalid_subcommand,
+            scenario.command if scenario.command else invalid_subcommand
+        )
+        return invalid_subcommand_scenario
+
     def test_command_parameter_normalization(self):
         for scenario in self.scenarios:
             # base command
             self.assertScenarioIsHandledCorrectly(scenario)
             # command with invalid subcommand
-            command_with_invalid_subcommand = f'{scenario.command} oops'
-            invalid_subcommand_scenario = deepcopy(scenario)
-            invalid_subcommand_scenario.command = CommandNormalizationScenario(
-                command_with_invalid_subcommand,
-                scenario.command
-            )
+            invalid_subcommand_scenario = self._create_invalid_subcommand_scenario(scenario, 'oops')
             self.assertScenarioIsHandledCorrectly(invalid_subcommand_scenario)

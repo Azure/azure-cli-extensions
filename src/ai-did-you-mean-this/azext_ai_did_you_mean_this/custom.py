@@ -53,9 +53,9 @@ def normalize_and_sort_parameters(command_table, command, parameters):
     logger.debug('normalize_and_sort_parameters: command: "%s", parameters: "%s"', command, parameters)
 
     _command, parsed_command = Command.parse(command_table, command)
-    _parameteters, unrecognized_parameters = Command.normalize(_command, *parameters)
-    normalized_parameters = ','.join(sorted(set(_parameteters)))
-    unrecognized_parameters = ','.join(sorted(set(unrecognized_parameters)))
+    normalized_parameters, unrecognized_parameters = Command.normalize(_command, *parameters)
+    normalized_parameters = ','.join(normalized_parameters)
+    unrecognized_parameters = ','.join(unrecognized_parameters)
 
     set_properties({
         TelemetryProperty.RawCommand: command,

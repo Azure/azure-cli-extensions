@@ -137,5 +137,9 @@ NORMALIZATION_TEST_SCENARIOS: List[CommandParameterNormalizationScenario] = [
     CommandParameterNormalizationScenario(
         CommandNormalizationScenario('Lorem ipsum.', 'Lorem'),
         parameters=['--foo', '--baz']
+    ),
+    # invalid (empty) command and no parameters
+    CommandParameterNormalizationScenario(
+        command=''
     )
 ]
