@@ -17,3 +17,7 @@ Release History
 0.2.0
 +++++
 * Change name of required service parameter
+
+0.3.0
++++++
+*

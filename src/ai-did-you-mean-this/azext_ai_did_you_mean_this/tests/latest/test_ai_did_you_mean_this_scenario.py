@@ -63,10 +63,11 @@ class AiDidYouMeanThisScenarioTest(AladdinScenarioTest):
 
     def test_ai_did_you_mean_this_handles_service_connection_timeout(self):
         exception_msg = 'Could not establish connection to https://foo.net'
+        exception = requests.ConnectTimeout(exception_msg)
         scenario = Scenario(
             CliCommand('account'),
             expected_user_fault_type=UserFaultType.MISSING_REQUIRED_SUBCOMMAND,
-            request_scenario=RequestScenario(HTTPStatus.REQUEST_TIMEOUT, raise_exc=requests.ConnectTimeout(exception_msg))
+            request_scenario=RequestScenario(HTTPStatus.REQUEST_TIMEOUT, exception)
         )
 
         with mock_aladdin_service_call(scenario):

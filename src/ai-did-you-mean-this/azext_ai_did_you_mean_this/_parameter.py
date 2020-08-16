@@ -29,8 +29,6 @@ GLOBAL_PARAM_LOOKUP_TBL = {
 GLOBAL_PARAM_BLOCKLIST = {
     '--only-show-errors',
     '--help',
-    '--output',
-    '--query',
     '--debug',
     '--verbose',
 }

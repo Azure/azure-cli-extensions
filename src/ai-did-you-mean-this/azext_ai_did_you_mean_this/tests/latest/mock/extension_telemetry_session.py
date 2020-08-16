@@ -16,7 +16,7 @@ from azext_ai_did_you_mean_this.tests.latest.mock.const import (
     TELEMETRY_IS_ENABLED_PATCH_TARGET, TELEMETRY_SET_EXCETION_PATCH_TARGET)
 
 
-class UnknownException(Exception):
+class UnexpectedError(Exception):
     pass
 
 
@@ -105,5 +105,5 @@ class ExtensionTelemetryMockSession():
         return self._fault
 
     @property
-    def extension_event(self):
+    def extension_event(self) -> ExtensionTelemetryEvent:
         return self._extension_event

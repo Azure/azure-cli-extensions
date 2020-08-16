@@ -30,5 +30,8 @@ class Arguments():
                 value = [str(item) for item in value]
             else:
                 raise TypeError(f'{self.name} must be of type str')
+        else:
+            # filter out empty entries from list of arguments.
+            value = list(filter(None, value.split(self.delim)))
 
-        self.data[id(instance)] = value.split(self.delim) if is_string else value
+        self.data[id(instance)] = value
