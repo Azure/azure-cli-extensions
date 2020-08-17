@@ -16,7 +16,7 @@ helps['ssh vm'] = """
     examples:
         - name: Give a resource group and VM to SSH to
           text: |
-            az ssh vm --resource-group myResourceGroup --name myVm
+            az ssh vm --resource-group myResourceGroup --vm-name myVm
         - name: Give the public IP of a VM to SSH to
           text: |
             az ssh vm --ip 1.2.3.4
@@ -28,7 +28,7 @@ helps['ssh config'] = """
     examples:
         - name: Give a resource group and VM for which to create a config, and save in a local file
           text: |
-            az ssh config --resource-group myResourceGroup --name myVm --file ./sshconfig
+            az ssh config --resource-group myResourceGroup --vm-name myVm --file ./sshconfig
         - name: Give the public IP of a VM for which to create a config
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
