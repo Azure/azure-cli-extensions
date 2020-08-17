@@ -38,8 +38,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                            help='The login password of the administrator.')
 
         with self.argument_context('{} down'.format(scope)) as c:
-            c.ignore('server_name')
-            c.ignore('resource_group_name')
+            c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.')
             c.argument('delete_group', action='store_true', help="Delete the resource group.")
 
     for scope in ('mysql', 'postgres'):
