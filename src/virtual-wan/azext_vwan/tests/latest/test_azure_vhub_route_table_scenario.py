@@ -30,7 +30,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             self.check('name', self.kwargs['routetable'])
         ])
         self.cmd('network vhub route-table list -g {rg} --vhub-name {vhub}', checks=[
-            # self.check('@[0].name', self.kwargs['routetable']),
+            self.check('@[0].name', self.kwargs['routetable']),
             self.check('length(@)', 3)
         ])
 
@@ -80,7 +80,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
 
         self.cmd('network vhub route-table list -g {rg} --vhub-name {vhub}', checks=[
-            # self.check('@[2].name', self.kwargs['routetable']),
+            self.check('@[2].name', self.kwargs['routetable']),
             self.check('length(@)', 3)
         ])
 

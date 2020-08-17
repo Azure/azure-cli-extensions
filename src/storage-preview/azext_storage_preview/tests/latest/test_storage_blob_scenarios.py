@@ -17,7 +17,7 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     def test_storage_blob_update_service_properties(self, resource_group):
         storage_account = self.create_random_name(prefix='account', length=24)
 
-        self.cmd('storage account create -n {} -g {} --kind StorageV2'.format(storage_account, resource_group))
+        self.cmd('storage account create -n {} -g {} --kind StorageV2 --https-only '.format(storage_account, resource_group))
         account_info = self.get_account_info(resource_group, storage_account)
 
         self.storage_cmd('storage blob service-properties show', account_info) \

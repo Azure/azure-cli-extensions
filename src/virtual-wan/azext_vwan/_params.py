@@ -61,6 +61,9 @@ def load_arguments(self, _):
         c.argument('p2s_vpn_gateway', help='Name or ID of a P2S VPN gateway.', validator=get_network_resource_name_or_id('p2s_vpn_gateway', 'P2sVpnGateways'))
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
+    with self.argument_context('network vhub get-effective-routes') as c:
+        c.argument('virtual_wan_resource_type', options_list='--resource-type')
+
     with self.argument_context('network vhub connection') as c:
         c.argument('virtual_hub_name', vhub_name_type)
         c.argument('connection_name', help='Name of the connection.', options_list=['--name', '-n'], id_part='child_name_1')
@@ -71,6 +74,11 @@ def load_arguments(self, _):
 
     with self.argument_context('network vhub connection list') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
+
+    with self.argument_context('network vhub connection', arg_group='RoutingConfiguration', min_api='2020-04-01', is_preview=True) as c:
+        c.argument('address_prefixes', nargs='+', help='Space-separated list of all address prefixes.')
+        c.argument('next_hop_ip_address', options_list='--next-hop', help='The ip address of the next hop.')
+        c.argument('route_name', help='The name of the Static Route that is unique within a Vnet Route.')
 
     with self.argument_context('network vhub route') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
@@ -208,7 +216,7 @@ def load_arguments(self, _):
     # endregion
 
     # region Routing Configuration
-    for item in ['vpn-gateway connection', 'p2s-vpn-gateway']:
+    for item in ['vpn-gateway connection', 'p2s-vpn-gateway', 'vhub connection']:
         with self.argument_context('network {}'.format(item), arg_group='Routing Configuration', min_api='2020-04-01', is_preview=True) as c:
             c.argument('associated_route_table', associated_route_table_type)
             c.argument('propagated_route_tables', propagated_route_tables_type)

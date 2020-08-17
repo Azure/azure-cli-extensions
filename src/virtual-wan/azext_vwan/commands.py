@@ -99,6 +99,7 @@ def load_command_table(self, _):
         g.show_command('show')
         g.custom_command('list', 'list_virtual_hubs')
         g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
+        g.command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True)
 
     with self.command_group('network vhub connection', network_vhub_connection_sdk) as g:
         g.custom_command('create', 'create_hub_vnet_connection', supports_no_wait=True)
@@ -111,6 +112,8 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_hub_route', supports_no_wait=True)
         g.custom_command('list', 'list_hub_routes')
         g.custom_command('remove', 'remove_hub_route', supports_no_wait=True)
+        g.custom_command('reset', 'reset_hub_routes',
+                         supports_no_wait=True)
 
     with self.command_group('network vhub route-table', network_vhub_route_table_sdk) as g:
         g.custom_command('create', 'create_vhub_route_table', supports_no_wait=True)

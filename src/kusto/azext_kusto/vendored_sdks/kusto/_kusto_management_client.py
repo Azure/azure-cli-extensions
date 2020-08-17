@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import KustoManagementClientConfiguration
 from .operations import ClusterOperations
 from .operations import ClusterPrincipalAssignmentOperations
@@ -30,24 +32,25 @@ class KustoManagementClient(object):
     """The Azure Kusto management API provides a RESTful set of web services that interact with Azure Kusto services to manage your clusters and databases. The API enables you to create, update, and delete clusters and databases.
 
     :ivar cluster: ClusterOperations operations
-    :vartype cluster: azure.mgmt.kusto.operations.ClusterOperations
+    :vartype cluster: kusto_management_client.operations.ClusterOperations
     :ivar cluster_principal_assignment: ClusterPrincipalAssignmentOperations operations
-    :vartype cluster_principal_assignment: azure.mgmt.kusto.operations.ClusterPrincipalAssignmentOperations
+    :vartype cluster_principal_assignment: kusto_management_client.operations.ClusterPrincipalAssignmentOperations
     :ivar database: DatabaseOperations operations
-    :vartype database: azure.mgmt.kusto.operations.DatabaseOperations
+    :vartype database: kusto_management_client.operations.DatabaseOperations
     :ivar database_principal_assignment: DatabasePrincipalAssignmentOperations operations
-    :vartype database_principal_assignment: azure.mgmt.kusto.operations.DatabasePrincipalAssignmentOperations
+    :vartype database_principal_assignment: kusto_management_client.operations.DatabasePrincipalAssignmentOperations
     :ivar attached_database_configuration: AttachedDatabaseConfigurationOperations operations
-    :vartype attached_database_configuration: azure.mgmt.kusto.operations.AttachedDatabaseConfigurationOperations
+    :vartype attached_database_configuration: kusto_management_client.operations.AttachedDatabaseConfigurationOperations
     :ivar data_connection: DataConnectionOperations operations
-    :vartype data_connection: azure.mgmt.kusto.operations.DataConnectionOperations
+    :vartype data_connection: kusto_management_client.operations.DataConnectionOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.kusto.operations.OperationOperations
+    :vartype operation: kusto_management_client.operations.OperationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

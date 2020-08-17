@@ -21,7 +21,7 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true --https-only ')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'testdirectory'
@@ -191,7 +191,8 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus --https-only')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus '
+                 '--https-only')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -288,7 +289,7 @@ class StorageADLSDirectoryDownloadTests(StorageScenarioMixin, LiveScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true --https-only ')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
