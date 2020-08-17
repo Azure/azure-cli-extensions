@@ -450,6 +450,8 @@ class ClusterResourceProperties(Model):
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a
      created resource
     :vartype service_id: str
+    :param network_profile: Network profile of the Service
+    :type network_profile: ~azure.mgmt.appplatform.models.NetworkProfile
     """
 
     _validation = {
@@ -463,6 +465,7 @@ class ClusterResourceProperties(Model):
         'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
         'version': {'key': 'version', 'type': 'int'},
         'service_id': {'key': 'serviceId', 'type': 'str'},
+        'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
     }
 
     def __init__(self, *, network_profile=None, **kwargs) -> None:
@@ -471,6 +474,7 @@ class ClusterResourceProperties(Model):
         self.network_profile = network_profile
         self.version = None
         self.service_id = None
+        self.network_profile = network_profile
 
 
 class ConfigServerGitProperty(Model):
