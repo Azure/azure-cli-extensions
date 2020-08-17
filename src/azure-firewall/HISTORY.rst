@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.1
+++++++
+* `az network firewall create/update`: support new `--allow-active-ftp` argument.
+* `az network firewall network-rule delete`: refine help message.
 
 0.5.0
 ++++++
