@@ -60,8 +60,6 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
-    properties = models.ClusterResourceProperties()
-
     update_tracing_config(cmd, resource_group, name, location, properties,
                           app_insights_key, app_insights, disable_distributed_tracing)
 
