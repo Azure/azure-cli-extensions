@@ -63,7 +63,7 @@ def load_command_table(self, _):
     with self.command_group('network firewall threat-intel-whitelist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
         g.custom_command('create', 'create_azure_firewall_threat_intel_whitelist')
         g.custom_command('delete', 'delete_azure_firewall_threat_intel_whitelist')
-        g.custom_command('show', 'show_azure_firewall_threat_intel_whitelist')
+        g.custom_show_command('show', 'show_azure_firewall_threat_intel_whitelist')
         g.generic_update_command('update', custom_func_name='update_azure_firewall_threat_intel_whitelist')
 
     with self.command_group('network firewall ip-config', network_util) as g:
@@ -94,7 +94,7 @@ def load_command_table(self, _):
         with self.command_group('network firewall {}'.format(af_rule['scope']), network_firewall_sdk) as g:
             g.custom_command('create', 'create_af_{}'.format(rule_type), validator=af_rule['validator'])
             g.custom_command('list', build_af_rule_list(rule_type, '{}_collections'.format(rule_type)))
-            g.custom_command('show', build_af_rule_show(rule_type, '{}_collections'.format(rule_type)))
+            g.custom_show_command('show', build_af_rule_show(rule_type, '{}_collections'.format(rule_type)))
             g.custom_command('delete', build_af_rule_delete(rule_type, '{}_collections'.format(rule_type)))
 
     af_collections = {
