@@ -9,7 +9,7 @@ helps['vm repair'] = """
     type: group
     short-summary: Auto repair commands to fix VMs.
     long-summary: |
-        VM repair scripts will enable Azure users to self-repair non-bootable VMs by copying the source VM's OS disk and attaching it to a newly created repair VM.
+        VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM's OS disk and attaching it to a newly created repair VM.
 """
 
 helps['vm repair create'] = """

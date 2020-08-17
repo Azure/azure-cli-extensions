@@ -24,7 +24,13 @@ def check_connection_aladdin():
 
 
 def new_examples(help_file):
-    help_file.examples = replace_examples(help_file.command)
+    try:
+        examples = replace_examples(help_file.command)
+    except requests.exceptions.ConnectionError:
+        examples = []
+
+    if examples:
+        help_file.examples = examples
 
 
 # Replace built in examples with Aladdin ones

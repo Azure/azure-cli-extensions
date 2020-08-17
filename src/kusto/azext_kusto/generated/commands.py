@@ -33,7 +33,7 @@ def load_command_table(self, _):
                          supports_no_wait=True)
         g.custom_command('start', 'kusto_cluster_start', supports_no_wait=True)
         g.custom_command('stop', 'kusto_cluster_stop', supports_no_wait=True)
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'kusto_cluster_show')
 
     from azext_kusto.generated._client_factory import cf_cluster_principal_assignment
     kusto_cluster_principal_assignment = CliCommandType(
@@ -47,7 +47,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'kusto_cluster_principal_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_cluster_principal_assignment_update', supports_no_wait=True)
         g.custom_command('delete', 'kusto_cluster_principal_assignment_delete', supports_no_wait=True)
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'kusto_cluster_principal_assignment_show')
 
     from azext_kusto.generated._client_factory import cf_database
     kusto_database = CliCommandType(
@@ -62,7 +62,7 @@ def load_command_table(self, _):
         g.custom_command('add-principal', 'kusto_database_add_principal')
         g.custom_command('list-principal', 'kusto_database_list_principal')
         g.custom_command('remove-principal', 'kusto_database_remove_principal')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'kusto_database_show')
 
     from azext_kusto.generated._client_factory import cf_database_principal_assignment
     kusto_database_principal_assignment = CliCommandType(
@@ -76,7 +76,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'kusto_database_principal_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_database_principal_assignment_update', supports_no_wait=True)
         g.custom_command('delete', 'kusto_database_principal_assignment_delete', supports_no_wait=True)
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'kusto_database_principal_assignment_show')
 
     from azext_kusto.generated._client_factory import cf_attached_database_configuration
     kusto_attached_database_configuration = CliCommandType(
@@ -90,7 +90,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'kusto_attached_database_configuration_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_attached_database_configuration_update', supports_no_wait=True)
         g.custom_command('delete', 'kusto_attached_database_configuration_delete', supports_no_wait=True)
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'kusto_attached_database_configuration_show')
 
     from azext_kusto.generated._client_factory import cf_data_connection
     kusto_data_connection = CliCommandType(
@@ -109,9 +109,9 @@ def load_command_table(self, _):
         g.custom_command('iot-hub update', 'kusto_data_connection_iot_hub_update', supports_no_wait=True)
         g.custom_command('delete', 'kusto_data_connection_delete', supports_no_wait=True)
         g.custom_command('event-grid data-connection-validation', 'kusto_data_connection_event_grid_data_connection_val'
-                         'idation')
+                         'idation', supports_no_wait=True)
         g.custom_command('event-hub data-connection-validation', 'kusto_data_connection_event_hub_data_connection_valid'
-                         'ation')
+                         'ation', supports_no_wait=True)
         g.custom_command('iot-hub data-connection-validation', 'kusto_data_connection_iot_hub_data_connection_validatio'
-                         'n')
-        g.wait_command('wait')
+                         'n', supports_no_wait=True)
+        g.custom_wait_command('wait', 'kusto_data_connection_show')
