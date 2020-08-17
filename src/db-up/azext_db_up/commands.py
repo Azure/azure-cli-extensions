@@ -29,8 +29,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     )
 
     with self.command_group('mysql', mysql_servers_sdk, client_factory=cf_mysql_servers) as g:
+        from ._exception_handler import password_handler
         g.custom_command('up', 'mysql_up', validator=db_up_namespace_processor('mysql'),
-                         table_transformer=table_transform_connection_string)
+                         table_transformer=table_transform_connection_string,
+                         exception_handler=password_handler)
         g.custom_command('down', 'server_down', validator=db_down_namespace_processor('mysql'), supports_no_wait=True,
                          confirmation=True)
         g.custom_command('show-connection-string', 'create_mysql_connection_string')

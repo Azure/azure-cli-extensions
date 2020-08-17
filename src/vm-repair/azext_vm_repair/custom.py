@@ -31,14 +31,14 @@ from .repair_utils import (
     _process_bash_parameters,
     _parse_run_script_raw_logs,
     _check_script_succeeded,
-    _fetch_disk_info
+    _fetch_disk_info,
+    _unlock_singlepass_encrypted_disk,
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
-
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -52,8 +52,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         is_managed = _uses_managed_disk(source_vm)
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
-
-        # List of created resouces
         created_resources = []
 
         # Fetch OS image urn and set OS type for disk create
@@ -67,7 +65,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Set up base create vm command
         create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
                                    .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
-        # fetch VM size of repair VM
+        # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm)
         if not sku:
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
@@ -105,6 +103,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Attaching copied disk to repair VM...')
             _call_az_command(attach_disk_command)
+
+            # Handle encrypted VM cases
+            if unlock_encrypted_vm:
+                _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name)
+
         # UNMANAGED DISK
         else:
             logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
@@ -183,10 +186,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+
     finally:
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
-
     # Generate return results depending on command state
     if not command.is_status_success():
         command.set_status_error()
@@ -209,7 +212,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', command.message)
-
     return return_dict
 
 

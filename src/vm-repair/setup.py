@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.7"
+VERSION = "0.3.2"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -30,13 +30,20 @@ setup(
     name='vm-repair',
     version=VERSION,
     description='Auto repair commands to fix VMs.',
-    long_description='VM repair scripts will enable Azure users to self-repair non-connectable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.',
+    long_description='VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='caiddev@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    package_data={'azext_vm_repair': ['scripts/linux-run-driver.sh', 'scripts/win-run-driver.ps1']},
+    package_data={
+        'azext_vm_repair': [
+            'scripts/linux-run-driver.sh',
+            'scripts/win-run-driver.ps1',
+            'scripts/mount-encrypted-disk.sh',
+            'azext_metadata.json'
+        ]
+    },
     install_requires=DEPENDENCIES
 )

@@ -7,7 +7,8 @@
 import argparse
 
 from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type, zones_type)
+    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type, zones_type,
+    get_three_state_flag)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from knack.arguments import CLIArgumentType
@@ -17,7 +18,8 @@ from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
     process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
-    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator)
+    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
+    validate_ip_groups)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -56,6 +58,23 @@ def load_arguments(self, _):
                                                                                   'The default sku in server end is AZFW_VNet. '
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+        c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+        c.argument('allow_active_ftp', arg_type=get_three_state_flag(),
+                   help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.")
+
+    with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
+        c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,
+                   help="Number of Public IP Address associated with azure firewall. "
+                        "It's used to add public ip addresses into this firewall.")
+        c.argument('hub_public_ip_addresses', nargs='+', options_list=['--public-ips'],
+                   help="Space-separated list of Public IP addresses associated with azure firewall. "
+                        "It's used to delete public ip addresses from this firewall. ")
+
+    with self.argument_context('network firewall', arg_group='DNS') as c:
+        c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
+        c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
+        c.argument('require_dns_proxy_for_network_rules', arg_type=get_three_state_flag(), help='Requires DNS Proxy functionality for FQDNs within Network Rules')
+
     with self.argument_context('network firewall threat-intel-whitelist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
@@ -140,27 +159,44 @@ def load_arguments(self, _):
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
+    with self.argument_context('network firewall policy', arg_group='Threat Intel Whitelist') as c:
+        c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
+
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
-        c.argument('rule_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
         c.argument('priority', type=int, help='Priority of the Firewall Policy Rule Collection Group')
 
     with self.argument_context('network firewall policy rule-collection-group collection') as c:
-        c.argument('rule_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
-        c.argument('rule_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
         c.argument('rule_priority', options_list=['--collection-priority'], type=int, help='The priority of the rule in Firewall Policy Rule Collection Group')
-        c.argument('description', arg_group='Common Rule', help='The description of rule.')
-        c.argument('destination_addresses', arg_group='Common Rule', nargs='+', help="Space-separated list of destination IP addresses.")
-        c.argument('source_addresses', arg_group='Common Rule', nargs='+', help="Space-separated list of source IP addresses.")
-        c.argument('condition_name', options_list=['--rule-name'], arg_group='Common Rule', help='The name of rule')
-        c.argument('condition_type', options_list=['--rule-type'], arg_group='Common Rule', arg_type=get_enum_type(["ApplicationRule", "NetworkRule"]), help='The type of rule')
-        c.argument('translated_address', arg_group='Nat Collection', help='Translated address for this NAT rule collection.')
-        c.argument('translated_port', arg_group='Nat Collection', help='Translated port for this NAT rule collection.')
-        c.argument('destination_ports', arg_group='Network Rule', nargs='+', help="Space-separated list of destination ports.")
-        c.argument('ip_protocols', arg_group='Network Rule', nargs='+', arg_type=get_enum_type(["TCP", "UDP", "Any", "ICMP"]), help="Space-separated list of IP protocols")
-        c.argument('target_fqdns', nargs='+', arg_group='Application Rule', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
-        c.argument('fqdn_tags', nargs='+', arg_group='Application Rule', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
-        c.argument('protocols', nargs='+', arg_group='Application Rule', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Common Rule') as c:
+        c.argument('description', help='The description of rule.')
+        c.argument('destination_addresses', nargs='+', help="Space-separated list of destination IP addresses.")
+        c.argument('source_addresses', nargs='+', help="Space-separated list of source IP addresses.")
+        c.argument('rule_name', options_list=['--rule-name'], help='The name of rule')
+        c.argument('rule_type', options_list=['--rule-type'], arg_type=get_enum_type(["ApplicationRule", "NetworkRule", "NatRule"]), help='The type of rule')
+        c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.")
+        c.argument('ip_protocols', nargs='+', arg_type=get_enum_type(["TCP", "UDP", "Any", "ICMP"]),
+                   help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule.")
+        c.argument('source_ip_groups', nargs='+', validator=validate_ip_groups,
+                   help='Space-separated list of name or resource id of source IpGroups.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Nat Rule') as c:
+        c.argument('translated_address', help='Translated address for this NAT rule collection.')
+        c.argument('translated_port', help='Translated port for this NAT rule collection.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
+        c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
+        c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
+        c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
+
+    with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Network Rule') as c:
+        c.argument('destination_ip_groups', nargs='+', validator=validate_ip_groups,
+                   help='Space-separated list of name or resource id of destination IpGroups')
 
     with self.argument_context('network firewall policy rule-collection-group collection add-filter-collection') as c:
         c.argument('filter_action', options_list=['--action'], arg_type=get_enum_type(['Allow', 'Deny']), help='The action type of a rule collection.')
@@ -169,6 +205,6 @@ def load_arguments(self, _):
         c.argument('nat_action', options_list=['--action'], arg_type=get_enum_type(['DNAT', 'SNAT']), help='The action type of a rule collection.')
 
     with self.argument_context('network firewall policy rule-collection-group collection rule') as c:
-        c.argument('rule_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
-        c.argument('condition_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
+        c.argument('rule_collection_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
+        c.argument('rule_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
     # endregion

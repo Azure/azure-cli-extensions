@@ -93,3 +93,22 @@ class DeploymentResourceStatus(str, Enum):
     allocating = "Allocating"
     upgrading = "Upgrading"
     compiling = "Compiling"
+
+
+class SkuScaleType(str, Enum):
+
+    none = "None"
+    manual = "Manual"
+    automatic = "Automatic"
+
+
+class ResourceSkuRestrictionsType(str, Enum):
+
+    location = "Location"
+    zone = "Zone"
+
+
+class ResourceSkuRestrictionsReasonCode(str, Enum):
+
+    quota_id = "QuotaId"
+    not_available_for_subscription = "NotAvailableForSubscription"

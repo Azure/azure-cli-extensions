@@ -39,7 +39,7 @@ helps['monitor app-insights component create'] = """
     examples:
       - name: Create a component with kind web and location.
         text: |
-          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web
+          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web --retention-time 120
 """
 
 helps['monitor app-insights component update'] = """
@@ -52,7 +52,7 @@ helps['monitor app-insights component update'] = """
     examples:
       - name: Update a component with kind web.
         text: |
-          az monitor app-insights component update --app demoApp -k web -g demoRg
+          az monitor app-insights component update --app demoApp -k web -g demoRg --retention-time 120
 """
 
 helps['monitor app-insights component update-tags'] = """
@@ -154,14 +154,17 @@ helps['monitor app-insights api-key create'] = """
         short-summary: Name of the API key to create.
       - name: --read-properties
         type: list
-        short-summary: A space seperated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry and AuthenticateSDKControlChannel.
+        short-summary: A space seperated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry, AuthenticateSDKControlChannel and "".
       - name: --write-properties
         type: list
-        short-summary: A space seperated list of names of write Roles for this API key to inherit. Possible values include WriteAnnotations.
+        short-summary: A space seperated list of names of write Roles for this API key to inherit. Possible values include WriteAnnotations and "".
     examples:
       - name: Create a component with kind web and location.
         text: |
           az monitor app-insights api-key create --api-key cli-demo --read-properties ReadTelemetry -g demoRg --app testApp
+      - name: Create a component with kind web and location without any permission
+        text: |
+          az monitor app-insights api-key create --api-key cli-demo --read-properties '""' --write-properties '""' -g demoRg --app testApp
 """
 
 helps['monitor app-insights metrics'] = """

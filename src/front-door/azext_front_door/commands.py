@@ -112,7 +112,7 @@ def load_command_table(self, _):
 
     with self.command_group('network front-door routing-rule', frontdoor_sdk) as g:
         g.generic_update_command('update', custom_func_name='update_fd_routing_rule',
-                                 is_preview=True, setter_arg_name='front_door_parameters',
+                                 setter_arg_name='front_door_parameters',
                                  child_collection_prop_name='routing_rules')
 
     # with self.command_group('network front-door probe', frontdoor_sdk) as g:
@@ -178,24 +178,24 @@ def load_command_table(self, _):
 
     # region RulesEngine
 
-    with self.command_group('network front-door rules-engine', rules_engine_sdk, is_preview=True) as g:
+    with self.command_group('network front-door rules-engine', rules_engine_sdk) as g:
         g.show_command('show', 'get')
         g.command('list', 'list_by_front_door')
         g.command('delete', 'delete')
 
-    with self.command_group('network front-door rules-engine rule', rules_engine_sdk, is_preview=True) as g:
+    with self.command_group('network front-door rules-engine rule', rules_engine_sdk) as g:
         g.custom_command('create', 'create_rules_engine_rule')
         g.custom_command('delete', 'delete_rules_engine_rule')
         g.custom_show_command('show', 'show_rules_engine_rule')
         g.custom_command('list', 'list_rules_engine_rule')
         g.custom_command('update', 'update_rules_engine_rule')
 
-    with self.command_group('network front-door rules-engine rule condition', rules_engine_sdk, is_preview=True) as g:
+    with self.command_group('network front-door rules-engine rule condition', rules_engine_sdk) as g:
         g.custom_command('add', 'add_rules_engine_condition')
         g.custom_command('remove', 'remove_rules_engine_condition')
         g.custom_command('list', 'list_rules_engine_condition')
 
-    with self.command_group('network front-door rules-engine rule action', rules_engine_sdk, is_preview=True) as g:
+    with self.command_group('network front-door rules-engine rule action', rules_engine_sdk) as g:
         g.custom_command('add', 'add_rules_engine_action')
         g.custom_command('remove', 'remove_rules_engine_action')
         g.custom_command('list', 'list_rules_engine_action')

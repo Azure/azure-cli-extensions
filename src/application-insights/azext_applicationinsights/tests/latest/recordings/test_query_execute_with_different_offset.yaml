@@ -1,0 +1,92 @@
+interactions:
+- request:
+    body: '{"query": "availabilityResults | distinct name | order by name asc", "timespan":
+      "2020-06-01T19:21:28.027311/2020-06-05T07:21:28.027311", "applications": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '157'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.9 azure-applicationinsights/0.1.0
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/db709f0e-cb4e-4f43-ba80-05e10d6a4447/query
+  response:
+    body:
+      string: '{"tables":[{"name":"PrimaryResult","columns":[{"name":"name","type":"string"}],"rows":[]}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      connection:
+      - keep-alive
+      content-length:
+      - '91'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Jun 2020 07:21:29 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-oms-5f5bbdf49d-pgt7m
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"query": "availabilityResults | distinct name | order by name asc", "timespan":
+      "2020-06-01T19:20:29.882273/2020-06-05T07:21:29.882273", "applications": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '157'
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.9 azure-applicationinsights/0.1.0
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/db709f0e-cb4e-4f43-ba80-05e10d6a4447/query
+  response:
+    body:
+      string: '{"tables":[{"name":"PrimaryResult","columns":[{"name":"name","type":"string"}],"rows":[]}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      connection:
+      - keep-alive
+      content-length:
+      - '91'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Jun 2020 07:21:30 GMT
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-oms-5f5bbdf49d-548wj
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
