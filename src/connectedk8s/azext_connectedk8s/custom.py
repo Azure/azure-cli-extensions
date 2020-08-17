@@ -73,6 +73,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     token_based_onboarding = False
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
+        logger.warning("HELMVALUESPATH env var is set and points to a file. Getting flag for token based onboarding.\n")
         token_based_onboarding = utils.get_flag_from_values_file(values_file)
 
     # Loading the kubeconfig file in kubernetes client configuration
@@ -214,8 +215,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Failed to export private key')
             raise CLIError("Failed to export private key." + str(e))
 
-        print(chart_path)
-
         # Helm Install
         cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                             "--set", "global.subscriptionId={}".format(subscription_id),
@@ -234,9 +233,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             cmd_helm_install.extend(["--kube-context", kube_context])
     else:
         logger.warning("Doing access token based onboarding...\n")
-        values_file = get_values_file_path(values_file)
         if values_file is None:
-            raise CLIError("For token based onboarding, please provide access token in a file, and provide file path through --values-file or -f")
+            raise CLIError("For token based onboarding, please provide access token and other values in a file, and provide file path in env var HELMVALUESPATH")
         trim_file_path(values_file)
 
         # subscriptionId, tenantId and clientSecret should be provided in values yaml file,
@@ -293,12 +291,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Because resource creation and connect is done by connect-agent independently in that case.
     if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
         return put_cc_response
-
-
-def get_values_file_path(values_file):
-    if values_file is None:
-        values_file = os.getenv('VALUESPATH')
-    return values_file
 
 
 def trim_file_path(values_file):
