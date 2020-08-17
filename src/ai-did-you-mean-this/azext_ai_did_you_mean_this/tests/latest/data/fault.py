@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 class FaultDetails():
     FAULT_DESCRIPTION_PROPERTY = 'Reserved.DataModel.Fault.Description'
     FAULT_TYPE_PROPERTY = 'Context.Default.AzureCLI.FaultType'
