@@ -42,7 +42,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
                         vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
-                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, sku='Standard', tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
@@ -58,11 +58,10 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
-    if sku is None:
-        sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
+    properties = models.ClusterResourceProperties()
+
     update_tracing_config(cmd, resource_group, name, location, properties,
                           app_insights_key, app_insights, disable_distributed_tracing)
 
@@ -88,7 +87,6 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     app_insights_target_status = False
     if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
         app_insights_target_status = True
@@ -204,7 +202,6 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
-        instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
         runtime_version=runtime_version,)
@@ -213,12 +210,13 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
+    sku = models.Sku(capacity=instance_count)
 
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
     poller = client.deployments.create_or_update(
-        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties=properties, sku=sku)
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
@@ -442,12 +440,12 @@ def app_scale(cmd, client, resource_group, service, name,
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
-        memory_in_gb=memory,
-        instance_count=instance_count,)
+        memory_in_gb=memory)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
+    sku = models.Sku(capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
-                       resource_group, service, name, deployment, properties)
+                       resource_group, service, name, deployment, properties=properties, sku=sku)
 
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
@@ -631,7 +629,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         if active_deployment:
             cpu = cpu or active_deployment.properties.deployment_settings.cpu
             memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
-            instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
+            instance_count = instance_count or active_deployment.sku.capacity
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
     else:
@@ -1152,8 +1150,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         memory_in_gb=memory,
         environment_variables=env,
         jvm_options=jvm_options,
-        runtime_version=runtime_version,
-        instance_count=instance_count,)
+        runtime_version=runtime_version)
+    sku = models.Sku(capacity=instance_count)
     user_source_info = models.UserSourceInfo(
         version=version,
         relative_path=relative_path,
@@ -1203,10 +1201,10 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
-                           resource_group, service, app, name, properties)
+                           resource_group, service, app, name, properties=properties, sku=sku)
 
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
-                       resource_group, service, app, name, properties)
+                       resource_group, service, app, name, properties=properties, sku=sku)
 
 
 def _get_app_log(url, user_name, password, exceptions):
@@ -1291,13 +1289,6 @@ def get_app_insights_key(cli_ctx, resource_group, name):
     if appinsights is None or appinsights.instrumentation_key is None:
         raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
     return appinsights.instrumentation_key
-
-
-def check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing):
-    if (app_insights is not None or app_insights_key is not None) and disable_distributed_tracing is True:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' can not be set with '--disable-distributed-tracing true'.")
-    if app_insights is not None and app_insights_key is not None:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,

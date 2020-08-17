@@ -219,11 +219,11 @@ class BindingResourceProperties(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :param resource_name: The name of the bound resource
-    :type resource_name: str
-    :param resource_type: The standard Azure resource type of the bound
+    :ivar resource_name: The name of the bound resource
+    :vartype resource_name: str
+    :ivar resource_type: The standard Azure resource type of the bound
      resource
-    :type resource_type: str
+    :vartype resource_type: str
     :param resource_id: The Azure resource id of the bound resource
     :type resource_id: str
     :param key: The key of the bound resource
@@ -240,6 +240,8 @@ class BindingResourceProperties(Model):
     """
 
     _validation = {
+        'resource_name': {'readonly': True},
+        'resource_type': {'readonly': True},
         'generated_properties': {'readonly': True},
         'created_at': {'readonly': True},
         'updated_at': {'readonly': True},
@@ -258,8 +260,8 @@ class BindingResourceProperties(Model):
 
     def __init__(self, **kwargs):
         super(BindingResourceProperties, self).__init__(**kwargs)
-        self.resource_name = kwargs.get('resource_name', None)
-        self.resource_type = kwargs.get('resource_type', None)
+        self.resource_name = None
+        self.resource_type = None
         self.resource_id = kwargs.get('resource_id', None)
         self.key = kwargs.get('key', None)
         self.binding_parameters = kwargs.get('binding_parameters', None)
@@ -374,7 +376,7 @@ class CertificateResource(ProxyResource):
 class CloudError(Model):
     """An error response from the service.
 
-    :param error:
+    :param error: An error response from the service.
     :type error: ~azure.mgmt.appplatform.models.CloudErrorBody
     """
 
@@ -441,12 +443,8 @@ class ClusterResourceProperties(Model):
      'Succeeded', 'Failed', 'Moving', 'Moved', 'MoveFailed'
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.models.ProvisioningState
-    :param config_server_properties: Config server git properties of the
-     Service
-    :type config_server_properties:
-     ~azure.mgmt.appplatform.models.ConfigServerProperties
-    :param trace: Trace properties of the Service
-    :type trace: ~azure.mgmt.appplatform.models.TraceProperties
+    :param network_profile: Network profile of the Service
+    :type network_profile: ~azure.mgmt.appplatform.models.NetworkProfile
     :ivar version: Version of the Service
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a
@@ -464,8 +462,7 @@ class ClusterResourceProperties(Model):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
-        'trace': {'key': 'trace', 'type': 'TraceProperties'},
+        'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
         'version': {'key': 'version', 'type': 'int'},
         'service_id': {'key': 'serviceId', 'type': 'str'},
         'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
@@ -474,8 +471,7 @@ class ClusterResourceProperties(Model):
     def __init__(self, **kwargs):
         super(ClusterResourceProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.config_server_properties = kwargs.get('config_server_properties', None)
-        self.trace = kwargs.get('trace', None)
+        self.network_profile = kwargs.get('network_profile', None)
         self.version = None
         self.service_id = None
         self.network_profile = kwargs.get('network_profile', None)
@@ -546,9 +542,10 @@ class ConfigServerProperties(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar state: State of the config server. Possible values include:
-     'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or ~azure.mgmt.appplatform.models.ConfigServerState
+    :ivar provisioning_state: State of the config server. Possible values
+     include: 'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.models.ConfigServerState
     :param error: Error when apply config server settings.
     :type error: ~azure.mgmt.appplatform.models.Error
     :param config_server: Settings of config server.
@@ -556,20 +553,54 @@ class ConfigServerProperties(Model):
     """
 
     _validation = {
-        'state': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
-        'state': {'key': 'state', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'error': {'key': 'error', 'type': 'Error'},
         'config_server': {'key': 'configServer', 'type': 'ConfigServerSettings'},
     }
 
     def __init__(self, **kwargs):
         super(ConfigServerProperties, self).__init__(**kwargs)
-        self.state = None
+        self.provisioning_state = None
         self.error = kwargs.get('error', None)
         self.config_server = kwargs.get('config_server', None)
+
+
+class ConfigServerResource(ProxyResource):
+    """Config Server resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param properties: Properties of the Config Server resource
+    :type properties: ~azure.mgmt.appplatform.models.ConfigServerProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'ConfigServerProperties'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ConfigServerResource, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)
 
 
 class ConfigServerSettings(Model):
@@ -591,13 +622,20 @@ class ConfigServerSettings(Model):
 class CustomDomainProperties(Model):
     """Custom domain of app resource payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param thumbprint: The thumbprint of bound certificate.
     :type thumbprint: str
-    :param app_name: The app name of domain.
-    :type app_name: str
+    :ivar app_name: The app name of domain.
+    :vartype app_name: str
     :param cert_name: The bound certificate name of domain.
     :type cert_name: str
     """
+
+    _validation = {
+        'app_name': {'readonly': True},
+    }
 
     _attribute_map = {
         'thumbprint': {'key': 'thumbprint', 'type': 'str'},
@@ -608,7 +646,7 @@ class CustomDomainProperties(Model):
     def __init__(self, **kwargs):
         super(CustomDomainProperties, self).__init__(**kwargs)
         self.thumbprint = kwargs.get('thumbprint', None)
-        self.app_name = kwargs.get('app_name', None)
+        self.app_name = None
         self.cert_name = kwargs.get('cert_name', None)
 
 
@@ -741,6 +779,8 @@ class DeploymentResource(ProxyResource):
     :param properties: Properties of the Deployment resource
     :type properties:
      ~azure.mgmt.appplatform.models.DeploymentResourceProperties
+    :param sku: Sku of the Deployment resource
+    :type sku: ~azure.mgmt.appplatform.models.Sku
     """
 
     _validation = {
@@ -754,11 +794,13 @@ class DeploymentResource(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'DeploymentResourceProperties'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
     def __init__(self, **kwargs):
         super(DeploymentResource, self).__init__(**kwargs)
         self.properties = kwargs.get('properties', None)
+        self.sku = kwargs.get('sku', None)
 
 
 class DeploymentResourceProperties(Model):
@@ -835,9 +877,6 @@ class DeploymentSettings(Model):
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param instance_count: Instance count, basic tier should be in range (1,
-     25), standard tier should be in range (1, 500). Default value: 1 .
-    :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
     :param runtime_version: Runtime version. Possible values include:
@@ -850,7 +889,6 @@ class DeploymentSettings(Model):
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
-        'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
@@ -860,7 +898,6 @@ class DeploymentSettings(Model):
         self.cpu = kwargs.get('cpu', 1)
         self.memory_in_gb = kwargs.get('memory_in_gb', 1)
         self.jvm_options = kwargs.get('jvm_options', None)
-        self.instance_count = kwargs.get('instance_count', 1)
         self.environment_variables = kwargs.get('environment_variables', None)
         self.runtime_version = kwargs.get('runtime_version', None)
 
@@ -997,12 +1034,12 @@ class LogSpecification(Model):
 class ManagedIdentityProperties(Model):
     """Managed identity properties retrieved from ARM request headers.
 
-    :param type: Possible values include: 'None', 'SystemAssigned',
-     'UserAssigned', 'SystemAssigned,UserAssigned'
+    :param type: Type of the managed identity. Possible values include:
+     'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     :type type: str or ~azure.mgmt.appplatform.models.ManagedIdentityType
-    :param principal_id:
+    :param principal_id: Principal Id
     :type principal_id: str
-    :param tenant_id:
+    :param tenant_id: Tenant Id
     :type tenant_id: str
     """
 
@@ -1092,6 +1129,79 @@ class MetricSpecification(Model):
         self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
         self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
         self.dimensions = kwargs.get('dimensions', None)
+
+
+class MonitoringSettingProperties(Model):
+    """Monitoring Setting properties payload.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar provisioning_state: State of the Monitoring Setting. Possible values
+     include: 'NotAvailable', 'Failed', 'Succeeded', 'Updating'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.models.MonitoringSettingState
+    :param error: Error when apply Monitoring Setting changes.
+    :type error: ~azure.mgmt.appplatform.models.Error
+    :param trace_enabled: Indicates whether enable the trace functionality
+    :type trace_enabled: bool
+    :param app_insights_instrumentation_key: Target application insight
+     instrumentation key
+    :type app_insights_instrumentation_key: str
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'Error'},
+        'trace_enabled': {'key': 'traceEnabled', 'type': 'bool'},
+        'app_insights_instrumentation_key': {'key': 'appInsightsInstrumentationKey', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(MonitoringSettingProperties, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.error = kwargs.get('error', None)
+        self.trace_enabled = kwargs.get('trace_enabled', None)
+        self.app_insights_instrumentation_key = kwargs.get('app_insights_instrumentation_key', None)
+
+
+class MonitoringSettingResource(ProxyResource):
+    """Monitoring Setting resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param properties: Properties of the Monitoring Setting resource
+    :type properties:
+     ~azure.mgmt.appplatform.models.MonitoringSettingProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'MonitoringSettingProperties'},
+    }
+
+    def __init__(self, **kwargs):
+        super(MonitoringSettingResource, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)
 
 
 class NameAvailability(Model):
@@ -1379,7 +1489,7 @@ class ResourceSkuCapabilities(Model):
 
 
 class ResourceSkuLocationInfo(Model):
-    """ResourceSkuLocationInfo.
+    """Locations and availability zones where the SKU is available.
 
     :param location: Gets location of the SKU
     :type location: str
@@ -1405,7 +1515,7 @@ class ResourceSkuLocationInfo(Model):
 
 
 class ResourceSkuRestrictionInfo(Model):
-    """ResourceSkuRestrictionInfo.
+    """Information about the restriction where the SKU cannot be used.
 
     :param locations: Gets locations where the SKU is restricted
     :type locations: list[str]
@@ -1425,7 +1535,7 @@ class ResourceSkuRestrictionInfo(Model):
 
 
 class ResourceSkuRestrictions(Model):
-    """ResourceSkuRestrictions.
+    """Restrictions where the SKU cannot be used.
 
     :param type: Gets the type of restrictions. Possible values include:
      'Location', 'Zone'
@@ -1461,7 +1571,7 @@ class ResourceSkuRestrictions(Model):
 
 
 class ResourceSkuZoneDetails(Model):
-    """ResourceSkuZoneDetails.
+    """Details of capabilities available to a SKU in specific zones.
 
     :param name: Gets the set of zones that the SKU is available in with the
      specified capabilities.
@@ -1724,43 +1834,6 @@ class TestKeys(Model):
         self.primary_test_endpoint = kwargs.get('primary_test_endpoint', None)
         self.secondary_test_endpoint = kwargs.get('secondary_test_endpoint', None)
         self.enabled = kwargs.get('enabled', None)
-
-
-class TraceProperties(Model):
-    """Trace properties payload.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar state: State of the trace proxy. Possible values include:
-     'NotAvailable', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or ~azure.mgmt.appplatform.models.TraceProxyState
-    :param error: Error when apply trace proxy changes.
-    :type error: ~azure.mgmt.appplatform.models.Error
-    :param enabled: Indicates whether enable the tracing functionality
-    :type enabled: bool
-    :param app_insight_instrumentation_key: Target application insight
-     instrumentation key
-    :type app_insight_instrumentation_key: str
-    """
-
-    _validation = {
-        'state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'state': {'key': 'state', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Error'},
-        'enabled': {'key': 'enabled', 'type': 'bool'},
-        'app_insight_instrumentation_key': {'key': 'appInsightInstrumentationKey', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(TraceProperties, self).__init__(**kwargs)
-        self.state = None
-        self.error = kwargs.get('error', None)
-        self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
 
 
 class UserSourceInfo(Model):

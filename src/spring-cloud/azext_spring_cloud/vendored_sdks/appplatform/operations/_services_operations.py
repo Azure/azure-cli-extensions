@@ -27,7 +27,7 @@ class ServicesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client Api Version. Constant value: "2019-05-01-preview".
+    :ivar api_version: Client Api Version. Constant value: "2020-07-01".
     """
 
     models = models
@@ -37,7 +37,7 @@ class ServicesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-05-01-preview"
+        self.api_version = "2020-07-01"
 
         self.config = config
 
@@ -138,7 +138,7 @@ class ServicesOperations(object):
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
@@ -148,6 +148,8 @@ class ServicesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('ServiceResource', response)
         if response.status_code == 201:
+            deserialized = self._deserialize('ServiceResource', response)
+        if response.status_code == 202:
             deserialized = self._deserialize('ServiceResource', response)
 
         if raw:
@@ -530,7 +532,7 @@ class ServicesOperations(object):
 
     def disable_test_endpoint(
             self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """
+        """Disable test endpoint functionality for a Service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -585,7 +587,7 @@ class ServicesOperations(object):
 
     def enable_test_endpoint(
             self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """
+        """Enable test endpoint functionality for a Service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
