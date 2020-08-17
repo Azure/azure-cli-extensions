@@ -144,27 +144,43 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         tags = 'date=2020-01-01 category=test '
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --tags {} ', account_info,
                          container1, local_file, blob_name1, tags)
+
+        # May several seconds to take effect
         self.storage_cmd('storage blob tag list -n {} -c {} ', account_info, blob_name1, container1)\
             .assert_with_checks(JMESPathCheck('date', '2020-01-01'),
                                 JMESPathCheck('category', 'test'))
+        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)\
+            .assert_with_checks(JMESPathCheck('[0].tags.date', '2020-01-01'),
+                                JMESPathCheck('[0].tags.category', 'test'))
 
         # copy with tags
+        tag = 'number=1'
         self.storage_cmd('storage blob copy start --source-blob {} --source-container {} -c {} -b {} --tags {}',
                          account_info, blob_name1, container1, container2, local_file, blob_name2, tags)
-
-        self.storage_cmd('storage blob show -n {} -c {} ', account_info, blob_name1, container1)
-        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)
+        # May several seconds to take effect
+        self.storage_cmd('storage blob tag list -n {} -c {} ', account_info, blob_name2, container2)\
+            .assert_with_checks(JMESPathCheck('number', '1'))
+        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)\
+            .assert_with_checks(JMESPathCheckExists('[0].tags.number', '1'))
 
         # set tags
         self.storage_cmd('storage blob tag set -c {} --include t', account_info, blob_name1, container1)
 
         # list tags
-
-        # list with tags included
-        self.storage_cmd('storage blob list -c {} --include t', account_info, blob_name1, container1)
+        self.storage_cmd('storage blob tag list -n {} -c {} ', account_info, blob_name2, container2)\
+            .assert_with_checks(JMESPathCheck('number', '1'))
 
         # generate sas with tag permission
-        self.storage_cmd('storage blob generate-sas -n {} -c {} --permissions t', account_info, blob_name1, container1)
+        from datetime import datetime, timedelta
+        expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+        sas = self.storage_cmd('storage blob generate-sas -n {} -c {} --permissions t --expiry {} --https-only -o tsv',
+                               account_info, blob_name1, container1, expiry).output
+
+        self.storage_cmd('storage blob tag list -n {} -c {} ', account_info, blob_name1, container1)\
+            .assert_with_checks(JMESPathCheck('date', '2020-01-01'),
+                                JMESPathCheck('category', 'test'))
 
         # find blobs cross containers with index tags
-        self.storage_cmd('storage blob filter -c {} --include t', account_info, blob_name1, container1)
+        self.storage_cmd("storage blob filter --tag-filter category='test' ", account_info)
+
+        # date expression not work

@@ -286,6 +286,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
+    with self.argument_context('storage blob filter') as c:
+        c.argument('filter_expression', options_list=['--tag-filter'])
+
     with self.argument_context('storage blob generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
 
@@ -338,7 +341,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('marker', arg_type=marker_type)
         c.argument('num_results', arg_type=num_results_type)
         c.argument('prefix',
-                   help='Filters the results to return only blobs whose name begins with the specified prefix.')
+                   help='Filter the results to return only blobs whose name begins with the specified prefix.')
         c.argument('show_next_marker', action='store_true',
                    help='Show nextMarker in result when specified.')
 
