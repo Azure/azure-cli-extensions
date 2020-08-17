@@ -200,6 +200,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         min_api='2019-02-02',
         help='Indicate the priority with which to rehydrate an archived blob.')
 
+    if_tags_type = CLIArgumentType(
+        help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
+
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
         c.argument('directory_name', directory_type)
@@ -228,6 +231,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_modified_since', options_list='--destination-if-modified-since')
         c.argument('if_none_match', options_list='--destination-if-none-match')
         c.argument('if_unmodified_since', options_list='--destination-if-unmodified-since')
+        c.argument('if_tags', options_list='--destination-if-tags')
 
         c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
                    help='Name of the destination blob. If the exists, it will be overwritten.')
@@ -364,11 +368,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
         c.extra('version_id', version_id_type)
         c.extra('snapshot', snapshot_type)
+        c.extra('if_tags', if_tags_type)
 
     with self.argument_context('storage blob tag set') as c:
         c.register_blob_arguments()
         c.extra('version_id', version_id_type)
         c.argument('tags', tags_type)
+        c.extra('if_tags', if_tags_type)
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import validate_encryption_scope_client_params, \

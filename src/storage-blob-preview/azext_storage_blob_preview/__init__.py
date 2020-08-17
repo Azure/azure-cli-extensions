@@ -133,8 +133,10 @@ class StorageArgumentContext(AzArgumentContext):
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
     def register_precondition_options(self, prefix=''):
-        self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition')
-        self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition')
+        self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition',
+                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').")
+        self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition',
+                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').")
         self.extra('{}if_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform the "
                    "operation only if the resource's ETag matches the value specified.")
@@ -143,6 +145,8 @@ class StorageArgumentContext(AzArgumentContext):
                    "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
                    "character (*) to perform the operation only if the resource does not exist, and fail the operation "
                    "if it does exist.")
+        self.extra('{}if_tags'.format(prefix), arg_group='Precondition',
+                   help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
 
     def register_blob_arguments(self):
         self.extra('blob_name', required=True)
