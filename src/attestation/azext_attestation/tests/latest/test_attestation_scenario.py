@@ -49,6 +49,9 @@ class AttestationMgmtScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=self.check('[0].name', '{myattestation}'))
 
+    def _list_by_subscription(self):
+        self.cmd('az attestation list', checks=self.check('length(@)', 6))
+
     def _delete(self, rg):
         self.cmd('az attestation delete '
                  '--name "{myattestation}" '
@@ -67,6 +70,7 @@ class AttestationMgmtScenarioTest(ScenarioTest):
         self._create(resource_group)
         self._get(resource_group)
         self._list_by_resource_group(resource_group)
+        self._list_by_subscription()
         self._delete(resource_group)
 
 

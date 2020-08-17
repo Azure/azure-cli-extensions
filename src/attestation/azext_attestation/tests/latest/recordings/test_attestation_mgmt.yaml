@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 14 Aug 2020 07:37:51 GMT
+      - Mon, 17 Aug 2020 07:28:05 GMT
       expires:
       - '-1'
       location:
@@ -49,7 +49,7 @@ interactions:
       x-ms-maa-service-version:
       - 1.10.01287.0001
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -81,7 +81,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 14 Aug 2020 07:37:52 GMT
+      - Mon, 17 Aug 2020 07:28:06 GMT
       expires:
       - '-1'
       pragma:
@@ -129,7 +129,53 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 14 Aug 2020 07:37:52 GMT
+      - Mon, 17 Aug 2020 07:28:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt","name":"bimatt","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://bimatt.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt2","name":"bimatt2","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","bKey":"bValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://bimatt2.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt3","name":"bimatt3","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://bimatt3.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002","name":"clitestatt000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestatt000002.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_policyxq6idijnpopnlvqpvg6rulju4vtepuynhi25p5snafaatndefb4lvdwd/providers/Microsoft.Attestation/attestationProviders/clitestattpolicyyesetr3d","name":"clitestattpolicyyesetr3d","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattpolicyyesetr3d.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signerwvvirk2z4ioscpzz7jotcho4k74bjmd4y2laz3h2ipnlf3yntm7dfwox/providers/Microsoft.Attestation/attestationProviders/clitestattsignerxak7yvah","name":"clitestattsignerxak7yvah","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattsignerxak7yvah.eus2.attest.azure.net"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2542'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:09 GMT
       expires:
       - '-1'
       pragma:
@@ -177,7 +223,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 14 Aug 2020 07:37:57 GMT
+      - Mon, 17 Aug 2020 07:28:12 GMT
       expires:
       - '-1'
       pragma:
@@ -191,7 +237,7 @@ interactions:
       x-ms-maa-service-version:
       - 1.10.01287.0001
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14995'
+      - '14997'
     status:
       code: 200
       message: OK
@@ -223,7 +269,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 14 Aug 2020 07:37:58 GMT
+      - Mon, 17 Aug 2020 07:28:13 GMT
       expires:
       - '-1'
       pragma:
