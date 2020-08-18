@@ -158,6 +158,7 @@ def get_flag_from_values_file(docs):
 
     return isClientSecretATokenFlag
 
+
 def get_details_from_values_file(values_file, location):
     isClientSecretATokenFlag = False
     with open(values_file) as f:
