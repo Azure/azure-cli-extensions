@@ -403,7 +403,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.extra('tags', arg_type=tags_type)
+        c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('storage container') as c:
         from .sdkutil import get_container_access_type_names

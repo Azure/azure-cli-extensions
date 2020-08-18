@@ -583,7 +583,7 @@ def set_blob_tier_v2(client, blob_type='block', rehydrate_priority=None, **kwarg
 
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, max_connections=2, lease_id=None,
-                progress_callback=None, encryption_scope=None, **kwargs):
+                progress_callback=None, encryption_scope=None,  **kwargs):
     """Upload a blob to a container."""
 
     upload_args = {
