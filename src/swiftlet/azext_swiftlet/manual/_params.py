@@ -20,20 +20,22 @@ from azext_swiftlet.action import (
     AddSwiftletVirtualMachineCreatePorts,
     AddSwiftletVirtualMachineUpdatePorts
 )
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
 
     with self.argument_context('swiftlet vm list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('swiftlet vm show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')
 
     with self.argument_context('swiftlet vm create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vm_name', type=str, help='The name of the virtual machine.')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -54,14 +56,14 @@ def load_arguments(self, _):
 
     with self.argument_context('swiftlet vm update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('ports', action=AddSwiftletVirtualMachineUpdatePorts, nargs='*', help='Specifies the list of ports '
                    'to be opened.')
 
     with self.argument_context('swiftlet vm delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')
 
     with self.argument_context('swiftlet vm list-bundle') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -70,13 +72,13 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('swiftlet vm start') as c:
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('swiftlet vm stop') as c:
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('swiftlet vm wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vm_name', type=str, help='The name of the virtual machine.', id_part='name')
+        c.argument('vm_name', arg_type=name_arg_type, type=str, help='The name of the virtual machine.', id_part='name')

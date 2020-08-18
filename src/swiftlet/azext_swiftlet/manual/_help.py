@@ -33,7 +33,7 @@ helps['swiftlet vm show'] = """
     examples:
       - name: Get a virtual machine.
         text: |-
-               az swiftlet vm show --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+               az swiftlet vm show --resource-group "myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm create'] = """
@@ -57,7 +57,7 @@ port, a range (i.e. 50-60), or "*" to indicate all ports.
                az swiftlet vm create --location "westus" --password "{your-password}," --ports \
 port-range="3389" protocol="*" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Windows_1" \
 --swiftlet-image-id "windows-2019-datacenter" --username "SwiftletUser" --tags key1="value1" key2="value2" \
---resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+--resource-group "myResourceGroup" --name "myVirtualMachine"
       - name: Create a virtual machine with ssh authentication.
         text: |-
                az swiftlet vm create --location "westus" --ports port-range="22" protocol="*" \
@@ -66,7 +66,7 @@ oOdHQwmU2FrKXZSW4w2sYE70KeWnrFViCOX5MTVvJgPE8ClugNl8RWth/tU849DvM9sT7vFgfVSHcAS2
 K8JFYIa1eybKsY3hEAxRCA+/7bq8et+Gj3coOsuRmrehav7rE6N12Pb80I6ofa6SM5XNYq4Xk0iYNx7R3kdz0Jj9XgZYWjAHjJmT0gTRoOnt6upOuxK7xI/\
 ykWrllgpXrCPu3Ymz+c+ujaqcxDopnAl2lmf69/J1" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Linux_1" \
 --swiftlet-image-id "ubuntu-18.04-lts" --username "SwiftletUser" --tags key1="value1" key2="value2" --resource-group \
-"myResourceGroup" --vm-name "myVirtualMachine"
+"myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm update'] = """
@@ -88,7 +88,7 @@ port, a range (i.e. 50-60), or "*" to indicate all ports.
       - name: Update tags of a virtual machine.
         text: |-
                az swiftlet vm update --ports port-range="80" protocol="TCP" --ports port-range="50-60" \
-protocol="UDP" --tags key3="value3" --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+protocol="UDP" --tags key3="value3" --resource-group "myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm delete'] = """
@@ -97,7 +97,7 @@ helps['swiftlet vm delete'] = """
     examples:
       - name: Delete a virtual machine.
         text: |-
-               az swiftlet vm delete --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+               az swiftlet vm delete --resource-group "myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm list-bundle'] = """
@@ -124,7 +124,7 @@ helps['swiftlet vm start'] = """
     examples:
       - name: Start a virtual machine.
         text: |-
-               az swiftlet vm start --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+               az swiftlet vm start --resource-group "myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm stop'] = """
@@ -133,7 +133,7 @@ helps['swiftlet vm stop'] = """
     examples:
       - name: Stop a virtual machine.
         text: |-
-               az swiftlet vm stop --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+               az swiftlet vm stop --resource-group "myResourceGroup" --name "myVirtualMachine"
 """
 
 helps['swiftlet vm wait'] = """
@@ -142,14 +142,14 @@ helps['swiftlet vm wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the swiftlet vm is successfully created.
         text: |-
-               az swiftlet vm wait --resource-group "myResourceGroup" --vm-name "myVirtualMachine" \
+               az swiftlet vm wait --resource-group "myResourceGroup" --name "myVirtualMachine" \
 --created
       - name: Pause executing next line of CLI script until the swiftlet vm is successfully updated.
         text: |-
-               az swiftlet vm wait --resource-group "myResourceGroup" --vm-name "myVirtualMachine" \
+               az swiftlet vm wait --resource-group "myResourceGroup" --name "myVirtualMachine" \
 --updated
       - name: Pause executing next line of CLI script until the swiftlet vm is successfully deleted.
         text: |-
-               az swiftlet vm wait --resource-group "myResourceGroup" --vm-name "myVirtualMachine" \
+               az swiftlet vm wait --resource-group "myResourceGroup" --name "myVirtualMachine" \
 --deleted
 """

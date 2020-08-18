@@ -25,11 +25,11 @@ def setup(test, rg):
 # EXAMPLE: /VirtualMachines/put/Create a virtual machine with password authentication.
 @try_manual
 def step__virtualmachines_put_create_a_virtual_machine_with_password_authentication_(test, rg):
-    test.cmd('az swiftlet virtual-machine create '
-             '--location "westus" '
-             '--password "{your-password}," '
+    test.cmd('az swiftlet vm create '
+             '--location "centraluseuap" '
+             '--password "testPassword0" '
              '--ports port-range="3389" protocol="*" '
-             '--startup-script "{inline startup script}" '
+             # '--startup-script "{inline startup script}" '
              '--swiftlet-bundle-sku "Windows_1" '
              '--swiftlet-image-id "windows-2019-datacenter" '
              '--username "SwiftletUser" '
@@ -42,14 +42,14 @@ def step__virtualmachines_put_create_a_virtual_machine_with_password_authenticat
 # EXAMPLE: /VirtualMachines/put/Create a virtual machine with ssh authentication.
 @try_manual
 def step__virtualmachines_put_create_a_virtual_machine_with_ssh_authentication_(test, rg):
-    test.cmd('az swiftlet virtual-machine create '
+    test.cmd('az swiftlet vm create ' 
              '--location "westus" '
              '--ports port-range="22" protocol="*" '
              '--ssh-public-key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeClRAk2ipUs/l5voIsDC5q9RI+YSRd1Bvd/O+axgY4WiBzG+'
              '4FwJWZm/mLLe5DoOdHQwmU2FrKXZSW4w2sYE70KeWnrFViCOX5MTVvJgPE8ClugNl8RWth/tU849DvM9sT7vFgfVSHcAS2yDRyDlueii+'
              '8nF2ym8XWAPltFVCyLHRsyBp5YPqK8JFYIa1eybKsY3hEAxRCA+/7bq8et+Gj3coOsuRmrehav7rE6N12Pb80I6ofa6SM5XNYq4Xk0iYN'
              'x7R3kdz0Jj9XgZYWjAHjJmT0gTRoOnt6upOuxK7xI/ykWrllgpXrCPu3Ymz+c+ujaqcxDopnAl2lmf69/J1" '
-             '--startup-script "{inline startup script}" '
+             # '--startup-script "{inline startup script}" '
              '--swiftlet-bundle-sku "Linux_1" '
              '--swiftlet-image-id "ubuntu-18.04-lts" '
              '--username "SwiftletUser" '
@@ -62,7 +62,7 @@ def step__virtualmachines_put_create_a_virtual_machine_with_ssh_authentication_(
 # EXAMPLE: /VirtualMachines/get/Get a virtual machine.
 @try_manual
 def step__virtualmachines_get_get_a_virtual_machine_(test, rg):
-    test.cmd('az swiftlet virtual-machine show '
+    test.cmd('az swiftlet vm show '
              '--resource-group "{rg}" '
              '--vm-name "myVirtualMachine"',
              checks=[])
@@ -71,7 +71,7 @@ def step__virtualmachines_get_get_a_virtual_machine_(test, rg):
 # EXAMPLE: /VirtualMachines/get/List all virtual machines in a resource group.
 @try_manual
 def step__virtualmachines_get_list_all_virtual_machines_in_a_resource_group_(test, rg):
-    test.cmd('az swiftlet virtual-machine list '
+    test.cmd('az swiftlet vm list '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -79,7 +79,7 @@ def step__virtualmachines_get_list_all_virtual_machines_in_a_resource_group_(tes
 # EXAMPLE: /VirtualMachines/get/List all virtual machines in a subscription.
 @try_manual
 def step__virtualmachines_get_list_all_virtual_machines_in_a_subscription_(test, rg):
-    test.cmd('az swiftlet virtual-machine list '
+    test.cmd('az swiftlet vm list '
              '-g ""',
              checks=[])
 
@@ -87,7 +87,7 @@ def step__virtualmachines_get_list_all_virtual_machines_in_a_subscription_(test,
 # EXAMPLE: /VirtualMachines/get/List available Swiftlet bundles
 @try_manual
 def step__virtualmachines_get_list_available_swiftlet_bundles(test, rg):
-    test.cmd('az swiftlet virtual-machine list-bundle '
+    test.cmd('az swiftlet vm list-bundle '
              '--location "westus"',
              checks=[])
 
@@ -95,7 +95,7 @@ def step__virtualmachines_get_list_available_swiftlet_bundles(test, rg):
 # EXAMPLE: /VirtualMachines/get/List available Swiftlet images
 @try_manual
 def step__virtualmachines_get_list_available_swiftlet_images(test, rg):
-    test.cmd('az swiftlet virtual-machine list-image '
+    test.cmd('az swiftlet vm list-image '
              '--location "westus"',
              checks=[])
 
@@ -103,7 +103,7 @@ def step__virtualmachines_get_list_available_swiftlet_images(test, rg):
 # EXAMPLE: /VirtualMachines/post/Start a virtual machine.
 @try_manual
 def step__virtualmachines_post_start_a_virtual_machine_(test, rg):
-    test.cmd('az swiftlet virtual-machine start '
+    test.cmd('az swiftlet vm start '
              '--resource-group "{rg}" '
              '--vm-name "myVirtualMachine"',
              checks=[])
@@ -112,7 +112,7 @@ def step__virtualmachines_post_start_a_virtual_machine_(test, rg):
 # EXAMPLE: /VirtualMachines/post/Stop a virtual machine.
 @try_manual
 def step__virtualmachines_post_stop_a_virtual_machine_(test, rg):
-    test.cmd('az swiftlet virtual-machine stop '
+    test.cmd('az swiftlet vm stop '
              '--resource-group "{rg}" '
              '--vm-name "myVirtualMachine"',
              checks=[])
@@ -121,7 +121,7 @@ def step__virtualmachines_post_stop_a_virtual_machine_(test, rg):
 # EXAMPLE: /VirtualMachines/patch/Update tags of a virtual machine.
 @try_manual
 def step__virtualmachines_patch_update_tags_of_a_virtual_machine_(test, rg):
-    test.cmd('az swiftlet virtual-machine update '
+    test.cmd('az swiftlet vm update '
              '--ports port-range="80" protocol="TCP" '
              '--ports port-range="50-60" protocol="UDP" '
              '--tags key3="value3" '
@@ -133,7 +133,7 @@ def step__virtualmachines_patch_update_tags_of_a_virtual_machine_(test, rg):
 # EXAMPLE: /VirtualMachines/delete/Delete a virtual machine.
 @try_manual
 def step__virtualmachines_delete_delete_a_virtual_machine_(test, rg):
-    test.cmd('az swiftlet virtual-machine delete -y '
+    test.cmd('az swiftlet vm delete -y '
              '--resource-group "{rg}" '
              '--vm-name "myVirtualMachine"',
              checks=[])
@@ -170,3 +170,26 @@ class SwiftletManagementClientScenarioTest(ScenarioTest):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
+
+
+class SwiftletScenarioTest(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='clitest_swiftlet_')
+    def test_swiftlet_create(self, rg):
+        self.cmd('swiftlet vm create '
+                 '--location "centraluseuap" '
+                 '--password "testPassword0" '
+                 '--ports port-range="3389" protocol="*" '
+                 # '--startup-script "{inline startup script}" '
+                 '--swiftlet-bundle-sku "Windows_1" '
+                 '--swiftlet-image-id "windows-2019-datacenter" '
+                 '--username "SwiftletUser" '
+                 '--tags key1="value1" key2="value2" '
+                 '--resource-group "{rg}" '
+                 '--vm-name "myVirtualMachine"',
+                 checks=[])
+        self.cmd('swiftlet vm show -g {rg} -n {vm}')
+        self.cmd('swiftlet vm delete -g {rg} -n {vm}')
+
+    def test_swiftlet_list(self, rg):
+        self.cmd('swiftlet vm list-bundle -l centraluseuap')
+        self.cmd('swiftlet vm list-image -l centraluseuap')
