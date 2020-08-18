@@ -77,7 +77,7 @@ class ExperimentOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -153,7 +153,7 @@ class ExperimentOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'experimentName': self._serialize.url("experiment_name", experiment_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -223,7 +223,7 @@ class ExperimentOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'experimentName': self._serialize.url("experiment_name", experiment_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -297,7 +297,7 @@ class ExperimentOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'experimentName': self._serialize.url("experiment_name", experiment_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)

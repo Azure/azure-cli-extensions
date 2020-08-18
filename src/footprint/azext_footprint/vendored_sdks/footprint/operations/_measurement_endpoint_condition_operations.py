@@ -80,7 +80,7 @@ class MeasurementEndpointConditionOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
                     'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -160,7 +160,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
@@ -240,7 +240,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
@@ -318,7 +318,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
