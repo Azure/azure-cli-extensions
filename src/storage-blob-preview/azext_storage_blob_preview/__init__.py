@@ -145,8 +145,6 @@ class StorageArgumentContext(AzArgumentContext):
                    "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
                    "character (*) to perform the operation only if the resource does not exist, and fail the operation "
                    "if it does exist.")
-        self.extra('{}if_tags'.format(prefix), arg_group='Precondition',
-                   help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
 
     def register_blob_arguments(self):
         self.extra('blob_name', required=True)
