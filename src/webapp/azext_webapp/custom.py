@@ -13,8 +13,10 @@ from azure.cli.command_modules.appservice.custom import (
     _get_scm_url,
     list_publish_profiles,
     get_site_configs,
-    update_container_settings, create_webapp,
-    get_sku_name)
+    update_container_settings,
+    create_webapp,
+    get_sku_name,
+    _check_zip_deployment_status)
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 from azure.cli.command_modules.appservice._create_util import (
     should_create_new_rg,
@@ -308,3 +310,75 @@ def _should_create_new_asp(cmd, rg_name, asp_name, location):
                 item.location == location):
             return False
     return True
+
+
+def enable_one_deploy(cmd, resource_group_name, name, src, deploy_type=None, is_async=None, target_path=None, timeout=None, slot=None):
+    import ntpath
+    logger.info("Preparing for deployment")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+
+    try:
+        scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    except ValueError:
+        raise CLIError('Failed to fetch scm url for for app {}'.format(name))
+
+    # Interpret deployment type from the file extension if the type parameter is not passed
+    if deploy_type is None:
+        fileName = ntpath.basename(src)
+        fileExtension = fileName.split(".", 1)[1]
+        if fileExtension in ('war', 'jar', 'zip', 'ear'):
+            deploy_type = fileExtension
+        elif fileExtension in ('sh', 'bat'):
+            deploy_type = 'startup'
+        else:
+            deploy_type = 'static'
+
+    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. Possible values: static, zip, war, jar, ear, startup", deploy_type)
+    deploy_url = scm_url + '/api/publish?type=' + deploy_type
+
+    if is_async is not None:
+        deploy_url = deploy_url + '&async=true'
+
+    if target_path is not None:
+        deploy_url = deploy_url + '&path=' + target_path
+
+    deployment_status_url = scm_url + '/api/deployments/latest'
+
+    from azure.cli.core.util import (
+        should_disable_connection_verify,
+        get_az_user_agent
+    )
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['Content-Type'] = 'application/octet-stream'
+    headers['Cache-Control'] = 'no-cache'
+    headers['User-Agent'] = get_az_user_agent()
+
+    import requests
+    import os
+
+    # Read file content
+    with open(os.path.realpath(os.path.expanduser(src)), 'rb') as fs:
+        artifact_content = fs.read()
+        logger.warning("Starting deployment...")
+        res = requests.post(deploy_url, data=artifact_content, headers=headers, verify=not should_disable_connection_verify())
+
+    # check if an error occured during deployment
+    if res.status_code == 400:
+        raise CLIError("An error occured durng deployment: {}".format(res.text))
+
+    # check if there's an ongoing process
+    if res.status_code == 409:
+        raise CLIError("There may be an ongoing deployment or your app setting has WEBSITE_RUN_FROM_PACKAGE. "
+                       "Please track your deployment in {} and ensure the WEBSITE_RUN_FROM_PACKAGE app setting "
+                       "is removed.".format(deployment_status_url))
+
+    # check the status of async deployment
+    if res.status_code == 202:
+        logger.warning("Asynchronous deployment request has been recieved")
+        response = _check_zip_deployment_status(cmd, resource_group_name, name, deployment_status_url, authorization, timeout)
+        return response
+
+    return logger.warning("Deployment has completed successfully")
