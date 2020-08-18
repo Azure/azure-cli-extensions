@@ -153,7 +153,7 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue',
                                            'ContainsValueIgnoreCasing', 'DoesNotContainValue',
                                            'DoesNotContainValueIgnoreCasing']),
-                   help='The operator of a Footprint measurement endpoint condition. Swagger name=operator')
+                   help='The operator of a Footprint measurement endpoint condition.')
         c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition.')
 
     with self.argument_context('footprint measurement-endpoint-condition delete') as c:
