@@ -232,17 +232,17 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
 
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
         g.command('list', 'list', table_transformer=transform_service_list)
-        g.command('show', 'get', table_transformer=transform_service)
+        g.show_command('show', 'get', table_transformer=transform_service)
 
     with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
         g.command('list', 'list', table_transformer=transform_service_replica_list)
-        g.command('show', 'get', table_transformer=transform_service_replica)
+        g.show_command('show', 'get', table_transformer=transform_service_replica)
 
     with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
         g.command('get', 'get_container_logs', transform=transform_log_output)
 
     with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
-        g.command('show', 'get', table_transformer=transform_network)
+        g.show_command('show', 'get', table_transformer=transform_network)
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh network', cmd_util) as g:
@@ -255,22 +255,22 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
 
     with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
-        g.command('show', 'get')
+        g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secret', cmd_util) as g:
         g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
 
     with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
-        g.command('show', 'get')
+        g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
-        g.custom_command('show', 'secret_show')
+        g.custom_show_command('show', 'secret_show')
         g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)
 
     with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
-        g.command('show', 'get', table_transformer=transform_gateway)
+        g.show_command('show', 'get', table_transformer=transform_gateway)
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
