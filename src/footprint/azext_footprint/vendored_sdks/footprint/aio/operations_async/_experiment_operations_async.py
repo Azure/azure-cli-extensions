@@ -47,9 +47,9 @@ class ExperimentOperations:
         profile_name: str,
         **kwargs
     ) -> AsyncIterable["models.ExperimentList"]:
-        """Retrieves the information about all experiments under a Footprint profile.
+        """Get all experiments under a Footprint profile.
 
-        Get all experiments under a Footprint profile.
+        Retrieves the information about all experiments under a Footprint profile.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -66,6 +66,10 @@ class ExperimentOperations:
         api_version = "2020-02-01-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_profile.metadata['url']  # type: ignore
@@ -79,15 +83,11 @@ class ExperimentOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -122,9 +122,9 @@ class ExperimentOperations:
         experiment_name: str,
         **kwargs
     ) -> "models.Experiment":
-        """Retrieves the information about a single Footprint experiment.
+        """Get a Footprint experiment resource.
 
-        Get a Footprint experiment resource.
+        Retrieves the information about a single Footprint experiment.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -160,7 +160,6 @@ class ExperimentOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -186,9 +185,9 @@ class ExperimentOperations:
         description: Optional[str] = None,
         **kwargs
     ) -> "models.Experiment":
-        """Creates or updates a Footprint experiment with the specified properties.
+        """Creates or updates a Footprint experiment resource.
 
-        Creates or updates a Footprint experiment resource.
+        Creates or updates a Footprint experiment with the specified properties.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -230,7 +229,6 @@ class ExperimentOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'Experiment')
         body_content_kwargs['content'] = body_content
@@ -244,7 +242,6 @@ class ExperimentOperations:
             error = self._deserialize(models.DefaultErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Experiment', pipeline_response)
 
@@ -264,9 +261,9 @@ class ExperimentOperations:
         experiment_name: str,
         **kwargs
     ) -> None:
-        """Deletes an existing Footprint experiment.
+        """Deletes a Footprint experiment resource.
 
-        Deletes a Footprint experiment resource.
+        Deletes an existing Footprint experiment.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -301,7 +298,6 @@ class ExperimentOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response

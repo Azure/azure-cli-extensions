@@ -10,7 +10,7 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if
+from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 
 
@@ -28,7 +28,7 @@ def step__profiles_put_create_or_update_a_footprint_profile_(test, rg):
     test.cmd('az footprint profile create '
              '--location "westus2" '
              '--measurement-count 3 '
-             '--start-delay-milliseconds 5000 '
+             '--start-delay-ms 5000 '
              '--tags key1="value1" key2="value2" '
              '--name "{myProfile}" '
              '--resource-group "{rg}"',
@@ -138,8 +138,8 @@ def step__measurementendpoints_get_list_all_the_measurement_endpoints_under_a_fo
 @try_manual
 def step__measurementendpointconditions_put_create_or_update_a_measurement_endpoint_condition_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition create '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--constant "Edge-Prod-WST" '
              '--operator "MatchValueIgnoreCasing" '
              '--variable "X-FD-EdgeEnvironment" '
@@ -152,8 +152,8 @@ def step__measurementendpointconditions_put_create_or_update_a_measurement_endpo
 @try_manual
 def step__measurementendpointconditions_get_get_the_details_of_a_measurement_endpoint_condition_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition show '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -163,7 +163,7 @@ def step__measurementendpointconditions_get_get_the_details_of_a_measurement_end
 @try_manual
 def step__measurementendpointconditions_get_list_all_conditions_under_a_measurement_endpoint_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition list '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -172,9 +172,9 @@ def step__measurementendpointconditions_get_list_all_conditions_under_a_measurem
 # EXAMPLE: /measurementEndpointConditions/delete/Delete a measurement endpoint condition.
 @try_manual
 def step__measurementendpointconditions_delete_delete_a_measurement_endpoint_condition_(test, rg):
-    test.cmd('az footprint measurement-endpoint-condition delete '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+    test.cmd('az footprint measurement-endpoint-condition delete -y '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -183,7 +183,7 @@ def step__measurementendpointconditions_delete_delete_a_measurement_endpoint_con
 # EXAMPLE: /experiments/delete/Delete an experiment.
 @try_manual
 def step__experiments_delete_delete_an_experiment_(test, rg):
-    test.cmd('az footprint experiment delete '
+    test.cmd('az footprint experiment delete -y '
              '--name "{myExperiment}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
@@ -193,7 +193,7 @@ def step__experiments_delete_delete_an_experiment_(test, rg):
 # EXAMPLE: /measurementEndpoints/delete/Delete a measurement endpoint.
 @try_manual
 def step__measurementendpoints_delete_delete_a_measurement_endpoint_(test, rg):
-    test.cmd('az footprint measurement-endpoint delete '
+    test.cmd('az footprint measurement-endpoint delete -y '
              '--name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
@@ -203,7 +203,7 @@ def step__measurementendpoints_delete_delete_a_measurement_endpoint_(test, rg):
 # EXAMPLE: /profiles/delete/Delete a Footprint profile.
 @try_manual
 def step__profiles_delete_delete_a_footprint_profile_(test, rg):
-    test.cmd('az footprint profile delete '
+    test.cmd('az footprint profile delete -y '
              '--name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -247,8 +247,9 @@ class FootprintMonitoringManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'myProfile': self.create_random_name(prefix='fpProfile1'[:5], length=10),
             'myMeasurementEndpoint': self.create_random_name(prefix='endpoint1'[:4], length=9),
-            'myExperiment': self.create_random_name(prefix='fpExp1'[:3], length=9),
+            'myExperiment': self.create_random_name(prefix='fpExp1'[:2], length=9),
         })
 
         call_scenario(self, rg)
+        calc_coverage(__file__)
         raise_if()
