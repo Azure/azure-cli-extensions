@@ -16,7 +16,7 @@ from ._shared.shared_access_signature import SharedAccessSignature, _SharedAcces
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from azure.storage.blob import (
+    from . import (
         ResourceTypes,
         AccountSasPermissions,
         UserDelegationKey,

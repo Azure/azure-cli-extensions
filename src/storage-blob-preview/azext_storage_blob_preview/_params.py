@@ -414,7 +414,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage container generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
-        t_container_permissions = self.get_sdk('_models#ContainerSasPermissions')
+        t_container_permissions = self.get_sdk('_models#ContainerSasPermissions',
+                                               resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_sas_arguments()
         c.argument('id', options_list='--policy-name',
                    help='The name of a stored access policy within the container\'s ACL.',
