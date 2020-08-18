@@ -109,23 +109,19 @@ def get_helm_registry(profile, location):
     raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))
 
 
-def get_helm_registry_using_token(values_file, location):
-    if values_file is None:
-        raise CLIError("For token based onboarding, please provide access token, and provide file path in env variable HELMVALUESPATH")
-    if not os.path.isfile(values_file):
-        raise CLIError("{} is not a valid file path for the values yml file.".format(values_file))
-    token = ""
-    with open(values_file) as f:
-        try:
-            docs = yaml.safe_load(f)
-            if 'global' not in docs:
-                raise CLIError("Incorrect values file format. Provide 'clientSecret' param under 'global' field in .yml file.")
-            if 'clientSecret' in docs['global']:
-                token = docs['global']['clientSecret']
-            else:
-                raise CLIError("Access token not provided in the file. Provide it as 'clientSecret' param under 'global' in values file.")
-        except Exception as e:
-            raise CLIError("Error while reading helm values yml file: {}".format(e))
+def get_helm_registry_using_token(docs, location):
+    if 'global' not in docs:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Incorrect values file format.', fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                summary='Provide it as clientSecret param under global field in .yml file.')
+        raise CLIError("Incorrect values file format. Provide it as 'clientSecret' param under 'global' field in .yml file.")
+    if 'clientSecret' in docs['global']:
+        token = docs['global']['clientSecret']
+    else:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Access token not provided in the file.', fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                summary='Provide it as clientSecret param under global field in .yml file.')
+        raise CLIError("Access token not provided in the file. Provide it as 'clientSecret' param under 'global' in values file.")
 
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     query_parameters = {}
@@ -145,19 +141,38 @@ def get_helm_registry_using_token(values_file, location):
     raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))
 
 
-def get_flag_from_values_file(values_file):
-    isClientSecretATokenFlag = None
+def get_flag_from_values_file(docs):
+    isClientSecretATokenFlag = False
+
+    if 'systemDefaultValues' not in docs:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Incorrect values file format.', fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                summary='Provide isClientSecretAToken flag under systemDefaultValues in .yml file.')
+        raise CLIError("Incorrect values file format. Provide 'isClientSecretAToken' flag under 'systemDefaultValues' in .yml file.")
+    if 'isClientSecretAToken' not in docs['systemDefaultValues']:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Incorrect values file format.', fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                summary='Provide isClientSecretAToken flag set to true if you want token based onboarding.')
+        raise CLIError("Please provide flag 'isClientSecretAToken' set to \"true\" if you want token based onboarding.")
+    isClientSecretATokenFlag = docs['systemDefaultValues']['isClientSecretAToken']
+
+    return isClientSecretATokenFlag
+
+def get_details_from_values_file(values_file, location):
+    isClientSecretATokenFlag = False
     with open(values_file) as f:
         try:
             docs = yaml.safe_load(f)
-            if 'systemDefaultValues' not in docs:
-                raise CLIError("Incorrect values file format. Provide 'isClientSecretAToken' flag under 'systemDefaultValues' .yml file.")
-            else:
-                if 'isClientSecretAToken' not in docs['systemDefaultValues']:
-                    raise CLIError("Please provide flag 'isClientSecretAToken' set to \"true\" if you want token based onboarding.")
-                else:
-                    isClientSecretATokenFlag = docs['systemDefaultValues']['isClientSecretAToken']
         except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                    summary='Error while reading helm values yml file')
             raise CLIError("Error while reading helm values yml file: {}".format(e))
 
-    return isClientSecretATokenFlag
+        isClientSecretATokenFlag = get_flag_from_values_file(docs)
+        if isClientSecretATokenFlag is None:
+            isClientSecretATokenFlag = False
+
+        helm_registry_path = get_helm_registry_using_token(docs, location)
+
+        return isClientSecretATokenFlag, helm_registry_path

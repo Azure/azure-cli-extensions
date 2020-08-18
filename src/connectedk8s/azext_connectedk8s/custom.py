@@ -69,13 +69,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
-    # Checking whether tokenbasedonboarding has been opted from the values file.
-    token_based_onboarding = False
-    values_file = os.getenv('HELMVALUESPATH')
-    if (values_file is not None) and (os.path.isfile(values_file)):
-        logger.warning("HELMVALUESPATH env var is set and points to a file. Getting flag for token based onboarding.\n")
-        token_based_onboarding = utils.get_flag_from_values_file(values_file)
-
     # Loading the kubeconfig file in kubernetes client configuration
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
@@ -112,9 +105,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     utils.validate_location(cmd, location)
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
 
+    # Checking whether tokenbasedonboarding has been opted from the values file.
+    token_based_onboarding = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        logger.warning("HELMVALUESPATH env var is set and points to a file. Getting flag for token based onboarding, and helm registry path directly using that token.\n")
+        token_based_onboarding, helm_registry_path = utils.get_details_from_values_file(values_file, location)
+
     # If this is direct access token based onboarding, this will be done by connect-agent itself.
     # Therefore, this is done only if it is not token_based_onboarding.
-    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+    if (token_based_onboarding == "false") or (not token_based_onboarding):
         # Check Release Existance
         release_namespace = get_release_namespace(kube_config, kube_context)
         if release_namespace is not None:
@@ -177,15 +177,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
-    # registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(profile, location)
     if os.getenv('HELMREGISTRY'):
         registry_path = os.getenv('HELMREGISTRY')
     else:
-        if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+        if (token_based_onboarding == "false") or (not token_based_onboarding):
             registry_path = utils.get_helm_registry(profile, location)
         else:
-            # If token based onboarding, gets the access token from the values file given, then gets helm registry using that token
-            registry_path = utils.get_helm_registry_using_token(values_file, location)
+            # Got the registry path directly using access token
+            registry_path = helm_registry_path
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -194,7 +193,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Get helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+    if (token_based_onboarding == "false") or (not token_based_onboarding):
         # Generate public-private key pair
         try:
             key_pair = RSA.generate(4096)
@@ -234,6 +233,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     else:
         logger.warning("Doing access token based onboarding...\n")
         if values_file is None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Incorrect values file format.', fault_type=consts.Incorrect_Helm_Values_File_Fault_Type,
+                                    summary='For token based onboarding, please provide access token and other values in a file, and provide file path in env var HELMVALUESPATH')
             raise CLIError("For token based onboarding, please provide access token and other values in a file, and provide file path in env var HELMVALUESPATH")
         trim_file_path(values_file)
 
@@ -262,7 +264,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
     # Create connected cluster resource if not token base onboarding
-    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+    if (token_based_onboarding == "false") or (not token_based_onboarding):
         cc = generate_request_payload(configuration, location, public_key, tags)
         try:
             put_cc_response = sdk_no_wait(no_wait, client.create,
@@ -289,7 +291,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Returning response on the terminal only when it is not token based onboarding,
     # Because resource creation and connect is done by connect-agent independently in that case.
-    if (token_based_onboarding is None) or (token_based_onboarding == "false") or (not token_based_onboarding):
+    if (token_based_onboarding == "false") or (not token_based_onboarding):
         return put_cc_response
 
 
