@@ -16,8 +16,6 @@ UNEXPECTED_ERROR_STR = (
     'An unexpected error occurred.'
 )
 
-TELEMETRY_PROPERTY_PREFIX = 'Context.Default.Extension.Thoth'
-
 UPDATE_RECOMMENDATION_STR = (
     "Better failure recovery recommendations are available from the latest version of the CLI. "
     "Please update for the best experience.\n"

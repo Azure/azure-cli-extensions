@@ -24,7 +24,7 @@ from azext_ai_did_you_mean_this._const import (
     UNABLE_TO_HELP_FMT_STR)
 from azext_ai_did_you_mean_this._logging import get_logger
 from azext_ai_did_you_mean_this._style import style_message
-from azext_ai_did_you_mean_this._suggestion import Suggestion, SuggestionParseError
+from azext_ai_did_you_mean_this._suggestion import Suggestion, SuggestionParseError, InvalidSuggestionError
 from azext_ai_did_you_mean_this._suggestion_encoder import SuggestionEncoder
 from azext_ai_did_you_mean_this._telemetry import (
     FaultType,
@@ -38,6 +38,7 @@ from azext_ai_did_you_mean_this._telemetry import (
     set_property
 )
 from azext_ai_did_you_mean_this._timer import Timer
+from azext_ai_did_you_mean_this._util import safe_repr
 from azext_ai_did_you_mean_this.version import VERSION
 
 logger = get_logger(__name__)
@@ -164,8 +165,14 @@ def get_recommendations_from_http_response(response):
         except SuggestionParseError as ex:
             logger.debug('Failed to parse suggestion field: %s', ex)
             set_exception(exception=ex,
-                          fault_type=FaultType.ParseError.value,
+                          fault_type=FaultType.SuggestionParseError.value,
                           summary='Unexpected error while parsing suggestions from HTTP response body.')
+        except InvalidSuggestionError as ex:
+            msg = f'Failed to parse suggestion: {safe_repr(Suggestion, suggestion)}'
+            logger.debug(msg)
+            set_exception(exception=ex,
+                          fault_type=FaultType.InvalidSuggestionError.value,
+                          summary=msg)
 
     valid_suggestion_count = len(suggestions)
 

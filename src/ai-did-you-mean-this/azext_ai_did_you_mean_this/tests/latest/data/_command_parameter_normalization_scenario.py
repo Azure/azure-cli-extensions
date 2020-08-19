@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import pprint
 import re
 from copy import deepcopy
 from typing import Iterable, List, Pattern, Set, Tuple, Union
@@ -15,6 +14,7 @@ from azext_ai_did_you_mean_this._parameter import (
     GLOBAL_PARAM_LOOKUP_TBL
 )
 from azext_ai_did_you_mean_this._types import ArgumentsType
+from azext_ai_did_you_mean_this._util import safe_repr
 from azext_ai_did_you_mean_this.arguments import Arguments
 from azext_ai_did_you_mean_this.tests.latest.data._command_normalization_scenario import \
     CommandNormalizationScenario
@@ -111,13 +111,12 @@ class CommandParameterNormalizationScenario():
         ]
 
     def __repr__(self) -> str:
-        classname = type(self).__name__
-        return '{classname}(command={0}, parameters={1}, normalized_parameters={2})'.format(
-            pprint.pformat(self.command),
-            pprint.pformat(self.parameters),
-            pprint.pformat(self.normalized_parameters),
-            classname=classname
+        attrs = dict(
+            command=self.command,
+            parameters=self.parameters,
+            normalized_parameters=self.normalized_parameters
         )
+        return safe_repr(self, attrs)
 
     def __copy__(self):
         return type(self)(

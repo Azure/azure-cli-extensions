@@ -10,9 +10,10 @@ import azure.cli.core.telemetry as telemetry
 
 from azext_ai_did_you_mean_this._const import (
     UNEXPECTED_ERROR_STR,
-    EXTENSION_NAME,
-    TELEMETRY_PROPERTY_PREFIX
+    EXTENSION_NAME
 )
+
+TELEMETRY_PROPERTY_PREFIX = 'Context.Default.Extension.Thoth'
 
 
 def _user_agrees_to_telemetry(func):
@@ -28,7 +29,8 @@ def _user_agrees_to_telemetry(func):
 
 class FaultType(Enum):
     RequestError = 'thoth-aladdin-request-error'
-    ParseError = 'thoth-aladdin-response-parse-error'
+    SuggestionParseError = 'thoth-aladdin-response-parse-error'
+    InvalidSuggestionError = 'thoth-aladdin-invalid-suggestion-in-response-error'
     UnexpectedError = 'thoth-unexpected-error'
 
     def __eq__(self, value: Union['FaultType', str]):

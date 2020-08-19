@@ -3,14 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import pprint
 from typing import Dict
 
 from azext_ai_did_you_mean_this._cli_command import CliCommand
 from azext_ai_did_you_mean_this._types import ArgumentsType
+from azext_ai_did_you_mean_this._util import safe_repr
 
 
 class SuggestionParseError(KeyError):
+    pass
+
+
+class InvalidSuggestionError(ValueError):
     pass
 
 
@@ -23,11 +27,8 @@ class Suggestion(CliCommand):
         return f"az {super().__str__()}"
 
     def __repr__(self):
-        return 'Suggestion(command={0}, parameters={1}, placeholders={2})'.format(
-            pprint.pformat(self.command),
-            pprint.pformat(self.parameters),
-            pprint.pformat(self.arguments)
-        )
+        attrs = dict(command=self.command, parameters=self.parameters, arguments=self.arguments)
+        return safe_repr(self, attrs)
 
     @classmethod
     def parse(cls, data: Dict[str, str]):
@@ -38,4 +39,7 @@ class Suggestion(CliCommand):
         except KeyError as e:
             raise SuggestionParseError(*e.args)
 
-        return Suggestion(command, parameters, placeholders)
+        try:
+            return Suggestion(command, parameters, placeholders)
+        except ValueError as e:
+            raise InvalidSuggestionError(*e.args)
