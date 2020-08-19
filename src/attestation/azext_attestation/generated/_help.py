@@ -58,3 +58,72 @@ helps['attestation delete'] = """
         text: |-
                az attestation delete --name "myattestationprovider" --resource-group "MyResourceGroup"
 """
+
+helps['attestation policy'] = """
+    type: group
+    short-summary: Manage the policies
+"""
+
+helps['attestation policy set'] = """
+    type: command
+    short-summary: Sets the policy for a given kind of TEE.
+    examples:
+      - name: Sets the policy for a given kind of TEE (SgxEnclave).
+        text: |-
+               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave \\
+               --new-attestation-policy "newAttestationPolicyname"
+"""
+
+helps['attestation policy reset'] = """
+    type: command
+    short-summary: Resets the attestation policy for the specified tenant and reverts to the default policy.
+    examples:
+      - name: Resets the attestation policy for the specified tenant and reverts to the default policy.
+        text: |-
+               az attestation policy reset -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave \\
+               --policy-jws "eyJhbGciOiJub25lIn0.."
+"""
+
+helps['attestation policy show'] = """
+    type: command
+    short-summary: Retrieves the current policy for a given kind of TEE.
+    examples:
+      - name: Retrieves the current policy for a given kind of TEE (SgxEnclave).
+        text: |-
+               az attestation policy show -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave
+"""
+
+helps['attestation signer'] = """
+    type: group
+    short-summary: Manage the trusted policy signers
+"""
+
+helps['attestation signer add'] = """
+    type: command
+    short-summary: Adds a new attestation policy certificate to the set of policy management certificates.
+    examples:
+      - name: Adds a new attestation policy certificate to the set of policy management certificates.
+        text: |-
+               az attestation signer add -n "myattestationprovider" -g "MyResourceGroup" \\
+               --signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
+"""
+
+helps['attestation signer remove'] = """
+    type: command
+    short-summary: Removes the specified policy management certificate. Note that the final policy management
+     certificate cannot be removed.
+    examples:
+      - name: Removes the specified policy management certificate.
+        text: |-
+               az attestation signer remove -n "myattestationprovider" -g "MyResourceGroup" \\
+               --signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
+"""
+
+helps['attestation signer list'] = """
+    type: command
+    short-summary: Retrieves the set of certificates used to express policy for the current tenant.
+    examples:
+      - name: Retrieves the set of certificates used to express policy for the current tenant.
+        text: |-
+               az attestation signer list -n "myattestationprovider" -g "MyResourceGroup"
+"""

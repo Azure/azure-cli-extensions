@@ -15,12 +15,20 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
     get_location_type,
-    file_type
+    file_type,
+    get_resource_name_completion_list,
+    get_enum_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+    from ..vendored_sdks.azure_attestation.models import TeeKind
+
+    attestation_name_type = CLIArgumentType(
+        help='Name of the attestation.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
+        completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
 
     with self.argument_context('attestation list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -44,3 +52,29 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service',
                    id_part='name')
+
+    for item in ['list', 'add', 'remove']:
+        with self.argument_context('attestation signer {}'.format(item)) as c:
+            c.extra('resource_group_name', resource_group_name_type, required=False)
+            c.extra('attestation_name', attestation_name_type, required=False)
+            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
+                       help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
+                            'You can ignore --name and --resource-group if you specified the URL.')
+            if item in ['add', 'remove']:
+                c.argument('policy_certificate_to_{}'.format(item), options_list=['--signer'],
+                           help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
+                                '"aas-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
+                                'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
+                                'certificates'.format(item))
+
+    for item in ['set', 'reset', 'show']:
+        with self.argument_context('attestation policy {}'.format(item)) as c:
+            c.extra('resource_group_name', resource_group_name_type, required=False)
+            c.extra('attestation_name', attestation_name_type, required=False)
+            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
+                       help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
+                            'You can ignore --name and --resource-group if you specified the URL.')
+            c.argument('tee', arg_type=get_enum_type(TeeKind))
+
+    with self.argument_context('attestation policy set') as c:
+        c.argument('new_attestation_policy', options_list=['--new-attestation-policy', '-p'])
