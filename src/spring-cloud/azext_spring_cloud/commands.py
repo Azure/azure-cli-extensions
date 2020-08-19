@@ -77,7 +77,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud app binding', client_factory=cf_bindings) as g:
         g.custom_command('list', 'binding_list')
-        g.custom_command('show', 'binding_get')
+        g.custom_show_command('show', 'binding_get')
         g.custom_command('cosmos add', 'binding_cosmos_add')
         g.custom_command('cosmos update', 'binding_cosmos_update')
         g.custom_command('mysql add', 'binding_mysql_add')

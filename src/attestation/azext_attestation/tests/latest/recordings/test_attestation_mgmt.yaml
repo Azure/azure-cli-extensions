@@ -1,0 +1,286 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "tags": {"aKey": "aValue", "anotherKey": "anotherValue"},
+      "properties": {"policySigningCertificates": {"keys": [{"kty": "RSA", "x5c":
+      ["MIIEgDCCBCegAwIBAgIVAJSNWH+S7TzUL/e7UNpLHH2IVoICMAoGCCqGSM49BAMCMHExIzAhBgNVBAMMGkludGVsIFNHWCBQQ0sgUHJvY2Vzc29yIENBMRowGAYDVQQKDBFJbnRlbCBDb3Jwb3JhdGlvbjEUMBIGA1UEBwwLU2FudGEgQ2xhcmExCzAJBgNVBAgMAkNBMQswCQYDVQQGEwJVUzAeFw0xOTAxMDgyMjUwMDlaFw0yNjAxMDgyMjUwMDlaMHAxIjAgBgNVBAMMGUludGVsIFNHWCBQQ0sgQ2VydGlmaWNhdGUxGjAYBgNVBAoMEUludGVsIENvcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJBgNVBAYTAlVTMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEJyTADcSZqI5q/J2L4w7KLAKmKygcN3EUQNOCjTrGKm+l7lY4v+7Nk2V9Ni7jBulSvq/DVaF1+GaD2Wa1iFGIkaOCApswggKXMB8GA1UdIwQYMBaAFNDoqtp11/kuSReYPHsUZdDV8llNMF8GA1UdHwRYMFYwVKBSoFCGTmh0dHBzOi8vYXBpLnRydXN0ZWRzZXJ2aWNlcy5pbnRlbC5jb20vc2d4L2NlcnRpZmljYXRpb24vdjEvcGNrY3JsP2NhPXByb2Nlc3NvcjAdBgNVHQ4EFgQU8rUw3kBsLXvFpXD8XO7VE9dCBfMwDgYDVR0PAQH/BAQDAgbAMAwGA1UdEwEB/wQCMAAwggHUBgkqhkiG+E0BDQEEggHFMIIBwTAeBgoqhkiG+E0BDQEBBBBDEqPl/7XCXw04NRlmTlzbMIIBZAYKKoZIhvhNAQ0BAjCCAVQwEAYLKoZIhvhNAQ0BAgECAQUwEAYLKoZIhvhNAQ0BAgICAQUwEAYLKoZIhvhNAQ0BAgMCAQIwEAYLKoZIhvhNAQ0BAgQCAQQwEAYLKoZIhvhNAQ0BAgUCAQEwEQYLKoZIhvhNAQ0BAgYCAgCAMBAGCyqGSIb4TQENAQIHAgEBMBAGCyqGSIb4TQENAQIIAgEAMBAGCyqGSIb4TQENAQIJAgEAMBAGCyqGSIb4TQENAQIKAgEAMBAGCyqGSIb4TQENAQILAgEAMBAGCyqGSIb4TQENAQIMAgEAMBAGCyqGSIb4TQENAQINAgEAMBAGCyqGSIb4TQENAQIOAgEAMBAGCyqGSIb4TQENAQIPAgEAMBAGCyqGSIb4TQENAQIQAgEAMBAGCyqGSIb4TQENAQIRAgEHMB8GCyqGSIb4TQENAQISBBAFBQIEAYABAAAAAAAAAAAAMBAGCiqGSIb4TQENAQMEAgAAMBQGCiqGSIb4TQENAQQEBgCQbqEAADAPBgoqhkiG+E0BDQEFCgEAMAoGCCqGSM49BAMCA0cAMEQCICTDAJ/R69OXbv0S8HPBVsZMAJ5y8gmaBnxn4RRPqyEmAiBqOPODjj2R+iRD7PSVT9mo/XK6V4nS8YLejjeeDFovZw=="]}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1711'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --tags --certs-input-path
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002","name":"clitestatt000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestatt000002.eus2.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '514'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://clitestatt000002.eus2.attest.azure.net/
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002","name":"clitestatt000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestatt000002.eus2.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '514'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002","name":"clitestatt000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestatt000002.eus2.attest.azure.net"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt","name":"bimatt","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://bimatt.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt2","name":"bimatt2","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","bKey":"bValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://bimatt2.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt3","name":"bimatt3","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://bimatt3.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002","name":"clitestatt000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":{"aKey":"aValue","anotherKey":"anotherValue"},"properties":{"trustModel":"Isolated","status":"Ready","attestUri":"https://clitestatt000002.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_policyxq6idijnpopnlvqpvg6rulju4vtepuynhi25p5snafaatndefb4lvdwd/providers/Microsoft.Attestation/attestationProviders/clitestattpolicyyesetr3d","name":"clitestattpolicyyesetr3d","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattpolicyyesetr3d.eus2.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signerwvvirk2z4ioscpzz7jotcho4k74bjmd4y2laz3h2ipnlf3yntm7dfwox/providers/Microsoft.Attestation/attestationProviders/clitestattsignerxak7yvah","name":"clitestattsignerxak7yvah","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattsignerxak7yvah.eus2.attest.azure.net"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2542'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders/clitestatt000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 17 Aug 2020 07:28:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att000001/providers/Microsoft.Attestation/attestationProviders?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
