@@ -10,6 +10,7 @@ import requests
 
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.util import custom
 from azure.cli.core import telemetry
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
@@ -20,6 +21,7 @@ def validate_location(cmd, location):
     rp_locations = []
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
+    #print(providerDetails)
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
@@ -48,7 +50,9 @@ def get_chart_path(registry_path, kube_config, kube_context):
 
 
 def pull_helm_chart(registry_path, kube_config, kube_context):
-    cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path, "--kubeconfig", kube_config]
+    cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path]
+    if kube_config:
+        cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_chart_pull.extend(["--kube-context", kube_context])
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
@@ -61,7 +65,9 @@ def pull_helm_chart(registry_path, kube_config, kube_context):
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context):
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
-    cmd_helm_chart_export = ["helm", "chart", "export", registry_path, "--destination", chart_export_path, "--kubeconfig", kube_config]
+    cmd_helm_chart_export = ["helm", "chart", "export", registry_path, "--destination", chart_export_path]
+    if kube_config:
+        cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_chart_export.extend(["--kube-context", kube_context])
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
@@ -75,7 +81,9 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 def add_helm_repo(kube_config, kube_context):
     repo_name = os.getenv('HELMREPONAME')
     repo_url = os.getenv('HELMREPOURL')
-    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url, "--kubeconfig", kube_config]
+    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url]
+    if kube_config:
+        cmd_helm_repo.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_repo.extend(["--kube-context", kube_context])
     response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
@@ -86,24 +94,11 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(profile, location):
-    cred, _, _ = profile.get_login_credentials(
-        resource='https://management.core.windows.net/')
-    token = cred._token_retriever()[2].get('accessToken')  # pylint: disable=protected-access
-
+def get_helm_registry(cmd, location):
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
-    query_parameters = {}
-    query_parameters['releaseTrain'] = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-    header_parameters = {}
-    header_parameters['Authorization'] = "Bearer {}".format(str(token))
     try:
-        response = requests.post(get_chart_location_url, params=query_parameters, headers=header_parameters)
+        return custom.rest_call(cmd, get_chart_location_url, method='post', resource='https://management.core.windows.net/').get('repositoryPath')
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
         raise CLIError("Error while fetching helm chart registry path: " + str(e))
-    if response.status_code == 200:
-        return response.json().get('repositoryPath')
-    telemetry.set_exception(exception=str(response.json()), fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
-                            summary='Error while fetching helm chart registry path')
-    raise CLIError("Error while fetching helm chart registry path: {}".format(str(response.json())))

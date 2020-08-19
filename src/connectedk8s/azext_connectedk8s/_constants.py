@@ -7,6 +7,7 @@
 Invalid_Location_Fault_Type = 'location-validation-error'
 Load_Kubeconfig_Fault_Type = 'kubeconfig-load-error'
 Read_ConfigMap_Fault_Type = 'configmap-read-error'
+Get_ConnectedCluster_Fault_Type = 'connected-cluster-fetch-error'
 Create_ConnectedCluster_Fault_Type = 'connected-cluster-create-error'
 Delete_ConnectedCluster_Fault_Type = 'connected-cluster-delete-error'
 Bad_DeleteRequest_Fault_Type = 'bad-delete-request-error'
