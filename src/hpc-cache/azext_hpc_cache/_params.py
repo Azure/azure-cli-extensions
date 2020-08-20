@@ -27,11 +27,15 @@ storage_account_type = CLIArgumentType(options_list=['--storage-account'],
                                        help='Resource ID or Name of target storage account.',
                                        validator=validate_storage_account_name_or_id)
 
+cache_name_type = CLIArgumentType(help='Name of Cache.')
+
+storage_target_type = CLIArgumentType(help='Name of the Storage Target.')
+
 
 def load_arguments(self, _):
 
     with self.argument_context('hpc-cache create') as c:
-        c.argument('name', help='Name of Cache.', required=True)
+        c.argument('name', cache_name_type, required=True)
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True)
         c.argument('cache_size_gb', help='The size of this Cache, in GB.', required=True)
@@ -39,40 +43,23 @@ def load_arguments(self, _):
         c.argument('sku_name', help='SKU name for this Cache.', required=True)
 
     with self.argument_context('hpc-cache update') as c:
-        c.argument('name', help='Name of Cache.')
+        c.argument('name', cache_name_type)
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), deprecate_info=c.deprecate(hide=True))
         c.argument('cache_size_gb', help='The size of this Cache, in GB.', deprecate_info=c.deprecate(hide=True))
         c.argument('subnet', help='Subnet used for the Cache.', deprecate_info=c.deprecate(hide=True))
         c.argument('sku_name', help='SKU name for this Cache.', deprecate_info=c.deprecate(hide=True))
 
-    with self.argument_context('hpc-cache delete') as c:
-        c.argument('name', help='Name of Cache.')
-
-    with self.argument_context('hpc-cache show') as c:
-        c.argument('name', help='Name of Cache.')
+    for item in ['delete', 'show', 'flush', 'start', 'stop', 'upgrade-firmware']:
+        with self.argument_context('hpc-cache {}'.format(item)) as c:
+            c.argument('name', cache_name_type)
 
     with self.argument_context('hpc-cache wait') as c:
-        c.argument('cache_name', options_list=['--name', '-n'], help='Name of Cache.', required=True)
-
-    with self.argument_context('hpc-cache list') as c:
-        c.argument('resource_group_name', resource_group_name_type, required=False)
-
-    with self.argument_context('hpc-cache flush') as c:
-        c.argument('name', help='Name of Cache.')
-
-    with self.argument_context('hpc-cache start') as c:
-        c.argument('name', help='Name of Cache.')
-
-    with self.argument_context('hpc-cache stop') as c:
-        c.argument('name', help='Name of Cache.')
-
-    with self.argument_context('hpc-cache upgrade-firmware') as c:
-        c.argument('name', help='Name of Cache.')
+        c.argument('cache_name', cache_name_type, options_list=['--name', '-n'], required=True)
 
     with self.argument_context('hpc-cache blob-storage-target add') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
         c.argument('virtual_namespace_path', options_list=['--virtual-namespace-path', '-v'], required=True,
                    help='Path to create for this storage target in the client-facing virtual filesystem.')
         c.extra('storage_account', storage_account_type, required=True)
@@ -81,8 +68,8 @@ def load_arguments(self, _):
         c.ignore('clfs_target')
 
     with self.argument_context('hpc-cache blob-storage-target update') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
         c.argument('virtual_namespace_path', options_list=['--virtual-namespace-path', '-v'],
                    help='Path to create for this storage target in the client-facing virtual filesystem.')
         c.extra('storage_account', storage_account_type)
@@ -91,19 +78,19 @@ def load_arguments(self, _):
         c.ignore('clfs_target')
 
     with self.argument_context('hpc-cache storage-target remove') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
 
     with self.argument_context('hpc-cache storage-target show') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
 
     with self.argument_context('hpc-cache storage-target list') as c:
-        c.argument('cache_name', help='Name of Cache.')
+        c.argument('cache_name', cache_name_type)
 
     with self.argument_context('hpc-cache nfs-storage-target add') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
 
         c.argument('junctions', junction_type, required=True)
         c.argument('nfs3_target', help='IP address or host name of an NFSv3 host (e.g., 10.0.44.44).', required=True)
@@ -111,8 +98,8 @@ def load_arguments(self, _):
                    required=True)
 
     with self.argument_context('hpc-cache nfs-storage-target update') as c:
-        c.argument('cache_name', help='Name of Cache.')
-        c.argument('name', help='Name of the Storage Target.')
+        c.argument('cache_name', cache_name_type)
+        c.argument('name', storage_target_type)
         c.argument('junctions', junction_type)
         c.argument('nfs3_target', help='IP address or host name of an NFSv3 host (e.g., 10.0.44.44).')
         c.argument('nfs3_usage_model', help='Identifies the primary usage model to be used for this Storage Target.')

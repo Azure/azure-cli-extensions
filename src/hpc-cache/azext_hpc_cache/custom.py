@@ -66,7 +66,7 @@ def get_hpc_cache(client,
 
 
 def list_hpc_cache(client,
-                   resource_group_name):
+                   resource_group_name=None):
     if resource_group_name is None:
         return client.list()
     return client.list_by_resource_group(resource_group_name=resource_group_name)
