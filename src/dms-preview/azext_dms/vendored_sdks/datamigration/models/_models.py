@@ -4065,6 +4065,8 @@ class MigrateMySqlAzureDbForMySqlSyncDatabaseInput(Model):
     :param target_setting: Target settings to tune target endpoint migration
      behavior
     :type target_setting: dict[str, str]
+    :param table_map: Mapping of source to target tables
+    :type table_map: dict[str, str]
     """
 
     _attribute_map = {
@@ -4073,6 +4075,7 @@ class MigrateMySqlAzureDbForMySqlSyncDatabaseInput(Model):
         'migration_setting': {'key': 'migrationSetting', 'type': '{str}'},
         'source_setting': {'key': 'sourceSetting', 'type': '{str}'},
         'target_setting': {'key': 'targetSetting', 'type': '{str}'},
+        'table_map': {'key': 'tableMap', 'type': '{str}'},
     }
 
     def __init__(self, **kwargs):
@@ -4082,6 +4085,7 @@ class MigrateMySqlAzureDbForMySqlSyncDatabaseInput(Model):
         self.migration_setting = kwargs.get('migration_setting', None)
         self.source_setting = kwargs.get('source_setting', None)
         self.target_setting = kwargs.get('target_setting', None)
+        self.table_map = kwargs.get('table_map', None)
 
 
 class MigrateMySqlAzureDbForMySqlSyncTaskInput(Model):
@@ -5102,6 +5106,9 @@ class MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput(Model):
     :param target_setting: Target settings to tune target endpoint migration
      behavior
     :type target_setting: dict[str, str]
+    :param selected_tables: Tables selected for migration
+    :type selected_tables:
+     list[~azure.mgmt.datamigration.models.MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput]
     """
 
     _attribute_map = {
@@ -5110,6 +5117,7 @@ class MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput(Model):
         'migration_setting': {'key': 'migrationSetting', 'type': '{str}'},
         'source_setting': {'key': 'sourceSetting', 'type': '{str}'},
         'target_setting': {'key': 'targetSetting', 'type': '{str}'},
+        'selected_tables': {'key': 'selectedTables', 'type': '[MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput]'},
     }
 
     def __init__(self, **kwargs):
@@ -5119,6 +5127,23 @@ class MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput(Model):
         self.migration_setting = kwargs.get('migration_setting', None)
         self.source_setting = kwargs.get('source_setting', None)
         self.target_setting = kwargs.get('target_setting', None)
+        self.selected_tables = kwargs.get('selected_tables', None)
+
+
+class MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput(Model):
+    """Selected tables for the migration.
+
+    :param name: Name of the table to migrate
+    :type name: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
 
 
 class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput(Model):
