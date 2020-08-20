@@ -10,18 +10,51 @@
 
 from azure.cli.core.commands import CliCommandType
 
+from ._validators import validate_attestation_name
+
 
 def load_command_table(self, _):
+    from ._client_factory import cf_attestation_provider, cf_policy_certificates, cf_policy
 
-    from azext_attestation.generated._client_factory import cf_attestation_provider
-    attestation_attestation_provider = CliCommandType(
-        operations_tmpl='azext_attestation.vendored_sdks.azure_mgmt_attestation.operations._attestation_provider_opera'
-        'tions#AttestationProviderOperations.{}',
+    attestation_provider_mgmt_tmpl = 'azext_attestation.vendored_sdks.azure_mgmt_attestation.operations.' \
+                                     '_attestation_provider_operations#AttestationProviderOperations.{}'
+    attestation_provider_mgmt_sdk = CliCommandType(
+        operations_tmpl=attestation_provider_mgmt_tmpl,
         client_factory=cf_attestation_provider)
-    with self.command_group('attestation', attestation_attestation_provider,
-                            client_factory=cf_attestation_provider, is_experimental=True) as g:
+
+    policy_certificates_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
+                                    '_policy_certificates_operations#PolicyCertificatesOperations.{}'
+    policy_certificates_data_sdk = CliCommandType(
+        operations_tmpl=policy_certificates_data_tmpl,
+        client_factory=cf_policy_certificates)
+
+    policy_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
+                       '_policy_operations#PolicyOperations.{}'
+    policy_data_sdk = CliCommandType(
+        operations_tmpl=policy_data_tmpl,
+        client_factory=cf_policy)
+
+    with self.command_group('attestation', attestation_provider_mgmt_sdk, client_factory=cf_attestation_provider,
+                            is_experimental=True) as g:
         g.custom_command('list', 'attestation_attestation_provider_list')
         g.custom_show_command('show', 'attestation_attestation_provider_show')
         g.custom_command('create', 'attestation_attestation_provider_create')
-        g.custom_command(
-            'delete', 'attestation_attestation_provider_delete', confirmation=True)
+        g.custom_command('delete', 'attestation_attestation_provider_delete', confirmation=True)
+
+    with self.command_group('attestation signer', policy_certificates_data_sdk, client_factory=cf_policy_certificates,
+                            is_experimental=True) as g:
+        g.command('add', 'add', validator=validate_attestation_name,
+                  doc_string_source=policy_certificates_data_tmpl.format('add'))
+        g.command('remove', 'remove', validator=validate_attestation_name,
+                  doc_string_source=policy_certificates_data_tmpl.format('remove'))
+        g.custom_command('list', 'list_signers', validator=validate_attestation_name,
+                         doc_string_source=policy_certificates_data_tmpl.format('get'))
+
+    with self.command_group('attestation policy', policy_data_sdk, client_factory=cf_policy,
+                            is_experimental=True) as g:
+        g.command('set', 'set', validator=validate_attestation_name,
+                  doc_string_source=policy_data_tmpl.format('set'))
+        g.command('reset', 'reset', validator=validate_attestation_name,
+                  doc_string_source=policy_data_tmpl.format('reset'))
+        g.custom_command('show', 'get_policy', validator=validate_attestation_name,
+                         doc_string_source=policy_data_tmpl.format('get'))

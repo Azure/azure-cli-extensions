@@ -1954,6 +1954,51 @@
                 "sha256Digest": "4ed371e2e02a31133bec6d416dd98c0de3e1ffbf56089e034abc36609c9dfa97"
             }
         ],
+        "attestation": [
+            {
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/attestation-0.1.0-py3-none-any.whl",
+                "filename": "attestation-0.1.0-py3-none-any.whl",
+                "metadata": {
+                    "azext.isExperimental": true,
+                    "azext.minCliCoreVersion": "2.3.1",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/attestation"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "attestation",
+                    "summary": "Microsoft Azure Command-Line Tools AttestationManagementClient Extension",
+                    "version": "0.1.0"
+                },
+                "sha256Digest": "1d4e9b832a3f50b33428d565478a2e655c81d49277c07dc909f1485b62ba5372"
+            }
+        ],
         "azure-batch-cli-extensions": [
             {
                 "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.3/azure_batch_cli_extensions-2.5.3-py2.py3-none-any.whl",
@@ -2290,8 +2335,8 @@
         ],
         "azure-cli-ml": [
             {
-                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.10.0-py3-none-any.whl",
-                "filename": "azure_cli_ml-1.10.0-py3-none-any.whl",
+                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.12.0-py3-none-any.whl",
+                "filename": "azure_cli_ml-1.12.0-py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.3.1",
                     "classifiers": [
@@ -2318,7 +2363,7 @@
                                 "license": "LICENSE.txt"
                             },
                             "project_urls": {
-                                "Home": "https://docs.microsoft.com/azure/machine-learning/service/"
+                                "Home": "https://docs.microsoft.com/python/api/overview/azure/ml/?view=azure-ml-py"
                             }
                         }
                     },
@@ -2332,7 +2377,7 @@
                         {
                             "requires": [
                                 "adal (>=1.2.1)",
-                                "azureml-cli-common (~=1.10.0)",
+                                "azureml-cli-common (~=1.12.0)",
                                 "docker (>=3.7.2)",
                                 "msrest (>=0.6.6)",
                                 "pyyaml (>=5.1.0)",
@@ -2351,9 +2396,9 @@
                             ]
                         }
                     ],
-                    "version": "1.10.0"
+                    "version": "1.12.0"
                 },
-                "sha256Digest": "e0b5045367de3d6e61749cc7f972c5b682342af17dfacc5890e7e7ee00e87a35"
+                "sha256Digest": "51bb9bed05af974494df27cccebea7382b6c37e5b12e8edc5ff7134e58efc143"
             },
             {
                 "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.5.0-py2.py3-none-any.whl",
@@ -2947,6 +2992,59 @@
             }
         ],
         "azure-iot": [
+            {
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.9.8/azure_iot-0.9.8-py2.py3-none-any.whl",
+                "filename": "azure_iot-0.9.8-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.3.1",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "iotupx@microsoft.com",
+                                    "name": "Microsoft",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/azure/azure-iot-cli-extension"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-iot",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "jsonschema (==3.0.2)",
+                                "paho-mqtt (==1.5.0)",
+                                "setuptools"
+                            ]
+                        }
+                    ],
+                    "summary": "The Azure IoT extension for Azure CLI.",
+                    "version": "0.9.8"
+                },
+                "sha256Digest": "d3f576c0a07459d252e31b81bca37f21d8ec329958e4a0ff0424b15696308908"
+            },
             {
                 "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.9.7/azure_iot-0.9.7-py2.py3-none-any.whl",
                 "filename": "azure_iot-0.9.7-py2.py3-none-any.whl",
@@ -7894,6 +7992,51 @@
                     "version": "0.5.0"
                 },
                 "sha256Digest": "b2a36656b073f9cf588755508757fcd2cd7e0f8d573b7e43fc5fa3adb315a063"
+            },
+            {
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/spring_cloud-0.5.1-py2.py3-none-any.whl",
+                "filename": "spring_cloud-0.5.1-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.67",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "spring-cloud",
+                    "summary": "Microsoft Azure Command-Line Tools spring-cloud Extension",
+                    "version": "0.5.1"
+                },
+                "sha256Digest": "79fd3b7b6928ea53b63a040412420398e138097e960a3afdfa76da051f140f19"
             }
         ],
         "storage-or-preview": [

@@ -105,7 +105,7 @@ def load_command_table(self, _):
     with self.command_group('network front-door frontend-endpoint', frontdoor_sdk) as g:
         g.custom_command('create', 'create_fd_frontend_endpoints')
         g.custom_command('list', 'list_fd_frontend_endpoints')
-        g.custom_command('show', 'get_fd_frontend_endpoints')
+        g.custom_show_command('show', 'get_fd_frontend_endpoints')
     #   g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
         g.custom_command('disable-https', 'configure_fd_frontend_endpoint_disable_https')
         g.custom_command('enable-https', 'configure_fd_frontend_endpoint_enable_https')
@@ -168,7 +168,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_wp_custom_rule')
         g.custom_command('delete', 'delete_wp_custom_rule')
         g.custom_command('list', 'list_wp_custom_rules')
-        g.custom_command('show', 'show_wp_custom_rule')
+        g.custom_show_command('show', 'show_wp_custom_rule')
 
     with self.command_group('network front-door waf-policy rule match-condition', waf_policy_sdk, supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models') as g:
         g.custom_command('add', 'add_custom_rule_match_condition')
