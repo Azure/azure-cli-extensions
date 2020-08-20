@@ -99,5 +99,5 @@ def load_command_table(self, _):
         g.custom_command('update', 'domain_update')
         g.custom_command('unbind', 'domain_unbind')
 
-    with self.command_group('spring-cloud', is_preview=True):
+    with self.command_group('spring-cloud'):
         pass
