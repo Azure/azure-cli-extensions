@@ -17,7 +17,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication',
                        help='The login username of the administrator.')
             c.argument('administrator_login_password', options_list=['--admin-password', '-p'],
-                       arg_group='Authentication', help='The login password of the administrator.')
+                       arg_group='Authentication',
+                       help='The login password of the administrator. Minimum 8 characters and maximum 128 characters. '
+                       'Password must contain characters from three of the following categories: English uppercase '
+                       'letters, English lowercase letters, numbers, and non-alphanumeric characters.'
+                       'Your password cannot contain all or part of the login name. Part of a login name is defined '
+                       'as three or more consecutive alphanumeric characters.')
             c.extra('generate_password', help='Generate a password.', arg_group='Authentication')
             c.argument('database_name', options_list=['--database-name', '-d'],
                        help='The name of a database to initialize.')
@@ -33,8 +38,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                            help='The login password of the administrator.')
 
         with self.argument_context('{} down'.format(scope)) as c:
-            c.ignore('server_name')
-            c.ignore('resource_group_name')
+            c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.')
             c.argument('delete_group', action='store_true', help="Delete the resource group.")
 
     for scope in ('mysql', 'postgres'):
@@ -47,7 +51,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('storage_mb', options_list=['--storage-size'], type=int,
                        help='The max storage size of the server. Unit is megabytes.')
             c.argument('ssl_enforcement', arg_type=get_enum_type(SslEnforcementEnum),
-                       default=SslEnforcementEnum.disabled.value,
+                       default=SslEnforcementEnum.enabled.value,
                        help='Enable ssl enforcement or not when connect to server.')
 
     with self.argument_context('mysql up') as c:

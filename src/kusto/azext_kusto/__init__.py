@@ -20,8 +20,8 @@ class KustoManagementClientCommandsLoader(AzCommandsLoader):
         kusto_custom = CliCommandType(
             operations_tmpl='azext_kusto.custom#{}',
             client_factory=cf_kusto)
-        super(KustoManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                  custom_command_type=kusto_custom)
+        parent = super(KustoManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=kusto_custom)
 
     def load_command_table(self, args):
         from azext_kusto.generated.commands import load_command_table

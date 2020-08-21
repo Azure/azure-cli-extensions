@@ -8,7 +8,8 @@ from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from knack.util import CLIError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterAPIServerAccessProfile
+from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 
 
@@ -88,4 +89,50 @@ def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
     attached
     """
     storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
-    return storage_name_without_hcp
+    if len(storage_name_without_hcp) > CONST_CONTAINER_NAME_MAX_LENGTH:
+        storage_name_without_hcp = storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
+    return storage_name_without_hcp.rstrip('-')
+
+
+def _fuzzy_match(query, arr):
+    """
+    will compare all elements in @arr against the @query to see if they are similar
+
+    similar implies one is a substring of the other or the two words are 1 change apart
+
+    Ex. bird and bord are similar
+    Ex. bird and birdwaj are similar
+    Ex. bird and bead are not similar
+    """
+    def similar_word(a, b):
+        a_len = len(a)
+        b_len = len(b)
+        if a_len > b_len:  # @a should always be the shorter string
+            return similar_word(b, a)
+        if a in b:
+            return True
+        if b_len - a_len > 1:
+            return False
+        i = 0
+        j = 0
+        found_difference = False
+        while i < a_len:
+            if a[i] != b[j]:
+                if found_difference:
+                    return False
+                found_difference = True
+                if a_len == b_len:
+                    i += 1
+                j += 1
+            else:
+                i += 1
+                j += 1
+        return True
+
+    matches = []
+
+    for word in arr:
+        if similar_word(query, word):
+            matches.append(word)
+
+    return matches

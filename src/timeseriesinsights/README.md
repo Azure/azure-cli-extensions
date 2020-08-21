@@ -7,11 +7,31 @@ This package is for the 'timeseriesinsights' extension:
 az timeseriesinsights
 ```
 
+## Install
+
+```sh
+az extension add --name timeseriesinsights
+```
+
+## Uninstall
+
+```sh
+az extension remove --name timeseriesinsights
+```
+
+## Examples
+
+All commands are for Bash. For PowerShell, please set the variables like 
+
+```powershell
+$rg='rg1'
+```
+
 ### Create a resource group for the environments
 
 ```sh
 rg={resource_group_name}
-az group create -n $rg
+az group create --name $rg --location westus
 ```
 
 ### Create a standard environment

@@ -47,9 +47,7 @@ def load_command_table(self, _):
         g.custom_command('enable-addons', 'aks_enable_addons', supports_no_wait=True)
         g.custom_command('get-credentials', 'aks_get_credentials')
         g.custom_show_command('show', 'aks_show', table_transformer=aks_show_table_format)
-        g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True,
-                         confirmation='Kubernetes may be unavailable during cluster upgrades.\n' +
-                         'Are you sure you want to perform this operation?')
+        g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True)
         g.command('get-upgrades', 'get_upgrade_profile', table_transformer=aks_upgrades_table_format)
         g.custom_command('rotate-certs', 'aks_rotate_certs', supports_no_wait=True,
                          confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +

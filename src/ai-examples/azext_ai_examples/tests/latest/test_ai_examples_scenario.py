@@ -20,10 +20,12 @@ def create_valid_http_response():
     mock_response.status_code = 200
     data = [{
         'title': 'RunTestAutomation',
-        'snippet': 'az find'
+        'snippet': 'az find',
+        'source': 'crawler-example'
     }, {
         'title': 'az test',
-        'snippet': 'The title'
+        'snippet': 'The title',
+        'source': 'crawler-crafted'
     }]
     mock_response._content = json.dumps(data)
     return mock_response

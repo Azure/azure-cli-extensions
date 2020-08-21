@@ -32,10 +32,12 @@ try:
     from ._models_py3 import GitPatternRepository
     from ._models_py3 import LogFileUrlResponse
     from ._models_py3 import LogSpecification
+    from ._models_py3 import ManagedIdentityProperties
     from ._models_py3 import MetricDimension
     from ._models_py3 import MetricSpecification
     from ._models_py3 import NameAvailability
     from ._models_py3 import NameAvailabilityParameters
+    from ._models_py3 import NetworkProfile
     from ._models_py3 import OperationDetail
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationProperties
@@ -43,9 +45,17 @@ try:
     from ._models_py3 import ProxyResource
     from ._models_py3 import RegenerateTestKeyRequestPayload
     from ._models_py3 import Resource
+    from ._models_py3 import ResourceSku
+    from ._models_py3 import ResourceSkuCapabilities
+    from ._models_py3 import ResourceSkuLocationInfo
+    from ._models_py3 import ResourceSkuRestrictionInfo
+    from ._models_py3 import ResourceSkuRestrictions
+    from ._models_py3 import ResourceSkuZoneDetails
     from ._models_py3 import ResourceUploadDefinition
     from ._models_py3 import ServiceResource
     from ._models_py3 import ServiceSpecification
+    from ._models_py3 import Sku
+    from ._models_py3 import SkuCapacity
     from ._models_py3 import TemporaryDisk
     from ._models_py3 import TestKeys
     from ._models_py3 import TraceProperties
@@ -74,10 +84,12 @@ except (SyntaxError, ImportError):
     from ._models import GitPatternRepository
     from ._models import LogFileUrlResponse
     from ._models import LogSpecification
+    from ._models import ManagedIdentityProperties
     from ._models import MetricDimension
     from ._models import MetricSpecification
     from ._models import NameAvailability
     from ._models import NameAvailabilityParameters
+    from ._models import NetworkProfile
     from ._models import OperationDetail
     from ._models import OperationDisplay
     from ._models import OperationProperties
@@ -85,9 +97,17 @@ except (SyntaxError, ImportError):
     from ._models import ProxyResource
     from ._models import RegenerateTestKeyRequestPayload
     from ._models import Resource
+    from ._models import ResourceSku
+    from ._models import ResourceSkuCapabilities
+    from ._models import ResourceSkuLocationInfo
+    from ._models import ResourceSkuRestrictionInfo
+    from ._models import ResourceSkuRestrictions
+    from ._models import ResourceSkuZoneDetails
     from ._models import ResourceUploadDefinition
     from ._models import ServiceResource
     from ._models import ServiceSpecification
+    from ._models import Sku
+    from ._models import SkuCapacity
     from ._models import TemporaryDisk
     from ._models import TestKeys
     from ._models import TraceProperties
@@ -99,17 +119,22 @@ from ._paged_models import CertificateResourcePaged
 from ._paged_models import CustomDomainResourcePaged
 from ._paged_models import DeploymentResourcePaged
 from ._paged_models import OperationDetailPaged
+from ._paged_models import ResourceSkuPaged
 from ._paged_models import ServiceResourcePaged
 from ._app_platform_management_client_enums import (
     ProvisioningState,
     ConfigServerState,
     TraceProxyState,
+    ManagedIdentityType,
     TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
     RuntimeVersion,
     DeploymentResourceProvisioningState,
     DeploymentResourceStatus,
+    SkuScaleType,
+    ResourceSkuRestrictionsType,
+    ResourceSkuRestrictionsReasonCode,
 )
 
 __all__ = [
@@ -135,10 +160,12 @@ __all__ = [
     'GitPatternRepository',
     'LogFileUrlResponse',
     'LogSpecification',
+    'ManagedIdentityProperties',
     'MetricDimension',
     'MetricSpecification',
     'NameAvailability',
     'NameAvailabilityParameters',
+    'NetworkProfile',
     'OperationDetail',
     'OperationDisplay',
     'OperationProperties',
@@ -146,9 +173,17 @@ __all__ = [
     'ProxyResource',
     'RegenerateTestKeyRequestPayload',
     'Resource',
+    'ResourceSku',
+    'ResourceSkuCapabilities',
+    'ResourceSkuLocationInfo',
+    'ResourceSkuRestrictionInfo',
+    'ResourceSkuRestrictions',
+    'ResourceSkuZoneDetails',
     'ResourceUploadDefinition',
     'ServiceResource',
     'ServiceSpecification',
+    'Sku',
+    'SkuCapacity',
     'TemporaryDisk',
     'TestKeys',
     'TraceProperties',
@@ -161,13 +196,18 @@ __all__ = [
     'CustomDomainResourcePaged',
     'DeploymentResourcePaged',
     'OperationDetailPaged',
+    'ResourceSkuPaged',
     'ProvisioningState',
     'ConfigServerState',
     'TraceProxyState',
+    'ManagedIdentityType',
     'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',
     'RuntimeVersion',
     'DeploymentResourceProvisioningState',
     'DeploymentResourceStatus',
+    'SkuScaleType',
+    'ResourceSkuRestrictionsType',
+    'ResourceSkuRestrictionsReasonCode',
 ]

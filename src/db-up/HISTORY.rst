@@ -3,6 +3,20 @@
  Release History
 ===============
 
+0.2.0 (2020-7-29)
+++++++++++++++++
+* `az postgres down`: Add more arguments to fix issue #942
+
+0.1.15 (2020-7-20)
+++++++++++++++++
+* `az mysql up`: Refine error message for error PasswordNotComplex
+
+0.1.14 (2020-5-9)
+++++++++++++++++
+* Bump Cython, psycopg2-binary
+* `az postgres/mysql up`: Enable SSL enforcement by default.
+* Fix bug in validator when using a different resource group
+
 0.1.10 (2019-3-22)
 +++++++++++++++++
 * `az sql up/down/show-connection-string`.

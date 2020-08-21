@@ -35,7 +35,7 @@ class StorageCacheScenarioTest(ScenarioTest):
                  '--location "eastus" '
                  '--cache-size-gb "3072" '
                  '--subnet "{}/subnets/default" '
-                 '--sku-name "Standard_2G"'.format(resource_group, cache_name, vnet_id, resource_group, vnet_name),
+                 '--sku-name "Standard_2G"'.format(resource_group, cache_name, vnet_id),
                  checks=[
                      self.check('name', cache_name)
                  ])

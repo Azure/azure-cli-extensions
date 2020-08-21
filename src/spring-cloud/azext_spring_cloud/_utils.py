@@ -193,3 +193,21 @@ def _get_rg_location(ctx, resource_group_name, subscription_id=None):
     # Just do the get, we don't need the result, it will error out if the group doesn't exist.
     rg = groups.get(resource_group_name)
     return rg.location
+
+
+def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
+    tier = tier.upper()
+    if tier == 'BASIC':
+        return 'B0'
+    if tier == 'STANDARD':
+        return 'S0'
+    raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
+
+
+def _get_persistent_disk_size(tier):  # pylint: disable=too-many-return-statements
+    tier = tier.upper()
+    if tier == 'BASIC':
+        return 1
+    if tier == 'STANDARD':
+        return 50
+    return 50

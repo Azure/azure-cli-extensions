@@ -70,6 +70,9 @@ helps['aks create'] = """
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -133,9 +136,9 @@ helps['aks create'] = """
                 http_application_routing  - configure ingress with automatic public DNS name creation.
                 monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
                                             If monitoring addon is enabled --no-wait argument will have no effect
-                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                virtual-node              - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
                 azure-policy              - enable Azure policy (PREVIEW).
-                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
+                ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -172,6 +175,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -211,7 +217,10 @@ helps['aks create'] = """
           short-summary: Enable VMSS node public IP.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
+          short-summary: (PREVIEW) Using managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
@@ -220,19 +229,16 @@ helps['aks create'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --appgw-name
           type: string
-          short-summary: Name of the application gateway to create/use in the node resource group
+          short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
         - name: --appgw-subnet-prefix
           type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-id
           type: string
-          short-summary: Resource Id of an existing Application Gateway to use with AGIC
+          short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
         - name: --appgw-subnet-id
           type: string
-          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-        - name: --appgw-shared
-          type: bool
-          short-summary: Use shared flag if application gateway will be shared
+          short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-watch-namespace
           type: string
           short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
@@ -265,6 +271,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
+        - name: Create a kubernetes cluster with managed AAD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -290,6 +298,9 @@ helps['aks upgrade'] = """
         - name: --control-plane-only
           type: bool
           short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade node image for agent pools.
 """
 
 helps['aks update'] = """
@@ -311,6 +322,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --uptime-sla
+          type: bool
+          short-summary: Enable a paid managed cluster service with a financially backed SLA.
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -349,6 +363,9 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+        - name: --enable-aad
+          type: bool
+          short-summary: Enable managed AAD feature for cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -383,6 +400,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges ""
       - name: Restrict apiserver traffic in a kubernetes cluster to agentpool nodes.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
+      - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+      - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 """
 
 helps['aks kollect'] = """
@@ -481,6 +502,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --ppg
+          type: string
+          short-summary: The ID of a PPG.
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
@@ -517,6 +541,9 @@ helps['aks nodepool add'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool scale'] = """
@@ -535,6 +562,12 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+        - name: --node-image-only
+          type: bool
+          short-summary: Only upgrade agent pool's node image.
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
 """
 
 helps['aks nodepool update'] = """
@@ -556,6 +589,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --max-surge
+          type: string
+          short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -583,7 +619,7 @@ long-summary: |-
         http_application_routing  - configure ingress with automatic public DNS name creation.
         monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
                                     If monitoring addon is enabled --no-wait argument will have no effect
-        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        virtual-node              - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy              - enable Azure policy (PREVIEW).
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
@@ -598,25 +634,25 @@ parameters:
     short-summary: The subnet name for the virtual node to use.
   - name: --appgw-name
     type: string
-    short-summary: Name of the application gateway to create/use in the node resource group
+    short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
   - name: --appgw-subnet-prefix
     type: string
-    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-id
     type: string
-    short-summary: Resource Id of an existing Application Gateway to use with AGIC
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
   - name: --appgw-subnet-id
     type: string
-    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
-  - name: --appgw-shared
-    type: bool
-    short-summary: Use shared flag if application gateway will be shared
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-watch-namespace
     type: string
-    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+  - name: Enable ingress-appgw addon with subnet prefix.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
     crafted: true
 """
 
