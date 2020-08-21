@@ -1,0 +1,474 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "tags": {"aKey": "aValue", "anotherKey": "anotherValue"},
+      "properties": {"lenses": {"0": {"order": 0, "parts": {"0": {"position": {"x":
+      6, "y": 2, "rowSpan": 2, "colSpan": 2}, "metadata": {"inputs": [], "type": "Extension/HubsExtension/PartType/ClockPart",
+      "settings": {}}}}}}, "metadata": {"model": {"timeRange": {"value": {"relative":
+      {"duration": 24, "timeUnit": 1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '466'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --input- --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '710'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=83f1c12d-bc20-4970-85d6-f2f21201065e; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-dashboard-session:
+      - 0:-1#2310549
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '710'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=364ac29d-a19d-4ef7-b9ae-d8ae7c54d3de; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '722'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=d2b94eb9-1c67-46fb-aadc-7cdcd6677c72; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":1,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}},"1":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/mydashboard","name":"mydashboard","type":"Microsoft.Portal/dashboards","location":"eastus"},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/testdashboard","name":"testdashboard","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
+        dashboard"}},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dashboards/providers/Microsoft.Portal/dashboards/testa","name":"testa","type":"Microsoft.Portal/dashboards","location":"eastus"},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yalin-rg/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","name":"7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
+        dashboard"}},{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3887'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=1780b2bd-c6cd-48e7-901c-bd978535696a; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"lenses": {"0": {"order": 0, "parts": {"0": {"position":
+      {"x": 6, "y": 2, "rowSpan": 2, "colSpan": 2}, "metadata": {"inputs": [], "type":
+      "Extension/HubsExtension/PartType/ClockPart", "settings": {}}}}}}, "metadata":
+      {"model": {"timeRange": {"value": {"relative": {"duration": 12, "timeUnit":
+      1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '386'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --input-path --name --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":6,"y":2,"rowSpan":2,"colSpan":2},"metadata":{"inputs":[],"type":"Extension/HubsExtension/PartType/ClockPart","settings":{}}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":12,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002","name":"cli_test_000002","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"aKey":"aValue","anotherKey":"anotherValue"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '710'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=b2d167fe-014c-4a1b-a700-dee719204b4b; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-dashboard-session:
+      - 0:-1#2310550
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --y
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/cli_test_000002?api-version=2019-01-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=7f645dd7-79f7-4ac8-81ef-dd59a2c9cc42; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-dashboard-session:
+      - 0:-1#2310551
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=3f42a1ee-b7e4-481d-a4bf-e1c935fea3d1; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "tags": {"hidden-title": "test dashboard"}, "properties":
+      {"lenses": {"0": {"order": 0, "parts": {"0": {"position": {"x": 0, "y": 0, "rowSpan":
+      4, "colSpan": 6}, "metadata": {"inputs": [{"name": "resourceType", "value":
+      "Microsoft.Resources/subscriptions/resourcegroups", "isOptional": true}, {"name":
+      "filter", "isOptional": true}, {"name": "scope", "isOptional": true}, {"name":
+      "kind", "isOptional": true}], "type": "Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},
+      "metadata": {"model": {"timeRange": {"value": {"relative": {"duration": 24,
+      "timeUnit": 1}}, "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - portal dashboard import
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '678'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --input-path --name --resource-group
+      User-Agent:
+      - AZURECLI/2.3.1 azsdk-python-core/1.4.0 Python/3.8.1 (Windows-10-10.0.18362-SP0)
+        azsdk-python-portal/unknown
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260?api-version=2019-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"lenses":{"0":{"order":0,"parts":{"0":{"position":{"x":0,"y":0,"rowSpan":4,"colSpan":6},"metadata":{"inputs":[{"name":"resourceType","value":"Microsoft.Resources/subscriptions/resourcegroups","isOptional":true},{"name":"filter","isOptional":true},{"name":"scope","isOptional":true},{"name":"kind","isOptional":true}],"type":"Extension/HubsExtension/PartType/BrowseResourceGroupPinnedPart"}}}}},"metadata":{"model":{"timeRange":{"value":{"relative":{"duration":24,"timeUnit":1}},"type":"MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_000001/providers/Microsoft.Portal/dashboards/7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","name":"7c0464ec-b1cd-4a98-a4a5-1ebe2d980260","type":"Microsoft.Portal/dashboards","location":"eastus","tags":{"hidden-title":"test
+        dashboard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '933'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Apr 2020 02:50:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - browserId=9a1cc8f4-5d86-4be9-a931-fcb526b59b17; domain=portal.azure.com; path=/;
+        secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-dashboard-session:
+      - 0:-1#2310552
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-version:
+      - 5.0.303.3324 (production_htfx#4e36611bb5.200415-0501) Signed
+      x-ua-compatible:
+      - IE=edge
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+version: 1

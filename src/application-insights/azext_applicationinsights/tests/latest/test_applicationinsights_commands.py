@@ -23,6 +23,11 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         assert len(query_guid['tables'][0]['rows']) == 37
         assert isinstance(query_guid['tables'][0]['rows'][0][1], (int, float, complex))
 
+    def test_query_execute_with_different_offset(self):
+        """Tests data plane query capabilities for Application Insights."""
+        self.cmd('az monitor app-insights query --apps db709f0e-cb4e-4f43-ba80-05e10d6a4447 --analytics-query "availabilityResults | distinct name | order by name asc" --offset P3DT12H')
+        self.cmd('az monitor app-insights query --apps db709f0e-cb4e-4f43-ba80-05e10d6a4447 --analytics-query "availabilityResults | distinct name | order by name asc" --offset 3d12h1m')
+
     def test_metrics_show(self):
         self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum --start-time 2019-03-06 00:31 +00:00 --end-time 2019-03-06 01:31 +00:00', checks=[
             self.check('value."requests/duration".count', 0),

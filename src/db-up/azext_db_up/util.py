@@ -30,8 +30,17 @@ def create_random_resource_name(prefix='azure', length=15):
 def get_config_value(db_type, option, fallback='_fallback_none'):
     config_section = CONFIG_MAP[db_type]
     if fallback == '_fallback_none':
-        return DB_CONFIG.get(config_section, option)
-    return DB_CONFIG.get(config_section, option, fallback=fallback)
+        result = DB_CONFIG.get(config_section, option)
+    else:
+        result = DB_CONFIG.get(config_section, option, fallback=fallback)
+    if result:
+        return result
+    return None
+
+
+def remove_config_value(db_type, option):
+    config_section = CONFIG_MAP[db_type]
+    DB_CONFIG.remove_option(config_section, option)
 
 
 def set_config_value(db_type, option, value):

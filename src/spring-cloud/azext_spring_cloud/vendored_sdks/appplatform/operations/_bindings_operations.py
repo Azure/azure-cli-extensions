@@ -59,7 +59,8 @@ class BindingsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.BindingResource or
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -124,14 +125,15 @@ class BindingsOperations(object):
         :type binding_name: str
         :param properties: Properties of the Binding resource
         :type properties:
-         ~azure.mgmt.appplatform.models.BindingResourceProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.BindingResource or
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -263,14 +265,15 @@ class BindingsOperations(object):
         :type binding_name: str
         :param properties: Properties of the Binding resource
         :type properties:
-         ~azure.mgmt.appplatform.models.BindingResourceProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.BindingResource or
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -344,7 +347,7 @@ class BindingsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of BindingResource
         :rtype:
-         ~azure.mgmt.appplatform.models.BindingResourcePaged[~azure.mgmt.appplatform.models.BindingResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

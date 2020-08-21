@@ -2,9 +2,96 @@
 
 Release History
 ===============
+0.4.60
++++++
+* Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
+
+0.4.59
++++++
+* Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
+
+0.4.58
++++++
+* Added clearer error message for invalid addon names
+
+0.4.57
++++++
+* Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.
+
+0.4.56
++++++
+* Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
+
+0.4.55
++++++
+* Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization
+
+0.4.54
++++++
+* Support "--enable-aad" for "az aks update" to update an existing AAD-Integrated cluster to the new AKS-managed AAD experience
+
+0.4.53
++++++
+* Add --ppg for "az aks create" and "az aks nodepool add"
+
+0.4.52
++++++
+* Add --uptime-sla for az aks update
+
+0.4.51
++++++
+* Remove --appgw-shared flag from AGIC addon
+* Handle role assignments for AGIC addon post-cluster creation
+* Support --yes for "az aks upgrade"
+* Revert default VM SKU to Standard_DS2_v2
+
+0.4.50
++++++
+* Add "--max-surge" for az aks nodepool add/update/upgrade
+
+0.4.49
++++++
+* Fix break in get-versions since container service needs to stay on old api.
+
+0.4.48
++++++
+* Fix issues of storage account name for az aks kollect
+
+0.4.47
++++++
+* Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
+
+0.4.46
++++++
+* Fix issues for az aks kollect on private clusters
+
+0.4.45
++++++
+* Add "--aks-custom-headers" for "az aks nodepool add" and "az aks update"
+
+0.4.44
++++++
+* Fix issues with monitoring addon enabling with CLI versions 2.4.0+
+
+0.4.43
++++++
+* Add support for VMSS node public IP.
+
+0.4.38
++++++
+* Add support for AAD V2.
+
+0.4.37
++++++
+* Added slb outbound ip fix
+
+0.4.36
++++++
+* Added --uptime-sla for paid service
+
 0.4.35
 +++++
-* Adding --uptime-sla for paid service
+* Added support for creation time node labels
 
 0.4.34
 +++++

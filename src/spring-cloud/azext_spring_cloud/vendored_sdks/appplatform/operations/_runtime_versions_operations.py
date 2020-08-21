@@ -50,8 +50,9 @@ class RuntimeVersionsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: AvailableRuntimeVersions or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.AvailableRuntimeVersions or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.AvailableRuntimeVersions
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL

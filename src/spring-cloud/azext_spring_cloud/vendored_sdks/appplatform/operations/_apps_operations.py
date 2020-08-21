@@ -61,8 +61,8 @@ class AppsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: AppResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.AppResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -77,9 +77,9 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
         if sync_status is not None:
             query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -113,9 +113,7 @@ class AppsOperations(object):
 
 
     def _create_or_update_initial(
-            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, **operation_config):
-        app_resource = models.AppResource(properties=properties)
-
+            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
@@ -167,7 +165,7 @@ class AppsOperations(object):
         return deserialized
 
     def create_or_update(
-            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, polling=True, **operation_config):
         """Create a new App or update an exiting App.
 
         :param resource_group_name: The name of the resource group that
@@ -178,8 +176,9 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param properties: Properties of the App resource
-        :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+        :param app_resource: Parameters for the create or update operation
+        :type app_resource:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -188,16 +187,16 @@ class AppsOperations(object):
         :return: An instance of LROPoller that returns AppResource or
          ClientRawResponse<AppResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
-            properties=properties,
+            app_resource=app_resource,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -281,9 +280,7 @@ class AppsOperations(object):
 
 
     def _update_initial(
-            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, **operation_config):
-        app_resource = models.AppResource(properties=properties)
-
+            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -335,7 +332,7 @@ class AppsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, polling=True, **operation_config):
         """Operation to update an exiting App.
 
         :param resource_group_name: The name of the resource group that
@@ -346,8 +343,9 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param properties: Properties of the App resource
-        :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+        :param app_resource: Parameters for the update operation
+        :type app_resource:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -356,16 +354,16 @@ class AppsOperations(object):
         :return: An instance of LROPoller that returns AppResource or
          ClientRawResponse<AppResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
-            properties=properties,
+            app_resource=app_resource,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -406,7 +404,7 @@ class AppsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of AppResource
         :rtype:
-         ~azure.mgmt.appplatform.models.AppResourcePaged[~azure.mgmt.appplatform.models.AppResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -482,8 +480,9 @@ class AppsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ResourceUploadDefinition or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.ResourceUploadDefinition or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceUploadDefinition
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL

@@ -12,15 +12,21 @@
 from ._services_operations import ServicesOperations
 from ._apps_operations import AppsOperations
 from ._bindings_operations import BindingsOperations
+from ._certificates_operations import CertificatesOperations
+from ._custom_domains_operations import CustomDomainsOperations
 from ._deployments_operations import DeploymentsOperations
 from ._operations import Operations
 from ._runtime_versions_operations import RuntimeVersionsOperations
+from ._sku_operations import SkuOperations
 
 __all__ = [
     'ServicesOperations',
     'AppsOperations',
     'BindingsOperations',
+    'CertificatesOperations',
+    'CustomDomainsOperations',
     'DeploymentsOperations',
     'Operations',
     'RuntimeVersionsOperations',
+    'SkuOperations',
 ]
