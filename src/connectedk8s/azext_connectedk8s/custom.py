@@ -6,7 +6,6 @@
 import os
 import json
 import time
-import subprocess
 from subprocess import Popen, PIPE
 from base64 import b64encode
 
@@ -15,16 +14,16 @@ from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
+from msrestazure.azure_exceptions import CloudError
+from kubernetes import client as kube_client, config  # pylint: disable=import-error
+from Crypto.IO import PEM  # pylint: disable=import-error
+from Crypto.PublicKey import RSA  # pylint: disable=import-error
+from Crypto.Util import asn1  # pylint: disable=import-error
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
-from msrestazure.azure_exceptions import CloudError
-from kubernetes import client as kube_client, config, watch  # pylint: disable=import-error
-from Crypto.IO import PEM  # pylint: disable=import-error
-from Crypto.PublicKey import RSA  # pylint: disable=import-error
-from Crypto.Util import asn1  # pylint: disable=import-error
 
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
 
@@ -46,9 +45,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # Checking azure cloud
-    if cmd.cli_ctx.cloud.endpoints.active_directory != "https://login.microsoftonline.com":
+    # Checking cloud
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == "https://api-dogfood.resources.windows-int.net/":
         telemetry.set_user_fault()
+        telemetry.set_exception(exception='Dogfood cloud not supported.', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Dogfood cloud not supported.')
+        raise CLIError("Connect CLI is not supported for Dogfood environment. Please switch the cloud using 'az cloud set --name {cloudName}' and try again.")
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -113,6 +115,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             str_exception = str(e)
             if ("404" in str_exception or "401" in str_exception or "403" in str_exception):
                 telemetry.set_user_fault()
+                if "404" in str_exception:
+                    logger.warning("The helm release 'azure-arc' is present but the arc namespace/configmap is missing. Please run 'helm delete azure-arc' to cleanup the release before onboarding the cluster again.")
+                if "403" in str_exception:
+                    logger.warning("The user does not have priviledges on the kubernetes cluster to onboard to azure-arc")
             telemetry.set_exception(exception=e, fault_type=consts.Read_ConfigMap_Fault_Type,
                                     summary='Unable to read ConfigMap')
             raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
@@ -125,21 +131,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 try:
                     public_key = client.get(configmap_rg_name,
                                             configmap_cluster_name).agent_public_key_certificate
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-except
                     if 'Azure Error: AuthorizationFailed' in str(e):
                         telemetry.set_user_fault()
                     telemetry.set_exception(exception=e, fault_type=consts.Get_ConnectedCluster_Fault_Type,
                                             summary='Unable to fetch connected cluster resource')
                 cc = generate_request_payload(configuration, location, public_key, tags)
-                try:
-                    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
-                                       cluster_name=cluster_name, connected_cluster=cc)
-                except CloudError as ex:
-                    if 'Azure Error: AuthorizationFailed' in str(ex):
-                        telemetry.set_user_fault()
-                    telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
-                                            summary='Unable to create connected cluster resource')
-                    raise CLIError(ex)
+                create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
@@ -206,47 +204,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                 summary='Failed to export private key')
         raise CLIError("Failed to export private key." + str(e))
 
-    # Create connected cluster resource
+    # Generate request payload
     cc = generate_request_payload(configuration, location, public_key, tags)
-    try:
-        put_cc_response = sdk_no_wait(no_wait, client.create,
-                                      resource_group_name=resource_group_name,
-                                      cluster_name=cluster_name, connected_cluster=cc)
-    except CloudError as ex:
-        if 'Azure Error: AuthorizationFailed' in str(ex):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
-                                summary='Unable to create connected cluster resource')
-        raise CLIError(ex)
+
+    # Create connected cluster resource
+    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Install azure-arc agents
-    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
-                        "--set", "global.subscriptionId={}".format(subscription_id),
-                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
-                        "--set", "global.resourceGroupName={}".format(resource_group_name),
-                        "--set", "global.resourceName={}".format(cluster_name),
-                        "--set", "global.location={}".format(location),
-                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
-                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
-                        "--set", "systemDefaultValues.spnOnboarding=false",
-                        "--output", "json"]
-    if kube_config:
-        cmd_helm_install.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_install.extend(["--kube-context", kube_context])
-    if not no_wait:
-        cmd_helm_install.extend(["--wait"])
-    response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
-    _, error_helm_install = response_helm_install.communicate()
-    if response_helm_install.returncode != 0:
-        if 'forbidden' in error_helm_install.decode("ascii"):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
-                                summary='Unable to install helm release')
-        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+    helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
+                         kube_context, no_wait)
 
     return put_cc_response
 
@@ -258,7 +225,7 @@ def set_kube_config(kube_config):
             kube_config = kube_config[1:]
         if (kube_config.endswith("'") or kube_config.endswith('"')):
             kube_config = kube_config[:-1]
-        return kube_config       
+        return kube_config
     return None
 
 
@@ -308,8 +275,8 @@ def check_helm_install(kube_config, kube_context):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Check_HelmInstallation_Fault_Type,
                                 summary='Unable to verify helm installation')
-        raise CLIError("Helm is not installed or is not accessible to the connect cli. Could be a permission issue." +
-                       "Ensure that you have the latest version of Helm installed on your machine. " +
+        raise CLIError("Helm is not installed or the helm binary is not accessible to the connect cli. Could be a permission issue." +
+                       "Ensure that you have the latest version of Helm installed on your machine and run using admin priviledge. " +
                        "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     except Exception as e2:
         telemetry.set_user_fault()
@@ -357,7 +324,7 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
             return False
         if 'Azure Error: AuthorizationFailed' in str(ex):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=e, fault_type=consts.Get_ConnectedCluster_Fault_Type,
+        telemetry.set_exception(exception=ex, fault_type=consts.Get_ConnectedCluster_Fault_Type,
                                 summary='Unable to fetch connected cluster resource')
         raise CLIError("Unable to determine if the connected cluster resource exists. " + str(ex))
     return True
@@ -384,6 +351,8 @@ def get_server_version(configuration):
         str_exception = str(e)
         if ("401" in str_exception or "403" in str_exception):
             telemetry.set_user_fault()
+            if "403" in str_exception:
+                logger.warning("The user does not have priviledges on the kubernetes cluster to onboard to azure-arc")
         telemetry.set_exception(exception=e, fault_type=consts.Get_Kubernetes_Version_Fault_Type,
                                 summary='Unable to fetch kubernetes version')
         logger.warning("Unable to fetch kubernetes version: %s\n", e)
@@ -402,6 +371,8 @@ def get_kubernetes_distro(configuration):
         str_exception = str(e)
         if ("401" in str_exception or "403" in str_exception):
             telemetry.set_user_fault()
+            if "403" in str_exception:
+                logger.warning("The user does not have priviledges on the kubernetes cluster to onboard to azure-arc")
         telemetry.set_exception(exception=e, fault_type=consts.Get_Kubernetes_Distro_Fault_Type,
                                 summary='Unable to fetch kubernetes distribution')
         logger.warning("Exception while trying to fetch kubernetes distribution: %s\n", e)
@@ -444,6 +415,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     logger.warning("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     logger.warning("This operation might take a while ...\n")
 
+    # Checking cloud
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == "https://api-dogfood.resources.windows-int.net/":
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Dogfood cloud not supported.', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Dogfood cloud not supported.')
+        raise CLIError("Connect CLI is not supported for Dogfood environment. Please switch the cloud using 'az cloud set --name {cloudName}' and try again.")
+
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
@@ -482,9 +460,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         str_exception = str(e)
         if ("401" in str_exception or "403" in str_exception or "404" in str_exception):
             telemetry.set_user_fault()
+            if "404" in str_exception:
+                logger.warning("The helm release 'azure-arc' is present but the arc namespace/configmap is missing. Please run 'helm delete azure-arc' to cleanup the release before onboarding the cluster again.")
+            if "403" in str_exception:
+                logger.warning("The user does not have priviledges on the kubernetes cluster to onboard to azure-arc")
         telemetry.set_exception(exception=e, fault_type=consts.Read_ConfigMap_Fault_Type,
                                 summary='Unable to read ConfigMap')
-        raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: %s\n" % e)
+        raise CLIError("Unable to read ConfigMap 'azure-clusterconfig' or 'azure-arc' namespace: %s\n" % e)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
@@ -524,6 +506,50 @@ def get_release_namespace(kube_config, kube_context):
     return None
 
 
+def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
+                         kube_config, kube_context, no_wait):
+    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                        "--set", "global.subscriptionId={}".format(subscription_id),
+                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                        "--set", "global.resourceGroupName={}".format(resource_group_name),
+                        "--set", "global.resourceName={}".format(cluster_name),
+                        "--set", "global.location={}".format(location),
+                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                        "--set", "global.httpsProxy={}".format(https_proxy),
+                        "--set", "global.httpProxy={}".format(http_proxy),
+                        "--set", "global.noProxy={}".format(no_proxy),
+                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
+                        "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--output", "json"]
+    if kube_config:
+        cmd_helm_install.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_install.extend(["--kube-context", kube_context])
+    if not no_wait:
+        cmd_helm_install.extend(["--wait"])
+    response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
+    _, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        if 'forbidden' in error_helm_install.decode("ascii"):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+
+
+def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
+    try:
+        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
+                           cluster_name=cluster_name, connected_cluster=cc)
+    except CloudError as ex:
+        if 'Azure Error: AuthorizationFailed' in str(ex):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=consts.Create_ConnectedCluster_Fault_Type,
+                                summary='Unable to create connected cluster resource')
+        raise CLIError(ex)
+
+
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
         sdk_no_wait(no_wait, client.delete,
@@ -546,12 +572,13 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
     response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
     _, error_helm_delete = response_helm_delete.communicate()
     if response_helm_delete.returncode != 0:
-        if 'forbidden' in error_helm_delete.decode("ascii"):
+        if 'forbidden' in error_helm_delete.decode("ascii") or 'Error: warning: Hook pre-delete' in error_helm_delete.decode("ascii") or 'Error: timed out waiting for the condition' in error_helm_delete.decode("ascii"):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_delete.decode("ascii"), fault_type=consts.Delete_HelmRelease_Fault_Type,
                                 summary='Unable to delete helm release')
         raise CLIError("Error occured while cleaning up arc agents. " +
-                       "Helm release deletion failed: " + error_helm_delete.decode("ascii"))
+                       "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
+                       " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup(configuration)
 
 
@@ -560,7 +587,8 @@ def ensure_namespace_cleanup(configuration):
     timeout = time.time() + 180
     while True:
         if time.time() > timeout:
-            logger.warning("Namespace 'azure-arc' still in terminating state")
+            telemetry.set_user_fault()
+            logger.warning("Namespace 'azure-arc' still in terminating state. Please ensure that you delete the 'azure-arc' namespace before onboarding the cluster again.")
             return
         try:
             api_response = api_instance.list_namespace(field_selector='metadata.name=azure-arc')
@@ -568,7 +596,12 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Exception while retrieving 'azure-arc' namespace: %s\n", e)
+            str_exception = str(e)
+            if ("401" in str_exception or "403" in str_exception):
+                telemetry.set_user_fault()
+                if "403" in str_exception:
+                    logger.warning("The user does not have priviledges on the kubernetes cluster to onboard to azure-arc")
+            logger.warning("Exception while retrieving namespace information: %s\n", e)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
@@ -588,9 +621,12 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-    # Checking azure cloud
-    if cmd.cli_ctx.cloud.endpoints.active_directory != "https://login.microsoftonline.com":
+    # Checking cloud
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == "https://api-dogfood.resources.windows-int.net/":
         telemetry.set_user_fault()
+        telemetry.set_exception(exception='Dogfood cloud not supported.', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Dogfood cloud not supported.')
+        raise CLIError("Connect CLI is not supported for Dogfood environment. Please switch the cloud using 'az cloud set --name {cloudName}' and try again.")
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)

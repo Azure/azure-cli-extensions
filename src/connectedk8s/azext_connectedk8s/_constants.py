@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 
+# pylint: disable=line-too-long
+
 Invalid_Location_Fault_Type = 'location-validation-error'
 Load_Kubeconfig_Fault_Type = 'kubeconfig-load-error'
 Read_ConfigMap_Fault_Type = 'configmap-read-error'

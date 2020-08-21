@@ -6,7 +6,6 @@
 import os
 import subprocess
 from subprocess import Popen, PIPE
-import requests
 
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -15,13 +14,14 @@ from azure.cli.core import telemetry
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 
+# pylint: disable=line-too-long
+
 
 def validate_location(cmd, location):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     rp_locations = []
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
     providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
-    #print(providerDetails)
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
