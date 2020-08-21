@@ -2,10 +2,6 @@
 
 Release History
 ===============
-0.4.61
-+++++
-* Fix the spot max price decimal length check since we cannot compare float with 0
-
 0.4.60
 +++++
 * Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
