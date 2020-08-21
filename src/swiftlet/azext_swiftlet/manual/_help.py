@@ -61,10 +61,7 @@ port-range="3389" protocol="*" --startup-script "{inline startup script}" --swif
       - name: Create a virtual machine with ssh authentication.
         text: |-
                az swiftlet vm create --location "westus" --ports port-range="22" protocol="*" \
---ssh-public-key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeClRAk2ipUs/l5voIsDC5q9RI+YSRd1Bvd/O+axgY4WiBzG+4FwJWZm/mLLe5D\
-oOdHQwmU2FrKXZSW4w2sYE70KeWnrFViCOX5MTVvJgPE8ClugNl8RWth/tU849DvM9sT7vFgfVSHcAS2yDRyDlueii+8nF2ym8XWAPltFVCyLHRsyBp5YPq\
-K8JFYIa1eybKsY3hEAxRCA+/7bq8et+Gj3coOsuRmrehav7rE6N12Pb80I6ofa6SM5XNYq4Xk0iYNx7R3kdz0Jj9XgZYWjAHjJmT0gTRoOnt6upOuxK7xI/\
-ykWrllgpXrCPu3Ymz+c+ujaqcxDopnAl2lmf69/J1" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Linux_1" \
+--ssh-public-key "ssh-rsa {SSH_KEY}" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Linux_1" \
 --swiftlet-image-id "ubuntu-18.04-lts" --username "SwiftletUser" --tags key1="value1" key2="value2" --resource-group \
 "myResourceGroup" --name "myVirtualMachine"
 """
