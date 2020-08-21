@@ -4,7 +4,7 @@ Release History
 ===============
 0.4.61
 +++++
-* Remove the spot max price decimal length check since we cannot compare float with 0
+* Fix the spot max price decimal length check since we cannot compare float with 0
 
 0.4.60
 +++++
