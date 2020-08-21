@@ -66,6 +66,52 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
+def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=[], additional_custom_scripts=[]):
+    """
+    Use azure run command to run the scripts within the vm-repair/scripts file and return stdout, stderr.
+    """
+
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
+    RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
+
+    # Build absoulte path of driver script
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, script_name)
+
+    if is_linux:
+        command_id = RUN_COMMAND_RUN_SHELL_ID
+    else:
+        command_id = RUN_COMMAND_RUN_PS_ID
+
+    # Process script list to scripts string
+    additional_scripts_string = ''
+    for script in additional_custom_scripts:
+        additional_scripts_string += ' "@{script_name}"'.format(script_name=script)
+
+    run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                  '--scripts @"{run_script}"{additional_scripts} -o json' \
+                  .format(rg=rg_name, vm=vm_name, command_id=command_id, run_script=run_script, additional_scripts=additional_scripts_string)
+    if parameters:
+        run_command += " --parameters {params}".format(params=' '.join(parameters))
+    return_str = _call_az_command(run_command)
+
+    # Extract stdout and stderr, if stderr exists then possible error
+    run_command_return = loads(return_str)
+
+    if is_linux:
+        run_command_message = run_command_return['value'][0]['message'].split('[stdout]')[1].split('[stderr]')
+        stdout = run_command_message[0].strip('\n')
+        stderr = run_command_message[1].strip('\n')
+    else:
+        stdout = run_command_return['value'][0]['message']
+        stderr = run_command_return['value'][1]['message']
+
+    return stdout, stderr
+
 
 def _get_current_vmrepair_version():
     from azure.cli.core.extension.operations import list_extensions
@@ -237,18 +283,8 @@ def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, re
 
 def _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
-    REPAIR_DIR_NAME = 'azext_vm_repair'
-    SCRIPTS_DIR_NAME = 'scripts'
     LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
-    command_id = 'RunShellScript'
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
-    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-    mount_disk_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                         '--scripts "@{run_script}" -o json' \
-                         .format(rg=repair_group_name, vm=repair_vm_name, command_id=command_id, run_script=run_script)
-    _call_az_command(mount_disk_command)
+    return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
