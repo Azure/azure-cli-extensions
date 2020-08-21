@@ -219,7 +219,7 @@ def step_kustodatabaseprincipalassignmentsget(test, rg):
 # EXAMPLE: kustodatabaseprincipalassignmentsdelete
 @try_manual
 def step_kustodatabaseprincipalassignmentsdelete(test, rg):
-    test.cmd('az kusto database-principal-assignment delete '
+    test.cmd('az kusto database-principal-assignment delete -y '
              '--cluster-name "{Clusters_3}" '
              '--database-name "Kustodatabase8" '
              '--principal-assignment-name "kustoprincipal1" '
@@ -326,7 +326,7 @@ def step_kustooperationslist(test, rg):
 # EXAMPLE: kustodatabasesdelete
 @try_manual
 def step_kustodatabasesdelete(test, rg):
-    test.cmd('az kusto database delete '
+    test.cmd('az kusto database delete -y '
              '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
@@ -336,7 +336,7 @@ def step_kustodatabasesdelete(test, rg):
 # EXAMPLE: kustoclustersdelete
 @try_manual
 def step_kustoclustersdelete(test, rg):
-    test.cmd('az kusto cluster delete '
+    test.cmd('az kusto cluster delete -y '
              '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -397,7 +397,7 @@ def step_kustodataconnectionsupdate(test, rg):
 # EXAMPLE: KustoDataConnectionsDelete
 @try_manual
 def step_kustodataconnectionsdelete(test, rg):
-    test.cmd('az kusto data-connection delete '
+    test.cmd('az kusto data-connection delete -y '
              '--cluster-name "{Clusters_3}" '
              '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
