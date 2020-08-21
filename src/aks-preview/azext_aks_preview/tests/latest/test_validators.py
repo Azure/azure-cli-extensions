@@ -188,6 +188,18 @@ class TestSpotMaxPrice(unittest.TestCase):
             validators.validate_spot_max_price(SpotMaxPriceNamespace(5.123456))
         self.assertTrue('--spot_max_price can only include up to 5 decimal places' in str(cm.exception), msg=str(cm.exception))
 
+    def test_throws_if_non_valid_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_spot_max_price(SpotMaxPriceNamespace(-2))
+        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_if_input_max_price_for_regular(self):
+        ns = SpotMaxPriceNamespace(2)
+        ns.priority = "Regular"
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_spot_max_price(ns)
+        self.assertTrue('--spot_max_price can only be set when --priority is Spot' in str(cm.exception), msg=str(cm.exception))
+
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
