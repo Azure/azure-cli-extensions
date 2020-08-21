@@ -22,7 +22,6 @@ from ._helpers import (_fuzzy_match)
 
 from ._consts import ADDONS
 
-
 logger = get_logger(__name__)
 
 
@@ -215,6 +214,8 @@ def validate_spot_max_price(namespace):
     if not isnan(namespace.spot_max_price):
         if namespace.priority != "Spot":
             raise CLIError("--spot_max_price can only be set when --priority is Spot")
+        if namespace.spot_max_price > 0 and not isclose(namespace.spot_max_price * 100000 % 1, 0, rel_tol=1e-06):
+            raise CLIError("--spot_max_price can only include up to 5 decimal places")
         if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
             raise CLIError(
                 "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
@@ -281,7 +282,8 @@ def validate_cluster_autoscaler_profile(namespace):
 def _validate_cluster_autoscaler_key(key):
     if not key:
         raise CLIError('Empty key specified for cluster-autoscaler-profile')
-    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
+    valid_keys = list(k.replace("_", "-") for k, v in
+                      ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
     if key not in valid_keys:
         raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
 

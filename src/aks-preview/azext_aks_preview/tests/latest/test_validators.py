@@ -154,6 +154,12 @@ class MaxSurgeNamespace:
         self.max_surge = max_surge
 
 
+class SpotMaxPriceNamespace:
+    def __init__(self, spot_max_price):
+        self.priority = "Spot"
+        self.spot_max_price = spot_max_price
+
+
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%"]
@@ -169,6 +175,18 @@ class TestMaxSurge(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestSpotMaxPrice(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = [5, 5.12345, -1.0]
+        for v in valid:
+            validators.validate_spot_max_price(SpotMaxPriceNamespace(v))
+
+    def test_throws_if_more_than_5(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_spot_max_price(SpotMaxPriceNamespace(5.123456))
+        self.assertTrue('--spot_max_price can only include up to 5 decimal places' in str(cm.exception), msg=str(cm.exception))
 
 
 class ValidateAddonsNamespace:
