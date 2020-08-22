@@ -179,7 +179,7 @@ class TestMaxSurge(unittest.TestCase):
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
-        valid = [5, 5.12345, -1.0, 0.068, 0.071]
+        valid = [5, 5.12345, -1.0, 0.068, 0.071, 5.00000000]
         for v in valid:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(v))
 
