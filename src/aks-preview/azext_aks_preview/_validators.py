@@ -214,7 +214,7 @@ def validate_spot_max_price(namespace):
     if not isnan(namespace.spot_max_price):
         if namespace.priority != "Spot":
             raise CLIError("--spot_max_price can only be set when --priority is Spot")
-        if namespace.spot_max_price > 0 and not isclose(namespace.spot_max_price * 100000 % 1, 0, rel_tol=1e-06):
+        if len(str(namespace.spot_max_price).split(".")) > 1 and len(str(namespace.spot_max_price).split(".")[1]) > 5:
             raise CLIError("--spot_max_price can only include up to 5 decimal places")
         if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
             raise CLIError(
