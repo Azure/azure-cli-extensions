@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil, isnan, isclose
+from math import isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
@@ -409,4 +409,4 @@ def validate_addons(namespace):
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
 
             raise CLIError(
-                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
