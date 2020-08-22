@@ -4,19 +4,24 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from copy import deepcopy
 from enum import Enum, auto
 
-from azure.cli.core.mock import DummyCli
 from azure.cli.core import MainCommandsLoader
+from azure.cli.core.mock import DummyCli
 
-from azext_ai_did_you_mean_this.custom import normalize_and_sort_parameters
-from azext_ai_did_you_mean_this.tests.latest._commands import get_commands, AzCommandType
+from azext_ai_did_you_mean_this.tests.latest.data._command_normalization_scenario import \
+    CommandNormalizationScenario
+from azext_ai_did_you_mean_this.tests.latest.data._command_parameter_normalization_scenario import \
+    CommandParameterNormalizationScenario
+from azext_ai_did_you_mean_this.tests.latest.data.scenarios import \
+    NORMALIZATION_TEST_SCENARIOS
 
 
-class TestNormalizeAndSortParameters(unittest.TestCase):
+class TestCommandParameterNormalization(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        super(TestNormalizeAndSortParameters, cls).setUpClass()
+        super(TestCommandParameterNormalization, cls).setUpClass()
 
         from knack.events import EVENT_INVOKER_POST_CMD_TBL_CREATE
         from azure.cli.core.commands.events import EVENT_INVOKER_PRE_LOAD_ARGUMENTS, EVENT_INVOKER_POST_LOAD_ARGUMENTS
@@ -42,7 +47,8 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
         cli_ctx.raise_event(EVENT_INVOKER_PRE_LOAD_ARGUMENTS, commands_loader=cmd_loader)
 
         # load arguments for each command
-        for cmd in get_commands():
+        for scenario in NORMALIZATION_TEST_SCENARIOS:
+            cmd = scenario.command
             # simulate command invocation by filling in required metadata.
             cmd_loader.command_name = cmd
             cli_ctx.invocation.data['command_string'] = cmd
@@ -54,28 +60,35 @@ class TestNormalizeAndSortParameters(unittest.TestCase):
 
         cls.cmd_tbl = cmd_loader.command_table
 
-    def test_custom_normalize_and_sort_parameters(self):
-        for cmd in AzCommandType:
-            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, cmd.parameters)
-            self.assertEqual(parameters, cmd.expected_parameters)
-            self.assertEqual(command, cmd.command)
+    def setUp(self):
+        super().setUp()
 
-    def test_custom_normalize_and_sort_parameters_remove_invalid_command_token(self):
-        for cmd in AzCommandType:
-            cmd_with_invalid_token = f'{cmd.command} oops'
-            command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd_with_invalid_token, cmd.parameters)
-            self.assertEqual(parameters, cmd.expected_parameters)
-            self.assertEqual(command, cmd.command)
+        self.scenarios = NORMALIZATION_TEST_SCENARIOS
 
-    def test_custom_normalize_and_sort_parameters_empty_parameter_list(self):
-        cmd = AzCommandType.ACCOUNT_SET
-        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, cmd.command, '')
-        self.assertEqual(parameters, '')
-        self.assertEqual(command, cmd.command)
+    def assertScenarioIsHandledCorrectly(self, scenario: CommandParameterNormalizationScenario):
+        normalized_command, normalized_parameters, unrecognized_parameters = scenario.normalize(self.cmd_tbl)
+        self.assertEqual(normalized_parameters, scenario.normalized_parameters)
+        self.assertEqual(normalized_command, scenario.normalized_command)
 
-    def test_custom_normalize_and_sort_parameters_invalid_command(self):
-        invalid_cmd = 'Lorem ipsum.'
-        command, parameters = normalize_and_sort_parameters(self.cmd_tbl, invalid_cmd, ['--foo', '--baz'])
-        self.assertEqual(parameters, '')
-        # verify that recursive parsing removes the last invalid whitespace delimited token.
-        self.assertEqual(command, 'Lorem')
+    def _create_invalid_subcommand_scenario(self,
+                                            scenario: CommandParameterNormalizationScenario,
+                                            invalid_subcommand: str):
+
+        invalid_subcommands = [invalid_subcommand] * (1 if scenario.command else 2)
+        sep = ' ' if scenario.command else ''
+        command_with_invalid_subcommand = scenario.command + sep + ' '.join(invalid_subcommands)
+
+        invalid_subcommand_scenario = deepcopy(scenario)
+        invalid_subcommand_scenario.command = CommandNormalizationScenario(
+            command_with_invalid_subcommand,
+            scenario.command if scenario.command else invalid_subcommand
+        )
+        return invalid_subcommand_scenario
+
+    def test_command_parameter_normalization(self):
+        for scenario in self.scenarios:
+            # base command
+            self.assertScenarioIsHandledCorrectly(scenario)
+            # command with invalid subcommand
+            invalid_subcommand_scenario = self._create_invalid_subcommand_scenario(scenario, 'oops')
+            self.assertScenarioIsHandledCorrectly(invalid_subcommand_scenario)
