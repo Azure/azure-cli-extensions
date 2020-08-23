@@ -8,11 +8,18 @@ import subprocess
 from subprocess import Popen, PIPE
 
 from knack.util import CLIError
+from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.util import custom
+from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
+from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
+from msrestazure.azure_exceptions import CloudError
+from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
+
+
+logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 
@@ -21,7 +28,10 @@ def validate_location(cmd, location):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     rp_locations = []
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
-    providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
+    try:
+        providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
+    except Exception as e:  # pylint: disable=broad-except
+        arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to create the resource group')
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
@@ -96,9 +106,83 @@ def add_helm_repo(kube_config, kube_context):
 
 def get_helm_registry(cmd, location):
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+    uri_parameters = ["releaseTrain={}".format(release_train)]
     try:
-        return custom.rest_call(cmd, get_chart_location_url, method='post', resource='https://management.core.windows.net/').get('repositoryPath')
+        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource='https://management.core.windows.net/')
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
-        raise CLIError("Error while fetching helm chart registry path: " + str(e))
+        raise CLIError("Error while fetching helm chart registry path: " + str(e) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+    if r.content:
+        try:
+            return r.json().get('repositoryPath')
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
+                                    summary='Error while fetching helm chart registry path')
+            raise CLIError("Error while fetching helm chart registry path from JSON response: " + str(e) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+    else:
+        telemetry.set_exception(exception='No content in response', fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
+                                summary='No content in acr path response')
+        raise CLIError("No content was found in helm registry path response." + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+
+
+def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
+    if isinstance(ex, AuthenticationError):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        raise CLIError("Authentication Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    if isinstance(ex, TokenExpiredError):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        raise CLIError("Token Expired Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    if isinstance(ex, HttpOperationError):
+        status_code = ex.response.status_code
+        if status_code == 404 and return_if_not_found:
+            return
+        if status_code // 100 == 4:
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        raise CLIError("Http Operation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    if isinstance(ex, ValidationError):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        try:
+            raise CLIError("Validation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        except AttributeError:
+            raise CLIError("Validation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    if isinstance(ex, CloudError):
+        status_code = ex.status_code
+        if status_code == 404 and return_if_not_found:
+            return
+        if status_code // 100 == 4:
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        raise CLIError("Cloud Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+    raise CLIError("Error occured while making ARM request: " + str(ex) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues" + "\nSummary: {}".format(summary))
+
+
+def kubernetes_exception_handeler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
+                                  message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
+                                  message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
+    if isinstance(ex, ApiException):
+        status_code = ex.status
+        if status_code // 100 != 2:
+            telemetry.set_user_fault()
+        if status_code == 403:
+            logger.warning(message_for_unauthorized_request)
+        if status_code == 404:
+            logger.warning(message_for_not_found)
+        if raise_error:
+            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+            raise CLIError(error_message + "\nError Response: " + str(ex.body))
+    else:
+        if raise_error:
+            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+            raise CLIError(error_message + "\nError: " + str(ex))
