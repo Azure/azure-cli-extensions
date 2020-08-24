@@ -151,10 +151,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     if isinstance(ex, ValidationError):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        try:
-            raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
-        except AttributeError:
-            raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, CloudError):
         status_code = ex.status_code
