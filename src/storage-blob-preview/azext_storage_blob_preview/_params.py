@@ -200,7 +200,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         min_api='2019-02-02',
         help='Indicate the priority with which to rehydrate an archived blob.')
 
-    if_tags_type = CLIArgumentType(
+    tags_condition_type = CLIArgumentType(
+        options_list='--tags-condition', min_api='2019-12-12',
         help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
 
     with self.argument_context('storage') as c:
@@ -231,7 +232,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_modified_since', options_list='--destination-if-modified-since')
         c.argument('if_none_match', options_list='--destination-if-none-match')
         c.argument('if_unmodified_since', options_list='--destination-if-unmodified-since')
-        c.argument('if_tags', options_list='--destination-if-tags')
+        c.argument('if_tags_match_condition', options_list='--destination-tags-condition')
 
         c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
                    help='Name of the destination blob. If the exists, it will be overwritten.')
@@ -329,6 +330,46 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.ignore('sas_token')
         c.argument('version_id', version_id_type)
 
+    with self.argument_context('storage blob lease') as c:
+        c.argument('blob_name', arg_type=blob_name_type)
+
+    with self.argument_context('storage blob lease acquire') as c:
+        c.register_precondition_options()
+        c.register_blob_arguments()
+        c.extra('lease_id', options_list='--proposed-lease-id', help='Proposed lease ID, in a GUID string format. '
+                'The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format.')
+        c.argument('lease_duration', help='Specify the duration of the lease, in seconds, or negative one (-1) for '
+                   'a lease that never expires. A non-infinite lease can be between 15 and 60 seconds. A lease '
+                   'duration cannot be changed using renew or change. Default is -1 (infinite lease)', type=int)
+        c.extra('if_tags_match_condition', tags_condition_type)
+
+    with self.argument_context('storage blob lease break') as c:
+        c.register_precondition_options()
+        c.register_blob_arguments()
+        c.argument('lease_break_period', type=int,
+                   help="This is the proposed duration of seconds that the lease should continue before it is broken, "
+                   "between 0 and 60 seconds. This break period is only used if it is shorter than the time remaining "
+                   "on the lease. If longer, the time remaining on the lease is used. A new lease will not be "
+                   "available before the break period has expired, but the lease may be held for longer than the break "
+                   "period. If this header does not appear with a break operation, a fixed-duration lease breaks after "
+                   "the remaining lease period elapses, and an infinite lease breaks immediately.")
+        c.extra('if_tags_match_condition', tags_condition_type)
+
+    with self.argument_context('storage blob lease change') as c:
+        c.register_precondition_options()
+        c.register_blob_arguments()
+        c.extra('proposed_lease_id', help='Proposed lease ID, in a GUID string format. The Blob service returns 400 '
+                '(Invalid request) if the proposed lease ID is not in the correct format.', required=True)
+        c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
+        c.extra('if_tags_match_condition', tags_condition_type)
+
+    for item in ['release', 'renew']:
+        with self.argument_context('storage blob lease {}'.format(item)) as c:
+            c.register_precondition_options()
+            c.register_blob_arguments()
+            c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
+            c.extra('if_tags_match_condition', tags_condition_type)
+
     with self.argument_context('storage blob list') as c:
         from .track2_util import get_include_help_string
         t_blob_include = self.get_sdk('_generated.models._azure_blob_storage_enums#ListBlobsIncludeItem',
@@ -356,6 +397,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tier', tier_type, validator=blob_tier_validator)
         c.argument('rehydrate_priority', rehydrate_priority_type, is_preview=True)
         c.extra('version_id', version_id_type)
+        c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob show') as c:
         c.register_blob_arguments()
@@ -368,13 +410,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
         c.extra('version_id', version_id_type)
         c.extra('snapshot', snapshot_type)
-        c.extra('if_tags', if_tags_type)
+        c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob tag set') as c:
         c.register_blob_arguments()
         c.extra('version_id', version_id_type)
         c.argument('tags', tags_type)
-        c.extra('if_tags', if_tags_type)
+        c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import validate_encryption_scope_client_params, \

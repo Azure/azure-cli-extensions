@@ -1,4 +1,4 @@
-from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service
+from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
@@ -50,7 +50,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        table_transformer=transform_blob_output,
                                        exception_handler=show_exception_handler)
         g.storage_custom_command_oauth('upload', 'upload_blob')
-        g.storage_command_oauth('copy start', 'start_copy_from_url')
+        g.storage_custom_command_oauth('copy start', 'copy_blob')
         g.storage_command_oauth('delete', 'delete_blob')
         g.storage_custom_command_oauth('download', 'download_blob')
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
@@ -64,6 +64,22 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
         g.storage_command_oauth('filter', 'find_blobs_by_tags', is_preview=True)
+
+    blob_lease_client_sdk = CliCommandType(
+        operations_tmpl='azure.multiapi.storagev2.blob._lease#BlobLeaseClient.{}',
+        client_factory=cf_blob_lease_client,
+        resource_type=ResourceType.DATA_STORAGE_BLOB
+    )
+
+    with self.command_group('storage blob lease', blob_lease_client_sdk, resource_type=ResourceType.DATA_STORAGE_BLOB,
+                            min_api='2019-02-02',
+                            custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_lease_client,
+                                                               resource_type=ResourceType.DATA_STORAGE_BLOB)) as g:
+        g.storage_custom_command_oauth('acquire', 'acquire_blob_lease')
+        g.storage_command_oauth('break', 'break_lease')
+        g.storage_command_oauth('change', 'change')
+        g.storage_custom_command_oauth('renew', 'renew_blob_lease')
+        g.storage_command_oauth('release', 'release')
 
     # --auth-mode login need to verify
     with self.command_group('storage blob tag', command_type=blob_client_sdk,
