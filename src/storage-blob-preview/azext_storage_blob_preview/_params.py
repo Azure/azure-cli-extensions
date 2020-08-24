@@ -402,7 +402,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
 
         c.argument('blob_type', options_list=('--type', '-t'), arg_type=get_enum_type(('block', 'page')))
-        c.extra('tier', tier_type, validator=blob_tier_validator)
+        c.extra('tier', tier_type, validator=blob_tier_validator, required=True)
         c.argument('rehydrate_priority', rehydrate_priority_type, is_preview=True)
         c.extra('version_id', version_id_type)
         c.extra('if_tags_match_condition', tags_condition_type)
@@ -432,7 +432,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob tag set') as c:
         c.register_blob_arguments()
         c.extra('version_id', version_id_type)
-        c.argument('tags', tags_type)
+        c.argument('tags', tags_type, required=True)
         c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob upload') as c:
@@ -462,7 +462,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.')
         c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.argument('tags', arg_type=tags_type)
+        c.extra('tags', arg_type=tags_type)
 
     with self.argument_context('storage container') as c:
         from .sdkutil import get_container_access_type_names
