@@ -62,6 +62,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
         g.storage_command_oauth('snapshot', 'create_snapshot')  # need to refine output
         g.storage_custom_command_oauth('set-tier', 'set_blob_tier_v2')
+        g.storage_command_oauth('undelete', 'undelete_blob')
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',

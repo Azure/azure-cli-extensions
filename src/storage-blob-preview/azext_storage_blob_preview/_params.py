@@ -414,11 +414,14 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('lease', lease_type)
         c.argument('version_id', version_id_type)
 
-    with self.argument_context('storage blob snapshot', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
+    with self.argument_context('storage blob snapshot') as c:
         c.register_blob_arguments()
         c.register_precondition_options()
         c.extra('lease', lease_type)
         c.extra('if_tags_match_condition', tags_condition_type)
+
+    with self.argument_context('storage blob undelete', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
+        c.register_blob_arguments()
 
     with self.argument_context('storage blob tag list') as c:
         c.register_blob_arguments()
