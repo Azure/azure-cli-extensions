@@ -31,7 +31,7 @@ def validate_location(cmd, location):
     try:
         providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
     except Exception as e:  # pylint: disable=broad-except
-        arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to create the resource group')
+        arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to fetch resource provider details')
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
@@ -113,30 +113,30 @@ def get_helm_registry(cmd, location):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
-        raise CLIError("Error while fetching helm chart registry path: " + str(e) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+        raise CLIError("Error while fetching helm chart registry path: " + str(e))
     if r.content:
         try:
             return r.json().get('repositoryPath')
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                     summary='Error while fetching helm chart registry path')
-            raise CLIError("Error while fetching helm chart registry path from JSON response: " + str(e) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+            raise CLIError("Error while fetching helm chart registry path from JSON response: " + str(e))
     else:
         telemetry.set_exception(exception='No content in response', fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='No content in acr path response')
-        raise CLIError("No content was found in helm registry path response." + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues")
+        raise CLIError("No content was found in helm registry path response.")
 
 
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     if isinstance(ex, AuthenticationError):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Authentication Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise CLIError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, TokenExpiredError):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Token Expired Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise CLIError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
@@ -145,15 +145,15 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Http Operation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise CLIError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ValidationError):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         try:
-            raise CLIError("Validation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+            raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         except AttributeError:
-            raise CLIError("Validation Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+            raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, CloudError):
         status_code = ex.status_code
@@ -162,15 +162,15 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Cloud Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise CLIError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-    raise CLIError("Error occured while making ARM request: " + str(ex) + "\nPlease file an issue on https://github.com/Azure/azure-arc-kubernetes-preview/issues" + "\nSummary: {}".format(summary))
+    raise CLIError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
 
-def kubernetes_exception_handeler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
-                                  message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
-                                  message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
+def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
+                                 message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
+                                 message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
     if isinstance(ex, ApiException):
         status_code = ex.status
         if status_code // 100 != 2:

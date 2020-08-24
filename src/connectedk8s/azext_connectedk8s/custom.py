@@ -108,9 +108,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         try:
             configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
-            utils.kubernetes_exception_handeler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                                message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc' to cleanup the release before onboarding the cluster again.")
+            utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
+                                               error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -233,8 +233,8 @@ def check_kube_connection(configuration):
         api_instance.get_api_resources()
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Unable to verify connectivity to the Kubernetes cluster.")
-        utils.kubernetes_exception_handeler(e, consts.Kubernetes_Connectivity_FaultType, 'Unable to verify connectivity to the Kubernetes cluster',
-                                            error_message="If you are using AAD Enabled cluster, verify that you are able to access the cluster. Learn more at https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Connectivity_FaultType, 'Unable to verify connectivity to the Kubernetes cluster',
+                                           error_message="If you are using AAD Enabled cluster, verify that you are able to access the cluster. Learn more at https://aka.ms/arc/k8s/onboarding-aad-enabled-clusters")
 
 
 def check_helm_install(kube_config, kube_context):
@@ -330,8 +330,8 @@ def get_server_version(configuration):
         return api_response.git_version
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Unable to fetch kubernetes version.")
-        utils.kubernetes_exception_handeler(e, consts.Get_Kubernetes_Version_Fault_Type, 'Unable to fetch kubernetes version',
-                                            raise_error=False)
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Version_Fault_Type, 'Unable to fetch kubernetes version',
+                                           raise_error=False)
 
 
 def get_kubernetes_distro(configuration):
@@ -344,9 +344,9 @@ def get_kubernetes_distro(configuration):
                 return "openshift"
         return "default"
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Exception while trying to fetch kubernetes distribution.")
-        utils.kubernetes_exception_handeler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
-                                            raise_error=False)
+        logger.warning("Error occured while trying to fetch kubernetes distribution.")
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
+                                           raise_error=False)
 
 
 def generate_request_payload(configuration, location, public_key, tags):
@@ -421,9 +421,9 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
-        utils.kubernetes_exception_handeler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                            message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc' to cleanup the release before onboarding the cluster again.")
+        utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
+                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
@@ -548,9 +548,9 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Exception while retrieving namespace information.")
-            utils.kubernetes_exception_handeler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
-                                                raise_error=False)
+            logger.warning("Error while retrieving namespace information.")
+            utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
+                                               raise_error=False)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
