@@ -1,7 +1,7 @@
 Microsoft Azure CLI 'swiftlet' Extension
 ==========================================
 
-This package is for the 'swiftlet' extension. Swiftlet is a new Azure Compute offering. Swiftlet is conceived to offer a greatly simplified Azure experience for non-enterprise developers
+This package is for the 'swiftlet' extension. Swiftlet is a new Azure Compute offering. Swiftlet is conceived to offer a greatly simplified Azure experience for non-enterprise developers.
 
 ### How to use ###
 Install this extension using the below CLI command
