@@ -67,6 +67,11 @@ examples:
         az storage blob copy start --account-name MyAccount --destination-blob MyDestinationBlob --destination-container MyDestinationContainer --sas-token $sas --source-uri https://storage.blob.core.windows.net/photos
 """
 
+helps['storage blob download'] = """
+type: command
+short-summary: Download a blob to a file path, with automatic chunking and progress notifications.
+"""
+
 helps['storage blob filter'] = """
 type: command
 short-summary: list blobs across all containers whose tags match a given search expression. 
