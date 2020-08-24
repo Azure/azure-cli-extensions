@@ -241,3 +241,6 @@ def transform_immutability_policy(result):
         return result
     return None
 
+
+def transform_metadata(result):
+    return result.metadata

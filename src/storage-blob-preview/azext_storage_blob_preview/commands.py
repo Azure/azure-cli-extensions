@@ -42,7 +42,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_client,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
         from azure.cli.command_modules.storage._format import transform_blob_output
-        from ._transformers import transform_blob_list_output, transform_blob_json_output
+        from ._transformers import transform_blob_list_output, transform_blob_json_output, transform_metadata
         g.storage_custom_command_oauth('list', 'list_blobs', client_factory=cf_container_client,
                                        transform=transform_blob_list_output,
                                        table_transformer=transform_blob_output)
@@ -58,6 +58,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                            'blob', client_factory=cf_blob_service,
                                            resource_type=CUSTOM_DATA_STORAGE_BLOB))
         g.storage_custom_command_oauth('set-tier', 'set_blob_tier_v2')
+        g.storage_command_oauth('metadata show', 'get_blob_properties', exception_handler=show_exception_handler,
+                                transform=transform_metadata)
+        g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',

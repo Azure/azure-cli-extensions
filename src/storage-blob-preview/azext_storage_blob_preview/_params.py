@@ -390,6 +390,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('show_next_marker', action='store_true',
                    help='Show nextMarker in result when specified.')
 
+    for item in ['show', 'update']:
+        with self.argument_context('storage blob metadata {}'.format(item), resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
+            c.register_blob_arguments()
+            c.register_precondition_options()
+            c.extra('lease', lease_type)
+            c.extra('snapshot', snapshot_type)
+            c.extra('if_tags_match_condition', tags_condition_type)
+
+
     with self.argument_context('storage blob set-tier', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
         c.register_blob_arguments()
 

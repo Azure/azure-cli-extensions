@@ -87,6 +87,27 @@ examples:
     text: az storage blob list -c MyContainer --prefix foo
 """
 
+helps['storage blob metadata'] = """
+type: group
+short-summary: Manage blob metadata. 
+"""
+
+helps['storage blob metadata show'] = """
+type: command
+short-summary: Return all user-defined metadata for the specified blob or snapshot. 
+examples:
+  - name: Get all user-defined metadata for the specified blob.
+    text: az storage blob metadata show -n myblob -c mycontainer --account-name mystorageaccount --account-key 0000-0000
+"""
+
+helps['storage blob metadata update'] = """
+type: command
+short-summary: Set user-defined metadata for the specified blob as one or more name-value pairs.
+examples:
+  - name:  Set user-defined metadata for the specified blob as one or more name-value pairs.
+    text: az storage blob metadata update -n myblob -c mycontainer --metadata a=b c=d
+"""
+
 helps['storage blob tag'] = """
 type: group
 short-summary: Manage blob tags.
