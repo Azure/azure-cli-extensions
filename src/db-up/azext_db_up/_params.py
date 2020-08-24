@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.parameters import tags_type, get_location_type, get_enum_type
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms.mysql.models.my_sql_management_client_enums import (
     SslEnforcementEnum, GeoRedundantBackup
 )
@@ -58,6 +59,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('version', help='Server version', default='5.7')
 
     with self.argument_context('postgres up') as c:
+        c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.',
+                   local_context_attribute=LocalContextAttribute(
+                       name='postgres_server_name', actions=[LocalContextAction.SET], scopes=['cupertino']))
+        c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication',
+                   help='The login username of the administrator.',
+                   local_context_attribute=LocalContextAttribute(
+                       name='postgres_admin_user_name', actions=[LocalContextAction.SET], scopes=['cupertino']))
+        c.argument('database_name', options_list=['--database-name', '-d'],
+                   help='The name of a database to initialize.',
+                   local_context_attribute=LocalContextAttribute(
+                       name='postgres_database_name', actions=[LocalContextAction.SET], scopes=['cupertino']))
         c.argument('version', help='Server version', default='10')
 
     with self.argument_context('sql up') as c:
