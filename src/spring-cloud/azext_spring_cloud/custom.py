@@ -715,12 +715,8 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
-    return sdk_no_wait(no_wait, client.update,
-                       resource_group, name, service_resource)
+    return sdk_no_wait(no_wait, client.update_put,
+                       resource_group, name, config_server_properties)
 
 
 def config_get(cmd, client, resource_group, name):
