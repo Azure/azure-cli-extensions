@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client
 
 from azure.cli.core.commands import CliCommandType
