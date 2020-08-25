@@ -129,11 +129,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_source_uri_arguments(validator=validate_source_url)
 
         c.ignore('incremental_copy')
-        c.argument('if_match', options_list='--destination-if-match')
-        c.argument('if_modified_since', options_list='--destination-if-modified-since')
-        c.argument('if_none_match', options_list='--destination-if-none-match')
-        c.argument('if_unmodified_since', options_list='--destination-if-unmodified-since')
-        c.argument('if_tags_match_condition', options_list='--destination-tags-condition')
+        c.argument('if_match', options_list=['--destination-if-match'])
+        c.argument('if_modified_since', options_list=['--destination-if-modified-since'])
+        c.argument('if_none_match', options_list=['--destination-if-none-match'])
+        c.argument('if_unmodified_since', options_list=['--destination-if-unmodified-since'])
+        c.argument('if_tags_match_condition', options_list=['--destination-tags-condition'])
 
         c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
                    help='Name of the destination blob. If the exists, it will be overwritten.')
@@ -352,8 +352,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Path of the file to upload as the blob content.')
         c.argument('max_connections', type=int,
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
-        c.argument('maxsize_condition', type=int,
-                   help='The max length in bytes permitted for the append blob.')
+        c.extra('maxsize_condition', type=int,
+                help='The max length in bytes permitted for the append blob.')
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
                    arg_type=get_enum_type(get_blob_types()))
         c.argument('validate_content', action='store_true', min_api='2016-05-31')
