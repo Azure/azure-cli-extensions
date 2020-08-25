@@ -17,7 +17,7 @@ def load_command_table(self, _):
     with self.command_group('connectedmachine', connectedmachine_sdk, client_factory=cf_connectedmachine) as g:
         g.custom_command('delete', 'delete_connectedmachine')
         g.custom_command('list', 'list_connectedmachine')
-        g.custom_command('show', 'show_connectedmachine')
+        g.custom_show_command('show', 'show_connectedmachine')
 
     with self.command_group('connectedmachine', is_preview=True):
         pass

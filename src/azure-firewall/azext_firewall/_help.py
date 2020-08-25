@@ -129,7 +129,7 @@ helps['network firewall network-rule create'] = """
 
 helps['network firewall network-rule delete'] = """
     type: command
-    short-summary: Delete an Azure Firewall network rule.
+    short-summary: Delete an Azure Firewall network rule. If you want to delete the last rule in a collection, please delete the collection instead.
 """
 
 helps['network firewall network-rule list'] = """
