@@ -56,5 +56,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_storage-blob-preview': ['azext_metadata.json']},
+    package_data={'azext_storage_blob_preview': ['azext_metadata.json']},
 )
