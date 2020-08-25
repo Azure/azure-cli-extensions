@@ -5,7 +5,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
+import os
+import re
 from codecs import open
 from setuptools import setup, find_packages
 try:
@@ -14,7 +15,11 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '0.2.1'
+# Inspired by https://github.com/Azure/azure-cli-extensions/blob/63f9cca19ab7a163c6c368b8c62f9c32432a899c/src/alias/setup.py#L14
+extension_path = os.path.dirname(os.path.realpath(__file__))
+with open(os.path.join(extension_path, 'azext_ai_did_you_mean_this', 'version.py'), 'r') as version_file:
+    VERSION = re.search(r'^VERSION\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        version_file.read(), re.MULTILINE).group(1)
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
