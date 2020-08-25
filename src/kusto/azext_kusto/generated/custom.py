@@ -46,11 +46,11 @@ def kusto_cluster_create(client,
                          identity_type=None,
                          identity_user_assigned_identities=None,
                          no_wait=False):
-    if enable_streaming_ingest is None:
+    if enable_streaming_ingest == None:
         enable_streaming_ingest = False
-    if enable_purge is None:
+    if enable_purge == None:
         enable_purge = False
-    if enable_double_encryption is None:
+    if enable_double_encryption == None:
         enable_double_encryption = False
     if isinstance(identity_user_assigned_identities, str):
         identity_user_assigned_identities = json.loads(identity_user_assigned_identities)
@@ -91,11 +91,11 @@ def kusto_cluster_update(client,
                          identity_type=None,
                          identity_user_assigned_identities=None,
                          no_wait=False):
-    if enable_streaming_ingest is None:
+    if enable_streaming_ingest == None:
         enable_streaming_ingest = False
-    if enable_purge is None:
+    if enable_purge == None:
         enable_purge = False
-    if enable_double_encryption is None:
+    if enable_double_encryption == None:
         enable_double_encryption = False
     if isinstance(identity_user_assigned_identities, str):
         identity_user_assigned_identities = json.loads(identity_user_assigned_identities)

@@ -39,12 +39,12 @@ def load_arguments(self, _):
 
     with self.argument_context('kusto cluster show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -67,11 +67,15 @@ def load_arguments(self, _):
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates if'
                    ' double encryption is enabled.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne''d-identities'], help='The list of user identities associated with the Kusto cluster. The user ident''ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI''d}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i''dentityName}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
+                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
+                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
+                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
+                   'dentityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
@@ -94,22 +98,26 @@ def load_arguments(self, _):
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates if'
                    ' double encryption is enabled.')
         c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned']), help='The identity type.')
-        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne''d-identities'], help='The list of user identities associated with the Kusto cluster. The user ident''ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI''d}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i''dentityName}\'. Expected value: json-string/@json-file.'))
+        c.argument('identity_user_assigned_identities', arg_type=CLIArgumentType(options_list=['--identity-user-assigne'
+                   'd-identities'], help='The list of user identities associated with the Kusto cluster. The user ident'
+                   'ity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionI'
+                   'd}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{i'
+                   'dentityName}\'. Expected value: json-string/@json-file.'))
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster add-language-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
         c.argument('value', action=AddClustersValue, nargs='+', help='The list of language extensions.')
 
     with self.argument_context('kusto cluster detach-follower-database') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
         c.argument('cluster_resource_id', help='Resource id of the cluster that follows a database owned by this cluste'
                    'r.')
@@ -118,40 +126,40 @@ def load_arguments(self, _):
 
     with self.argument_context('kusto cluster diagnose-virtual-network') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster list-follower-database') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.')
 
     with self.argument_context('kusto cluster list-language-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.')
 
     with self.argument_context('kusto cluster list-sku') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.')
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.')
 
     with self.argument_context('kusto cluster remove-language-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
         c.argument('value', action=AddClustersValue, nargs='+', help='The list of language extensions.')
 
     with self.argument_context('kusto cluster start') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster stop') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.',
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Kusto cluster.',
                    id_part='name')
 
     with self.argument_context('kusto cluster-principal-assignment list') as c:
@@ -311,13 +319,13 @@ def load_arguments(self, _):
     with self.argument_context('kusto attached-database-configuration show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', help='The name of the attache'
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n'], help='The name of the attache'
                    'd database configuration.', id_part='child_name_1')
 
     with self.argument_context('kusto attached-database-configuration create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.')
-        c.argument('attached_database_configuration_name', help='The name of the attache'
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n'], help='The name of the attache'
                    'd database configuration.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -325,30 +333,33 @@ def load_arguments(self, _):
                    ' follow all current and future databases.')
         c.argument('cluster_resource_id', help='The resource id of the cluster where the databases you would like to at'
                    'tach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help='The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=
+                   'The default principals modification kind')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cluster_name', help='The name of the Kusto cluster.')
-        c.argument('attached_database_configuration_name', help='The name of the attached database configuration.')
+        c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n'], help='The name of the attache'
+                   'd database configuration.', id_part='child_name_1')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('database_name', help='The name of the database which you would like to attach, use * if you want to'
                    ' follow all current and future databases.')
         c.argument('cluster_resource_id', help='The resource id of the cluster where the databases you would like to at'
                    'tach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help='The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=
+                   'The default principals modification kind')
 
     with self.argument_context('kusto attached-database-configuration delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', help='The name of the attache'
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n'], help='The name of the attache'
                    'd database configuration.', id_part='child_name_1')
 
     with self.argument_context('kusto attached-database-configuration wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', help='The name of the attache'
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n'], help='The name of the attache'
                    'd database configuration.', id_part='child_name_1')
 
     with self.argument_context('kusto data-connection list') as c:
@@ -360,14 +371,14 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
 
     with self.argument_context('kusto data-connection event-grid create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.')
         c.argument('database_name', help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('storage_account_resource_id',
@@ -390,7 +401,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.')
         c.argument('database_name', help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('event_hub_resource_id', help='The resource ID of the event hub to be used to create a data connecti'
@@ -411,7 +422,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.')
         c.argument('database_name', help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('iot_hub_resource_id',
@@ -431,7 +442,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -455,7 +466,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -477,7 +488,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
@@ -498,14 +509,14 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
 
     with self.argument_context('kusto data-connection event-grid data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('storage_account_resource_id',
@@ -528,7 +539,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('event_hub_resource_id', help='The resource ID of the event hub to be used to create a data connecti'
@@ -549,7 +560,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.')
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('iot_hub_resource_id',
@@ -569,5 +580,5 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', help='The name of the Kusto cluster.', id_part='name')
         c.argument('database_name', help='The name of the database in the Kusto cluster.', id_part='child_name_1')
-        c.argument('data_connection_name', help='The name of the data connection.',
+        c.argument('data_connection_name', options_list=['--name', '-n'], help='The name of the data connection.',
                    id_part='child_name_2')
