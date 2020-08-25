@@ -47,7 +47,6 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     if location is None:
         location = rg_location
     properties = models.ClusterResourceProperties()
-    resource = models.ServiceResource(location=location, properties=properties)
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
         properties.network_profile = models.NetworkProfile(
@@ -60,12 +59,19 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
-    update_tracing_config(cmd, resource_group, name, location, properties,
-                          app_insights_key, app_insights, disable_distributed_tracing)
-
     resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group, service_name=name, resource=resource)
 
+    poller = client.services.create_or_update(
+        resource_group, name, resource)
+    while poller.done() is False:
+        sleep(5)
+    if disable_distributed_tracing is not True:
+        trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+                                                 disable_distributed_tracing)
+        if trace_properties is not None:
+            poller = client.monitoring_settings.update_put(resource_group, name, trace_properties)
+            while poller.done() is False:
+                sleep(5)
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                         disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
@@ -80,34 +86,37 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         updated_resource.sku = full_sku
         update_service_sku = True
 
-    resource = client.get(resource_group, name)
+    resource = client.services.get(resource_group, name)
     location = resource.location
     resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
+    trace_properties = client.monitoring_settings.get(resource_group, name)
+    trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
 
     app_insights_target_status = False
     if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
         app_insights_target_status = True
-        if resource_properties.trace.enabled is False:
+        if trace_enabled is False:
             update_app_insights = True
-        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+        elif app_insights_key != trace_properties.app_insights_instrumentation_key:
             update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
-        if resource_properties.trace.enabled is True:
+        if trace_enabled is True:
             update_app_insights = True
 
     # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
-            resource_properties.trace.enabled = app_insights_target_status
-        elif resource_properties.trace.app_insight_instrumentation_key is not None \
+            trace_properties.trace_enabled = app_insights_target_status
+        elif trace_properties.app_insights_instrumentation_key is not None \
                 and app_insights is None and app_insights_key is None:
-            resource_properties.trace.enabled = app_insights_target_status
+            trace_properties.trace_enabled = app_insights_target_status
         else:
-            update_tracing_config(cmd, resource_group, name, location, resource_properties, app_insights_key,
-                                  app_insights, disable_distributed_tracing)
-        updated_resource_properties.trace = resource_properties.trace
+            trace_properties = update_tracing_config(cmd, resource_group, name, location, resource_properties,
+                                                     app_insights_key, app_insights, disable_distributed_tracing)
+        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, resource=trace_properties)
 
     # update service tags
     if tags is not None:
@@ -118,7 +127,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         return resource
 
     updated_resource.properties = updated_resource_properties
-    return sdk_no_wait(no_wait, client.update,
+    return sdk_no_wait(no_wait, client.services.update,
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
@@ -1291,24 +1300,24 @@ def get_app_insights_key(cli_ctx, resource_group, name):
     return appinsights.instrumentation_key
 
 
-def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
+def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
                           app_insights, disable_distributed_tracing):
     create_app_insights = False
-
+    trace_properties = None
     if app_insights_key is not None:
-        resource_properties.trace = models.TraceProperties(
-            enabled=True, app_insight_instrumentation_key=app_insights_key)
+        trace_properties = models.MonitoringSettingProperties(
+            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
     elif app_insights is not None:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
                                                        resource_id_dict['resource_name'])
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif disable_distributed_tracing is not True:
         create_app_insights = True
 
@@ -1316,13 +1325,14 @@ def update_tracing_config(cmd, resource_group, service_name, location, resource_
         try:
             instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
             if instrumentation_key is not None:
-                resource_properties.trace = models.TraceProperties(
-                    enabled=True, app_insight_instrumentation_key=instrumentation_key)
+                trace_properties = models.MonitoringSettingProperties()
+                trace_properties.trace_enabled = True
+                trace_properties.app_insights_instrumentation_key = instrumentation_key
         except Exception:  # pylint: disable=broad-except
             logger.warning(
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
-
+    return trace_properties
 
 def try_create_application_insights(cmd, resource_group, name, location):
     creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
