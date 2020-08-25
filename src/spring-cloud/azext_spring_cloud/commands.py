@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._client_factory import (cf_app_services, cf_spring_cloud, cf_bindings)
+from ._client_factory import (cf_app_services, cf_spring_cloud, cf_bindings, cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
@@ -27,7 +27,7 @@ def load_command_table(self, _):
         g.custom_command('renew-key', 'regenerate_keys')
         g.custom_command('list', 'list_keys')
 
-    with self.command_group('spring-cloud config-server', client_factory=cf_app_services) as g:
+    with self.command_group('spring-cloud config-server', client_factory=cf_config_servers) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')

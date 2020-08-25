@@ -724,11 +724,11 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
 
 
 def config_get(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server:
+    config_server_resource = client.get(resource_group, name).properties.config_server
+
+    if not config_server_resource:
         raise CLIError("Config server not set.")
-    return config_server.git_property
+    return config_server_resource.git_property
 
 
 def config_delete(cmd, client, resource_group, name):
