@@ -724,21 +724,16 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
 
 
 def config_get(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name).properties.config_server
+    config_server_resource = client.get(resource_group, name)
 
-    if not config_server_resource:
+    if not config_server_resource.properties.config_server:
         raise CLIError("Config server not set.")
-    return config_server_resource.git_property
+    return config_server_resource
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties(
-        config_server=models.ConfigServerSettings())
-    properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    appResource = models.ServiceResource(properties=properties)
-
-    return client.update(resource_group, name, appResource)
+    config_server_properties = models.ConfigServerProperties()
+    return client.update_put(resource_group, name, config_server_properties)
 
 
 def config_git_set(cmd, client, resource_group, name, uri,
