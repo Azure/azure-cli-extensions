@@ -17,3 +17,20 @@ Release History
 0.2.0
 +++++
 * Change name of required service parameter
+
+0.3.0
++++++
+* Log custom telemetry data when given permission by the user to do so.
+
+  * Record exceptions thrown by the extension.
+  * Track various performance and health metrics.
+  * Track what suggestions are shown.
+
+* Fix incorrect parsing of argument placeholders.
+* Support parameter prefix matching for feature parity with the CLI parser.
+* Add preliminary support for partial command matching
+ 
+  * Fixes bug where certain command groups are not recognized.
+
+* Improve handling of extension debug logs.
+* Store extension version in a centralized location to improve maintainability.
