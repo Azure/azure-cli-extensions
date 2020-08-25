@@ -106,32 +106,6 @@ class StorageArgumentContext(AzArgumentContext):
             self.extra('source_share', default=None, arg_group='Copy Source',
                        help='The share name for the source storage account.')
 
-    def register_common_storage_account_options(self):
-        from azure.cli.core.commands.parameters import get_three_state_flag, get_enum_type
-        from ._validators import validate_encryption_services
-
-        t_access_tier, t_sku_name, t_encryption_services = self.command_loader.get_models(
-            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=ResourceType.MGMT_STORAGE)
-
-        self.argument('https_only', help='Allows https traffic only to storage service.',
-                      arg_type=get_three_state_flag())
-        self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
-        self.argument('assign_identity', action='store_true', resource_type=ResourceType.MGMT_STORAGE,
-                      min_api='2017-06-01',
-                      help='Generate and assign a new Storage Account Identity for this storage account for use '
-                           'with key management services like Azure KeyVault.')
-        self.argument('access_tier', arg_type=get_enum_type(t_access_tier),
-                      help='The access tier used for billing StandardBlob accounts. Cannot be set for StandardLRS, '
-                           'StandardGRS, StandardRAGRS, or PremiumLRS account types. It is required for '
-                           'StandardBlob accounts during creation')
-
-        if t_encryption_services:
-            encryption_choices = list(
-                t_encryption_services._attribute_map.keys())  # pylint: disable=protected-access
-            self.argument('encryption_services', arg_type=get_enum_type(encryption_choices),
-                          resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01', nargs='+',
-                          validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
-
     def register_precondition_options(self, prefix=''):
         self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition',
                    help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').")

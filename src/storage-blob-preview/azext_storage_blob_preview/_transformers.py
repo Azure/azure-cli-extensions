@@ -240,7 +240,3 @@ def transform_immutability_policy(result):
     if result.immutability_period_since_creation_in_days:
         return result
     return None
-
-
-def transform_metadata(result):
-    return result.metadata

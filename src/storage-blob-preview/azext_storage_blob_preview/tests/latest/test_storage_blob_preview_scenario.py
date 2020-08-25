@@ -97,7 +97,6 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info, prefix="con")
 
-        local_dir = self.create_temp_dir()
         local_file = self.create_temp_file(128)
         blob_name = self.create_random_name(prefix='blob', length=24)
 

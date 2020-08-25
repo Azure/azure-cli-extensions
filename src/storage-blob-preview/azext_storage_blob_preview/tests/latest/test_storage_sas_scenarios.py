@@ -61,4 +61,3 @@ class StorageSASScenario(StorageScenarioMixin, LiveScenarioTest):
         self.kwargs['blob_sas'] = sas
         self.cmd('storage blob show -c {container} -n {blob} --account-name {account} --sas-token {blob_sas}') \
             .assert_with_checks(JMESPathCheck('name', blob_name))
-

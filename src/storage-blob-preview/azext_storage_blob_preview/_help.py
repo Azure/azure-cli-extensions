@@ -59,7 +59,7 @@ parameters:
         Specify this conditional header to copy the blob only if the source blob
         has not been modified since the specified date/time.
 examples:
-  - name: Copy a blob asynchronously. Use `az storage blob show` to check the status of the blobs. 
+  - name: Copy a blob asynchronously. Use `az storage blob show` to check the status of the blobs.
     text: |
         az storage blob copy start --account-key 00000000 --account-name MyAccount --destination-blob MyDestinationBlob --destination-container MyDestinationContainer --source-uri https://storage.blob.core.windows.net/photos
   - name: Copy a blob asynchronously. Use `az storage blob show` to check the status of the blobs.
@@ -74,8 +74,10 @@ short-summary: Download a blob to a file path, with automatic chunking and progr
 
 helps['storage blob filter'] = """
 type: command
-short-summary: list blobs across all containers whose tags match a given search expression. 
-long-summary: Filter blobs searches across all containers within a storage account but can be scoped within the expression to a single container.
+short-summary: List blobs across all containers whose tags match a given search expression.
+long-summary: >
+    Filter blobs searches across all containers within a storage account but can be scoped within the expression to
+    a single container.
 parameters:
   - name: --tag-filter
     short-summary: >
@@ -94,12 +96,12 @@ examples:
 
 helps['storage blob metadata'] = """
 type: group
-short-summary: Manage blob metadata. 
+short-summary: Manage blob metadata.
 """
 
 helps['storage blob metadata show'] = """
 type: command
-short-summary: Return all user-defined metadata for the specified blob or snapshot. 
+short-summary: Return all user-defined metadata for the specified blob or snapshot.
 examples:
   - name: Get all user-defined metadata for the specified blob.
     text: az storage blob metadata show -n myblob -c mycontainer --account-name mystorageaccount --account-key 0000-0000
@@ -130,4 +132,3 @@ long-summary: >
     Each call to this operation replaces all existing tags attached to the blob. To remove all
     tags from the blob, call this operation with no tags set.
 """
-

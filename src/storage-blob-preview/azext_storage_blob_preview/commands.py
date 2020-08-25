@@ -3,11 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client
-
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from azure.cli.core.profiles import ResourceType
+
+from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
@@ -31,14 +31,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     )
 
     blob_service_sdk = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._blob_service_client#BlobServiceClient.{}',
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._blob_service_client#'
+                        'BlobServiceClient.{}',
         client_factory=cf_blob_service,
-        resource_type=CUSTOM_DATA_STORAGE_BLOB
-    )
-
-    container_client_sdk = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._container_client#ContainerClient.{}',
-        client_factory=cf_container_client,
         resource_type=CUSTOM_DATA_STORAGE_BLOB
     )
 
@@ -105,5 +100,3 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_container_uri',
                                        custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
                                                                           resource_type=CUSTOM_DATA_STORAGE_BLOB))
-
-

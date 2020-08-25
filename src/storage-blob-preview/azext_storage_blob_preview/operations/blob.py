@@ -8,7 +8,6 @@ from __future__ import print_function
 import os
 from datetime import datetime
 
-from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.command_modules.storage.url_quote_util import encode_for_url, make_encoded_file_url_and_params
 from azure.cli.command_modules.storage.util import (create_blob_service_from_storage_client,
@@ -23,26 +22,6 @@ from knack.util import CLIError
 from ..profiles import CUSTOM_DATA_STORAGE_BLOB
 
 logger = get_logger(__name__)
-
-
-def create_container(cmd, container_name, resource_group_name=None, account_name=None,
-                     metadata=None, public_access=None, fail_on_exist=False, timeout=None,
-                     default_encryption_scope=None, prevent_encryption_scope_override=None, **kwargs):
-    if default_encryption_scope is not None or prevent_encryption_scope_override is not None:
-        from .._client_factory import storage_client_factory
-        client = storage_client_factory(cmd.cli_ctx).blob_containers
-        BlobContainer = cmd.get_models('BlobContainer', resource_type=ResourceType.MGMT_STORAGE)
-        blob_container = BlobContainer(default_encryption_scope=default_encryption_scope,
-                                       deny_encryption_scope_override=prevent_encryption_scope_override)
-        container = client.create(resource_group_name=resource_group_name, account_name=account_name,
-                                  container_name=container_name, blob_container=blob_container)
-        return container is not None
-
-    from .._client_factory import blob_data_service_factory
-    kwargs['account_name'] = account_name
-    client = blob_data_service_factory(cmd.cli_ctx, kwargs)
-    return client.create_container(container_name, metadata=metadata, public_access=public_access,
-                                   fail_on_exist=fail_on_exist, timeout=timeout)
 
 
 def delete_container(client, container_name, fail_not_exist=False, lease_id=None, if_modified_since=None,
@@ -134,9 +113,7 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
                             destination_path=None, source_container=None, source_share=None,
                             source_sas=None, pattern=None, dryrun=False):
     """Copy a group of blob or files to a blob container."""
-    logger = None
     if dryrun:
-        logger = get_logger(__name__)
         logger.warning('copy files or blobs to blob container')
         logger.warning('    account %s', client.account_name)
         logger.warning('  container %s', container_name)
@@ -219,7 +196,6 @@ def storage_blob_download_batch(client, source, destination, source_container_na
         blobs_to_download[normalized_blob_name] = blob_name
 
     if dryrun:
-        logger = get_logger(__name__)
         logger.warning('download action: from %s to %s', source, destination)
         logger.warning('    pattern %s', pattern)
         logger.warning('  container %s', source_container_name)
@@ -264,7 +240,6 @@ def storage_blob_upload_batch(cmd, client, source, destination, pattern=None,  #
             'Last Modified': upload_result.last_modified if upload_result else None,
             'eTag': upload_result.etag if upload_result else None}
 
-    logger = get_logger(__name__)
     source_files = source_files or []
     t_content_settings = cmd.get_models('blob.models#ContentSettings')
 
@@ -369,7 +344,6 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
         }
         return client.delete_blob(**delete_blob_args)
 
-    logger = get_logger(__name__)
     source_blobs = list(collect_blob_objects(client, source_container_name, pattern))
 
     if dryrun:
@@ -461,7 +435,7 @@ def _get_datetime_from_string(dt_str):
     raise ValueError("datetime string '{}' not valid. Valid example: 2000-12-31T12:59:59Z".format(dt_str))
 
 
-def copy_blob(client, source_url, metadata=None,  **kwargs):
+def copy_blob(client, source_url, metadata=None, **kwargs):
     if not kwargs['requires_sync']:
         kwargs.pop('requires_sync')
     return client.start_copy_from_url(source_url=source_url, metadata=metadata, incremental_copy=False, **kwargs)
@@ -485,7 +459,6 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
 
     sas_kwargs = {}
     if as_user:
-        from datetime import datetime
         sas_kwargs['user_delegation_key'] = client.get_user_delegation_key(
             _get_datetime_from_string(start) if start else datetime.utcnow(),
             _get_datetime_from_string(expiry))
@@ -516,7 +489,6 @@ def generate_sas_container_uri(client, cmd, container_name, permission=None,
 
     sas_kwargs = {}
     if as_user:
-        from datetime import datetime
         sas_kwargs['user_delegation_key'] = client.get_user_delegation_key(
             _get_datetime_from_string(start) if start else datetime.utcnow(),
             _get_datetime_from_string(expiry))
@@ -531,7 +503,8 @@ def generate_sas_container_uri(client, cmd, container_name, permission=None,
 
     if full_uri:
         t_container_client = cmd.get_models('_container_client#ContainerClient')
-        container_client = t_container_client(account_url=client.url, container_name=container_name, credential=sas_token)
+        container_client = t_container_client(account_url=client.url, container_name=container_name,
+                                              credential=sas_token)
         return container_client.url
 
     return sas_token
@@ -594,7 +567,7 @@ def snapshot_blob(client, metadata=None, **kwargs):
 
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, max_connections=2, lease_id=None,
-                progress_callback=None, encryption_scope=None,  **kwargs):
+                progress_callback=None, encryption_scope=None, **kwargs):
     """Upload a blob to a container."""
 
     upload_args = {
