@@ -64,6 +64,17 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
+     # Checking whether optional extra values file has been provided.
+    values_file_provided = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        values_file_provided = True
+        # trimming required for windows os
+        if (values_file.startswith("'") or values_file.startswith('"')):
+            values_file = values_file[1:]
+        if (values_file.endswith("'") or values_file.endswith('"')):
+            values_file = values_file[:-1]
+
     # Loading the kubeconfig file in kubernetes client configuration
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
@@ -195,7 +206,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait)
+                         kube_context, no_wait, values_file_provided, values_file)
 
     return put_cc_response
 
@@ -468,7 +479,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
-                         kube_config, kube_context, no_wait):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -482,6 +493,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--output", "json"]
+    # To set some other helm parameters through file
+    if values_file_provided:
+        cmd_helm_install.extend(["-f", values_file])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
