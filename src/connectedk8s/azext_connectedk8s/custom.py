@@ -64,7 +64,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
-     # Checking whether optional extra values file has been provided.
+    # Checking whether optional extra values file has been provided.
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
