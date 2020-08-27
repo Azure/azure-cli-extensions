@@ -70,11 +70,6 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob list -c {} --prefix {}', account_info, container, 'dir/') \
             .assert_with_checks(JMESPathCheck('length(@)', 2))
 
-        # Test with include metadata, snapshot
-        self.storage_cmd('storage blob list -c {} --include mscdv', account_info, container) \
-            .assert_with_checks(JMESPathCheck('[0].metadata.test', '1'),
-                                JMESPathCheck('[0].snapshot', snapshot))
-
         # Test with delimiter
         self.storage_cmd('storage blob list -c {} --delimiter "/"', account_info, container) \
             .assert_with_checks(JMESPathCheck('length(@)', 1),
