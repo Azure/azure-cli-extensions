@@ -836,13 +836,12 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                        host_key_algorithm=None,
                        private_key=None,
                        strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
@@ -852,27 +851,26 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     if pattern:
         pattern = pattern.split(",")
 
-    repository = repository[0]
-    repository = models.GitPatternRepository()
-    repository.uri = uri or repository.uri
-    repository.label = label or repository.label
-    repository.search_paths = search_paths or repository.search_paths
-    repository.username = username or repository.username
-    repository.password = password or repository.password
-    repository.host_key = host_key or repository.host_key
-    repository.host_key_algorithm = host_key_algorithm or repository.host_key_algorithm
-    repository.private_key = private_key or repository.private_key
-    repository.strict_host_key_checking = strict_host_key_checking or repository.strict_host_key_checking
+    old_repository = repository[0]
+    git_property.repositories.remove(old_repository)
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    repository = models.GitPatternRepository(name=old_repository.name, uri=uri or old_repository.uri)
+    repository.pattern = pattern or old_repository.pattern
+    repository.label = label or old_repository.label
+    repository.search_paths = search_paths or old_repository.search_paths
+    repository.username = username or old_repository.username
+    repository.password = password or old_repository.password
+    repository.host_key = host_key or old_repository.host_key
+    repository.host_key_algorithm = host_key_algorithm or old_repository.host_key_algorithm
+    repository.private_key = private_key or old_repository.private_key
+    repository.strict_host_key_checking = strict_host_key_checking or old_repository.strict_host_key_checking
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    git_property.repositories.append(repository)
+
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_list(cmd, client, resource_group, name):
