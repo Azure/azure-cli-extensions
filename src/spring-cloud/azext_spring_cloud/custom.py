@@ -709,14 +709,10 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['repos']
 
     config_property['repositories'] = repositories
-    git_property = client._deserialize(
-        'ConfigServerGitProperty', config_property)
-    config_server_settings = models.ConfigServerSettings(
-        git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    return sdk_no_wait(no_wait, client.update_put,
-                       resource_group, name, config_server_properties)
+    git_property = client._deserialize('ConfigServerGitProperty', config_property)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    return sdk_no_wait(no_wait, client.update_put, resource_group, name, config_server_properties)
 
 
 def config_get(cmd, client, resource_group, name):
@@ -741,33 +737,24 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    git_property = models.ConfigServerGitProperty(uri=uri)
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    config.uri = uri
-    config.label = label
-    config.search_paths = search_paths
-    config.username = username
-    config.password = password
-    config.host_key = host_key
-    config.host_key_algorithm = host_key_algorithm
-    config.private_key = private_key
-    config.strict_host_key_checking = strict_host_key_checking
+    git_property.label = label
+    git_property.search_paths = search_paths
+    git_property.username = username
+    git_property.password = password
+    git_property.host_key = host_key
+    git_property.host_key_algorithm = host_key_algorithm
+    git_property.private_key = private_key
+    git_property.strict_host_key_checking = strict_host_key_checking
 
-    config_server = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
 
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
