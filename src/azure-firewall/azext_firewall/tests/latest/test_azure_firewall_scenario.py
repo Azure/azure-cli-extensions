@@ -331,7 +331,7 @@ class AzureFirewallScenario(ScenarioTest):
         ])
         self.cmd('network firewall update -g {rg} -n {af2} --firewall-policy {policy2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='eastus2')
     def test_azure_firewall_policy_with_threat_intel_allowlist(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -356,7 +356,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
                  ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -399,25 +399,25 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
         self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}')
         ])
 
         self.cmd('network firewall policy rule-collection-group show -g {rg} --policy-name {policy} -n {collectiongroup}', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}'),
             self.check('priority', '{collection_group_priority}')
         ])
 
         self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
             self.check('length(@)', 1),
-            self.check('@[0].type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('@[0].type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('@[0].name', '{collectiongroup}'),
             self.check('@[0].priority', '{collection_group_priority}')
         ])
 
         self.cmd('network firewall policy rule-collection-group update -g {rg} --policy-name {policy} -n {collectiongroup} --priority 12000', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}'),
             self.check('priority', 12000)
         ])

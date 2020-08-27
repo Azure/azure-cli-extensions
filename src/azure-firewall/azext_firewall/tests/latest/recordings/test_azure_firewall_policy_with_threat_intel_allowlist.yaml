@@ -1,0 +1,377 @@
+interactions:
+- request:
+    body: '{"location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
+        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
+        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/6e7586f4-9083-449c-877b-b9dff183e208?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '543'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/6e7586f4-9083-449c-877b-b9dff183e208?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
+        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
+        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '544'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
+        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
+        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '544'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
+      "location": "eastus2", "properties": {"threatIntelMode": "Deny", "threatIntelWhitelist":
+      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '371'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"00bc69c8-2456-4b8c-9cb0-50473ce0a545\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/402a6702-0c43-4b07-ab26-f06c28316cf9?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '709'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/402a6702-0c43-4b07-ab26-f06c28316cf9?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
+        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
+        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
+        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
+        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"00bc69c8-2456-4b8c-9cb0-50473ce0a545\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '710'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Aug 2020 08:50:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
