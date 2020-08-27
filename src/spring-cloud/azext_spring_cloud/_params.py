@@ -204,7 +204,7 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud config-server git repo add', 'spring-cloud config-server git repo update', 'spring-cloud config-server git repo remove']:
         with self.argument_context(scope) as c:
-            c.argument('repo_name', help='Uri of the repo.')
+            c.argument('repo_name', help='Name of the repo.')
 
     for scope in ['spring-cloud config-server git repo add', 'spring-cloud config-server git repo update']:
         with self.argument_context(scope) as c:

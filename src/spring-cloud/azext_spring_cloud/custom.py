@@ -768,7 +768,6 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     private_key=None,
                     strict_host_key_checking=None):
     config_server_resource = client.get(resource_group, name)
-
     config_server = config_server_resource.properties.config_server
     git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
@@ -807,28 +806,23 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
 
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server or not config_server.config or not config_server.config.repositories:
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config.repositories.remove(repository[0])
+    git_property.repositories.remove(repository[0])
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_update(cmd, client, resource_group, name, repo_name,
