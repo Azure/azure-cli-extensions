@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import os
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
-                               StorageAccountPreparer, api_version_constraint)
+                               StorageAccountPreparer, api_version_constraint, live_only)
 from azure.cli.core.profiles import ResourceType
 from ..storage_test_util import StorageScenarioMixin
 from knack.util import CLIError
@@ -14,6 +14,7 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
     def oauth_cmd(self, cmd, *args, **kwargs):
         return self.cmd(cmd + ' --auth-mode login', *args, **kwargs)
 
+    @live_only()
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     def test_storage_blob_sas_oauth(self, resource_group, storage_account):
@@ -49,7 +50,7 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
         sas = self.oauth_cmd('storage blob generate-sas -c {container} -n {blob} --https-only --permissions acdrw '
                              '--expiry {expiry} --as-user --account-name {account} -otsv').output.strip()
         self.kwargs['blob_sas'] = sas
-        self.cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} '
+        self.cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --overwrite '
                  '--account-name {account} --sas-token "{blob_sas}"')
 
         self.cmd('storage blob show -c {container} -n {blob} --account-name {account} --sas-token {blob_sas}') \

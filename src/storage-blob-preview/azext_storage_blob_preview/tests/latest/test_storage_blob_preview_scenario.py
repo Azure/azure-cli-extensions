@@ -83,8 +83,10 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('length(@)', 2))
 
     @ResourceGroupPreparer(name_prefix='clitest')
-    @StorageAccountPreparer(name_prefix='version')
+    @StorageAccountPreparer(name_prefix='version', kind='StorageV2', location='eastus2euap')
     def test_storage_blob_versioning(self, resource_group, storage_account):
+        import time
+        from datetime import datetime, timedelta
         self.cmd('storage  account blob-service-properties update -n {} -g {} --enable-versioning '.format(
             storage_account, resource_group), checks=[
             JMESPathCheck('isVersioningEnabled', True)
@@ -92,36 +94,60 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info, prefix="con")
 
-        local_file = self.create_temp_file(128)
+        temp_dir = self.create_temp_dir()
+        local_file = self.create_temp_file(1)
         blob_name = self.create_random_name(prefix='blob', length=24)
 
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
                          container, local_file, blob_name)
+        while True:
+            # get previous version
+            result = self.storage_cmd('storage blob list -c {} --include v', account_info,
+                                      container).get_output_in_json()
+            version_id = result[0]['versionId']
+            if version_id:
+                break
+            time.sleep(10)
+            self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --overwrite ', account_info,
+                             container, local_file, blob_name)
 
-        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
-
-        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
-                         container, local_file, blob_name)
-
-        # get versions
-        version_id = self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+        local_file2 = self.create_temp_file(2)
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --overwrite ', account_info,
+                         container, local_file2, blob_name)
 
         # show with version id
-        self.storage_cmd('storage blob show -c {} -n {} --version-id {}', account_info, container)
+        self.storage_cmd('storage blob show -c {} -n {} --version-id {} ', account_info, container, blob_name,
+                         version_id).assert_with_checks(JMESPathCheck('versionId', version_id),
+                                                        JMESPathCheck('name', blob_name),
+                                                        JMESPathCheck('properties.blobTier', 'Hot'),
+                                                        JMESPathCheck('properties.contentLength', 1024))
 
         # download with version id
-        self.storage_cmd('storage blob download -c {} -n {} --version-id {}', account_info, container)
+        self.storage_cmd('storage blob download -c {} -n {} --version-id {} -f "{}" ', account_info, container,
+                         blob_name, version_id, os.path.join(temp_dir, local_file))
 
         # set-tier with version id, not for page blob
-        self.storage_cmd('storage blob set-tier -c {} -n {} --version-id {} --version-id {} ', account_info, container)
+        self.storage_cmd('storage blob set-tier -c {} -n {} --version-id {} --tier Cool ', account_info, container,
+                         blob_name, version_id)
+        self.storage_cmd('storage blob show -c {} -n {} --version-id {} ', account_info, container, blob_name,
+                         version_id).assert_with_checks(JMESPathCheck('versionId', version_id),
+                                                        JMESPathCheck('name', blob_name),
+                                                        JMESPathCheck('properties.blobTier', 'Cool'))
 
         # generate sas with version id
-        sas_token = self.storage_cmd('storage blob generate-sas -c {} -n {} --version-id {}', account_info, container)
+        expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+        sas_token = self.storage_cmd(
+            'storage blob generate-sas -c {} -n {} --version-id {} --permissions dx --expiry {} ', account_info,
+            container, blob_name, version_id, expiry).output.strip('\n')
 
         # delete with version id
-        self.cmd('storage blob delete -c {} -n {} --version-id {} --account-name {} --sas-token {} '.format(
+        self.storage_cmd('storage blob list -c {} --include v', account_info, container)\
+            .assert_with_checks(JMESPathCheck('length(@)', 2))
+        self.cmd('storage blob delete -c {} -n {} --version-id {} --account-name {} --sas-token "{}" '.format(
             container, blob_name, version_id, storage_account, sas_token))
-        self.storage_cmd('storage blob list -c {} --include v', account_info, container)
+
+        self.storage_cmd('storage blob list -c {} --include v', account_info, container)\
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='blobtag', kind='StorageV2', location='eastus2euap')
@@ -188,7 +214,7 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
                          '--source-tags-condition "{}" ', account_info, blob_name1, container1, container2,
                          blob_name2, tag_condition)
 
-        self.storage_cmd('storage blob upload -n {} -c {} --tags-condition "{}" -f "{}" --tags {}', account_info,
+        self.storage_cmd('storage blob upload -n {} -c {} --tags-condition "{}" -f "{}" --tags {} --overwrite ', account_info,
                          blob_name1, container1, tag_condition, local_file, tags)
 
         # metadata

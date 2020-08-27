@@ -15,8 +15,8 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-storage/11.1.0
-        Azure-SDK-For-Python AZURECLI/2.10.1
+      - python/3.7.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-storage/11.1.0 Azure-SDK-For-Python AZURECLI/2.11.0
       accept-language:
       - en-US
     method: POST
@@ -32,7 +32,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 19 Aug 2020 02:42:50 GMT
+      - Thu, 27 Aug 2020 08:18:46 GMT
       expires:
       - '-1'
       pragma:
@@ -48,7 +48,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11997'
     status:
       code: 200
       message: OK
@@ -60,9 +60,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.10.1
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.11.0
       x-ms-date:
-      - Wed, 19 Aug 2020 02:42:50 GMT
+      - Thu, 27 Aug 2020 08:18:47 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -74,11 +74,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 19 Aug 2020 02:42:53 GMT
+      - Thu, 27 Aug 2020 08:18:49 GMT
       etag:
-      - '"0x8D843E9923E6106"'
+      - '"0x8D84A61D402D62C"'
       last-modified:
-      - Wed, 19 Aug 2020 02:42:53 GMT
+      - Thu, 27 Aug 2020 08:18:50 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -89,7 +89,7 @@ interactions:
 - request:
     body: '<?xml version=''1.0'' encoding=''utf-8''?>
 
-      <KeyInfo><Start>2020-08-19T02:42:54Z</Start><Expiry>2020-08-19T03:42:00Z</Expiry></KeyInfo>'
+      <KeyInfo><Start>2020-08-27T08:18:51Z</Start><Expiry>2020-08-27T09:18:00Z</Expiry></KeyInfo>'
     headers:
       Accept:
       - application/xml
@@ -104,19 +104,19 @@ interactions:
       User-Agent:
       - azsdk-python-storage-blob/12.4.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Wed, 19 Aug 2020 02:42:54 GMT
+      - Thu, 27 Aug 2020 08:18:51 GMT
       x-ms-version:
       - '2019-12-12'
     method: POST
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=userdelegationkey
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><UserDelegationKey><SignedOid>21cd756e-e290-4a26-9547-93e8cc1a8923</SignedOid><SignedTid>54826b22-38d6-4fb2-bad9-b7b93a3e9c5a</SignedTid><SignedStart>2020-08-19T02:42:54Z</SignedStart><SignedExpiry>2020-08-19T03:42:00Z</SignedExpiry><SignedService>b</SignedService><SignedVersion>2019-12-12</SignedVersion><Value>SkuJdRKoMrs7AmRjPADlgtsq6WrFJOdJe07Cnby3IBI=</Value></UserDelegationKey>"
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><UserDelegationKey><SignedOid>21cd756e-e290-4a26-9547-93e8cc1a8923</SignedOid><SignedTid>54826b22-38d6-4fb2-bad9-b7b93a3e9c5a</SignedTid><SignedStart>2020-08-27T08:18:51Z</SignedStart><SignedExpiry>2020-08-27T09:18:00Z</SignedExpiry><SignedService>b</SignedService><SignedVersion>2019-12-12</SignedVersion><Value>IopCdp+At20yE9iK5sfDa4p/x8G613b63M/TK2jVg4w=</Value></UserDelegationKey>"
     headers:
       content-type:
       - application/xml
       date:
-      - Wed, 19 Aug 2020 02:42:54 GMT
+      - Thu, 27 Aug 2020 08:18:52 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -139,16 +139,18 @@ interactions:
       - '131072'
       Content-Type:
       - application/octet-stream
+      If-None-Match:
+      - '*'
       User-Agent:
       - azsdk-python-storage-blob/12.4.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Wed, 19 Aug 2020 02:42:56 GMT
+      - Thu, 27 Aug 2020 08:18:53 GMT
       x-ms-version:
       - '2019-12-12'
     method: PUT
-    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-19T03%3A42Z&sp=rwdl&spr=https&sv=2019-12-12&sr=c&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-19T02%3A42%3A54Z&ske=2020-08-19T03%3A42%3A00Z&sks=b&skv=2019-12-12&sig=TkV%2FMRhiTn%2FfagqOyS0xivOAqNJx%2FGnrY3UFiEIBwQQ%3D
+    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-27T09%3A18Z&sp=rwdl&spr=https&sv=2019-12-12&sr=c&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-27T08%3A18%3A51Z&ske=2020-08-27T09%3A18%3A00Z&sks=b&skv=2019-12-12&sig=W0HMMweNnXjJ%2FpIBtii4K11Wt3VmHJat32ZQtN5HVVA%3D
   response:
     body:
       string: ''
@@ -158,11 +160,11 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Wed, 19 Aug 2020 02:42:57 GMT
+      - Thu, 27 Aug 2020 08:18:54 GMT
       etag:
-      - '"0x8D843E99508D08A"'
+      - '"0x8D84A61D6CA8E14"'
       last-modified:
-      - Wed, 19 Aug 2020 02:42:57 GMT
+      - Thu, 27 Aug 2020 08:18:54 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-content-crc64:
@@ -177,7 +179,7 @@ interactions:
 - request:
     body: '<?xml version=''1.0'' encoding=''utf-8''?>
 
-      <KeyInfo><Start>2020-08-19T02:42:58Z</Start><Expiry>2020-08-19T03:42:00Z</Expiry></KeyInfo>'
+      <KeyInfo><Start>2020-08-27T08:18:55Z</Start><Expiry>2020-08-27T09:18:00Z</Expiry></KeyInfo>'
     headers:
       Accept:
       - application/xml
@@ -192,19 +194,19 @@ interactions:
       User-Agent:
       - azsdk-python-storage-blob/12.4.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Wed, 19 Aug 2020 02:42:58 GMT
+      - Thu, 27 Aug 2020 08:18:55 GMT
       x-ms-version:
       - '2019-12-12'
     method: POST
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=userdelegationkey
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><UserDelegationKey><SignedOid>21cd756e-e290-4a26-9547-93e8cc1a8923</SignedOid><SignedTid>54826b22-38d6-4fb2-bad9-b7b93a3e9c5a</SignedTid><SignedStart>2020-08-19T02:42:58Z</SignedStart><SignedExpiry>2020-08-19T03:42:00Z</SignedExpiry><SignedService>b</SignedService><SignedVersion>2019-12-12</SignedVersion><Value>6LOea3PM3yBUOgCMxyBiN+MlwLjjJ+xR5eXUvD3HJBU=</Value></UserDelegationKey>"
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><UserDelegationKey><SignedOid>21cd756e-e290-4a26-9547-93e8cc1a8923</SignedOid><SignedTid>54826b22-38d6-4fb2-bad9-b7b93a3e9c5a</SignedTid><SignedStart>2020-08-27T08:18:55Z</SignedStart><SignedExpiry>2020-08-27T09:18:00Z</SignedExpiry><SignedService>b</SignedService><SignedVersion>2019-12-12</SignedVersion><Value>5zsCT+0FprXpcU1IjNSNEadxSWPIECo6R3gz562ofd0=</Value></UserDelegationKey>"
     headers:
       content-type:
       - application/xml
       date:
-      - Wed, 19 Aug 2020 02:43:00 GMT
+      - Thu, 27 Aug 2020 08:18:55 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -232,11 +234,11 @@ interactions:
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Wed, 19 Aug 2020 02:43:01 GMT
+      - Thu, 27 Aug 2020 08:18:56 GMT
       x-ms-version:
       - '2019-12-12'
     method: PUT
-    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-19T03%3A42Z&sp=racwd&spr=https&sv=2019-12-12&sr=b&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-19T02%3A42%3A58Z&ske=2020-08-19T03%3A42%3A00Z&sks=b&skv=2019-12-12&sig=hE453fbTpKB9ymCeixr5XgxkP%2BOOXdwD9BexL6OYUUk%3D
+    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-27T09%3A18Z&sp=racwd&spr=https&sv=2019-12-12&sr=b&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-27T08%3A18%3A55Z&ske=2020-08-27T09%3A18%3A00Z&sks=b&skv=2019-12-12&sig=5vRJYOaitfpc6G17RkZ2fsBy94SjZlklAjDjId0MZ9E%3D
   response:
     body:
       string: ''
@@ -246,11 +248,11 @@ interactions:
       content-md5:
       - DfvoqkwgtS4bi/PLbL3xkw==
       date:
-      - Wed, 19 Aug 2020 02:43:02 GMT
+      - Thu, 27 Aug 2020 08:18:58 GMT
       etag:
-      - '"0x8D843E9980DF4B9"'
+      - '"0x8D84A61D8FC0516"'
       last-modified:
-      - Wed, 19 Aug 2020 02:43:03 GMT
+      - Thu, 27 Aug 2020 08:18:58 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-content-crc64:
@@ -274,11 +276,11 @@ interactions:
       User-Agent:
       - azsdk-python-storage-blob/12.4.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Wed, 19 Aug 2020 02:43:03 GMT
+      - Thu, 27 Aug 2020 08:18:58 GMT
       x-ms-version:
       - '2019-12-12'
     method: HEAD
-    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-19T03%3A42Z&sp=racwd&spr=https&sv=2019-12-12&sr=b&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-19T02%3A42%3A58Z&ske=2020-08-19T03%3A42%3A00Z&sks=b&skv=2019-12-12&sig=hE453fbTpKB9ymCeixr5XgxkP%2BOOXdwD9BexL6OYUUk%3D
+    uri: https://clitest000002.blob.core.windows.net/cont000003/blob000004?se=2020-08-27T09%3A18Z&sp=racwd&spr=https&sv=2019-12-12&sr=b&skoid=21cd756e-e290-4a26-9547-93e8cc1a8923&sktid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&skt=2020-08-27T08%3A18%3A55Z&ske=2020-08-27T09%3A18%3A00Z&sks=b&skv=2019-12-12&sig=5vRJYOaitfpc6G17RkZ2fsBy94SjZlklAjDjId0MZ9E%3D
   response:
     body:
       string: ''
@@ -292,17 +294,17 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Wed, 19 Aug 2020 02:43:04 GMT
+      - Thu, 27 Aug 2020 08:18:58 GMT
       etag:
-      - '"0x8D843E9980DF4B9"'
+      - '"0x8D84A61D8FC0516"'
       last-modified:
-      - Wed, 19 Aug 2020 02:43:03 GMT
+      - Thu, 27 Aug 2020 08:18:58 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Wed, 19 Aug 2020 02:42:57 GMT
+      - Thu, 27 Aug 2020 08:18:54 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
