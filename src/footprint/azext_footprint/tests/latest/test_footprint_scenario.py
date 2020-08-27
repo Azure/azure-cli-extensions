@@ -10,7 +10,7 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if
+from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 
 
@@ -22,47 +22,47 @@ def setup(test, rg):
     pass
 
 
-# EXAMPLE: /profiles/put/profilesCreateOrUpdate
+# EXAMPLE: /profiles/put/Create or update a Footprint profile.
 @try_manual
-def step__profiles_put_profilescreate(test, rg):
+def step__profiles_put_create_or_update_a_footprint_profile_(test, rg):
     test.cmd('az footprint profile create '
              '--location "westus2" '
              '--measurement-count 3 '
-             '--start-delay-milliseconds 5000 '
+             '--start-delay-ms 5000 '
              '--tags key1="value1" key2="value2" '
              '--name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /profiles/get/List Footprint profiles in a Resource Group
+# EXAMPLE: /profiles/get/Get the details of a Footprint profile.
 @try_manual
-def step__profiles_get_list_footprint_profiles_in_a_resource_group(test, rg):
-    test.cmd('az footprint profile list '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /profiles/get/List Footprint profiles in a Subscription
-@try_manual
-def step__profiles_get_list_footprint_profiles_in_a_subscription(test, rg):
-    test.cmd('az footprint profile list '
-             '-g ""',
-             checks=[])
-
-
-# EXAMPLE: /profiles/get/profilesGet
-@try_manual
-def step__profiles_get_profilesget(test, rg):
+def step__profiles_get_get_the_details_of_a_footprint_profile_(test, rg):
     test.cmd('az footprint profile show '
              '--name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /profiles/patch/profilesUpdate
+# EXAMPLE: /profiles/get/List all Footprint profiles under a Resource Group.
 @try_manual
-def step__profiles_patch_profilesupdate(test, rg):
+def step__profiles_get_list_all_footprint_profiles_under_a_resource_group_(test, rg):
+    test.cmd('az footprint profile list '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /profiles/get/List all Footprint profiles under a subscription.
+@try_manual
+def step__profiles_get_list_all_footprint_profiles_under_a_subscription_(test, rg):
+    test.cmd('az footprint profile list '
+             '-g ""',
+             checks=[])
+
+
+# EXAMPLE: /profiles/patch/Update a Footprint profile.
+@try_manual
+def step__profiles_patch_update_a_footprint_profile_(test, rg):
     test.cmd('az footprint profile update '
              '--tags key1="value1" key2="value2" '
              '--name "{myProfile}" '
@@ -70,9 +70,9 @@ def step__profiles_patch_profilesupdate(test, rg):
              checks=[])
 
 
-# EXAMPLE: /experiments/put/experimentsCreateOrUpdate
+# EXAMPLE: /experiments/put/Create or update an experiment.
 @try_manual
-def step__experiments_put_experimentscreate(test, rg):
+def step__experiments_put_create_or_update_an_experiment_(test, rg):
     test.cmd('az footprint experiment create '
              '--name "{myExperiment}" '
              '--description "An experiment description." '
@@ -81,20 +81,9 @@ def step__experiments_put_experimentscreate(test, rg):
              checks=[])
 
 
-# EXAMPLE: /experiments/put/experimentsCreateOrUpdate
+# EXAMPLE: /experiments/get/Get the details of an experiment.
 @try_manual
-def step__experiments_put_experimentsupdate(test, rg):
-    test.cmd('az footprint experiment update '
-             '--name "{myExperiment}" '
-             '--description "An experiment description." '
-             '--profile-name "{myProfile}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /experiments/get/experimentsGet
-@try_manual
-def step__experiments_get_experimentsget(test, rg):
+def step__experiments_get_get_the_details_of_an_experiment_(test, rg):
     test.cmd('az footprint experiment show '
              '--name "{myExperiment}" '
              '--profile-name "{myProfile}" '
@@ -102,18 +91,18 @@ def step__experiments_get_experimentsget(test, rg):
              checks=[])
 
 
-# EXAMPLE: /experiments/get/experimentsListByProfile
+# EXAMPLE: /experiments/get/List all experiments under a Footprint profile.
 @try_manual
-def step__experiments_get_experimentslistbyprofile(test, rg):
+def step__experiments_get_list_all_experiments_under_a_footprint_profile_(test, rg):
     test.cmd('az footprint experiment list '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /measurementEndpoints/put/measurementEndpointsCreateOrUpdate
+# EXAMPLE: /measurementEndpoints/put/Create or update a measurement endpoint.
 @try_manual
-def step__measurementendpoints_put_measurementendpointscreate(test, rg):
+def step__measurementendpoints_put_create_or_update_a_measurement_endpoint_(test, rg):
     test.cmd('az footprint measurement-endpoint create '
              '--name "{myMeasurementEndpoint}" '
              '--endpoint "www.contoso.com" '
@@ -126,24 +115,9 @@ def step__measurementendpoints_put_measurementendpointscreate(test, rg):
              checks=[])
 
 
-# EXAMPLE: /measurementEndpoints/put/measurementEndpointsCreateOrUpdate
+# EXAMPLE: /measurementEndpoints/get/Get the details of a measurement endpoint.
 @try_manual
-def step__measurementendpoints_put_measurementendpointsupdate(test, rg):
-    test.cmd('az footprint measurement-endpoint update '
-             '--name "{myMeasurementEndpoint}" '
-             '--endpoint "www.contoso.com" '
-             '--experiment-id "664cdec4f07d4e1083c9b3969ee2c49b" '
-             '--measurement-type 2 '
-             '--object-path "/trans.gif" '
-             '--weight 10 '
-             '--profile-name "{myProfile}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /measurementEndpoints/get/measurementEndpointsGet
-@try_manual
-def step__measurementendpoints_get_measurementendpointsget(test, rg):
+def step__measurementendpoints_get_get_the_details_of_a_measurement_endpoint_(test, rg):
     test.cmd('az footprint measurement-endpoint show '
              '--name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
@@ -151,21 +125,21 @@ def step__measurementendpoints_get_measurementendpointsget(test, rg):
              checks=[])
 
 
-# EXAMPLE: /measurementEndpoints/get/measurementEndpointsListByProfile
+# EXAMPLE: /measurementEndpoints/get/List all the measurement endpoints under a Footprint profile.
 @try_manual
-def step__measurementendpoints_get_measurementendpointslistbyprofile(test, rg):
+def step__measurementendpoints_get_list_all_the_measurement_endpoints_under_a_footprint_profile_(test, rg):
     test.cmd('az footprint measurement-endpoint list '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /measurementEndpointConditions/put/measurementEndpointConditionCreateOrUpdate
+# EXAMPLE: /measurementEndpointConditions/put/Create or update a measurement endpoint condition.
 @try_manual
-def step__measurementendpointconditions_put_measurementendpointconditioncreate(test, rg):
+def step__measurementendpointconditions_put_create_or_update_a_measurement_endpoint_condition_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition create '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--constant "Edge-Prod-WST" '
              '--operator "MatchValueIgnoreCasing" '
              '--variable "X-FD-EdgeEnvironment" '
@@ -174,76 +148,62 @@ def step__measurementendpointconditions_put_measurementendpointconditioncreate(t
              checks=[])
 
 
-# EXAMPLE: /measurementEndpointConditions/put/measurementEndpointConditionCreateOrUpdate
+# EXAMPLE: /measurementEndpointConditions/get/Get the details of a measurement endpoint condition.
 @try_manual
-def step__measurementendpointconditions_put_measurementendpointconditionupdate(test, rg):
-    test.cmd('az footprint measurement-endpoint-condition update '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
-             '--constant "Edge-Prod-WST" '
-             '--operator "MatchValueIgnoreCasing" '
-             '--variable "X-FD-EdgeEnvironment" '
-             '--profile-name "{myProfile}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /measurementEndpointConditions/get/measurementEndpointConditionGet
-@try_manual
-def step__measurementendpointconditions_get_measurementendpointconditionget(test, rg):
+def step__measurementendpointconditions_get_get_the_details_of_a_measurement_endpoint_condition_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition show '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /measurementEndpointConditions/get/measurementEndpointConditionsListByEndpoint
+# EXAMPLE: /measurementEndpointConditions/get/List all conditions under a measurement endpoint.
 @try_manual
-def step__measurementendpointconditions_get_measurementendpointconditionslistbyendpoint(test, rg):
+def step__measurementendpointconditions_get_list_all_conditions_under_a_measurement_endpoint_(test, rg):
     test.cmd('az footprint measurement-endpoint-condition list '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /measurementEndpointConditions/delete/measurementEndpointConditionDelete
+# EXAMPLE: /measurementEndpointConditions/delete/Delete a measurement endpoint condition.
 @try_manual
-def step__measurementendpointconditions_delete_measurementendpointconditiondelete(test, rg):
-    test.cmd('az footprint measurement-endpoint-condition delete '
-             '--condition-name "condition0" '
-             '--measurement-endpoint-name "{myMeasurementEndpoint}" '
+def step__measurementendpointconditions_delete_delete_a_measurement_endpoint_condition_(test, rg):
+    test.cmd('az footprint measurement-endpoint-condition delete -y '
+             '--name "condition0" '
+             '--endpoint-name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /experiments/delete/experimentsDelete
+# EXAMPLE: /experiments/delete/Delete an experiment.
 @try_manual
-def step__experiments_delete_experimentsdelete(test, rg):
-    test.cmd('az footprint experiment delete '
+def step__experiments_delete_delete_an_experiment_(test, rg):
+    test.cmd('az footprint experiment delete -y '
              '--name "{myExperiment}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /measurementEndpoints/delete/measurementEndpointsDelete
+# EXAMPLE: /measurementEndpoints/delete/Delete a measurement endpoint.
 @try_manual
-def step__measurementendpoints_delete_measurementendpointsdelete(test, rg):
-    test.cmd('az footprint measurement-endpoint delete '
+def step__measurementendpoints_delete_delete_a_measurement_endpoint_(test, rg):
+    test.cmd('az footprint measurement-endpoint delete -y '
              '--name "{myMeasurementEndpoint}" '
              '--profile-name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
 
 
-# EXAMPLE: /profiles/delete/profilesDelete
+# EXAMPLE: /profiles/delete/Delete a Footprint profile.
 @try_manual
-def step__profiles_delete_profilesdelete(test, rg):
-    test.cmd('az footprint profile delete '
+def step__profiles_delete_delete_a_footprint_profile_(test, rg):
+    test.cmd('az footprint profile delete -y '
              '--name "{myProfile}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -257,27 +217,24 @@ def cleanup(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
-    step__profiles_put_profilescreate(test, rg)
-    step__profiles_get_list_footprint_profiles_in_a_resource_group(test, rg)
-    step__profiles_get_list_footprint_profiles_in_a_subscription(test, rg)
-    step__profiles_get_profilesget(test, rg)
-    step__profiles_patch_profilesupdate(test, rg)
-    step__experiments_put_experimentscreate(test, rg)
-    step__experiments_put_experimentsupdate(test, rg)
-    step__experiments_get_experimentsget(test, rg)
-    step__experiments_get_experimentslistbyprofile(test, rg)
-    step__measurementendpoints_put_measurementendpointscreate(test, rg)
-    step__measurementendpoints_put_measurementendpointsupdate(test, rg)
-    step__measurementendpoints_get_measurementendpointsget(test, rg)
-    step__measurementendpoints_get_measurementendpointslistbyprofile(test, rg)
-    step__measurementendpointconditions_put_measurementendpointconditioncreate(test, rg)
-    step__measurementendpointconditions_put_measurementendpointconditionupdate(test, rg)
-    step__measurementendpointconditions_get_measurementendpointconditionget(test, rg)
-    step__measurementendpointconditions_get_measurementendpointconditionslistbyendpoint(test, rg)
-    step__measurementendpointconditions_delete_measurementendpointconditiondelete(test, rg)
-    step__experiments_delete_experimentsdelete(test, rg)
-    step__measurementendpoints_delete_measurementendpointsdelete(test, rg)
-    step__profiles_delete_profilesdelete(test, rg)
+    step__profiles_put_create_or_update_a_footprint_profile_(test, rg)
+    step__profiles_get_get_the_details_of_a_footprint_profile_(test, rg)
+    step__profiles_get_list_all_footprint_profiles_under_a_resource_group_(test, rg)
+    step__profiles_get_list_all_footprint_profiles_under_a_subscription_(test, rg)
+    step__profiles_patch_update_a_footprint_profile_(test, rg)
+    step__experiments_put_create_or_update_an_experiment_(test, rg)
+    step__experiments_get_get_the_details_of_an_experiment_(test, rg)
+    step__experiments_get_list_all_experiments_under_a_footprint_profile_(test, rg)
+    step__measurementendpoints_put_create_or_update_a_measurement_endpoint_(test, rg)
+    step__measurementendpoints_get_get_the_details_of_a_measurement_endpoint_(test, rg)
+    step__measurementendpoints_get_list_all_the_measurement_endpoints_under_a_footprint_profile_(test, rg)
+    step__measurementendpointconditions_put_create_or_update_a_measurement_endpoint_condition_(test, rg)
+    step__measurementendpointconditions_get_get_the_details_of_a_measurement_endpoint_condition_(test, rg)
+    step__measurementendpointconditions_get_list_all_conditions_under_a_measurement_endpoint_(test, rg)
+    step__measurementendpointconditions_delete_delete_a_measurement_endpoint_condition_(test, rg)
+    step__experiments_delete_delete_an_experiment_(test, rg)
+    step__measurementendpoints_delete_delete_a_measurement_endpoint_(test, rg)
+    step__profiles_delete_delete_a_footprint_profile_(test, rg)
     cleanup(test, rg)
 
 
@@ -290,8 +247,9 @@ class FootprintMonitoringManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'myProfile': self.create_random_name(prefix='fpProfile1'[:5], length=10),
             'myMeasurementEndpoint': self.create_random_name(prefix='endpoint1'[:4], length=9),
-            'myExperiment': self.create_random_name(prefix='fpExp1'[:3], length=9),
+            'myExperiment': self.create_random_name(prefix='fpExp1'[:2], length=9),
         })
 
         call_scenario(self, rg)
+        calc_coverage(__file__)
         raise_if()
