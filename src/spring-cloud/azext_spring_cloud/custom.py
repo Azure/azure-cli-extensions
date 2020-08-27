@@ -767,24 +767,28 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     host_key_algorithm=None,
                     private_key=None,
                     strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    config_server_resource = client.get(resource_group, name)
+
+    config_server = config_server_resource.properties.config_server
+    git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    if config.repositories:
-        repos = [repo for repo in config.repositories if repo.name == repo_name]
+    if pattern:
+        pattern = pattern.split(",")
+
+    if git_property.repositories:
+        repos = [repo for repo in git_property.repositories if repo.name == repo_name]
         if repos:
-            raise CLIError("Repo '{}' already exiests.".format(repo_name))
+            raise CLIError("Repo '{}' already exists.".format(repo_name))
     else:
-        config.repositories = []
+        git_property.repositories = []
 
     repository = models.GitPatternRepository(
         uri=uri,
         name=repo_name,
+        pattern=pattern,
         label=label,
         search_paths=search_paths,
         username=username,
@@ -794,15 +798,12 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         private_key=private_key,
         strict_host_key_checking=strict_host_key_checking)
 
-    config.repositories.append(repository)
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    git_property.repositories.append(repository)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_resource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_resource_properties)
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):

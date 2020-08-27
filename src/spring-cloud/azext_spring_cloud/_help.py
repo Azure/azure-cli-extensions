@@ -284,22 +284,22 @@ helps['spring-cloud config-server git set'] = """
 
 helps['spring-cloud config-server git repo add'] = """
     type: command
-    short-summary: Set add a new repositry of git property of Config Server.
+    short-summary: Add a new repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo remove'] = """
     type: command
-    short-summary: Remove an existing repositry of git property of Config Server.
+    short-summary: Remove an existing repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo update'] = """
     type: command
-    short-summary: Override an existing repositry of git property of Config Server, will totally override the old one.
+    short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
 """
 
 helps['spring-cloud config-server git repo list'] = """
     type: command
-    short-summary: List all repositries of git property of Config Server.
+    short-summary: List all repositories of git property of Config Server.
 """
 
 helps['spring-cloud app binding'] = """
