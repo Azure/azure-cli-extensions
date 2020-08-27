@@ -54,3 +54,48 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
 
         self.cmd('storage blob show -c {container} -n {blob} --account-name {account} --sas-token {blob_sas}') \
             .assert_with_checks(JMESPathCheck('name', blob_name))
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_storage_append_blob_upload_oauth(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+        self.kwargs = {
+            'account': storage_account,
+            'container': self.create_container(account_info),
+            'local_file': self.create_temp_file(1, full_random=False),
+            'blob': self.create_random_name('blob', 16)
+        }
+
+        # create an append blob with pre-condition
+        self.oauth_cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --type append --if-none-match * '
+                       '--account-name {account} ')
+        result = self.oauth_cmd('storage blob show -n {blob} -c {container} --account-name {account}')\
+            .get_output_in_json()
+        self.assertEqual(result['properties']['blobType'], 'AppendBlob')
+        length = int(result['properties']['contentLength'])
+
+        # append if-none-match should throw exception
+        with self.assertRaises(Exception):
+            self.oauth_cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --type append '
+                           '--if-none-match * --account-name {} ')
+
+        # append an append blob
+        self.oauth_cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --type append '
+                       '--account-name {account} ')
+        self.oauth_cmd('storage blob show -n {blob} -c {container} --account-name {account}').assert_with_checks(
+            JMESPathCheck('properties.contentLength', length * 2),
+            JMESPathCheck('properties.blobType', 'AppendBlob')
+        )
+
+        # append an append blob with maxsize_condition
+        with self.assertRaises(Exception):
+            self.oauth_cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --type append '
+                           '--maxsize-condition 1000 --account-name {account} ')
+
+        # append an append blob with overwrite
+        self.oauth_cmd('storage blob upload -c {container} -f "{local_file}" -n {blob} --type append '
+                       '--overwrite --account-name {account} ')
+        self.oauth_cmd('storage blob show -n {blob} -c {container} --account-name {account}').assert_with_checks(
+            JMESPathCheck('properties.contentLength', length),
+            JMESPathCheck('properties.blobType', 'AppendBlob')
+        )

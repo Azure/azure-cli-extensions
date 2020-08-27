@@ -450,6 +450,18 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     return blob
 
 
+def exists(cmd, client, **kwargs):
+    from azure.core.exceptions import HttpResponseError
+    try:
+        client.get_blob_properties(**kwargs)
+        return True
+    except HttpResponseError as ex:
+        from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
+        StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
+                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        return _dont_fail_on_exist(ex, StorageErrorCode.blob_not_found)
+
+
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
                           expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                           protocol=None, cache_control=None, content_disposition=None,
@@ -566,16 +578,21 @@ def snapshot_blob(client, metadata=None, **kwargs):
 
 
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
-                metadata=None, validate_content=False, max_connections=2, lease_id=None,
-                progress_callback=None, encryption_scope=None, **kwargs):
+                metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
+                if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
+                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, **kwargs):
     """Upload a blob to a container."""
 
     upload_args = {
         'blob_type': transform_blob_type(cmd, blob_type),
         'lease': lease_id,
-        'max_concurrency': max_connections,
-        'overwrite': True
+        'max_concurrency': max_connections
     }
+
+    if overwrite is not None:
+        upload_args['overwrite'] = overwrite
+    if maxsize_condition:
+        upload_args['maxsize_condition'] = maxsize_condition
 
     if cmd.supported_api_version(min_api='2016-05-31'):
         upload_args['validate_content'] = validate_content
@@ -583,11 +600,26 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
     if progress_callback:
         upload_args['raw_response_hook'] = progress_callback
 
+    check_blob_args = {
+        'lease': lease_id,
+        'if_modified_since': if_modified_since,
+        'if_unmodified_since': if_unmodified_since,
+        'if_match': if_match,
+        'if_none_match': if_none_match,
+        'timeout': timeout
+    }
+
+    # used to check for the preconditions as upload_append_blob() cannot
+    if blob_type == 'append':
+        from azure.core.exceptions import HttpResponseError
+        if exists(cmd, client, timeout=timeout):
+            client.get_blob_properties(**check_blob_args)
+
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
     count = os.path.getsize(file_path)
     with open(file_path, 'rb') as stream:
-        response = client.upload_blob(data=stream, length=count, encryption_scope=encryption_scope,
+        response = client.upload_blob(data=stream, length=count, metadata=metadata, encryption_scope=encryption_scope,
                                       **upload_args, **kwargs)
 
     # PageBlobChunkUploader verifies the file when uploading the chunk data, If the contents of the file are

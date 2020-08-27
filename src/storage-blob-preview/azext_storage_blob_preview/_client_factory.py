@@ -54,7 +54,7 @@ def cf_blob_service(cli_ctx, kwargs):
                    "sas token or login auth mode.")
 
 
-def cf_blob_client(cli_ctx, **kwargs):
+def cf_blob_client(cli_ctx, kwargs):
     return cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs.pop('container_name'),
                                                             blob=kwargs.pop('blob_name'),
                                                             snapshot=kwargs.pop('snapshot', None))

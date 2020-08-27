@@ -851,12 +851,13 @@ def block_blob_tier_validator(cmd, namespace):
 
 
 def blob_tier_validator(cmd, namespace):
-    if namespace.blob_type == 'page':
-        page_blob_tier_validator(cmd, namespace)
-    elif namespace.blob_type == 'block':
-        block_blob_tier_validator(cmd, namespace)
-    else:
-        raise ValueError('Blob tier is only applicable to block or page blob.')
+    if namespace.tier:
+        if namespace.blob_type == 'page':
+            page_blob_tier_validator(cmd, namespace)
+        elif namespace.blob_type == 'block':
+            block_blob_tier_validator(cmd, namespace)
+        else:
+            raise ValueError('Blob tier is only applicable to block or page blob.')
     del namespace.tier
 
 

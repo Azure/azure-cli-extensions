@@ -350,6 +350,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
                    help='Path of the file to upload as the blob content.')
+        c.argument('overwrite', arg_type=get_three_state_flag(),
+                   help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
+                   'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
+                   'The exception to the above is with Append blob types: if set to False and the data already exists, '
+                   'an error will not be raised and the data will be appended to the existing blob. If set '
+                   'overwrite=True, then the existing append blob will be deleted, and a new one created. '
+                   'Defaults to False.', is_preview=True)
         c.argument('max_connections', type=int,
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
         c.extra('maxsize_condition', type=int,
