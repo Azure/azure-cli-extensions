@@ -73,6 +73,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
             while poller.done() is False:
                 sleep(5)
 
+
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                         disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
@@ -116,7 +117,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
             trace_properties = update_tracing_config(cmd, resource_group, name, location, resource_properties,
                                                      app_insights_key, app_insights, disable_distributed_tracing)
         sdk_no_wait(no_wait, client.monitoring_settings.update_put,
-                        resource_group_name=resource_group, service_name=name, resource=trace_properties)
+                    resource_group_name=resource_group, service_name=name, resource=trace_properties)
 
     # update service tags
     if tags is not None:
@@ -1308,6 +1309,7 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
     return trace_properties
+
 
 def try_create_application_insights(cmd, resource_group, name, location):
     creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
