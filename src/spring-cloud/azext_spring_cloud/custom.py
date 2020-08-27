@@ -874,9 +874,13 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
 
 
 def config_repo_list(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
-    return config.repositories
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
+        raise CLIError("Repos not found.")
+
+    return config_server.git_property.repositories
 
 
 def binding_list(cmd, client, resource_group, service, app):
