@@ -219,7 +219,7 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
-    sku = models.Sku(capacity=instance_count)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
 
     # create default deployment
     logger.warning(
@@ -451,7 +451,7 @@ def app_scale(cmd, client, resource_group, service, name,
         memory_in_gb=memory)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    sku = models.Sku(capacity=instance_count)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
                        resource_group, service, name, deployment, properties=properties, sku=sku)
 
@@ -1137,7 +1137,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         environment_variables=env,
         jvm_options=jvm_options,
         runtime_version=runtime_version)
-    sku = models.Sku(capacity=instance_count)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     user_source_info = models.UserSourceInfo(
         version=version,
         relative_path=relative_path,
