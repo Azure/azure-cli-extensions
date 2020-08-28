@@ -89,9 +89,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
     resource = client.services.get(resource_group, name)
     location = resource.location
-    resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
-    trace_properties = client.monitoring_settings.get(resource_group, name)
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
     trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
 
     app_insights_target_status = False
@@ -99,7 +98,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         app_insights_target_status = True
         if trace_enabled is False:
             update_app_insights = True
-        elif app_insights_key != trace_properties.app_insights_instrumentation_key:
+        elif app_insights is not None or (app_insights_key is not None and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
@@ -114,17 +113,17 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
                 and app_insights is None and app_insights_key is None:
             trace_properties.trace_enabled = app_insights_target_status
         else:
-            trace_properties = update_tracing_config(cmd, resource_group, name, location, resource_properties,
+            trace_properties = update_tracing_config(cmd, resource_group, name, location,
                                                      app_insights_key, app_insights, disable_distributed_tracing)
-        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
-                    resource_group_name=resource_group, service_name=name, resource=trace_properties)
+        sdk_no_wait(no_wait, client.monitoring_settings.update_patch,
+                    resource_group_name=resource_group, service_name=name, properties=trace_properties)
 
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_app_insights is False and update_service_tags is False and update_service_sku is False:
+    if update_service_tags is False and update_service_sku is False:
         return resource
 
     updated_resource.properties = updated_resource_properties
