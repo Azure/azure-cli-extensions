@@ -632,6 +632,9 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     if not skip_clone_settings:
         active_deployment_name = client.apps.get(
             resource_group, service, app).properties.active_deployment_name
+        if not active_deployment_name:
+            raise CLIError("No production deployment found, use --skip-clone-settings to skip copying settings from "
+                           "production deployment.")
         active_deployment = client.deployments.get(
             resource_group, service, app, active_deployment_name)
         if active_deployment:
