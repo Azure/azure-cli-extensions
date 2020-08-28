@@ -64,14 +64,16 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     poller = client.services.create_or_update(
         resource_group, name, resource)
     while poller.done() is False:
-        sleep(5)
+        logger.warning(" - Creating Service ..")
+        sleep(15)
     if disable_distributed_tracing is not True:
+        logger.warning("Start configure distributed tracing")
         trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
                                                  disable_distributed_tracing)
         if trace_properties is not None:
-            poller = client.monitoring_settings.update_put(resource_group, name, trace_properties)
-            while poller.done() is False:
-                sleep(5)
+            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
+    return poller
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
@@ -115,7 +117,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         else:
             trace_properties = update_tracing_config(cmd, resource_group, name, location,
                                                      app_insights_key, app_insights, disable_distributed_tracing)
-        sdk_no_wait(no_wait, client.monitoring_settings.update_patch,
+        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
                     resource_group_name=resource_group, service_name=name, properties=trace_properties)
 
     # update service tags
