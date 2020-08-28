@@ -104,11 +104,18 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, location):
+def get_helm_registry(cmd, location, dp_endpoint_dogfood=None, release_train_dogfood=None):
+    # Setting uri
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+    if dp_endpoint_dogfood:
+        get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
+        if release_train_dogfood:
+            release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
-    resource = cmd.cli_ctx.cloud.endpoints.management
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+
+    # Sending request
     try:
         r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
     except Exception as e:
@@ -181,6 +188,7 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError Response: " + str(ex.body))
     else:
+        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
