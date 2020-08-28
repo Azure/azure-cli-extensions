@@ -70,6 +70,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
         values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
         # trimming required for windows os
         if (values_file.startswith("'") or values_file.startswith('"')):
             values_file = values_file[1:]
@@ -546,7 +547,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
-        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state.")
+        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
 
@@ -642,6 +643,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
         values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
         # trimming required for windows os
         if (values_file.startswith("'") or values_file.startswith('"')):
             values_file = values_file[1:]

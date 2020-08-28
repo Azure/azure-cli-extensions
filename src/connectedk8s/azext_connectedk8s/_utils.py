@@ -176,10 +176,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
 def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
                                  message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
                                  message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
+    telemetry.set_user_fault()
     if isinstance(ex, ApiException):
         status_code = ex.status
-        if status_code // 100 != 2:
-            telemetry.set_user_fault()
         if status_code == 403:
             logger.warning(message_for_unauthorized_request)
         if status_code == 404:
@@ -188,7 +187,6 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError Response: " + str(ex.body))
     else:
-        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
