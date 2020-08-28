@@ -85,34 +85,34 @@ helps['network firewall management-ip-config show'] = """
 """
 # endregion
 
-# region AzureFirewall Threat Intelligence Whitelist
-helps['network firewall threat-intel-whitelist'] = """
+# region AzureFirewall Threat Intelligence allowlist
+helps['network firewall threat-intel-allowlist'] = """
     type: group
-    short-summary: Manage and configure Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Manage and configure Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist create'] = """
+helps['network firewall threat-intel-allowlist create'] = """
     type: command
-    short-summary: Create an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Create an Azure Firewall Threat Intelligence Allow List.
     examples:
-        - name: Create a threat intelligence whitelist
+        - name: Create a threat intelligence allow list
           text: |
-            az network firewall threat-intel-whitelist create -g MyResourceGroup -n MyFirewall --ip-addresses 10.0.0.0 10.0.0.1 --fqdns *.microsoft.com www.bing.com *google.com
+            az network firewall threat-intel-allowlist create -g MyResourceGroup -n MyFirewall --ip-addresses 10.0.0.0 10.0.0.1 --fqdns *.microsoft.com www.bing.com *google.com
 """
 
-helps['network firewall threat-intel-whitelist delete'] = """
+helps['network firewall threat-intel-allowlist delete'] = """
     type: command
-    short-summary: Delete an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Delete an Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist update'] = """
+helps['network firewall threat-intel-allowlist update'] = """
     type: command
-    short-summary: Update Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Update Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist show'] = """
+helps['network firewall threat-intel-allowlist show'] = """
     type: command
-    short-summary: Get the details of an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Get the details of an Azure Firewall Threat Intelligence Allow List.
 """
 # endregion
 
