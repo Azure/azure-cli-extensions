@@ -299,7 +299,6 @@ def app_update(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=None,
         memory_in_gb=None,
-        instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
         runtime_version=runtime_version,)
