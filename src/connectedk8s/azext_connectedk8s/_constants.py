@@ -7,6 +7,7 @@
 # pylint: disable=line-too-long
 
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
+Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
 Load_Kubeconfig_Fault_Type = 'kubeconfig-load-error'
 Read_ConfigMap_Fault_Type = 'configmap-read-error'
