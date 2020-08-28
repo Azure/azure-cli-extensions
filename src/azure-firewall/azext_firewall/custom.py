@@ -503,9 +503,9 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    'FirewallPolicyThreatIntelWhitelist',
                                    'DnsSettings')
     firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
-                                      threat_intel_mode=threat_intel_mode,
-                                      location=location,
-                                      tags=tags)
+                                     threat_intel_mode=threat_intel_mode,
+                                     location=location,
+                                     tags=tags)
 
     threat_intel_allowlist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
                                                                 fqdns=fqdns) if ip_addresses and fqdns else None
