@@ -87,7 +87,7 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
     def test_storage_blob_versioning(self, resource_group, storage_account):
         import time
         from datetime import datetime, timedelta
-        self.cmd('storage  account blob-service-properties update -n {} -g {} --enable-versioning '.format(
+        self.cmd('storage account blob-service-properties update -n {} -g {} --enable-versioning '.format(
             storage_account, resource_group), checks=[
             JMESPathCheck('isVersioningEnabled', True)
         ])
@@ -100,6 +100,7 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
 
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
                          container, local_file, blob_name)
+        count = 1
         while True:
             # get previous version
             result = self.storage_cmd('storage blob list -c {} --include v', account_info,
@@ -110,11 +111,12 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             time.sleep(10)
             self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --overwrite ', account_info,
                              container, local_file, blob_name)
+            count += 1
 
         local_file2 = self.create_temp_file(2)
         self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --overwrite ', account_info,
                          container, local_file2, blob_name)
-
+        count += 1
         # show with version id
         self.storage_cmd('storage blob show -c {} -n {} --version-id {} ', account_info, container, blob_name,
                          version_id).assert_with_checks(JMESPathCheck('versionId', version_id),
@@ -139,15 +141,16 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         sas_token = self.storage_cmd(
             'storage blob generate-sas -c {} -n {} --version-id {} --permissions dx --expiry {} ', account_info,
             container, blob_name, version_id, expiry).output.strip('\n')
+        self.assertIn('sig=', sas_token)
 
         # delete with version id
         self.storage_cmd('storage blob list -c {} --include v', account_info, container)\
-            .assert_with_checks(JMESPathCheck('length(@)', 2))
-        self.cmd('storage blob delete -c {} -n {} --version-id {} --account-name {} --sas-token "{}" '.format(
-            container, blob_name, version_id, storage_account, sas_token))
+            .assert_with_checks(JMESPathCheck('length(@)', count))
+        self.storage_cmd('storage blob delete -c {} -n {} --version-id {} --account-name {}  ', account_info,
+                         container, blob_name, version_id, storage_account, sas_token)
 
         self.storage_cmd('storage blob list -c {} --include v', account_info, container)\
-            .assert_with_checks(JMESPathCheck('length(@)', 1))
+            .assert_with_checks(JMESPathCheck('length(@)', count - 1))
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='blobtag', kind='StorageV2', location='eastus2euap')
@@ -198,9 +201,8 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
         sas = self.storage_cmd('storage blob generate-sas -n {} -c {} --permissions t --expiry {} --https-only -o tsv',
                                account_info, blob_name1, container1, expiry).output.strip('\n')
-
-        self.cmd('storage blob tag list -n {} -c {} --account-name {} --sas-token "{}"'.format(blob_name1,
-                 container1, storage_account, sas)).assert_with_checks(JMESPathCheck('test', 'tag'))
+        self.assertTrue(sas)
+        self.assertIn('sig=', sas)
 
         # find blobs cross containers with index tags
         self.storage_cmd("storage blob filter --tag-filter \"test='tag'\" ", account_info).\

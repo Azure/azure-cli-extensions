@@ -18,6 +18,12 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     def test_storage_blob_sas_oauth(self, resource_group, storage_account):
+        """
+        Test user delegaiton SAS.
+        A user delegation SAS is secured with Azure Active Directory (Azure AD) credentials and also by the
+        permissions specified for the SAS. A user delegation SAS applies to Blob storage only.
+
+        """
         from datetime import datetime, timedelta
         expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
 
