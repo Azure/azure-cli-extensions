@@ -192,6 +192,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
+    with self.argument_context('storage blob exists') as c:
+        c.register_blob_arguments()
+
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
 

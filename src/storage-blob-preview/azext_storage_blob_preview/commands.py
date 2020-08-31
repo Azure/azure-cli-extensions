@@ -42,15 +42,16 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_client,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
         from azure.cli.command_modules.storage._format import transform_blob_output
-        from ._transformers import transform_blob_list_output, transform_blob_json_output, transform_metadata
+        from ._transformers import transform_blob_list_output, transform_blob_json_output, transform_metadata,\
+            create_boolean_result_output_transformer
         g.storage_custom_command_oauth('list', 'list_blobs', client_factory=cf_container_client,
                                        transform=transform_blob_list_output,
                                        table_transformer=transform_blob_output)
 
-
         g.storage_custom_command_oauth('copy start', 'copy_blob')
         g.storage_command_oauth('delete', 'delete_blob')
         g.storage_custom_command_oauth('download', 'download_blob')
+        g.storage_custom_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
                                        custom_command_type=get_custom_sdk(
                                            'blob', client_factory=cf_blob_service,
