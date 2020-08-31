@@ -12,7 +12,7 @@
 # EXAMPLE: IntegrationRuntimes_Create
 def step_integrationruntimes_create(test, rg):
     test.cmd('az datafactory integration-runtime self-hosted create '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--description "A selfhosted integration runtime" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}"',
@@ -24,7 +24,7 @@ def step_integrationruntimes_create(test, rg):
 
 def step_triggerruns_rerun(test, rg):
     test.cmd('az datafactory trigger-run rerun '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--resource-group "{rg}" '
              '--trigger-name "{myTrigger}" '
              '--run-id "{myRunId}"',
@@ -33,7 +33,7 @@ def step_triggerruns_rerun(test, rg):
 
 def step_pipelines_createrun(test, rg):
     output = test.cmd('az datafactory pipeline create-run '
-                      '--factory-name "{myFactoryName}" '
+                      '--factory-name "{myFactory}" '
                       '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
                       '--name "{myPipeline}" '
                       '--resource-group "{rg}"',
@@ -43,7 +43,7 @@ def step_pipelines_createrun(test, rg):
 
 def step_triggerruns_querybyfactory(test, rg):
     output = test.cmd('az datafactory trigger-run query-by-factory '
-                      '--factory-name "{myFactoryName}" '
+                      '--factory-name "{myFactory}" '
                       '--last-updated-after "{myStartTime}" '
                       '--last-updated-before "{myEndTime}" '
                       '--resource-group "{rg}"',
@@ -53,7 +53,7 @@ def step_triggerruns_querybyfactory(test, rg):
 
 def step_integrationruntimes_managed_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
              '--description "Managed Integration Runtime" '
@@ -70,7 +70,7 @@ def step_integrationruntimes_managed_create(test, rg):
 
 def step_pipelines_wait_create(test, rg):
     test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"Wait1\\",'
              '\\"type\\":\\"Wait\\",\\"dependsOn\\":[],\\"userProperties'
              '\\":[],\\"typeProperties\\":{{\\"waitTimeInSeconds\\":5'
@@ -95,7 +95,7 @@ def step_triggers_tumble_create(test, rg):
              '\\"endTime\\":\\"{myEndTime}\\",\\"delay\\":\\"00:00:00\\",'
              '\\"maxConcurrency\\":50,\\"retryPolicy\\":{{\\"intervalInSeconds'
              '\\":30}},\\"dependsOn\\":[]}}}}" '
-             '--factory-name "{myFactoryName}" '
+             '--factory-name "{myFactory}" '
              '--name "{myTrigger}"',
              checks=[
                  test.check('name', "{myTrigger}"),
