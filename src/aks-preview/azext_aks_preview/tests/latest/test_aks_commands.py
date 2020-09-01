@@ -281,7 +281,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('[0].roleDefinitionName', 'Contributor')
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_confcom_addon(self, resource_group, resource_group_location):
