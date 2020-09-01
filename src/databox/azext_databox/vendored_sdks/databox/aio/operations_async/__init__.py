@@ -6,11 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._data_box_management_client import DataBoxManagementClient
-__all__ = ['DataBoxManagementClient']
+from ._operation_operations_async import OperationOperations
+from ._job_operations_async import JobOperations
+from ._service_operations_async import ServiceOperations
 
-try:
-    from ._patch import patch_sdk
-    patch_sdk()
-except ImportError:
-    pass
+__all__ = [
+    'OperationOperations',
+    'JobOperations',
+    'ServiceOperations',
+]
