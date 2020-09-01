@@ -197,20 +197,6 @@ class TestValidateIPRanges(unittest.TestCase):
             validate_vnet(_get_test_cmd(), ns)
             self.assertTrue('subnet should not associate with any route tables.' in str(context.exception))
 
-    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
-    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
-    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
-                _mock_get_graph_rbac_management_client)
-    def test_vnet_without_permission(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None,
-                       app_subnet='/subscriptions/33333333-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
-                       service_runtime_subnet='/subscriptions/33333333-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
-        with self.assertLogs('cli.azext_spring_cloud._validators', level='WARNING') as cm:
-            validate_vnet(_get_test_cmd(), ns)
-            self.assertTrue(
-                'Please make sure to grant Azure Spring Cloud service permission to the virtual network.' in str(
-                    cm.output))
-
     def test_subnets_same(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None,
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualnetworks/test-Vnet/subnets/app',

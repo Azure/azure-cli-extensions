@@ -189,7 +189,6 @@ def validate_vnet(cmd, namespace):
         namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj.address_space.address_prefixes) if \
             vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
             else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
-    _check_spring_cloud_rp_permission(cmd, vnet_id)
 
 
 def _validate_subnet(namespace, subnet):
@@ -210,32 +209,6 @@ def _validate_subnet(namespace, subnet):
     address = ip_network(subnet.address_prefix, strict=False)
     if address.prefixlen > limit:
         raise CLIError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
-
-
-def _check_spring_cloud_rp_permission(cmd, vnet_id):
-    vnet = parse_resource_id(vnet_id)
-    auth_client = _get_authorization_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
-    assignments = auth_client.role_assignments.list_for_scope(vnet_id)
-    objectIds = [x.principal_id for x in assignments if x.principal_type == 'ServicePrincipal' and
-                 '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' in x.role_definition_id]
-    objectId = _look_up_spring_cloud_rp(cmd, objectIds, subscription_id=vnet['subscription'])
-    if not objectId:
-        logger.warning("Please make sure to grant Azure Spring Cloud service permission to the virtual network. Refer "
-                       "to https://aka.ms/asc/vnet-permission-help for more details.")
-
-
-def _look_up_spring_cloud_rp(cmd, objectIds, subscription_id=None):
-    if not objectIds:
-        return None
-    graph_client = _get_graph_rbac_management_client(cmd.cli_ctx, subscription_id=subscription_id)
-    from azure.graphrbac.models import GetObjectsParameters
-    for i in range(0, len(objectIds), 1000):
-        params = GetObjectsParameters(include_directory_object_references=True, object_ids=objectIds[i:i + 1000])
-        result = list(graph_client.objects.get_objects_by_object_ids(params))
-        app = next((x for x in result if x.app_id and x.app_id == 'e8de9221-a19c-4c81-b814-fd37c6caf9d2'), None)
-        if app:
-            return app
-    return None
 
 
 def _get_vnet(cmd, vnet_id):
