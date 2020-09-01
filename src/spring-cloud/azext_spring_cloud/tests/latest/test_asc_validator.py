@@ -30,7 +30,7 @@ def _get_test_cmd():
 
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
-        def _get_subnet(vnet_id, name, address_prefix=None, route_table=None, ip_configurations=None):
+        def _get_subnet(vnet_id, name, address_prefix=None, route_table=None, ip_configurations=None, location=None):
             subnet = mock.MagicMock()
             subnet.id = '{0}/subnets/{1}'.format(vnet_id, name)
             subnet.name = name
@@ -39,24 +39,29 @@ def _mock_get_vnet(cmd, vnet_id):
             subnet.ip_configurations = ip_configurations
             return subnet
 
-        def _get_mock_vnet(id, **kwargs):
+        def _get_mock_vnet(id, location, **kwargs):
             vnet = mock.MagicMock()
             vnet.id = id
+            vnet.location = location
             vnet.subnets = [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
             return vnet
 
         all_mocks = [
             _get_mock_vnet(
                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet",
+                'eastus',
                 address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
+                'eastus',
                 address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
+                'eastus',
                 route_table=mock.MagicMock(), address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/33333333-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
+                'eastus',
                 address_prefix='10.0.0.0/24'),
         ]
         for x in all_mocks:
@@ -246,3 +251,15 @@ class TestValidateIPRanges(unittest.TestCase):
             self.assertEqual(
                 'Cannot set "reserved-cidr-range" automatically.Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.',
                 str(context.exception))
+
+    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
+    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
+    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
+                _mock_get_graph_rbac_management_client)
+    def test_vnet_location(self):
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.1/16', resource_group='test', vnet=None, sku=None, location='westus',
+                       app_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/app',
+                       service_runtime_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/svc')
+        with self.assertRaises(CLIError) as context:
+            validate_vnet(_get_test_cmd(), ns)
+        self.assertTrue('--vnet and Azure Spring Cloud instance should be in the same location.' in str(context.exception))
