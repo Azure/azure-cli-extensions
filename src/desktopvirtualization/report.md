@@ -59,11 +59,12 @@ create a desktopvirtualization hostpool.
 |**--host-pool-name**|string|The name of the host pool within the specified resource group|host_pool_name|
 |**--location**|string|The geo-location where the resource lives|location|
 |**--host-pool-type**|choice|HostPool type for desktop.|host_pool_type|
-|**--personal-desktop-assignment-type**|choice|PersonalDesktopAssignment type for HostPool.|personal_desktop_assignment_type|
 |**--load-balancer-type**|choice|The type of the load balancer.|load_balancer_type|
+|**--preferred-app-group-type**|choice|The type of preferred application group type, default to Desktop Application Group|preferred_app_group_type|
 |**--tags**|dictionary|Resource tags.|tags|
 |**--friendly-name**|string|Friendly name of HostPool.|friendly_name|
 |**--description**|string|Description of HostPool.|description|
+|**--personal-desktop-assignment-type**|choice|PersonalDesktopAssignment type for HostPool.|personal_desktop_assignment_type|
 |**--custom-rdp-property**|string|Custom rdp property of HostPool.|custom_rdp_property|
 |**--max-session-limit**|integer|The max session limit of HostPool.|max_session_limit|
 |**--ring**|integer|The ring number of HostPool.|ring|
@@ -114,6 +115,7 @@ update a desktopvirtualization hostpool.
 |**--validation-environment**|boolean|Is validation environment.|validation_environment|
 |**--registration-info**|object|The registration info of HostPool.|registration_info|
 |**--sso-context**|string|Path to keyvault containing ssoContext secret.|sso_context|
+|**--preferred-app-group-type**|choice|The type of preferred application group type, default to Desktop Application Group|preferred_app_group_type|
 ### desktopvirtualization workspace create
 
 create a desktopvirtualization workspace.
