@@ -7,8 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=protected-access
-
-import argparse
-from knack.util import CLIError
-from collections import defaultdict

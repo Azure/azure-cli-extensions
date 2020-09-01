@@ -12,9 +12,8 @@ try:
     from ._models_py3 import DashboardListResult
     from ._models_py3 import DashboardParts
     from ._models_py3 import DashboardPartsPosition
-    from ._models_py3 import DashboardProperties
     from ._models_py3 import ErrorDefinition
-    from ._models_py3 import ErrorResponse, ErrorResponseException
+    from ._models_py3 import ErrorResponse
     from ._models_py3 import PatchableDashboard
     from ._models_py3 import ResourceProviderOperation
     from ._models_py3 import ResourceProviderOperationDisplay
@@ -25,9 +24,8 @@ except (SyntaxError, ImportError):
     from ._models import DashboardListResult  # type: ignore
     from ._models import DashboardParts  # type: ignore
     from ._models import DashboardPartsPosition  # type: ignore
-    from ._models import DashboardProperties  # type: ignore
     from ._models import ErrorDefinition  # type: ignore
-    from ._models import ErrorResponse, ErrorResponseException  # type: ignore
+    from ._models import ErrorResponse  # type: ignore
     from ._models import PatchableDashboard  # type: ignore
     from ._models import ResourceProviderOperation  # type: ignore
     from ._models import ResourceProviderOperationDisplay  # type: ignore
@@ -39,9 +37,8 @@ __all__ = [
     'DashboardListResult',
     'DashboardParts',
     'DashboardPartsPosition',
-    'DashboardProperties',
     'ErrorDefinition',
-    'ErrorResponse', 'ErrorResponseException',
+    'ErrorResponse',
     'PatchableDashboard',
     'ResourceProviderOperation',
     'ResourceProviderOperationDisplay',
