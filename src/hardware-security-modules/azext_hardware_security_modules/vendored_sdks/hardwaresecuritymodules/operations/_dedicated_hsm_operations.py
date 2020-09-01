@@ -20,7 +20,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -32,7 +32,7 @@ class DedicatedHsmOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.hardwaresecuritymodules.models
+    :type models: ~azure_dedicated_hsm_resource_provider.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,19 +57,20 @@ class DedicatedHsmOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         stamp_id=None,  # type: Optional[str]
         subnet=None,  # type: Optional["models.ApiEntityReference"]
-        network_interfaces=None,  # type: Optional[List["NetworkInterface"]]
+        network_interfaces=None,  # type: Optional[List["models.NetworkInterface"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.DedicatedHsm"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsm"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.DedicatedHsm(location=location, sku=sku, zones=zones, tags=tags, stamp_id=stamp_id, subnet=subnet, network_interfaces=network_interfaces)
         api_version = "2018-10-31-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self._create_or_update_initial.metadata['url']
+        url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'name': self._serialize.url("name", name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
@@ -108,10 +109,10 @@ class DedicatedHsmOperations(object):
             deserialized = self._deserialize('DedicatedHsm', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def begin_create_or_update(
         self,
@@ -123,10 +124,10 @@ class DedicatedHsmOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         stamp_id=None,  # type: Optional[str]
         subnet=None,  # type: Optional["models.ApiEntityReference"]
-        network_interfaces=None,  # type: Optional[List["NetworkInterface"]]
+        network_interfaces=None,  # type: Optional[List["models.NetworkInterface"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DedicatedHsm"
+        # type: (...) -> LROPoller
         """Create or Update a dedicated HSM in the specified subscription.
 
         :param resource_group_name: The name of the Resource Group to which the resource belongs.
@@ -136,7 +137,7 @@ class DedicatedHsmOperations(object):
         :param location: The supported Azure location where the dedicated HSM should be created.
         :type location: str
         :param sku: SKU details.
-        :type sku: ~azure.mgmt.hardwaresecuritymodules.models.Sku
+        :type sku: ~azure_dedicated_hsm_resource_provider.models.Sku
         :param zones: The Dedicated Hsm zones.
         :type zones: list[str]
         :param tags: Resource tags.
@@ -144,21 +145,25 @@ class DedicatedHsmOperations(object):
         :param stamp_id: This field will be used when RP does not support Availability zones.
         :type stamp_id: str
         :param subnet: Specifies the identifier of the subnet.
-        :type subnet: ~azure.mgmt.hardwaresecuritymodules.models.ApiEntityReference
+        :type subnet: ~azure_dedicated_hsm_resource_provider.models.ApiEntityReference
         :param network_interfaces: Specifies the list of resource Ids for the network interfaces
      associated with the dedicated HSM.
-        :type network_interfaces: list[~azure.mgmt.hardwaresecuritymodules.models.NetworkInterface]
+        :type network_interfaces: list[~azure_dedicated_hsm_resource_provider.models.NetworkInterface]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns DedicatedHsm
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsm]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either DedicatedHsm or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure_dedicated_hsm_resource_provider.models.DedicatedHsm]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsm"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
             name=name,
@@ -173,6 +178,9 @@ class DedicatedHsmOperations(object):
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('DedicatedHsm', pipeline_response)
 
@@ -180,15 +188,11 @@ class DedicatedHsmOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def _update_initial(
         self,
@@ -199,14 +203,15 @@ class DedicatedHsmOperations(object):
     ):
         # type: (...) -> "models.DedicatedHsm"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsm"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.DedicatedHsmPatchParameters(tags=tags)
         api_version = "2018-10-31-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self._update_initial.metadata['url']
+        url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'name': self._serialize.url("name", name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
@@ -240,10 +245,10 @@ class DedicatedHsmOperations(object):
         deserialized = self._deserialize('DedicatedHsm', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def begin_update(
         self,
@@ -252,7 +257,7 @@ class DedicatedHsmOperations(object):
         tags=None,  # type: Optional[Dict[str, str]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DedicatedHsm"
+        # type: (...) -> LROPoller
         """Update a dedicated HSM in the specified subscription.
 
         :param resource_group_name: The name of the Resource Group to which the server belongs.
@@ -265,13 +270,17 @@ class DedicatedHsmOperations(object):
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns DedicatedHsm
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsm]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either DedicatedHsm or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure_dedicated_hsm_resource_provider.models.DedicatedHsm]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsm"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             name=name,
@@ -280,6 +289,9 @@ class DedicatedHsmOperations(object):
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('DedicatedHsm', pipeline_response)
 
@@ -287,15 +299,11 @@ class DedicatedHsmOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def _delete_initial(
         self,
@@ -305,11 +313,12 @@ class DedicatedHsmOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-10-31-preview"
 
         # Construct URL
-        url = self._delete_initial.metadata['url']
+        url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'name': self._serialize.url("name", name, 'str'),
@@ -335,9 +344,9 @@ class DedicatedHsmOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def begin_delete(
         self,
@@ -345,7 +354,7 @@ class DedicatedHsmOperations(object):
         name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> None
+        # type: (...) -> LROPoller
         """Deletes the specified Azure Dedicated HSM.
 
         :param resource_group_name: The name of the Resource Group to which the dedicated HSM belongs.
@@ -356,13 +365,17 @@ class DedicatedHsmOperations(object):
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns None
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
             name=name,
@@ -370,19 +383,18 @@ class DedicatedHsmOperations(object):
             **kwargs
         )
 
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def get(
         self,
@@ -398,16 +410,17 @@ class DedicatedHsmOperations(object):
         :param name: The name of the dedicated HSM.
         :type name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DedicatedHsm or the result of cls(response)
-        :rtype: ~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsm
+        :return: DedicatedHsm, or the result of cls(response)
+        :rtype: ~azure_dedicated_hsm_resource_provider.models.DedicatedHsm
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsm"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-10-31-preview"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'name': self._serialize.url("name", name, 'str'),
@@ -436,10 +449,10 @@ class DedicatedHsmOperations(object):
         deserialized = self._deserialize('DedicatedHsm', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs/{name}'}  # type: ignore
 
     def list_by_resource_group(
         self,
@@ -447,7 +460,7 @@ class DedicatedHsmOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DedicatedHsmListResult"
+        # type: (...) -> Iterable["models.DedicatedHsmListResult"]
         """The List operation gets information about the dedicated hsms associated with the subscription and within the specified resource group.
 
         :param resource_group_name: The name of the Resource Group to which the dedicated HSM belongs.
@@ -455,32 +468,33 @@ class DedicatedHsmOperations(object):
         :param top: Maximum number of results to return.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DedicatedHsmListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsmListResult
+        :return: An iterator like instance of either DedicatedHsmListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure_dedicated_hsm_resource_provider.models.DedicatedHsmListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsmListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-10-31-preview"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_resource_group.metadata['url']
+                url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -512,44 +526,45 @@ class DedicatedHsmOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs'}  # type: ignore
 
     def list_by_subscription(
         self,
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DedicatedHsmListResult"
+        # type: (...) -> Iterable["models.DedicatedHsmListResult"]
         """The List operation gets information about the dedicated HSMs associated with the subscription.
 
         :param top: Maximum number of results to return.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DedicatedHsmListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsmListResult
+        :return: An iterator like instance of either DedicatedHsmListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure_dedicated_hsm_resource_provider.models.DedicatedHsmListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DedicatedHsmListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-10-31-preview"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_subscription.metadata['url']
+                url = self.list_by_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -581,4 +596,4 @@ class DedicatedHsmOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HardwareSecurityModules/dedicatedHSMs'}  # type: ignore

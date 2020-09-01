@@ -11,6 +11,9 @@ try:
     from ._models_py3 import DedicatedHsm
     from ._models_py3 import DedicatedHsmError
     from ._models_py3 import DedicatedHsmListResult
+    from ._models_py3 import DedicatedHsmOperation
+    from ._models_py3 import DedicatedHsmOperationDisplay
+    from ._models_py3 import DedicatedHsmOperationListResult
     from ._models_py3 import DedicatedHsmPatchParameters
     from ._models_py3 import Error
     from ._models_py3 import NetworkInterface
@@ -22,6 +25,9 @@ except (SyntaxError, ImportError):
     from ._models import DedicatedHsm  # type: ignore
     from ._models import DedicatedHsmError  # type: ignore
     from ._models import DedicatedHsmListResult  # type: ignore
+    from ._models import DedicatedHsmOperation  # type: ignore
+    from ._models import DedicatedHsmOperationDisplay  # type: ignore
+    from ._models import DedicatedHsmOperationListResult  # type: ignore
     from ._models import DedicatedHsmPatchParameters  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import NetworkInterface  # type: ignore
@@ -38,6 +44,9 @@ __all__ = [
     'DedicatedHsm',
     'DedicatedHsmError',
     'DedicatedHsmListResult',
+    'DedicatedHsmOperation',
+    'DedicatedHsmOperationDisplay',
+    'DedicatedHsmOperationListResult',
     'DedicatedHsmPatchParameters',
     'Error',
     'NetworkInterface',

@@ -47,7 +47,7 @@ class Resource(msrest.serialization.Model):
      created.
     :type location: str
     :param sku: SKU details.
-    :type sku: ~azure.mgmt.hardwaresecuritymodules.models.Sku
+    :type sku: ~azure_dedicated_hsm_resource_provider.models.Sku
     :param zones: The Dedicated Hsm zones.
     :type zones: list[str]
     :param tags: A set of tags. Resource tags.
@@ -102,7 +102,7 @@ class DedicatedHsm(Resource):
      created.
     :type location: str
     :param sku: SKU details.
-    :type sku: ~azure.mgmt.hardwaresecuritymodules.models.Sku
+    :type sku: ~azure_dedicated_hsm_resource_provider.models.Sku
     :param zones: The Dedicated Hsm zones.
     :type zones: list[str]
     :param tags: A set of tags. Resource tags.
@@ -113,12 +113,13 @@ class DedicatedHsm(Resource):
     :vartype status_message: str
     :ivar provisioning_state: Provisioning state. Possible values include: "Succeeded",
      "Provisioning", "Allocating", "Connecting", "Failed", "CheckingQuota", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.hardwaresecuritymodules.models.JsonWebKeyType
+    :vartype provisioning_state: str or
+     ~azure_dedicated_hsm_resource_provider.models.JsonWebKeyType
     :param subnet: Specifies the identifier of the subnet.
-    :type subnet: ~azure.mgmt.hardwaresecuritymodules.models.ApiEntityReference
+    :type subnet: ~azure_dedicated_hsm_resource_provider.models.ApiEntityReference
     :param network_interfaces: Specifies the list of resource Ids for the network interfaces
      associated with the dedicated HSM.
-    :type network_interfaces: list[~azure.mgmt.hardwaresecuritymodules.models.NetworkInterface]
+    :type network_interfaces: list[~azure_dedicated_hsm_resource_provider.models.NetworkInterface]
     """
 
     _validation = {
@@ -163,7 +164,7 @@ class DedicatedHsmError(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar error: The key vault server error.
-    :vartype error: ~azure.mgmt.hardwaresecuritymodules.models.Error
+    :vartype error: ~azure_dedicated_hsm_resource_provider.models.Error
     """
 
     _validation = {
@@ -186,7 +187,7 @@ class DedicatedHsmListResult(msrest.serialization.Model):
     """List of dedicated HSMs.
 
     :param value: The list of dedicated HSMs.
-    :type value: list[~azure.mgmt.hardwaresecuritymodules.models.DedicatedHsm]
+    :type value: list[~azure_dedicated_hsm_resource_provider.models.DedicatedHsm]
     :param next_link: The URL to get the next set of dedicated hsms.
     :type next_link: str
     """
@@ -203,6 +204,89 @@ class DedicatedHsmListResult(msrest.serialization.Model):
         super(DedicatedHsmListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
+
+
+class DedicatedHsmOperation(msrest.serialization.Model):
+    """REST API operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param name: The name of the Dedicated HSM Resource Provider Operation.
+    :type name: str
+    :ivar is_data_action: Gets or sets a value indicating whether it is a data plane action.
+    :vartype is_data_action: str
+    :param display:
+    :type display: ~azure_dedicated_hsm_resource_provider.models.DedicatedHsmOperationDisplay
+    """
+
+    _validation = {
+        'is_data_action': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'str'},
+        'display': {'key': 'display', 'type': 'DedicatedHsmOperationDisplay'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DedicatedHsmOperation, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.is_data_action = None
+        self.display = kwargs.get('display', None)
+
+
+class DedicatedHsmOperationDisplay(msrest.serialization.Model):
+    """DedicatedHsmOperationDisplay.
+
+    :param provider: The Resource Provider of the operation.
+    :type provider: str
+    :param resource: Resource on which the operation is performed.
+    :type resource: str
+    :param operation: Operation type: Read, write, delete, etc.
+    :type operation: str
+    :param description: The object that represents the operation.
+    :type description: str
+    """
+
+    _attribute_map = {
+        'provider': {'key': 'provider', 'type': 'str'},
+        'resource': {'key': 'resource', 'type': 'str'},
+        'operation': {'key': 'operation', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DedicatedHsmOperationDisplay, self).__init__(**kwargs)
+        self.provider = kwargs.get('provider', None)
+        self.resource = kwargs.get('resource', None)
+        self.operation = kwargs.get('operation', None)
+        self.description = kwargs.get('description', None)
+
+
+class DedicatedHsmOperationListResult(msrest.serialization.Model):
+    """Result of the request to list Dedicated HSM Provider operations. It contains a list of operations.
+
+    :param value: List of Dedicated HSM Resource Provider operations.
+    :type value: list[~azure_dedicated_hsm_resource_provider.models.DedicatedHsmOperation]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DedicatedHsmOperation]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DedicatedHsmOperationListResult, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
 
 
 class DedicatedHsmPatchParameters(msrest.serialization.Model):
@@ -234,7 +318,7 @@ class Error(msrest.serialization.Model):
     :ivar message: The error message.
     :vartype message: str
     :ivar inner_error: The key vault server error.
-    :vartype inner_error: ~azure.mgmt.hardwaresecuritymodules.models.Error
+    :vartype inner_error: ~azure_dedicated_hsm_resource_provider.models.Error
     """
 
     _validation = {
@@ -293,7 +377,7 @@ class ResourceListResult(msrest.serialization.Model):
     """List of dedicated HSM resources.
 
     :param value: The list of dedicated HSM resources.
-    :type value: list[~azure.mgmt.hardwaresecuritymodules.models.Resource]
+    :type value: list[~azure_dedicated_hsm_resource_provider.models.Resource]
     :param next_link: The URL to get the next set of dedicated HSM resources.
     :type next_link: str
     """
