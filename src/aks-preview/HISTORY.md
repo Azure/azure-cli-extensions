@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.62
++++++
+* Add support for ACC SGX device plugin addon and quote helper.
+
 0.4.61
 +++++
 * Fix AGIC typo and remove preview label from VN #2141
