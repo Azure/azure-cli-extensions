@@ -17,7 +17,7 @@ from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
-    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
+    process_threat_intel_allowlist_ip_addresses, process_threat_intel_allowlist_fqdns,
     validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
     validate_ip_groups)
 
@@ -75,9 +75,9 @@ def load_arguments(self, _):
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
         c.argument('require_dns_proxy_for_network_rules', arg_type=get_three_state_flag(), help='Requires DNS Proxy functionality for FQDNs within Network Rules')
 
-    with self.argument_context('network firewall threat-intel-whitelist') as c:
-        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
-        c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
+    with self.argument_context('network firewall threat-intel-allowlist') as c:
+        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', validator=process_threat_intel_allowlist_fqdns, help='Space-separated list of FQDNs.')
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:
@@ -159,7 +159,7 @@ def load_arguments(self, _):
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
-    with self.argument_context('network firewall policy', arg_group='Threat Intel Whitelist') as c:
+    with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
 

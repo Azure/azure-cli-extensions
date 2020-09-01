@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.4.61
++++++
+* Fix AGIC typo and remove preview label from VN #2141
+* Set network profile when using basic load balancer. #2137
+* Fix bug that compare float number with 0 #2213
+
 0.4.60
 +++++
 * Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0

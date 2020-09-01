@@ -8,7 +8,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['ai-did-you-mean-this'] = """
     type: group
-    short-summary: Add recommendations for recovering from failure.
+    short-summary: Automatically adds failure recovery suggestions for supported scenarios.
 """
 
 helps['ai-did-you-mean-this version'] = """
