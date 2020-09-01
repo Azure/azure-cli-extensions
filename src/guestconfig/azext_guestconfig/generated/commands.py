@@ -24,7 +24,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'guestconfig_guest_configuration_assignment_show')
         g.custom_command('create', 'guestconfig_guest_configuration_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'guestconfig_guest_configuration_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'guestconfig_guest_configuration_assignment_delete', supports_no_wait=True)
         g.custom_wait_command('wait', 'guestconfig_guest_configuration_assignment_show')
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_assignment_report
@@ -50,7 +49,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'guestconfig_guest_configuration_hcrp_assignment_show')
         g.custom_command('create', 'guestconfig_guest_configuration_hcrp_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'guestconfig_guest_configuration_hcrp_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'guestconfig_guest_configuration_hcrp_assignment_delete', supports_no_wait=True)
         g.custom_wait_command('wait', 'guestconfig_guest_configuration_hcrp_assignment_show')
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_hcrp_assignment_report

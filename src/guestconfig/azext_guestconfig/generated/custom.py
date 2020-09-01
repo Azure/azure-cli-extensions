@@ -93,18 +93,6 @@ def guestconfig_guest_configuration_assignment_update(client,
                        configuration_setting=guest_configuration_configuration_setting)
 
 
-def guestconfig_guest_configuration_assignment_delete(client,
-                                                      resource_group_name,
-                                                      guest_configuration_assignment_name,
-                                                      vm_name,
-                                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       vm_name=vm_name)
-
-
 def guestconfig_guest_configuration_assignment_report_list(client,
                                                            resource_group_name,
                                                            guest_configuration_assignment_name,
@@ -203,18 +191,6 @@ def guestconfig_guest_configuration_hcrp_assignment_update(client,
                        version=guest_configuration_version,
                        configuration_parameter=guest_configuration_configuration_parameter,
                        configuration_setting=guest_configuration_configuration_setting)
-
-
-def guestconfig_guest_configuration_hcrp_assignment_delete(client,
-                                                           resource_group_name,
-                                                           guest_configuration_assignment_name,
-                                                           machine_name,
-                                                           no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       machine_name=machine_name)
 
 
 def guestconfig_guest_configuration_hcrp_assignment_report_list(client,

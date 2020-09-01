@@ -127,16 +127,6 @@ Configuration" configuration-mode="MonitorOnly" configuration-mode-frequency-min
 onfiguration-version "1.*" --resource-group "myResourceGroupName" --vm-name "myVMName"
 """
 
-helps['guestconfig guest-configuration-assignment delete'] = """
-    type: command
-    short-summary: Delete a guest configuration assignment
-    examples:
-      - name: Delete an guest configuration assignment
-        text: |-
-               az guestconfig guest-configuration-assignment delete --name "SecureProtocol" --resource-group "myResourc\
-eGroupName" --vm-name "myVMName"
-"""
-
 helps['guestconfig guest-configuration-assignment wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the guestconfig guest-configuration-assignment\
@@ -147,11 +137,6 @@ lly created.
         text: |-
                az guestconfig guest-configuration-assignment wait --name "SecureProtocol" --resource-group "myResourceG\
 roupName" --vm-name "myVMName" --created
-      - name: Pause executing next line of CLI script until the guestconfig guest-configuration-assignment is successfu\
-lly deleted.
-        text: |-
-               az guestconfig guest-configuration-assignment wait --name "SecureProtocol" --resource-group "myResourceG\
-roupName" --vm-name "myVMName" --deleted
 """
 
 helps['guestconfig guest-configuration-assignment-report'] = """
@@ -295,16 +280,6 @@ etting action-after-reboot="ContinueConfiguration" configuration-mode="MonitorOn
 5 reboot-if-needed="False" --guest-configuration-version "1.*" --resource-group "myResourceGroupName"
 """
 
-helps['guestconfig guest-configuration-hcrp-assignment delete'] = """
-    type: command
-    short-summary: Delete a guest configuration assignment
-    examples:
-      - name: Delete an guest configuration assignment
-        text: |-
-               az guestconfig guest-configuration-hcrp-assignment delete --guest-configuration-assignment-name "SecureP\
-rotocol" --machine-name "myMachineName" --resource-group "myResourceGroupName"
-"""
-
 helps['guestconfig guest-configuration-hcrp-assignment wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the guestconfig guest-configuration-hcrp-assig\
@@ -315,11 +290,6 @@ essfully created.
         text: |-
                az guestconfig guest-configuration-hcrp-assignment wait --guest-configuration-assignment-name "SecurePro\
 tocol" --machine-name "myMachineName" --resource-group "myResourceGroupName" --created
-      - name: Pause executing next line of CLI script until the guestconfig guest-configuration-hcrp-assignment is succ\
-essfully deleted.
-        text: |-
-               az guestconfig guest-configuration-hcrp-assignment wait --guest-configuration-assignment-name "SecurePro\
-tocol" --machine-name "myMachineName" --resource-group "myResourceGroupName" --deleted
 """
 
 helps['guestconfig guest-configuration-hcrp-assignment-report'] = """
