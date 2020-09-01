@@ -27,8 +27,8 @@ CONST_NODEPOOL_MODE_USER = "User"
 # naming-and-referencing-containers--blobs--and-metadata#container-names
 CONST_CONTAINER_NAME_MAX_LENGTH = 63
 
-# ACC SGX addon keys
-CONST_ACC_SGX_DEVICE_PLUGIN_ADDON_NAME = "ACCSGXDevicePlugin"
+# confcom addon keys
+CONST_CONFCOM_ADDON_NAME = "ACCSGXDevicePlugin"
 CONST_ACC_SGX_QUOTE_HELPER_ENABLED = "ACCSGXQuoteHelperEnabled"
 
 ADDONS = {
@@ -38,5 +38,5 @@ ADDONS = {
     'azure-policy': 'azurepolicy',
     'kube-dashboard': 'kubeDashboard',
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
-    "acc-sgx-device-plugin": CONST_ACC_SGX_DEVICE_PLUGIN_ADDON_NAME
+    "confcom": CONST_CONFCOM_ADDON_NAME
 }
