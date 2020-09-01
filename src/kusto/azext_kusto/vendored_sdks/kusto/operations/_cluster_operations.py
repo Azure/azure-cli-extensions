@@ -111,8 +111,8 @@ class ClusterOperations(object):
         location,  # type: str
         sku,  # type: "models.AzureSku"
         tags=None,  # type: Optional[Dict[str, str]]
-        trusted_external_tenants=None,  # type: Optional[List["models.TrustedExternalTenant"]]
         zones=None,  # type: Optional[List[str]]
+        trusted_external_tenants=None,  # type: Optional[List["models.TrustedExternalTenant"]]
         optimized_autoscale=None,  # type: Optional["models.OptimizedAutoscale"]
         enable_disk_encryption=None,  # type: Optional[bool]
         enable_streaming_ingest=False,  # type: Optional[bool]

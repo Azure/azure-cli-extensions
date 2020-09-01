@@ -47,7 +47,7 @@ def step_kustodatabasescreateorupdate(test, rg):
     test.cmd('az kusto database create '
              '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
-             '--parameters "{{\\"location\\":\\"westus\\",\\"properties\\":{{\\"softDeletePeriod\\":\\"P1D\\"}}}}" '
+             '--read-write-database location="westus" soft-delete-period="P1D" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -95,14 +95,13 @@ def step_attacheddatabaseconfigurationsget(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
+
 # EXAMPLE: KustoDataConnectionsGet
-
-
 @try_manual
 def step_kustodataconnectionsget(test, rg):
     test.cmd('az kusto data-connection show '
-             '--name "{DataConnections8}" '
              '--cluster-name "{Clusters_3}" '
+             '--name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
              '--resource-group "{rg}"',
              checks=[])
