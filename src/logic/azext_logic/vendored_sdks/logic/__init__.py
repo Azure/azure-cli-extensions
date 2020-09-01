@@ -8,3 +8,9 @@
 
 from ._logic_management_client import LogicManagementClient
 __all__ = ['LogicManagementClient']
+
+try:
+    from ._patch import patch_sdk
+    patch_sdk()
+except ImportError:
+    pass

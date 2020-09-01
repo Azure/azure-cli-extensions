@@ -6,18 +6,23 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
-T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+
+    T = TypeVar('T')
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 class IntegrationAccountAgreementOperations(object):
     """IntegrationAccountAgreementOperations operations.
@@ -49,7 +54,7 @@ class IntegrationAccountAgreementOperations(object):
         filter=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.IntegrationAccountAgreementListResult"
+        # type: (...) -> Iterable["models.IntegrationAccountAgreementListResult"]
         """Gets a list of integration account agreements.
 
         :param resource_group_name: The resource group name.
@@ -62,35 +67,36 @@ class IntegrationAccountAgreementOperations(object):
      AgreementType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: IntegrationAccountAgreementListResult or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountAgreementListResult
+        :return: An iterator like instance of either IntegrationAccountAgreementListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~logic_management_client.models.IntegrationAccountAgreementListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreementListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'integrationAccountName': self._serialize.url("integration_account_name", integration_account_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-
+                query_parameters = {}  # type: Dict[str, Any]
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
@@ -115,14 +121,14 @@ class IntegrationAccountAgreementOperations(object):
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements'}  # type: ignore
 
     def get(
         self,
@@ -141,16 +147,17 @@ class IntegrationAccountAgreementOperations(object):
         :param agreement_name: The integration account agreement name.
         :type agreement_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: IntegrationAccountAgreement or the result of cls(response)
+        :return: IntegrationAccountAgreement, or the result of cls(response)
         :rtype: ~logic_management_client.models.IntegrationAccountAgreement
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreement"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -175,15 +182,15 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('IntegrationAccountAgreement', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}  # type: ignore
 
     def create_or_update(
         self,
@@ -231,19 +238,20 @@ class IntegrationAccountAgreementOperations(object):
         :param metadata: The metadata.
         :type metadata: object
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: IntegrationAccountAgreement or the result of cls(response)
-        :rtype: ~logic_management_client.models.IntegrationAccountAgreement or ~logic_management_client.models.IntegrationAccountAgreement
+        :return: IntegrationAccountAgreement, or the result of cls(response)
+        :rtype: ~logic_management_client.models.IntegrationAccountAgreement
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationAccountAgreement"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _agreement = models.IntegrationAccountAgreement(location=location, tags=tags, metadata=metadata, agreement_type=agreement_type, host_partner=host_partner, guest_partner=guest_partner, host_identity=host_identity, guest_identity=guest_identity, content=content)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.create_or_update.metadata['url']
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -273,7 +281,7 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -283,10 +291,10 @@ class IntegrationAccountAgreementOperations(object):
             deserialized = self._deserialize('IntegrationAccountAgreement', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}  # type: ignore
 
     def delete(
         self,
@@ -305,16 +313,17 @@ class IntegrationAccountAgreementOperations(object):
         :param agreement_name: The integration account agreement name.
         :type agreement_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
+        :return: None, or the result of cls(response)
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2019-05-01"
 
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -338,12 +347,12 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}'}  # type: ignore
 
     def list_content_callback_url(
         self,
@@ -368,19 +377,20 @@ class IntegrationAccountAgreementOperations(object):
         :param key_type: The key type.
         :type key_type: str or ~logic_management_client.models.KeyType
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: WorkflowTriggerCallbackUrl or the result of cls(response)
+        :return: WorkflowTriggerCallbackUrl, or the result of cls(response)
         :rtype: ~logic_management_client.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkflowTriggerCallbackUrl"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _list_content_callback_url = models.GetCallbackUrlParameters(not_after=not_after, key_type=key_type)
         api_version = "2019-05-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.list_content_callback_url.metadata['url']
+        url = self.list_content_callback_url.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -410,12 +420,12 @@ class IntegrationAccountAgreementOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_content_callback_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}/listContentCallbackUrl'}
+    list_content_callback_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/integrationAccounts/{integrationAccountName}/agreements/{agreementName}/listContentCallbackUrl'}  # type: ignore
