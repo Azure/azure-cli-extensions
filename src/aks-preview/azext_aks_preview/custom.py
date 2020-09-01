@@ -1777,7 +1777,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
         addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME] = addon_profile
         addons.remove('ingress-appgw')
     if 'acc-sgx-device-plugin' in addons:
-        addon_profile = ManagedClusterAddonProfile(enabled=True, config={ CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false" })
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
         if enable_sgx_quote_helper:
             addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
         addon_profiles[CONST_ACC_SGX_DEVICE_PLUGIN_ADDON_NAME] = addon_profile
@@ -2563,7 +2563,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'To change acc-sgx-device-plugin configuration, run '
                                    f'"az aks disable-addons -a acc-sgx-device-plugin -n {name} -g {resource_group_name}" '
                                    'before enabling it again.')
-                addon_profile = ManagedClusterAddonProfile(enabled=True, config={ CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false" })
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
                 if enable_sgx_quote_helper:
                     addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
             addon_profiles[addon] = addon_profile
