@@ -13,22 +13,33 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_blockchain.generated._client_factory import cf_member
-    blockchain_member = CliCommandType(
+    from azext_blockchain.generated._client_factory import cf_blockchain_member
+    blockchain_blockchain_member = CliCommandType(
         operations_tmpl='azext_blockchain.vendored_sdks.blockchain.operations._blockchain_member_operations#BlockchainM'
         'emberOperations.{}',
-        client_factory=cf_member)
-    with self.command_group('blockchain member', blockchain_member, client_factory=cf_member,
-                            is_experimental=True) as g:
-        g.custom_command('list', 'blockchain_member_list')
-        g.custom_show_command('show', 'blockchain_member_show')
-        g.custom_command('create', 'blockchain_member_create', supports_no_wait=True)
-        g.custom_command('update', 'blockchain_member_update')
-        g.custom_command('delete', 'blockchain_member_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('list-api-key', 'blockchain_member_list_api_key')
-        g.custom_command('list-consortium-member', 'blockchain_member_list_consortium_member')
-        g.custom_command('regenerate-api-key', 'blockchain_member_regenerate_api_key')
-        g.wait_command('wait')
+        client_factory=cf_blockchain_member)
+    with self.command_group('blockchain blockchain-member', blockchain_blockchain_member,
+                            client_factory=cf_blockchain_member, is_experimental=True) as g:
+        g.custom_command('list', 'blockchain_blockchain_member_list')
+        g.custom_show_command('show', 'blockchain_blockchain_member_show')
+        g.custom_command('create', 'blockchain_blockchain_member_create', supports_no_wait=True)
+        g.custom_command('update', 'blockchain_blockchain_member_update')
+        g.custom_command('delete', 'blockchain_blockchain_member_delete', supports_no_wait=True)
+        g.custom_command('list-all', 'blockchain_blockchain_member_list_all')
+        g.custom_command('list-api-key', 'blockchain_blockchain_member_list_api_key')
+        g.custom_command('list-consortium-member', 'blockchain_blockchain_member_list_consortium_member')
+        g.custom_command('regenerate-api-key', 'blockchain_blockchain_member_regenerate_api_key')
+        g.custom_wait_command('wait', 'blockchain_blockchain_member_show')
+
+    from azext_blockchain.generated._client_factory import cf_blockchain_member_operation_result
+    blockchain_blockchain_member_operation_result = CliCommandType(
+        operations_tmpl='azext_blockchain.vendored_sdks.blockchain.operations._blockchain_member_operation_result_opera'
+        'tions#BlockchainMemberOperationResultOperations.{}',
+        client_factory=cf_blockchain_member_operation_result)
+    with self.command_group('blockchain blockchain-member-operation-result',
+                            blockchain_blockchain_member_operation_result,
+                            client_factory=cf_blockchain_member_operation_result, is_experimental=True) as g:
+        g.custom_show_command('show', 'blockchain_blockchain_member_operation_result_show')
 
     from azext_blockchain.generated._client_factory import cf_consortium
     blockchain_consortium = CliCommandType(
@@ -38,6 +49,13 @@ def load_command_table(self, _):
     with self.command_group('blockchain consortium', blockchain_consortium, client_factory=cf_consortium,
                             is_experimental=True) as g:
         g.custom_command('list', 'blockchain_consortium_list')
+
+    from azext_blockchain.generated._client_factory import cf_sku
+    blockchain_sku = CliCommandType(
+        operations_tmpl='azext_blockchain.vendored_sdks.blockchain.operations._sku_operations#SkuOperations.{}',
+        client_factory=cf_sku)
+    with self.command_group('blockchain sku', blockchain_sku, client_factory=cf_sku, is_experimental=True) as g:
+        g.custom_command('list', 'blockchain_sku_list')
 
     from azext_blockchain.generated._client_factory import cf_transaction_node
     blockchain_transaction_node = CliCommandType(
@@ -50,7 +68,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'blockchain_transaction_node_show')
         g.custom_command('create', 'blockchain_transaction_node_create', supports_no_wait=True)
         g.custom_command('update', 'blockchain_transaction_node_update')
-        g.custom_command('delete', 'blockchain_transaction_node_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('delete', 'blockchain_transaction_node_delete', supports_no_wait=True)
         g.custom_command('list-api-key', 'blockchain_transaction_node_list_api_key')
         g.custom_command('regenerate-api-key', 'blockchain_transaction_node_regenerate_api_key')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'blockchain_transaction_node_show')

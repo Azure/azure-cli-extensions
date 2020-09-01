@@ -6,10 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration_async import BlockchainManagementClientConfiguration
 from .operations_async import BlockchainMemberOperations
@@ -25,22 +29,23 @@ class BlockchainManagementClient(object):
     """REST API for Azure Blockchain Service.
 
     :ivar blockchain_member: BlockchainMemberOperations operations
-    :vartype blockchain_member: azure.mgmt.blockchain.aio.operations_async.BlockchainMemberOperations
+    :vartype blockchain_member: blockchain_management_client.aio.operations_async.BlockchainMemberOperations
     :ivar blockchain_member_operation_result: BlockchainMemberOperationResultOperations operations
-    :vartype blockchain_member_operation_result: azure.mgmt.blockchain.aio.operations_async.BlockchainMemberOperationResultOperations
+    :vartype blockchain_member_operation_result: blockchain_management_client.aio.operations_async.BlockchainMemberOperationResultOperations
     :ivar location: LocationOperations operations
-    :vartype location: azure.mgmt.blockchain.aio.operations_async.LocationOperations
+    :vartype location: blockchain_management_client.aio.operations_async.LocationOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.blockchain.aio.operations_async.OperationOperations
+    :vartype operation: blockchain_management_client.aio.operations_async.OperationOperations
     :ivar sku: SkuOperations operations
-    :vartype sku: azure.mgmt.blockchain.aio.operations_async.SkuOperations
+    :vartype sku: blockchain_management_client.aio.operations_async.SkuOperations
     :ivar transaction_node: TransactionNodeOperations operations
-    :vartype transaction_node: azure.mgmt.blockchain.aio.operations_async.TransactionNodeOperations
+    :vartype transaction_node: blockchain_management_client.aio.operations_async.TransactionNodeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Gets the subscription Id which uniquely identifies the Microsoft Azure subscription. The subscription ID is part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

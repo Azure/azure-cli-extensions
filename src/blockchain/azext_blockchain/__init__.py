@@ -20,8 +20,8 @@ class BlockchainManagementClientCommandsLoader(AzCommandsLoader):
         blockchain_custom = CliCommandType(
             operations_tmpl='azext_blockchain.custom#{}',
             client_factory=cf_blockchain)
-        super(BlockchainManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                       custom_command_type=blockchain_custom)
+        parent = super(BlockchainManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=blockchain_custom)
 
     def load_command_table(self, args):
         from azext_blockchain.generated.commands import load_command_table

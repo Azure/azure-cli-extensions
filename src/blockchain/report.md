@@ -1,15 +1,8 @@
 # Azure CLI Module Creation Report
 
-### blockchain consortium list
+### blockchain blockchain-member create
 
-list a blockchain consortium.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--location-name**|string|Location Name.|location_name|
-### blockchain member create
-
-create a blockchain member.
+create a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -26,46 +19,46 @@ create a blockchain member.
 |**--consortium-role**|string|Gets the role of the member in the consortium.|consortium_role|
 |**--consortium-member-display-name**|string|Gets the display name of the member in the consortium.|consortium_member_display_name|
 |**--firewall-rules**|array|Gets or sets firewall rules|firewall_rules|
-### blockchain member delete
+### blockchain blockchain-member delete
 
-delete a blockchain member.
+delete a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--blockchain-member-name**|string|Blockchain member name|blockchain_member_name|
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
-### blockchain member list
+### blockchain blockchain-member list
 
-list a blockchain member.
+list a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
-### blockchain member list-all
+### blockchain blockchain-member list-all
 
-list-all a blockchain member.
+list-all a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-### blockchain member list-api-key
+### blockchain blockchain-member list-api-key
 
-list-api-key a blockchain member.
+list-api-key a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--blockchain-member-name**|string|Blockchain member name.|blockchain_member_name|
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
-### blockchain member list-consortium-member
+### blockchain blockchain-member list-consortium-member
 
-list-consortium-member a blockchain member.
+list-consortium-member a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--blockchain-member-name**|string|Blockchain member name.|blockchain_member_name|
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
-### blockchain member regenerate-api-key
+### blockchain blockchain-member regenerate-api-key
 
-regenerate-api-key a blockchain member.
+regenerate-api-key a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -73,17 +66,17 @@ regenerate-api-key a blockchain member.
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
 |**--key-name**|string|Gets or sets the API key name.|key_name|
 |**--value**|string|Gets or sets the API key value.|value|
-### blockchain member show
+### blockchain blockchain-member show
 
-show a blockchain member.
+show a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--blockchain-member-name**|string|Blockchain member name.|blockchain_member_name|
 |**--resource-group-name**|string|The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|
-### blockchain member update
+### blockchain blockchain-member update
 
-update a blockchain member.
+update a blockchain blockchain-member.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -93,6 +86,27 @@ update a blockchain member.
 |**--password**|string|Sets the transaction node dns endpoint basic auth password.|password|
 |**--firewall-rules**|array|Gets or sets the firewall rules.|firewall_rules|
 |**--consortium-management-account-password**|string|Sets the managed consortium management account password.|consortium_management_account_password|
+### blockchain blockchain-member-operation-result show
+
+show a blockchain blockchain-member-operation-result.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--location-name**|string|Location name.|location_name|
+|**--operation-id**|string|Operation Id.|operation_id|
+### blockchain consortium list
+
+list a blockchain consortium.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--location-name**|string|Location Name.|location_name|
+### blockchain sku list
+
+list a blockchain sku.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
 ### blockchain transaction-node create
 
 create a blockchain transaction-node.
