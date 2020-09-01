@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import os
+import sys
 import platform
 import subprocess
 
@@ -18,7 +19,7 @@ def start_ssh_connection(ip, username, cert_file, private_key_file):
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file)
     logger.debug("Running ssh command %s", ' '.join(command))
-    subprocess.call(command, shell=True)
+    subprocess.call(command, shell=platform.system() == 'Windows')
 
 
 def write_ssh_config(config_path, resource_group, vm_name,
