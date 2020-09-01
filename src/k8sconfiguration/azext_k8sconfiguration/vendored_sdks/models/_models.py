@@ -296,16 +296,17 @@ class SourceControlConfiguration(ProxyResource):
     :type operator_instance_name: str
     :param operator_type: Type of the operator. Possible values include:
      'Flux'
-    :type operator_type: str or
-     ~azure.mgmt.kubernetesconfiguration.models.OperatorType
+    :type operator_type: str or ~kubernetesconfiguration.models.OperatorType
     :param operator_params: Any Parameters for the Operator instance in string
      format.
     :type operator_params: str
+    :param configuration_protected_settings: Any Secrets the User would like to create on
+     the cluster.
+    :type configuration_protected_settings: str
     :param operator_scope: Scope at which the operator will be installed.
      Possible values include: 'cluster', 'namespace'. Default value: "cluster"
      .
-    :type operator_scope: str or
-     ~azure.mgmt.kubernetesconfiguration.models.OperatorScope
+    :type operator_scope: str or ~kubernetesconfiguration.models.OperatorScope
     :ivar repository_public_key: Public Key associated with this SourceControl
      configuration (either generated within the cluster or provided by the
      user).
@@ -313,18 +314,18 @@ class SourceControlConfiguration(ProxyResource):
     :param enable_helm_operator: Option to enable Helm Operator for this git
      configuration. Possible values include: 'true', 'false'
     :type enable_helm_operator: str or
-     ~azure.mgmt.kubernetesconfiguration.models.EnableHelmOperator
+     ~kubernetesconfiguration.models.EnableHelmOperator
     :param helm_operator_properties: Properties for Helm operator.
     :type helm_operator_properties:
-     ~azure.mgmt.kubernetesconfiguration.models.HelmOperatorProperties
+     ~kubernetesconfiguration.models.HelmOperatorProperties
     :ivar provisioning_state: The provisioning state of the resource provider.
      Possible values include: 'Accepted', 'Deleting', 'Running', 'Succeeded',
      'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.kubernetesconfiguration.models.ProvisioningState
+     ~kubernetesconfiguration.models.ProvisioningState
     :ivar compliance_status: Compliance Status of the Configuration
     :vartype compliance_status:
-     ~azure.mgmt.kubernetesconfiguration.models.ComplianceStatus
+     ~kubernetesconfiguration.models.ComplianceStatus
     """
 
     _validation = {
@@ -345,6 +346,7 @@ class SourceControlConfiguration(ProxyResource):
         'operator_instance_name': {'key': 'properties.operatorInstanceName', 'type': 'str'},
         'operator_type': {'key': 'properties.operatorType', 'type': 'str'},
         'operator_params': {'key': 'properties.operatorParams', 'type': 'str'},
+        'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': 'str'},
         'operator_scope': {'key': 'properties.operatorScope', 'type': 'str'},
         'repository_public_key': {'key': 'properties.repositoryPublicKey', 'type': 'str'},
         'enable_helm_operator': {'key': 'properties.enableHelmOperator', 'type': 'str'},
@@ -360,9 +362,11 @@ class SourceControlConfiguration(ProxyResource):
         self.operator_instance_name = kwargs.get('operator_instance_name', None)
         self.operator_type = kwargs.get('operator_type', None)
         self.operator_params = kwargs.get('operator_params', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.operator_scope = kwargs.get('operator_scope', "cluster")
         self.repository_public_key = None
         self.enable_helm_operator = kwargs.get('enable_helm_operator', None)
         self.helm_operator_properties = kwargs.get('helm_operator_properties', None)
         self.provisioning_state = None
         self.compliance_status = None
+

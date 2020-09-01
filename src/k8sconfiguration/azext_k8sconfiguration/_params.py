@@ -41,6 +41,10 @@ def load_arguments(self, _):
                    help='Chart version of the Helm Operator (if enabled)')
         c.argument('operator_params',
                    help='Parameters for the Operator')
+        c.argument('gitops_privatekey',
+                   help='Specify private ssh key for private repository sync (either base64 encoded or raw)')
+        c.argument('gitops_privatekey_filepath',
+                   help='Specify filepath to private ssh key for private repository sync')
         c.argument('operator_instance_name',
                    help='Instance name of the Operator')
         c.argument('operator_namespace',

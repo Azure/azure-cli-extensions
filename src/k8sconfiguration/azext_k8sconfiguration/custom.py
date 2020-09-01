@@ -8,6 +8,7 @@ from knack.util import CLIError
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
 from azext_k8sconfiguration.vendored_sdks.models import ErrorResponseException
+import base64
 
 
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
@@ -38,8 +39,8 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
 
 def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url, scope, cluster_type,
                             operator_instance_name=None, operator_namespace='default', helm_operator_version='0.3.0',
-                            operator_type='flux', operator_params='', enable_helm_operator=None,
-                            helm_operator_params=''):
+                            operator_type='flux', operator_params='', gitops_privatekey_filepath='', gitops_privatekey='', 
+                            enable_helm_operator=None, helm_operator_params=''):
     """Create a new Kubernetes Source Control Configuration.
 
     """
@@ -58,12 +59,36 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
         helm_operator_properties.chart_version = helm_operator_version.strip()
         helm_operator_properties.chart_values = helm_operator_params.strip()
 
+    if gitops_privatekey != '' and gitops_privatekey_filepath != '':
+        raise Exception("Cannot provide raw key AND filepath, must choose one")
+    elif gitops_privatekey_filepath != '':
+        with open (gitops_privatekey_filepath, "r") as myfile: # user passed in filename
+            dataList = myfile.readlines() # keeps newline characters intact
+            if len(dataList) <= 1:
+                raise Exception("Empty file was provided")
+            dataRaw = ''.join(dataList)
+            dataBytes = dataRaw.encode('utf-8')
+            data = base64.b64encode(dataBytes)
+            data = data.decode('utf-8')
+            configuration_protected_settings = "{\"GitOpsPrivateKey\":\""+ data +"\"}"
+    elif gitops_privatekey != '':
+        if "\\n" in gitops_privatekey: # user passed raw key
+            dataBytes = gitops_privatekey.encode('utf-8')
+            data = base64.b64encode(dataBytes)
+            data = data.decode('utf-8')
+        else: # user passed base64 encoded key
+            data = gitops_privatekey
+        configuration_protected_settings = "{\"GitOpsPrivateKey\":\""+ data +"\"}"
+    else:
+        configuration_protected_settings = "{}"
+
     # Create sourceControlConfiguration object
     source_control_configuration = SourceControlConfiguration(repository_url=repository_url,
                                                               operator_namespace=operator_namespace,
                                                               operator_instance_name=operator_instance_name,
                                                               operator_type=operator_type,
                                                               operator_params=operator_params,
+                                                              configuration_protected_settings=configuration_protected_settings,
                                                               operator_scope=scope,
                                                               enable_helm_operator=enable_helm_operator,
                                                               helm_operator_properties=helm_operator_properties)
