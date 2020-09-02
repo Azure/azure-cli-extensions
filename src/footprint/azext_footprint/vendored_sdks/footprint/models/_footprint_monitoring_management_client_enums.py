@@ -6,25 +6,49 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class Operator(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class Operator(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The operator of a Footprint measurement endpoint condition.
     """
 
-    is_exact_value = "IsExactValue"
-    match_value_ignore_casing = "MatchValueIgnoreCasing"
-    contains_value = "ContainsValue"
-    contains_value_ignore_casing = "ContainsValueIgnoreCasing"
-    does_not_contain_value = "DoesNotContainValue"
-    does_not_contain_value_ignore_casing = "DoesNotContainValueIgnoreCasing"
+    IS_EXACT_VALUE = "IsExactValue"
+    MATCH_VALUE_IGNORE_CASING = "MatchValueIgnoreCasing"
+    CONTAINS_VALUE = "ContainsValue"
+    CONTAINS_VALUE_IGNORE_CASING = "ContainsValueIgnoreCasing"
+    DOES_NOT_CONTAIN_VALUE = "DoesNotContainValue"
+    DOES_NOT_CONTAIN_VALUE_IGNORE_CASING = "DoesNotContainValueIgnoreCasing"
 
-class ProvisioningState(str, Enum):
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioned state of the resource.
     """
 
-    succeeded = "Succeeded"
-    failed = "Failed"
-    cancelled = "Cancelled"
-    updating = "Updating"
-    deleting = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELLED = "Cancelled"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of a Footprint measurement endpoint condition.
+    """
+
+    REQUEST_HEADER = "RequestHeader"

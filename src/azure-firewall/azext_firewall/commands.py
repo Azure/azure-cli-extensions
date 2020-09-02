@@ -60,11 +60,11 @@ def load_command_table(self, _):
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_azure_firewall')
 
-    with self.command_group('network firewall threat-intel-whitelist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
-        g.custom_command('create', 'create_azure_firewall_threat_intel_whitelist')
-        g.custom_command('delete', 'delete_azure_firewall_threat_intel_whitelist')
-        g.custom_show_command('show', 'show_azure_firewall_threat_intel_whitelist')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_threat_intel_whitelist')
+    with self.command_group('network firewall threat-intel-allowlist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
+        g.custom_command('create', 'create_azure_firewall_threat_intel_allowlist')
+        g.custom_command('delete', 'delete_azure_firewall_threat_intel_allowlist')
+        g.custom_show_command('show', 'show_azure_firewall_threat_intel_allowlist')
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_threat_intel_allowlist')
 
     with self.command_group('network firewall ip-config', network_util) as g:
         g.custom_command('create', 'create_af_ip_configuration')

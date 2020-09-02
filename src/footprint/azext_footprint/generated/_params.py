@@ -26,34 +26,34 @@ def load_arguments(self, _):
 
     with self.argument_context('footprint profile show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource.', id_part='name')
+        c.argument('profile_name', options_list=['--name', '-n', '--profile-name'], type=str, help='Name of the '
+                   'Footprint profile resource.', id_part='name')
 
     with self.argument_context('footprint profile create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource.')
+        c.argument('profile_name', options_list=['--name', '-n', '--profile-name'], type=str, help='Name of the '
+                   'Footprint profile resource.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('description', type=str, help='The description of the Footprint profile.')
-        c.argument('start_delay_milliseconds', type=int, help='The delay in milliseconds that the clients should wait '
-                   'for until they start performing measurements.')
+        c.argument('start_delay_milliseconds', options_list=['--start-delay-ms'], type=int, help='The delay in '
+                   'milliseconds that the clients should wait for until they start performing measurements.')
         c.argument('measurement_count', type=int, help='The number of measurements to perform.')
-        c.argument('cold_path_sampling_percentage_rate', type=float, help='The default sampling percentage for cold '
-                   'path measurement storage.')
+        c.argument('cold_path_sampling_percentage_rate', options_list=['--sample-rate-cold'], type=float, help='The '
+                   'default sampling percentage for cold path measurement storage.')
         c.argument('reporting_endpoints', nargs='*', help='The endpoints which to upload measurements to.')
 
     with self.argument_context('footprint profile update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource.', id_part='name')
+        c.argument('profile_name', options_list=['--name', '-n', '--profile-name'], type=str, help='Name of the '
+                   'Footprint profile resource.', id_part='name')
         c.argument('tags', tags_type)
 
     with self.argument_context('footprint profile delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('profile_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint profile '
-                   'resource.', id_part='name')
+        c.argument('profile_name', options_list=['--name', '-n', '--profile-name'], type=str, help='Name of the '
+                   'Footprint profile resource.', id_part='name')
 
     with self.argument_context('footprint measurement-endpoint list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -62,14 +62,14 @@ def load_arguments(self, _):
     with self.argument_context('footprint measurement-endpoint show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource.', id_part='child_name_1')
+        c.argument('measurement_endpoint_name', options_list=['--name', '-n', '--measurement-endpoint-name'], type=str,
+                   help='Name of the Footprint measurement endpoint resource.', id_part='child_name_1')
 
     with self.argument_context('footprint measurement-endpoint create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
-        c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource.')
+        c.argument('measurement_endpoint_name', options_list=['--name', '-n', '--measurement-endpoint-name'], type=str,
+                   help='Name of the Footprint measurement endpoint resource.')
         c.argument('description', type=str, help='The description of a measurement endpoint.')
         c.argument('endpoint', type=str, help='The value of a measurement endpoint.')
         c.argument('measurement_type', type=int, help='The type of a measurement endpoint.')
@@ -79,19 +79,19 @@ def load_arguments(self, _):
         c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to.')
         c.argument('start_time_utc', help='The start time that a measurement endpoint should be served.')
         c.argument('end_time_utc', help='The end time that a measurement endpoint should be served.')
-        c.argument('hot_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the hot '
-                   'path logging of a measurement endpoint.')
-        c.argument('warm_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the warm '
-                   'path logging of a measurement endpoint.')
-        c.argument('cold_path_sampling_percentage_rate_override', type=float, help='The percentual sampling rate for '
-                   'the cold path logging of a measurement endpoint.')
+        c.argument('hot_path_sampling_percentage_rate', options_list=['--sample-rate-hot'], type=float, help='The '
+                   'percentual sampling rate for the hot path logging of a measurement endpoint.')
+        c.argument('warm_path_sampling_percentage_rate', options_list=['--sample-rate-warm'], type=float, help='The '
+                   'percentual sampling rate for the warm path logging of a measurement endpoint.')
+        c.argument('cold_path_sampling_percentage_rate_override', options_list=['--sample-rate-cold'], type=float,
+                   help='The percentual sampling rate for the cold path logging of a measurement endpoint.')
         c.argument('metadata', type=str, help='The metadata of a measurement endpoint.')
 
     with self.argument_context('footprint measurement-endpoint update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource.', id_part='child_name_1')
+        c.argument('measurement_endpoint_name', options_list=['--name', '-n', '--measurement-endpoint-name'], type=str,
+                   help='Name of the Footprint measurement endpoint resource.', id_part='child_name_1')
         c.argument('description', type=str, help='The description of a measurement endpoint.')
         c.argument('endpoint', type=str, help='The value of a measurement endpoint.')
         c.argument('measurement_type', type=int, help='The type of a measurement endpoint.')
@@ -101,68 +101,69 @@ def load_arguments(self, _):
         c.argument('object_path', type=str, help='The path of the object that a measurement endpoint points to.')
         c.argument('start_time_utc', help='The start time that a measurement endpoint should be served.')
         c.argument('end_time_utc', help='The end time that a measurement endpoint should be served.')
-        c.argument('hot_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the hot '
-                   'path logging of a measurement endpoint.')
-        c.argument('warm_path_sampling_percentage_rate', type=float, help='The percentual sampling rate for the warm '
-                   'path logging of a measurement endpoint.')
-        c.argument('cold_path_sampling_percentage_rate_override', type=float, help='The percentual sampling rate for '
-                   'the cold path logging of a measurement endpoint.')
+        c.argument('hot_path_sampling_percentage_rate', options_list=['--sample-rate-hot'], type=float, help='The '
+                   'percentual sampling rate for the hot path logging of a measurement endpoint.')
+        c.argument('warm_path_sampling_percentage_rate', options_list=['--sample-rate-warm'], type=float, help='The '
+                   'percentual sampling rate for the warm path logging of a measurement endpoint.')
+        c.argument('cold_path_sampling_percentage_rate_override', options_list=['--sample-rate-cold'], type=float,
+                   help='The percentual sampling rate for the cold path logging of a measurement endpoint.')
         c.argument('metadata', type=str, help='The metadata of a measurement endpoint.')
 
     with self.argument_context('footprint measurement-endpoint delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint '
-                   'measurement endpoint resource.', id_part='child_name_1')
+        c.argument('measurement_endpoint_name', options_list=['--name', '-n', '--measurement-endpoint-name'], type=str,
+                   help='Name of the Footprint measurement endpoint resource.', id_part='child_name_1')
 
     with self.argument_context('footprint measurement-endpoint-condition list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.')
+        c.argument('measurement_endpoint_name', options_list=['--endpoint-name'], type=str, help='Name of the '
+                   'Footprint measurement endpoint resource.')
 
     with self.argument_context('footprint measurement-endpoint-condition show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
-                   id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
-                   id_part='child_name_2')
+        c.argument('measurement_endpoint_name', options_list=['--endpoint-name'], type=str, help='Name of the '
+                   'Footprint measurement endpoint resource.', id_part='child_name_1')
+        c.argument('condition_name', options_list=['--name'], type=str, help='Name of the Footprint measurement '
+                   'endpoint condition resource.', id_part='child_name_2')
 
     with self.argument_context('footprint measurement-endpoint-condition create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.')
+        c.argument('measurement_endpoint_name', options_list=['--endpoint-name'], type=str, help='Name of the '
+                   'Footprint measurement endpoint resource.')
+        c.argument('condition_name', options_list=['--name'], type=str, help='Name of the Footprint measurement '
+                   'endpoint condition resource.')
         c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition.')
-        c.argument('operator',
-                   arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue',
-                                           'ContainsValueIgnoreCasing', 'DoesNotContainValue',
-                                           'DoesNotContainValueIgnoreCasing']),
-                   help='The operator of a Footprint measurement endpoint condition.')
+        c.argument('operator', arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue', ''
+                                                       'ContainsValueIgnoreCasing', 'DoesNotContainValue', ''
+                                                       'DoesNotContainValueIgnoreCasing']), help='The operator of a '
+                   'Footprint measurement endpoint condition.')
         c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition.')
 
     with self.argument_context('footprint measurement-endpoint-condition update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
-                   id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
-                   id_part='child_name_2')
+        c.argument('measurement_endpoint_name', options_list=['--endpoint-name'], type=str, help='Name of the '
+                   'Footprint measurement endpoint resource.', id_part='child_name_1')
+        c.argument('condition_name', options_list=['--name'], type=str, help='Name of the Footprint measurement '
+                   'endpoint condition resource.', id_part='child_name_2')
         c.argument('variable', type=str, help='The variable of a Footprint measurement endpoint condition.')
-        c.argument('operator',
-                   arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue',
-                                           'ContainsValueIgnoreCasing', 'DoesNotContainValue',
-                                           'DoesNotContainValueIgnoreCasing']),
-                   help='The operator of a Footprint measurement endpoint condition. Swagger name=operator')
+        c.argument('operator', arg_type=get_enum_type(['IsExactValue', 'MatchValueIgnoreCasing', 'ContainsValue', ''
+                                                       'ContainsValueIgnoreCasing', 'DoesNotContainValue', ''
+                                                       'DoesNotContainValueIgnoreCasing']), help='The operator of a '
+                   'Footprint measurement endpoint condition.')
         c.argument('constant', type=str, help='The constant of a Footprint measurement endpoint condition.')
 
     with self.argument_context('footprint measurement-endpoint-condition delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('measurement_endpoint_name', type=str, help='Name of the Footprint measurement endpoint resource.',
-                   id_part='child_name_1')
-        c.argument('condition_name', type=str, help='Name of the Footprint measurement endpoint condition resource.',
-                   id_part='child_name_2')
+        c.argument('measurement_endpoint_name', options_list=['--endpoint-name'], type=str, help='Name of the '
+                   'Footprint measurement endpoint resource.', id_part='child_name_1')
+        c.argument('condition_name', options_list=['--name'], type=str, help='Name of the Footprint measurement '
+                   'endpoint condition resource.', id_part='child_name_2')
 
     with self.argument_context('footprint experiment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -171,25 +172,25 @@ def load_arguments(self, _):
     with self.argument_context('footprint experiment show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource.', id_part='child_name_1')
+        c.argument('experiment_name', options_list=['--name', '-n', '--experiment-name'], type=str, help='Name of the '
+                   'Footprint experiment resource.', id_part='child_name_1')
 
     with self.argument_context('footprint experiment create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.')
-        c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource.')
+        c.argument('experiment_name', options_list=['--name', '-n', '--experiment-name'], type=str, help='Name of the '
+                   'Footprint experiment resource.')
         c.argument('description', type=str, help='The description of a Footprint experiment.')
 
     with self.argument_context('footprint experiment update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource.', id_part='child_name_1')
+        c.argument('experiment_name', options_list=['--name', '-n', '--experiment-name'], type=str, help='Name of the '
+                   'Footprint experiment resource.', id_part='child_name_1')
         c.argument('description', type=str, help='The description of a Footprint experiment.')
 
     with self.argument_context('footprint experiment delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('profile_name', type=str, help='Name of the Footprint profile resource.', id_part='name')
-        c.argument('experiment_name', options_list=['--name', '-n'], type=str, help='Name of the Footprint experiment '
-                   'resource.', id_part='child_name_1')
+        c.argument('experiment_name', options_list=['--name', '-n', '--experiment-name'], type=str, help='Name of the '
+                   'Footprint experiment resource.', id_part='child_name_1')

@@ -104,11 +104,18 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, location):
+def get_helm_registry(cmd, location, dp_endpoint_dogfood=None, release_train_dogfood=None):
+    # Setting uri
     get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+    if dp_endpoint_dogfood:
+        get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
+        if release_train_dogfood:
+            release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
-    resource = cmd.cli_ctx.cloud.endpoints.management
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+
+    # Sending request
     try:
         r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
     except Exception as e:
@@ -169,10 +176,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
 def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
                                  message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
                                  message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
+    telemetry.set_user_fault()
     if isinstance(ex, ApiException):
         status_code = ex.status
-        if status_code // 100 != 2:
-            telemetry.set_user_fault()
         if status_code == 403:
             logger.warning(message_for_unauthorized_request)
         if status_code == 404:
