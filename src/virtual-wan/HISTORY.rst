@@ -5,7 +5,7 @@ Release History
 
 0.2.1
 ++++++
-* `az network vwan create/update`: Remove the stale argument `--vnet-to-vnet-traffic`.
+* [BREAKING CHANGE] `az network vwan create/update`: Remove the stale argument `--vnet-to-vnet-traffic`.
 
 0.2.0
 ++++++
