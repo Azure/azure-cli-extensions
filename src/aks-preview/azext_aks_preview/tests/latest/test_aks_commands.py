@@ -298,7 +298,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_confcom_addon_helper_disabled(self, resource_group, resource_group_location):
@@ -316,10 +315,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_enable_addons_acc_sgx_device_plugin_addon(self, resource_group, resource_group_location):
+    def test_aks_enable_addons_confcom_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
@@ -340,10 +338,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_disable_addons_acc_sgx_device_plugin_addon(self, resource_group, resource_group_location):
+    def test_aks_disable_addons_confcom_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
