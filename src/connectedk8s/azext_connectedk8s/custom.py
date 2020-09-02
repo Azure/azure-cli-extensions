@@ -225,7 +225,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file)
+                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled)
 
     return put_cc_response
 
@@ -618,7 +618,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -631,6 +631,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--set", "systemDefaultValues.connectproxy-agent.enabled={}".format(is_aad_enabled),
+                        "--set", "systemDefaultValues.azureArcAgents.releaseTrain={}".format(get_release_train())
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
@@ -847,6 +849,9 @@ def load_kubernetes_configuration(filename):
             raise CLIError('{} does not exist'.format(filename))
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+
+def get_release_train():
+    return os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
 
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
