@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.6
+++++++
+* `az connectedk8s get-credentials`: Added support for list cluster user ceredentials
+
 0.2.5
 ++++++
 * `az connectedk8s connect`: Added support for Dogfood cloud
