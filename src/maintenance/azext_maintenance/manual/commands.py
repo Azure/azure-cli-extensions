@@ -21,7 +21,7 @@ def load_command_table(self, _):
         'tions#PublicMaintenanceConfigurationOperations.{}',
         client_factory=cf_public_maintenance_configuration)
     with self.command_group('maintenance public-configuration', maintenance_public_maintenance_configuration,
-                            client_factory=cf_public_maintenance_configuration, is_experimental=True) as g:
+                            client_factory=cf_public_maintenance_configuration, is_preview=True) as g:
         g.custom_command('list', 'maintenance_public_configuration_list')
         g.custom_show_command('show', 'maintenance_public_configuration_show')
 
@@ -30,8 +30,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._apply_update_operations#ApplyUpdateOpe'
         'rations.{}',
         client_factory=cf_apply_update)
-    with self.command_group('maintenance applyupdate', maintenance_apply_update, client_factory=cf_apply_update,
-                            is_experimental=True) as g:
+    with self.command_group('maintenance applyupdate', maintenance_apply_update, client_factory=cf_apply_update) as g:
         g.custom_show_command('show', 'maintenance_applyupdate_show')
         g.custom_command('create', 'maintenance_applyupdate_create')
         g.custom_command('update', 'maintenance_applyupdate_update')
@@ -43,7 +42,7 @@ def load_command_table(self, _):
         'nfigurationAssignmentOperations.{}',
         client_factory=cf_configuration_assignment)
     with self.command_group('maintenance assignment', maintenance_configuration_assignment,
-                            client_factory=cf_configuration_assignment, is_experimental=True) as g:
+                            client_factory=cf_configuration_assignment) as g:
         g.custom_command('list', 'maintenance_assignment_list')
         g.custom_command('create', 'maintenance_assignment_create')
         g.custom_command('update', 'maintenance_assignment_update')
@@ -56,7 +55,7 @@ def load_command_table(self, _):
         'aintenanceConfigurationOperations.{}',
         client_factory=cf_maintenance_configuration)
     with self.command_group('maintenance configuration', maintenance_maintenance_configuration,
-                            client_factory=cf_maintenance_configuration, is_experimental=True) as g:
+                            client_factory=cf_maintenance_configuration) as g:
         g.custom_command('list', 'maintenance_configuration_list')
         g.custom_show_command('show', 'maintenance_configuration_show')
         g.custom_command('create', 'maintenance_configuration_create')
@@ -67,7 +66,6 @@ def load_command_table(self, _):
     maintenance_update = CliCommandType(
         operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._update_operations#UpdateOperations.{}',
         client_factory=cf_update)
-    with self.command_group('maintenance update', maintenance_update, client_factory=cf_update,
-                            is_experimental=True) as g:
+    with self.command_group('maintenance update', maintenance_update, client_factory=cf_update) as g:
         g.custom_command('list', 'maintenance_update_list')
         g.custom_command('list-parent', 'maintenance_update_list_parent')

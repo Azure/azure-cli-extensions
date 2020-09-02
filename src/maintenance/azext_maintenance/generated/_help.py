@@ -12,183 +12,181 @@
 from knack.help_files import helps
 
 
-helps['maintenance public-maintenance-configuration'] = """
+helps['maintenance public-configuration'] = """
     type: group
-    short-summary: maintenance public-maintenance-configuration
+    short-summary: maintenance public-configuration
 """
 
-helps['maintenance public-maintenance-configuration list'] = """
+helps['maintenance public-configuration list'] = """
     type: command
     short-summary: "Get Public Maintenance Configuration records"
     examples:
       - name: PublicMaintenanceConfigurations_List
         text: |-
-               az maintenance public-maintenance-configuration list
+               az maintenance public-configuration list
 """
 
-helps['maintenance public-maintenance-configuration show'] = """
+helps['maintenance public-configuration show'] = """
     type: command
     short-summary: "Get Public Maintenance Configuration record"
     examples:
       - name: PublicMaintenanceConfigurations_GetForResource
         text: |-
-               az maintenance public-maintenance-configuration show --resource-name "configuration1"
+               az maintenance public-configuration show --resource-name "configuration1"
 """
 
-helps['maintenance apply-update'] = """
+helps['maintenance applyupdate'] = """
     type: group
-    short-summary: maintenance apply-update
+    short-summary: maintenance applyupdate
 """
 
-helps['maintenance apply-update show'] = """
+helps['maintenance applyupdate show'] = """
     type: command
     short-summary: "Track maintenance updates to resource"
     examples:
       - name: ApplyUpdates_Get
         text: |-
-               az maintenance apply-update show --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
+               az maintenance applyupdate show --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
 "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
 """
 
-helps['maintenance apply-update create'] = """
+helps['maintenance applyupdate create'] = """
     type: command
     short-summary: "Apply maintenance updates to resource"
     examples:
       - name: ApplyUpdates_CreateOrUpdateParent
         text: |-
-               az maintenance apply-update create --provider-name "Microsoft.Compute" --resource-group "examplerg" \
+               az maintenance applyupdate create --provider-name "Microsoft.Compute" --resource-group "examplerg" \
 --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" \
 --resource-type "virtualMachines"
 """
 
-helps['maintenance apply-update update'] = """
+helps['maintenance applyupdate update'] = """
     type: command
     short-summary: "Apply maintenance updates to resource"
 """
 
-helps['maintenance apply-update get-parent'] = """
+helps['maintenance applyupdate get-parent'] = """
     type: command
     short-summary: "Track maintenance updates to resource with parent"
     examples:
       - name: ApplyUpdates_GetParent
         text: |-
-               az maintenance apply-update get-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
+               az maintenance applyupdate get-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
 "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
 --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
 """
 
-helps['maintenance configuration-assignment'] = """
+helps['maintenance assignment'] = """
     type: group
-    short-summary: maintenance configuration-assignment
+    short-summary: maintenance assignment
 """
 
-helps['maintenance configuration-assignment list'] = """
+helps['maintenance assignment list'] = """
     type: command
     short-summary: "List configurationAssignments for resource."
     examples:
       - name: ConfigurationAssignments_List
         text: |-
-               az maintenance configuration-assignment list --provider-name "Microsoft.Compute" --resource-group \
-"examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
+               az maintenance assignment list --provider-name "Microsoft.Compute" --resource-group "examplerg" \
+--resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
 """
 
-helps['maintenance configuration-assignment create'] = """
+helps['maintenance assignment create'] = """
     type: command
     short-summary: "Register configuration for resource."
     examples:
       - name: ConfigurationAssignments_CreateOrUpdateParent
         text: |-
-               az maintenance configuration-assignment create --maintenance-configuration-id \
-"/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenan\
-ceConfigurations/policy1" --name "workervmPolicy" --provider-name "Microsoft.Compute" --resource-group "examplerg" \
---resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" \
---resource-type "virtualMachines"
+               az maintenance assignment create --maintenance-configuration-id "/subscriptions/5b4b650e-28b9-4790-b3ab-\
+ddbd88d727c4/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/policy1" --name \
+"workervmPolicy" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" \
+--resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
 """
 
-helps['maintenance configuration-assignment update'] = """
+helps['maintenance assignment update'] = """
     type: command
     short-summary: "Register configuration for resource."
 """
 
-helps['maintenance configuration-assignment delete'] = """
+helps['maintenance assignment delete'] = """
     type: command
     short-summary: "Unregister configuration for resource."
     examples:
       - name: ConfigurationAssignments_DeleteParent
         text: |-
-               az maintenance configuration-assignment delete --name "workervmConfiguration" --provider-name \
-"Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
---resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+               az maintenance assignment delete --name "workervmConfiguration" --provider-name "Microsoft.Compute" \
+--resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type \
+"virtualMachineScaleSets" --resource-type "virtualMachines"
 """
 
-helps['maintenance configuration-assignment list-parent'] = """
+helps['maintenance assignment list-parent'] = """
     type: command
     short-summary: "List configurationAssignments for resource."
     examples:
       - name: ConfigurationAssignments_ListParent
         text: |-
-               az maintenance configuration-assignment list-parent --provider-name "Microsoft.Compute" \
---resource-group "examplerg" --resource-name "smdtestvm1" --resource-parent-name "smdtest1" --resource-parent-type \
-"virtualMachineScaleSets" --resource-type "virtualMachines"
+               az maintenance assignment list-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" \
+--resource-name "smdtestvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" \
+--resource-type "virtualMachines"
 """
 
-helps['maintenance maintenance-configuration'] = """
+helps['maintenance configuration'] = """
     type: group
-    short-summary: maintenance maintenance-configuration
+    short-summary: maintenance configuration
 """
 
-helps['maintenance maintenance-configuration list'] = """
+helps['maintenance configuration list'] = """
     type: command
     short-summary: "Get Configuration records within a subscription"
     examples:
       - name: MaintenanceConfigurations_List
         text: |-
-               az maintenance maintenance-configuration list
+               az maintenance configuration list
 """
 
-helps['maintenance maintenance-configuration show'] = """
+helps['maintenance configuration show'] = """
     type: command
     short-summary: "Get Configuration record"
     examples:
       - name: MaintenanceConfigurations_GetForResource
         text: |-
-               az maintenance maintenance-configuration show --resource-group "examplerg" --resource-name \
-"configuration1"
+               az maintenance configuration show --resource-group "examplerg" --resource-name "configuration1"
 """
 
-helps['maintenance maintenance-configuration create'] = """
+helps['maintenance configuration create'] = """
     type: command
     short-summary: "Create or Update configuration record"
     examples:
       - name: MaintenanceConfigurations_CreateOrUpdateForResource
         text: |-
-               az maintenance maintenance-configuration create --location "westus2" --maintenance-scope "OSImage" \
+               az maintenance configuration create --location "westus2" --maintenance-scope "OSImage" \
 --maintenance-window-duration "05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" \
 --maintenance-window-recur-every "Day" --maintenance-window-start-date-time "2020-04-30 08:00" \
 --maintenance-window-time-zone "Pacific Standard Time" --namespace "Microsoft.Maintenance" --visibility "Custom" \
 --resource-group "examplerg" --resource-name "configuration1"
 """
 
-helps['maintenance maintenance-configuration update'] = """
+helps['maintenance configuration update'] = """
     type: command
     short-summary: "Patch configuration record"
     examples:
       - name: MaintenanceConfigurations_UpdateForResource
         text: |-
-               az maintenance maintenance-configuration update --location "westus2" --maintenance-scope "OSImage" \
+               az maintenance configuration update --location "westus2" --maintenance-scope "OSImage" \
 --maintenance-window-duration "05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" \
 --maintenance-window-recur-every "Month Third Sunday" --maintenance-window-start-date-time "2020-04-30 08:00" \
 --maintenance-window-time-zone "Pacific Standard Time" --namespace "Microsoft.Maintenance" --visibility "Custom" \
 --resource-group "examplerg" --resource-name "configuration1"
 """
 
-helps['maintenance maintenance-configuration delete'] = """
+helps['maintenance configuration delete'] = """
     type: command
     short-summary: "Delete Configuration record"
     examples:
       - name: MaintenanceConfigurations_DeleteForResource
         text: |-
-               az maintenance maintenance-configuration delete --resource-group "examplerg" --resource-name "example1"
+               az maintenance configuration delete --resource-group "examplerg" --resource-name "example1"
 """
 
 helps['maintenance update'] = """

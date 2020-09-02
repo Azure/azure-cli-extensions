@@ -1,13 +1,13 @@
 # Azure CLI Module Creation Report
 
-### maintenance apply-update create
+### maintenance applyupdate create
 
-create a maintenance apply-update.
+create a maintenance applyupdate.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance apply-update|ApplyUpdates|
+|maintenance applyupdate|ApplyUpdates|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -25,14 +25,14 @@ create a maintenance apply-update.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance apply-update get-parent
+### maintenance applyupdate get-parent
 
-get-parent a maintenance apply-update.
+get-parent a maintenance applyupdate.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance apply-update|ApplyUpdates|
+|maintenance applyupdate|ApplyUpdates|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -50,14 +50,14 @@ get-parent a maintenance apply-update.
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
 
-### maintenance apply-update show
+### maintenance applyupdate show
 
-show a maintenance apply-update.
+show a maintenance applyupdate.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance apply-update|ApplyUpdates|
+|maintenance applyupdate|ApplyUpdates|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -73,14 +73,14 @@ show a maintenance apply-update.
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
 
-### maintenance apply-update update
+### maintenance applyupdate update
 
-update a maintenance apply-update.
+update a maintenance applyupdate.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance apply-update|ApplyUpdates|
+|maintenance applyupdate|ApplyUpdates|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -95,14 +95,14 @@ update a maintenance apply-update.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance configuration-assignment create
+### maintenance assignment create
 
-create a maintenance configuration-assignment.
+create a maintenance assignment.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance configuration-assignment|ConfigurationAssignments|
+|maintenance assignment|ConfigurationAssignments|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -124,14 +124,14 @@ create a maintenance configuration-assignment.
 |**--maintenance-configuration-id**|string|The maintenance configuration Id|maintenance_configuration_id|maintenanceConfigurationId|
 |**--resource-id**|string|The unique resourceId|resource_id|resourceId|
 
-### maintenance configuration-assignment delete
+### maintenance assignment delete
 
-delete a maintenance configuration-assignment.
+delete a maintenance assignment.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance configuration-assignment|ConfigurationAssignments|
+|maintenance assignment|ConfigurationAssignments|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -150,14 +150,14 @@ delete a maintenance configuration-assignment.
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--configuration-assignment-name**|string|Unique configuration assignment name|configuration_assignment_name|configurationAssignmentName|
 
-### maintenance configuration-assignment list
+### maintenance assignment list
 
-list a maintenance configuration-assignment.
+list a maintenance assignment.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance configuration-assignment|ConfigurationAssignments|
+|maintenance assignment|ConfigurationAssignments|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -172,14 +172,14 @@ list a maintenance configuration-assignment.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance configuration-assignment list-parent
+### maintenance assignment list-parent
 
-list-parent a maintenance configuration-assignment.
+list-parent a maintenance assignment.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance configuration-assignment|ConfigurationAssignments|
+|maintenance assignment|ConfigurationAssignments|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -196,14 +196,14 @@ list-parent a maintenance configuration-assignment.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance configuration-assignment update
+### maintenance assignment update
 
-update a maintenance configuration-assignment.
+update a maintenance assignment.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance configuration-assignment|ConfigurationAssignments|
+|maintenance assignment|ConfigurationAssignments|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -222,14 +222,14 @@ update a maintenance configuration-assignment.
 |**--maintenance-configuration-id**|string|The maintenance configuration Id|maintenance_configuration_id|maintenanceConfigurationId|
 |**--resource-id**|string|The unique resourceId|resource_id|resourceId|
 
-### maintenance maintenance-configuration create
+### maintenance configuration create
 
-create a maintenance maintenance-configuration.
+create a maintenance configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance maintenance-configuration|MaintenanceConfigurations|
+|maintenance configuration|MaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -253,14 +253,14 @@ create a maintenance maintenance-configuration.
 |**--maintenance-window-time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
 |**--maintenance-window-recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
 
-### maintenance maintenance-configuration delete
+### maintenance configuration delete
 
-delete a maintenance maintenance-configuration.
+delete a maintenance configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance maintenance-configuration|MaintenanceConfigurations|
+|maintenance configuration|MaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -273,14 +273,14 @@ delete a maintenance maintenance-configuration.
 |**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
 |**--resource-name**|string|Resource Identifier|resource_name|resourceName|
 
-### maintenance maintenance-configuration list
+### maintenance configuration list
 
-list a maintenance maintenance-configuration.
+list a maintenance configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance maintenance-configuration|MaintenanceConfigurations|
+|maintenance configuration|MaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -291,14 +291,14 @@ list a maintenance maintenance-configuration.
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 
-### maintenance maintenance-configuration show
+### maintenance configuration show
 
-show a maintenance maintenance-configuration.
+show a maintenance configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance maintenance-configuration|MaintenanceConfigurations|
+|maintenance configuration|MaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -311,14 +311,14 @@ show a maintenance maintenance-configuration.
 |**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
 |**--resource-name**|string|Resource Identifier|resource_name|resourceName|
 
-### maintenance maintenance-configuration update
+### maintenance configuration update
 
-update a maintenance maintenance-configuration.
+update a maintenance configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance maintenance-configuration|MaintenanceConfigurations|
+|maintenance configuration|MaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -342,14 +342,14 @@ update a maintenance maintenance-configuration.
 |**--maintenance-window-time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
 |**--maintenance-window-recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
 
-### maintenance public-maintenance-configuration list
+### maintenance public-configuration list
 
-list a maintenance public-maintenance-configuration.
+list a maintenance public-configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance public-maintenance-configuration|PublicMaintenanceConfigurations|
+|maintenance public-configuration|PublicMaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|
@@ -360,14 +360,14 @@ list a maintenance public-maintenance-configuration.
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 
-### maintenance public-maintenance-configuration show
+### maintenance public-configuration show
 
-show a maintenance public-maintenance-configuration.
+show a maintenance public-configuration.
 
 #### Command group
 |Name (az)|Swagger name|
 |---------|------------|
-|maintenance public-maintenance-configuration|PublicMaintenanceConfigurations|
+|maintenance public-configuration|PublicMaintenanceConfigurations|
 
 #### Methods
 |Name (az)|Swagger name|

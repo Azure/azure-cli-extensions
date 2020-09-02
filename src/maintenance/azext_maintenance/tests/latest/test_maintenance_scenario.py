@@ -25,7 +25,7 @@ def setup(test, rg):
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdate
 @try_manual
 def step__applyupdates_put_applyupdates_createorupdate(test, rg):
-    test.cmd('az maintenance apply-update create '
+    test.cmd('az maintenance applyupdate create '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdtest1" '
@@ -36,7 +36,7 @@ def step__applyupdates_put_applyupdates_createorupdate(test, rg):
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdateParent
 @try_manual
 def step__applyupdates_put_applyupdates_createorupdateparent(test, rg):
-    test.cmd('az maintenance apply-update create '
+    test.cmd('az maintenance applyupdate create '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdvm1" '
@@ -49,7 +49,7 @@ def step__applyupdates_put_applyupdates_createorupdateparent(test, rg):
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_Get
 @try_manual
 def step__applyupdates_get_applyupdates_get(test, rg):
-    test.cmd('az maintenance apply-update show '
+    test.cmd('az maintenance applyupdate show '
              '--name "{myApplyUpdate}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
@@ -61,7 +61,7 @@ def step__applyupdates_get_applyupdates_get(test, rg):
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_GetParent
 @try_manual
 def step__applyupdates_get_applyupdates_getparent(test, rg):
-    test.cmd('az maintenance apply-update get-parent '
+    test.cmd('az maintenance applyupdate get-parent '
              '--name "{myApplyUpdate}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
@@ -75,7 +75,7 @@ def step__applyupdates_get_applyupdates_getparent(test, rg):
 # EXAMPLE: /MaintenanceConfigurations/put/MaintenanceConfigurations_CreateOrUpdateForResource
 @try_manual
 def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test, rg):
-    test.cmd('az maintenance maintenance-configuration create '
+    test.cmd('az maintenance configuration create '
              '--location "westus2" '
              '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
@@ -93,7 +93,7 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource
 @try_manual
 def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource(test, rg):
-    test.cmd('az maintenance maintenance-configuration show '
+    test.cmd('az maintenance configuration show '
              '--resource-group "{rg}" '
              '--resource-name "{myMaintenanceConfiguration2}"',
              checks=[])
@@ -102,14 +102,14 @@ def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_List
 @try_manual
 def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test, rg):
-    test.cmd('az maintenance maintenance-configuration list',
+    test.cmd('az maintenance configuration list',
              checks=[])
 
 
 # EXAMPLE: /MaintenanceConfigurations/patch/MaintenanceConfigurations_UpdateForResource
 @try_manual
 def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test, rg):
-    test.cmd('az maintenance maintenance-configuration update '
+    test.cmd('az maintenance configuration update '
              '--location "westus2" '
              '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
@@ -127,7 +127,7 @@ def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforres
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdate
 @try_manual
 def step__configurationassignments_put_configurationassignments_createorupdate(test, rg):
-    test.cmd('az maintenance configuration-assignment create '
+    test.cmd('az maintenance assignment create '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
              'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration2}" '
              '--name "{myConfigurationAssignment2}" '
@@ -141,7 +141,7 @@ def step__configurationassignments_put_configurationassignments_createorupdate(t
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdateParent
 @try_manual
 def step__configurationassignments_put_configurationassignments_createorupdateparent(test, rg):
-    test.cmd('az maintenance configuration-assignment create '
+    test.cmd('az maintenance assignment create '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
              'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}" '
              '--name "{myConfigurationAssignment}" '
@@ -157,7 +157,7 @@ def step__configurationassignments_put_configurationassignments_createorupdatepa
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_List
 @try_manual
 def step__configurationassignments_get_configurationassignments_list(test, rg):
-    test.cmd('az maintenance configuration-assignment list '
+    test.cmd('az maintenance assignment list '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdtest1" '
@@ -168,7 +168,7 @@ def step__configurationassignments_get_configurationassignments_list(test, rg):
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ListParent
 @try_manual
 def step__configurationassignments_get_configurationassignments_listparent(test, rg):
-    test.cmd('az maintenance configuration-assignment list-parent '
+    test.cmd('az maintenance assignment list-parent '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdtestvm1" '
@@ -181,7 +181,7 @@ def step__configurationassignments_get_configurationassignments_listparent(test,
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteParent
 @try_manual
 def step__configurationassignments_delete_configurationassignments_deleteparent(test, rg):
-    test.cmd('az maintenance configuration-assignment delete -y '
+    test.cmd('az maintenance assignment delete -y '
              '--name "{myConfigurationAssignment2}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
@@ -195,7 +195,7 @@ def step__configurationassignments_delete_configurationassignments_deleteparent(
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_GetForResource
 @try_manual
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test, rg):
-    test.cmd('az maintenance public-maintenance-configuration show '
+    test.cmd('az maintenance public-configuration show '
              '--resource-name "{myMaintenanceConfiguration2}"',
              checks=[])
 
@@ -203,7 +203,7 @@ def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_ge
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_List
 @try_manual
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test, rg):
-    test.cmd('az maintenance public-maintenance-configuration list',
+    test.cmd('az maintenance public-configuration list',
              checks=[])
 
 
@@ -234,7 +234,7 @@ def step__updates_get_updates_listparent(test, rg):
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_Delete
 @try_manual
 def step__configurationassignments_delete_configurationassignments_delete(test, rg):
-    test.cmd('az maintenance configuration-assignment delete -y '
+    test.cmd('az maintenance assignment delete -y '
              '--name "{myConfigurationAssignment2}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
@@ -246,7 +246,7 @@ def step__configurationassignments_delete_configurationassignments_delete(test, 
 # EXAMPLE: /MaintenanceConfigurations/delete/MaintenanceConfigurations_DeleteForResource
 @try_manual
 def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforresource(test, rg):
-    test.cmd('az maintenance maintenance-configuration delete -y '
+    test.cmd('az maintenance configuration delete -y '
              '--resource-group "{rg}" '
              '--resource-name "example1"',
              checks=[])
@@ -301,4 +301,5 @@ class MaintenanceClientScenarioTest(ScenarioTest):
         })
 
         call_scenario(self, rg)
+        calc_coverage(__file__)
         raise_if()
