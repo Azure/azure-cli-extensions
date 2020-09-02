@@ -15,6 +15,7 @@ from msrestazure.tools import parse_resource_id
 from msrestazure.tools import resource_id
 from knack.log import get_logger
 from ._utils import ApiType
+from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 
@@ -180,6 +181,15 @@ def validate_vnet(cmd, namespace):
         raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
 
     vnet_obj = _get_vnet(cmd, vnet_id)
+    instance_location = namespace.location
+    if instance_location is None:
+        instance_location = _get_rg_location(cmd.cli_ctx, namespace.resource_group)
+    else:
+        instance_location_slice = instance_location.split(" ")
+        instance_location = "".join([piece.lower()
+                                     for piece in instance_location_slice])
+    if vnet_obj.location.lower() != instance_location.lower():
+        raise CLIError('--vnet and Azure Spring Cloud instance should be in the same location.')
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
 
