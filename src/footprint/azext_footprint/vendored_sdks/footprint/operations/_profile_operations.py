@@ -50,9 +50,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.ProfileList"]
-        """Retrieves the information about all Footprint profiles under a subscription.
+        """Get all Footprint profiles under a subscription.
 
-        Get all Footprint profiles under a subscription.
+        Retrieves the information about all Footprint profiles under a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ProfileList or the result of cls(response)
@@ -65,6 +65,10 @@ class ProfileOperations(object):
         api_version = "2020-02-01-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_subscription.metadata['url']  # type: ignore
@@ -76,15 +80,11 @@ class ProfileOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -118,9 +118,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.ProfileList"]
-        """Retrieves the information about all Footprint profiles under a resource group.
+        """Get all Footprint profiles under a resource group.
 
-        Get all Footprint profiles under a resource group.
+        Retrieves the information about all Footprint profiles under a resource group.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -135,6 +135,10 @@ class ProfileOperations(object):
         api_version = "2020-02-01-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
@@ -147,15 +151,11 @@ class ProfileOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -190,9 +190,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Profile"
-        """Retrieves the information about a single Footprint profile.
+        """Get a Footprint profile resource.
 
-        Get a Footprint profile resource.
+        Retrieves the information about a single Footprint profile.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -213,7 +213,7 @@ class ProfileOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -225,7 +225,6 @@ class ProfileOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -257,9 +256,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Profile"
-        """Creates or updates a Footprint profile with the specified properties.
+        """Creates or updates a Footprint profile resource.
 
-        Creates or updates a Footprint profile resource.
+        Creates or updates a Footprint profile with the specified properties.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -299,7 +298,7 @@ class ProfileOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -312,7 +311,6 @@ class ProfileOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'Profile')
         body_content_kwargs['content'] = body_content
@@ -326,7 +324,6 @@ class ProfileOperations(object):
             error = self._deserialize(models.DefaultErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Profile', pipeline_response)
 
@@ -346,9 +343,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Deletes an existing Footprint profile.
+        """Deletes a Footprint profile resource.
 
-        Deletes a Footprint profile resource.
+        Deletes an existing Footprint profile.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -369,7 +366,7 @@ class ProfileOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -380,7 +377,6 @@ class ProfileOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -403,9 +399,9 @@ class ProfileOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Profile"
-        """Updates an existing Footprint profile resource.
+        """Updates a Footprint profile resource.
 
-        Updates a Footprint profile resource.
+        Updates an existing Footprint profile resource.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -431,7 +427,7 @@ class ProfileOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -444,7 +440,6 @@ class ProfileOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'ProfilePatch')
         body_content_kwargs['content'] = body_content
