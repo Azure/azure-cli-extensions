@@ -63,9 +63,9 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
     poller = client.services.create_or_update(
         resource_group, name, resource)
+    logger.warning(" - Creating Service ..")
     while poller.done() is False:
-        logger.warning(" - Creating Service ..")
-        sleep(15)
+        sleep(5)
     if disable_distributed_tracing is not True:
         logger.warning("Start configure distributed tracing")
         trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
