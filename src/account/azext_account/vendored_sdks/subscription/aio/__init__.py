@@ -6,14 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._subscription_operations import SubscriptionOperations
-from ._tenant_operations import TenantOperations
-from ._operation_operations import OperationOperations
-from ._alias_operations import AliasOperations
-
-__all__ = [
-    'SubscriptionOperations',
-    'TenantOperations',
-    'OperationOperations',
-    'AliasOperations',
-]
+from ._subscription_client_async import SubscriptionClient
+__all__ = ['SubscriptionClient']
