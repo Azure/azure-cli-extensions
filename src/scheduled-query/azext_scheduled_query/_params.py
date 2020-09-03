@@ -5,19 +5,38 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-
+from azure.cli.core.commands.parameters import (
+    get_location_type, tags_type, get_three_state_flag, get_enum_type, get_datetime_type, resource_group_name_type)
+from azure.cli.command_modules.monitor.actions import get_period_type, timezone_offset_type, timezone_name_type
+from azure.cli.command_modules.monitor.validators import get_action_group_validator
+from ._actions import ScheduleQueryConditionAction, ScheduleQueryAddAction
 
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
-    scheduled_query_name_type = CLIArgumentType(options_list='--scheduled-query-name-name', help='Name of the Scheduled_query.', id_part='name')
-
-    with self.argument_context('scheduled-query') as c:
-        c.argument('tags', tags_type)
+    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+    with self.argument_context('monitor scheduled-query') as c:
+        c.argument('rule_name', name_arg_type, id_part='name', help='Name of the scheduled query rule.')
         c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('scheduled_query_name', scheduled_query_name_type, options_list=['--name', '-n'])
+        c.argument('tags', tags_type)
+        c.argument('severity', type=int, help='Severity of the alert from 0 (critical) to 4 (verbose).')
+        c.argument('window_size', type=get_period_type(), help='Time over which to aggregate metrics in "##h##m##s" format.')
+        c.argument('evaluation_frequency', type=get_period_type(), help='Frequency with which to evaluate the rule in "##h##m##s" format.')
+        c.argument('condition', options_list=['--condition'], action=ScheduleQueryConditionAction, nargs='+')
+        c.argument('description', help='Free-text description of the rule.')
+        c.argument('scopes', nargs='+', help='Space-separated list of scopes the rule applies to. '
+                                             'The resources specified in this parameter must be of the same type and exist in the same location.')
+        c.argument('disabled', arg_type=get_three_state_flag())
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Whether the metric alert rule is enabled.')
+        c.argument('target_resource_type', options_list=['--target-resource-type', '--type'],
+                   help='The resource type of the target resource(s) in scopes. '
+                        'This must be provided when scopes is resource group or subscription.')
+        c.argument('scheduled_query', help='Log query alert')
+        c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True), help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
+        c.argument('number_of_evaluation_periods', type=float)
+        c.argument('min_failing_periods_to_alert', type=float)
 
-    with self.argument_context('scheduled-query list') as c:
-        c.argument('scheduled_query_name', scheduled_query_name_type, id_part=None)
+    with self.argument_context('monitor scheduled-query create', arg_group=None) as c:
+        c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))

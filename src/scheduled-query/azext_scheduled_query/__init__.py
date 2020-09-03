@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_scheduled_query._help import helps  # pylint: disable=unused-import
+from azext_scheduled_query._help import helps
 
 
 class ScheduledQueryCommandsLoader(AzCommandsLoader):

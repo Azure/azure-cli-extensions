@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from .MetricAlertConditionListener import MetricAlertConditionListener
+from .ScheduleQueryConditionListener import ScheduleQueryConditionListener
 
 
 op_conversion = {
@@ -29,10 +29,10 @@ dim_op_conversion = {
 }
 
 # This class defines a complete listener for a parse tree produced by MetricAlertConditionParser.
-class MetricAlertConditionValidator(MetricAlertConditionListener):
+class ScheduleQueryConditionValidator(ScheduleQueryConditionListener):
 
     def __init__(self):
-        super(MetricAlertConditionValidator, self).__init__()
+        super(ScheduleQueryConditionValidator, self).__init__()
         self.parameters = {}
         self._dimension_index = 0
 
@@ -41,13 +41,9 @@ class MetricAlertConditionValidator(MetricAlertConditionListener):
         aggregation = agg_conversion[ctx.getText().strip()]
         self.parameters['time_aggregation'] = aggregation
 
-    # Exit a parse tree produced by MetricAlertConditionParser#namespace.
-    def exitNamespace(self, ctx):
-        self.parameters['metric_namespace'] = ctx.getText().strip()
-
     # Exit a parse tree produced by MetricAlertConditionParser#metric.
     def exitMetric(self, ctx):
-        self.parameters['metric_name'] = ctx.getText().strip()
+        self.parameters['metric_measure_column'] = ctx.getText().strip()
 
     # Exit a parse tree produced by MetricAlertConditionParser#operator.
     def exitOperator(self, ctx):
@@ -85,11 +81,10 @@ class MetricAlertConditionValidator(MetricAlertConditionListener):
         self.parameters['dimensions'][self._dimension_index]['values'] = [x for x in dvalues if x not in ['', 'or']]
 
     def result(self):
-        from azure.mgmt.monitor.models import MetricCriteria, MetricDimension
+        from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import Condition, Dimension
         dim_params = self.parameters.get('dimensions', [])
         dimensions = []
         for dim in dim_params:
-            dimensions.append(MetricDimension(**dim))
+            dimensions.append(Dimension(**dim))
         self.parameters['dimensions'] = dimensions
-        self.parameters['name'] = ''  # will be auto-populated later
-        return MetricCriteria(**self.parameters)
+        return Condition(**self.parameters)

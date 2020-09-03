@@ -1,10 +1,10 @@
 /* PARSER RULES */
 
-grammar MetricAlertCondition ;
+grammar ScheduleQueryCondition ;
 
 /* Main Rules */
 
-expression          : aggregation (namespace '.')* (QUOTE metric QUOTE WHITESPACE | metric) operator threshold (WHITESPACE dimensions)* NEWLINE* ;
+expression          : aggregation (QUOTE metric QUOTE WHITESPACE | metric)* operator threshold (WHITESPACE dimensions)* NEWLINE* ;
 
 aggregation         : WORD WHITESPACE ;
 
