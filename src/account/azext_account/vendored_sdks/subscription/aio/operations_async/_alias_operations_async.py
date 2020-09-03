@@ -11,7 +11,7 @@ import warnings
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -72,7 +72,6 @@ class AliasOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_body, 'PutAliasRequest')
         body_content_kwargs['content'] = body_content
@@ -86,7 +85,6 @@ class AliasOperations:
             error = self._deserialize(models.ErrorResponseBody, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('PutAliasResponse', pipeline_response)
 
@@ -99,12 +97,12 @@ class AliasOperations:
         return deserialized
     _create_initial.metadata = {'url': '/providers/Microsoft.Subscription/aliases/{aliasName}'}  # type: ignore
 
-    async def create(
+    async def begin_create(
         self,
         alias_name: str,
         properties: "models.PutAliasRequestProperties",
         **kwargs
-    ) -> "models.PutAliasResponse":
+    ) -> AsyncLROPoller["models.PutAliasResponse"]:
         """Create Alias Subscription.
 
         :param alias_name: Alias Name.
@@ -112,12 +110,13 @@ class AliasOperations:
         :param properties: Put alias request properties.
         :type properties: ~subscription_client.models.PutAliasRequestProperties
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: PutAliasResponse, or the result of cls(response)
-        :rtype: ~subscription_client.models.PutAliasResponse
+        :return: An instance of AsyncLROPoller that returns either PutAliasResponse or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~subscription_client.models.PutAliasResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -126,12 +125,14 @@ class AliasOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._create_initial(
-            alias_name=alias_name,
-            properties=properties,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._create_initial(
+                alias_name=alias_name,
+                properties=properties,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -146,8 +147,16 @@ class AliasOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    create.metadata = {'url': '/providers/Microsoft.Subscription/aliases/{aliasName}'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create.metadata = {'url': '/providers/Microsoft.Subscription/aliases/{aliasName}'}  # type: ignore
 
     async def get(
         self,
@@ -183,7 +192,6 @@ class AliasOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -234,7 +242,6 @@ class AliasOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -276,7 +283,6 @@ class AliasOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
