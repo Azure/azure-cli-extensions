@@ -90,7 +90,7 @@ def _find_item_at_path(instance, path):
 # region VirtualWAN
 def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, location=None,
                        security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       office365_category=None, disable_vpn_encryption=None,
                        vwan_type=None):
     client = network_client_factory(cmd.cli_ctx).virtual_wans
     VirtualWAN = cmd.get_models('VirtualWAN')
@@ -100,7 +100,6 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
         disable_vpn_encryption=disable_vpn_encryption,
         security_provider_name=security_provider_name,
         allow_branch_to_branch_traffic=branch_to_branch_traffic,
-        allow_vnet_to_vnet_traffic=vnet_to_vnet_traffic,
         office365_local_breakout_category=office365_category,
         type=vwan_type
     )
@@ -108,13 +107,11 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
 
 
 def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
-                       vwan_type=None):
+                       office365_category=None, disable_vpn_encryption=None, vwan_type=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('security_provider_name', security_provider_name, False)
         c.update_param('allow_branch_to_branch_traffic', branch_to_branch_traffic, False)
-        c.update_param('allow_vnet_to_vnet_traffic', vnet_to_vnet_traffic, False)
         c.update_param('office365_local_breakout_category', office365_category, False)
         c.update_param('disable_vpn_encryption', disable_vpn_encryption, False)
         c.update_param('type', vwan_type, False)

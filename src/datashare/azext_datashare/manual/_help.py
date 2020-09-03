@@ -135,6 +135,11 @@ helps['datashare dataset create'] = """
                az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
 --dataset "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"filePath\\":\\"file21\\",\\"resourceGroup\\": \
 \\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
+      - name: Create a BlobFolder dataset
+        text: |-
+               az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
+--dataset "{\\"kind\\":\\"BlobFolder\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"prefix\\":\\"folder21\\",\\"resourceGroup\\": \
+\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
       - name: Create a KustoCluster dataset
         text: |-
                az datashare dataset create --account-name MyAccount --name MyDataset --resource-group MyResourceGroup --share-name MyShare \
@@ -208,6 +213,11 @@ helps['datashare consumer dataset-mapping create'] = """
                az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
 --mapping "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"filePath\
 \\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
+      - name: Create a BlobFolder dataset mapping
+        text: |-
+               az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \
+--mapping "{\\"kind\\":\\"BlobFolder\\",\\"properties\\":{\\"containerName\\":\\"C2\\",\\"dataSetId\\":\\"00000000-0000-0000-0000-000000000000\\",\\"prefix\
+\\":\\"folder21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage3\\",\\"subscriptionId\\":\\"00000000-0000-0000-0000-000000000000\\"}}"
       - name: Create a SqlDBTable dataset mapping
         text: |-
                az datashare consumer dataset-mapping create --account-name MyAccount --name MyDatasetMapping --resource-group MyResourceGroup --share-subscription-name MyShareSubscription \

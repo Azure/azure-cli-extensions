@@ -1,5 +1,14 @@
 Release History
 ===============
+1.0.0
+-----
+* Bump version to 1.0.0
+
+0.5.1
+-----
+* Stream the build logs when deploying from source code
+* Fix distributed tracing issues
+
 0.5.0
 -----
 * Support Virtual Network injection feature.

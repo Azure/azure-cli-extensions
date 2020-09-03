@@ -25,7 +25,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'footprint_profile_show')
         g.custom_command('create', 'footprint_profile_create')
         g.custom_command('update', 'footprint_profile_update')
-        g.custom_command('delete', 'footprint_profile_delete')
+        g.custom_command('delete', 'footprint_profile_delete', confirmation=True)
 
     from azext_footprint.generated._client_factory import cf_measurement_endpoint
     footprint_measurement_endpoint = CliCommandType(
@@ -38,7 +38,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'footprint_measurement_endpoint_show')
         g.custom_command('create', 'footprint_measurement_endpoint_create')
         g.custom_command('update', 'footprint_measurement_endpoint_update')
-        g.custom_command('delete', 'footprint_measurement_endpoint_delete')
+        g.custom_command('delete', 'footprint_measurement_endpoint_delete', confirmation=True)
 
     from azext_footprint.generated._client_factory import cf_measurement_endpoint_condition
     footprint_measurement_endpoint_condition = CliCommandType(
@@ -51,7 +51,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'footprint_measurement_endpoint_condition_show')
         g.custom_command('create', 'footprint_measurement_endpoint_condition_create')
         g.custom_command('update', 'footprint_measurement_endpoint_condition_update')
-        g.custom_command('delete', 'footprint_measurement_endpoint_condition_delete')
+        g.custom_command('delete', 'footprint_measurement_endpoint_condition_delete', confirmation=True)
 
     from azext_footprint.generated._client_factory import cf_experiment
     footprint_experiment = CliCommandType(
@@ -64,4 +64,4 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'footprint_experiment_show')
         g.custom_command('create', 'footprint_experiment_create')
         g.custom_command('update', 'footprint_experiment_update')
-        g.custom_command('delete', 'footprint_experiment_delete')
+        g.custom_command('delete', 'footprint_experiment_delete', confirmation=True)

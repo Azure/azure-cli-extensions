@@ -3,29 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import re
 import logging
+import re
+from typing import Union
 import unittest.mock as mock
 
-from azure.cli.testsdk.patches import mock_in_unit_test
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.patches import mock_in_unit_test
 
-from azext_ai_did_you_mean_this._const import UNABLE_TO_HELP_FMT_STR, RECOMMENDATION_HEADER_FMT_STR
 from azext_ai_did_you_mean_this._cmd_table import CommandTable
-from azext_ai_did_you_mean_this.tests.latest._mock import MOCK_UUID, MOCK_VERSION
+from azext_ai_did_you_mean_this._const import (
+    RECOMMENDATION_HEADER_FMT_STR,
+    UNABLE_TO_HELP_FMT_STR
+)
 from azext_ai_did_you_mean_this.custom import recommend_recovery_options
-from azext_ai_did_you_mean_this.tests.latest._mock import UserFaultType
-
-TELEMETRY_MODULE = 'azure.cli.core.telemetry'
-TELEMETRY_SESSION_OBJECT = f'{TELEMETRY_MODULE}._session'
-
-USER_FAULT_TYPE_KEYWORDS = {
-    UserFaultType.EXPECTED_AT_LEAST_ONE_ARGUMENT: 'expected',
-    UserFaultType.INVALID_JMESPATH_QUERY: 'jmespath',
-    UserFaultType.MISSING_REQUIRED_SUBCOMMAND: '_subcommand',
-    UserFaultType.NOT_IN_A_COMMAND_GROUP: 'command group',
-    UserFaultType.UNRECOGNIZED_ARGUMENTS: 'unrecognized'
-}
+from azext_ai_did_you_mean_this.tests.latest.data.user_fault_type import UserFaultType
+from azext_ai_did_you_mean_this.tests.latest.mock.const import (
+    AZURE_CLI_CORE_VERSION_PATCH_TARGET,
+    MOCK_CORE_CLI_VERSION, MOCK_UUID,
+    TELEMETRY_AZURE_SUBSCRIPTION_ID_PATCH_TARGET,
+    TELEMETRY_CORRELATION_ID_PATCH_TARGET,
+    TELEMETRY_IS_ENABLED_PATCH_TARGET
+)
 
 FMT_STR_PATTERN_REGEX = r'\[[^\]]+\]|{[^}]+}'
 SUGGEST_AZ_FIND_PATTERN_REGEX = re.sub(FMT_STR_PATTERN_REGEX, r'.*', UNABLE_TO_HELP_FMT_STR)
@@ -37,22 +36,22 @@ def patch_ids(unit_test):
         return MOCK_UUID
 
     mock_in_unit_test(unit_test,
-                      f'{TELEMETRY_SESSION_OBJECT}.correlation_id',
+                      TELEMETRY_CORRELATION_ID_PATCH_TARGET,
                       _mock_uuid())
     mock_in_unit_test(unit_test,
-                      f'{TELEMETRY_MODULE}._get_azure_subscription_id',
+                      TELEMETRY_AZURE_SUBSCRIPTION_ID_PATCH_TARGET,
                       _mock_uuid)
 
 
 def patch_version(unit_test):
     mock_in_unit_test(unit_test,
-                      'azure.cli.core.__version__',
-                      MOCK_VERSION)
+                      AZURE_CLI_CORE_VERSION_PATCH_TARGET,
+                      MOCK_CORE_CLI_VERSION)
 
 
 def patch_telemetry(unit_test):
     mock_in_unit_test(unit_test,
-                      'azure.cli.core.telemetry.is_telemetry_enabled',
+                      TELEMETRY_IS_ENABLED_PATCH_TARGET,
                       lambda: True)
 
 
@@ -108,8 +107,7 @@ class AladdinScenarioTest(ScenarioTest):
                     self._parser_error_msg = '\n'.join(parser_logs.output)
                     self._recommendation_msg = '\n'.join(self.recommendations)
 
-                    if expect_user_fault_failure:
-                        self.assert_cmd_was_user_fault_failure()
+                    self.assert_cmd_was_user_fault_failure()
                 else:
                     run_cmd()
 
@@ -117,12 +115,11 @@ class AladdinScenarioTest(ScenarioTest):
             self.assert_cmd_table_not_empty()
             self.assert_user_fault_is_of_correct_type(expect_user_fault_failure)
 
-    def assert_user_fault_is_of_correct_type(self, expect_user_fault_failure):
+    def assert_user_fault_is_of_correct_type(self, user_fault_type: Union[UserFaultType, bool]):
         # check the user fault type where applicable
-        if isinstance(expect_user_fault_failure, UserFaultType):
-            keyword = USER_FAULT_TYPE_KEYWORDS.get(expect_user_fault_failure, None)
-            if keyword:
-                self.assertRegex(self._parser_error_msg, keyword)
+        if isinstance(user_fault_type, UserFaultType) and user_fault_type != UserFaultType.NOT_APPLICABLE:
+            keyword = user_fault_type.keyword
+            self.assertRegex(self._parser_error_msg, keyword)
 
     def assert_cmd_was_user_fault_failure(self):
         is_user_fault_failure = (isinstance(self._exception, SystemExit) and

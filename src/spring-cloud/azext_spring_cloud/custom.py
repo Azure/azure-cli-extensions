@@ -94,6 +94,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         app_insights_target_status = True
         if resource_properties.trace.enabled is False:
             update_app_insights = True
+        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+            update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
         if resource_properties.trace.enabled is True:
@@ -1188,9 +1190,9 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 log_url = get_log_url()
                 sleep(10)
 
-            logger.info("Trying to fetch build logs")
+            logger.warning("Trying to fetch build logs")
             stream_logs(client.deployments, resource_group, service,
-                        app, name, logger_level_func=logger.info)
+                        app, name, logger_level_func=print)
 
         old_log_url = get_log_url()
 

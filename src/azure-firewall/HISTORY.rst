@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.0
+++++++
+* [Breaking Change] `az network firewall threat-intel-allowlist`: rename whitelist to allowlist
+
 0.5.1
 ++++++
 * `az network firewall create/update`: support new `--allow-active-ftp` argument.

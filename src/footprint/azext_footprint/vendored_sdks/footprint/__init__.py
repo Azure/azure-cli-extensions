@@ -10,7 +10,7 @@ from ._footprint_monitoring_management_client import FootprintMonitoringManageme
 __all__ = ['FootprintMonitoringManagementClient']
 
 try:
-    from ._patch import patch_sdk
+    from ._patch import patch_sdk  # type: ignore
     patch_sdk()
 except ImportError:
     pass
