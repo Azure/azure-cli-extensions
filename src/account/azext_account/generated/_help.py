@@ -13,45 +13,6 @@ helps['account subscription'] = """
     short-summary: Manage subscriptions
 """
 
-helps['account subscription create'] = """
-    type: command
-    short-summary: Create a new WebDirect or EA Azure subscription.
-    examples:
-      - name: Create subscription
-        text: |-
-               az account subscription create --billing-account-name \\
-               "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_XXXX-XX-XX" \\
-               --billing-profile-name "27VR-HDWX-BG7-TGB" --cost-center "135366376" --display-name \\
-               "Contoso MCA subscription" --owner xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx \\
-               --sku-id "0001" --invoice-section-name "JGF7-NSBG-PJA-TGB"
-"""
-
-
-helps['account subscription create-in-enrollment-account'] = """
-    type: command
-    short-summary: Create subscription in enrolment account
-    examples:
-      - name: Create subscription in enrollment account
-        text: |-
-               az account subscription create-in-enrollment-account --display-name \\
-               "Test Ea Azure Sub" --offer-type "MS-AZR-0017P" --owners \\
-               xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx \\
-               xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx --enrollment-account-name \\
-               "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-"""
-
-helps['account subscription create-csp'] = """
-    type: command
-    short-summary: Create a new CSP subscription.
-    examples:
-      - name: Create CSP subscription
-        text: |-
-               az account subscription create-csp --billing-account-name \\
-               "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_XXXX-XX-XX" \\
-               --display-name "Contoso MCA subscription" --sku-id "0001" --customer-name \\
-               "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-"""
-
 helps['account subscription rename'] = """
     type: command
     short-summary: Rename subscription
@@ -77,4 +38,107 @@ helps['account subscription enable'] = """
       - name: Enable subscription
         text: |-
                az account subscription enable --subscription-id "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+"""
+
+helps['account subscription list'] = """
+    type: command
+    short-summary: Gets all subscriptions for a tenant.
+    examples:
+      - name: listSubscriptions
+        text: |-
+               az account subscription list
+"""
+
+helps['account subscription show'] = """
+    type: command
+    short-summary: Gets details about a specified subscription.
+    examples:
+      - name: getSubscription
+        text: |-
+               az account subscription show --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+"""
+
+helps['account subscription list-location'] = """
+    type: command
+    short-summary: This operation provides all the locations that are available for resource providers; however, each r\
+esource provider may support a subset of this list.
+    examples:
+      - name: listLocations
+        text: |-
+               az account subscription list-location --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+"""
+
+helps['account tenant'] = """
+    type: group
+    short-summary: account tenant
+"""
+
+helps['account tenant list'] = """
+    type: command
+    short-summary: Gets the tenants for your account.
+    examples:
+      - name: listTenants
+        text: |-
+               az account tenant list
+"""
+
+helps['account alias'] = """
+    type: group
+    short-summary: account alias
+"""
+
+helps['account alias list'] = """
+    type: command
+    short-summary: List Alias Subscriptions.
+    examples:
+      - name: List Alias Subscriptions
+        text: |-
+               az account alias list
+"""
+
+helps['account alias show'] = """
+    type: command
+    short-summary: Get Alias Subscription.
+    examples:
+      - name: GetAlias
+        text: |-
+               az account alias show --name "aliasForNewSub"
+"""
+
+helps['account alias create'] = """
+    type: command
+    short-summary: Create Alias Subscription.
+    parameters:
+      - name: --properties
+        short-summary: Put alias request properties.
+        long-summary: |
+            Usage: --properties display-name=XX workload=XX billing-scope=XX subscription-id=XX
+            display-name: Required. The friendly name of the subscription.
+            workload: Required. The workload type of the subscription. It can be either Production or DevTest.
+            billing-scope: Required. Determines whether subscription is fieldLed, partnerLed or LegacyEA
+            subscription-id: This parameter can be used to create alias for existing subscription Id
+    examples:
+      - name: CreateAlias
+        text: |-
+               az account alias create --name "aliasForNewSub" --properties billing-scope="/providers/Microsoft.Billing\
+/billingAccounts/e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/P\
+E2Q-NOIT-BG7-TGB/invoiceSections/MTT4-OBS7-PJA-TGB" display-name="Contoso MCA subscription" workload="Production"
+"""
+
+helps['account alias delete'] = """
+    type: command
+    short-summary: Delete Alias.
+    examples:
+      - name: DeleteAlias
+        text: |-
+               az account alias delete --name "aliasForNewSub"
+"""
+
+helps['account alias wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the account alias is met.
+    examples:
+      - name: Pause executing next line of CLI script until the account alias is successfully created.
+        text: |-
+               az account alias wait --name "aliasForNewSub" --created
 """
