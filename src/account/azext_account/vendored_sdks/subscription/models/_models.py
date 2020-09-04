@@ -319,9 +319,7 @@ class PutAliasRequestProperties(msrest.serialization.Model):
     """
 
     _validation = {
-        'display_name': {'required': True},
         'workload': {'required': True},
-        'billing_scope': {'required': True},
     }
 
     _attribute_map = {

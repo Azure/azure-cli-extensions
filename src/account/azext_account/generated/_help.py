@@ -107,22 +107,13 @@ helps['account alias show'] = """
 
 helps['account alias create'] = """
     type: command
-    short-summary: Create Alias Subscription.
-    parameters:
-      - name: --properties
-        short-summary: Put alias request properties.
-        long-summary: |
-            Usage: --properties display-name=XX workload=XX billing-scope=XX subscription-id=XX
-            display-name: Required. The friendly name of the subscription.
-            workload: Required. The workload type of the subscription. It can be either Production or DevTest.
-            billing-scope: Required. Determines whether subscription is fieldLed, partnerLed or LegacyEA
-            subscription-id: This parameter can be used to create alias for existing subscription Id
+    short-summary: "Create Alias Subscription."
     examples:
       - name: CreateAlias
         text: |-
-               az account alias create --name "aliasForNewSub" --properties billing-scope="/providers/Microsoft.Billing\
-/billingAccounts/e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/P\
-E2Q-NOIT-BG7-TGB/invoiceSections/MTT4-OBS7-PJA-TGB" display-name="Contoso MCA subscription" workload="Production"
+               az account alias create --name "aliasForNewSub" --billing-scope "/providers/Microsoft.Billing/billingAcc\
+ounts/e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/PE2Q-NOIT-BG\
+7-TGB/invoiceSections/MTT4-OBS7-PJA-TGB" --display-name "Contoso MCA subscription" --workload "Production"
 """
 
 helps['account alias delete'] = """

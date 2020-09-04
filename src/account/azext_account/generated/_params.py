@@ -6,14 +6,14 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azext_account.action import AddProperties
+from azure.cli.core.commands.parameters import get_enum_type
 
 
 def load_arguments(self, _):
 
     with self.argument_context('account subscription rename') as c:
         c.argument('subscription_id', help='Subscription Id.')
-        c.argument('subscription_name', help='New subscription name')
+        c.argument('subscription_name', options_list=['--name', '-n'], help='New subscription name')
 
     with self.argument_context('account subscription cancel') as c:
         c.argument('subscription_id', help='Subscription Id.')
@@ -40,8 +40,14 @@ def load_arguments(self, _):
         c.argument('alias_name', options_list=['--name', '-n'], help='Alias Name')
 
     with self.argument_context('account alias create') as c:
-        c.argument('alias_name', options_list=['--name', '-n'], help='Alias Name')
-        c.argument('properties', action=AddProperties, nargs='+', help='Put alias request properties.')
+        c.argument('alias_name', options_list=['--name', '-n', '--alias-name'], type=str, help='Alias Name')
+        c.argument('display_name', type=str, help='The friendly name of the subscription.')
+        c.argument('workload', arg_type=get_enum_type(['Production', 'DevTest']), help='The workload type of the '
+                   'subscription. It can be either Production or DevTest.')
+        c.argument('billing_scope', type=str, help='Determines whether subscription is fieldLed, partnerLed or '
+                   'LegacyEA')
+        c.argument('subscription_id', type=str, help='This parameter can be used to create alias for existing '
+                   'subscription Id')
 
     with self.argument_context('account alias delete') as c:
         c.argument('alias_name', options_list=['--name', '-n'], help='Alias Name')
