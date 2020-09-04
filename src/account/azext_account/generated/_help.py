@@ -70,7 +70,7 @@ esource provider may support a subset of this list.
 
 helps['account tenant'] = """
     type: group
-    short-summary: account tenant
+    short-summary: Manage tenant
 """
 
 helps['account tenant list'] = """
@@ -84,7 +84,7 @@ helps['account tenant list'] = """
 
 helps['account alias'] = """
     type: group
-    short-summary: account alias
+    short-summary: Manage subscription alias
 """
 
 helps['account alias list'] = """

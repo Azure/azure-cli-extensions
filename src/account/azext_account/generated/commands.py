@@ -16,7 +16,7 @@ def load_command_table(self, _):
     account_subscription = CliCommandType(
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_operations#SubscriptionOperations.{}',
         client_factory=cf_subscription)
-    with self.command_group('account subscription', account_subscription, client_factory=cf_subscription) as g:
+    with self.command_group('account subscription', account_subscription, client_factory=cf_subscription, is_experimental=True) as g:
         # g.custom_command('create', 'account_subscription_create_subscription', supports_no_wait=True)
         g.custom_command('rename', 'account_subscription_rename')
         g.custom_command('cancel', 'account_subscription_cancel', confirmation=True)
