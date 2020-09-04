@@ -110,8 +110,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     kubernetes_version = get_server_version(configuration)
     kubernetes_distro = get_kubernetes_distro(configuration)
 
-    aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
+    is_aad_enabled = False
+    aad_profile = None
+    if (aad_client_app_id is not None) and (aad_server_app_id is not None):
+        aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -408,6 +411,12 @@ def get_kubernetes_distro(configuration):
 
 
 def generate_request_payload(configuration, location, public_key, tags, aad_profile):
+    if aad_profile is None:
+        aad_profile = ConnectedClusterAADProfile(
+            tenant_id="",
+            client_app_id="",
+            server_app_id=""
+        )
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -426,6 +435,8 @@ def generate_request_payload(configuration, location, public_key, tags, aad_prof
 
 def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id):
 
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
     try:
         all_contexts, current_context = config.list_kube_config_contexts()
     except Exception as e: # pylint: disable=broad-except
