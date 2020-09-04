@@ -105,9 +105,9 @@ def account_alias_show(client,
 
 def account_alias_create(client,
                          alias_name,
-                         display_name=None,
-                         workload=None,
+                         workload,
                          billing_scope=None,
+                         display_name=None,
                          subscription_id=None,
                          no_wait=False):
     properties = {

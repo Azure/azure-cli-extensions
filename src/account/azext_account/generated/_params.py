@@ -7,13 +7,14 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import get_enum_type
+from ._validators import alias_validator
 
 
 def load_arguments(self, _):
 
     with self.argument_context('account subscription rename') as c:
         c.argument('subscription_id', help='Subscription Id.')
-        c.argument('subscription_name', options_list=['--name', '-n'], help='New subscription name')
+        c.argument('subscription_name', options_list=['--name', '-n', '--subscription-name'], help='New subscription name')
 
     with self.argument_context('account subscription cancel') as c:
         c.argument('subscription_id', help='Subscription Id.')
@@ -39,7 +40,7 @@ def load_arguments(self, _):
     with self.argument_context('account alias show') as c:
         c.argument('alias_name', options_list=['--name', '-n'], help='Alias Name')
 
-    with self.argument_context('account alias create') as c:
+    with self.argument_context('account alias create', validator=alias_validator) as c:
         c.argument('alias_name', options_list=['--name', '-n', '--alias-name'], type=str, help='Alias Name')
         c.argument('display_name', type=str, help='The friendly name of the subscription.')
         c.argument('workload', arg_type=get_enum_type(['Production', 'DevTest']), help='The workload type of the '
