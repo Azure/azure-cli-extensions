@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.63
++++++
+* Fix checksum not match problem.
+
 0.4.62
 +++++
 * Add support for enable/disable confcom (sgx) addon.
