@@ -643,7 +643,6 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "systemDefaultValues.connectproxy-agent.enabled={}".format(is_aad_enabled),
-                        "--set", "systemDefaultValues.azureArcAgents.releaseTrain={}".format(get_release_train()),
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
@@ -759,7 +758,7 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
             os.makedirs(directory)
         except OSError as ex:
             if ex.errno != errno.EEXIST:
-                raise
+                raise CLIError("Could not create a kubeconfig directory")
     if not os.path.exists(path):
         with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
             pass
