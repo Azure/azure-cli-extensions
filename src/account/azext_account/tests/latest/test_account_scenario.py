@@ -34,7 +34,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                              checks=[self.check('name', '{alias_name}'),
                                      self.check('properties.provisioningState', 'Succeeded')]).get_output_in_json()
         sub_id = alias_sub['properties']['subscriptionId']
-        self.kwargs.update({'subscription_id':sub_id})
+        self.kwargs.update({'subscription_id': sub_id})
 
         # response different from swagger, causing deserialization error
         # self.cmd('az account alias list',
@@ -44,10 +44,9 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                  checks=[self.greater_than('length(@)', 0)])
 
         self.cmd('az account subscription show --subscription-id {subscription_id}',
-                 checks=[
-                 self.check('displayName', '{display_name}'),
-                 self.check('state', 'Enabled'),
-                 self.check('subscriptionId', sub_id)])
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Enabled'),
+                         self.check('subscriptionId', sub_id)])
 
         self.cmd('az account subscription list-location --subscription-id {subscription_id}',
                  checks=[self.greater_than('length(@)', 0)])
@@ -57,20 +56,18 @@ class SubscriptionClientScenarioTest(ScenarioTest):
         if self.in_recording:
             time.sleep(300)
         self.cmd('az account subscription show --subscription-id {subscription_id}',
-                 checks=[
-                 self.check('displayName', '{display_name}'),
-                 self.check('state', 'Warned'),
-                 self.check('subscriptionId', sub_id)])
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Warned'),
+                         self.check('subscriptionId', sub_id)])
 
         self.cmd('az account subscription enable --subscription-id {subscription_id}',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
         if self.in_recording:
             time.sleep(300)
         self.cmd('az account subscription show --subscription-id {subscription_id}',
-                 checks=[
-                 self.check('displayName', '{display_name}'),
-                 self.check('state', 'Enabled'),
-                 self.check('subscriptionId', sub_id)])
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Enabled'),
+                         self.check('subscriptionId', sub_id)])
 
         self.cmd('az account subscription rename --subscription-id {subscription_id} --name "{new_display_name}"',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
@@ -87,7 +84,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
 
         self.cmd('az account alias delete -n {alias_name}',
                  checks=[])
-        
+
         self.cmd('az account alias create --name {new_alias_name} --workload "Production" --subscription-id {subscription_id}',
                  checks=[self.check('name', '{new_alias_name}'),
                          self.check('properties.provisioningState', 'Succeeded')])
