@@ -770,6 +770,7 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
             os.makedirs(directory)
         except OSError as ex:
             if ex.errno != errno.EEXIST:
+                telemetry.set_user_fault()
                 telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Merge_Credentials_Fault_Type,
                                         summary='Could not create a kubeconfig directory.')
                 raise CLIError("Could not create a kubeconfig directory." + str(ex))
