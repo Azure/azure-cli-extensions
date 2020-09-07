@@ -895,7 +895,7 @@ def load_kubernetes_configuration(filename):
             raise CLIError('{} does not exist'.format(filename))
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
-                                    summary='Error parsing {} ({})'.format(filename, str(ex)))
+                                summary='Error parsing {} ({})'.format(filename, str(ex)))
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 def get_release_train():

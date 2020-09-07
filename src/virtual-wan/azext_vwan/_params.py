@@ -41,7 +41,6 @@ def load_arguments(self, _):
         c.argument('virtual_wan_name', vwan_name_type, options_list=['--name', '-n'])
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('branch_to_branch_traffic', arg_type=get_three_state_flag(), help='Allow branch-to-branch traffic flow.')
-        c.argument('vnet_to_vnet_traffic', arg_type=get_three_state_flag(), help='Allow VNet-to-VNet traffic flow.')
         c.argument('security_provider_name', help='The security provider name.')
         c.argument('office365_category', help='The office local breakout category.')
         c.argument('disable_vpn_encryption', arg_type=get_three_state_flag(), help='State of VPN encryption.')

@@ -1,5 +1,9 @@
 Release History
 ===============
+1.0.1
+-----
+* Optimize VNet Injection validator
+
 1.0.0
 -----
 * Bump version to 1.0.0
