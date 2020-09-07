@@ -229,7 +229,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
                          kube_context, no_wait, values_file_provided, values_file, is_aad_enabled)
-
     return put_cc_response
 
 
@@ -405,9 +404,7 @@ def get_kubernetes_distro(configuration):
         return "default"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
-                                           raise_error=False)
-
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution', raise_error=False)
 
 
 def generate_request_payload(configuration, location, public_key, tags, aad_profile):
@@ -439,7 +436,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
         kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
     try:
         all_contexts, current_context = config.list_kube_config_contexts()
-    except Exception as e: # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Problem listing kube contexts')
@@ -476,7 +473,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
             telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
                                     summary='User details not found in Users section.')
             raise CLIError("AAD details could not be retrieved." + str(ex))
-    except Exception as e: # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.User_Not_Found_Type,
                                 summary='Failed to get aad profile from kube config')
@@ -504,9 +501,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
         telemetry.set_user_fault()
         telemetry.set_exception(exception='Invalid AAD Profile', fault_type=consts.Invalid_AAD_Profile_Details_Type,
                                 summary='AAD profile details are partially passed/filled')
-        raise CLIError("AAD profile details are missing server-app-id: " + retrieved_aad_server_app_id
-                       + "client-app-id: " + retrieved_aad_client_app_id
-                       + " tenant-id: " + retrieved_aad_tenant_id)
+        raise CLIError("AAD profile details are missing server-app-id: " + retrieved_aad_server_app_id + "client-app-id: " + retrieved_aad_client_app_id + " tenant-id: " + retrieved_aad_tenant_id)
 
     return ConnectedClusterAADProfile(
         server_app_id=retrieved_aad_server_app_id,
@@ -528,9 +523,9 @@ def get_user_aad_details(kube_config, required_user):
         for user in users:
             if user.get('name') == required_user:
                 user_details = user.get('user')
-                ## Check if user is AAD user or not.
-                if not 'auth-provider' in user_details:
-                    ## The user is not a AAD user so return empty strings
+                # Check if user is AAD user or not.
+                if 'auth-provider' not in user_details:
+                    # The user is not a AAD user so return empty strings
                     return "", "", ""
                 else:
                     auth_provider_config = user_details.get('auth-provider').get('config')
@@ -898,8 +893,10 @@ def load_kubernetes_configuration(filename):
                                 summary='Error parsing {} ({})'.format(filename, str(ex)))
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
+
 def get_release_train():
     return os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+
 
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
