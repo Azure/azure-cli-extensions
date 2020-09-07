@@ -15,6 +15,7 @@ import platform
 import yaml
 import requests
 
+
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -229,6 +230,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
                          kube_context, no_wait, values_file_provided, values_file, is_aad_enabled)
+
 
     return put_cc_response
 
@@ -642,6 +644,7 @@ def get_release_namespace(kube_config, kube_context):
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled):
+
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),

@@ -1,3 +1,8 @@
+0.1.10
+++++++++++++++++++
+
+* `az monitor app-insights component update`: Prompt consent when migrating to workspace-centric workspace.
+
 0.1.9
 ++++++++++++++++++
 

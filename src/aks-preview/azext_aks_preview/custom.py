@@ -87,6 +87,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
+from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -843,6 +844,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_aad=False,
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
+               disable_sgxquotehelper=False,
                assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
@@ -1004,7 +1006,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_subnet_prefix,
         appgw_id,
         appgw_subnet_id,
-        appgw_watch_namespace
+        appgw_watch_namespace,
+        disable_sgxquotehelper
     )
     monitoring = False
     if 'omsagent' in addon_profiles:
@@ -1727,7 +1730,8 @@ def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_n
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None):
+                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None,
+                        appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1772,6 +1776,13 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
         addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME] = addon_profile
         addons.remove('ingress-appgw')
+    if 'confcom' in addons:
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
+        if disable_sgxquotehelper:
+            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+        addon_profiles[CONST_CONFCOM_ADDON_NAME] = addon_profile
+        addons.remove('confcom')
+
     # error out if any (unrecognized) addons remain
     if addons:
         raise CLIError('"{}" {} not recognized by the --enable-addons argument.'.format(
@@ -2424,12 +2435,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
-                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None, no_wait=False):
+                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
-                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
+                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
+                              disable_sgxquotehelper=disable_sgxquotehelper, no_wait=no_wait)
 
     if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
@@ -2479,6 +2491,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_id=None,
                    appgw_subnet_id=None,
                    appgw_watch_namespace=None,
+                   disable_sgxquotehelper=False,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2544,6 +2557,15 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
                 if appgw_watch_namespace is not None:
                     addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
+            elif addon.lower() == CONST_CONFCOM_ADDON_NAME.lower():
+                if addon_profile.enabled:
+                    raise CLIError('The confcom addon is already enabled for this managed cluster.\n'
+                                   'To change confcom configuration, run '
+                                   f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
+                if disable_sgxquotehelper:
+                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:

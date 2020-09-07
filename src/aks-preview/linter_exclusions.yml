@@ -1,0 +1,10 @@
+aks create:
+  parameters:
+    disable_sgxquotehelper:
+      rule_exclusions:
+      - option_length_too_long
+aks enable-addons:
+  parameters:
+    disable_sgxquotehelper:
+      rule_exclusions:
+      - option_length_too_long
