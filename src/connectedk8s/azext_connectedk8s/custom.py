@@ -10,9 +10,9 @@ import tempfile
 import time
 from subprocess import Popen, PIPE
 from base64 import b64encode
-import yaml
 import stat
 import platform
+import yaml
 import requests
 
 from knack.util import CLIError
@@ -114,7 +114,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     aad_profile = None
     if (aad_client_app_id is not None) and (aad_server_app_id is not None):
         aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -470,7 +470,12 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
                 telemetry.set_exception(exception='User not found', fault_type=consts.User_Not_Found_Type,
                                         summary='User in not found in kube context')
                 raise CLIError("User not found in kubecontext: " + str(kube_context))
-        retrieved_aad_server_app_id, retrieved_aad_client_app_id, retrieved_aad_tenant_id = get_user_aad_details(kube_config, user)
+        try:
+            retrieved_aad_server_app_id, retrieved_aad_client_app_id, retrieved_aad_tenant_id = get_user_aad_details(kube_config, user)
+        except Exception as ex:
+            telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
+                                    summary='User details not found in Users section.')
+            raise CLIError("AAD details could not be retrieved." + str(ex))
     except Exception as e: # pylint: disable=broad-except
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.User_Not_Found_Type,
@@ -509,9 +514,16 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
         tenant_id=retrieved_aad_tenant_id
     ), aad_enabled
 
+
 def get_user_aad_details(kube_config, required_user):
     with open(kube_config) as f:
-        config_data = yaml.safe_load(f)
+        try:
+            config_data = yaml.safe_load(f)
+        except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                    summary='Problem loading the kubeconfig file while getting user aad details')
+            raise CLIError("Problem loading the kubeconfig file while getting user aad details : " + str(e))
         users = config_data.get('users')
         for user in users:
             if user.get('name') == required_user:
@@ -524,7 +536,7 @@ def get_user_aad_details(kube_config, required_user):
                     auth_provider_config = user_details.get('auth-provider').get('config')
                     return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
     telemetry.set_user_fault()
-    telemetry.set_exception(exception='User not found', fault_type=consts.User_Not_Found_Type,
+    telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
                             summary='User details not found in Users section.')
     raise CLIError("User details for User " + str(required_user) + " not found in KubeConfig: " + str(kube_config))
 
@@ -734,12 +746,17 @@ def list_cluster_user_credentials(cmd,
                                   overwrite_existing=False):
     try:
         credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
+                                summary='Unable to list cluster user credentials')
+        raise CLIError("Failed to get credentials." + str(e))
+    try:
         kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
-
     except Exception as e:
-        logger.warning("Exception while getting credentials: %s\n", e)
-        raise CLIError("Failed to get credentials")
+        telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
+                                summary='Unable to list cluster user credentials')
+        raise CLIError("Failed to get credentials." + str(e))
 
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
@@ -758,7 +775,9 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
             os.makedirs(directory)
         except OSError as ex:
             if ex.errno != errno.EEXIST:
-                raise CLIError("Could not create a kubeconfig directory")
+                telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Merge_Credentials_Fault_Type,
+                                        summary='Could not create a kubeconfig directory.')
+                raise CLIError("Could not create a kubeconfig directory." + str(ex))
     if not os.path.exists(path):
         with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
             pass
@@ -778,8 +797,13 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
 
 
 def merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
-    existing = load_kubernetes_configuration(existing_file)
-    addition = load_kubernetes_configuration(addition_file)
+    try:
+        existing = load_kubernetes_configuration(existing_file)
+        addition = load_kubernetes_configuration(addition_file)
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
+                                summary='Exception while loading kubernetes configuration')
+        raise CLIError('Exception while loading kubernetes configuration.' + str(ex))
 
     if context_name is not None:
         addition['contexts'][0]['name'] = context_name
@@ -798,6 +822,8 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
             continue
 
     if addition is None:
+        telemetry.set_exception(exception='Failed to load additional configuration', fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
+                                summary='failed to load additional configuration from {}'.format(addition_file))
         raise CLIError('failed to load additional configuration from {}'.format(addition_file))
 
     if existing is None:
@@ -816,7 +842,12 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
                            existing_file, existing_file_perms)
 
     with open(existing_file, 'w+') as stream:
-        yaml.safe_dump(existing, stream, default_flow_style=False)
+        try:
+            yaml.safe_dump(existing, stream, default_flow_style=False)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Merge_Kubeconfig_File,
+                                    summary='Exception while merging the kubeconfig file')
+            raise CLIError('Exception while merging the kubeconfig file.' + str(e))
 
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
@@ -846,6 +877,8 @@ def handle_merge(existing, addition, key, replace):
                         existing[key].remove(j)
                     else:
                         msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                        telemetry.set_exception(exception='A different object with same name exists in the kubeconfig file', fault_type=consts.Different_Object_With_Same_Name_Fault_Type,
+                                                summary=msg.format(i['name'], key))
                         raise CLIError(msg.format(i['name'], key))
         existing[key].append(i)
 
@@ -856,8 +889,13 @@ def load_kubernetes_configuration(filename):
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                    summary='{} does not exist'.format(filename))
             raise CLIError('{} does not exist'.format(filename))
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                    summary='Error parsing {} ({})'.format(filename, str(ex)))
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 def get_release_train():
