@@ -12,6 +12,110 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
+class Resource(msrest.serialization.Model):
+    """Resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class Configuration(Resource):
+    """Tenant configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param enforce_private_markdown_storage: When flag is set to true Markdown tile will require
+     external storage configuration (URI). The inline content configuration will be prohibited.
+    :type enforce_private_markdown_storage: bool
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'enforce_private_markdown_storage': {'key': 'properties.enforcePrivateMarkdownStorage', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enforce_private_markdown_storage: Optional[bool] = None,
+        **kwargs
+    ):
+        super(Configuration, self).__init__(**kwargs)
+        self.enforce_private_markdown_storage = enforce_private_markdown_storage
+
+
+class ConfigurationList(msrest.serialization.Model):
+    """List of tenant configurations.
+
+    :param value: The array of custom resource provider manifests.
+    :type value: list[~portal.models.Configuration]
+    :param next_link: The URL to use for getting the next set of results.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Configuration]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["Configuration"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(ConfigurationList, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class Dashboard(msrest.serialization.Model):
     """The shared dashboard resource definition.
 
@@ -217,32 +321,6 @@ class DashboardPartsPosition(msrest.serialization.Model):
         self.metadata = metadata
 
 
-class DashboardProperties(msrest.serialization.Model):
-    """The shared dashboard properties.
-
-    :param lenses: The dashboard lenses.
-    :type lenses: dict[str, ~portal.models.DashboardLens]
-    :param metadata: The dashboard metadata.
-    :type metadata: dict[str, object]
-    """
-
-    _attribute_map = {
-        'lenses': {'key': 'lenses', 'type': '{DashboardLens}'},
-        'metadata': {'key': 'metadata', 'type': '{object}'},
-    }
-
-    def __init__(
-        self,
-        *,
-        lenses: Optional[Dict[str, "DashboardLens"]] = None,
-        metadata: Optional[Dict[str, object]] = None,
-        **kwargs
-    ):
-        super(DashboardProperties, self).__init__(**kwargs)
-        self.lenses = lenses
-        self.metadata = metadata
-
-
 class ErrorDefinition(msrest.serialization.Model):
     """Error definition.
 
@@ -278,38 +356,12 @@ class ErrorDefinition(msrest.serialization.Model):
         self.details = None
 
 
-class ErrorResponseException(HttpResponseError):
-    """Server responded with exception of type: 'ErrorResponse'.
-
-    :param response: Server response to be deserialized.
-    :param error_model: A deserialized model of the response body as model.
-    """
-
-    def __init__(self, response, error_model):
-        self.error = error_model
-        super(ErrorResponseException, self).__init__(response=response, error_model=error_model)
-
-    @classmethod
-    def from_response(cls, response, deserialize):
-        """Deserialize this response as this exception, or a subclass of this exception.
-
-        :param response: Server response to be deserialized.
-        :param deserialize: A deserializer
-        """
-        model_name = 'ErrorResponse'
-        error = deserialize(model_name, response)
-        if error is None:
-            error = deserialize.dependencies[model_name]()
-        return error._EXCEPTION_TYPE(response, error)
-
-
 class ErrorResponse(msrest.serialization.Model):
     """Error response.
 
-    :param error: Error definition.
+    :param error: The error details.
     :type error: ~portal.models.ErrorDefinition
     """
-    _EXCEPTION_TYPE = ErrorResponseException
 
     _attribute_map = {
         'error': {'key': 'error', 'type': 'ErrorDefinition'},
@@ -354,6 +406,40 @@ class PatchableDashboard(msrest.serialization.Model):
         self.tags = tags
         self.lenses = lenses
         self.metadata = metadata
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyResource, self).__init__(**kwargs)
 
 
 class ResourceProviderOperation(msrest.serialization.Model):
