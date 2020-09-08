@@ -17,12 +17,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_operations#SubscriptionOperations.{}',
         client_factory=cf_subscription)
     with self.command_group('account subscription', account_subscription, client_factory=cf_subscription, is_experimental=True) as g:
-        # g.custom_command('create', 'account_subscription_create_subscription', supports_no_wait=True)
         g.custom_command('rename', 'account_subscription_rename')
         g.custom_command('cancel', 'account_subscription_cancel', confirmation=True)
         g.custom_command('enable', 'account_subscription_enable')
-        # g.custom_command('create-csp', 'account_subscription_create_csp_subscription', supports_no_wait=True)
-        # g.custom_command('create-in-enrollment-account', 'account_subscription_create_subscription_in_enrollment_account', supports_no_wait=True)
         g.custom_command('list', 'account_subscription_list')
         g.custom_show_command('show', 'account_subscription_show')
         g.custom_command('list-location', 'account_subscription_list_location')

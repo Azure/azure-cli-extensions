@@ -55,7 +55,7 @@ helps['account subscription show'] = """
     examples:
       - name: getSubscription
         text: |-
-               az account subscription show --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+               az account subscription show --subscription-id "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 """
 
 helps['account subscription list-location'] = """
@@ -65,7 +65,7 @@ esource provider may support a subset of this list.
     examples:
       - name: listLocations
         text: |-
-               az account subscription list-location --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+               az account subscription list-location --subscription-id "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 """
 
 helps['account tenant'] = """
@@ -112,7 +112,7 @@ helps['account alias create'] = """
       - name: CreateAlias
         text: |-
                az account alias create --name "aliasForNewSub" --billing-scope "/providers/Microsoft.Billing/billingAcc\
-ounts/e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/PE2Q-NOIT-BG\
+ounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/PE2Q-NOIT-BG\
 7-TGB/invoiceSections/MTT4-OBS7-PJA-TGB" --display-name "Contoso MCA subscription" --workload "Production"
 """
 

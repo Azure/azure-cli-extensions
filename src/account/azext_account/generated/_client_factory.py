@@ -15,12 +15,6 @@ def cf_account(cli_ctx, *_):
 def cf_subscription(cli_ctx, *_):
     return cf_account(cli_ctx).subscription
 
-# def cf_subscription_operation(cli_ctx, *_):
-#     return cf_account(cli_ctx).subscription_operation
-
-
-# def cf_operation(cli_ctx, *_):
-#     return cf_account(cli_ctx).operation
 
 def cf_tenant(cli_ctx, *_):
     return cf_account(cli_ctx).tenant
