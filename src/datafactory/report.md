@@ -1024,8 +1024,15 @@ update a datafactory pipeline.
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--pipeline-name**|string|The pipeline name.|pipeline_name|pipelineName|
-|**--pipeline**|object|Pipeline resource definition.|pipeline|pipeline|
 |**--if-match**|string|ETag of the pipeline entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--description**|string|The description of the pipeline.|description|description|
+|**--activities**|array|List of activities in pipeline.|activities|activities|
+|**--parameters**|dictionary|List of parameters for pipeline.|parameters|parameters|
+|**--variables**|dictionary|List of variables for pipeline.|variables|variables|
+|**--concurrency**|integer|The max number of concurrent runs for the pipeline.|concurrency|concurrency|
+|**--annotations**|array|List of tags that can be used for describing the Pipeline.|annotations|annotations|
+|**--run-dimensions**|dictionary|Dimensions emitted by Pipeline.|run_dimensions|runDimensions|
+|**--folder-name**|string|The name of the folder that this Pipeline is in.|name|name|
 
 ### datafactory pipeline-run cancel
 

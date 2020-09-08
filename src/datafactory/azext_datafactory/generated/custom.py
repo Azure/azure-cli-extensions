@@ -530,7 +530,31 @@ def datafactory_pipeline_update(instance,
                                 resource_group_name,
                                 factory_name,
                                 pipeline_name,
-                                if_match=None):
+                                if_match=None,
+                                description=None,
+                                activities=None,
+                                parameters=None,
+                                variables=None,
+                                concurrency=None,
+                                annotations=None,
+                                run_dimensions=None,
+                                folder_name=None):
+    if description is not None:
+        instance.description = description
+    if activities is not None:
+        instance.activities = activities
+    if parameters is not None:
+        instance.parameters = parameters
+    if variables is not None:
+        instance.variables = variables
+    if concurrency is not None:
+        instance.concurrency = concurrency
+    if annotations is not None:
+        instance.annotations = annotations
+    if run_dimensions is not None:
+        instance.run_dimensions = run_dimensions
+    if folder_name is not None:
+        instance.name_folder_name = folder_name
     return instance
 
 

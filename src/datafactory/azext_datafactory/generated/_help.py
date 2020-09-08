@@ -580,16 +580,16 @@ helps['datafactory pipeline update'] = """
     examples:
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline update --factory-name "exampleFactoryName" --pipeline \
-"{\\"description\\":\\"Example description\\",\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"\
-ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"input\
-s\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\
-\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\\
-",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"exam\
-plecontainer\\"},\\"referenceName\\":\\"exampleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\
-\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"t\
-ype\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"OutputBlob\
-NameList\\":{\\"type\\":\\"Array\\"}}}" --name "examplePipeline" --resource-group "exampleResourceGroup"
+               az datafactory pipeline update --factory-name "exampleFactoryName" --description "Example description" \
+--activities "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\"\
+:[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"param\
+eters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\\
+"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\
+\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDa\
+taset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"\
+type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline(\
+).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name \
+"examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """

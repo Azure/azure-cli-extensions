@@ -31,6 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
     from .manual.dependency import DEPENDENCIES
 except ImportError:

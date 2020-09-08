@@ -123,16 +123,17 @@ def step_pipelines_create(test, rg):
 def step_pipelines_update(test, rg):
     test.cmd('az datafactory pipeline update '
              '--factory-name "{myFactory}" '
-             '--pipeline "{{\\"description\\":\\"Example description\\",\\"activities\\":[{{\\"name\\":\\"ExampleForeac'
-             'hActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCop'
-             'yActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{'
-             '\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName'
-             '\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileN'
-             'ame\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\'
-             '"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink'
-             '\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":tr'
-             'ue,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}'
-             '}}}}}],\\"parameters\\":{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}}}" '
+             '--description "Example description" '
+             '--activities "[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{'
+             '\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\"'
+             ':\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\"'
+             ':\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"type\\":\\"Dataset'
+             'Reference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}'
+             '},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"typeProperties'
+             '\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\'
+             '"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@p'
+             'ipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
+             '--parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
              '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -189,7 +190,7 @@ def step_integrationruntimes_update(test, rg):
 
 # EXAMPLE: IntegrationRuntimes_CreateLinkedIntegrationRuntime
 @try_manual
-def step_integrationruntimes_createlinkedintegrationruntime(test, rg):
+def step_integrationruntimes_createlinkedintegrationru(test, rg):
     test.cmd('az datafactory integration-runtime linked-integration-runtime create '
              '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
              '--location "West US" '
@@ -690,7 +691,7 @@ def call_scenario(test, rg):
     step_triggers_update(test, rg)
     step_integrationruntimes_create(test, rg)
     step_integrationruntimes_update(test, rg)
-    step_integrationruntimes_createlinkedintegrationruntime(test, rg)
+    step_integrationruntimes_createlinkedintegrationru(test, rg)
     step_pipelines_createrun(test, rg)
     step_integrationruntimes_get(test, rg)
     step_reruntriggers_listbytrigger(test, rg)
