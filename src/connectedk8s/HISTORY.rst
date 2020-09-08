@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.6
+++++++
+* `az connectedk8s connect`: Few bug fixes
+* `az connectedk8s update`: Few bug fixes
+
 0.2.5
 ++++++
 * `az connectedk8s connect`: Added support for Dogfood cloud

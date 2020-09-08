@@ -696,7 +696,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
         telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade the helm version and try again.")
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):

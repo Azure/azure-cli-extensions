@@ -26,14 +26,6 @@ logger = get_logger(__name__)
 # pylint: disable=bare-except
 
 
-def cleanup_helm_chart_directory(path):
-    try:
-        if os.path.isdir(path):
-            shutil.rmtree(path)
-    except:
-        logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", path)
-
-
 def validate_location(cmd, location):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     rp_locations = []
@@ -60,11 +52,16 @@ def get_chart_path(registry_path, kube_config, kube_context):
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
     pull_helm_chart(registry_path, kube_config, kube_context)
 
-    # Exporting helm chart
+    # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
-    cleanup_helm_chart_directory(chart_export_path)
+    try:
+        if os.path.isdir(chart_export_path):
+            shutil.rmtree(chart_export_path)
+    except:
+        logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
     export_helm_chart(registry_path, chart_export_path, kube_config, kube_context)
-    # Helm Install
+
+    # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     return chart_path
