@@ -118,7 +118,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
         telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade the helm version and try again.")
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Validate location
     utils.validate_location(cmd, location)
