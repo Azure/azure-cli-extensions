@@ -8,7 +8,7 @@ import os
 import json
 import tempfile
 import time
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, run, STDOUT
 from base64 import b64encode
 import stat
 import platform
@@ -59,7 +59,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
     onboarding_tenant_id = graph_client.config.tenant_id
-    aad_tenant_id = onboarding_tenant_id
+
+    aad_tenant_id = None
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -430,6 +431,29 @@ def generate_request_payload(configuration, location, public_key, tags, aad_prof
     return cc
 
 
+def get_kubeconfig_dict(kube_config=None):
+    #Gets the kubeconfig as per kubectl(after applying all merging rules)
+    args = ['kubectl', 'config', 'view']
+    if kube_config:
+        args += ["--kubeconfig", kube_config]
+
+    #subprocess run
+    try:
+        proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        if proc.returncode:
+            telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                    summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+            raise CLIError("Error running kubectl config view." + str(proc.stdout))
+        config_doc_str = proc.stdout.strip()
+        config_dict = yaml.safe_load(config_doc_str)
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+        raise CLIError("Error while fetching merged kubeconfig through kubectl." + str(ex))
+
+    return config_dict
+
+
 def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id):
 
     if kube_config is None:
@@ -480,7 +504,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
         logger.warning("Exception while trying to fetch aad profile details: %s\n", e)
         raise CLIError("Failed to fetch AAD profile details from kubecontext: " + str(kube_context))
 
-    # Override retrived values with passed values in cli.
+    # Override retrieved values with passed values in cli.
     if aad_server_app_id:
         retrieved_aad_server_app_id = aad_server_app_id
 
@@ -511,25 +535,24 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
 
 
 def get_user_aad_details(kube_config, required_user):
-    with open(kube_config) as f:
-        try:
-            config_data = yaml.safe_load(f)
-        except Exception as e:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
-                                    summary='Problem loading the kubeconfig file while getting user aad details')
-            raise CLIError("Problem loading the kubeconfig file while getting user aad details : " + str(e))
-        users = config_data.get('users')
-        for user in users:
-            if user.get('name') == required_user:
-                user_details = user.get('user')
-                # Check if user is AAD user or not.
-                if 'auth-provider' not in user_details:
-                    # The user is not a AAD user so return empty strings
-                    return "", "", ""
-                else:
-                    auth_provider_config = user_details.get('auth-provider').get('config')
-                    return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
+    try:
+        config_data = get_kubeconfig_dict(kube_config=kube_config)
+    except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                summary='Problem loading the kubeconfig file while getting user aad details')
+        raise CLIError("Problem loading the kubeconfig file while getting user aad details : " + str(e))
+    users = config_data.get('users')
+    for user in users:
+        if user.get('name') == required_user:
+            user_details = user.get('user')
+            # Check if user is AAD user or not.
+            if 'auth-provider' not in user_details:
+                # The user is not a AAD user so return empty strings
+                return "", "", ""
+            else:
+                auth_provider_config = user_details.get('auth-provider').get('config')
+                return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
     telemetry.set_user_fault()
     telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
                             summary='User details not found in Users section.')
