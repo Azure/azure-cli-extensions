@@ -22,6 +22,15 @@ class ScheduleQueryConditionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ScheduleQueryConditionParser#comes_from.
+    def enterComes_from(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#comes_from.
+    def exitComes_from(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ScheduleQueryConditionParser#namespace.
     def enterNamespace(self, ctx):
         pass
@@ -31,12 +40,39 @@ class ScheduleQueryConditionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ScheduleQueryConditionParser#metric_with_quote.
+    def enterMetric_with_quote(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#metric_with_quote.
+    def exitMetric_with_quote(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ScheduleQueryConditionParser#metric.
     def enterMetric(self, ctx):
         pass
 
     # Exit a parse tree produced by ScheduleQueryConditionParser#metric.
     def exitMetric(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#query_with_quote.
+    def enterQuery_with_quote(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#query_with_quote.
+    def exitQuery_with_quote(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#query.
+    def enterQuery(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#query.
+    def exitQuery(self, ctx):
         pass
 
 
@@ -55,6 +91,105 @@ class ScheduleQueryConditionListener(ParseTreeListener):
 
     # Exit a parse tree produced by ScheduleQueryConditionParser#threshold.
     def exitThreshold(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#resource_column.
+    def enterResource_column(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#resource_column.
+    def exitResource_column(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#resource_id.
+    def enterResource_id(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#resource_id.
+    def exitResource_id(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#resource.
+    def enterResource(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#resource.
+    def exitResource(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#column.
+    def enterColumn(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#column.
+    def exitColumn(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#falling_period.
+    def enterFalling_period(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#falling_period.
+    def exitFalling_period(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#at.
+    def enterAt(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#at.
+    def exitAt(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#least.
+    def enterLeast(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#least.
+    def exitLeast(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#out.
+    def enterOut(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#out.
+    def exitOut(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#of.
+    def enterOf(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#of.
+    def exitOf(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#min_times.
+    def enterMin_times(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#min_times.
+    def exitMin_times(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#evaluation_period.
+    def enterEvaluation_period(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#evaluation_period.
+    def exitEvaluation_period(self, ctx):
         pass
 
 

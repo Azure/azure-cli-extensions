@@ -142,7 +142,7 @@ class Condition(Model):
      ~azure.mgmt.monitor.v2020_05_01_preview.models.ConditionOperator
     :param threshold: Required. the criteria threshold value that activates
      the alert.
-    :type threshold: float
+    :type threshold: int
     :param failing_periods: The minimum number of violations required within
      the selected lookback time window required to raise an alert.
     :type failing_periods:
@@ -162,7 +162,7 @@ class Condition(Model):
         'resource_id_column': {'key': 'resourceIdColumn', 'type': 'str'},
         'dimensions': {'key': 'dimensions', 'type': '[Dimension]'},
         'operator': {'key': 'operator', 'type': 'str'},
-        'threshold': {'key': 'threshold', 'type': 'float'},
+        'threshold': {'key': 'threshold', 'type': 'int'},
         'failing_periods': {'key': 'failingPeriods', 'type': 'ConditionFailingPeriods'},
     }
 
@@ -186,16 +186,16 @@ class ConditionFailingPeriods(Model):
      points. The lookback time window is calculated based on the aggregation
      granularity (windowSize) and the selected number of aggregated points.
      Default value is 1
-    :type number_of_evaluation_periods: float
+    :type number_of_evaluation_periods: int
     :param min_failing_periods_to_alert: The number of violations to trigger
      an alert. Should be smaller or equal to numberOfEvaluationPeriods. Default
      value is 1
-    :type min_failing_periods_to_alert: float
+    :type min_failing_periods_to_alert: int
     """
 
     _attribute_map = {
-        'number_of_evaluation_periods': {'key': 'numberOfEvaluationPeriods', 'type': 'float'},
-        'min_failing_periods_to_alert': {'key': 'minFailingPeriodsToAlert', 'type': 'float'},
+        'number_of_evaluation_periods': {'key': 'numberOfEvaluationPeriods', 'type': 'int'},
+        'min_failing_periods_to_alert': {'key': 'minFailingPeriodsToAlert', 'type': 'int'},
     }
 
     def __init__(self, **kwargs):
@@ -457,7 +457,7 @@ class ScheduledQueryRuleResource(TrackedResource):
     :type description: str
     :param severity: Severity of the alert. Should be an integer between
      [0-4]. Value of 0 is severest
-    :type severity: float
+    :type severity: int
     :param enabled: The flag which indicates whether this scheduled query rule
      is enabled. Value should be true or false
     :type enabled: bool
@@ -502,7 +502,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -536,7 +536,7 @@ class ScheduledQueryRuleResourcePatch(Model):
     :type description: str
     :param severity: Severity of the alert. Should be an integer between
      [0-4]. Value of 0 is severest
-    :type severity: float
+    :type severity: int
     :param enabled: The flag which indicates whether this scheduled query rule
      is enabled. Value should be true or false
     :type enabled: bool
@@ -570,7 +570,7 @@ class ScheduledQueryRuleResourcePatch(Model):
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},

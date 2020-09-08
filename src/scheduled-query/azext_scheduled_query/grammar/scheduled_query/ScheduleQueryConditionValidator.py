@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from .ScheduleQueryConditionListener import ScheduleQueryConditionListener
+from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import ConditionFailingPeriods
 
 
 op_conversion = {
@@ -53,6 +54,26 @@ class ScheduleQueryConditionValidator(ScheduleQueryConditionListener):
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitThreshold(self, ctx):
         self.parameters['threshold'] = ctx.getText().strip()
+
+    # Exit a parse tree produced by MetricAlertConditionParser#threshold.
+    def exitQuery(self, ctx):
+        self.parameters['query'] = ctx.getText().strip()
+
+    # Exit a parse tree produced by MetricAlertConditionParser#threshold.
+    def exitResource_id(self, ctx):
+        self.parameters['resource_id_column'] = ctx.getText().strip()
+
+    # Enter a parse tree produced by MetricAlertConditionParser#dimensions.
+    def enterFalling_period(self, ctx):
+        self.parameters['failing_periods'] = ConditionFailingPeriods()
+
+    # Exit a parse tree produced by MetricAlertConditionParser#threshold.
+    def exitMin_times(self, ctx):
+        self.parameters['failing_periods'].min_failing_periods_to_alert = float(ctx.getText().strip())
+
+    # Exit a parse tree produced by MetricAlertConditionParser#threshold.
+    def exitEvaluation_period(self, ctx):
+        self.parameters['failing_periods'].number_of_evaluation_periods = float(ctx.getText().strip())
 
     # Enter a parse tree produced by MetricAlertConditionParser#dimensions.
     def enterDimensions(self, ctx):

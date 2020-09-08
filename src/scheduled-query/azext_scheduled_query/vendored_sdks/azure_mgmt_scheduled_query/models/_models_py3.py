@@ -142,7 +142,7 @@ class Condition(Model):
      ~azure.mgmt.monitor.v2020_05_01_preview.models.ConditionOperator
     :param threshold: Required. the criteria threshold value that activates
      the alert.
-    :type threshold: float
+    :type threshold: int
     :param failing_periods: The minimum number of violations required within
      the selected lookback time window required to raise an alert.
     :type failing_periods:
@@ -162,11 +162,11 @@ class Condition(Model):
         'resource_id_column': {'key': 'resourceIdColumn', 'type': 'str'},
         'dimensions': {'key': 'dimensions', 'type': '[Dimension]'},
         'operator': {'key': 'operator', 'type': 'str'},
-        'threshold': {'key': 'threshold', 'type': 'float'},
+        'threshold': {'key': 'threshold', 'type': 'int'},
         'failing_periods': {'key': 'failingPeriods', 'type': 'ConditionFailingPeriods'},
     }
 
-    def __init__(self, *, time_aggregation, operator, threshold: float, query: str=None, metric_measure_column: str=None, resource_id_column: str=None, dimensions=None, failing_periods=None, **kwargs) -> None:
+    def __init__(self, *, time_aggregation, operator, threshold: int, query: str=None, metric_measure_column: str=None, resource_id_column: str=None, dimensions=None, failing_periods=None, **kwargs) -> None:
         super(Condition, self).__init__(**kwargs)
         self.query = query
         self.time_aggregation = time_aggregation
@@ -186,19 +186,19 @@ class ConditionFailingPeriods(Model):
      points. The lookback time window is calculated based on the aggregation
      granularity (windowSize) and the selected number of aggregated points.
      Default value is 1
-    :type number_of_evaluation_periods: float
+    :type number_of_evaluation_periods: int
     :param min_failing_periods_to_alert: The number of violations to trigger
      an alert. Should be smaller or equal to numberOfEvaluationPeriods. Default
      value is 1
-    :type min_failing_periods_to_alert: float
+    :type min_failing_periods_to_alert: int
     """
 
     _attribute_map = {
-        'number_of_evaluation_periods': {'key': 'numberOfEvaluationPeriods', 'type': 'float'},
-        'min_failing_periods_to_alert': {'key': 'minFailingPeriodsToAlert', 'type': 'float'},
+        'number_of_evaluation_periods': {'key': 'numberOfEvaluationPeriods', 'type': 'int'},
+        'min_failing_periods_to_alert': {'key': 'minFailingPeriodsToAlert', 'type': 'int'},
     }
 
-    def __init__(self, *, number_of_evaluation_periods: float=None, min_failing_periods_to_alert: float=None, **kwargs) -> None:
+    def __init__(self, *, number_of_evaluation_periods: int=None, min_failing_periods_to_alert: int=None, **kwargs) -> None:
         super(ConditionFailingPeriods, self).__init__(**kwargs)
         self.number_of_evaluation_periods = number_of_evaluation_periods
         self.min_failing_periods_to_alert = min_failing_periods_to_alert
@@ -457,7 +457,7 @@ class ScheduledQueryRuleResource(TrackedResource):
     :type description: str
     :param severity: Severity of the alert. Should be an integer between
      [0-4]. Value of 0 is severest
-    :type severity: float
+    :type severity: int
     :param enabled: The flag which indicates whether this scheduled query rule
      is enabled. Value should be true or false
     :type enabled: bool
@@ -502,7 +502,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -513,7 +513,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'actions': {'key': 'properties.actions', 'type': '[Action]'},
     }
 
-    def __init__(self, *, location: str, tags=None, description: str=None, severity: float=None, enabled: bool=None, scopes=None, evaluation_frequency=None, window_size=None, target_resource_types=None, criteria=None, mute_actions_duration=None, actions=None, **kwargs) -> None:
+    def __init__(self, *, location: str, tags=None, description: str=None, severity: int=None, enabled: bool=None, scopes=None, evaluation_frequency=None, window_size=None, target_resource_types=None, criteria=None, mute_actions_duration=None, actions=None, **kwargs) -> None:
         super(ScheduledQueryRuleResource, self).__init__(tags=tags, location=location, **kwargs)
         self.description = description
         self.severity = severity
@@ -536,7 +536,7 @@ class ScheduledQueryRuleResourcePatch(Model):
     :type description: str
     :param severity: Severity of the alert. Should be an integer between
      [0-4]. Value of 0 is severest
-    :type severity: float
+    :type severity: int
     :param enabled: The flag which indicates whether this scheduled query rule
      is enabled. Value should be true or false
     :type enabled: bool
@@ -570,7 +570,7 @@ class ScheduledQueryRuleResourcePatch(Model):
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -581,7 +581,7 @@ class ScheduledQueryRuleResourcePatch(Model):
         'actions': {'key': 'properties.actions', 'type': '[Action]'},
     }
 
-    def __init__(self, *, tags=None, description: str=None, severity: float=None, enabled: bool=None, scopes=None, evaluation_frequency=None, window_size=None, target_resource_types=None, criteria=None, mute_actions_duration=None, actions=None, **kwargs) -> None:
+    def __init__(self, *, tags=None, description: str=None, severity: int=None, enabled: bool=None, scopes=None, evaluation_frequency=None, window_size=None, target_resource_types=None, criteria=None, mute_actions_duration=None, actions=None, **kwargs) -> None:
         super(ScheduledQueryRuleResourcePatch, self).__init__(**kwargs)
         self.tags = tags
         self.description = description
