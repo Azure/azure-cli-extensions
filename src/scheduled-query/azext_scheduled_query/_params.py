@@ -27,9 +27,11 @@ def load_arguments(self, _):
         c.argument('description', help='Free-text description of the rule.')
         c.argument('scopes', nargs='+', help='Space-separated list of scopes the rule applies to. '
                                              'The resources specified in this parameter must be of the same type and exist in the same location.')
-        c.argument('disabled', arg_type=get_three_state_flag())
+        c.argument('disabled', arg_type=get_three_state_flag(), help='Disable the scheduled query.')
         c.argument('target_resource_type', options_list=['--target-resource-type', '--type'],
                    help='The resource type of the target resource(s) in scopes. '
                         'This must be provided when scopes is resource group or subscription.')
-        c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True), help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
+        c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True),
+                   options_list=['--mute-actions-duration', '--mad'],
+                   help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
         c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))

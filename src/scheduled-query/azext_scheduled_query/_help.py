@@ -45,17 +45,6 @@ parameters:
         Usage:   --action ACTION_GROUP_NAME_OR_ID [KEY=VAL [KEY=VAL ...]]
 
         Multiple action groups can be specified by using more than one `--action` argument.
-  - name: --condition
-    short-summary: The condition which triggers the rule.
-    long-summary: |
-        Usage:  --condition {avg,min,max,total,count} ["METRIC COLUMN" from]
-                            "QUERY" {=,!=,>,>=,<,<=} THRESHOLD
-                            [resource id RESOURCEID]
-                            [where DIMENSION {includes,excludes} VALUE [or VALUE ...]
-                            [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]
-                            [at least MinTimeToFail out of EvaluationPeriod]'
-
-        Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 """
 
 helps['monitor scheduled-query list'] = """
