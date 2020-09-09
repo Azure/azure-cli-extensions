@@ -833,4 +833,56 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 09 Sep 2020 06:44:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - a039b443-376d-474b-8433-c7f5c7ba4a76
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-gsm:
+      - 1.0.0.0
+      x-ms-ratelimit-remaining-tenant-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
 version: 1

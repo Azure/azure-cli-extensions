@@ -53,8 +53,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
 
         self.cmd('az account subscription cancel --subscription-id {subscription_id} --yes',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
-        if self.in_recording:
-            time.sleep(300)
+        time.sleep(300)
         self.cmd('az account subscription show --subscription-id {subscription_id}',
                  checks=[self.check('displayName', '{display_name}'),
                          self.check('state', 'Warned'),
@@ -62,8 +61,7 @@ class SubscriptionClientScenarioTest(ScenarioTest):
 
         self.cmd('az account subscription enable --subscription-id {subscription_id}',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
-        if self.in_recording:
-            time.sleep(300)
+        time.sleep(300)
         self.cmd('az account subscription show --subscription-id {subscription_id}',
                  checks=[self.check('displayName', '{display_name}'),
                          self.check('state', 'Enabled'),
@@ -71,8 +69,8 @@ class SubscriptionClientScenarioTest(ScenarioTest):
 
         self.cmd('az account subscription rename --subscription-id {subscription_id} --name "{new_display_name}"',
                  checks=[self.check('subscriptionId', '{subscription_id}')])
-        # if self.in_recording:
-        #     time.sleep(600)
+        # uncomment when request body match is supported in playback tests
+        # time.sleep(600)
         # self.cmd('az account subscription show --subscription-id {subscription_id}',
         #          checks=[
         #          self.check('displayName', '{new_display_name}'),
@@ -89,6 +87,6 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                  checks=[self.check('name', '{new_alias_name}'),
                          self.check('properties.provisioningState', 'Succeeded')])
 
-        # no permission issue
-        # self.cmd('az account alias delete -n {new_alias_name}',
-        #          checks=[])
+        time.sleep(600)
+        self.cmd('az account alias delete -n {new_alias_name}',
+                 checks=[])
