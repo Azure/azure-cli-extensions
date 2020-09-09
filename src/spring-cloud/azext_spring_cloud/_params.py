@@ -84,7 +84,7 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
             c.argument('main_entry', options_list=[
-                '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
+                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
