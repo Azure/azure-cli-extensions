@@ -147,8 +147,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetPrefix', "10.2.0.0/16")
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -189,12 +189,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayName', "gateway"),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetId', vnet_id + '/subnets/appgw-subnet')
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetid', vnet_id + '/subnets/appgw-subnet')
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
@@ -265,11 +265,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayId', appgw_id)
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
@@ -335,8 +335,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         enable_cmd = 'aks enable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', True),
+            self.check('addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
         ])
 
     @live_only()  # without live only fails with need az login
@@ -360,6 +360,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = 'aks disable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', False),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config', None)
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', False),
+            self.check('addonProfiles.accsgxdeviceplugin.config', None)
         ])
