@@ -200,10 +200,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'addon_client_id': addon_client_id,
         })
 
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {vnet_id}/subnets/appgw-subnet --role "4d97b98b-1d4f-4787-a291-c67834d212e7" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Network Contributor')
-        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -275,11 +271,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'addon_client_id': addon_client_id,
         })
 
-        # check role assignment
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {appgw_group_id} --role "b24988ac-6180-42a0-ab88-20f7382dd24c" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Contributor')
-        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
