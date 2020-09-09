@@ -41,6 +41,32 @@ def step_pipelines_createrun(test, rg):
     return output
 
 
+def step_pipelineruns_cancel(test, rg):
+    test.cmd('az datafactory pipeline-run cancel '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=[])
+
+
+def step_pipelineruns_get(test, rg):
+    test.cmd('az datafactory pipeline-run show '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=[])
+
+
+
+def step_pipelines_update(test, rg):
+    test.cmd('az datafactory pipeline update '
+             '--factory-name "{myFactory}" '
+             '--description "Test Update description" '
+             '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
 def step_triggerruns_querybyfactory(test, rg):
     output = test.cmd('az datafactory trigger-run query-by-factory '
                       '--factory-name "{myFactory}" '
@@ -111,6 +137,7 @@ def call_managed_integrationruntime_scenario(test, rg):
     g.step_factories_createorupdate(test, rg)
     step_integrationruntimes_managed_create(test, rg)
     g.step_integrationruntimes_get(test, rg)
+    test.kwargs.update({'myIntegrationRuntime2': test.kwargs.get('myIntegrationRuntime')})
     g.step_integrationruntimes_start(test, rg)
     g.step_integrationruntimes_stop(test, rg)
     g.step_integrationruntimes_delete(test, rg)
