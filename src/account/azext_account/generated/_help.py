@@ -42,7 +42,7 @@ helps['account subscription enable'] = """
 
 helps['account subscription list'] = """
     type: command
-    short-summary: Gets all subscriptions for a tenant.
+    short-summary: Get all subscriptions for a tenant.
     examples:
       - name: listSubscriptions
         text: |-
@@ -51,7 +51,7 @@ helps['account subscription list'] = """
 
 helps['account subscription show'] = """
     type: command
-    short-summary: Gets details about a specified subscription.
+    short-summary: Get details about a specified subscription.
     examples:
       - name: getSubscription
         text: |-
@@ -75,7 +75,7 @@ helps['account tenant'] = """
 
 helps['account tenant list'] = """
     type: command
-    short-summary: Gets the tenants for your account.
+    short-summary: Get the tenants for your account.
     examples:
       - name: listTenants
         text: |-
