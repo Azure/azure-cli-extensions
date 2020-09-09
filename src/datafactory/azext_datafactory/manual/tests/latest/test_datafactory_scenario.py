@@ -57,7 +57,6 @@ def step_pipelineruns_get(test, rg):
              checks=[])
 
 
-
 def step_pipelines_update(test, rg):
     test.cmd('az datafactory pipeline update '
              '--factory-name "{myFactory}" '
