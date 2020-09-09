@@ -6,6 +6,7 @@
 import argparse
 from knack.util import CLIError
 
+
 # pylint: disable=protected-access, too-few-public-methods
 class ScheduleQueryConditionAction(argparse._AppendAction):
 
@@ -17,7 +18,8 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
         from azext_scheduled_query.grammar.scheduled_query import (
             ScheduleQueryConditionLexer, ScheduleQueryConditionParser, ScheduleQueryConditionValidator)
 
-        usage = 'usage error: --condition {avg,min,max,total,count} ["METRIC COLUMN" from] "QUERY" {=,!=,>,>=,<,<=} THRESHOLD\n' \
+        usage = 'usage error: --condition {avg,min,max,total,count} ["METRIC COLUMN" from] ' \
+                '                         "QUERY" {=,!=,>,>=,<,<=} THRESHOLD\n' \
                 '                         [resource id RESOURCEID]\n' \
                 '                         [where DIMENSION {includes,excludes} VALUE [or VALUE ...]\n' \
                 '                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]' \
@@ -40,6 +42,7 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
         except (AttributeError, TypeError, KeyError):
             raise CLIError(usage)
         super(ScheduleQueryConditionAction, self).__call__(parser, namespace, metric_condition, option_string)
+
 
 # pylint: disable=protected-access, too-few-public-methods
 class ScheduleQueryAddAction(argparse._AppendAction):

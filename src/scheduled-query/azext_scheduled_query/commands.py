@@ -15,8 +15,6 @@ def load_command_table(self, _):
         client_factory=cf_scheduled_query
     )
 
-
-
     with self.command_group('monitor scheduled-query', scheduled_query_sdk) as g:
         g.custom_command('create', 'create_scheduled_query')
         g.command('delete', 'delete', confirmation=True)

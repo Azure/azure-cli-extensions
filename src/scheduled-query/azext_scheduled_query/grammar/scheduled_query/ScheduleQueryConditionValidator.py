@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=all
 from .ScheduleQueryConditionListener import ScheduleQueryConditionListener
 from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import ConditionFailingPeriods
 

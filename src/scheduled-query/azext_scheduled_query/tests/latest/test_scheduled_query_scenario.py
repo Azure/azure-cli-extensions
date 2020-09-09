@@ -28,13 +28,13 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'ws': self.create_random_name('clitest', 20)
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws}').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
                                  resource_group=resource_group),
             'sub_id': resource_id(subscription=self.get_subscription_id(),
-                                 resource_group=resource_group),
+                                  resource_group=resource_group),
         })
         time.sleep(180)
         self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
@@ -77,6 +77,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
         self.cmd('monitor scheduled-query delete -g {rg} -n {name1} -y')
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
+
 
 class ScheduledQueryCondtionTest(unittest.TestCase):
 

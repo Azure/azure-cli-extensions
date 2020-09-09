@@ -32,11 +32,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
-DEPENDENCIES = [
-    'azure-cli-core'
-]
-
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
@@ -55,6 +50,5 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    install_requires=DEPENDENCIES,
     package_data={'azext_scheduled_query': ['azext_metadata.json']},
 )

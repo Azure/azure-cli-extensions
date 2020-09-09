@@ -4,16 +4,15 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import (
-    get_location_type, tags_type, get_three_state_flag, get_enum_type, get_datetime_type, resource_group_name_type)
-from azure.cli.command_modules.monitor.actions import get_period_type, timezone_offset_type, timezone_name_type
+from azure.cli.core.commands.parameters import tags_type, get_three_state_flag
+from azure.cli.command_modules.monitor.actions import get_period_type
 from azure.cli.command_modules.monitor.validators import get_action_group_validator
+from knack.arguments import CLIArgumentType
 from ._actions import ScheduleQueryConditionAction, ScheduleQueryAddAction
+
 
 def load_arguments(self, _):
 
-    from azure.cli.core.commands.parameters import tags_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')

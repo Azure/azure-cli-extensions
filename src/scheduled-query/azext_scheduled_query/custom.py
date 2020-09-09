@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
 
-def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, disabled=False, description=None,
-                           tags=None, location=None, actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
+def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition,
+                           disabled=False, description=None, tags=None, location=None,
+                           actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
                            target_resource_type=None, mute_actions_duration='PT30M'):
     from .vendored_sdks.azure_mgmt_scheduled_query.models import (ScheduledQueryRuleResource,
                                                                   ScheduledQueryRuleCriteria,
