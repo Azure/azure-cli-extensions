@@ -19,7 +19,7 @@ def load_command_table(self, _):
 
     with self.command_group('monitor scheduled-query', scheduled_query_sdk) as g:
         g.custom_command('create', 'create_scheduled_query')
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.custom_command('list', 'list_scheduled_query')
         g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_scheduled_query')
+        g.generic_update_command('update', custom_func_name='update_scheduled_query')

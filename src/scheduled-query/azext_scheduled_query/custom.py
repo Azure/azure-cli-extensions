@@ -9,8 +9,15 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
                            tags=None, location=None, actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
                            target_resource_type=None, mute_actions_duration='PT30M'):
     from .vendored_sdks.azure_mgmt_scheduled_query.models import (ScheduledQueryRuleResource,
-                                                                  ScheduledQueryRuleCriteria)
+                                                                  ScheduledQueryRuleCriteria,
+                                                                  ConditionFailingPeriods)
 
+    for cond in condition:
+        if cond.failing_periods is None:
+            cond.failing_periods = ConditionFailingPeriods(
+                min_failing_periods_to_alert=1,
+                number_of_evaluation_periods=1
+            )
     criteria = ScheduledQueryRuleCriteria(all_of=condition)
 
     kwargs = {
@@ -36,7 +43,16 @@ def list_scheduled_query(client, resource_group_name=None):
     return client.list_by_subscription()
 
 
-def update_scheduled_query(cmd, instance, tags=None):
+def update_scheduled_query(cmd, instance, tags=None, disabled=False,
+                           description=None, actions=None, severity=None, window_size=None,
+                           evaluation_frequency=None, mute_actions_duration=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
+        c.set_param('enabled', not disabled)
+        c.set_param('description', description)
+        c.set_param('actions', actions)
+        c.set_param('severity', severity)
+        c.set_param('window_size', window_size)
+        c.set_param('evaluation_frequency', evaluation_frequency)
+        c.set_param('mute_actions_duration', mute_actions_duration)
     return instance

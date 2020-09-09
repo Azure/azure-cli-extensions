@@ -29,14 +29,8 @@ def load_arguments(self, _):
         c.argument('scopes', nargs='+', help='Space-separated list of scopes the rule applies to. '
                                              'The resources specified in this parameter must be of the same type and exist in the same location.')
         c.argument('disabled', arg_type=get_three_state_flag())
-        c.argument('enabled', arg_type=get_three_state_flag(), help='Whether the metric alert rule is enabled.')
         c.argument('target_resource_type', options_list=['--target-resource-type', '--type'],
                    help='The resource type of the target resource(s) in scopes. '
                         'This must be provided when scopes is resource group or subscription.')
-        c.argument('scheduled_query', help='Log query alert')
         c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True), help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
-        c.argument('number_of_evaluation_periods', type=float)
-        c.argument('min_failing_periods_to_alert', type=float)
-
-    with self.argument_context('monitor scheduled-query create', arg_group=None) as c:
         c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))
