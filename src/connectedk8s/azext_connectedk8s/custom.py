@@ -3,15 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import errno
 import os
 import json
+import tempfile
 import time
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, run, STDOUT
 from base64 import b64encode
+import stat
+import platform
 import yaml
+import requests
 
 from knack.util import CLIError
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
+from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
@@ -39,7 +46,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, aad_server_app_id=None, aad_client_app_id=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -52,6 +59,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
     onboarding_tenant_id = graph_client.config.tenant_id
+
+    aad_tenant_id = None
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -102,6 +111,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     kubernetes_version = get_server_version(configuration)
     kubernetes_distro = get_kubernetes_distro(configuration)
 
+    is_aad_enabled = False
+    aad_profile = None
+    if (aad_client_app_id is not None) and (aad_server_app_id is not None):
+        aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
+
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
@@ -141,7 +156,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags)
+                cc = generate_request_payload(configuration, location, public_key, tags, aad_profile)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
@@ -206,7 +221,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags)
+    cc = generate_request_payload(configuration, location, public_key, tags, aad_profile)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
@@ -214,8 +229,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file)
-
+                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled)
     return put_cc_response
 
 
@@ -391,17 +405,17 @@ def get_kubernetes_distro(configuration):
         return "default"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
-                                           raise_error=False)
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution', raise_error=False)
 
 
-def generate_request_payload(configuration, location, public_key, tags):
+def generate_request_payload(configuration, location, public_key, tags, aad_profile):
+    if aad_profile is None:
+        aad_profile = ConnectedClusterAADProfile(
+            tenant_id="",
+            client_app_id="",
+            server_app_id=""
+        )
     # Create connected cluster resource object
-    aad_profile = ConnectedClusterAADProfile(
-        tenant_id="",
-        client_app_id="",
-        server_app_id=""
-    )
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
@@ -415,6 +429,134 @@ def generate_request_payload(configuration, location, public_key, tags):
         tags=tags
     )
     return cc
+
+
+def get_kubeconfig_dict(kube_config=None):
+    #Gets the kubeconfig as per kubectl(after applying all merging rules)
+    args = ['kubectl', 'config', 'view']
+    if kube_config:
+        args += ["--kubeconfig", kube_config]
+
+    #subprocess run
+    try:
+        proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        if proc.returncode:
+            telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                    summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+            raise CLIError("Error running kubectl config view." + str(proc.stdout))
+        config_doc_str = proc.stdout.strip()
+        config_dict = yaml.safe_load(config_doc_str)
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+        raise CLIError("Error while fetching merged kubeconfig through kubectl." + str(ex))
+
+    return config_dict
+
+
+def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id):
+
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    try:
+        all_contexts, current_context = config.list_kube_config_contexts()
+    except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Problem listing kube contexts')
+        logger.warning("Exception while trying to list kube contexts: %s\n", e)
+        raise CLIError("Problem listing kube contexts." + str(e))
+
+    user = None
+    aad_enabled = False
+    try:
+        if kube_context is None:
+            # Get name of the user from current context as kube_context is none.
+            user = current_context.get('context').get('user')
+            if user is None:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='User not found', fault_type=consts.User_Not_Found_Type,
+                                        summary='User in not found in current context')
+                raise CLIError("User not found in currentcontext: " + str(current_context))
+        else:
+            # Get name of the user from name of the kube_context passed.
+            user_found = False
+            for context in all_contexts:
+                if context.get('name') == kube_context:
+                    user_found = True
+                    user = context.get('context').get('user')
+                    break
+            if not user_found or user is None:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='User not found', fault_type=consts.User_Not_Found_Type,
+                                        summary='User in not found in kube context')
+                raise CLIError("User not found in kubecontext: " + str(kube_context))
+        try:
+            retrieved_aad_server_app_id, retrieved_aad_client_app_id, retrieved_aad_tenant_id = get_user_aad_details(kube_config, user)
+        except Exception as ex:
+            telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
+                                    summary='User details not found in Users section.')
+            raise CLIError("AAD details could not be retrieved." + str(ex))
+    except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.User_Not_Found_Type,
+                                summary='Failed to get aad profile from kube config')
+        logger.warning("Exception while trying to fetch aad profile details: %s\n", e)
+        raise CLIError("Failed to fetch AAD profile details from kubecontext: " + str(kube_context))
+
+    # Override retrieved values with passed values in cli.
+    if aad_server_app_id:
+        retrieved_aad_server_app_id = aad_server_app_id
+
+    if aad_client_app_id:
+        retrieved_aad_client_app_id = aad_client_app_id
+
+    if aad_tenant_id:
+        retrieved_aad_tenant_id = aad_tenant_id
+
+    if retrieved_aad_client_app_id != "" and retrieved_aad_client_app_id != "" and retrieved_aad_tenant_id != "":
+        # If all fields are filled it is a aad enabled cluster.
+        aad_enabled = True
+    elif retrieved_aad_client_app_id == "" and retrieved_aad_server_app_id == "" and retrieved_aad_tenant_id == "":
+        # If all fields are empty it is not aad enabled cluster.
+        aad_enabled = False
+    else:
+        # If fields are partially filled raise error.
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Invalid AAD Profile', fault_type=consts.Invalid_AAD_Profile_Details_Type,
+                                summary='AAD profile details are partially passed/filled')
+        raise CLIError("AAD profile details are missing server-app-id: " + retrieved_aad_server_app_id + "client-app-id: " + retrieved_aad_client_app_id + " tenant-id: " + retrieved_aad_tenant_id)
+
+    return ConnectedClusterAADProfile(
+        server_app_id=retrieved_aad_server_app_id,
+        client_app_id=retrieved_aad_client_app_id,
+        tenant_id=retrieved_aad_tenant_id
+    ), aad_enabled
+
+
+def get_user_aad_details(kube_config, required_user):
+    try:
+        config_data = get_kubeconfig_dict(kube_config=kube_config)
+    except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                summary='Problem loading the kubeconfig file while getting user aad details')
+        raise CLIError("Problem loading the kubeconfig file while getting user aad details : " + str(e))
+    users = config_data.get('users')
+    for user in users:
+        if user.get('name') == required_user:
+            user_details = user.get('user')
+            # Check if user is AAD user or not.
+            if 'auth-provider' not in user_details:
+                # The user is not a AAD user so return empty strings
+                return "", "", ""
+            else:
+                auth_provider_config = user_details.get('auth-provider').get('config')
+                return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
+    telemetry.set_user_fault()
+    telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
+                            summary='User details not found in Users section.')
+    raise CLIError("User details for User " + str(required_user) + " not found in KubeConfig: " + str(kube_config))
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
@@ -517,7 +659,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -530,6 +672,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--set", "systemDefaultValues.connectproxy-agent.enabled={}".format(is_aad_enabled),
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
@@ -610,6 +753,174 @@ def update_connectedk8s(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
     return instance
+
+
+def list_cluster_user_credentials(cmd,
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  context_name=None,
+                                  path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                                  overwrite_existing=False):
+    try:
+        credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
+                                summary='Unable to list cluster user credentials')
+        raise CLIError("Failed to get credentials." + str(e))
+    try:
+        kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
+        print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
+                                summary='Unable to list cluster user credentials')
+        raise CLIError("Failed to get credentials." + str(e))
+
+
+def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
+    """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
+    stdout if the path is "-".
+    """
+    # Special case for printing to stdout
+    if path == "-":
+        print(kubeconfig)
+        return
+
+    # ensure that at least an empty ~/.kube/config exists
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except OSError as ex:
+            if ex.errno != errno.EEXIST:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Merge_Credentials_Fault_Type,
+                                        summary='Could not create a kubeconfig directory.')
+                raise CLIError("Could not create a kubeconfig directory." + str(ex))
+    if not os.path.exists(path):
+        with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
+            pass
+
+    # merge the new kubeconfig into the existing one
+    fd, temp_path = tempfile.mkstemp()
+    additional_file = os.fdopen(fd, 'w+t')
+    try:
+        additional_file.write(kubeconfig)
+        additional_file.flush()
+        merge_kubernetes_configurations(path, temp_path, overwrite_existing, context_name)
+    except yaml.YAMLError as ex:
+        logger.warning('Failed to merge credentials to kube config file: %s', ex)
+    finally:
+        additional_file.close()
+        os.remove(temp_path)
+
+
+def merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
+    try:
+        existing = load_kubernetes_configuration(existing_file)
+        addition = load_kubernetes_configuration(addition_file)
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
+                                summary='Exception while loading kubernetes configuration')
+        raise CLIError('Exception while loading kubernetes configuration.' + str(ex))
+
+    if context_name is not None:
+        addition['contexts'][0]['name'] = context_name
+        addition['contexts'][0]['context']['cluster'] = context_name
+        addition['clusters'][0]['name'] = context_name
+        addition['current-context'] = context_name
+
+    # rename the admin context so it doesn't overwrite the user context
+    for ctx in addition.get('contexts', []):
+        try:
+            if ctx['context']['user'].startswith('clusterAdmin'):
+                admin_name = ctx['name'] + '-admin'
+                addition['current-context'] = ctx['name'] = admin_name
+                break
+        except (KeyError, TypeError):
+            continue
+
+    if addition is None:
+        telemetry.set_exception(exception='Failed to load additional configuration', fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
+                                summary='failed to load additional configuration from {}'.format(addition_file))
+        raise CLIError('failed to load additional configuration from {}'.format(addition_file))
+
+    if existing is None:
+        existing = addition
+    else:
+        handle_merge(existing, addition, 'clusters', replace)
+        handle_merge(existing, addition, 'users', replace)
+        handle_merge(existing, addition, 'contexts', replace)
+        existing['current-context'] = addition['current-context']
+
+    # check that ~/.kube/config is only read- and writable by its owner
+    if platform.system() != 'Windows':
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith('600'):
+            logger.warning('%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                           existing_file, existing_file_perms)
+
+    with open(existing_file, 'w+') as stream:
+        try:
+            yaml.safe_dump(existing, stream, default_flow_style=False)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Merge_Kubeconfig_File,
+                                    summary='Exception while merging the kubeconfig file')
+            raise CLIError('Exception while merging the kubeconfig file.' + str(e))
+
+    current_context = addition.get('current-context', 'UNKNOWN')
+    msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
+    print(msg)
+
+
+def handle_merge(existing, addition, key, replace):
+    if not addition[key]:
+        return
+    if existing[key] is None:
+        existing[key] = addition[key]
+        return
+
+    for i in addition[key]:
+        for j in existing[key]:
+            if i['name'] == j['name']:
+                if replace or i == j:
+                    existing[key].remove(j)
+                else:
+                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
+                    overwrite = False
+                    try:
+                        overwrite = prompt_y_n(msg.format(i['name']))
+                    except NoTTYException:
+                        pass
+                    if overwrite:
+                        existing[key].remove(j)
+                    else:
+                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                        telemetry.set_exception(exception='A different object with same name exists in the kubeconfig file', fault_type=consts.Different_Object_With_Same_Name_Fault_Type,
+                                                summary=msg.format(i['name'], key))
+                        raise CLIError(msg.format(i['name'], key))
+        existing[key].append(i)
+
+
+def load_kubernetes_configuration(filename):
+    try:
+        with open(filename) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                    summary='{} does not exist'.format(filename))
+            raise CLIError('{} does not exist'.format(filename))
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                summary='Error parsing {} ({})'.format(filename, str(ex)))
+        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+
+
+def get_release_train():
+    return os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+
 
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals

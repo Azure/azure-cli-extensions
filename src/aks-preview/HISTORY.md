@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.62
++++++
+* Add support for enable/disable confcom (sgx) addon.
+
 0.4.61
 +++++
 * Fix AGIC typo and remove preview label from VN #2141
