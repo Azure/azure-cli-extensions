@@ -60,7 +60,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     graph_client = _graph_client_factory(cmd.cli_ctx)
     onboarding_tenant_id = graph_client.config.tenant_id
 
-    aad_tenant_id = None
+    aad_tenant_id = onboarding_tenant_id
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -113,8 +113,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     is_aad_enabled = False
     aad_profile = None
-    if (aad_client_app_id is not None) and (aad_server_app_id is not None):
-        aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
+    # if (aad_client_app_id is not None) and (aad_server_app_id is not None):
+    aad_profile, is_aad_enabled = get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': is_aad_enabled})
 
     kubernetes_properties = {
@@ -517,8 +517,8 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
     if retrieved_aad_client_app_id != "" and retrieved_aad_client_app_id != "" and retrieved_aad_tenant_id != "":
         # If all fields are filled it is a aad enabled cluster.
         aad_enabled = True
-    elif retrieved_aad_client_app_id == "" and retrieved_aad_server_app_id == "" and retrieved_aad_tenant_id == "":
-        # If all fields are empty it is not aad enabled cluster.
+    elif retrieved_aad_client_app_id == "" and retrieved_aad_server_app_id == "":
+        # If all fields are empty it is not aad enabled cluster. Since aad tenant id is set as onboarding tenant id.
         aad_enabled = False
     else:
         # If fields are partially filled raise error.
