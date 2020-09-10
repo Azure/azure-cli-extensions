@@ -66,4 +66,57 @@ az attestation delete \
 --resource-group "MyResourceGroup"
 ```
 
+#### Add a new attestation policy certificate ####
+Example:
+```
+az attestation signer add \
+-n "myattestationprovider" -g "MyResourceGroup" \
+--signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
+```
+
+#### Remove the specified policy management certificate ####
+Example:
+```
+az attestation signer remove \
+-n "myattestationprovider" -g "MyResourceGroup" \
+--signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
+```
+
+#### Retrieve the set of certificates used to express policy ####
+Example:
+```
+az attestation signer list \
+-n "myattestationprovider" -g "MyResourceGroup"
+```
+
+#### Set the policy for a given kind of TEE ####
+Note: You need to specify `-n` and `-g` (or use `-u`) even if they are not marked as `required` parameters.
+
+Example:
+```
+az attestation policy set \
+-n "myattestationprovider" -g "MyResourceGroup" \
+--tee SgxEnclave --new-attestation-policy "newAttestationPolicyname"
+
+az attestation policy set \
+-u https://myattestationprovider.eastus2.attest.azure.net \
+--tee SgxEnclave --new-attestation-policy "newAttestationPolicyname"
+```
+
+#### Reset the attestation policy ####
+Example:
+```
+az attestation policy reset \
+-n "myattestationprovider" -g "MyResourceGroup" \
+--tee SgxEnclave --policy-jws "eyJhbGciOiJub25lIn0.."
+```
+
+#### Retrieve the current policy for a given kind of TEE. ####
+Example:
+```
+az attestation policy show \
+-n "myattestationprovider" -g "MyResourceGroup" \
+--tee SgxEnclave
+```
+
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

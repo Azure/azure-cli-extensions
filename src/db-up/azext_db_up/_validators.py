@@ -14,7 +14,7 @@ from msrestazure.azure_exceptions import CloudError
 from msrest.exceptions import ValidationError
 from azext_db_up._client_factory import resource_client_factory
 from azext_db_up.random_name.generate import generate_username
-from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value
+from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value, remove_config_value
 
 logger = get_logger(__name__)
 
@@ -87,12 +87,26 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
 
 def _process_db_down_namespace(namespace, db_type=None):
     # populate from cache if existing
-    _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
-    _set_value(db_type, namespace, 'server_name', 'server', cache=False)
+    if namespace.resource_group_name is None:
+        namespace.resource_group_name = _get_value(db_type, namespace, 'resource_group_name', 'group')
+        remove_config_value(db_type, 'group')
+    if namespace.server_name is None and not namespace.delete_group:
+        namespace.server_name = _get_value(db_type, namespace, 'server_name', 'server')
+        remove_config_value(db_type, 'server')
+        remove_config_value(db_type, 'login')
+        remove_config_value(db_type, 'database')
+        remove_config_value(db_type, 'location')
 
     # put resource group info back in config if user does not want to delete it
-    if not namespace.delete_group:
+    if not namespace.delete_group and namespace.resource_group_name:
         _set_value(db_type, namespace, 'resource_group_name', 'group')
+
+    # error handling
+    if namespace.delete_group and not namespace.resource_group_name:
+        raise CLIError("Please specify the resource group name to delete.")
+    if not namespace.delete_group and not namespace.resource_group_name and not namespace.server_name:
+        raise CLIError("Please specify the {} server name to delete and its resource group name if you only want to "
+                       "delete the specific {} server.".format(db_type, db_type))
 
 
 def _set_value(db_type, namespace, attribute, option, default=None, cache=True):
