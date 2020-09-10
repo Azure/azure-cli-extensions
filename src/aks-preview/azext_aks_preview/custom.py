@@ -82,6 +82,7 @@ from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
+from ._consts import CONST_KUBE_DASHBOARD_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
@@ -600,7 +601,10 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
-    addon_profile = addon_profiles.get("kubeDashboard", ManagedClusterAddonProfile(enabled=True))
+    # addon name is case insensitive
+    addon_profile = next((addon_profiles[k] for k in addon_profiles
+                         if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
+                         ManagedClusterAddonProfile(enabled=True))
     if not addon_profile.enabled:
         raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
                        'To use "az aks browse" first enable the add-on\n'
@@ -1739,7 +1743,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
         addon_profiles['httpApplicationRouting'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('http_application_routing')
     if 'kube-dashboard' in addons:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+        addon_profiles[CONST_KUBE_DASHBOARD_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
@@ -2498,13 +2502,13 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
-    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
 
     os_type = 'Linux'
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg not in ADDONS:
+            raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag
@@ -2569,7 +2573,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
-                raise CLIError("The addon {} is not installed.".format(addon))
+                if addon == CONST_KUBE_DASHBOARD_ADDON_NAME:
+                    addon_profiles[addon] = ManagedClusterAddonProfile(enabled=False)
+                else:
+                    raise CLIError("The addon {} is not installed.".format(addon))
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 

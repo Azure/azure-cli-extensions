@@ -12,6 +12,8 @@ CONST_SCALE_SET_PRIORITY_SPOT = "Spot"
 CONST_SPOT_EVICTION_POLICY_DELETE = "Delete"
 CONST_SPOT_EVICTION_POLICY_DEALLOCATE = "Deallocate"
 
+CONST_KUBE_DASHBOARD_ADDON_NAME = "kubeDashboard"
+
 # IngressApplicaitonGateway configuration keys
 CONST_INGRESS_APPGW_ADDON_NAME = "IngressApplicationGateway"
 CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME = "applicationGatewayName"
@@ -36,7 +38,7 @@ ADDONS = {
     'monitoring': 'omsagent',
     'virtual-node': 'aciConnector',
     'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard',
+    'kube-dashboard': CONST_KUBE_DASHBOARD_ADDON_NAME,
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
     "confcom": CONST_CONFCOM_ADDON_NAME
 }
