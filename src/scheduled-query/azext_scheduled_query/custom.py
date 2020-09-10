@@ -43,9 +43,10 @@ def list_scheduled_query(client, resource_group_name=None):
     return client.list_by_subscription()
 
 
-def update_scheduled_query(cmd, instance, tags=None, disabled=False,
+def update_scheduled_query(cmd, instance, tags=None, disabled=False, condition=None,
                            description=None, actions=None, severity=None, window_size=None,
                            evaluation_frequency=None, mute_actions_duration=None):
+    from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleCriteria
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
         c.set_param('enabled', not disabled)
@@ -55,4 +56,6 @@ def update_scheduled_query(cmd, instance, tags=None, disabled=False,
         c.set_param('window_size', window_size)
         c.set_param('evaluation_frequency', evaluation_frequency)
         c.set_param('mute_actions_duration', mute_actions_duration)
+        if condition is not None:
+            c.set_param('criteria', ScheduledQueryRuleCriteria(all_of=condition))
     return instance

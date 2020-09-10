@@ -47,7 +47,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].timeAggregation', 'Count'),
                      self.check('criteria.allOf[0].operator', 'GreaterThan'),
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
-                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1)
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
                  ])
         self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
                  checks=[
@@ -55,13 +55,19 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('scopes[0]', '{rg_id}'),
                      self.check('severity', 2)
                  ])
-        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 at least 2 out of 3" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
                      self.check('severity', 4),
                      self.check('windowSize', '0:10:00'),
-                     self.check('evaluationFrequency', '0:10:00')
+                     self.check('evaluationFrequency', '0:10:00'),
+                     self.check('criteria.allOf[0].query', 'union Event | where TimeGenerated > ago(2h)'),
+                     self.check('criteria.allOf[0].threshold', 260),
+                     self.check('criteria.allOf[0].timeAggregation', 'Count'),
+                     self.check('criteria.allOf[0].operator', 'LessThan'),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 2),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 3)
                  ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[
