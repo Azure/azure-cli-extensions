@@ -107,7 +107,7 @@ NORMALIZATION_TEST_SCENARIOS: List[CommandParameterNormalizationScenario] = [
     # global parameter prefixes + duplicate parameters
     CommandParameterNormalizationScenario(
         command='account list',
-        parameters=['--out', '--que', '--all', '--all'],
+        parameters=['--out', '--query', '--all', '--all'],
         normalized_parameters=['--output', '--query', '--all']
     ),
     # invalid parameters for command
