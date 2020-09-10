@@ -147,8 +147,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetPrefix', "10.2.0.0/16")
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -189,21 +189,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayName', "gateway"),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetId', vnet_id + '/subnets/appgw-subnet')
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetid', vnet_id + '/subnets/appgw-subnet')
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
         })
-
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {vnet_id}/subnets/appgw-subnet --role "4d97b98b-1d4f-4787-a291-c67834d212e7" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Network Contributor')
-        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -265,21 +260,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayId', appgw_id)
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
         })
-
-        # check role assignment
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {appgw_group_id} --role "b24988ac-6180-42a0-ab88-20f7382dd24c" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Contributor')
-        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -335,8 +324,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         enable_cmd = 'aks enable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', True),
+            self.check('addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
         ])
 
     @live_only()  # without live only fails with need az login
@@ -360,6 +349,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = 'aks disable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', False),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config', None)
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', False),
+            self.check('addonProfiles.accsgxdeviceplugin.config', None)
         ])
