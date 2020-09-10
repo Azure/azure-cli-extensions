@@ -66,7 +66,9 @@ def _give_recommends(recommends):
             reason = " people use this command in next step."
         idx += 1
         print("{}. az {}".format(idx, rec['command']))
-        print("Recommended reason: {:.1f}% {}".format(rec['ratio'] * 100, reason))
+        if rec['ratio']:
+               reason = "{:.1f}% {}".format(rec['ratio'] * 100, reason)
+        print("Recommended reason: {}".format(reason))
 
 
 def handle_next(cmd):
