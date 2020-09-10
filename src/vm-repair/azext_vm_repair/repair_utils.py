@@ -66,7 +66,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
-def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=[], additional_custom_scripts=[]):
+
+def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None, additional_custom_scripts=None):
     """
     Use azure run command to run the scripts within the vm-repair/scripts file and return stdout, stderr.
     """
@@ -89,8 +90,9 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=[], 
 
     # Process script list to scripts string
     additional_scripts_string = ''
-    for script in additional_custom_scripts:
-        additional_scripts_string += ' "@{script_name}"'.format(script_name=script)
+    if additional_custom_scripts:
+        for script in additional_custom_scripts:
+            additional_scripts_string += ' "@{script_name}"'.format(script_name=script)
 
     run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                   '--scripts @"{run_script}"{additional_scripts} -o json' \
@@ -232,18 +234,19 @@ def _list_resource_ids_in_rg(resource_group_name):
 def _fetch_encryption_settings(source_vm):
     key_vault = None
     kekurl = None
+    secreturl = None
     if source_vm.storage_profile.os_disk.encryption_settings is not None:
-        return Encryption.DUAL, key_vault, kekurl
+        return Encryption.DUAL, key_vault, kekurl, secreturl
     # Unmanaged disk only support dual
     if not _uses_managed_disk(source_vm):
-        return Encryption.NONE, key_vault, kekurl
+        return Encryption.NONE, key_vault, kekurl, secreturl
 
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
     encryption_type, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
-        return Encryption.NONE, key_vault, kekurl
+        return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]
         return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl, secreturl
@@ -251,27 +254,26 @@ def _fetch_encryption_settings(source_vm):
     return Encryption.SINGLE_WITH_KEK, key_vault, kekurl, secreturl
 
 
-def _secret_tag_check(copy_disk_name, resource_group_name, source_vm):
-    _, _, _, secreturl = _fetch_encryption_settings(source_vm)  
-    show_disk_command = 'az disk show -g {g} -n {n} --query [encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
-                         .format(n=copy_disk_name, g=resource_group_name)
-    key_vault, secreturl_new = loads(_call_az_command(show_disk_command))
-    key_vault, secreturl_new = key_vault[0], secreturl_new[0]
+def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
+    DEFAULT_LINUXPASSPHRASE_FILENAME = 'LinuxPassPhraseFileName'
+    show_disk_command = 'az disk show -g {g} -n {n} --query encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl -o json' \
+                        .format(n=copy_disk_name, g=resource_group_name)
+    secreturl_new = loads(_call_az_command(show_disk_command))[0]
     if secreturl == secreturl_new:
-        logger.info('Secrets are same,hence skipping the tag check...')
+        logger.debug('Secret urls are same. Skipping the tag check...')
     else:
-        logger.warn('Secrets are not same,changing the tag...')
-        show_tag_command = 'az keyvault secret show --id {securl} --query [tags.DiskEncryptionKeyEncryptionAlgorithm,tags.DiskEncryptionKeyEncryptionKeyURL,tags.DiskEncryptionKeyFileName] -o json' \
-                            .format(securl=secreturl_new)
-        algorithm, keyurl, keyfilename = loads(_call_az_command(show_tag_command))
+        logger.debug('Secret urls are not same. Changing the tag...')
+        show_tag_command = 'az keyvault secret show --id {securl} --query [tags.DiskEncryptionKeyEncryptionAlgorithm,tags.DiskEncryptionKeyEncryptionKeyURL] -o json' \
+                           .format(securl=secreturl_new)
+        algorithm, keyurl = loads(_call_az_command(show_tag_command))
         set_tag_command = 'az keyvault secret set-attributes --tags DiskEncryptionKeyFileName={keyfile} DiskEncryptionKeyEncryptionAlgorithm={alg} DiskEncryptionKeyEncryptionKeyURL={kekurl} --id {securl}' \
-                          .format(keyfile="LinuxPassPhraseFileName", alg=algorithm, kekurl=keyurl, securl=secreturl_new)
+                          .format(keyfile=DEFAULT_LINUXPASSPHRASE_FILENAME, alg=algorithm, kekurl=keyurl, securl=secreturl_new)
         _call_az_command(set_tag_command)
 
- 
-def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name, copy_disk_name, resource_group_name):
+
+def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
     # Installs the extension on repair VM and mounts the disk after unlocking.
-    encryption_type, key_vault, kekurl, _ = _fetch_encryption_settings(source_vm)
+    encryption_type, key_vault, kekurl, secreturl = _fetch_encryption_settings(source_vm)
     if is_linux:
         volume_type = 'DATA'
     else:
@@ -279,32 +281,35 @@ def _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, re
 
     try:
         if encryption_type is Encryption.SINGLE_WITH_KEK:
-            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume} --encrypt-format-all' \
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
         elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
-            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume} --encrypt-format-all' \
+            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+        # Add format-all flag for linux vms
+        if is_linux:
+            install_ade_extension_command += " --encrypt-format-all"
         logger.info('Unlocking attached copied disk...')
         _call_az_command(install_ade_extension_command)
-        # Validating secret tag and setting original tag if it got changed
-        _secret_tag_check(copy_disk_name, resource_group_name, source_vm)
         # Linux VM encryption extension has a bug and we need to manually unlock and mount its disk
         if is_linux:
+            # Validating secret tag and setting original tag if it got changed
+            _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
             logger.debug("Manually unlocking and mounting disk for Linux VMs.")
-            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
+            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
     except AzCommandError as azCommandError:
         error_message = str(azCommandError)
         # Linux VM encryption extension bug where it fails and then continue to mount disk manually
         if is_linux and "Failed to encrypt data volumes with error" in error_message:
             logger.debug("Expected bug for linux VMs. Ignoring error.")
-        # Validating secret tag and setting original tag if it got changed
-            _secret_tag_check(copy_disk_name, resource_group_name, source_vm)
-            _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name)
+            # Validating secret tag and setting original tag if it got changed
+            _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
+            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
         else:
             raise
 
 
-def _manually_unlock_mount_encrypted_disk(repair_group_name, repair_vm_name):
+def _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
     LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)

@@ -5,8 +5,6 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import timeit
-import os
-import pkgutil
 import traceback
 import requests
 from knack.log import get_logger
@@ -106,7 +104,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Handle encrypted VM cases
             if unlock_encrypted_vm:
-                _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name, copy_disk_name, resource_group_name)
+                _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux)
 
         # UNMANAGED DISK
         else:
