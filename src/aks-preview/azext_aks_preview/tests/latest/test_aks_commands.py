@@ -200,7 +200,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'addon_client_id': addon_client_id,
         })
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_appgw_with_ingress_appgw_addon(self, resource_group, resource_group_location):
@@ -270,7 +269,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update({
             'addon_client_id': addon_client_id,
         })
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
