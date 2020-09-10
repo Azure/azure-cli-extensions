@@ -106,7 +106,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Handle encrypted VM cases
             if unlock_encrypted_vm:
-                _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name)
+                _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name, copy_disk_name, resource_group_name)
 
         # UNMANAGED DISK
         else:
