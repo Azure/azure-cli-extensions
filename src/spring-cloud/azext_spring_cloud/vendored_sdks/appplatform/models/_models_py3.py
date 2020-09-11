@@ -90,9 +90,11 @@ class AppResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the App resource
-    :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResourceProperties
     :param identity: The Managed Identity type of the app resource
-    :type identity: ~azure.mgmt.appplatform.models.ManagedIdentityProperties
+    :type identity:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ManagedIdentityProperties
     :param location: The GEO location of the application, always the same with
      its parent resource
     :type location: str
@@ -133,7 +135,7 @@ class AppResourceProperties(Model):
     :ivar provisioning_state: Provisioning state of the App. Possible values
      include: 'Succeeded', 'Failed', 'Creating', 'Updating'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.models.AppResourceProvisioningState
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResourceProvisioningState
     :param active_deployment_name: Name of the active deployment of the App
     :type active_deployment_name: str
     :param fqdn: Fully qualified dns Name.
@@ -143,9 +145,11 @@ class AppResourceProperties(Model):
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :param temporary_disk: Temporary disk settings
-    :type temporary_disk: ~azure.mgmt.appplatform.models.TemporaryDisk
+    :type temporary_disk:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TemporaryDisk
     :param persistent_disk: Persistent disk settings
-    :type persistent_disk: ~azure.mgmt.appplatform.models.PersistentDisk
+    :type persistent_disk:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.PersistentDisk
     """
 
     _validation = {
@@ -179,6 +183,30 @@ class AppResourceProperties(Model):
         self.persistent_disk = persistent_disk
 
 
+class AvailableRuntimeVersions(Model):
+    """AvailableRuntimeVersions.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar value: A list of all supported runtime versions.
+    :vartype value:
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion1]
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[SupportedRuntimeVersion1]'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(AvailableRuntimeVersions, self).__init__(**kwargs)
+        self.value = None
+
+
 class BindingResource(ProxyResource):
     """Binding resource payload.
 
@@ -192,7 +220,8 @@ class BindingResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the Binding resource
-    :type properties: ~azure.mgmt.appplatform.models.BindingResourceProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResourceProperties
     """
 
     _validation = {
@@ -219,11 +248,11 @@ class BindingResourceProperties(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :param resource_name: The name of the bound resource
-    :type resource_name: str
-    :param resource_type: The standard Azure resource type of the bound
+    :ivar resource_name: The name of the bound resource
+    :vartype resource_name: str
+    :ivar resource_type: The standard Azure resource type of the bound
      resource
-    :type resource_type: str
+    :vartype resource_type: str
     :param resource_id: The Azure resource id of the bound resource
     :type resource_id: str
     :param key: The key of the bound resource
@@ -240,6 +269,8 @@ class BindingResourceProperties(Model):
     """
 
     _validation = {
+        'resource_name': {'readonly': True},
+        'resource_type': {'readonly': True},
         'generated_properties': {'readonly': True},
         'created_at': {'readonly': True},
         'updated_at': {'readonly': True},
@@ -256,10 +287,10 @@ class BindingResourceProperties(Model):
         'updated_at': {'key': 'updatedAt', 'type': 'str'},
     }
 
-    def __init__(self, *, resource_name: str=None, resource_type: str=None, resource_id: str=None, key: str=None, binding_parameters=None, **kwargs) -> None:
+    def __init__(self, *, resource_id: str=None, key: str=None, binding_parameters=None, **kwargs) -> None:
         super(BindingResourceProperties, self).__init__(**kwargs)
-        self.resource_name = resource_name
-        self.resource_type = resource_type
+        self.resource_name = None
+        self.resource_type = None
         self.resource_id = resource_id
         self.key = key
         self.binding_parameters = binding_parameters
@@ -350,7 +381,8 @@ class CertificateResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the certificate resource payload.
-    :type properties: ~azure.mgmt.appplatform.models.CertificateProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateProperties
     """
 
     _validation = {
@@ -375,7 +407,8 @@ class CloudError(Model):
     """An error response from the service.
 
     :param error:
-    :type error: ~azure.mgmt.appplatform.models.CloudErrorBody
+    :type error:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CloudErrorBody
     """
 
     _attribute_map = {
@@ -412,7 +445,8 @@ class CloudErrorBody(Model):
      of the property in error.
     :type target: str
     :param details: A list of additional details about the error.
-    :type details: list[~azure.mgmt.appplatform.models.CloudErrorBody]
+    :type details:
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -440,20 +474,22 @@ class ClusterResourceProperties(Model):
      values include: 'Creating', 'Updating', 'Deleting', 'Deleted',
      'Succeeded', 'Failed', 'Moving', 'Moved', 'MoveFailed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.models.ProvisioningState
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ProvisioningState
     :param config_server_properties: Config server git properties of the
      Service
     :type config_server_properties:
-     ~azure.mgmt.appplatform.models.ConfigServerProperties
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerProperties
     :param trace: Trace properties of the Service
-    :type trace: ~azure.mgmt.appplatform.models.TraceProperties
+    :type trace:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TraceProperties
+    :param network_profile: Network profile of the Service
+    :type network_profile:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.NetworkProfile
     :ivar version: Version of the Service
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a
      created resource
     :vartype service_id: str
-    :param network_profile: Network profile of the Service
-    :type network_profile: ~azure.mgmt.appplatform.models.NetworkProfile
     """
 
     _validation = {
@@ -466,9 +502,9 @@ class ClusterResourceProperties(Model):
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
         'trace': {'key': 'trace', 'type': 'TraceProperties'},
+        'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
         'version': {'key': 'version', 'type': 'int'},
         'service_id': {'key': 'serviceId', 'type': 'str'},
-        'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
     }
 
     def __init__(self, *, config_server_properties=None, trace=None, network_profile=None, **kwargs) -> None:
@@ -476,9 +512,9 @@ class ClusterResourceProperties(Model):
         self.provisioning_state = None
         self.config_server_properties = config_server_properties
         self.trace = trace
+        self.network_profile = network_profile
         self.version = None
         self.service_id = None
-        self.network_profile = network_profile
 
 
 class ConfigServerGitProperty(Model):
@@ -488,7 +524,7 @@ class ConfigServerGitProperty(Model):
 
     :param repositories: Repositories of git.
     :type repositories:
-     list[~azure.mgmt.appplatform.models.GitPatternRepository]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.GitPatternRepository]
     :param uri: Required. URI of the repository
     :type uri: str
     :param label: Label of the repository
@@ -548,11 +584,13 @@ class ConfigServerProperties(Model):
 
     :ivar state: State of the config server. Possible values include:
      'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or ~azure.mgmt.appplatform.models.ConfigServerState
+    :vartype state: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerState
     :param error: Error when apply config server settings.
-    :type error: ~azure.mgmt.appplatform.models.Error
+    :type error: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Error
     :param config_server: Settings of config server.
-    :type config_server: ~azure.mgmt.appplatform.models.ConfigServerSettings
+    :type config_server:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerSettings
     """
 
     _validation = {
@@ -576,7 +614,8 @@ class ConfigServerSettings(Model):
     """The settings of config server.
 
     :param git_property: Property of git environment.
-    :type git_property: ~azure.mgmt.appplatform.models.ConfigServerGitProperty
+    :type git_property:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerGitProperty
     """
 
     _attribute_map = {
@@ -591,13 +630,20 @@ class ConfigServerSettings(Model):
 class CustomDomainProperties(Model):
     """Custom domain of app resource payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param thumbprint: The thumbprint of bound certificate.
     :type thumbprint: str
-    :param app_name: The app name of domain.
-    :type app_name: str
+    :ivar app_name: The app name of domain.
+    :vartype app_name: str
     :param cert_name: The bound certificate name of domain.
     :type cert_name: str
     """
+
+    _validation = {
+        'app_name': {'readonly': True},
+    }
 
     _attribute_map = {
         'thumbprint': {'key': 'thumbprint', 'type': 'str'},
@@ -605,10 +651,10 @@ class CustomDomainProperties(Model):
         'cert_name': {'key': 'certName', 'type': 'str'},
     }
 
-    def __init__(self, *, thumbprint: str=None, app_name: str=None, cert_name: str=None, **kwargs) -> None:
+    def __init__(self, *, thumbprint: str=None, cert_name: str=None, **kwargs) -> None:
         super(CustomDomainProperties, self).__init__(**kwargs)
         self.thumbprint = thumbprint
-        self.app_name = app_name
+        self.app_name = None
         self.cert_name = cert_name
 
 
@@ -625,7 +671,8 @@ class CustomDomainResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the custom domain resource.
-    :type properties: ~azure.mgmt.appplatform.models.CustomDomainProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainProperties
     """
 
     _validation = {
@@ -740,7 +787,7 @@ class DeploymentResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the Deployment resource
     :type properties:
-     ~azure.mgmt.appplatform.models.DeploymentResourceProperties
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProperties
     """
 
     _validation = {
@@ -768,28 +815,29 @@ class DeploymentResourceProperties(Model):
     sending a request.
 
     :param source: Uploaded source information of the deployment.
-    :type source: ~azure.mgmt.appplatform.models.UserSourceInfo
+    :type source:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.UserSourceInfo
     :ivar app_name: App name of the deployment
     :vartype app_name: str
     :param deployment_settings: Deployment settings of the Deployment
     :type deployment_settings:
-     ~azure.mgmt.appplatform.models.DeploymentSettings
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentSettings
     :ivar provisioning_state: Provisioning state of the Deployment. Possible
      values include: 'Creating', 'Updating', 'Succeeded', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.models.DeploymentResourceProvisioningState
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProvisioningState
     :ivar status: Status of the Deployment. Possible values include:
      'Unknown', 'Stopped', 'Running', 'Failed', 'Allocating', 'Upgrading',
      'Compiling'
     :vartype status: str or
-     ~azure.mgmt.appplatform.models.DeploymentResourceStatus
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active
     :vartype active: bool
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :ivar instances: Collection of instances belong to the Deployment
     :vartype instances:
-     list[~azure.mgmt.appplatform.models.DeploymentInstance]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentInstance]
     """
 
     _validation = {
@@ -835,31 +883,36 @@ class DeploymentSettings(Model):
     :type memory_in_gb: int
     :param jvm_options: JVM parameter
     :type jvm_options: str
+    :param net_core_main_entry_path: The path to the .NET executable relative
+     to zip root
+    :type net_core_main_entry_path: str
     :param instance_count: Instance count, basic tier should be in range (1,
      25), standard tier should be in range (1, 500). Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
     :param runtime_version: Runtime version. Possible values include:
-     'Java_8', 'Java_11'
+     'Java_8', 'Java_11', 'NetCore_31'
     :type runtime_version: str or
-     ~azure.mgmt.appplatform.models.RuntimeVersion
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.RuntimeVersion
     """
 
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
+        'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
 
-    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
+    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, net_core_main_entry_path: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
         super(DeploymentSettings, self).__init__(**kwargs)
         self.cpu = cpu
         self.memory_in_gb = memory_in_gb
         self.jvm_options = jvm_options
+        self.net_core_main_entry_path = net_core_main_entry_path
         self.instance_count = instance_count
         self.environment_variables = environment_variables
         self.runtime_version = runtime_version
@@ -999,7 +1052,8 @@ class ManagedIdentityProperties(Model):
 
     :param type: Possible values include: 'None', 'SystemAssigned',
      'UserAssigned', 'SystemAssigned,UserAssigned'
-    :type type: str or ~azure.mgmt.appplatform.models.ManagedIdentityType
+    :type type: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ManagedIdentityType
     :param principal_id:
     :type principal_id: str
     :param tenant_id:
@@ -1064,7 +1118,8 @@ class MetricSpecification(Model):
      returned for time duration where no metric is emitted/published.
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric
-    :type dimensions: list[~azure.mgmt.appplatform.models.MetricDimension]
+    :type dimensions:
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.MetricDimension]
     """
 
     _attribute_map = {
@@ -1189,11 +1244,13 @@ class OperationDetail(Model):
     :param is_data_action: Indicates whether the operation is a data action
     :type is_data_action: bool
     :param display: Display of the operation
-    :type display: ~azure.mgmt.appplatform.models.OperationDisplay
+    :type display:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationDisplay
     :param origin: Origin of the operation
     :type origin: str
     :param properties: Properties of the operation
-    :type properties: ~azure.mgmt.appplatform.models.OperationProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationProperties
     """
 
     _attribute_map = {
@@ -1246,7 +1303,7 @@ class OperationProperties(Model):
 
     :param service_specification: Service specifications of the operation
     :type service_specification:
-     ~azure.mgmt.appplatform.models.ServiceSpecification
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -1297,7 +1354,8 @@ class RegenerateTestKeyRequestPayload(Model):
 
     :param key_type: Required. Type of the test key. Possible values include:
      'Primary', 'Secondary'
-    :type key_type: str or ~azure.mgmt.appplatform.models.TestKeyType
+    :type key_type: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeyType
     """
 
     _validation = {
@@ -1323,18 +1381,19 @@ class ResourceSku(Model):
     :param tier: Gets the tier of SKU.
     :type tier: str
     :param capacity: Gets the capacity of SKU.
-    :type capacity: ~azure.mgmt.appplatform.models.SkuCapacity
+    :type capacity:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SkuCapacity
     :param locations: Gets the set of locations that the SKU is available.
     :type locations: list[str]
     :param location_info: Gets a list of locations and availability zones in
      those locations where the SKU is available.
     :type location_info:
-     list[~azure.mgmt.appplatform.models.ResourceSkuLocationInfo]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuLocationInfo]
     :param restrictions: Gets the restrictions because of which SKU cannot be
      used. This is
      empty if there are no restrictions.
     :type restrictions:
-     list[~azure.mgmt.appplatform.models.ResourceSkuRestrictions]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictions]
     """
 
     _attribute_map = {
@@ -1388,7 +1447,7 @@ class ResourceSkuLocationInfo(Model):
     :param zone_details: Gets details of capabilities available to a SKU in
      specific zones.
     :type zone_details:
-     list[~azure.mgmt.appplatform.models.ResourceSkuZoneDetails]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuZoneDetails]
     """
 
     _attribute_map = {
@@ -1430,7 +1489,7 @@ class ResourceSkuRestrictions(Model):
     :param type: Gets the type of restrictions. Possible values include:
      'Location', 'Zone'
     :type type: str or
-     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionsType
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionsType
     :param values: Gets the value of restrictions. If the restriction type is
      set to
      location. This would be different locations where the SKU is restricted.
@@ -1438,11 +1497,11 @@ class ResourceSkuRestrictions(Model):
     :param restriction_info: Gets the information about the restriction where
      the SKU cannot be used.
     :type restriction_info:
-     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionInfo
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionInfo
     :param reason_code: Gets the reason for restriction. Possible values
      include: 'QuotaId', 'NotAvailableForSubscription'
     :type reason_code: str or
-     ~azure.mgmt.appplatform.models.ResourceSkuRestrictionsReasonCode
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionsReasonCode
     """
 
     _attribute_map = {
@@ -1470,7 +1529,7 @@ class ResourceSkuZoneDetails(Model):
      the SKU in the
      specified list of zones.
     :type capabilities:
-     list[~azure.mgmt.appplatform.models.ResourceSkuCapabilities]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuCapabilities]
     """
 
     _attribute_map = {
@@ -1561,9 +1620,10 @@ class ServiceResource(TrackedResource):
      describe the resource.
     :type tags: dict[str, str]
     :param properties: Properties of the Service resource
-    :type properties: ~azure.mgmt.appplatform.models.ClusterResourceProperties
+    :type properties:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ClusterResourceProperties
     :param sku: Sku of the Service resource
-    :type sku: ~azure.mgmt.appplatform.models.Sku
+    :type sku: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Sku
     """
 
     _validation = {
@@ -1593,11 +1653,11 @@ class ServiceSpecification(Model):
 
     :param log_specifications: Specifications of the Log for Azure Monitoring
     :type log_specifications:
-     list[~azure.mgmt.appplatform.models.LogSpecification]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.LogSpecification]
     :param metric_specifications: Specifications of the Metrics for Azure
      Monitoring
     :type metric_specifications:
-     list[~azure.mgmt.appplatform.models.MetricSpecification]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -1648,7 +1708,8 @@ class SkuCapacity(Model):
     :type default: int
     :param scale_type: Gets or sets the type of the scale. Possible values
      include: 'None', 'Manual', 'Automatic'
-    :type scale_type: str or ~azure.mgmt.appplatform.models.SkuScaleType
+    :type scale_type: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SkuScaleType
     """
 
     _validation = {
@@ -1668,6 +1729,34 @@ class SkuCapacity(Model):
         self.maximum = maximum
         self.default = default
         self.scale_type = scale_type
+
+
+class SupportedRuntimeVersion1(Model):
+    """Supported deployment runtime version descriptor.
+
+    :param value: The raw value which could be passed to deployment CRUD
+     operations. Possible values include: 'Java_8', 'Java_11', 'NetCore_31'
+    :type value: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion
+    :param platform: The platform of this runtime version (possible values:
+     "Java" or ".NET"). Possible values include: 'Java', '.NET Core'
+    :type platform: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimePlatform
+    :param version: The detailed version (major.minor) of the platform.
+    :type version: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': 'str'},
+        'platform': {'key': 'platform', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
+    }
+
+    def __init__(self, *, value=None, platform=None, version: str=None, **kwargs) -> None:
+        super(SupportedRuntimeVersion1, self).__init__(**kwargs)
+        self.value = value
+        self.platform = platform
+        self.version = version
 
 
 class TemporaryDisk(Model):
@@ -1734,9 +1823,10 @@ class TraceProperties(Model):
 
     :ivar state: State of the trace proxy. Possible values include:
      'NotAvailable', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or ~azure.mgmt.appplatform.models.TraceProxyState
+    :vartype state: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TraceProxyState
     :param error: Error when apply trace proxy changes.
-    :type error: ~azure.mgmt.appplatform.models.Error
+    :type error: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Error
     :param enabled: Indicates whether enable the tracing functionality
     :type enabled: bool
     :param app_insight_instrumentation_key: Target application insight
@@ -1767,8 +1857,9 @@ class UserSourceInfo(Model):
     """Source information for a deployment.
 
     :param type: Type of the source uploaded. Possible values include: 'Jar',
-     'Source'
-    :type type: str or ~azure.mgmt.appplatform.models.UserSourceType
+     'NetCoreZip', 'Source'
+    :type type: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.UserSourceType
     :param relative_path: Relative path of the storage which stores the source
     :type relative_path: str
     :param version: Version of the source
