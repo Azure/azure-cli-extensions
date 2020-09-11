@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.4
+++++++
+* Send User ID hash for rate limiting to prevent bad actors from slowing down the service for other users
+
 0.2.3
 ++++++
 * Add fallback to use built-in values if there is an issue with using the service
