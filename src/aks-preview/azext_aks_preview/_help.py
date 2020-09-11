@@ -46,6 +46,10 @@ helps['aks create'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Allowed values are 'Ephemeral'
+                          and 'Managed'. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --node-osdisk-diskencryptionset-id
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
@@ -497,6 +501,10 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Allowed values are 'Ephemeral'
+                          and 'Managed'. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
