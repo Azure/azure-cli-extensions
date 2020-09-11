@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* [BREAKING CHANGE] `az network vwan create/update`: Remove the stale argument `--vnet-to-vnet-traffic`.
+
 0.2.0
 ++++++
 * `az network vhub route-table`: Support virtual hub v3 route table.

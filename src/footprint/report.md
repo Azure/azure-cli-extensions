@@ -132,8 +132,8 @@ create a footprint measurement-endpoint.
 |**--description**|string|The description of a measurement endpoint.|description|description|
 |**--experiment-id**|string|The id of an experiment that a measurement endpoint is part of.|experiment_id|experimentId|
 |**--object-path**|string|The path of the object that a measurement endpoint points to.|object_path|objectPath|
-|**--start-time-utc**|date-time|The start time that a measurement endpoint should be served.|start_time_utc|startTimeUTC|
-|**--end-time-utc**|date-time|The end time that a measurement endpoint should be served.|end_time_utc|endTimeUTC|
+|**--start-time-utc**|date-time|The start time that a measurement endpoint should be served.|start_time_u_t_c|startTimeUTC|
+|**--end-time-utc**|date-time|The end time that a measurement endpoint should be served.|end_time_u_t_c|endTimeUTC|
 |**--hot-path-sampling-percentage-rate**|number|The percentual sampling rate for the hot path logging of a measurement endpoint.|hot_path_sampling_percentage_rate|hotPathSamplingPercentageRate|
 |**--warm-path-sampling-percentage-rate**|number|The percentual sampling rate for the warm path logging of a measurement endpoint.|warm_path_sampling_percentage_rate|warmPathSamplingPercentageRate|
 |**--cold-path-sampling-percentage-rate-override**|number|The percentual sampling rate for the cold path logging of a measurement endpoint.|cold_path_sampling_percentage_rate_override|coldPathSamplingPercentageRateOverride|
@@ -227,8 +227,8 @@ update a footprint measurement-endpoint.
 |**--description**|string|The description of a measurement endpoint.|description|description|
 |**--experiment-id**|string|The id of an experiment that a measurement endpoint is part of.|experiment_id|experimentId|
 |**--object-path**|string|The path of the object that a measurement endpoint points to.|object_path|objectPath|
-|**--start-time-utc**|date-time|The start time that a measurement endpoint should be served.|start_time_utc|startTimeUTC|
-|**--end-time-utc**|date-time|The end time that a measurement endpoint should be served.|end_time_utc|endTimeUTC|
+|**--start-time-utc**|date-time|The start time that a measurement endpoint should be served.|start_time_u_t_c|startTimeUTC|
+|**--end-time-utc**|date-time|The end time that a measurement endpoint should be served.|end_time_u_t_c|endTimeUTC|
 |**--hot-path-sampling-percentage-rate**|number|The percentual sampling rate for the hot path logging of a measurement endpoint.|hot_path_sampling_percentage_rate|hotPathSamplingPercentageRate|
 |**--warm-path-sampling-percentage-rate**|number|The percentual sampling rate for the warm path logging of a measurement endpoint.|warm_path_sampling_percentage_rate|warmPathSamplingPercentageRate|
 |**--cold-path-sampling-percentage-rate-override**|number|The percentual sampling rate for the cold path logging of a measurement endpoint.|cold_path_sampling_percentage_rate_override|coldPathSamplingPercentageRateOverride|
