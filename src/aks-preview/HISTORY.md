@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.63
++++++
+* Remove PREVIEW from azure policy addon.
+
 0.4.62
 +++++
 * Add support for enable/disable confcom (sgx) addon.
