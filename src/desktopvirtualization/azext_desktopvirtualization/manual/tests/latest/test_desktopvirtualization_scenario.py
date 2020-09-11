@@ -105,3 +105,27 @@ def step__workspaces_patch_workspace_update(test, rg):
                  JMESPathCheck('tags.tag1', 'value3'),
                  JMESPathCheck('tags.tag2', 'value4'),
              ])
+
+
+def call_scenario(test, rg):
+    from ....tests.latest import test_desktopvirtualization_scenario as g
+    g.setup(test, rg)
+    g.step__hostpools_put_hostpool_create(test, rg)
+    g.step__hostpools_get_hostpool_get(test, rg)
+    g.step__hostpools_get_hostpool_list(test, rg)
+    g.step__hostpools_get_hostpool_listbyresourcegroup(test, rg)
+    g.step__hostpools_patch_hostpool_update(test, rg)
+    #step__applicationgroups_put_applicationgroup_create(test, rg)
+    #step__applicationgroups_get_applicationgroup_get(test, rg)
+    #step__applicationgroups_get_applicationgroup_list(test, rg)
+    #step__applicationgroups_get_applicationgroup_listbyresourcegroup(test, rg)
+    #step__applicationgroups_patch_applicationgroups_update(test, rg)
+    #step__applicationgroups_delete_applicationgroup_delete(test, rg)
+    g.step__workspaces_put_workspace_create(test, rg)
+    g.step__workspaces_get_workspace_get(test, rg)
+    g.step__workspaces_get_workspace_listbyresourcegroup(test, rg)
+    g.step__workspaces_get_workspace_listbysubscription(test, rg)
+    g.step__workspaces_patch_workspace_update(test, rg)
+    g.step__hostpools_delete_hostpool_delete(test, rg)
+    g.step__workspaces_delete_workspace_delete(test, rg)
+    g.cleanup(test, rg)
