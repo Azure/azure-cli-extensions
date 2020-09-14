@@ -9,7 +9,7 @@
 from enum import Enum
 
 from azure.core.paging import PageIterator
-from azure.storage.blob._generated.models import FilterBlobItem
+from ._generated.models import FilterBlobItem
 
 from ._shared import decode_base64_to_text
 from ._shared.response_handlers import return_context_and_deserialized, process_storage_error
