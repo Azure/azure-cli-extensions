@@ -83,7 +83,9 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  '--sku-name S1 '
                  '--sku-capacity 1 '
                  '--data-retention-time 7',
-                 checks=[self.check('name', '{env2}')])
+                 checks=[self.check('name', '{env2}'),
+                         self.check('partitionKeyProperties', None),
+                         self.check('storageLimitExceededBehavior', 'PurgeOldData')])
 
         self.cmd('az timeseriesinsights environment delete '
                  '--resource-group {rg} '
