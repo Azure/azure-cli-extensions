@@ -35,13 +35,16 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
             validator = ScheduleQueryConditionValidator()
             walker = antlr4.ParseTreeWalker()
             walker.walk(validator, tree)
-            metric_condition = validator.result()
+            scheduled_query_condition = validator.result()
             for item in ['time_aggregation', 'threshold', 'operator']:
-                if not getattr(metric_condition, item, None):
+                if not getattr(scheduled_query_condition, item, None):
                     raise CLIError(usage)
         except (AttributeError, TypeError, KeyError):
             raise CLIError(usage)
-        super(ScheduleQueryConditionAction, self).__call__(parser, namespace, metric_condition, option_string)
+        super(ScheduleQueryConditionAction, self).__call__(parser,
+                                                           namespace,
+                                                           scheduled_query_condition,
+                                                           option_string)
 
 
 # pylint: disable=protected-access, too-few-public-methods

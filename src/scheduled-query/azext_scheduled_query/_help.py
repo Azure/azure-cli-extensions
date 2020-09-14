@@ -33,6 +33,11 @@ parameters:
                             [at least MinTimeToFail out of EvaluationPeriod]'
 
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
+examples:
+  - name: Create a scheduled query for a VM.
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines
+  - name: Create a scheduled query for VMs in a resource group.
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' < 260 at least 1 out of 5" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines
 """
 
 helps['monitor scheduled-query update'] = """
