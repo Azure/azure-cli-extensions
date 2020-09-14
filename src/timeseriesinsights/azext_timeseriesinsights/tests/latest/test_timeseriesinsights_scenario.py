@@ -34,7 +34,21 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
             'env': self.create_random_name('cli-test-tsi-env', 24),
         })
 
-        # Test environment standard create
+        # Test `environment standard create` with required arguments
+        self.cmd('az timeseriesinsights environment standard create '
+                 '--resource-group {rg} '
+                 '--name {env} '
+                 '--sku-name S1 '
+                 '--sku-capacity 1 '
+                 '--data-retention-time 7',
+                 checks=[self.check('name', '{env}')])
+
+        self.cmd('az timeseriesinsights environment delete '
+                 '--resource-group {rg} '
+                 '--name {env} --yes',
+                 checks=[])
+
+        # Test `environment standard create` with optional arguments
         self.cmd('az timeseriesinsights environment standard create '
                  '--resource-group {rg} '
                  '--name {env} '
@@ -63,8 +77,9 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[self.check('length(@)', 1)])
 
-        self.cmd('az timeseriesinsights environment list',
-                 checks=[self.check("length([?name=='{env}'])", 1)])
+        # Disable this test as it depends on environments in the subscription.
+        # self.cmd('az timeseriesinsights environment list',
+        #          checks=[self.check("length([?name=='{env}'])", 1)])
 
         self.cmd('az timeseriesinsights environment delete '
                  '--resource-group {rg} '
