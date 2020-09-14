@@ -32,21 +32,8 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
     def test_timeseriesinsights_environment_standard(self, resource_group):
         self.kwargs.update({
             'env': self.create_random_name('cli-test-tsi-env', 24),
+            'env2': self.create_random_name('cli-test-tsi-env', 24),
         })
-
-        # Test `environment standard create` with required arguments
-        self.cmd('az timeseriesinsights environment standard create '
-                 '--resource-group {rg} '
-                 '--name {env} '
-                 '--sku-name S1 '
-                 '--sku-capacity 1 '
-                 '--data-retention-time 7',
-                 checks=[self.check('name', '{env}')])
-
-        self.cmd('az timeseriesinsights environment delete '
-                 '--resource-group {rg} '
-                 '--name {env} --yes',
-                 checks=[])
 
         # Test `environment standard create` with optional arguments
         self.cmd('az timeseriesinsights environment standard create '
@@ -77,9 +64,8 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[self.check('length(@)', 1)])
 
-        # Disable this test as it depends on environments in the subscription.
-        # self.cmd('az timeseriesinsights environment list',
-        #          checks=[self.check("length([?name=='{env}'])", 1)])
+        self.cmd('az timeseriesinsights environment list',
+                 checks=[self.check("length([?name=='{env}'])", 1)])
 
         self.cmd('az timeseriesinsights environment delete '
                  '--resource-group {rg} '
@@ -89,6 +75,20 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         self.cmd('az timeseriesinsights environment list '
                  '--resource-group {rg}',
                  checks=[self.check('length(@)', 0)])
+
+        # Test `environment standard create` with required arguments
+        self.cmd('az timeseriesinsights environment standard create '
+                 '--resource-group {rg} '
+                 '--name {env2} '
+                 '--sku-name S1 '
+                 '--sku-capacity 1 '
+                 '--data-retention-time 7',
+                 checks=[self.check('name', '{env2}')])
+
+        self.cmd('az timeseriesinsights environment delete '
+                 '--resource-group {rg} '
+                 '--name {env2} --yes',
+                 checks=[])
 
     @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
     @StorageAccountPreparer()
