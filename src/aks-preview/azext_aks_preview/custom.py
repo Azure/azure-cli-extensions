@@ -1371,7 +1371,6 @@ def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
-
 def _remove_nulls(managed_clusters):
     """
     Remove some often-empty fields from a list of ManagedClusters, so the JSON representation
