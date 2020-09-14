@@ -44,7 +44,9 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
                  '--data-retention-time 7 '
                  '--partition-key-properties DeviceId1 '
                  '--storage-limit-exceeded-behavior PauseIngress',
-                 checks=[self.check('name', '{env}')])
+                 checks=[self.check('name', '{env}'),
+                         self.check('partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
+                         self.check('storageLimitExceededBehavior', 'PauseIngress')])
 
         self.cmd('az timeseriesinsights environment standard update --resource-group {rg} --name {env} --sku-name S1 --sku-capacity 2',
                  checks=[self.check('sku.capacity', '2')])
