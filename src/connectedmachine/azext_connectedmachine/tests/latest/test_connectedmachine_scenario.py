@@ -12,7 +12,7 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
-
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 CUSTOM_SCRIPT_EXTENSION_NAME = 'customScript'
@@ -146,6 +146,7 @@ def call_scenario(test):
 @try_manual
 class ConnectedMachineScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse()
     def test_connectedmachine(self):
         print(MACHINES_MACHINE_NAME)
         call_scenario(self)
