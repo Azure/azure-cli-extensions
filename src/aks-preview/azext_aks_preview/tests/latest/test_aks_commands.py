@@ -369,13 +369,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         stop_cmd = 'aks stop --resource-group={resource_group} --name={name}'
-        self.cmd(stop_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('powerState.code', 'Stopped')
-        ])
+        self.cmd(stop_cmd)
 
         start_cmd = 'aks start --resource-group={resource_group} --name={name}'
-        self.cmd(start_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('powerState.code', 'Running')
-        ])
+        self.cmd(start_cmd)
