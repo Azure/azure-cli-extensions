@@ -12,7 +12,7 @@ from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import ScopeNamespace
 from azext_k8s_extension.vendored_sdks.models import Scope
-
+from .containerinsights  import _get_container_insights_settings
 
 def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type):
     """Get an existing K8s Extension.
@@ -22,18 +22,21 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
     cluster_rp = __get_cluster_type(cluster_type)
 
     try:
-        extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        extension = client.get(resource_group_name,
+                               cluster_rp, cluster_type, cluster_name, name)
         return extension
     except ErrorResponseException as ex:
         # Customize the error message for resources not found
         if ex.response.status_code == 404:
             # If Cluster not found
             if ex.message.__contains__("(ResourceNotFound)"):
-                message = "{0} Verify that the --cluster-type is correct and the resource exists.".format(ex.message)
+                message = "{0} Verify that the --cluster-type is correct and the resource exists.".format(
+                    ex.message)
             # If Configuration not found
             elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
                 message = "(ExtensionNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
-                          "extensions/{3} could not be found!".format(cluster_rp, cluster_type, cluster_name, name)
+                          "extensions/{3} could not be found!".format(
+                              cluster_rp, cluster_type, cluster_name, name)
             else:
                 message = ex.message
             raise CLIError(message)
@@ -53,7 +56,22 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     __validate_scope_and_namespace(scope, release_namespace, target_namespace)
 
     # Validate version, release_train
-    __validate_version_and_release_train(version, release_train, auto_upgrade_minor_version)
+    __validate_version_and_release_train(
+        version, release_train, auto_upgrade_minor_version)
+
+    if extension_type.lower() == 'azuremonitor-containers':
+         # hardcoding  name and release_namespace since container insights only supports one instance
+        # and platform doesnt have support extension specific constraints like this
+        name = "container-insights"
+        release_namespace = "container-insights"
+        if not configuration_settings:
+            configuration_settings = {}
+
+        if not configuration_protected_settings:
+            configuration_protected_settings = {}
+
+        _get_container_insights_settings(cmd, resource_group_name,
+                                         cluster_name, configuration_settings, configuration_protected_settings)
 
     # Determine namespace name
     if scope == 'cluster':
@@ -145,3 +163,4 @@ def __validate_version_and_release_train(version, release_train, auto_upgrade_mi
         if auto_upgrade_minor_version is True:
             message = "To pin to specific version, auto_upgrade_minor_version must be set to 'false'."
             raise CLIError(message)
+
