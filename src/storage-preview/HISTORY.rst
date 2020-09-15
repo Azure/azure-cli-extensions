@@ -4,7 +4,7 @@
 ===============
 0.2.13 (2020-09-15)
 ++++++++++++++++
-* Deprecate `az storage blob list`
+* Remove `az storage blob list`
 
 0.2.12 (2020-07-29)
 ++++++++++++++++
