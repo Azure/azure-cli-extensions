@@ -2,7 +2,7 @@
 
  Release History
 ===============
-0.2.13 (2020-09-15)
+0.3.0 (2020-09-15)
 ++++++++++++++++
 * Remove `az storage blob list`
 
