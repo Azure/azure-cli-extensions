@@ -114,21 +114,42 @@ The secondary cluster will become the primary cluster after failover. Please und
         client_factory=adls_blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
+    def _adls_deprecate_message(self):
+        msg = "This {} has been deprecated and will be removed in future release.".format(self.object_type)
+        msg += " Use '{}' instead.".format(self.redirect)
+        msg += " For more information go to"
+        msg += " https://github.com/Azure/azure-cli/blob/dev/src/azure-cli/azure/cli/command_modules/storage/docs/ADLS%20Gen2.md"
+        return msg
+
+    # Change existing Blob Commands
+    with self.command_group('storage blob', command_type=adls_base_blob_sdk) as g:
+        from ._format import transform_blob_output
+        from ._transformers import transform_storage_list_output
+        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
+                                table_transformer=transform_blob_output,
+                                deprecate_info=self.deprecate(redirect="az storage fs file list", hide=True,
+                                                              message_func=_adls_deprecate_message))
+
     # New Blob Commands
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_command_oauth('move', 'rename_path', is_preview=True)
+        g.storage_command_oauth('move', 'rename_path', is_preview=True,
+                                deprecate_info=self.deprecate(redirect="az storage fs file move", hide=True,
+                                                              message_func=_adls_deprecate_message))
 
     with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS, is_preview=True) as g:
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS,
+                            deprecate_info=self.deprecate(redirect="az storage fs access", hide=True,
+                                                          message_func=_adls_deprecate_message)) as g:
         g.storage_command_oauth('set', 'set_path_access_control')
         g.storage_command_oauth('update', 'set_path_access_control')
         g.storage_command_oauth('show', 'get_path_access_control')
 
+    # TODO: Remove them after deprecate for two sprints
     # Blob directory Commands Group
     with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
@@ -161,3 +182,8 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.storage_command_oauth('set', 'set_path_access_control')
         g.storage_command_oauth('update', 'set_path_access_control')
         g.storage_command_oauth('show', 'get_path_access_control')
+
+    with self.command_group('storage blob directory',
+                            deprecate_info=self.deprecate(redirect="az storage fs directory", hide=True,
+                                                          message_func=_adls_deprecate_message)) as g:
+        pass
