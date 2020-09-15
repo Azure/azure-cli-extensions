@@ -85,7 +85,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                                              resource_type=CUSTOM_MGMT_STORAGE)
         c.register_common_storage_account_options()
         c.argument('hierarchical_namespace', help='Allows the blob service to exhibit filesystem semantics.',
-                   arg_type=get_three_state_flag())
+                   arg_type=get_three_state_flag(),
+                   deprecate_info=c.deprecate(redirect='--hns'))
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('account_type', help='The storage account type', arg_type=get_enum_type(t_account_type))
         c.argument('account_name', acct_name_type, options_list=['--name', '-n'], completer=None)
