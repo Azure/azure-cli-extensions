@@ -2,9 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# from docutils.nodes import version
+import json
 from knack.util import CLIError
-
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
@@ -45,7 +44,8 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
 def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type,
                          extension_type, scope, auto_upgrade_minor_version=True, release_train='Stable',
                          version=None, target_namespace=None, release_namespace=None, configuration_settings=None,
-                         configuration_protected_settings=None, location=None, tags=None):
+                         configuration_protected_settings=None, configuration_settings_file=None,
+                         configuration_protected_settings_file=None, location=None, tags=None):
     """Create a new Extension Instance.
 
     """
@@ -59,6 +59,36 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     __validate_version_and_release_train(
         version, release_train, auto_upgrade_minor_version)
 
+    # Configuration Settings & Configuration Protected Settings
+    if configuration_settings is not None and configuration_settings_file is not None:
+        raise CLIError('Error! Both configuration_settings and configuration_settings_file cannot be provided.')
+
+    if configuration_protected_settings is not None and configuration_protected_settings_file is not None:
+        raise CLIError('Error! Both configuration_protected_settings and configuration_protected_settings_file '
+                       'cannot be provided.')
+
+    config_settings = {}
+    config_protected_settings = {}
+
+    # Get Configuration Settings from file
+    if configuration_settings_file is not None:
+        config_settings = __get_config_settings_from_file(configuration_settings_file)
+
+    if configuration_settings is not None:
+        for dicts in configuration_settings:
+            for key, value in dicts.items():
+                config_settings[key] = value
+
+    # Get Configuration Protected Settings from file
+    if configuration_protected_settings_file is not None:
+        config_protected_settings = __get_config_settings_from_file(configuration_protected_settings_file)
+
+    if configuration_protected_settings is not None:
+        for dicts in configuration_protected_settings:
+            for key, value in dicts.items():
+                config_protected_settings[key] = value
+
+    # ExtensionType specific conditions
     if extension_type.lower() == 'azuremonitor-containers':
          # hardcoding  name and release_namespace since container insights only supports one instance
         # and platform doesnt have support extension specific constraints like this
@@ -85,17 +115,14 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
         scope_namespace = ScopeNamespace(target_namespace=target_namespace)
         ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
-    # Get Configuration Settings
-    # ##for config_key in configuration_settings:
-
     # Create Extension Instance object
     extension_instance = ExtensionInstanceForCreate(extension_type=extension_type,
                                                     auto_upgrade_minor_version=auto_upgrade_minor_version,
                                                     release_train=release_train,
                                                     version=version,
                                                     scope=ext_scope,
-                                                    configuration_settings=configuration_settings,
-                                                    configuration_protected_settings=configuration_protected_settings)
+                                                    configuration_settings=config_settings,
+                                                    configuration_protected_settings=config_protected_settings)
 
     # Try to create the resource
     return client.create(resource_group_name, cluster_rp, cluster_type, cluster_name, name, extension_instance)
@@ -163,4 +190,18 @@ def __validate_version_and_release_train(version, release_train, auto_upgrade_mi
         if auto_upgrade_minor_version is True:
             message = "To pin to specific version, auto_upgrade_minor_version must be set to 'false'."
             raise CLIError(message)
+
+
+def __get_config_settings_from_file(file_path):
+    settings = {}
+    try:
+        config_file = open(file_path,)
+        settings = json.load(config_file)
+    except ValueError:
+        raise Exception("File {} is not a valid JSON file".format(file_path))
+
+    if len(settings) == 0:
+        raise Exception("File {} is empty".format(file_path))
+
+    return settings
 
