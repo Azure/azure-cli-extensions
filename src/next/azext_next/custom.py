@@ -12,10 +12,10 @@ def _get_api_url():
     return "https://cli-recommendation.azurewebsites.net/api/RecommendationService"
 
 
-def _get_last_cmd():
+def _get_last_cmd(cmd):
     '''Get last executed command from local log files'''
     import os
-    his_file_name = os.path.join(os.environ['HOME'], '.azure', 'recommendation', 'cmd_history.log')
+    his_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
     with open(his_file_name, "r") as f:
         lines = f.read().splitlines()
         lines = [x for x in lines if x != 'next']
@@ -25,7 +25,7 @@ def _get_last_cmd():
 
 def _update_last_cmd(cmd):
     import os
-    his_file_name = os.path.join(os.environ['HOME'], '.azure', 'recommendation', 'cmd_history.log')
+    his_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
     with open(his_file_name, "a") as f:
         f.write("{}\n".format(cmd))
 
@@ -57,7 +57,6 @@ def _read_int(msg, default_value=0):
 
 
 def _give_recommends(recommends):
-    print("")
     idx = 0
     for rec in recommends:
         if 'reason' in rec:
@@ -65,7 +64,7 @@ def _give_recommends(recommends):
         else:
             reason = " people use this command in next step."
         idx += 1
-        print("{}. az {}".format(idx, rec['command']))
+        print("{}. az {} {}".format(idx, rec['command'], ' '.join(rec['arguments'])))
         if rec['ratio']:
                reason = "{:.1f}% {}".format(rec['ratio'] * 100, reason)
         print("Recommended reason: {}".format(reason))
@@ -82,10 +81,11 @@ Please select the type of recommendation you need:
 '''
     print(msg)
     option = _read_int("What kind of recommendation do you want? (RETURN is to set all): ", 1)
-    last_cmd = _get_last_cmd()
+    last_cmd = _get_last_cmd(cmd)
     recommends = _get_recommend_from_api(last_cmd, option)
     if not recommends:
         raise CLIError("Failed to get recommend for '{}'.".format(last_cmd))
+    print()
     _give_recommends(recommends)
     print()
     if len(recommends) > 1:
@@ -115,7 +115,8 @@ Please select the type of recommendation you need:
     for param in nx_param:
         value = input("Please input {}: ".format(param))
         args.append(param)
-        args.append(value)
+        if value:
+            args.append(value)
 
-    ret = cmd.cli_ctx.invoke(args)
+    cmd.cli_ctx.invoke(args)
     return None
