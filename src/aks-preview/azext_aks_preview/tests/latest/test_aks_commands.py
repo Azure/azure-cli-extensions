@@ -352,7 +352,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.accsgxdeviceplugin.enabled', False),
             self.check('addonProfiles.accsgxdeviceplugin.config', None)
         ])
-        
+
     @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
