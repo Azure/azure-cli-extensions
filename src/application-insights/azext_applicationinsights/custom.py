@@ -98,7 +98,7 @@ def _apm_migration_consent(cmd, new_workspace_resource_id, existing_workspace_re
 
         if need_consent:
             from azure.cli.core.util import user_confirmation
-            user_confirmation('Specified workspace is configured with workspace-based access mode and some APM features may be impacted.  Please refer to https://aka.ms/apm-workspace-access-mode for details. Do you want to continue?')
+            user_confirmation('Specified workspace is configured with workspace-based access mode and some APM features may be impacted. Consider selecting another workspace or allow resource-based access in the workspace settings. Please refer to https://aka.ms/apm-workspace-access-mode for details. Do you want to continue?')
 
 
 def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
