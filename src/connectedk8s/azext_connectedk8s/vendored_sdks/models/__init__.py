@@ -17,6 +17,9 @@ try:
     from .connected_cluster_py3 import ConnectedCluster
     from .credential_result_py3 import CredentialResult
     from .credential_results_py3 import CredentialResults
+    from .authentication_certificate_details_py3 import AuthenticationCertificateDetails
+    from .authentication_details_value_py3 import AuthenticationDetailsValue
+    from .authentication_details_py3 import AuthenticationDetails
     from .connected_cluster_patch_py3 import ConnectedClusterPatch
     from .error_details_py3 import ErrorDetails
     from .error_response_py3 import ErrorResponse, ErrorResponseException
@@ -30,6 +33,9 @@ except (SyntaxError, ImportError):
     from .connected_cluster import ConnectedCluster
     from .credential_result import CredentialResult
     from .credential_results import CredentialResults
+    from .authentication_certificate_details import AuthenticationCertificateDetails
+    from .authentication_details_value import AuthenticationDetailsValue
+    from .authentication_details import AuthenticationDetails
     from .connected_cluster_patch import ConnectedClusterPatch
     from .error_details import ErrorDetails
     from .error_response import ErrorResponse, ErrorResponseException
@@ -37,9 +43,10 @@ except (SyntaxError, ImportError):
     from .tracked_resource import TrackedResource
 from .connected_cluster_paged import ConnectedClusterPaged
 from .operation_paged import OperationPaged
-from .kubernetes_connect_rp_client_enums import (
+from .connected_kubernetes_client_enums import (
     ResourceIdentityType,
     ProvisioningState,
+    AuthenticationMethod,
 )
 
 __all__ = [
@@ -50,6 +57,9 @@ __all__ = [
     'ConnectedCluster',
     'CredentialResult',
     'CredentialResults',
+    'AuthenticationCertificateDetails',
+    'AuthenticationDetailsValue',
+    'AuthenticationDetails',
     'ConnectedClusterPatch',
     'ErrorDetails',
     'ErrorResponse', 'ErrorResponseException',
@@ -59,4 +69,5 @@ __all__ = [
     'OperationPaged',
     'ResourceIdentityType',
     'ProvisioningState',
+    'AuthenticationMethod',
 ]
