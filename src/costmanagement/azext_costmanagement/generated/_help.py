@@ -9,774 +9,947 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-# from knack.help_files import helps
+from knack.help_files import helps
 
 
-# helps['costmanagement view'] = """
-#     type: group
-#     short-summary: costmanagement view
-# """
+helps['costmanagement view'] = """
+    type: group
+    short-summary: costmanagement view
+"""
 
-# helps['costmanagement view list'] = """
-#     type: command
-#     short-summary: Lists all views by tenant and object.
-#     examples:
-#       - name: ResourceGroupViewList
-#         text: |-
-#                az costmanagement view list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/M\
-# YDEVTESTRG"
-# """
+helps['costmanagement view list'] = """
+    type: command
+    short-summary: "Lists all views by tenant and object."
+    examples:
+      - name: ResourceGroupViewList
+        text: |-
+               az costmanagement view list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/M\
+YDEVTESTRG"
+"""
 
-# helps['costmanagement view show'] = """
-#     type: command
-#     short-summary: Gets the view by view name.
-#     examples:
-#       - name: ResourceGroupView
-#         text: |-
-#                az costmanagement view show --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/M\
-# YDEVTESTRG" --view-name "swaggerExample"
-# """
+helps['costmanagement view show'] = """
+    type: command
+    short-summary: "Gets the view by view name."
+    examples:
+      - name: PrivateView
+        text: |-
+               az costmanagement view show --name "swaggerExample"
+"""
 
-# helps['costmanagement view create'] = """
-#     type: command
-#     short-summary: The operation to create or update a view. Update operation requires latest eTag to be set in the req\
-# uest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
-#     examples:
-#       - name: ResourceGroupCreateOrUpdateView
-#         text: |-
-#                az costmanagement view create --e-tag "\\"1d4ff9fe66f1d10\\"" --accumulated "true" --chart "Table" --dis\
-# play-name "swagger Example" --kpis type="Forecast" enabled=true id=null --kpis type="Budget" enabled=true id="/subscrip\
-# tions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Consumption/budgets/swaggerDe\
-# mo" --metric "ActualCost" --pivots name="ServiceName" type="Dimension" --pivots name="MeterCategory" type="Dimension" -\
-# -pivots name="swaggerTagKey" type="TagKey" --query-dataset "{\\"aggregation\\":{\\"totalCost\\":{\\"name\\":\\"PreTaxCo\
-# st\\",\\"function\\":\\"Sum\\"}},\\"granularity\\":\\"Daily\\",\\"grouping\\":[],\\"sorting\\":[{\\"name\\":\\"UsageDat\
-# e\\",\\"direction\\":\\"Ascending\\"}]}" --query-timeframe "MonthToDate" --properties-scope "subscriptions/00000000-000\
-# 0-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" --view-name "swaggerExample"
-# """
+helps['costmanagement view create'] = """
+    type: command
+    short-summary: "The operation to create or update a view. Update operation requires latest eTag to be set in the \
+request. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag."
+    parameters:
+      - name: --kpis
+        short-summary: "List of KPIs to show in Cost Analysis UI."
+        long-summary: |
+            Usage: --kpis type=XX id=XX enabled=XX
 
-# helps['costmanagement view delete'] = """
-#     type: command
-#     short-summary: The operation to delete a view.
-#     examples:
-#       - name: ResourceGroupDeleteView
-#         text: |-
-#                az costmanagement view delete --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups\
-# /MYDEVTESTRG" --view-name "TestView"
-# """
+            type: KPI type (Forecast, Budget).
+            id: ID of resource related to metric (budget).
+            enabled: show the KPI in the UI?
 
-# helps['costmanagement alert'] = """
-#     type: group
-#     short-summary: costmanagement alert
-# """
+            Multiple actions can be specified by using more than one --kpis argument.
+      - name: --pivots
+        short-summary: "Configuration of 3 sub-views in the Cost Analysis UI."
+        long-summary: |
+            Usage: --pivots type=XX name=XX
 
-# helps['costmanagement alert list'] = """
-#     type: command
-#     short-summary: Lists the alerts for scope defined.
-#     examples:
-#       - name: BillingAccountAlerts
-#         text: |-
-#                az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingProfileAlerts
-#         text: |-
-#                az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProf\
-# iles/13579"
-#       - name: DepartmentAlerts
-#         text: |-
-#                az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments\
-# /123"
-#       - name: EnrollmentAccountAlerts
-#         text: |-
-#                az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentA\
-# ccounts/456"
-#       - name: InvoiceSectionAlerts
-#         text: |-
-#                az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProf\
-# iles/13579/invoiceSections/9876"
-#       - name: ResourceGroupAlerts
-#         text: |-
-#                az costmanagement alert list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/\
-# ScreenSharingTest-peer"
-#       - name: SubscriptionAlerts
-#         text: |-
-#                az costmanagement alert list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
-# """
+            type: Data type to show in view.
+            name: Data field to show in view.
 
-# helps['costmanagement alert list-external'] = """
-#     type: command
-#     short-summary: Lists the Alerts for external cloud provider type defined.
-#     examples:
-#       - name: ExternalBillingAccountAlerts
-#         text: |-
-#                az costmanagement alert list-external --external-cloud-provider-id "100" --external-cloud-provider-type \
-# "externalBillingAccounts"
-#       - name: ExternalSubscriptionAlerts
-#         text: |-
-#                az costmanagement alert list-external --external-cloud-provider-id "100" --external-cloud-provider-type \
-# "externalSubscriptions"
-# """
+            Multiple actions can be specified by using more than one --pivots argument.
+      - name: --query-time-period
+        short-summary: "Has time period for pulling data for the report."
+        long-summary: |
+            Usage: --query-time-period from=XX to=XX
 
-# helps['costmanagement forecast'] = """
-#     type: group
-#     short-summary: costmanagement forecast
-# """
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+    examples:
+      - name: ResourceGroupCreateOrUpdateView
+        text: |-
+               az costmanagement view create --e-tag "\\"1d4ff9fe66f1d10\\"" --accumulated "true" --chart "Table" \
+--display-name "swagger Example" --kpis type="Forecast" enabled=true id=null --kpis type="Budget" enabled=true \
+id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Consumption/budg\
+ets/swaggerDemo" --metric "ActualCost" --pivots name="ServiceName" type="Dimension" --pivots name="MeterCategory" \
+type="Dimension" --pivots name="swaggerTagKey" type="TagKey" --query-dataset "{\\"aggregation\\":{\\"totalCost\\":{\\"n\
+ame\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}},\\"granularity\\":\\"Daily\\",\\"grouping\\":[],\\"sorting\\":[{\\"n\
+ame\\":\\"UsageDate\\",\\"direction\\":\\"Ascending\\"}]}" --query-timeframe "MonthToDate" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" --name "swaggerExample"
+"""
 
-# helps['costmanagement forecast external-cloud-provider-usage'] = """
-#     type: command
-#     short-summary: Lists the forecast charges for external cloud provider type defined.
-#     examples:
-#       - name: ExternalBillingAccountForecast
-#         text: |-
-#                az costmanagement forecast external-cloud-provider-usage --external-cloud-provider-id "100" --external-c\
-# loud-provider-type "externalBillingAccounts" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate"
-#       - name: ExternalSubscriptionForecast
-#         text: |-
-#                az costmanagement forecast external-cloud-provider-usage --external-cloud-provider-id "100" --external-c\
-# loud-provider-type "externalSubscriptions" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\\
-# "name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\\
-# "name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\"\
-# :\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate"
-# """
+helps['costmanagement view update'] = """
+    type: command
+    short-summary: "The operation to create or update a view. Update operation requires latest eTag to be set in the \
+request. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag."
+    parameters:
+      - name: --kpis
+        short-summary: "List of KPIs to show in Cost Analysis UI."
+        long-summary: |
+            Usage: --kpis type=XX id=XX enabled=XX
 
-# helps['costmanagement forecast usage'] = """
-#     type: command
-#     short-summary: Lists the forecast charges for scope defined.
-#     examples:
-#       - name: BillingAccountForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingProfileForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billi\
-# ngProfiles/13579"
-#       - name: DepartmentForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/depar\
-# tments/123"
-#       - name: EnrollmentAccountForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrol\
-# lmentAccounts/456"
-#       - name: InvoiceSectionForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billi\
-# ngProfiles/13579/invoiceSections/9876"
-#       - name: ResourceGroupForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceG\
-# roups/ScreenSharingTest-peer"
-#       - name: SubscriptionForecast
-#         text: |-
-#                az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --include-actual-cost false --include-f\
-# resh-partial-cost false --timeframe "MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
-# """
+            type: KPI type (Forecast, Budget).
+            id: ID of resource related to metric (budget).
+            enabled: show the KPI in the UI?
 
-# helps['costmanagement dimension'] = """
-#     type: group
-#     short-summary: costmanagement dimension
-# """
+            Multiple actions can be specified by using more than one --kpis argument.
+      - name: --pivots
+        short-summary: "Configuration of 3 sub-views in the Cost Analysis UI."
+        long-summary: |
+            Usage: --pivots type=XX name=XX
 
-# helps['costmanagement dimension list'] = """
-#     type: command
-#     short-summary: Lists the dimensions by the defined scope.
-#     examples:
-#       - name: BillingAccountDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100"
-#       - name: BillingAccountDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingAccountDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100"
-#       - name: BillingAccountDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789"
-#       - name: BillingAccountDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100"
-#       - name: BillingAccountDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingProfileDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
-# Profiles/13579"
-#       - name: BillingProfileDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: BillingProfileDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: CustomerDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/custome\
-# rs/5678"
-#       - name: CustomerDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/customers/5678"
-#       - name: CustomerDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
-#       - name: DepartmentDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/departments/12\
-# 3"
-#       - name: DepartmentDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100/departments/123"
-#       - name: DepartmentDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
-#       - name: EnrollmentAccountDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAcco\
-# unts/456"
-#       - name: EnrollmentAccountDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/100/enrollmentAccounts/456"
-#       - name: EnrollmentAccountDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
-#       - name: InvoiceSectionDimensionsList-Modern
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
-# Profiles/13579/invoiceSections/9876"
-#       - name: InvoiceSectionDimensionsListExpandAndTop-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Billing\
-# /billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
-#       - name: InvoiceSectionDimensionsListWithFilter-Modern
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876\
-# "
-#       - name: ManagementGroupDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --scope "providers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ManagementGroupDimensionsListExpandAndTop-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "providers/Microsoft.Managem\
-# ent/managementGroups/MyMgId"
-#       - name: ManagementGroupDimensionsListWithFilter-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \'resourceI\
-# d\'" --top 5 --scope "providers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ResourceGroupDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
-# -0000-0000-000000000000/resourceGroups/system.orlando"
-#       - name: SubscriptionDimensionsList-Legacy
-#         text: |-
-#                az costmanagement dimension list --expand "properties/data" --top 5 --scope "subscriptions/00000000-0000\
-# -0000-0000-000000000000"
-# """
+            type: Data type to show in view.
+            name: Data field to show in view.
 
-# helps['costmanagement dimension by-external-cloud-provider-type'] = """
-#     type: command
-#     short-summary: Lists the dimensions by the external cloud provider type.
-#     examples:
-#       - name: ExternalBillingAccountDimensionList
-#         text: |-
-#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
-# l-cloud-provider-type "externalBillingAccounts"
-#       - name: ExternalSubscriptionDimensionList
-#         text: |-
-#                az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" --externa\
-# l-cloud-provider-type "externalSubscriptions"
-# """
+            Multiple actions can be specified by using more than one --pivots argument.
+      - name: --query-time-period
+        short-summary: "Has time period for pulling data for the report."
+        long-summary: |
+            Usage: --query-time-period from=XX to=XX
 
-# helps['costmanagement query'] = """
-#     type: group
-#     short-summary: costmanagement query
-# """
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+"""
 
-# helps['costmanagement query usage'] = """
-#     type: command
-#     short-summary: Query the usage data for scope defined.
-#     examples:
-#       - name: BillingAccountQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/70664866"
-#       - name: BillingAccountQuery-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingAccountQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/70664866"
-#       - name: BillingAccountQueryGrouping-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
-#       - name: BillingProfileQuery-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: BillingProfileQueryGrouping-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
-#       - name: CustomerQuery-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
-#       - name: CustomerQueryGrouping-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
-#       - name: DepartmentQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/100/departments/123"
-#       - name: DepartmentQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
-#       - name: EnrollmentAccountQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
-#       - name: EnrollmentAccountQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
-#       - name: InvoiceSectionQuery-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
-#       - name: InvoiceSectionQueryGrouping-Modern
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
-#       - name: ManagementGroupQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "provid\
-# ers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ManagementGroupQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "providers/Microsoft.Management/managementGroups/MyMgId"
-#       - name: ResourceGroupQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "subscr\
-# iptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
-#       - name: ResourceGroupQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceType" type="Dimension" --timeframe "TheLastMonth\
-# " --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
-#       - name: SubscriptionQuery-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
-# \\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\
-# \\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\
-# \\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate" --scope "subscr\
-# iptions/00000000-0000-0000-0000-000000000000"
-#       - name: SubscriptionQueryGrouping-Legacy
-#         text: |-
-#                az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
-# axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe "TheLastMont\
-# h" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
-# """
+helps['costmanagement view delete'] = """
+    type: command
+    short-summary: "The operation to delete a view."
+    examples:
+      - name: ResourceGroupDeleteView
+        text: |-
+               az costmanagement view delete --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups\
+/MYDEVTESTRG" --name "TestView"
+"""
 
-# helps['costmanagement query usage-by-external-cloud-provider-type'] = """
-#     type: command
-#     short-summary: Query the usage data for external cloud provider type defined.
-#     examples:
-#       - name: ExternalBillingAccountQueryList
-#         text: |-
-#                az costmanagement query usage-by-external-cloud-provider-type --external-cloud-provider-id "100" --exter\
-# nal-cloud-provider-type "externalBillingAccounts" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\
-# \\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\
-# \\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"\
-# name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate"
-#       - name: ExternalSubscriptionsQuery
-#         text: |-
-#                az costmanagement query usage-by-external-cloud-provider-type --external-cloud-provider-id "100" --exter\
-# nal-cloud-provider-type "externalSubscriptions" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
-# ":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\\
-# ":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"na\
-# me\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe "MonthToDate"
-# """
+helps['costmanagement view get-by-scope'] = """
+    type: command
+    short-summary: "Gets the view for the defined scope by view name."
+    examples:
+      - name: ResourceGroupView
+        text: |-
+               az costmanagement view get-by-scope --scope "subscriptions/00000000-0000-0000-0000-000000000000/resource\
+Groups/MYDEVTESTRG" --name "swaggerExample"
+"""
 
-# helps['costmanagement export'] = """
-#     type: group
-#     short-summary: costmanagement export
-# """
+helps['costmanagement alert'] = """
+    type: group
+    short-summary: costmanagement alert
+"""
 
-# helps['costmanagement export list'] = """
-#     type: command
-#     short-summary: The operation to list all exports at the given scope.
-#     examples:
-#       - name: BillingAccountExportList
-#         text: |-
-#                az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/123456"
-#       - name: DepartmentExportList
-#         text: |-
-#                az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/12/departments/123"
-#       - name: EnrollmentAccountExportList
-#         text: |-
-#                az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccount\
-# s/456"
-#       - name: ManagementGroupExportList
-#         text: |-
-#                az costmanagement export list --scope "providers/Microsoft.Management/managementGroups/TestMG"
-#       - name: ResourceGroupExportList
-#         text: |-
-#                az costmanagement export list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups\
-# /MYDEVTESTRG"
-#       - name: SubscriptionExportList
-#         text: |-
-#                az costmanagement export list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
-# """
+helps['costmanagement alert list'] = """
+    type: command
+    short-summary: "Lists the alerts for scope defined."
+    examples:
+      - name: BillingAccountAlerts
+        text: |-
+               az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingProfileAlerts
+        text: |-
+               az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProf\
+iles/13579"
+      - name: DepartmentAlerts
+        text: |-
+               az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments\
+/123"
+      - name: EnrollmentAccountAlerts
+        text: |-
+               az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentA\
+ccounts/456"
+      - name: InvoiceSectionAlerts
+        text: |-
+               az costmanagement alert list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProf\
+iles/13579/invoiceSections/9876"
+      - name: ResourceGroupAlerts
+        text: |-
+               az costmanagement alert list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/\
+ScreenSharingTest-peer"
+      - name: SubscriptionAlerts
+        text: |-
+               az costmanagement alert list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+"""
 
-# helps['costmanagement export show'] = """
-#     type: command
-#     short-summary: The operation to get the execution history of an export for the defined scope by export name.
-#     examples:
-#       - name: BillingAccountExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "providers/Microsoft.Billing/billingAcc\
-# ounts/123456"
-#       - name: DepartmentExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "providers/Microsoft.Billing/billingAcc\
-# ounts/12/departments/1234"
-#       - name: EnrollmentAccountExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "providers/Microsoft.Billing/billingAcc\
-# ounts/100/enrollmentAccounts/456"
-#       - name: ManagementGroupExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "providers/Microsoft.Management/managem\
-# entGroups/TestMG"
-#       - name: ResourceGroupExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
-# 000000000000/resourceGroups/MYDEVTESTRG"
-#       - name: SubscriptionExport
-#         text: |-
-#                az costmanagement export show --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-\
-# 000000000000"
-# """
+helps['costmanagement alert show'] = """
+    type: command
+    short-summary: "Gets the alert for the scope by alert ID."
+    examples:
+      - name: ResourceGroupAlerts
+        text: |-
+               az costmanagement alert show --alert-id "22222222-2222-2222-2222-222222222222" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
+      - name: SubscriptionAlerts
+        text: |-
+               az costmanagement alert show --alert-id "22222222-2222-2222-2222-222222222222" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000"
+"""
 
-# helps['costmanagement export create'] = """
-#     type: command
-#     short-summary: The operation to create or update a export. Update operation requires latest eTag to be set in the r\
-# equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
-#     examples:
-#       - name: BillingAccountCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/123456"
-#       - name: DepartmentCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/12/departments/1234"
-#       - name: EnrollmentAccountCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/100/enrollmentAccounts/456"
-#       - name: ManagementGroupCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Management/ma\
-# nagementGroups/TestMG"
-#       - name: ResourceGroupCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-# 0000-000000000000/resourceGroups/MYDEVTESTRG"
-#       - name: SubscriptionCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export create --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-# 0000-000000000000"
-# """
+helps['costmanagement alert dismiss'] = """
+    type: command
+    short-summary: "Dismisses the specified alert"
+    parameters:
+      - name: --definition
+        short-summary: "defines the type of alert"
+        long-summary: |
+            Usage: --definition type=XX category=XX criteria=XX
 
-# helps['costmanagement export update'] = """
-#     type: command
-#     short-summary: The operation to create or update a export. Update operation requires latest eTag to be set in the r\
-# equest. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag.
-#     examples:
-#       - name: BillingAccountCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/123456"
-#       - name: DepartmentCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/12/departments/1234"
-#       - name: EnrollmentAccountCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Billing/billi\
-# ngAccounts/100/enrollmentAccounts/456"
-#       - name: ManagementGroupCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "providers/Microsoft.Management/ma\
-# nagementGroups/TestMG"
-#       - name: ResourceGroupCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-# 0000-000000000000/resourceGroups/MYDEVTESTRG"
-#       - name: SubscriptionCreateOrUpdateExport
-#         text: |-
-#                az costmanagement export update --export-name "TestExport" --definition-type "Usage" --definition-datase\
-# t-aggregation "{\\"costSum\\":{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}" --definition-dataset-configurati\
-# on columns="Date" columns="MeterId" columns="InstanceId" columns="ResourceLocation" columns="PreTaxCost" --definition-d\
-# ataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"va\
-# lues\\":[\\"East US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\
-# \\":[\\"UAT\\",\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\
-# \\"API\\"]}}]}" --definition-dataset-grouping name="SubscriptionName" type="Dimension" --definition-dataset-grouping na\
-# me="Environment" type="Tag" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" resour\
-# ce-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage/stora\
-# geAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" --schedule-recurrence-period from\
-# ="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" --schedule-status "Active" --scope "subscriptions/00000000-0000-0000-\
-# 0000-000000000000"
-# """
+            type: type of alert
+            category: Alert category
+            criteria: Criteria that triggered alert
+    examples:
+      - name: ResourceGroupAlerts
+        text: |-
+               az costmanagement alert dismiss --alert-id "22222222-2222-2222-2222-222222222222" --status "Dismissed" \
+--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
+      - name: SubscriptionAlerts
+        text: |-
+               az costmanagement alert dismiss --alert-id "22222222-2222-2222-2222-222222222222" --status "Dismissed" \
+--scope "subscriptions/00000000-0000-0000-0000-000000000000"
+"""
 
-# helps['costmanagement export delete'] = """
-#     type: command
-#     short-summary: The operation to delete a export.
-#     examples:
-#       - name: BillingAccountDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "providers/Microsoft.Billing/billingA\
-# ccounts/123456"
-#       - name: DepartmentDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "providers/Microsoft.Billing/billingA\
-# ccounts/12/departments/1234"
-#       - name: EnrollmentAccountDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "providers/Microsoft.Billing/billingA\
-# ccounts/100/enrollmentAccounts/456"
-#       - name: ManagementGroupDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "providers/Microsoft.Management/manag\
-# ementGroups/TestMG"
-#       - name: ResourceGroupDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
-# 0-000000000000/resourceGroups/MYDEVTESTRG"
-#       - name: SubscriptionDeleteExport
-#         text: |-
-#                az costmanagement export delete --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-000\
-# 0-000000000000"
-# """
+helps['costmanagement alert list-external'] = """
+    type: command
+    short-summary: "Lists the Alerts for external cloud provider type defined."
+    examples:
+      - name: ExternalBillingAccountAlerts
+        text: |-
+               az costmanagement alert list-external --external-cloud-provider-id "100" --external-cloud-provider-type \
+"externalBillingAccounts"
+      - name: ExternalSubscriptionAlerts
+        text: |-
+               az costmanagement alert list-external --external-cloud-provider-id "100" --external-cloud-provider-type \
+"externalSubscriptions"
+"""
 
-# helps['costmanagement export execute'] = """
-#     type: command
-#     short-summary: The operation to execute a export.
-#     examples:
-#       - name: BillingAccountExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "providers/Microsoft.Billing/billing\
-# Accounts/123456"
-#       - name: DepartmentExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "providers/Microsoft.Billing/billing\
-# Accounts/12/departments/1234"
-#       - name: EnrollmentAccountExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "providers/Microsoft.Billing/billing\
-# Accounts/100/enrollmentAccounts/456"
-#       - name: ManagementGroupExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "providers/Microsoft.Management/mana\
-# gementGroups/TestMG"
-#       - name: ResourceGroupExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-00\
-# 00-000000000000/resourceGroups/MYDEVTESTRG"
-#       - name: SubscriptionExecuteExport
-#         text: |-
-#                az costmanagement export execute --export-name "TestExport" --scope "subscriptions/00000000-0000-0000-00\
-# 00-000000000000"
-# """
+helps['costmanagement forecast'] = """
+    type: group
+    short-summary: costmanagement forecast
+"""
+
+helps['costmanagement forecast external-cloud-provider-usage'] = """
+    type: command
+    short-summary: "Lists the forecast charges for external cloud provider type defined."
+    parameters:
+      - name: --time-period
+        short-summary: "Has time period for pulling data for the forecast."
+        long-summary: |
+            Usage: --time-period from=XX to=XX
+
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+      - name: --dataset-configuration
+        short-summary: "Has configuration information for the data in the export. The configuration will be ignored if \
+aggregation and grouping are provided."
+        long-summary: |
+            Usage: --dataset-configuration columns=XX
+
+            columns: Array of column names to be included in the query. Any valid query column name is allowed. If not \
+provided, then query includes all columns.
+    examples:
+      - name: ExternalBillingAccountForecast
+        text: |-
+               az costmanagement forecast external-cloud-provider-usage --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalBillingAccounts" --type "Usage" --dataset-filter \
+"{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"Ea\
+st US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\
+\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--timeframe "MonthToDate"
+      - name: ExternalSubscriptionForecast
+        text: |-
+               az costmanagement forecast external-cloud-provider-usage --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalSubscriptions" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dime\
+nsion\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate"
+"""
+
+helps['costmanagement forecast usage'] = """
+    type: command
+    short-summary: "Lists the forecast charges for scope defined."
+    parameters:
+      - name: --time-period
+        short-summary: "Has time period for pulling data for the forecast."
+        long-summary: |
+            Usage: --time-period from=XX to=XX
+
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+      - name: --dataset-configuration
+        short-summary: "Has configuration information for the data in the export. The configuration will be ignored if \
+aggregation and grouping are provided."
+        long-summary: |
+            Usage: --dataset-configuration columns=XX
+
+            columns: Array of column names to be included in the query. Any valid query column name is allowed. If not \
+provided, then query includes all columns.
+    examples:
+      - name: BillingAccountForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingProfileForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+      - name: DepartmentForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/departments/123"
+      - name: EnrollmentAccountForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentAccounts/456"
+      - name: InvoiceSectionForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
+      - name: ResourceGroupForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
+      - name: SubscriptionForecast
+        text: |-
+               az costmanagement forecast usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\\
+":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--include-actual-cost false --include-fresh-partial-cost false --timeframe "MonthToDate" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['costmanagement dimension'] = """
+    type: group
+    short-summary: costmanagement dimension
+"""
+
+helps['costmanagement dimension list'] = """
+    type: command
+    short-summary: "Lists the dimensions by the defined scope."
+    examples:
+      - name: BillingAccountDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100"
+      - name: BillingAccountDimensionsList-Modern
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingAccountDimensionsListExpandAndTop-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/100"
+      - name: BillingAccountDimensionsListExpandAndTop-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingAccountDimensionsListWithFilter-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100"
+      - name: BillingAccountDimensionsListWithFilter-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingProfileDimensionsList-Modern
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
+Profiles/13579"
+      - name: BillingProfileDimensionsListExpandAndTop-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+      - name: BillingProfileDimensionsListWithFilter-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+      - name: CustomerDimensionsList-Modern
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/custome\
+rs/5678"
+      - name: CustomerDimensionsListExpandAndTop-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
+      - name: CustomerDimensionsListWithFilter-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
+      - name: DepartmentDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/departments/12\
+3"
+      - name: DepartmentDimensionsListExpandAndTop-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/100/departments/123"
+      - name: DepartmentDimensionsListWithFilter-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
+      - name: EnrollmentAccountDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAcco\
+unts/456"
+      - name: EnrollmentAccountDimensionsListExpandAndTop-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: EnrollmentAccountDimensionsListWithFilter-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: InvoiceSectionDimensionsList-Modern
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billing\
+Profiles/13579/invoiceSections/9876"
+      - name: InvoiceSectionDimensionsListExpandAndTop-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/9876"
+      - name: InvoiceSectionDimensionsListWithFilter-Modern
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSe\
+ctions/9876"
+      - name: ManagementGroupDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+      - name: ManagementGroupDimensionsListExpandAndTop-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"providers/Microsoft.Management/managementGroups/MyMgId"
+      - name: ManagementGroupDimensionsListWithFilter-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --filter "properties/category eq \
+\'resourceId\'" --top 5 --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+      - name: ResourceGroupDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/system.orlando"
+      - name: SubscriptionDimensionsList-Legacy
+        text: |-
+               az costmanagement dimension list --expand "properties/data" --top 5 --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['costmanagement dimension by-external-cloud-provider-type'] = """
+    type: command
+    short-summary: "Lists the dimensions by the external cloud provider type."
+    examples:
+      - name: ExternalBillingAccountDimensionList
+        text: |-
+               az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalBillingAccounts"
+      - name: ExternalSubscriptionDimensionList
+        text: |-
+               az costmanagement dimension by-external-cloud-provider-type --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalSubscriptions"
+"""
+
+helps['costmanagement query'] = """
+    type: group
+    short-summary: costmanagement query
+"""
+
+helps['costmanagement query usage'] = """
+    type: command
+    short-summary: "Query the usage data for scope defined."
+    parameters:
+      - name: --time-period
+        short-summary: "Has time period for pulling data for the query."
+        long-summary: |
+            Usage: --time-period from=XX to=XX
+
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+      - name: --dataset-configuration
+        short-summary: "Has configuration information for the data in the export. The configuration will be ignored if \
+aggregation and grouping are provided."
+        long-summary: |
+            Usage: --dataset-configuration columns=XX
+
+            columns: Array of column names to be included in the query. Any valid query column name is allowed. If not \
+provided, then query includes all columns.
+      - name: --dataset-grouping
+        short-summary: "Array of group by expression to use in the query. Query can have up to 2 group by clauses."
+        long-summary: |
+            Usage: --dataset-grouping type=XX name=XX
+
+            type: Required. Has type of the column to group.
+            name: Required. The name of the column to group.
+
+            Multiple actions can be specified by using more than one --dataset-grouping argument.
+    examples:
+      - name: BillingAccountQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/70664866"
+      - name: BillingAccountQuery-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingAccountQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/70664866"
+      - name: BillingAccountQueryGrouping-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789"
+      - name: BillingProfileQuery-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+      - name: BillingProfileQueryGrouping-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"
+      - name: CustomerQuery-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
+      - name: CustomerQueryGrouping-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"
+      - name: DepartmentQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
+      - name: DepartmentQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"
+      - name: EnrollmentAccountQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: EnrollmentAccountQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: InvoiceSectionQuery-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987\
+6"
+      - name: InvoiceSectionQueryGrouping-Modern
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/98\
+76"
+      - name: ManagementGroupQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+      - name: ManagementGroupQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "providers/Microsoft.Management/managementGroups/MyMgId"
+      - name: ResourceGroupQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
+      - name: ResourceGroupQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceType" type="Dimension" --timeframe \
+"TheLastMonth" --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"
+      - name: SubscriptionQuery-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\
+\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+      - name: SubscriptionQueryGrouping-Legacy
+        text: |-
+               az costmanagement query usage --type "Usage" --dataset-aggregation "{\\"totalCost\\":{\\"name\\":\\"PreT\
+axCost\\",\\"function\\":\\"Sum\\"}}" --dataset-grouping name="ResourceGroup" type="Dimension" --timeframe \
+"TheLastMonth" --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['costmanagement query usage-by-external-cloud-provider-type'] = """
+    type: command
+    short-summary: "Query the usage data for external cloud provider type defined."
+    parameters:
+      - name: --time-period
+        short-summary: "Has time period for pulling data for the query."
+        long-summary: |
+            Usage: --time-period from=XX to=XX
+
+            from: Required. The start date to pull data from.
+            to: Required. The end date to pull data to.
+      - name: --dataset-configuration
+        short-summary: "Has configuration information for the data in the export. The configuration will be ignored if \
+aggregation and grouping are provided."
+        long-summary: |
+            Usage: --dataset-configuration columns=XX
+
+            columns: Array of column names to be included in the query. Any valid query column name is allowed. If not \
+provided, then query includes all columns.
+      - name: --dataset-grouping
+        short-summary: "Array of group by expression to use in the query. Query can have up to 2 group by clauses."
+        long-summary: |
+            Usage: --dataset-grouping type=XX name=XX
+
+            type: Required. Has type of the column to group.
+            name: Required. The name of the column to group.
+
+            Multiple actions can be specified by using more than one --dataset-grouping argument.
+    examples:
+      - name: ExternalBillingAccountQueryList
+        text: |-
+               az costmanagement query usage-by-external-cloud-provider-type --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalBillingAccounts" --type "Usage" --dataset-filter \
+"{\\"and\\":[{\\"or\\":[{\\"dimension\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"Ea\
+st US\\",\\"West Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\
+\\"Prod\\"]}}]},{\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" \
+--timeframe "MonthToDate"
+      - name: ExternalSubscriptionsQuery
+        text: |-
+               az costmanagement query usage-by-external-cloud-provider-type --external-cloud-provider-id "100" \
+--external-cloud-provider-type "externalSubscriptions" --type "Usage" --dataset-filter "{\\"and\\":[{\\"or\\":[{\\"dime\
+nsion\\":{\\"name\\":\\"ResourceLocation\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West \
+Europe\\"]}},{\\"tag\\":{\\"name\\":\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}]},{\
+\\"dimension\\":{\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}]}" --timeframe \
+"MonthToDate"
+"""
+
+helps['costmanagement export'] = """
+    type: group
+    short-summary: costmanagement export
+"""
+
+helps['costmanagement export list'] = """
+    type: command
+    short-summary: "The operation to list all exports at the given scope."
+    examples:
+      - name: ExportsGetByBillingAccount
+        text: |-
+               az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/123456"
+      - name: ExportsGetByDepartment
+        text: |-
+               az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/12/departments/123"
+      - name: ExportsGetByEnrollmentAccount
+        text: |-
+               az costmanagement export list --scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccount\
+s/456"
+      - name: ExportsGetByManagementGroup
+        text: |-
+               az costmanagement export list --scope "providers/Microsoft.Management/managementGroups/TestMG"
+      - name: ExportsGetByResourceGroup
+        text: |-
+               az costmanagement export list --scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups\
+/MYDEVTESTRG"
+      - name: ExportsGetBySubscription
+        text: |-
+               az costmanagement export list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['costmanagement export show'] = """
+    type: command
+    short-summary: "The operation to get the export for the defined scope by export name."
+    examples:
+      - name: ExportGetByBillingAccount
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts/1\
+23456"
+      - name: ExportGetByDepartment
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts/1\
+2/departments/1234"
+      - name: ExportGetByEnrollmentAccount
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts/1\
+00/enrollmentAccounts/456"
+      - name: ExportGetByManagementGroup
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "providers/Microsoft.Management/managementGrou\
+ps/TestMG"
+      - name: ExportGetByResourceGroup
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-0000000\
+00000/resourceGroups/MYDEVTESTRG"
+      - name: ExportGetBySubscription
+        text: |-
+               az costmanagement export show --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-0000000\
+00000"
+"""
+
+helps['costmanagement export create'] = """
+    type: command
+    short-summary: "The operation to create or update a export. Update operation requires latest eTag to be set in the \
+request. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag."
+    parameters:
+      - name: --definition-time-period
+        short-summary: "Has time period for pulling data for the export."
+        long-summary: |
+            Usage: --definition-time-period from=XX to=XX
+
+            from: Required. The start date for export data.
+            to: Required. The end date for export data.
+      - name: --definition-data-set-configuration
+        short-summary: "The export dataset configuration."
+        long-summary: |
+            Usage: --definition-data-set-configuration columns=XX
+
+            columns: Array of column names to be included in the export. If not provided then the export will include \
+all available columns. The available columns can vary by customer channel (see examples).
+      - name: --delivery-info-destination
+        short-summary: "Has destination for the export being delivered."
+        long-summary: |
+            Usage: --delivery-info-destination resource-id=XX container=XX root-folder-path=XX
+
+            resource-id: Required. The resource id of the storage account where exports will be delivered.
+            container: Required. The name of the container where exports will be uploaded.
+            root-folder-path: The name of the directory where exports will be uploaded.
+      - name: --schedule-recurrence-period
+        short-summary: "Has start and end date of the recurrence. The start date must be in future. If present, the \
+end date must be greater than start date."
+        long-summary: |
+            Usage: --schedule-recurrence-period from=XX to=XX
+
+            from: Required. The start date of recurrence.
+            to: The end date of recurrence.
+    examples:
+      - name: ExportCreateOrUpdateByBillingAccount
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"providers/Microsoft.Billing/billingAccounts/123456"
+      - name: ExportCreateOrUpdateByDepartment
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"providers/Microsoft.Billing/billingAccounts/12/departments/1234"
+      - name: ExportCreateOrUpdateByEnrollmentAccount
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: ExportCreateOrUpdateByManagementGroup
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"providers/Microsoft.Management/managementGroups/TestMG"
+      - name: ExportCreateOrUpdateByResourceGroup
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"
+      - name: ExportCreateOrUpdateBySubscription
+        text: |-
+               az costmanagement export create --name "TestExport" --definition-type "ActualCost" \
+--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" columns="ResourceLocation" \
+columns="Quantity" --definition-timeframe "MonthToDate" --delivery-info-destination container="exports" \
+resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG/providers/Microsoft.Storage\
+/storageAccounts/ccmeastusdiag182" root-folder-path="ad-hoc" --schedule-recurrence "Weekly" \
+--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" --schedule-status "Active" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['costmanagement export update'] = """
+    type: command
+    short-summary: "The operation to create or update a export. Update operation requires latest eTag to be set in the \
+request. You may obtain the latest eTag by performing a get operation. Create operation does not require eTag."
+    parameters:
+      - name: --definition-time-period
+        short-summary: "Has time period for pulling data for the export."
+        long-summary: |
+            Usage: --definition-time-period from=XX to=XX
+
+            from: Required. The start date for export data.
+            to: Required. The end date for export data.
+      - name: --definition-data-set-configuration
+        short-summary: "The export dataset configuration."
+        long-summary: |
+            Usage: --definition-data-set-configuration columns=XX
+
+            columns: Array of column names to be included in the export. If not provided then the export will include \
+all available columns. The available columns can vary by customer channel (see examples).
+      - name: --delivery-info-destination
+        short-summary: "Has destination for the export being delivered."
+        long-summary: |
+            Usage: --delivery-info-destination resource-id=XX container=XX root-folder-path=XX
+
+            resource-id: Required. The resource id of the storage account where exports will be delivered.
+            container: Required. The name of the container where exports will be uploaded.
+            root-folder-path: The name of the directory where exports will be uploaded.
+      - name: --schedule-recurrence-period
+        short-summary: "Has start and end date of the recurrence. The start date must be in future. If present, the \
+end date must be greater than start date."
+        long-summary: |
+            Usage: --schedule-recurrence-period from=XX to=XX
+
+            from: Required. The start date of recurrence.
+            to: The end date of recurrence.
+"""
+
+helps['costmanagement export delete'] = """
+    type: command
+    short-summary: "The operation to delete a export."
+    examples:
+      - name: ExportDeleteByBillingAccount
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts\
+/123456"
+      - name: ExportDeleteByDepartment
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts\
+/12/departments/1234"
+      - name: ExportDeleteByEnrollmentAccount
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "providers/Microsoft.Billing/billingAccounts\
+/100/enrollmentAccounts/456"
+      - name: ExportDeleteByManagementGroup
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "providers/Microsoft.Management/managementGr\
+oups/TestMG"
+      - name: ExportDeleteByResourceGroup
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-00000\
+0000000/resourceGroups/MYDEVTESTRG"
+      - name: ExportDeleteBySubscription
+        text: |-
+               az costmanagement export delete --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-00000\
+0000000"
+"""
+
+helps['costmanagement export execute'] = """
+    type: command
+    short-summary: "The operation to execute an export."
+    examples:
+      - name: ExportRunByBillingAccount
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "providers/Microsoft.Billing/billingAccount\
+s/123456"
+      - name: ExportRunByDepartment
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "providers/Microsoft.Billing/billingAccount\
+s/12/departments/1234"
+      - name: ExportRunByEnrollmentAccount
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "providers/Microsoft.Billing/billingAccount\
+s/100/enrollmentAccounts/456"
+      - name: ExportRunByManagementGroup
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "providers/Microsoft.Management/managementG\
+roups/TestMG"
+      - name: ExportRunByResourceGroup
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-0000\
+00000000/resourceGroups/MYDEVTESTRG"
+      - name: ExportRunBySubscription
+        text: |-
+               az costmanagement export execute --name "TestExport" --scope "subscriptions/00000000-0000-0000-0000-0000\
+00000000"
+"""
+
+helps['costmanagement export get-execution-history'] = """
+    type: command
+    short-summary: "The operation to get the execution history of an export for the defined scope and export name."
+    examples:
+      - name: ExportRunHistoryGetByBillingAccount
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"providers/Microsoft.Billing/billingAccounts/123456"
+      - name: ExportRunHistoryGetByDepartment
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"providers/Microsoft.Billing/billingAccounts/12/departments/1234"
+      - name: ExportRunHistoryGetByEnrollmentAccount
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"
+      - name: ExportRunHistoryGetByManagementGroup
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"providers/Microsoft.Management/managementGroups/TestMG"
+      - name: ExportRunHistoryGetByResourceGroup
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"
+      - name: ExportRunHistoryGetBySubscription
+        text: |-
+               az costmanagement export get-execution-history --name "TestExport" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000"
+"""

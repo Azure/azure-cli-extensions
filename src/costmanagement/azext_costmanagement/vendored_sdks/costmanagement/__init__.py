@@ -7,13 +7,10 @@
 # --------------------------------------------------------------------------
 
 from ._cost_management_client import CostManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['CostManagementClient']
 
 try:
-    from .patch import patch_sdk
+    from ._patch import patch_sdk  # type: ignore
     patch_sdk()
 except ImportError:
     pass

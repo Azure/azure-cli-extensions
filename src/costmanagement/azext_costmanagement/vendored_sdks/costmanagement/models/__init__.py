@@ -9,20 +9,22 @@
 try:
     from ._models_py3 import Alert
     from ._models_py3 import AlertPropertiesDefinition
-    from ._models_py3 import AlertPropertiesDetails
     from ._models_py3 import AlertsResult
     from ._models_py3 import CommonExportProperties
     from ._models_py3 import Dimension
     from ._models_py3 import DimensionsListResult
+    from ._models_py3 import DismissAlertPayload
     from ._models_py3 import ErrorDetails
     from ._models_py3 import ErrorResponse
     from ._models_py3 import Export
+    from ._models_py3 import ExportDatasetConfiguration
     from ._models_py3 import ExportDeliveryDestination
     from ._models_py3 import ExportExecution
     from ._models_py3 import ExportExecutionListResult
     from ._models_py3 import ExportListResult
     from ._models_py3 import ExportProperties
     from ._models_py3 import ExportRecurrencePeriod
+    from ._models_py3 import ExportTimePeriod
     from ._models_py3 import ForecastDefinition
     from ._models_py3 import KpiProperties
     from ._models_py3 import Operation
@@ -53,20 +55,22 @@ try:
 except (SyntaxError, ImportError):
     from ._models import Alert  # type: ignore
     from ._models import AlertPropertiesDefinition  # type: ignore
-    from ._models import AlertPropertiesDetails  # type: ignore
     from ._models import AlertsResult  # type: ignore
     from ._models import CommonExportProperties  # type: ignore
     from ._models import Dimension  # type: ignore
     from ._models import DimensionsListResult  # type: ignore
+    from ._models import DismissAlertPayload  # type: ignore
     from ._models import ErrorDetails  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import Export  # type: ignore
+    from ._models import ExportDatasetConfiguration  # type: ignore
     from ._models import ExportDeliveryDestination  # type: ignore
     from ._models import ExportExecution  # type: ignore
     from ._models import ExportExecutionListResult  # type: ignore
     from ._models import ExportListResult  # type: ignore
     from ._models import ExportProperties  # type: ignore
     from ._models import ExportRecurrencePeriod  # type: ignore
+    from ._models import ExportTimePeriod  # type: ignore
     from ._models import ForecastDefinition  # type: ignore
     from ._models import KpiProperties  # type: ignore
     from ._models import Operation  # type: ignore
@@ -97,6 +101,13 @@ except (SyntaxError, ImportError):
 
 from ._cost_management_client_enums import (
     AccumulatedType,
+    AlertCategory,
+    AlertCriteria,
+    AlertOperator,
+    AlertSource,
+    AlertStatus,
+    AlertTimeGrainType,
+    AlertType,
     ChartType,
     ExecutionStatus,
     ExecutionType,
@@ -104,6 +115,9 @@ from ._cost_management_client_enums import (
     ExternalCloudProviderType,
     ForecastTimeframeType,
     ForecastType,
+    FormatType,
+    FunctionType,
+    GranularityType,
     KpiType,
     MetricType,
     OperatorType,
@@ -114,6 +128,7 @@ from ._cost_management_client_enums import (
     ReportConfigSortingDirection,
     ReportGranularityType,
     ReportTimeframeType,
+    ReportType,
     StatusType,
     TimeframeType,
 )
@@ -121,20 +136,22 @@ from ._cost_management_client_enums import (
 __all__ = [
     'Alert',
     'AlertPropertiesDefinition',
-    'AlertPropertiesDetails',
     'AlertsResult',
     'CommonExportProperties',
     'Dimension',
     'DimensionsListResult',
+    'DismissAlertPayload',
     'ErrorDetails',
     'ErrorResponse',
     'Export',
+    'ExportDatasetConfiguration',
     'ExportDeliveryDestination',
     'ExportExecution',
     'ExportExecutionListResult',
     'ExportListResult',
     'ExportProperties',
     'ExportRecurrencePeriod',
+    'ExportTimePeriod',
     'ForecastDefinition',
     'KpiProperties',
     'Operation',
@@ -163,6 +180,13 @@ __all__ = [
     'View',
     'ViewListResult',
     'AccumulatedType',
+    'AlertCategory',
+    'AlertCriteria',
+    'AlertOperator',
+    'AlertSource',
+    'AlertStatus',
+    'AlertTimeGrainType',
+    'AlertType',
     'ChartType',
     'ExecutionStatus',
     'ExecutionType',
@@ -170,6 +194,9 @@ __all__ = [
     'ExternalCloudProviderType',
     'ForecastTimeframeType',
     'ForecastType',
+    'FormatType',
+    'FunctionType',
+    'GranularityType',
     'KpiType',
     'MetricType',
     'OperatorType',
@@ -180,6 +207,7 @@ __all__ = [
     'ReportConfigSortingDirection',
     'ReportGranularityType',
     'ReportTimeframeType',
+    'ReportType',
     'StatusType',
     'TimeframeType',
 ]

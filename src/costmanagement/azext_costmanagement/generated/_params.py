@@ -10,458 +10,587 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     get_three_state_flag,
     get_enum_type
 )
+from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_costmanagement.action import (
     AddKpis,
     AddPivots,
     AddQueryTimePeriod,
+    AddDefinition,
     AddTimePeriod,
     AddDatasetConfiguration,
     AddDatasetGrouping,
+    AddDefinitionTimePeriod,
+    AddDefinitionDataSetConfiguration,
     AddDeliveryInfoDestination,
     AddScheduleRecurrencePeriod
 )
 
 
 def load_arguments(self, _):
-    pass
 
-    # with self.argument_context('costmanagement view list') as c:
-    #     c.argument('scope', help='The scope associated with view operations. This includes \'subscriptions/{subscriptio'
-    #                'nId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'
-    #                '\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}\' for '
-    #                'Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments'
-    #                '/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccou'
-    #                'ntId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'providers/Microsoft'
-    #                '.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for BillingProfile'
-    #                ' scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/invoiceSections/{invoiceSe'
-    #                'ctionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/managementGroups/{managementG'
-    #                'roupId}\' for Management Group scope, \'providers/Microsoft.CostManagement/externalBillingAccounts/'
-    #                '{externalBillingAccountName}\' for External Billing Account scope and \'providers/Microsoft.CostMan'
-    #                'agement/externalSubscriptions/{externalSubscriptionName}\' for External Subscription scope.')
+    with self.argument_context('costmanagement view list') as c:
+        c.argument('scope', type=str, help='The scope associated with view operations. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'providers/Microsoft.CostManagem'
+                   'ent/externalBillingAccounts/{externalBillingAccountName}\' for External Billing Account scope and '
+                   '\'providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'External Subscription scope.')
 
-    # with self.argument_context('costmanagement view show') as c:
-    #     c.argument('scope', help='The scope associated with view operations. This includes \'subscriptions/{subscriptio'
-    #                'nId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'
-    #                '\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}\' for '
-    #                'Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments'
-    #                '/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccou'
-    #                'ntId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'providers/Microsoft'
-    #                '.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for BillingProfile'
-    #                ' scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/invoiceSections/{invoiceSe'
-    #                'ctionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/managementGroups/{managementG'
-    #                'roupId}\' for Management Group scope, \'providers/Microsoft.CostManagement/externalBillingAccounts/'
-    #                '{externalBillingAccountName}\' for External Billing Account scope and \'providers/Microsoft.CostMan'
-    #                'agement/externalSubscriptions/{externalSubscriptionName}\' for External Subscription scope.')
-    #     c.argument('view_name', help='View name')
+    with self.argument_context('costmanagement view show') as c:
+        c.argument('view_name', options_list=['--name', '-n', '--view-name'], type=str, help='View name')
 
-    # with self.argument_context('costmanagement view create') as c:
-    #     c.argument('scope', help='The scope associated with view operations. This includes \'subscriptions/{subscriptio'
-    #                'nId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'
-    #                '\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}\' for '
-    #                'Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments'
-    #                '/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccou'
-    #                'ntId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'providers/Microsoft'
-    #                '.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for BillingProfile'
-    #                ' scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/invoiceSections/{invoiceSe'
-    #                'ctionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/managementGroups/{managementG'
-    #                'roupId}\' for Management Group scope, \'providers/Microsoft.CostManagement/externalBillingAccounts/'
-    #                '{externalBillingAccountName}\' for External Billing Account scope and \'providers/Microsoft.CostMan'
-    #                'agement/externalSubscriptions/{externalSubscriptionName}\' for External Subscription scope.')
-    #     c.argument('view_name', help='View name')
-    #     c.argument('e_tag', help='eTag of the resource. To handle concurrent update scenario, this field will be used t'
-    #                'o determine whether the user is updating the latest version or not.')
-    #     c.argument('display_name', help='User input name of the view. Required.')
-    #     c.argument('properties_scope', help='Cost Management scope to save the view on. This includes \'subscriptions/{'
-    #                'subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourceGroups/{resource'
-    #                'GroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccount'
-    #                'Id}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/d'
-    #                'epartments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
-    #                'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'providers'
-    #                '/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for Bill'
-    #                'ingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/invoiceSections/'
-    #                '{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/managementGroups/{m'
-    #                'anagementGroupId}\' for Management Group scope, \'/providers/Microsoft.CostManagement/externalBilli'
-    #                'ngAccounts/{externalBillingAccountName}\' for ExternalBillingAccount scope, and \'/providers/Micros'
-    #                'oft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for ExternalSubscription scop'
-    #                'e.')
-    #     c.argument('chart', arg_type=get_enum_type(['Area', 'Line', 'StackedColumn', 'GroupedColumn', 'Table']), help=
-    #                'Chart type of the main view in Cost Analysis. Required.')
-    #     c.argument('accumulated', arg_type=get_enum_type(['true', 'false']), help='Show costs accumulated over time.')
-    #     c.argument('metric', arg_type=get_enum_type(['ActualCost', 'AmortizedCost', 'AHUB']), help='Metric to use when '
-    #                'displaying costs.')
-    #     c.argument('kpis', action=AddKpis, nargs='+', help='List of KPIs to show in Cost Analysis UI. Expect value: KEY'
-    #                '1=VALUE1 KEY2=VALUE2 ... , available KEYs are: type, id, enabled.')
-    #     c.argument('pivots', action=AddPivots, nargs='+', help='Configuration of 3 sub-views in the Cost Analysis UI. E'
-    #                'xpect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: type, name.')
-    #     c.argument('query_timeframe', arg_type=get_enum_type(['WeekToDate', 'MonthToDate', 'YearToDate', 'Custom']),
-    #                help='The time frame for pulling data for the report. If custom, then a specific time period must be'
-    #                ' provided.')
-    #     c.argument('query_time_period', action=AddQueryTimePeriod, nargs='+', help='Has time period for pulling data fo'
-    #                'r the report. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('query_dataset', arg_type=CLIArgumentType(options_list=['--query-dataset'], help='Has definition for'
-    #                ' data in this report config. Expected value: json-string/@json-file.'))
+    with self.argument_context('costmanagement view create') as c:
+        c.argument('scope', type=str, help='The scope associated with view operations. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'providers/Microsoft.CostManagem'
+                   'ent/externalBillingAccounts/{externalBillingAccountName}\' for External Billing Account scope and '
+                   '\'providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'External Subscription scope.')
+        c.argument('view_name', options_list=['--name', '-n', '--view-name'], type=str, help='View name')
+        c.argument('e_tag', type=str, help='eTag of the resource. To handle concurrent update scenario, this field '
+                   'will be used to determine whether the user is updating the latest version or not.')
+        c.argument('display_name', type=str, help='User input name of the view. Required.')
+        c.argument('properties_scope', type=str, help='Cost Management scope to save the view on. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'/providers/Microsoft.CostManage'
+                   'ment/externalBillingAccounts/{externalBillingAccountName}\' for ExternalBillingAccount scope, and '
+                   '\'/providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'ExternalSubscription scope.')
+        c.argument('chart', arg_type=get_enum_type(['Area', 'Line', 'StackedColumn', 'GroupedColumn', 'Table']), help=''
+                   'Chart type of the main view in Cost Analysis. Required.')
+        c.argument('accumulated', arg_type=get_enum_type(['true', 'false']), help='Show costs accumulated over time.')
+        c.argument('metric', arg_type=get_enum_type(['ActualCost', 'AmortizedCost', 'AHUB']), help='Metric to use when '
+                   'displaying costs.')
+        c.argument('kpis', action=AddKpis, nargs='*', help='List of KPIs to show in Cost Analysis UI.')
+        c.argument('pivots', action=AddPivots, nargs='*',
+                   help='Configuration of 3 sub-views in the Cost Analysis UI.')
+        c.argument('query_timeframe', arg_type=get_enum_type(['WeekToDate', 'MonthToDate', 'YearToDate', 'Custom']),
+                   help='The time frame for pulling data for the report. If custom, then a specific time period must '
+                   'be provided.')
+        c.argument('query_time_period', action=AddQueryTimePeriod, nargs='*', help='Has time period for pulling data '
+                   'for the report.')
+        c.argument('query_dataset', type=validate_file_or_dict, help='Has definition for data in this report config. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement view delete') as c:
-    #     c.argument('scope', help='The scope associated with view operations. This includes \'subscriptions/{subscriptio'
-    #                'nId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'
-    #                '\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}\' for '
-    #                'Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments'
-    #                '/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccou'
-    #                'ntId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'providers/Microsoft'
-    #                '.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for BillingProfile'
-    #                ' scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/invoiceSections/{invoiceSe'
-    #                'ctionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/managementGroups/{managementG'
-    #                'roupId}\' for Management Group scope, \'providers/Microsoft.CostManagement/externalBillingAccounts/'
-    #                '{externalBillingAccountName}\' for External Billing Account scope and \'providers/Microsoft.CostMan'
-    #                'agement/externalSubscriptions/{externalSubscriptionName}\' for External Subscription scope.')
-    #     c.argument('view_name', help='View name')
+    with self.argument_context('costmanagement view update') as c:
+        c.argument('view_name', options_list=['--name', '-n', '--view-name'], type=str, help='View name')
+        c.argument('e_tag', type=str, help='eTag of the resource. To handle concurrent update scenario, this field '
+                   'will be used to determine whether the user is updating the latest version or not.')
+        c.argument('display_name', type=str, help='User input name of the view. Required.')
+        c.argument('scope', type=str, help='Cost Management scope to save the view on. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'/providers/Microsoft.CostManage'
+                   'ment/externalBillingAccounts/{externalBillingAccountName}\' for ExternalBillingAccount scope, and '
+                   '\'/providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'ExternalSubscription scope.')
+        c.argument('chart', arg_type=get_enum_type(['Area', 'Line', 'StackedColumn', 'GroupedColumn', 'Table']), help=''
+                   'Chart type of the main view in Cost Analysis. Required.')
+        c.argument('accumulated', arg_type=get_enum_type(['true', 'false']), help='Show costs accumulated over time.')
+        c.argument('metric', arg_type=get_enum_type(['ActualCost', 'AmortizedCost', 'AHUB']), help='Metric to use when '
+                   'displaying costs.')
+        c.argument('kpis', action=AddKpis, nargs='*', help='List of KPIs to show in Cost Analysis UI.')
+        c.argument('pivots', action=AddPivots, nargs='*',
+                   help='Configuration of 3 sub-views in the Cost Analysis UI.')
+        c.argument('query_timeframe', arg_type=get_enum_type(['WeekToDate', 'MonthToDate', 'YearToDate', 'Custom']),
+                   help='The time frame for pulling data for the report. If custom, then a specific time period must '
+                   'be provided.')
+        c.argument('query_time_period', action=AddQueryTimePeriod, nargs='*', help='Has time period for pulling data '
+                   'for the report.')
+        c.argument('query_dataset', type=validate_file_or_dict, help='Has definition for data in this report config. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement alert list') as c:
-    #     c.argument('scope', help='The scope associated with alerts operations. This includes \'/subscriptions/{subscrip'
-    #                'tionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupN'
-    #                'ame}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}\''
-    #                ' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
-    #                'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
-    #                'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
-    #                's/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provider'
-    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for bil'
-    #                'lingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfile'
-    #                's/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provider'
-    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
-    #                'rs.')
+    with self.argument_context('costmanagement view delete') as c:
+        c.argument('scope', type=str, help='The scope associated with view operations. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'providers/Microsoft.CostManagem'
+                   'ent/externalBillingAccounts/{externalBillingAccountName}\' for External Billing Account scope and '
+                   '\'providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'External Subscription scope.')
+        c.argument('view_name', options_list=['--name', '-n', '--view-name'], type=str, help='View name')
 
-    # with self.argument_context('costmanagement alert list-external') as c:
-    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-    #                'ed account.')
-    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
+    with self.argument_context('costmanagement view get-by-scope') as c:
+        c.argument('scope', type=str, help='The scope associated with view operations. This includes '
+                   '\'subscriptions/{subscriptionId}\' for subscription scope, \'subscriptions/{subscriptionId}/resourc'
+                   'eGroups/{resourceGroupName}\' for resourceGroup scope, \'providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}\' for Billing Account scope, \'providers/Microsoft.Billing/billingAccounts/{bi'
+                   'llingAccountId}/departments/{departmentId}\' for Department scope, \'providers/Microsoft.Billing/bi'
+                   'llingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount '
+                   'scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingPro'
+                   'fileId}\' for BillingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId'
+                   '}/invoiceSections/{invoiceSectionId}\' for InvoiceSection scope, \'providers/Microsoft.Management/m'
+                   'anagementGroups/{managementGroupId}\' for Management Group scope, \'providers/Microsoft.CostManagem'
+                   'ent/externalBillingAccounts/{externalBillingAccountName}\' for External Billing Account scope and '
+                   '\'providers/Microsoft.CostManagement/externalSubscriptions/{externalSubscriptionName}\' for '
+                   'External Subscription scope.')
+        c.argument('view_name', options_list=['--name', '-n', '--view-name'], type=str, help='View name')
 
-    # with self.argument_context('costmanagement forecast external-cloud-provider-usage') as c:
-    #     c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
-    #                'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
-    #                ' It does not currently support \'ne\', \'or\', or \'not\'.')
-    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-    #                'ed account.')
-    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-    #                help='The type of the forecast.')
-    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
-    #                'ustom, then a specific time period must be provided.')
-    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
-    #                'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
-    #                'll be included')
-    #     c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
-    #                'artialCost will be included')
-    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-    #                'rovided. Expect value: columns=xx.')
-    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-    #                'ring/@json-file.'))
-    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-    #                'available KEYs are: type, name.')
-    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
+    with self.argument_context('costmanagement alert list') as c:
+        c.argument('scope', type=str, help='The scope associated with alerts operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
 
-    # with self.argument_context('costmanagement forecast usage') as c:
-    #     c.argument('filter', help='May be used to filter forecasts by properties/usageDate (Utc time), properties/charg'
-    #                'eType or properties/grain. The filter supports \'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'.'
-    #                ' It does not currently support \'ne\', \'or\', or \'not\'.')
-    #     c.argument('scope', help='The scope associated with forecast operations. This includes \'/subscriptions/{subscr'
-    #                'iptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGrou'
-    #                'pName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}'
-    #                '\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/'
-    #                'departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{'
-    #                'billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provid'
-    #                'ers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, \'/provid'
-    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
-    #                'illingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfi'
-    #                'les/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'/provid'
-    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for part'
-    #                'ners.')
-    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-    #                help='The type of the forecast.')
-    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the forecast. If c'
-    #                'ustom, then a specific time period must be provided.')
-    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the forec'
-    #                'ast. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost wi'
-    #                'll be included')
-    #     c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if FreshP'
-    #                'artialCost will be included')
-    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-    #                'rovided. Expect value: columns=xx.')
-    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-    #                'ring/@json-file.'))
-    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-    #                'available KEYs are: type, name.')
-    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
+    with self.argument_context('costmanagement alert show') as c:
+        c.argument('scope', type=str, help='The scope associated with alerts operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('alert_id', type=str, help='Alert ID')
 
-    # with self.argument_context('costmanagement dimension list') as c:
-    #     c.argument('scope', help='The scope associated with dimension operations. This includes \'/subscriptions/{subsc'
-    #                'riptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGro'
-    #                'upName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId'
-    #                '}\' for Billing Account scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/de'
-    #                'partments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAccounts/{bi'
-    #                'llingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, \'/provider'
-    #                's/Microsoft.Management/managementGroups/{managementGroupId}\' for Management Group scope, \'/provid'
-    #                'ers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}\' for b'
-    #                'illingProfile scope, \'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfil'
-    #                'es/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'provider'
-    #                's/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific for partne'
-    #                'rs.')
-    #     c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
-    #                'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
-    #     c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
-    #                'ata is not included when listing dimensions.')
-    #     c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
-    #                'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
-    #                'oken parameter that specifies a starting point to use for subsequent calls.')
-    #     c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
+    with self.argument_context('costmanagement alert dismiss') as c:
+        c.argument('scope', type=str, help='The scope associated with alerts operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('alert_id', type=str, help='Alert ID')
+        c.argument('definition', action=AddDefinition, nargs='*', help='defines the type of alert')
+        c.argument('description', type=str, help='Alert description')
+        c.argument('source', arg_type=get_enum_type(['Preset', 'User']), help='Source of alert')
+        c.argument('cost_entity_id', type=str, help='related budget')
+        c.argument('status', arg_type=get_enum_type(['None', 'Active', 'Overridden', 'Resolved', 'Dismissed']), help=''
+                   'alert status')
+        c.argument('creation_time', type=str, help='dateTime in which alert was created')
+        c.argument('close_time', type=str, help='dateTime in which alert was closed')
+        c.argument('modification_time', type=str, help='dateTime in which alert was last modified')
+        c.argument('status_modification_user_name', type=str, help='')
+        c.argument('status_modification_time', type=str, help='dateTime in which the alert status was last modified')
+        c.argument('details_time_grain_type', arg_type=get_enum_type(['None', 'Monthly', 'Quarterly', 'Annually', ''
+                                                                      'BillingMonth', 'BillingQuarter',
+                                                                      'BillingAnnual']), help='Type of timegrain '
+                   'cadence')
+        c.argument('details_period_start_date', type=str, help='datetime of periodStartDate')
+        c.argument('details_triggered_by', type=str, help='notificationId that triggered this alert')
+        c.argument('details_resource_group_filter', type=validate_file_or_dict, help='array of resourceGroups to '
+                   'filter by Expected value: json-string/@json-file.')
+        c.argument('details_resource_filter', type=validate_file_or_dict, help='array of resources to filter by '
+                   'Expected value: json-string/@json-file.')
+        c.argument('details_meter_filter', type=validate_file_or_dict, help='array of meters to filter by Expected '
+                   'value: json-string/@json-file.')
+        c.argument('details_tag_filter', type=validate_file_or_dict, help='tags to filter by Expected value: '
+                   'json-string/@json-file.')
+        c.argument('details_threshold', type=float, help='notification threshold percentage as a decimal which '
+                   'activated this alert')
+        c.argument('details_operator', arg_type=get_enum_type(['None', 'EqualTo', 'GreaterThan',
+                                                               'GreaterThanOrEqualTo', 'LessThan',
+                                                              'LessThanOrEqualTo']), help='operator used to compare '
+                   'currentSpend with amount')
+        c.argument('details_amount', type=float, help='budget threshold amount')
+        c.argument('details_unit', type=str, help='unit of currency being used')
+        c.argument('details_current_spend', type=float, help='current spend')
+        c.argument('details_contact_emails', nargs='*', help='list of emails to contact')
+        c.argument('details_contact_groups', nargs='*', help='list of action groups to broadcast to')
+        c.argument('details_contact_roles', nargs='*', help='list of contact roles')
+        c.argument('details_overriding_alert', type=str, help='overriding alert')
 
-    # with self.argument_context('costmanagement dimension by-external-cloud-provider-type') as c:
-    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-    #                'ed account.')
-    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-    #     c.argument('filter', help='May be used to filter dimensions by properties/category, properties/usageStart, prop'
-    #                'erties/usageEnd. Supported operators are \'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
-    #     c.argument('expand', help='May be used to expand the properties/data within a dimension category. By default, d'
-    #                'ata is not included when listing dimensions.')
-    #     c.argument('skiptoken', help='Skiptoken is only used if a previous operation returned a partial result. If a pr'
-    #                'evious response contains a nextLink element, the value of the nextLink element will include a skipt'
-    #                'oken parameter that specifies a starting point to use for subsequent calls.')
-    #     c.argument('top', help='May be used to limit the number of results to the most recent N dimension data.')
+    with self.argument_context('costmanagement alert list-external') as c:
+        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', ''
+                                                                           'externalBillingAccounts']), help='The '
+                   'external cloud provider type associated with dimension/query operations. This includes '
+                   '\'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidated '
+                   'account.')
+        c.argument('external_cloud_provider_id', type=str, help='This can be \'{externalSubscriptionId}\' for linked '
+                   'account or \'{externalBillingAccountId}\' for consolidated account used with dimension/query '
+                   'operations.')
 
-    # with self.argument_context('costmanagement query usage') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-    #                help='The type of the query.')
-    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the query. If cust'
-    #                'om, then a specific time period must be provided.')
-    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the query'
-    #                '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-    #                'rovided. Expect value: columns=xx.')
-    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-    #                'ring/@json-file.'))
-    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-    #                'available KEYs are: type, name.')
-    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
+    with self.argument_context('costmanagement forecast external-cloud-provider-usage') as c:
+        c.argument('filter_', options_list=['--filter'], type=str, help='May be used to filter forecasts by '
+                   'properties/usageDate (Utc time), properties/chargeType or properties/grain. The filter supports '
+                   '\'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'. It does not currently support \'ne\', \'or\', '
+                   'or \'not\'.')
+        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', ''
+                                                                           'externalBillingAccounts']), help='The '
+                   'external cloud provider type associated with dimension/query operations. This includes '
+                   '\'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidated '
+                   'account.')
+        c.argument('external_cloud_provider_id', type=str, help='This can be \'{externalSubscriptionId}\' for linked '
+                   'account or \'{externalBillingAccountId}\' for consolidated account used with dimension/query '
+                   'operations.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+                   help='The type of the forecast.')
+        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', ''
+                                                        'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The '
+                   'time frame for pulling data for the forecast. If custom, then a specific time period must be '
+                   'provided.')
+        c.argument('time_period', action=AddTimePeriod, nargs='*', help='Has time period for pulling data for the '
+                   'forecast.')
+        c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost '
+                   'will be included')
+        c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if '
+                   'FreshPartialCost will be included')
+        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='*', help='Has configuration '
+                   'information for the data in the export. The configuration will be ignored if aggregation and '
+                   'grouping are provided.')
+        c.argument('dataset_aggregation', type=validate_file_or_dict, help='Dictionary of aggregation expression to '
+                   'use in the forecast. The key of each item in the dictionary is the alias for the aggregated '
+                   'column. forecast can have up to 2 aggregation clauses. Expected value: json-string/@json-file.')
+        c.argument('dataset_filter', type=validate_file_or_dict, help='Has filter expression to use in the forecast. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement query usage-by-external-cloud-provider-type') as c:
-    #     c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', 'externalBillingAcc'
-    #                'ounts']), help='The external cloud provider type associated with dimension/query operations. This i'
-    #                'ncludes \'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidat'
-    #                'ed account.')
-    #     c.argument('external_cloud_provider_id', help='This can be \'{externalSubscriptionId}\' for linked account or '
-    #                '\'{externalBillingAccountId}\' for consolidated account used with dimension/query operations.')
-    #     c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
-    #                help='The type of the query.')
-    #     c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', 'TheLastBi'
-    #                'llingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the query. If cust'
-    #                'om, then a specific time period must be provided.')
-    #     c.argument('time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data for the query'
-    #                '. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configuration informat'
-    #                'ion for the data in the export. The configuration will be ignored if aggregation and grouping are p'
-    #                'rovided. Expect value: columns=xx.')
-    #     c.argument('dataset_aggregation', arg_type=CLIArgumentType(options_list=['--dataset-aggregation'], help='Dictio'
-    #                'nary of aggregation expression to use in the query. The key of each item in the dictionary is the a'
-    #                'lias for the aggregated column. Query can have up to 2 aggregation clauses. Expected value: json-st'
-    #                'ring/@json-file.'))
-    #     c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by expression to use '
-    #                'in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , '
-    #                'available KEYs are: type, name.')
-    #     c.argument('dataset_filter', arg_type=CLIArgumentType(options_list=['--dataset-filter'], help='Has filter expre'
-    #                'ssion to use in the query. Expected value: json-string/@json-file.'))
+    with self.argument_context('costmanagement forecast usage') as c:
+        c.argument('filter_', options_list=['--filter'], type=str, help='May be used to filter forecasts by '
+                   'properties/usageDate (Utc time), properties/chargeType or properties/grain. The filter supports '
+                   '\'eq\', \'lt\', \'gt\', \'le\', \'ge\', and \'and\'. It does not currently support \'ne\', \'or\', '
+                   'or \'not\'.')
+        c.argument('scope', type=str, help='The scope associated with forecast operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+                   help='The type of the forecast.')
+        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', ''
+                                                        'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The '
+                   'time frame for pulling data for the forecast. If custom, then a specific time period must be '
+                   'provided.')
+        c.argument('time_period', action=AddTimePeriod, nargs='*', help='Has time period for pulling data for the '
+                   'forecast.')
+        c.argument('include_actual_cost', arg_type=get_three_state_flag(), help='a boolean determining if actualCost '
+                   'will be included')
+        c.argument('include_fresh_partial_cost', arg_type=get_three_state_flag(), help='a boolean determining if '
+                   'FreshPartialCost will be included')
+        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='*', help='Has configuration '
+                   'information for the data in the export. The configuration will be ignored if aggregation and '
+                   'grouping are provided.')
+        c.argument('dataset_aggregation', type=validate_file_or_dict, help='Dictionary of aggregation expression to '
+                   'use in the forecast. The key of each item in the dictionary is the alias for the aggregated '
+                   'column. forecast can have up to 2 aggregation clauses. Expected value: json-string/@json-file.')
+        c.argument('dataset_filter', type=validate_file_or_dict, help='Has filter expression to use in the forecast. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement export list') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
+    with self.argument_context('costmanagement dimension list') as c:
+        c.argument('scope', type=str, help='The scope associated with dimension operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope, \'/providers/Microsoft.Billing/billingAccount'
+                   's/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId}\' for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
+                   'ountId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}'
+                   '/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and \'providers/Microsoft.Billing/b'
+                   'illingAccounts/{billingAccountId}/customers/{customerId}\' specific for partners.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='May be used to filter dimensions by '
+                   'properties/category, properties/usageStart, properties/usageEnd. Supported operators are '
+                   '\'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
+        c.argument('expand', type=str, help='May be used to expand the properties/data within a dimension category. By '
+                   'default, data is not included when listing dimensions.')
+        c.argument('skiptoken', type=str, help='Skiptoken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skiptoken parameter that specifies a starting point to use for subsequent calls.')
+        c.argument('top', type=int, help='May be used to limit the number of results to the most recent N dimension '
+                   'data.')
 
-    # with self.argument_context('costmanagement export show') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('export_name', help='Export Name.')
+    with self.argument_context('costmanagement dimension by-external-cloud-provider-type') as c:
+        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', ''
+                                                                           'externalBillingAccounts']), help='The '
+                   'external cloud provider type associated with dimension/query operations. This includes '
+                   '\'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidated '
+                   'account.')
+        c.argument('external_cloud_provider_id', type=str, help='This can be \'{externalSubscriptionId}\' for linked '
+                   'account or \'{externalBillingAccountId}\' for consolidated account used with dimension/query '
+                   'operations.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='May be used to filter dimensions by '
+                   'properties/category, properties/usageStart, properties/usageEnd. Supported operators are '
+                   '\'eq\',\'lt\', \'gt\', \'le\', \'ge\'.')
+        c.argument('expand', type=str, help='May be used to expand the properties/data within a dimension category. By '
+                   'default, data is not included when listing dimensions.')
+        c.argument('skiptoken', type=str, help='Skiptoken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skiptoken parameter that specifies a starting point to use for subsequent calls.')
+        c.argument('top', type=int, help='May be used to limit the number of results to the most recent N dimension '
+                   'data.')
 
-    # with self.argument_context('costmanagement export create') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('export_name', help='Export Name.')
-    #     c.argument('e_tag', help='eTag of the resource. To handle concurrent update scenario, this field will be used t'
-    #                'o determine whether the user is updating the latest version or not.')
-    #     c.argument('definition_type', arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']), help='The type '
-    #                'of the query.')
-    #     c.argument('definition_timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth',
-    #                 'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the quer'
-    #                'y. If custom, then a specific time period must be provided.')
-    #     c.argument('definition_time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data fo'
-    #                'r the query. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('definition_dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configurati'
-    #                'on information for the data in the export. The configuration will be ignored if aggregation and gro'
-    #                'uping are provided. Expect value: columns=xx.')
-    #     c.argument('definition_dataset_aggregation', arg_type=CLIArgumentType(options_list=['--definition-dataset-aggre'
-    #                'gation'], help='Dictionary of aggregation expression to use in the query. The key of each item in t'
-    #                'he dictionary is the alias for the aggregated column. Query can have up to 2 aggregation clauses. E'
-    #                'xpected value: json-string/@json-file.'))
-    #     c.argument('definition_dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by express'
-    #                'ion to use in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VA'
-    #                'LUE2 ... , available KEYs are: type, name.')
-    #     c.argument('definition_dataset_filter', arg_type=CLIArgumentType(options_list=['--definition-dataset-filter'],
-    #                help='Has filter expression to use in the query. Expected value: json-string/@json-file.'))
-    #     c.argument('delivery_info_destination', action=AddDeliveryInfoDestination, nargs='+', help='Has destination for'
-    #                ' the export being delivered. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: resour'
-    #                'ce-id, container, root-folder-path.')
-    #     c.argument('schedule_status', arg_type=get_enum_type(['Active', 'Inactive']), help='The status of the schedule.'
-    #                ' Whether active or not. If inactive, the export\'s scheduled execution is paused.')
-    #     c.argument('schedule_recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly', 'Annually']), help='The'
-    #                ' schedule recurrence.')
-    #     c.argument('schedule_recurrence_period', action=AddScheduleRecurrencePeriod, nargs='+', help='Has start and end'
-    #                ' date of the recurrence. The start date must be in future. If present, the end date must be greater'
-    #                ' than start date. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    with self.argument_context('costmanagement query usage') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+                   help='The type of the query.')
+        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', ''
+                                                        'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The '
+                   'time frame for pulling data for the query. If custom, then a specific time period must be '
+                   'provided.')
+        c.argument('time_period', action=AddTimePeriod, nargs='*', help='Has time period for pulling data for the '
+                   'query.')
+        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='*', help='Has configuration '
+                   'information for the data in the export. The configuration will be ignored if aggregation and '
+                   'grouping are provided.')
+        c.argument('dataset_aggregation', type=validate_file_or_dict, help='Dictionary of aggregation expression to '
+                   'use in the query. The key of each item in the dictionary is the alias for the aggregated column. '
+                   'Query can have up to 2 aggregation clauses. Expected value: json-string/@json-file.')
+        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='*', help='Array of group by expression to use '
+                   'in the query. Query can have up to 2 group by clauses.')
+        c.argument('dataset_filter', type=validate_file_or_dict, help='Has filter expression to use in the query. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement export update') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('export_name', help='Export Name.')
-    #     c.argument('e_tag', help='eTag of the resource. To handle concurrent update scenario, this field will be used t'
-    #                'o determine whether the user is updating the latest version or not.')
-    #     c.argument('definition_type', arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']), help='The type '
-    #                'of the query.')
-    #     c.argument('definition_timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth',
-    #                 'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The time frame for pulling data for the quer'
-    #                'y. If custom, then a specific time period must be provided.')
-    #     c.argument('definition_time_period', action=AddTimePeriod, nargs='+', help='Has time period for pulling data fo'
-    #                'r the query. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
-    #     c.argument('definition_dataset_configuration', action=AddDatasetConfiguration, nargs='+', help='Has configurati'
-    #                'on information for the data in the export. The configuration will be ignored if aggregation and gro'
-    #                'uping are provided. Expect value: columns=xx.')
-    #     c.argument('definition_dataset_aggregation', arg_type=CLIArgumentType(options_list=['--definition-dataset-aggre'
-    #                'gation'], help='Dictionary of aggregation expression to use in the query. The key of each item in t'
-    #                'he dictionary is the alias for the aggregated column. Query can have up to 2 aggregation clauses. E'
-    #                'xpected value: json-string/@json-file.'))
-    #     c.argument('definition_dataset_grouping', action=AddDatasetGrouping, nargs='+', help='Array of group by express'
-    #                'ion to use in the query. Query can have up to 2 group by clauses. Expect value: KEY1=VALUE1 KEY2=VA'
-    #                'LUE2 ... , available KEYs are: type, name.')
-    #     c.argument('definition_dataset_filter', arg_type=CLIArgumentType(options_list=['--definition-dataset-filter'],
-    #                help='Has filter expression to use in the query. Expected value: json-string/@json-file.'))
-    #     c.argument('delivery_info_destination', action=AddDeliveryInfoDestination, nargs='+', help='Has destination for'
-    #                ' the export being delivered. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: resour'
-    #                'ce-id, container, root-folder-path.')
-    #     c.argument('schedule_status', arg_type=get_enum_type(['Active', 'Inactive']), help='The status of the schedule.'
-    #                ' Whether active or not. If inactive, the export\'s scheduled execution is paused.')
-    #     c.argument('schedule_recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly', 'Annually']), help='The'
-    #                ' schedule recurrence.')
-    #     c.argument('schedule_recurrence_period', action=AddScheduleRecurrencePeriod, nargs='+', help='Has start and end'
-    #                ' date of the recurrence. The start date must be in future. If present, the end date must be greater'
-    #                ' than start date. Expect value: KEY1=VALUE1 KEY2=VALUE2 ... , available KEYs are: from, to.')
+    with self.argument_context('costmanagement query usage-by-external-cloud-provider-type') as c:
+        c.argument('external_cloud_provider_type', arg_type=get_enum_type(['externalSubscriptions', ''
+                                                                           'externalBillingAccounts']), help='The '
+                   'external cloud provider type associated with dimension/query operations. This includes '
+                   '\'externalSubscriptions\' for linked account and \'externalBillingAccounts\' for consolidated '
+                   'account.')
+        c.argument('external_cloud_provider_id', type=str, help='This can be \'{externalSubscriptionId}\' for linked '
+                   'account or \'{externalBillingAccountId}\' for consolidated account used with dimension/query '
+                   'operations.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']),
+                   help='The type of the query.')
+        c.argument('timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth', ''
+                                                        'TheLastBillingMonth', 'WeekToDate', 'Custom']), help='The '
+                   'time frame for pulling data for the query. If custom, then a specific time period must be '
+                   'provided.')
+        c.argument('time_period', action=AddTimePeriod, nargs='*', help='Has time period for pulling data for the '
+                   'query.')
+        c.argument('dataset_configuration', action=AddDatasetConfiguration, nargs='*', help='Has configuration '
+                   'information for the data in the export. The configuration will be ignored if aggregation and '
+                   'grouping are provided.')
+        c.argument('dataset_aggregation', type=validate_file_or_dict, help='Dictionary of aggregation expression to '
+                   'use in the query. The key of each item in the dictionary is the alias for the aggregated column. '
+                   'Query can have up to 2 aggregation clauses. Expected value: json-string/@json-file.')
+        c.argument('dataset_grouping', action=AddDatasetGrouping, nargs='*', help='Array of group by expression to use '
+                   'in the query. Query can have up to 2 group by clauses.')
+        c.argument('dataset_filter', type=validate_file_or_dict, help='Has filter expression to use in the query. '
+                   'Expected value: json-string/@json-file.')
 
-    # with self.argument_context('costmanagement export delete') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('export_name', help='Export Name.')
+    with self.argument_context('costmanagement export list') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('expand', type=str, help='May be used to expand the properties within an export. Currently only '
+                   '\'runHistory\' is supported and will return information for the last execution of each export.')
 
-    # with self.argument_context('costmanagement export execute') as c:
-    #     c.argument('scope', help='The scope associated with query and export operations. This includes \'/subscriptions'
-    #                '/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/resourceGroups/{reso'
-    #                'urceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAc'
-    #                'countId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAccounts/{billingAcc'
-    #                'ountId}/departments/{departmentId}\' for Department scope, \'/providers/Microsoft.Billing/billingAc'
-    #                'counts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}\' for EnrollmentAccount scope, '
-    #                '\'/providers/Microsoft.Management/managementGroups/{managementGroupId} for Management Group scope, '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
-    #                '}\' for billingProfile scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/bil'
-    #                'lingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
-    #                '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' specific'
-    #                ' for partners.')
-    #     c.argument('export_name', help='Export Name.')
+    with self.argument_context('costmanagement export show') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
+        c.argument('expand', type=str, help='May be used to expand the properties within an export. Currently only '
+                   '\'runHistory\' is supported and will return information for the last 10 executions of the export.')
+
+    with self.argument_context('costmanagement export create') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
+        c.argument('e_tag', type=str, help='eTag of the resource. To handle concurrent update scenario, this field '
+                   'will be used to determine whether the user is updating the latest version or not.')
+        c.argument('definition_type', arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']), help='The type '
+                   'of the export. Note that \'Usage\' is equivalent to \'ActualCost\' and is applicable to exports '
+                   'that do not yet provide data for charges or amortization for service reservations.')
+        c.argument('definition_timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth',
+                                                                   'TheLastBillingMonth', 'WeekToDate', 'Custom']),
+                   help='The time frame for pulling data for the export. If custom, then a specific time period must '
+                   'be provided.')
+        c.argument('definition_time_period', action=AddDefinitionTimePeriod, nargs='*', help='Has time period for '
+                   'pulling data for the export.')
+        c.argument('definition_data_set_configuration', action=AddDefinitionDataSetConfiguration, nargs='*', help='The '
+                   'export dataset configuration.')
+        c.argument('delivery_info_destination', action=AddDeliveryInfoDestination, nargs='*', help='Has destination '
+                   'for the export being delivered.')
+        c.argument('schedule_status', arg_type=get_enum_type(['Active', 'Inactive']), help='The status of the '
+                   'export\'s schedule. If \'Inactive\', the export\'s schedule is paused.')
+        c.argument('schedule_recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly', 'Annually']), help=''
+                   'The schedule recurrence.')
+        c.argument('schedule_recurrence_period', action=AddScheduleRecurrencePeriod, nargs='*', help='Has start and '
+                   'end date of the recurrence. The start date must be in future. If present, the end date must be '
+                   'greater than start date.')
+
+    with self.argument_context('costmanagement export update') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
+        c.argument('e_tag', type=str, help='eTag of the resource. To handle concurrent update scenario, this field '
+                   'will be used to determine whether the user is updating the latest version or not.')
+        c.argument('definition_type', arg_type=get_enum_type(['Usage', 'ActualCost', 'AmortizedCost']), help='The type '
+                   'of the export. Note that \'Usage\' is equivalent to \'ActualCost\' and is applicable to exports '
+                   'that do not yet provide data for charges or amortization for service reservations.')
+        c.argument('definition_timeframe', arg_type=get_enum_type(['MonthToDate', 'BillingMonthToDate', 'TheLastMonth',
+                                                                   'TheLastBillingMonth', 'WeekToDate', 'Custom']),
+                   help='The time frame for pulling data for the export. If custom, then a specific time period must '
+                   'be provided.')
+        c.argument('definition_time_period', action=AddDefinitionTimePeriod, nargs='*', help='Has time period for '
+                   'pulling data for the export.')
+        c.argument('definition_data_set_configuration', action=AddDefinitionDataSetConfiguration, nargs='*', help='The '
+                   'export dataset configuration.')
+        c.argument('delivery_info_destination', action=AddDeliveryInfoDestination, nargs='*', help='Has destination '
+                   'for the export being delivered.')
+        c.argument('schedule_status', arg_type=get_enum_type(['Active', 'Inactive']), help='The status of the '
+                   'export\'s schedule. If \'Inactive\', the export\'s schedule is paused.')
+        c.argument('schedule_recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly', 'Annually']), help=''
+                   'The schedule recurrence.')
+        c.argument('schedule_recurrence_period', action=AddScheduleRecurrencePeriod, nargs='*', help='Has start and '
+                   'end date of the recurrence. The start date must be in future. If present, the end date must be '
+                   'greater than start date.')
+
+    with self.argument_context('costmanagement export delete') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
+
+    with self.argument_context('costmanagement export execute') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
+
+    with self.argument_context('costmanagement export get-execution-history') as c:
+        c.argument('scope', type=str, help='The scope associated with query and export operations. This includes '
+                   '\'/subscriptions/{subscriptionId}/\' for subscription scope, \'/subscriptions/{subscriptionId}/reso'
+                   'urceGroups/{resourceGroupName}\' for resourceGroup scope, \'/providers/Microsoft.Billing/billingAcc'
+                   'ounts/{billingAccountId}\' for Billing Account scope and \'/providers/Microsoft.Billing/billingAcco'
+                   'unts/{billingAccountId}/departments/{departmentId}\' for Department scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAcc'
+                   'ountId}\' for EnrollmentAccount scope, \'/providers/Microsoft.Management/managementGroups/{manageme'
+                   'ntGroupId} for Management Group scope, \'/providers/Microsoft.Billing/billingAccounts/{billingAccou'
+                   'ntId}/billingProfiles/{billingProfileId}\' for billingProfile scope, '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId'
+                   '}/invoiceSections/{invoiceSectionId}\' for invoiceSection scope, and '
+                   '\'/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}\' '
+                   'specific for partners.')
+        c.argument('export_name', options_list=['--name', '-n', '--export-name'], type=str, help='Export Name.')
