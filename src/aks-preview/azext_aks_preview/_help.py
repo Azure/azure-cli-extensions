@@ -46,6 +46,9 @@ helps['aks create'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --node-osdisk-diskencryptionset-id
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
@@ -278,6 +281,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
         - name: Create a kubernetes cluster with managed AAD enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+        - name: Create a kubernetes cluster with ephemeral os enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -497,6 +502,9 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -549,6 +557,10 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+    examples:
+        - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
+
 """
 
 helps['aks nodepool scale'] = """
