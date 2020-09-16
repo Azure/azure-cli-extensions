@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
-
+import requests
+from requests.auth import HTTPBasicAuth
 import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
@@ -13,6 +14,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
+from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -26,10 +28,7 @@ from ._utils import _get_sku_name
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
-import certifi
-import urllib3
 import sys
-import urllib3.contrib.pyopenssl
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -42,16 +41,27 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
+                        vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
+                        service_runtime_network_resource_group=None, app_network_resource_group=None,
                         disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
+    properties = models.ClusterResourceProperties()
+    resource = models.ServiceResource(location=location, properties=properties)
+
+    if service_runtime_subnet or app_subnet or reserved_cidr_range:
+        properties.network_profile = models.NetworkProfile(
+            service_runtime_subnet_id=service_runtime_subnet,
+            app_subnet_id=app_subnet,
+            service_cidr=reserved_cidr_range,
+            app_network_resource_group=app_network_resource_group,
+            service_runtime_network_resource_group=service_runtime_network_resource_group
+        )
 
     if sku is None:
         sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-
-    properties = models.ClusterResourceProperties()
 
     check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     update_tracing_config(cmd, resource_group, name, location, properties,
@@ -85,6 +95,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         app_insights_target_status = True
         if resource_properties.trace.enabled is False:
             update_app_insights = True
+        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+            update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
         if resource_properties.trace.enabled is True:
@@ -116,6 +128,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
+    logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
     return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, service_name=name)
 
 
@@ -197,9 +210,13 @@ def app_create(cmd, client, resource_group, service, name,
         instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
-        runtime_version=runtime_version,)
+        net_core_main_entry_path=None,
+        runtime_version=runtime_version)
+
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
+
     user_source_info = models.UserSourceInfo(
-        relative_path='<default>', type='Jar')
+        relative_path='<default>', type=file_type)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
@@ -243,6 +260,7 @@ def app_update(cmd, client, resource_group, service, name,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
+               main_entry=None,
                env=None,
                enable_persistent_storage=None,
                https_only=None):
@@ -284,6 +302,7 @@ def app_update(cmd, client, resource_group, service, name,
         instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
+        net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
@@ -383,13 +402,11 @@ def app_get(cmd, client,
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
-               jar_path=None,
+               artifact_path=None,
                target_module=None,
                runtime_version=None,
                jvm_options=None,
-               cpu=None,
-               memory=None,
-               instance_count=None,
+               main_entry=None,
                env=None,
                no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
@@ -401,7 +418,7 @@ def app_deploy(cmd, client, resource_group, service, name,
 
     client.deployments.get(resource_group, service, name, deployment)
 
-    file_type, file_path = _get_upload_local_file(jar_path)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
 
     return _app_deploy(client,
                        resource_group,
@@ -412,10 +429,11 @@ def app_deploy(cmd, client, resource_group, service, name,
                        file_path,
                        runtime_version,
                        jvm_options,
-                       cpu,
-                       memory,
-                       instance_count,
+                       None,
+                       None,
+                       None,
                        env,
+                       main_entry,
                        target_module,
                        no_wait,
                        file_type,
@@ -451,8 +469,8 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     deployment_properties = client.deployments.get(
         resource_group, service, name, deployment).properties
-    if deployment_properties.source.type == "Jar":
-        raise CLIError("Jar deployment has no build logs.")
+    if deployment_properties.source.type == "Jar" or deployment_properties.source.type == "NetCoreZip":
+        raise CLIError("{} deployment has no build logs.".format(deployment_properties.source.type))
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
@@ -477,6 +495,13 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
             return None
         instance = instances[0].name
 
+    spring_cloud_service = client.services.get(resource_group, service)
+    host_name = service
+    if spring_cloud_service.properties and \
+       spring_cloud_service.properties.network_profile and \
+       spring_cloud_service.properties.network_profile.service_runtime_subnet_id:
+        host_name = '{0}.private'.format(service)
+
     primary_key = client.services.list_test_keys(
         resource_group, service).primary_key
     if not primary_key:
@@ -484,7 +509,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
     base_url = 'azuremicroservices.io' if cmd.cli_ctx.cloud.name == 'AzureCloud' else 'asc-test.net'
     streaming_url = "https://{0}.{1}/api/logstream/apps/{2}/instances/{3}".format(
-        service, base_url, name, instance)
+        host_name, base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
@@ -595,10 +620,11 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
-                      jar_path=None,
+                      artifact_path=None,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
+                      main_entry=None,
                       cpu=None,
                       memory=None,
                       instance_count=None,
@@ -620,8 +646,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
             instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
+    else:
+        cpu = cpu or 1
+        memory = memory or 1
+        instance_count = instance_count or 1
 
-    file_type, file_path = _get_upload_local_file(jar_path)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
     return _app_deploy(client, resource_group, service, app, name, version, file_path,
                        runtime_version,
                        jvm_options,
@@ -629,6 +659,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        memory,
                        instance_count,
                        env,
+                       main_entry,
                        target_module,
                        no_wait,
                        file_type)
@@ -1102,12 +1133,14 @@ def _get_all_apps(client, resource_group, service):
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
+                main_entry=None,
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
                 update=False):
     upload_url = None
     relative_path = None
+    logger.warning("file_type is {}".format(file_type))
     logger.warning("[1/3] Requesting for upload URL")
     try:
         response = client.apps.get_resource_upload_url(resource_group,
@@ -1134,6 +1167,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         memory_in_gb=memory,
         environment_variables=env,
         jvm_options=jvm_options,
+        net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,
         instance_count=instance_count,)
     user_source_info = models.UserSourceInfo(
@@ -1170,9 +1204,9 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 log_url = get_log_url()
                 sleep(10)
 
-            logger.info("Trying to fetch build logs")
+            logger.warning("Trying to fetch build logs")
             stream_logs(client.deployments, resource_group, service,
-                        app, name, logger_level_func=logger.info)
+                        app, name, logger_level_func=print)
 
         old_log_url = get_log_url()
 
@@ -1192,49 +1226,19 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
 
 def _get_app_log(url, user_name, password, exceptions):
-    try:
-        urllib3.contrib.pyopenssl.inject_into_urllib3()
-    except ImportError:
-        pass
-
-    def stream(self, amt=2 ** 16, decode_content=None):
-        if self.chunked and self.supports_chunked_reads():
-            try:
-                for line in self.read_chunked(amt, decode_content=decode_content):
-                    yield line
-            except urllib3.exceptions.ProtocolError:
-                return
-        else:
-            while not self.is_fp_closed(self._fp):
-                data = self.read(amt=amt, decode_content=decode_content)
-
-                if data:
-                    yield data
-
-    http = urllib3.PoolManager(
-        cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-    headers = urllib3.util.make_headers(
-        basic_auth='{0}:{1}'.format(user_name, password))
-    response = http.request(
-        'GET',
-        url,
-        headers=headers,
-        preload_content=False
-    )
-    try:
-        if response.status != 200:
-            raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                response.status, response.reason))
-        std_encoding = sys.stdout.encoding
-
-        for chunk in stream(response):
-            if chunk:
-                sys.stdout.write(chunk.decode(encoding='utf-8', errors='replace')
-                                 .encode(std_encoding, errors='replace')
-                                 .decode(std_encoding, errors='replace'))
-        response.release_conn()
-    except CLIError as e:
-        exceptions.append(e)
+    with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
+        try:
+            if response.status_code != 200:
+                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
+                    response.status_code, response.reason))
+            std_encoding = sys.stdout.encoding
+            for content in response.iter_content():
+                if content:
+                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
+                                     .encode(std_encoding, errors='replace')
+                                     .decode(std_encoding, errors='replace'))
+        except CLIError as e:
+            exceptions.append(e)
 
 
 def certificate_add(cmd, client, resource_group, service, name, vault_uri, vault_certificate_name):

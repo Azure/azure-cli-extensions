@@ -35,18 +35,18 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clifrontdoor000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Creating\",\"resourceState\":\"Creating\",\"backendPools\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null\r\n
+        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
         \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings\"\r\n
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Creating\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
@@ -63,21 +63,21 @@ interactions:
         \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Creating\",\"routeConfiguration\":{\r\n
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null\r\n        }\r\n      }\r\n
-        \   ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"ba490b87-22a1-4617-b298-d0e346ab1189\",\"friendlyName\":\"clifrontdoor000002\"\r\n
+        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
+        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"3a4a01f2-2f7a-48fe-b005-0c1b0e65c5be\",\"friendlyName\":\"clifrontdoor000002\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/1181ab37-33b0-4ead-8434-37b0ed9c54b3?api-version=2020-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b6acfc3e-db6a-4bd0-a4dc-5eb507e4021a?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5333'
+      - '5429'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:22:23 GMT
+      - Wed, 08 Jul 2020 07:08:30 GMT
       expires:
       - '-1'
       odata-version:
@@ -113,10 +113,10 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/1181ab37-33b0-4ead-8434-37b0ed9c54b3?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b6acfc3e-db6a-4bd0-a4dc-5eb507e4021a?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
@@ -129,7 +129,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:22:34 GMT
+      - Wed, 08 Jul 2020 07:08:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -167,10 +167,10 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/1181ab37-33b0-4ead-8434-37b0ed9c54b3?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b6acfc3e-db6a-4bd0-a4dc-5eb507e4021a?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
@@ -183,7 +183,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:05 GMT
+      - Wed, 08 Jul 2020 07:09:10 GMT
       expires:
       - '-1'
       odata-version:
@@ -221,16 +221,16 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clifrontdoor000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"provisioningState\":\"Succeeded\",\"resourceState\":\"Enabled\",\"backendPools\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool\",\"name\":\"DefaultBackendPool\",\"type\":\"Microsoft.Network/Frontdoors/BackendPools\",\"properties\":{\r\n
-        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null\r\n
+        \         \"backends\":[\r\n            {\r\n              \"address\":\"202.120.2.3\",\"httpPort\":80,\"httpsPort\":443,\"priority\":1,\"weight\":50,\"backendHostHeader\":\"202.120.2.3\",\"enabledState\":\"Enabled\",\"privateLinkAlias\":null,\"privateEndpointStatus\":null,\"privateLinkApprovalMessage\":null,\"privateLinkResourceId\":null,\"privateLinkLocation\":null\r\n
         \           }\r\n          ],\"healthProbeSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings\"\r\n
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
@@ -247,19 +247,19 @@ interactions:
         \         ],\"patternsToMatch\":[\r\n            \"/*\"\r\n          ],\"enabledState\":\"Enabled\",\"resourceState\":\"Enabled\",\"routeConfiguration\":{\r\n
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool\"\r\n
-        \           }\r\n          },\"rulesEngine\":null\r\n        }\r\n      }\r\n
-        \   ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"ba490b87-22a1-4617-b298-d0e346ab1189\",\"friendlyName\":\"clifrontdoor000002\"\r\n
+        \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
+        \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"clifrontdoor000002.azurefd.net\",\"frontdoorId\":\"3a4a01f2-2f7a-48fe-b005-0c1b0e65c5be\",\"friendlyName\":\"clifrontdoor000002\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5328'
+      - '5424'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:06 GMT
+      - Wed, 08 Jul 2020 07:09:11 GMT
       expires:
       - '-1'
       odata-version:
@@ -298,12 +298,12 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values --transforms
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"error\": {\r\n    \"code\": \"NotFound\",\r\n    \"message\":
@@ -318,7 +318,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 May 2020 06:23:07 GMT
+      - Wed, 08 Jul 2020 07:09:12 GMT
       expires:
       - '-1'
       pragma:
@@ -359,12 +359,12 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values --transforms
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -385,7 +385,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:08 GMT
+      - Wed, 08 Jul 2020 07:09:13 GMT
       expires:
       - '-1'
       odata-version:
@@ -405,7 +405,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -426,12 +426,12 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -452,7 +452,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:09 GMT
+      - Wed, 08 Jul 2020 07:09:14 GMT
       expires:
       - '-1'
       odata-version:
@@ -503,12 +503,12 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -536,7 +536,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:11 GMT
+      - Wed, 08 Jul 2020 07:09:15 GMT
       expires:
       - '-1'
       odata-version:
@@ -556,7 +556,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -576,12 +576,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --match-processing-behavior
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -609,7 +609,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:11 GMT
+      - Wed, 08 Jul 2020 07:09:17 GMT
       expires:
       - '-1'
       odata-version:
@@ -661,12 +661,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --match-processing-behavior
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -694,7 +694,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:13 GMT
+      - Wed, 08 Jul 2020 07:09:18 GMT
       expires:
       - '-1'
       odata-version:
@@ -714,7 +714,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -734,12 +734,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name -n
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -767,7 +767,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:15 GMT
+      - Wed, 08 Jul 2020 07:09:19 GMT
       expires:
       - '-1'
       odata-version:
@@ -805,12 +805,12 @@ interactions:
       ParameterSetName:
       - -f -g --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -838,7 +838,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:16 GMT
+      - Wed, 08 Jul 2020 07:09:20 GMT
       expires:
       - '-1'
       odata-version:
@@ -876,12 +876,12 @@ interactions:
       ParameterSetName:
       - -f -g --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -909,7 +909,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:17 GMT
+      - Wed, 08 Jul 2020 07:09:20 GMT
       expires:
       - '-1'
       odata-version:
@@ -947,12 +947,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --header-action --header-name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -980,7 +980,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:18 GMT
+      - Wed, 08 Jul 2020 07:09:21 GMT
       expires:
       - '-1'
       odata-version:
@@ -1032,12 +1032,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --header-action --header-name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1066,7 +1066,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:19 GMT
+      - Wed, 08 Jul 2020 07:09:23 GMT
       expires:
       - '-1'
       odata-version:
@@ -1107,12 +1107,12 @@ interactions:
       - -f -g --rules-engine-name --name --action-type --backend-pool --caching --query-parameter-strip-directive
         --query-parameters --cache-duration
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1141,7 +1141,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:21 GMT
+      - Wed, 08 Jul 2020 07:09:23 GMT
       expires:
       - '-1'
       odata-version:
@@ -1198,12 +1198,12 @@ interactions:
       - -f -g --rules-engine-name --name --action-type --backend-pool --caching --query-parameter-strip-directive
         --query-parameters --cache-duration
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1235,7 +1235,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:23 GMT
+      - Wed, 08 Jul 2020 07:09:25 GMT
       expires:
       - '-1'
       odata-version:
@@ -1275,12 +1275,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --action-type --custom-path
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1312,7 +1312,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:23 GMT
+      - Wed, 08 Jul 2020 07:09:26 GMT
       expires:
       - '-1'
       odata-version:
@@ -1371,12 +1371,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --action-type --custom-path
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1408,7 +1408,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:25 GMT
+      - Wed, 08 Jul 2020 07:09:27 GMT
       expires:
       - '-1'
       odata-version:
@@ -1448,12 +1448,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1485,7 +1485,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:27 GMT
+      - Wed, 08 Jul 2020 07:09:28 GMT
       expires:
       - '-1'
       odata-version:
@@ -1523,12 +1523,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1560,7 +1560,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:27 GMT
+      - Wed, 08 Jul 2020 07:09:29 GMT
       expires:
       - '-1'
       odata-version:
@@ -1598,12 +1598,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --selector --operator --match-values --transforms
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1635,7 +1635,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:28 GMT
+      - Wed, 08 Jul 2020 07:09:30 GMT
       expires:
       - '-1'
       odata-version:
@@ -1696,12 +1696,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --selector --operator --match-values --transforms
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1736,7 +1736,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:30 GMT
+      - Wed, 08 Jul 2020 07:09:31 GMT
       expires:
       - '-1'
       odata-version:
@@ -1776,12 +1776,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --operator
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1816,7 +1816,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:30 GMT
+      - Wed, 08 Jul 2020 07:09:31 GMT
       expires:
       - '-1'
       odata-version:
@@ -1879,12 +1879,12 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --operator
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -1922,7 +1922,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:32 GMT
+      - Wed, 08 Jul 2020 07:09:32 GMT
       expires:
       - '-1'
       odata-version:
@@ -1942,7 +1942,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -1962,12 +1962,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2005,7 +2005,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:34 GMT
+      - Wed, 08 Jul 2020 07:09:34 GMT
       expires:
       - '-1'
       odata-version:
@@ -2043,12 +2043,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --index
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2086,7 +2086,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:34 GMT
+      - Wed, 08 Jul 2020 07:09:34 GMT
       expires:
       - '-1'
       odata-version:
@@ -2147,12 +2147,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --index
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2187,7 +2187,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:36 GMT
+      - Wed, 08 Jul 2020 07:09:36 GMT
       expires:
       - '-1'
       odata-version:
@@ -2227,12 +2227,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2267,7 +2267,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:37 GMT
+      - Wed, 08 Jul 2020 07:09:36 GMT
       expires:
       - '-1'
       odata-version:
@@ -2323,12 +2323,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2360,7 +2360,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:38 GMT
+      - Wed, 08 Jul 2020 07:09:37 GMT
       expires:
       - '-1'
       odata-version:
@@ -2380,7 +2380,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -2400,12 +2400,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --index
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2437,7 +2437,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:40 GMT
+      - Wed, 08 Jul 2020 07:09:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -2492,12 +2492,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --index
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2528,7 +2528,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:41 GMT
+      - Wed, 08 Jul 2020 07:09:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -2568,12 +2568,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2604,7 +2604,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:43 GMT
+      - Wed, 08 Jul 2020 07:09:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -2653,12 +2653,12 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2682,7 +2682,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:45 GMT
+      - Wed, 08 Jul 2020 07:09:42 GMT
       expires:
       - '-1'
       odata-version:
@@ -2702,7 +2702,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -2722,12 +2722,12 @@ interactions:
       ParameterSetName:
       - -f -g
       User-Agent:
-      - python/3.7.7 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.5.1
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-frontdoor/0.3.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"clirulesengine000003\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003\",\"type\":\"Microsoft.Network/frontdoors/rulesengines\",\"properties\":{\r\n
@@ -2752,7 +2752,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 15 May 2020 06:23:45 GMT
+      - Wed, 08 Jul 2020 07:09:43 GMT
       expires:
       - '-1'
       odata-version:

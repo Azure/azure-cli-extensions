@@ -12,6 +12,7 @@
 try:
     from ._models_py3 import AppResource
     from ._models_py3 import AppResourceProperties
+    from ._models_py3 import AvailableRuntimeVersions
     from ._models_py3 import BindingResource
     from ._models_py3 import BindingResourceProperties
     from ._models_py3 import CertificateProperties
@@ -37,6 +38,7 @@ try:
     from ._models_py3 import MetricSpecification
     from ._models_py3 import NameAvailability
     from ._models_py3 import NameAvailabilityParameters
+    from ._models_py3 import NetworkProfile
     from ._models_py3 import OperationDetail
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationProperties
@@ -55,6 +57,7 @@ try:
     from ._models_py3 import ServiceSpecification
     from ._models_py3 import Sku
     from ._models_py3 import SkuCapacity
+    from ._models_py3 import SupportedRuntimeVersion1
     from ._models_py3 import TemporaryDisk
     from ._models_py3 import TestKeys
     from ._models_py3 import TraceProperties
@@ -63,6 +66,7 @@ try:
 except (SyntaxError, ImportError):
     from ._models import AppResource
     from ._models import AppResourceProperties
+    from ._models import AvailableRuntimeVersions
     from ._models import BindingResource
     from ._models import BindingResourceProperties
     from ._models import CertificateProperties
@@ -88,6 +92,7 @@ except (SyntaxError, ImportError):
     from ._models import MetricSpecification
     from ._models import NameAvailability
     from ._models import NameAvailabilityParameters
+    from ._models import NetworkProfile
     from ._models import OperationDetail
     from ._models import OperationDisplay
     from ._models import OperationProperties
@@ -106,6 +111,7 @@ except (SyntaxError, ImportError):
     from ._models import ServiceSpecification
     from ._models import Sku
     from ._models import SkuCapacity
+    from ._models import SupportedRuntimeVersion1
     from ._models import TemporaryDisk
     from ._models import TestKeys
     from ._models import TraceProperties
@@ -133,11 +139,14 @@ from ._app_platform_management_client_enums import (
     SkuScaleType,
     ResourceSkuRestrictionsType,
     ResourceSkuRestrictionsReasonCode,
+    SupportedRuntimeVersion,
+    SupportedRuntimePlatform,
 )
 
 __all__ = [
     'AppResource',
     'AppResourceProperties',
+    'AvailableRuntimeVersions',
     'BindingResource',
     'BindingResourceProperties',
     'CertificateProperties',
@@ -163,6 +172,7 @@ __all__ = [
     'MetricSpecification',
     'NameAvailability',
     'NameAvailabilityParameters',
+    'NetworkProfile',
     'OperationDetail',
     'OperationDisplay',
     'OperationProperties',
@@ -181,6 +191,7 @@ __all__ = [
     'ServiceSpecification',
     'Sku',
     'SkuCapacity',
+    'SupportedRuntimeVersion1',
     'TemporaryDisk',
     'TestKeys',
     'TraceProperties',
@@ -207,4 +218,6 @@ __all__ = [
     'SkuScaleType',
     'ResourceSkuRestrictionsType',
     'ResourceSkuRestrictionsReasonCode',
+    'SupportedRuntimeVersion',
+    'SupportedRuntimePlatform',
 ]

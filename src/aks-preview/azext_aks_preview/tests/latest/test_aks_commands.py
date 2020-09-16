@@ -96,7 +96,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--vm-set-type VirtualMachineScaleSets --node-count=1 ' \
                      '-o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -107,7 +107,32 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-aad ' \
                      '--aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
                      '--aad-tenant-id 00000000-0000-0000-0000-000000000002 -o json'
-        self.cmd(update_cmd, expect_failure=True)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001'),
+            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000002')
+        ])
+
+    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_and_update_with_managed_aad_enable_azure_rbac(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--vm-set-type VirtualMachineScaleSets  AvailabilitySet -c 1 ' \
+                     '--enable-aad --enable-azure-rbac --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.enableAzureRBAC', True),
+            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -122,8 +147,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetPrefix', "10.2.0.0/16")
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -164,21 +189,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayName', "gateway"),
-            self.check('addonProfiles.IngressApplicationGateway.config.subnetId', vnet_id + '/subnets/appgw-subnet')
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetid', vnet_id + '/subnets/appgw-subnet')
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
         })
-
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {vnet_id}/subnets/appgw-subnet --role "4d97b98b-1d4f-4787-a291-c67834d212e7" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Network Contributor')
-        ])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -240,18 +260,131 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.IngressApplicationGateway.enabled', True),
-            self.check('addonProfiles.IngressApplicationGateway.config.applicationGatewayId', appgw_id)
+            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["IngressApplicationGateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
         })
 
-        # check role assignment
-        check_role_assignment = 'role assignment list --assignee {addon_client_id} --scope {appgw_group_id} --role "b24988ac-6180-42a0-ab88-20f7382dd24c" -o json'
-        self.cmd(check_role_assignment, checks=[
-            self.check('[0].roleDefinitionName', 'Contributor')
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_confcom_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+        ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_confcom_addon_helper_disabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+                     '-a confcom --disable-sgxquotehelper -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_addons_confcom_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+                     '-o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin', None)
+        ])
+
+        enable_cmd = 'aks enable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', True),
+            self.check('addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
+        ])
+
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_disable_addons_confcom_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+        ])
+
+        disable_cmd = 'aks disable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.accsgxdeviceplugin.enabled', False),
+            self.check('addonProfiles.accsgxdeviceplugin.config', None)
+        ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--node-osdisk-type=Managed'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].osDiskType', 'Managed'),
+        ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_ephemeral_disk(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                     '--node-osdisk-type=Ephemeral --node-osdisk-size 60'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].osDiskType', 'Ephemeral'),
         ])

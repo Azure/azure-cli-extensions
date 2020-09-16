@@ -21,6 +21,27 @@ az databricks create \
     --sku premium
 ```
 
+#### Create a workspace with double encryption
+Double Encryption is only enabled on Premium Databricks workspace.
+You need to register the feature first:  
+```
+az feature register --namespace Microsoft.Storage --name AllowRequireInfrastructureEncryption
+```  
+Then get the change propagated:  
+```
+az provider register -n Microsoft.Storage
+```  
+Now you can create a workspace with double encryption enabled:
+```
+az databricks workspace create \
+    -resource-group my-rg \
+    --name my-workspace \
+    --location eastus2euap \
+    --sku premium \
+    --prepare-encryption \
+    --require-infrastructure-encryption
+```
+
 ##### Update workspace tags
 ```
 az databricks update \

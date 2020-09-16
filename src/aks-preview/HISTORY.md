@@ -2,6 +2,44 @@
 
 Release History
 ===============
+0.4.63
++++++
+* Remove PREVIEW from azure policy addon.
+
+0.4.62
++++++
+* Add support for enable/disable confcom (sgx) addon.
+
+0.4.61
++++++
+* Fix AGIC typo and remove preview label from VN #2141
+* Set network profile when using basic load balancer. #2137
+* Fix bug that compare float number with 0 #2213
+
+0.4.60
++++++
+* Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
+
+0.4.59
++++++
+* Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
+
+0.4.58
++++++
+* Added clearer error message for invalid addon names
+
+0.4.57
++++++
+* Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.
+
+0.4.56
++++++
+* Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
+
+0.4.55
++++++
+* Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization
+
 0.4.54
 +++++
 * Support "--enable-aad" for "az aks update" to update an existing AAD-Integrated cluster to the new AKS-managed AAD experience

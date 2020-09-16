@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import json
 import re
 import requests
@@ -24,7 +25,13 @@ def check_connection_aladdin():
 
 
 def new_examples(help_file):
-    help_file.examples = replace_examples(help_file.command)
+    try:
+        examples = replace_examples(help_file.command)
+    except requests.exceptions.ConnectionError:
+        examples = []
+
+    if examples:
+        help_file.examples = examples
 
 
 # Replace built in examples with Aladdin ones
@@ -78,22 +85,30 @@ def ping_aladdin_service():
 
 
 def call_aladdin_service(query):
-    correlation_id = telemetry_core._session.correlation_id  # pylint: disable=protected-access
-    subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
     version = str(parse_version(core_version))
+    correlation_id = telemetry_core._session.correlation_id   # pylint: disable=protected-access
+    subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
+
+    # Used for DDOS protection and rate limiting
+    user_id = telemetry_core._get_user_azure_id()  # pylint: disable=protected-access
+    hashed_user_id = hashlib.sha256(user_id.encode('utf-8')).hexdigest()
 
     context = {
-        "correlationId": "",
-        "subscriptionId": "",
-        "versionNumber": version
+        "versionNumber": version,
     }
 
-    # Only pull in the other values if we have consent
+    # Only pull in the contextual values if we have consent
     if telemetry_core.is_telemetry_enabled():
-        context.update(correlationId=correlation_id, subscriptionId=subscription_id)
+        context['correlationId'] = correlation_id
+
+    if telemetry_core.is_telemetry_enabled() and subscription_id is not None:
+        context['subscriptionId'] = subscription_id
 
     api_url = 'https://app.aladdin.microsoft.com/api/v1.0/examples'
-    headers = {'Content-Type': 'application/json'}
+    headers = {
+        'Content-Type': 'application/json',
+        'X-UserId': hashed_user_id
+    }
 
     response = requests.get(
         api_url,

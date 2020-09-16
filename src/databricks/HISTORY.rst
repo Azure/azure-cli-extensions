@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.5.0
++++++
+* az databricks workspace create: add --require-infrastructure-encryption to enable double encryption
+
+0.4.0
++++++
+* az databricks workspace vnet-peering: support vnet peering operations for workspaces
+
 0.3.0
 +++++
 * az databricks workspace create/update: add customer-managed key feature

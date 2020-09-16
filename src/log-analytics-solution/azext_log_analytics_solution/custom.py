@@ -13,11 +13,12 @@ from azure.cli.core.util import sdk_no_wait
 
 def create_monitor_log_analytics_solution(client,
                                           resource_group_name,
-                                          solution_name,
-                                          plan_publisher,
-                                          plan_product,
+                                          solution_type,
                                           workspace_resource_id,
                                           location,
+                                          solution_name=None,
+                                          plan_publisher=None,
+                                          plan_product=None,
                                           tags=None,
                                           no_wait=False):
 
@@ -29,8 +30,8 @@ def create_monitor_log_analytics_solution(client,
         },
         "plan": {
             "name": solution_name,
-            "product": plan_product,
-            "publisher": plan_publisher,
+            "product": "OMSGallery/" + solution_type,
+            "publisher": "Microsoft",
             "promotion_code": ""
         }
     }

@@ -67,11 +67,13 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
-                          threat_intel_mode=None, hub_public_ip_count=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None):
     if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
+    if sku and sku.lower() == 'azfw_hub' and allow_active_ftp:
+        raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
@@ -102,12 +104,19 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
     if sku is None or sku.lower() == 'azfw_vnet':
         if firewall_policy is None:
+            if firewall.additional_properties is None:
+                firewall.additional_properties = {}
             firewall.additional_properties['Network.DNS.EnableProxy'] = \
                 enable_dns_proxy if enable_dns_proxy is not None else False
             firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
                 require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
             if dns_servers is not None:
                 firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+
+    if allow_active_ftp:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
@@ -117,7 +126,7 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
-                          hub_public_ip_count=None):
+                          hub_public_ip_count=None, allow_active_ftp=None):
     if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
@@ -177,6 +186,14 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
             instance.hub_ip_addresses.public_ips.count = len(hub_public_ip_addresses)
         except AttributeError:
             raise CLIError('Public Ip addresses must exist before deleting them.')
+
+    if allow_active_ftp is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if allow_active_ftp:
+            instance.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+        elif 'Network.FTP.AllowActiveFTP' in instance.additional_properties:
+            del instance.additional_properties['Network.FTP.AllowActiveFTP']
 
     return instance
 
@@ -427,7 +444,7 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
                            AzureFirewallApplicationRule, item_name, params, collection_params)
 
 
-def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name,
+def create_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure_firewall_name,
                                                  ip_addresses=None, fqdns=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
@@ -442,7 +459,7 @@ def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fqdns=None):
+def update_azure_firewall_threat_intel_allowlist(instance, ip_addresses=None, fqdns=None):
     if ip_addresses is not None:
         if instance.additional_properties is None:
             instance.additional_properties = {}
@@ -454,7 +471,7 @@ def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fq
     return instance
 
 
-def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
+def show_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure_firewall_name):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is None:
@@ -462,7 +479,7 @@ def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_f
     return firewall.additional_properties
 
 
-def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
+def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure_firewall_name):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is not None:
@@ -485,23 +502,23 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    'SubResource',
                                    'FirewallPolicyThreatIntelWhitelist',
                                    'DnsSettings')
-    fire_wall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
-                                      threat_intel_mode=threat_intel_mode,
-                                      location=location,
-                                      tags=tags)
+    firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
+                                     threat_intel_mode=threat_intel_mode,
+                                     location=location,
+                                     tags=tags)
 
-    threat_intel_whitelist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
+    threat_intel_allowlist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
                                                                 fqdns=fqdns) if ip_addresses and fqdns else None
-    fire_wall_policy.threat_intel_whitelist = threat_intel_whitelist
+    firewall_policy.threat_intel_whitelist = threat_intel_allowlist
 
     if cmd.supported_api_version(min_api='2020-05-01'):
         if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
             dns_settings = DnsSettings(servers=dns_servers,
                                        enable_proxy=enable_dns_proxy or False,
                                        require_proxy_for_network_rules=require_dns_proxy_for_network_rules or True)
-            fire_wall_policy.dns_settings = dns_settings
+            firewall_policy.dns_settings = dns_settings
 
-    return client.create_or_update(resource_group_name, firewall_policy_name, fire_wall_policy)
+    return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
 def update_azure_firewall_policies(cmd,

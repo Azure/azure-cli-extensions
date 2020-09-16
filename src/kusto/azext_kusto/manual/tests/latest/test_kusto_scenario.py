@@ -22,7 +22,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 @try_manual
 def setup(test, rg):
-    pass
+    test.kwargs.update({'eventhub_namespace': "codegenlivetest", 'eventhub_name': 'livetest'})
+    test.cmd('az eventhubs namespace create --name {eventhub_namespace} -g {rg}')
+    test.cmd('az eventhubs eventhub create --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
 
 
 # EXAMPLE: kustoclusterscreateorupdate
@@ -31,11 +33,11 @@ def step_kustoclusterscreateorupdate2(test, rg):
     test.cmd('az kusto cluster create '
              '--cluster-name "{Clusters_2}" '
              '--identity-type "SystemAssigned" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
              '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--sku name="Standard_L8s" capacity=2 tier="Standard" '
+             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -46,11 +48,11 @@ def step_kustoclusterscreateorupdate(test, rg):
     test.cmd('az kusto cluster create '
              '--cluster-name "{Clusters_3}" '
              '--identity-type "SystemAssigned" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
              '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--sku name="Standard_L8s" capacity=2 tier="Standard" '
+             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az kusto cluster wait --created '
@@ -130,7 +132,7 @@ def step_kustodatabasescreateorupdate(test, rg):
     test.cmd('az kusto database create '
              '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
-             '--read-write-database location="westus" soft-delete-period="P1D" '
+             '--read-write-database location="southcentralus" soft-delete-period="P1D" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -155,8 +157,8 @@ def step_kustodatabaseslistbycluster(test, rg):
 @try_manual
 def step_kustodatabasesget(test, rg):
     test.cmd('az kusto database show '
-             '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -260,7 +262,7 @@ def step_attacheddatabaseconfigurationscreateorupdate(test, rg):
     test.cmd('az kusto attached-database-configuration create '
              '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
              '--cluster-name "{Clusters_2}" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/Clu'
              'sters/{Clusters_3}" '
              '--database-name "Kustodatabase8" '
@@ -348,7 +350,7 @@ def step_kustodataconnectionvalidation(test, rg):
              '--database-name "KustoDatabase8" '
              '--data-connection-name "{DataConnections8}" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -360,9 +362,9 @@ def step_kustodataconnectionscreateorupdate(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -385,9 +387,9 @@ def step_kustodataconnectionsupdate(test, rg):
              '--cluster-name "{Clusters_3}" '
              '--data-connection-name "{DataConnections8}" '
              '--database-name "KustoDatabase8" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--consumer-group "$Default" '
-             '--event-hub-resource-id "/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/cliautogeneration-rg/providers/Microsoft.EventHub/namespaces/cliautogeneration/eventhubs/cliautogeneration-evenhub" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -405,7 +407,11 @@ def step_kustodataconnectionsdelete(test, rg):
 
 @try_manual
 def cleanup(test, rg):
-    pass
+    try:
+        test.cmd('az eventhubs eventhub delete --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
+        test.cmd('az eventhubs namespace delete --name {eventhub_namespace} -g {rg}')
+    except:
+        pass
 
 
 @try_manual
@@ -413,6 +419,7 @@ def call_scenario(test, rg):
     setup(test, rg)
     step_kustoclusterscreateorupdate2(test, rg)
     step_kustoclusterscreateorupdate(test, rg)
+    step_kustodatabasescreateorupdate(test, rg)
     step_kustoclusterschecknameavailability(test, rg)
     step_kustoclustersget(test, rg)
     step_kustoclusterslist(test, rg)
@@ -441,8 +448,6 @@ def call_scenario(test, rg):
     step_kustodataconnectionsupdate(test, rg)
     step_kustodataconnectionsdelete(test, rg)
     step_kustooperationslist(test, rg)
-    step_kustoclustersstop(test, rg)
-    step_kustoclustersstart(test, rg)
     step_kustodatabasesdelete(test, rg)
     step_kustoclustersdelete(test, rg)
     cleanup(test, rg)
@@ -459,8 +464,8 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'Clusters_2': 'testcliclusterfollower',
-            'Clusters_3': 'testcliclusterleader',
+            'Clusters_2': 'followercluster100',
+            'Clusters_3': 'leadercluster100',
             'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
             'DataConnections8': 'DataConnections8',
         })

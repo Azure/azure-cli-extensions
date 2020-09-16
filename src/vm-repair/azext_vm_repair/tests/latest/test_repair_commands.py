@@ -162,7 +162,7 @@ class WindowsSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         assert len(vms) == 1
 
         # Create key vault
-        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True --enable-soft-delete True')
+        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True')
 
         # Check keyvault
         keyvault = self.cmd('keyvault list -g {rg} -o json').get_output_in_json()
@@ -215,7 +215,7 @@ class LinuxSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
         assert len(vms) == 1
 
         # Create key vault
-        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True --enable-soft-delete True')
+        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True')
 
         # Check keyvault
         keyvault = self.cmd('keyvault list -g {rg} -o json').get_output_in_json()
@@ -269,7 +269,7 @@ class WindowsSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTe
         assert len(vms) == 1
 
         # Create key vault
-        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True --enable-soft-delete True')
+        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True')
 
         # Check keyvault
         keyvault = self.cmd('keyvault list -g {rg} -o json').get_output_in_json()
@@ -314,7 +314,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         assert len(vms) == 1
 
         # Create key vault
-        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True --enable-soft-delete True')
+        self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True')
 
         # Check keyvault
         keyvault = self.cmd('keyvault list -g {rg} -o json').get_output_in_json()

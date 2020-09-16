@@ -46,6 +46,9 @@ helps['aks create'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --node-osdisk-diskencryptionset-id
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
@@ -70,6 +73,9 @@ helps['aks create'] = """
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -133,9 +139,11 @@ helps['aks create'] = """
                 http_application_routing  - configure ingress with automatic public DNS name creation.
                 monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
                                             If monitoring addon is enabled --no-wait argument will have no effect
-                virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                azure-policy              - enable Azure policy (PREVIEW).
-                ingress-appgw             - enable Applicaiton Gateway Ingress Controller addon (PREVIEW).
+                virtual-node              - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy              - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+                                            Learn more at aka.ms/aks/policy.
+                ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
+                confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -214,7 +222,10 @@ helps['aks create'] = """
           short-summary: Enable VMSS node public IP.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
+          short-summary: (PREVIEW) Using managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
@@ -236,6 +247,9 @@ helps['aks create'] = """
         - name: --appgw-watch-namespace
           type: string
           short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
+        - name: --disable-sgxquotehelper
+          type: bool
+          short-summary: Disable SGX quote helper for confcom addon.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -267,6 +281,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
         - name: Create a kubernetes cluster with managed AAD enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+        - name: Create a kubernetes cluster with ephemeral os enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -396,8 +412,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
       - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
-      - name: Update an existing AKS AAD-Integrated cluster to the new AKS-managed AAD experience.
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad
+      - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
 """
 
 helps['aks kollect'] = """
@@ -486,6 +502,9 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+        - name: --node-osdisk-type
+          type: string
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -538,6 +557,10 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+    examples:
+        - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
+
 """
 
 helps['aks nodepool scale'] = """
@@ -613,8 +636,9 @@ long-summary: |-
         http_application_routing  - configure ingress with automatic public DNS name creation.
         monitoring                - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
                                     If monitoring addon is enabled --no-wait argument will have no effect
-        virtual-node              - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-        azure-policy              - enable Azure policy (PREVIEW).
+        virtual-node              - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy              - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+                                    Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
 parameters:
   - name: --addons -a
@@ -641,6 +665,9 @@ parameters:
   - name: --appgw-watch-namespace
     type: string
     short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
+  - name: --disable-sgxquotehelper
+    type: bool
+    short-summary: Disable SGX quote helper for confcom addon.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet

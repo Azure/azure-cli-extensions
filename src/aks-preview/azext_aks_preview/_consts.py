@@ -12,6 +12,11 @@ CONST_SCALE_SET_PRIORITY_SPOT = "Spot"
 CONST_SPOT_EVICTION_POLICY_DELETE = "Delete"
 CONST_SPOT_EVICTION_POLICY_DEALLOCATE = "Deallocate"
 
+CONST_KUBE_DASHBOARD_ADDON_NAME = "kubeDashboard"
+
+CONST_OS_DISK_TYPE_MANAGED = "Managed"
+CONST_OS_DISK_TYPE_EPHEMERAL = "Ephemeral"
+
 # IngressApplicaitonGateway configuration keys
 CONST_INGRESS_APPGW_ADDON_NAME = "IngressApplicationGateway"
 CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME = "applicationGatewayName"
@@ -26,3 +31,17 @@ CONST_NODEPOOL_MODE_USER = "User"
 # refer https://docs.microsoft.com/en-us/rest/api/storageservices/
 # naming-and-referencing-containers--blobs--and-metadata#container-names
 CONST_CONTAINER_NAME_MAX_LENGTH = 63
+
+# confcom addon keys
+CONST_CONFCOM_ADDON_NAME = "ACCSGXDevicePlugin"
+CONST_ACC_SGX_QUOTE_HELPER_ENABLED = "ACCSGXQuoteHelperEnabled"
+
+ADDONS = {
+    'http_application_routing': 'httpApplicationRouting',
+    'monitoring': 'omsagent',
+    'virtual-node': 'aciConnector',
+    'azure-policy': 'azurepolicy',
+    'kube-dashboard': CONST_KUBE_DASHBOARD_ADDON_NAME,
+    'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
+    "confcom": CONST_CONFCOM_ADDON_NAME
+}

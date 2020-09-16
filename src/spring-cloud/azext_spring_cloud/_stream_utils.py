@@ -12,7 +12,7 @@ from random import uniform
 from knack.util import CLIError
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
-from azure.storage.blob import AppendBlobService
+from azure.multiapi.storage.v2018_11_09.blob import AppendBlobService
 from azure.common import AzureHttpError
 from ._utils import get_blob_info
 
@@ -189,7 +189,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         logger_level_func(curr_bytes.decode('utf-8', errors='ignore'))
 
     build_status = _get_run_status(metadata).lower()
-    logger_level_func("Log status was: '%s'", build_status)
+    logger_level_func("Log status was: {}".format(build_status))
 
     if raise_error_on_failure:
         if build_status in ('internalerror', 'failed'):
