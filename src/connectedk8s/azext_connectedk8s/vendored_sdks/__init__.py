@@ -9,10 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .connected_kubernetes_client import ConnectedKubernetesClient
-from .version import VERSION
+from ._configuration import ConnectedKubernetesClientConfiguration
+from ._connected_kubernetes_client import ConnectedKubernetesClient
+__all__ = ['ConnectedKubernetesClient', 'ConnectedKubernetesClientConfiguration']
 
-__all__ = ['ConnectedKubernetesClient']
+from .version import VERSION
 
 __version__ = VERSION
 

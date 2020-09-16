@@ -9,8 +9,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .connected_cluster_operations import ConnectedClusterOperations
-from .operations import Operations
+from ._connected_cluster_operations import ConnectedClusterOperations
+from ._operations import Operations
 
 __all__ = [
     'ConnectedClusterOperations',

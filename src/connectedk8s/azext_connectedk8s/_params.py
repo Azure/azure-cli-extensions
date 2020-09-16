@@ -51,6 +51,6 @@ def load_arguments(self, _):
         c.argument('overwrite_existing', options_list=['--overwrite-existing'], help='Overwrite any existing cluster entry with the same name.')
         c.argument('authentication_method', options_list=['--authentication-method'], help='The mode of client authentication')
         c.argument('certificate_data', options_list=['--certificate-data'], help='Client certificate data')
-        c.argument('key_data', options_list=['--key-data'], help='Key data')
+        c.argument('key_data', options_list=['--key-data'], help='Client key data')
         c.argument('token', options_list=['--auth-token'], help='Authentication token')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'), help='Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.')
