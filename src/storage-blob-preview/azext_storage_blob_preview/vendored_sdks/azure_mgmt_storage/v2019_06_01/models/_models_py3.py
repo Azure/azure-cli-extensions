@@ -478,6 +478,10 @@ class BlobServiceProperties(Resource):
      policy.
     :type restore_policy:
      ~azure.mgmt.storage.v2019_06_01.models.RestorePolicyProperties
+    :param container_delete_retention_policy: The blob service properties for
+     container soft delete.
+    :type container_delete_retention_policy:
+     ~azure.mgmt.storage.v2019_06_01.models.DeleteRetentionPolicy
     :param last_access_time_tracking_policy: The blob service property to
      configure last access time based tracking policy.
     :type last_access_time_tracking_policy:
@@ -504,11 +508,12 @@ class BlobServiceProperties(Resource):
         'automatic_snapshot_policy_enabled': {'key': 'properties.automaticSnapshotPolicyEnabled', 'type': 'bool'},
         'change_feed': {'key': 'properties.changeFeed', 'type': 'ChangeFeed'},
         'restore_policy': {'key': 'properties.restorePolicy', 'type': 'RestorePolicyProperties'},
+        'container_delete_retention_policy': {'key': 'properties.containerDeleteRetentionPolicy', 'type': 'DeleteRetentionPolicy'},
         'last_access_time_tracking_policy': {'key': 'properties.lastAccessTimeTrackingPolicy', 'type': 'LastAccessTimeTrackingPolicy'},
         'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
-    def __init__(self, *, cors=None, default_service_version: str=None, delete_retention_policy=None, is_versioning_enabled: bool=None, automatic_snapshot_policy_enabled: bool=None, change_feed=None, restore_policy=None, last_access_time_tracking_policy=None, **kwargs) -> None:
+    def __init__(self, *, cors=None, default_service_version: str=None, delete_retention_policy=None, is_versioning_enabled: bool=None, automatic_snapshot_policy_enabled: bool=None, change_feed=None, restore_policy=None, container_delete_retention_policy=None, last_access_time_tracking_policy=None, **kwargs) -> None:
         super(BlobServiceProperties, self).__init__(**kwargs)
         self.cors = cors
         self.default_service_version = default_service_version
@@ -517,6 +522,7 @@ class BlobServiceProperties(Resource):
         self.automatic_snapshot_policy_enabled = automatic_snapshot_policy_enabled
         self.change_feed = change_feed
         self.restore_policy = restore_policy
+        self.container_delete_retention_policy = container_delete_retention_policy
         self.last_access_time_tracking_policy = last_access_time_tracking_policy
         self.sku = None
 

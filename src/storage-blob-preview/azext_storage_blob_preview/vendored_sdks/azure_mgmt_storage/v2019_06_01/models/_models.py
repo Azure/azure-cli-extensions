@@ -478,6 +478,10 @@ class BlobServiceProperties(Resource):
      policy.
     :type restore_policy:
      ~azure.mgmt.storage.v2019_06_01.models.RestorePolicyProperties
+    :param container_delete_retention_policy: The blob service properties for
+     container soft delete.
+    :type container_delete_retention_policy:
+     ~azure.mgmt.storage.v2019_06_01.models.DeleteRetentionPolicy
     :param last_access_time_tracking_policy: The blob service property to
      configure last access time based tracking policy.
     :type last_access_time_tracking_policy:
@@ -504,6 +508,7 @@ class BlobServiceProperties(Resource):
         'automatic_snapshot_policy_enabled': {'key': 'properties.automaticSnapshotPolicyEnabled', 'type': 'bool'},
         'change_feed': {'key': 'properties.changeFeed', 'type': 'ChangeFeed'},
         'restore_policy': {'key': 'properties.restorePolicy', 'type': 'RestorePolicyProperties'},
+        'container_delete_retention_policy': {'key': 'properties.containerDeleteRetentionPolicy', 'type': 'DeleteRetentionPolicy'},
         'last_access_time_tracking_policy': {'key': 'properties.lastAccessTimeTrackingPolicy', 'type': 'LastAccessTimeTrackingPolicy'},
         'sku': {'key': 'sku', 'type': 'Sku'},
     }
@@ -517,6 +522,7 @@ class BlobServiceProperties(Resource):
         self.automatic_snapshot_policy_enabled = kwargs.get('automatic_snapshot_policy_enabled', None)
         self.change_feed = kwargs.get('change_feed', None)
         self.restore_policy = kwargs.get('restore_policy', None)
+        self.container_delete_retention_policy = kwargs.get('container_delete_retention_policy', None)
         self.last_access_time_tracking_policy = kwargs.get('last_access_time_tracking_policy', None)
         self.sku = None
 
