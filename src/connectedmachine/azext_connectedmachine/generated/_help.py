@@ -19,8 +19,7 @@ helps['connectedmachine machine'] = """
 
 helps['connectedmachine machine list'] = """
     type: command
-    short-summary: "Lists all the hybrid machines in the specified subscription. Use the nextLink property in the \
-response to get the next page of hybrid machines."
+    short-summary: "Lists all the hybrid machines in the specified subscription."
     examples:
       - name: List Machines by resource group
         text: |-
@@ -84,9 +83,9 @@ helps['connectedmachine machine-extension create'] = """
 
 helps['connectedmachine machine-extension update'] = """
     type: command
-    short-summary: "The operation to create or update the extension."
+    short-summary: "The operation to update the extension."
     examples:
-      - name: Create or Update a Machine Extension
+      - name: Update a Machine Extension
         text: |-
                az connectedmachine machine-extension update --machine-name "myMachine" --name "CustomScriptExtension" \
 --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe \

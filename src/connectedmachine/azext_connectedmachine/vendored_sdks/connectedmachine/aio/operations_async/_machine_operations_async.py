@@ -159,8 +159,7 @@ class MachineOperations:
         resource_group_name: str,
         **kwargs
     ) -> AsyncIterable["models.MachineListResult"]:
-        """Lists all the hybrid machines in the specified resource group. Use the nextLink property in the
-        response to get the next page of hybrid machines.
+        """Lists all the hybrid machines in the specified resource group.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -227,8 +226,7 @@ class MachineOperations:
         self,
         **kwargs
     ) -> AsyncIterable["models.MachineListResult"]:
-        """Lists all the hybrid machines in the specified subscription. Use the nextLink property in the
-        response to get the next page of hybrid machines.
+        """Lists all the hybrid machines in the specified subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either MachineListResult or the result of cls(response)
