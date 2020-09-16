@@ -374,7 +374,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         start_cmd = 'aks start --resource-group={resource_group} --name={name}'
         self.cmd(start_cmd)
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
