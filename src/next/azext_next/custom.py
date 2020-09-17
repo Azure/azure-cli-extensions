@@ -15,28 +15,40 @@ def _get_api_url():
 def _get_last_cmd(cmd):
     '''Get last executed command from local log files'''
     import os
-    his_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
-    with open(his_file_name, "r") as f:
+    history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
+    with open(history_file_name, "r") as f:
         lines = f.read().splitlines()
         lines = [x for x in lines if x != 'next']
         return lines[-1]
     return ''
 
 
+def _get_last_exception(cmd):
+    '''Get last executed command from local log files'''
+    import os
+    history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'exception_history.log')
+    with open(history_file_name, "r") as f:
+        lines = f.read().splitlines()
+        return lines[-1].replace('Message: ', '')
+    return ''
+
+
 def _update_last_cmd(cmd):
     import os
-    his_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
-    with open(his_file_name, "a") as f:
+    history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
+    with open(history_file_name, "a") as f:
         f.write("{}\n".format(cmd))
 
 
-def _get_recommend_from_api(last_cmd, request_type, top_num=5, extra_data=None):  # pylint: disable=unused-argument
+def _get_recommend_from_api(last_cmd, type, top_num=5, extra_data=None):  # pylint: disable=unused-argument
     '''query next command from web api'''
     import requests
     url = _get_api_url()
     payload = {
         "command": last_cmd,
-        "top_num": top_num
+        "type": type,
+        "top_num": top_num,
+        'extra_data': extra_data
     }
     response = requests.post(url, json.dumps(payload))
     if response.status_code != 200:
