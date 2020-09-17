@@ -29,8 +29,16 @@ def cf_mgmt_blob_services(cli_ctx, _):
     return storage_client_factory(cli_ctx).blob_services
 
 
+def cf_mgmt_policy(cli_ctx, _):
+    return storage_client_factory(cli_ctx).management_policies
+
+
 def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
+
+
+def cf_mgmt_policy(cli_ctx, _):
+    return storage_client_factory(cli_ctx).management_policies
 
 
 def get_account_url(cli_ctx, account_name, service):

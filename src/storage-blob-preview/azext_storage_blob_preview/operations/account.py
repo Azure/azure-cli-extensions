@@ -5,6 +5,23 @@
 
 """Custom operations for storage account commands"""
 
+import os
+from azure.cli.core.util import get_file_json, shell_safe_json_parse
+
+
+def create_management_policies(client, resource_group_name, account_name, policy):
+    if os.path.exists(policy):
+        policy = get_file_json(policy)
+    else:
+        policy = shell_safe_json_parse(policy)
+    return client.create_or_update(resource_group_name, account_name, policy=policy)
+
+
+def update_management_policies(client, resource_group_name, account_name, parameters=None):
+    if parameters:
+        parameters = parameters.policy
+    return client.create_or_update(resource_group_name, account_name, policy=parameters)
+
 
 # TODO: support updating other properties besides 'enable_change_feed,delete_retention_policy'
 def update_blob_service_properties(cmd, instance, enable_change_feed=None, enable_delete_retention=None,

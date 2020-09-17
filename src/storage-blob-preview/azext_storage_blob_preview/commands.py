@@ -8,7 +8,7 @@ from azure.cli.core.commands.arm import show_exception_handler
 from azure.cli.core.profiles import ResourceType
 
 from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client, \
-    cf_mgmt_blob_services, cf_sa
+    cf_mgmt_blob_services, cf_sa, cf_mgmt_policy
 from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
 
@@ -26,7 +26,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         )
 
     blob_service_mgmt_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.storage.operations#BlobServicesOperations.{}',
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#BlobServicesOperations.{}',
         client_factory=cf_mgmt_blob_services,
         resource_type=CUSTOM_MGMT_STORAGE
     )
@@ -43,6 +43,26 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                  getter_name='get_service_properties',
                                  setter_name='set_service_properties',
                                  custom_func_name='update_blob_service_properties')
+
+    management_policy_sdk = CliCommandType(
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#ManagementPoliciesOperations.{}',
+        client_factory=cf_mgmt_policy,
+        resource_type=ResourceType.MGMT_STORAGE
+    )
+
+    management_policy_custom_type = CliCommandType(
+        operations_tmpl='azure.cli.command_modules.storage.operations.account#{}',
+        client_factory=cf_mgmt_policy)
+
+    with self.command_group('storage account management-policy', management_policy_sdk,
+                            resource_type=ResourceType.MGMT_STORAGE, min_api='2018-11-01',
+                            custom_command_type=management_policy_custom_type) as g:
+        g.show_command('show', 'get')
+        g.custom_command('create', 'create_management_policies')
+        g.generic_update_command('update', getter_name='get',
+                                 setter_name='update_management_policies',
+                                 setter_type=management_policy_custom_type)
+        g.command('delete', 'delete')
 
     blob_client_sdk = CliCommandType(
         operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._blob_client#BlobClient.{}',
