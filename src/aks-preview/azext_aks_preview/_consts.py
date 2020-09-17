@@ -14,6 +14,9 @@ CONST_SPOT_EVICTION_POLICY_DEALLOCATE = "Deallocate"
 
 CONST_KUBE_DASHBOARD_ADDON_NAME = "kubeDashboard"
 
+CONST_OS_DISK_TYPE_MANAGED = "Managed"
+CONST_OS_DISK_TYPE_EPHEMERAL = "Ephemeral"
+
 # IngressApplicaitonGateway configuration keys
 CONST_INGRESS_APPGW_ADDON_NAME = "IngressApplicationGateway"
 CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME = "applicationGatewayName"
