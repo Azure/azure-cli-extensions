@@ -482,3 +482,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('include_deleted', arg_type=get_three_state_flag(), min_api='2020-02-10',
                    help='Specify that deleted containers to be returned in the response. This is for container restore '
                    'enabled account. The default value is `False`')
+
+    with self.argument_context('storage container restore') as c:
+        c.argument('deleted_container_name', options_list=['--name', '-n'],
+                   help='Specify the name of the deleted container to restore.')
+        c.argument('deleted_container_version', options_list=['--deleted-version'],
+                   help='Specify the version of the deleted container to restore.')
+        c.argument('new_name', help='The new name for the deleted container to be restored to.')
+        c.extra('timeout', timeout_type)

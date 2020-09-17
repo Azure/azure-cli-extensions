@@ -147,3 +147,5 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('list', 'list_containers', custom_command_type=blob_service_custom_sdk,
                                        transform=transform_container_list_output,
                                        table_transformer=transform_container_list)
+        g.storage_command_oauth('restore', 'undelete_container', command_type=blob_service_sdk,
+                                min_api='2020-02-10', is_preview=True)

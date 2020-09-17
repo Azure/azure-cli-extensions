@@ -331,3 +331,36 @@ class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.storage_cmd('storage container list --include-deleted ', account_info) \
             .assert_with_checks(JMESPathCheck('length(@)', 2))
+
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(kind='StorageV2', name_prefix='clitest', location='eastus2euap')
+    def test_storage_container_soft_delete_scenarios(self, resource_group, storage_account):
+        import time
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info, prefix="con1")
+        self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --container-delete-retention-days 7 '
+                 '--enable-container-delete-retention',
+                 checks={
+                     JMESPathCheck('containerDeleteRetentionPolicy.days', 7),
+                     JMESPathCheck('containerDeleteRetentionPolicy.enabled', True)
+                 })
+        self.storage_cmd('storage container list ', account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+        self.storage_cmd('storage container delete -n {} ', account_info, container)
+        self.storage_cmd('storage container list ', account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 0))
+        self.storage_cmd('storage container list --include-deleted', account_info).assert_with_checks(
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].deleted', True))
+
+        time.sleep(30)
+        version = self.storage_cmd('storage container list --include-deleted --query [0].version -o tsv', account_info)\
+            .output.strip('\n')
+        self.storage_cmd('storage container restore -n {} --deleted-version {}', account_info, container, version)\
+            .assert_with_checks(JMESPathCheck('containerName', container))
+
+        self.storage_cmd('storage container list ', account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+        self.storage_cmd('storage container list --include-deleted ', account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
