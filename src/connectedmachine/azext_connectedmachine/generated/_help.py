@@ -53,7 +53,7 @@ helps['connectedmachine machine-extension list'] = """
     type: command
     short-summary: "The operation to get all extensions of a non-Azure machine"
     examples:
-      - name: GET all Machine Extensions
+      - name: Get all Machine Extensions
         text: |-
                az connectedmachine machine-extension list --machine-name "myMachine" --resource-group \
 "myResourceGroup"
@@ -63,7 +63,7 @@ helps['connectedmachine machine-extension show'] = """
     type: command
     short-summary: "The operation to get the extension."
     examples:
-      - name: GET Machine Extension
+      - name: Get Machine Extension
         text: |-
                az connectedmachine machine-extension show --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup"
