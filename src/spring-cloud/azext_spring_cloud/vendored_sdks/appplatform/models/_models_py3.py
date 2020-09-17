@@ -191,7 +191,7 @@ class AvailableRuntimeVersions(Model):
 
     :ivar value: A list of all supported runtime versions.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion1]
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion]
     """
 
     _validation = {
@@ -199,7 +199,7 @@ class AvailableRuntimeVersions(Model):
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[SupportedRuntimeVersion1]'},
+        'value': {'key': 'value', 'type': '[SupportedRuntimeVersion]'},
     }
 
     def __init__(self, **kwargs) -> None:
@@ -749,6 +749,8 @@ class DeploymentInstance(Model):
     :vartype reason: str
     :ivar discovery_status: Discovery status of the deployment instance
     :vartype discovery_status: str
+    :ivar start_time: Start time of the deployment instance
+    :vartype start_time: str
     """
 
     _validation = {
@@ -756,6 +758,7 @@ class DeploymentInstance(Model):
         'status': {'readonly': True},
         'reason': {'readonly': True},
         'discovery_status': {'readonly': True},
+        'start_time': {'readonly': True},
     }
 
     _attribute_map = {
@@ -763,6 +766,7 @@ class DeploymentInstance(Model):
         'status': {'key': 'status', 'type': 'str'},
         'reason': {'key': 'reason', 'type': 'str'},
         'discovery_status': {'key': 'discoveryStatus', 'type': 'str'},
+        'start_time': {'key': 'startTime', 'type': 'str'},
     }
 
     def __init__(self, **kwargs) -> None:
@@ -771,6 +775,7 @@ class DeploymentInstance(Model):
         self.status = None
         self.reason = None
         self.discovery_status = None
+        self.start_time = None
 
 
 class DeploymentResource(ProxyResource):
@@ -1203,6 +1208,9 @@ class NameAvailabilityParameters(Model):
 class NetworkProfile(Model):
     """Service network profile payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param service_runtime_subnet_id: Fully qualified resource Id of the
      subnet to host Azure Spring Cloud Service Runtime
     :type service_runtime_subnet_id: str
@@ -1217,7 +1225,15 @@ class NetworkProfile(Model):
     :param app_network_resource_group: Name of the resource group containing
      network resources of Azure Spring Cloud Apps
     :type app_network_resource_group: str
+    :ivar outbound_ips: Desired outbound IP resources for Azure Spring Cloud
+     instance.
+    :vartype outbound_ips:
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.NetworkProfileOutboundIPs
     """
+
+    _validation = {
+        'outbound_ips': {'readonly': True},
+    }
 
     _attribute_map = {
         'service_runtime_subnet_id': {'key': 'serviceRuntimeSubnetId', 'type': 'str'},
@@ -1225,6 +1241,7 @@ class NetworkProfile(Model):
         'service_cidr': {'key': 'serviceCidr', 'type': 'str'},
         'service_runtime_network_resource_group': {'key': 'serviceRuntimeNetworkResourceGroup', 'type': 'str'},
         'app_network_resource_group': {'key': 'appNetworkResourceGroup', 'type': 'str'},
+        'outbound_ips': {'key': 'outboundIPs', 'type': 'NetworkProfileOutboundIPs'},
     }
 
     def __init__(self, *, service_runtime_subnet_id: str=None, app_subnet_id: str=None, service_cidr: str=None, service_runtime_network_resource_group: str=None, app_network_resource_group: str=None, **kwargs) -> None:
@@ -1234,6 +1251,30 @@ class NetworkProfile(Model):
         self.service_cidr = service_cidr
         self.service_runtime_network_resource_group = service_runtime_network_resource_group
         self.app_network_resource_group = app_network_resource_group
+        self.outbound_ips = None
+
+
+class NetworkProfileOutboundIPs(Model):
+    """Desired outbound IP resources for Azure Spring Cloud instance.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar public_ips: A list of public IP addresses.
+    :vartype public_ips: list[str]
+    """
+
+    _validation = {
+        'public_ips': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'public_ips': {'key': 'publicIPs', 'type': '[str]'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(NetworkProfileOutboundIPs, self).__init__(**kwargs)
+        self.public_ips = None
 
 
 class OperationDetail(Model):
@@ -1731,13 +1772,13 @@ class SkuCapacity(Model):
         self.scale_type = scale_type
 
 
-class SupportedRuntimeVersion1(Model):
+class SupportedRuntimeVersion(Model):
     """Supported deployment runtime version descriptor.
 
     :param value: The raw value which could be passed to deployment CRUD
      operations. Possible values include: 'Java_8', 'Java_11', 'NetCore_31'
     :type value: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeValue
     :param platform: The platform of this runtime version (possible values:
      "Java" or ".NET"). Possible values include: 'Java', '.NET Core'
     :type platform: str or
@@ -1753,7 +1794,7 @@ class SupportedRuntimeVersion1(Model):
     }
 
     def __init__(self, *, value=None, platform=None, version: str=None, **kwargs) -> None:
-        super(SupportedRuntimeVersion1, self).__init__(**kwargs)
+        super(SupportedRuntimeVersion, self).__init__(**kwargs)
         self.value = value
         self.platform = platform
         self.version = version
