@@ -302,7 +302,7 @@ class SourceControlConfiguration(ProxyResource):
     :type operator_params: str
     :param configuration_protected_settings: Any Secrets the User would like to create on
      the cluster.
-    :type configuration_protected_settings: str
+    :type configuration_protected_settings: dict[str, str]
     :param operator_scope: Scope at which the operator will be installed.
      Possible values include: 'cluster', 'namespace'. Default value: "cluster"
      .
@@ -311,6 +311,8 @@ class SourceControlConfiguration(ProxyResource):
      configuration (either generated within the cluster or provided by the
      user).
     :vartype repository_public_key: str
+    :param ssh_known_hosts_contents: Base64-encoded known_hosts contents containing public SSH keys required to access private Git instances.
+    :type ssh_known_hosts_contents: str
     :param enable_helm_operator: Option to enable Helm Operator for this git
      configuration. Possible values include: 'true', 'false'
     :type enable_helm_operator: str or
@@ -346,9 +348,10 @@ class SourceControlConfiguration(ProxyResource):
         'operator_instance_name': {'key': 'properties.operatorInstanceName', 'type': 'str'},
         'operator_type': {'key': 'properties.operatorType', 'type': 'str'},
         'operator_params': {'key': 'properties.operatorParams', 'type': 'str'},
-        'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': 'str'},
+        'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': '{str}'},
         'operator_scope': {'key': 'properties.operatorScope', 'type': 'str'},
         'repository_public_key': {'key': 'properties.repositoryPublicKey', 'type': 'str'},
+        'ssh_known_hosts_contents': {'key': 'properties.sshKnownHostsContents', 'type': 'str'},
         'enable_helm_operator': {'key': 'properties.enableHelmOperator', 'type': 'str'},
         'helm_operator_properties': {'key': 'properties.helmOperatorProperties', 'type': 'HelmOperatorProperties'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -365,6 +368,7 @@ class SourceControlConfiguration(ProxyResource):
         self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.operator_scope = kwargs.get('operator_scope', "cluster")
         self.repository_public_key = None
+        self.ssh_known_hosts_contents = kwargs.get('ssh_known_hosts_contents', None)
         self.enable_helm_operator = kwargs.get('enable_helm_operator', None)
         self.helm_operator_properties = kwargs.get('helm_operator_properties', None)
         self.provisioning_state = None

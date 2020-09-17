@@ -3,12 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
+import json
 from knack.util import CLIError
 
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
 from azext_k8sconfiguration.vendored_sdks.models import ErrorResponseException
-import base64
 
 
 def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
@@ -39,7 +40,8 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
 
 def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url, scope, cluster_type,
                             operator_instance_name=None, operator_namespace='default', helm_operator_version='0.3.0',
-                            operator_type='flux', operator_params='', gitops_privatekey_filepath='', gitops_privatekey='', 
+                            operator_type='flux', operator_params='', ssh_private_key='', ssh_private_key_filepath='',
+                            https_user='', https_key='', ssh_known_hosts_contents='', ssh_known_hosts_filepath='', 
                             enable_helm_operator=None, helm_operator_params=''):
     """Create a new Kubernetes Source Control Configuration.
 
@@ -59,28 +61,23 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
         helm_operator_properties.chart_version = helm_operator_version.strip()
         helm_operator_properties.chart_values = helm_operator_params.strip()
 
-    if gitops_privatekey != '' and gitops_privatekey_filepath != '':
-        raise Exception("Cannot provide raw key AND filepath, must choose one")
-    elif gitops_privatekey_filepath != '':
-        with open (gitops_privatekey_filepath, "r") as myfile: # user passed in filename
-            dataList = myfile.readlines() # keeps newline characters intact
-            if len(dataList) <= 1:
-                raise Exception("Empty file was provided")
-            dataRaw = ''.join(dataList)
-            dataBytes = dataRaw.encode('utf-8')
-            data = base64.b64encode(dataBytes)
-            data = data.decode('utf-8')
-            configuration_protected_settings = "{\"GitOpsPrivateKey\":\""+ data +"\"}"
-    elif gitops_privatekey != '':
-        if "\\n" in gitops_privatekey: # user passed raw key
-            dataBytes = gitops_privatekey.encode('utf-8')
-            data = base64.b64encode(dataBytes)
-            data = data.decode('utf-8')
-        else: # user passed base64 encoded key
-            data = gitops_privatekey
-        configuration_protected_settings = "{\"GitOpsPrivateKey\":\""+ data +"\"}"
-    else:
-        configuration_protected_settings = "{}"
+    protected_settings = {}
+    ssh_private_key_data = __get_data_from_key_or_file(ssh_private_key, ssh_private_key_filepath, True)
+
+    # Add gitops private key data to protected settings if exists
+    if ssh_private_key_data != '':
+        protected_settings["sshPrivateKey"] = ssh_private_key_data
+
+    # Check if both httpsUser and httpsKey exist, then add to protected settings
+    if https_user != '' and https_key != '':
+        protected_settings['httpsUser'] = __to_base64(https_user)
+        protected_settings['httpsKey'] = __to_base64(https_key)
+    elif https_user != '':
+        raise Exception('Cannot provide https-user without https-key')
+    elif https_key != '':
+        raise Exception('Cannot provide https-key without https-user')
+
+    knownhost_data = __get_data_from_key_or_file(ssh_known_hosts_contents, ssh_known_hosts_filepath)
 
     # Create sourceControlConfiguration object
     source_control_configuration = SourceControlConfiguration(repository_url=repository_url,
@@ -88,8 +85,9 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
                                                               operator_instance_name=operator_instance_name,
                                                               operator_type=operator_type,
                                                               operator_params=operator_params,
-                                                              configuration_protected_settings=configuration_protected_settings,
+                                                              configuration_protected_settings=protected_settings,
                                                               operator_scope=scope,
+                                                              ssh_known_hosts_contents=knownhost_data,
                                                               enable_helm_operator=enable_helm_operator,
                                                               helm_operator_properties=helm_operator_properties)
 
@@ -178,3 +176,33 @@ def __fix_compliance_state(config):
         config.compliance_status.compliance_state = 'Installed'
 
     return config
+
+
+def __get_data_from_key_or_file(key, filepath, raw_key_is_valid=False):
+    if key != '' and filepath != '':
+        raise Exception("Cannot provide raw key AND filepath, must choose one")
+    data = ''
+    if filepath != '':
+        data = __read_key_file(filepath)
+    elif key != '':
+        if "\\n" in key: # user passed raw key
+            if not raw_key_is_valid:
+                raise Exception("Cannot provide raw key to this parameter")
+            data = __to_base64(key)
+        else: # user passed base64 encoded key
+            data = key
+    return data
+
+
+def __read_key_file(path):
+    with open (path, "r") as myfile: # user passed in filename
+        dataList = myfile.readlines() # keeps newline characters intact
+        if len(dataList) <= 0:
+            raise Exception("Empty file was provided")
+        raw_data = ''.join(dataList)
+    return __to_base64(raw_data)
+
+
+def __to_base64(raw_data):
+    bytes_data = raw_data.encode('utf-8')
+    return base64.b64encode(bytes_data).decode('utf-8')
