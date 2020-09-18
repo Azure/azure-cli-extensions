@@ -1,5 +1,17 @@
 Release History
 ===============
+1.1.3
+-----
+* Deprecate the '--jar-path' with '--artifact-path'.
+
+1.1.2
+-----
+* Reimport the updated version of Python SDK.
+
+1.1.0
+-----
+* Support Steeltoe feature.
+
 1.0.1
 -----
 * Optimize VNet Injection validator

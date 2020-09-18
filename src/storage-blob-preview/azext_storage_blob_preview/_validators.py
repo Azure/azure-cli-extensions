@@ -591,14 +591,16 @@ def validate_metadata(namespace):
 
 
 def get_permission_allowed_values(permission_class):
-    instance = permission_class()
+    if permission_class:
+        instance = permission_class()
 
-    allowed_values = [x.lower() for x in dir(instance) if not x.startswith('_')]
-    allowed_values.remove('from_string')
-    for i, item in enumerate(allowed_values):
-        if item == 'delete_previous_version':
-            allowed_values[i] = 'x' + item
-    return allowed_values
+        allowed_values = [x.lower() for x in dir(instance) if not x.startswith('_')]
+        allowed_values.remove('from_string')
+        for i, item in enumerate(allowed_values):
+            if item == 'delete_previous_version':
+                allowed_values[i] = 'x' + item
+        return allowed_values
+    return None
 
 
 def get_permission_help_string(permission_class):

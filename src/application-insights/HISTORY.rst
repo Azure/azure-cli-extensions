@@ -1,3 +1,8 @@
+0.1.11
+++++++++++++++++++
+
+* `az monitor app-insights component update`: Update consent message.
+
 0.1.10
 ++++++++++++++++++
 

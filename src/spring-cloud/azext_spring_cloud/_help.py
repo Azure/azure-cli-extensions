@@ -142,7 +142,7 @@ helps['spring-cloud app deploy'] = """
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment
 """
@@ -244,7 +244,7 @@ helps['spring-cloud app deployment create'] = """
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
 helps['spring-cloud config-server'] = """

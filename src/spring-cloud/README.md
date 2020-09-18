@@ -17,5 +17,5 @@ az spring-cloud create -n <service name> --no-wait
 ```
 Create a green deployment with default configuration
 ```
-az spring-cloud app deployment  create --app <app name> -n <deployment name> --jar-path <jar path>
+az spring-cloud app deployment  create --app <app name> -n <deployment name> --artifact-path <jar path>
 ```
