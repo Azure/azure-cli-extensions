@@ -6,7 +6,7 @@ Release History
 0.3.0
 ++++++
 * `az connectedk8s connect`: Added support for connect proxy
-* `az connectedk8s get-credentials`: Added support for list cluster user credentials
+* `az connectedk8s get-credentials`: Added support for list cluster user credentials for both AAD and non-AAd AKS clusters
 
 0.2.5
 ++++++
