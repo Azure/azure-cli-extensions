@@ -1,10 +1,10 @@
 Release History
 ===============
-1.1.3
+1.1.2
 -----
 * Deprecate the '--jar-path' with '--artifact-path'.
 
-1.1.2
+1.1.1
 -----
 * Reimport the updated version of Python SDK.
 
