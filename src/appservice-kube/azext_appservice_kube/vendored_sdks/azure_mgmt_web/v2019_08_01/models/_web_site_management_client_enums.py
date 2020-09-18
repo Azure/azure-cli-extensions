@@ -599,6 +599,18 @@ class TriggerTypes(str, Enum):
     unknown = "Unknown"
 
 
+class StorageType(str, Enum):
+
+    local_node = "LocalNode"
+    network_file_system = "NetworkFileSystem"
+
+
+class FrontEndServiceType(str, Enum):
+
+    node_port = "NodePort"
+    load_balancer = "LoadBalancer"
+
+
 class K8SEProvisioningState(str, Enum):
 
     succeeded = "Succeeded"

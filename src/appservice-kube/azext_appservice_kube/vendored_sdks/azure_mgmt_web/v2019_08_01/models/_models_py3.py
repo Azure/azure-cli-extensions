@@ -1991,6 +1991,49 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
         self.kube_environment_profile = kube_environment_profile
 
 
+class ArcConfiguration(Model):
+    """ArcConfiguration.
+
+    :param artifacts_storage_type: Possible values include: 'LocalNode',
+     'NetworkFileSystem'
+    :type artifacts_storage_type: str or
+     ~azure.mgmt.web.v2019_08_01.models.StorageType
+    :param artifact_storage_class_name:
+    :type artifact_storage_class_name: str
+    :param artifact_storage_mount_path:
+    :type artifact_storage_mount_path: str
+    :param artifact_storage_node_name:
+    :type artifact_storage_node_name: str
+    :param front_end_service_configuration:
+    :type front_end_service_configuration:
+     ~azure.mgmt.web.v2019_08_01.models.FrontEndConfiguration
+    :param kube_config:
+    :type kube_config: str
+    :param aks_engine_resource_group:
+    :type aks_engine_resource_group: str
+    """
+
+    _attribute_map = {
+        'artifacts_storage_type': {'key': 'artifactsStorageType', 'type': 'StorageType'},
+        'artifact_storage_class_name': {'key': 'artifactStorageClassName', 'type': 'str'},
+        'artifact_storage_mount_path': {'key': 'artifactStorageMountPath', 'type': 'str'},
+        'artifact_storage_node_name': {'key': 'artifactStorageNodeName', 'type': 'str'},
+        'front_end_service_configuration': {'key': 'frontEndServiceConfiguration', 'type': 'FrontEndConfiguration'},
+        'kube_config': {'key': 'kubeConfig', 'type': 'str'},
+        'aks_engine_resource_group': {'key': 'aksEngineResourceGroup', 'type': 'str'},
+    }
+
+    def __init__(self, *, artifacts_storage_type=None, artifact_storage_class_name: str=None, artifact_storage_mount_path: str=None, artifact_storage_node_name: str=None, front_end_service_configuration=None, kube_config: str=None, aks_engine_resource_group: str=None, **kwargs) -> None:
+        super(ArcConfiguration, self).__init__(**kwargs)
+        self.artifacts_storage_type = artifacts_storage_type
+        self.artifact_storage_class_name = artifact_storage_class_name
+        self.artifact_storage_mount_path = artifact_storage_mount_path
+        self.artifact_storage_node_name = artifact_storage_node_name
+        self.front_end_service_configuration = front_end_service_configuration
+        self.kube_config = kube_config
+        self.aks_engine_resource_group = aks_engine_resource_group
+
+
 class ArmIdWrapper(Model):
     """A wrapper for an ARM resource id.
 
@@ -5435,6 +5478,22 @@ class FileSystemHttpLogsConfig(Model):
         self.enabled = enabled
 
 
+class FrontEndConfiguration(Model):
+    """FrontEndConfiguration.
+
+    :param kind: Possible values include: 'NodePort', 'LoadBalancer'
+    :type kind: str or ~azure.mgmt.web.v2019_08_01.models.FrontEndServiceType
+    """
+
+    _attribute_map = {
+        'kind': {'key': 'kind', 'type': 'FrontEndServiceType'},
+    }
+
+    def __init__(self, *, kind=None, **kwargs) -> None:
+        super(FrontEndConfiguration, self).__init__(**kwargs)
+        self.kind = kind
+
+
 class FunctionEnvelope(ProxyOnlyResource):
     """Function information.
 
@@ -6388,40 +6447,8 @@ class KeyVaultReferenceResource(ProxyOnlyResource):
         self.location = location
 
 
-class KubeEnvironmentProfile(Model):
-    """Specification for a Kubernetes Environment to use for this resource.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :param id: Resource ID of the Kubernetes Environment.
-    :type id: str
-    :ivar name: Name of the Kubernetes Environment.
-    :vartype name: str
-    :ivar type: Resource type of the Kubernetes Environment.
-    :vartype type: str
-    """
-
-    _validation = {
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, *, id: str=None, **kwargs) -> None:
-        super(KubeEnvironmentProfile, self).__init__(**kwargs)
-        self.id = id
-        self.name = None
-        self.type = None
-
-
-class KubeEnvironmentResource(Resource):
-    """ARM resource for Kubernetes Environment.
+class KubeEnvironment(Resource):
+    """A Kubernetes cluster specialized for web workloads by Azure App Service.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -6496,14 +6523,26 @@ class KubeEnvironmentResource(Resource):
     :type service_principal_client_id: str
     :param service_principal_client_secret: Service Principal Client Secret
     :type service_principal_client_secret: str
-    :ivar static_ip: Static IP of the KubeEnvironment
-    :vartype static_ip: str
+    :param static_ip: Static IP of the KubeEnvironment
+    :type static_ip: str
     :param default_certificate_provision_start_time: Time when
      DefaultCertificateProvisioning is started, used to
      determine timeout for certificate provisioning
     :type default_certificate_provision_start_time: str
     :param log_analytics_workspace_id:
     :type log_analytics_workspace_id: str
+    :param compute_platform:
+    :type compute_platform: str
+    :param namespace:
+    :type namespace: str
+    :param arc_configuration: Cluster configuration which determines the ARC
+     cluster
+     components types. Eg: Choosing between BuildService kind,
+     FrontEnd Service ArtifactsStorageType etc.
+    :type arc_configuration:
+     ~azure.mgmt.web.v2019_08_01.models.ArcConfiguration
+    :param aks_resource_id:
+    :type aks_resource_id: str
     """
 
     _validation = {
@@ -6517,7 +6556,6 @@ class KubeEnvironmentResource(Resource):
         'aks_cluster_resource_group': {'readonly': True},
         'kubernetes_version': {'readonly': True},
         'deployment_errors': {'readonly': True},
-        'static_ip': {'readonly': True},
     }
 
     _attribute_map = {
@@ -6544,10 +6582,14 @@ class KubeEnvironmentResource(Resource):
         'static_ip': {'key': 'properties.staticIp', 'type': 'str'},
         'default_certificate_provision_start_time': {'key': 'properties.defaultCertificateProvisionStartTime', 'type': 'str'},
         'log_analytics_workspace_id': {'key': 'properties.logAnalyticsWorkspaceID', 'type': 'str'},
+        'compute_platform': {'key': 'properties.computePlatform', 'type': 'str'},
+        'namespace': {'key': 'properties.namespace', 'type': 'str'},
+        'arc_configuration': {'key': 'properties.arcConfiguration', 'type': 'ArcConfiguration'},
+        'aks_resource_id': {'key': 'properties.aksResourceID', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, node_pools, kind: str=None, tags=None, internal_load_balancer_enabled: bool=None, vnet_subnet_id: str=None, network_plugin=None, service_cidr: str=None, dns_service_ip: str=None, docker_bridge_cidr: str=None, service_principal_client_id: str=None, service_principal_client_secret: str=None, default_certificate_provision_start_time: str=None, log_analytics_workspace_id: str=None, **kwargs) -> None:
-        super(KubeEnvironmentResource, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
+    def __init__(self, *, location: str, node_pools, kind: str=None, tags=None, internal_load_balancer_enabled: bool=None, vnet_subnet_id: str=None, network_plugin=None, service_cidr: str=None, dns_service_ip: str=None, docker_bridge_cidr: str=None, service_principal_client_id: str=None, service_principal_client_secret: str=None, static_ip: str=None, default_certificate_provision_start_time: str=None, log_analytics_workspace_id: str=None, compute_platform: str=None, namespace: str=None, arc_configuration=None, aks_resource_id: str=None, **kwargs) -> None:
+        super(KubeEnvironment, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.provisioning_state = None
         self.node_pools = node_pools
         self.subscription_id = None
@@ -6562,9 +6604,45 @@ class KubeEnvironmentResource(Resource):
         self.docker_bridge_cidr = docker_bridge_cidr
         self.service_principal_client_id = service_principal_client_id
         self.service_principal_client_secret = service_principal_client_secret
-        self.static_ip = None
+        self.static_ip = static_ip
         self.default_certificate_provision_start_time = default_certificate_provision_start_time
         self.log_analytics_workspace_id = log_analytics_workspace_id
+        self.compute_platform = compute_platform
+        self.namespace = namespace
+        self.arc_configuration = arc_configuration
+        self.aks_resource_id = aks_resource_id
+
+
+class KubeEnvironmentProfile(Model):
+    """Specification for a Kubernetes Environment to use for this resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param id: Resource ID of the Kubernetes Environment.
+    :type id: str
+    :ivar name: Name of the Kubernetes Environment.
+    :vartype name: str
+    :ivar type: Resource type of the Kubernetes Environment.
+    :vartype type: str
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, **kwargs) -> None:
+        super(KubeEnvironmentProfile, self).__init__(**kwargs)
+        self.id = id
+        self.name = None
+        self.type = None
 
 
 class KubeNodePool(Model):

@@ -167,10 +167,12 @@ def load_arguments(self, _):
                    use `az network vnet [subnet] create`')
         c.argument('vnet_name', help='Name of the vnet. Mandatory if only subnet name is specified.')
         c.argument('dns_service_ip', help='Kubernetes Dns Service IP within service_cidr (commonly, .10 address). This is required if a vnet subnet is specified.')
-        c.argument('service_cidr', help='Address space to be used by services (nodeport/clusterip/loadbalancer). It must be within the vnet but not used by subnet. This is required if a vnet subnet is specified')
+        c.argument('service_cidr', help='Address space to be used by services (nodeport/clusterip/loadbalancer). It must be within the vnet but not used by subnet. This is required if a vnet subnet is specified.')
         c.argument('docker_bridge_cidr', help='This lets the cluster nodes communicate with the underlying management platform. This IP address must NOT be within the virtual network IP address range of your cluster, and shouldn\'t overlap with other address ranges in use on your network. Default (by AKS) is 172.17.0.1/16. If your VNET overlapped with this, you must specify others.')
         c.argument('workspace_id', help='Log analytics workspace ID')
         c.argument('tags', arg_type=tags_type)
+        c.argument('aks', help='AKS name or resource ID')
+        c.argument('static_ip', help='Static IP Address. This is required if an AKS resource ID is specified.')
 
     with self.argument_context('appservice kube update') as c:
         c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')

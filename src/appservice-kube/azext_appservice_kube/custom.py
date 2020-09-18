@@ -40,7 +40,7 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
                          CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
 
 from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_site_operation,
-                     _get_location_from_resource_group)
+                     _get_location_from_resource_group, validate_aks_id)
 from ._create_util import (zip_contents_from_dir, get_runtime_version_details, create_resource_group, get_app_details,
                            should_create_new_rg, set_location, does_app_already_exist, get_profile_username,
                            get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
@@ -63,8 +63,10 @@ def create_kube_environment(cmd,
                             client,
                             kube_name,
                             resource_group_name,
-                            client_id,
-                            client_secret,
+                            aks=None,
+                            static_ip=None,
+                            client_id=None,
+                            client_secret=None,
                             node_count=3,
                             max_count=3,
                             location=None,
@@ -81,13 +83,21 @@ def create_kube_environment(cmd,
                             tags=None,
                             no_wait=False):
 
-    KubeEnvironmentResource, KubeNodePool = cmd.get_models('KubeEnvironmentResource', 'KubeNodePool')
+    KubeEnvironment, KubeNodePool = cmd.get_models('KubeEnvironment', 'KubeNodePool')
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
     if subnet is not None:
         subnet_id = validate_subnet_id(cmd.cli_ctx, subnet, vnet_name, resource_group_name)
     else:
         subnet_id = None
+
+    if aks is not None:
+        aks_id = validate_aks_id(cmd.cli_ctx, aks, resource_group_name)
+    else:
+        aks_id = None
+
+    if aks_id and not static_ip:
+        raise CLIError('Usage error: --static-ip must be specified when using --aks')
 
     # TODO: add some verifications
     # TODO: support creating service principal automatically
@@ -98,7 +108,7 @@ def create_kube_environment(cmd,
         max_node_count=max_count,
         name=nodepool_name)
 
-    kube_def = KubeEnvironmentResource(
+    kube_def = KubeEnvironment(
         location=location,
         tags=tags,
         node_pools=[node_pool_def],
@@ -110,7 +120,9 @@ def create_kube_environment(cmd,
         docker_bridge_cidr=docker_bridge_cidr,
         service_principal_client_id=client_id,
         service_principal_client_secret=client_secret,
-        log_analytics_workspace_id=workspace_id)
+        log_analytics_workspace_id=workspace_id,
+        aks_resource_id=aks_id,
+        static_ip=static_ip)
 
     return sdk_no_wait(no_wait, client.create, resource_group_name, kube_name, kube_def)
 

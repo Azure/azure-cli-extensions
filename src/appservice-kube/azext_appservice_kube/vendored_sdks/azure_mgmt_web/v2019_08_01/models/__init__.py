@@ -31,6 +31,7 @@ try:
     from ._models_py3 import AppServiceEnvironmentResource
     from ._models_py3 import AppServicePlan
     from ._models_py3 import AppServicePlanPatchResource
+    from ._models_py3 import ArcConfiguration
     from ._models_py3 import ArmIdWrapper
     from ._models_py3 import AutoHealActions
     from ._models_py3 import AutoHealCustomAction
@@ -109,6 +110,7 @@ try:
     from ._models_py3 import Experiments
     from ._models_py3 import FileSystemApplicationLogsConfig
     from ._models_py3 import FileSystemHttpLogsConfig
+    from ._models_py3 import FrontEndConfiguration
     from ._models_py3 import FunctionEnvelope
     from ._models_py3 import FunctionSecrets
     from ._models_py3 import GeoRegion
@@ -131,8 +133,8 @@ try:
     from ._models_py3 import KeyInfo
     from ._models_py3 import KeyVaultReferenceCollection
     from ._models_py3 import KeyVaultReferenceResource
+    from ._models_py3 import KubeEnvironment
     from ._models_py3 import KubeEnvironmentProfile
-    from ._models_py3 import KubeEnvironmentResource
     from ._models_py3 import KubeNodePool
     from ._models_py3 import LocalizableString
     from ._models_py3 import LogSpecification
@@ -287,6 +289,7 @@ except (SyntaxError, ImportError):
     from ._models import AppServiceEnvironmentResource
     from ._models import AppServicePlan
     from ._models import AppServicePlanPatchResource
+    from ._models import ArcConfiguration
     from ._models import ArmIdWrapper
     from ._models import AutoHealActions
     from ._models import AutoHealCustomAction
@@ -365,6 +368,7 @@ except (SyntaxError, ImportError):
     from ._models import Experiments
     from ._models import FileSystemApplicationLogsConfig
     from ._models import FileSystemHttpLogsConfig
+    from ._models import FrontEndConfiguration
     from ._models import FunctionEnvelope
     from ._models import FunctionSecrets
     from ._models import GeoRegion
@@ -387,8 +391,8 @@ except (SyntaxError, ImportError):
     from ._models import KeyInfo
     from ._models import KeyVaultReferenceCollection
     from ._models import KeyVaultReferenceResource
+    from ._models import KubeEnvironment
     from ._models import KubeEnvironmentProfile
-    from ._models import KubeEnvironmentResource
     from ._models import KubeNodePool
     from ._models import LocalizableString
     from ._models import LogSpecification
@@ -546,7 +550,7 @@ from ._paged_models import HostNameBindingPaged
 from ._paged_models import HybridConnectionPaged
 from ._paged_models import IdentifierPaged
 from ._paged_models import InboundEnvironmentEndpointPaged
-from ._paged_models import KubeEnvironmentResourcePaged
+from ._paged_models import KubeEnvironmentPaged
 from ._paged_models import NameIdentifierPaged
 from ._paged_models import OutboundEnvironmentEndpointPaged
 from ._paged_models import PerfMonResponsePaged
@@ -652,6 +656,8 @@ from ._web_site_management_client_enums import (
     SiteRuntimeState,
     BuildStatus,
     TriggerTypes,
+    StorageType,
+    FrontEndServiceType,
     K8SEProvisioningState,
     K8SENetworkPlugin,
     SkuName,
@@ -679,6 +685,7 @@ __all__ = [
     'AppServiceEnvironmentResource',
     'AppServicePlan',
     'AppServicePlanPatchResource',
+    'ArcConfiguration',
     'ArmIdWrapper',
     'AutoHealActions',
     'AutoHealCustomAction',
@@ -757,6 +764,7 @@ __all__ = [
     'Experiments',
     'FileSystemApplicationLogsConfig',
     'FileSystemHttpLogsConfig',
+    'FrontEndConfiguration',
     'FunctionEnvelope',
     'FunctionSecrets',
     'GeoRegion',
@@ -779,8 +787,8 @@ __all__ = [
     'KeyInfo',
     'KeyVaultReferenceCollection',
     'KeyVaultReferenceResource',
+    'KubeEnvironment',
     'KubeEnvironmentProfile',
-    'KubeEnvironmentResource',
     'KubeNodePool',
     'LocalizableString',
     'LogSpecification',
@@ -972,7 +980,7 @@ __all__ = [
     'StrPaged',
     'HybridConnectionPaged',
     'ResourceHealthMetadataPaged',
-    'KubeEnvironmentResourcePaged',
+    'KubeEnvironmentPaged',
     'KeyVaultSecretStatus',
     'CertificateProductType',
     'ProvisioningState',
@@ -1043,6 +1051,8 @@ __all__ = [
     'SiteRuntimeState',
     'BuildStatus',
     'TriggerTypes',
+    'StorageType',
+    'FrontEndServiceType',
     'K8SEProvisioningState',
     'K8SENetworkPlugin',
     'SkuName',

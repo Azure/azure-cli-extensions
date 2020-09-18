@@ -779,16 +779,16 @@ class ResourceHealthMetadataPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(ResourceHealthMetadataPaged, self).__init__(*args, **kwargs)
-class KubeEnvironmentResourcePaged(Paged):
+class KubeEnvironmentPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`KubeEnvironmentResource <azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource>` object
+    A paging container for iterating over a list of :class:`KubeEnvironment <azure.mgmt.web.v2019_08_01.models.KubeEnvironment>` object
     """
 
     _attribute_map = {
         'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[KubeEnvironmentResource]'}
+        'current_page': {'key': 'value', 'type': '[KubeEnvironment]'}
     }
 
     def __init__(self, *args, **kwargs):
 
-        super(KubeEnvironmentResourcePaged, self).__init__(*args, **kwargs)
+        super(KubeEnvironmentPaged, self).__init__(*args, **kwargs)

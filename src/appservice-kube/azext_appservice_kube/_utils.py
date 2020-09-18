@@ -60,6 +60,24 @@ def validate_subnet_id(cli_ctx, subnet, vnet_name, resource_group_name):
     raise CLIError('Usage error: --subnet ID | --subnet NAME --vnet-name NAME')
 
 
+def validate_aks_id(cli_ctx, aks, resource_group_name):
+    from msrestazure.tools import is_valid_resource_id
+    aks_is_id = is_valid_resource_id(aks)
+
+    if aks_is_id:
+        return aks
+    if aks and not aks_is_id:
+        from msrestazure.tools import resource_id
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        return resource_id(
+            subscription=get_subscription_id(cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.ContainerService',
+            type='managedClusters',
+            name=aks)
+    raise CLIError('Usage error: --aks')
+
+
 def _generic_site_operation(cli_ctx, resource_group_name, name, operation_name, slot=None,
                             extra_parameter=None, client=None):
     client = client or web_client_factory(cli_ctx)

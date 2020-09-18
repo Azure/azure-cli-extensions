@@ -51,9 +51,9 @@ class KubeEnvironmentsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of KubeEnvironmentResource
+        :return: An iterator like instance of KubeEnvironment
         :rtype:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResourcePaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource]
+         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
         """
@@ -102,7 +102,7 @@ class KubeEnvironmentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.KubeEnvironmentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.KubeEnvironmentPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Web/kubeEnvironments'}
@@ -122,9 +122,9 @@ class KubeEnvironmentsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of KubeEnvironmentResource
+        :return: An iterator like instance of KubeEnvironment
         :rtype:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResourcePaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource]
+         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
         """
@@ -174,7 +174,7 @@ class KubeEnvironmentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.KubeEnvironmentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.KubeEnvironmentPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
     list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments'}
@@ -195,8 +195,8 @@ class KubeEnvironmentsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: KubeEnvironmentResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource or
+        :return: KubeEnvironment or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
@@ -233,7 +233,7 @@ class KubeEnvironmentsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironmentResource', response)
+            deserialized = self._deserialize('KubeEnvironment', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -270,7 +270,7 @@ class KubeEnvironmentsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironmentResource')
+        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironment')
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
@@ -282,9 +282,9 @@ class KubeEnvironmentsOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironmentResource', response)
+            deserialized = self._deserialize('KubeEnvironment', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('KubeEnvironmentResource', response)
+            deserialized = self._deserialize('KubeEnvironment', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -306,18 +306,18 @@ class KubeEnvironmentsOperations(object):
         :param kube_environment_envelope: Configuration details of the
          Kubernetes Environment.
         :type kube_environment_envelope:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource
+         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns KubeEnvironmentResource
-         or ClientRawResponse<KubeEnvironmentResource> if raw==True
+        :return: An instance of LROPoller that returns KubeEnvironment or
+         ClientRawResponse<KubeEnvironment> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]]
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
         """
@@ -331,7 +331,7 @@ class KubeEnvironmentsOperations(object):
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('KubeEnvironmentResource', response)
+            deserialized = self._deserialize('KubeEnvironment', response)
 
             if raw:
                 client_raw_response = ClientRawResponse(deserialized, response)
@@ -368,6 +368,7 @@ class KubeEnvironmentsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -382,9 +383,18 @@ class KubeEnvironmentsOperations(object):
         if response.status_code not in [202, 204]:
             raise models.DefaultErrorResponseException(self._deserialize, response)
 
+        deserialized = None
+
+        if response.status_code == 202:
+            deserialized = self._deserialize('Operation', response)
+        if response.status_code == 204:
+            deserialized = self._deserialize('Operation', response)
+
         if raw:
-            client_raw_response = ClientRawResponse(None, response)
+            client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
+
+        return deserialized
 
     def delete(
             self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, polling=True, **operation_config):
@@ -406,10 +416,12 @@ class KubeEnvironmentsOperations(object):
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns None or
-         ClientRawResponse<None> if raw==True
-        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
+        :return: An instance of LROPoller that returns Operation or
+         ClientRawResponse<Operation> if raw==True
+        :rtype:
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2019_08_01.models.Operation]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2019_08_01.models.Operation]]
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
         """
@@ -423,9 +435,13 @@ class KubeEnvironmentsOperations(object):
         )
 
         def get_long_running_output(response):
+            deserialized = self._deserialize('Operation', response)
+
             if raw:
-                client_raw_response = ClientRawResponse(None, response)
+                client_raw_response = ClientRawResponse(deserialized, response)
                 return client_raw_response
+
+            return deserialized
 
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
@@ -450,14 +466,14 @@ class KubeEnvironmentsOperations(object):
         :param kube_environment_envelope: Configuration details of the
          Kubernetes Environment.
         :type kube_environment_envelope:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource
+         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: KubeEnvironmentResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentResource or
+        :return: KubeEnvironment or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
@@ -487,7 +503,7 @@ class KubeEnvironmentsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironmentResource')
+        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironment')
 
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
@@ -498,7 +514,7 @@ class KubeEnvironmentsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironmentResource', response)
+            deserialized = self._deserialize('KubeEnvironment', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -506,3 +522,71 @@ class KubeEnvironmentsOperations(object):
 
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}'}
+
+    def get_operation(
+            self, resource_group_name, name, operation_id, custom_headers=None, raw=False, **operation_config):
+        """Get status of a Kubernetes Environment operation.
+
+        Description for Get status of a Kubernetes Environment operation.
+
+        :param resource_group_name: Name of the resource group to which the
+         resource belongs.
+        :type resource_group_name: str
+        :param name: Name of the Kubernetes Environment.
+        :type name: str
+        :param operation_id: ID of the operation.
+        :type operation_id: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: Operation or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2019_08_01.models.Operation or
+         ~msrest.pipeline.ClientRawResponse
+        :raises:
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+        """
+        # Construct URL
+        url = self.get_operation.metadata['url']
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+[^\.]$'),
+            'name': self._serialize.url("name", name, 'str'),
+            'operationId': self._serialize.url("operation_id", operation_id, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct and send request
+        request = self._client.get(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
+
+        if response.status_code not in [200, 202, 404, 500]:
+            raise models.DefaultErrorResponseException(self._deserialize, response)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('Operation', response)
+        if response.status_code == 202:
+            deserialized = self._deserialize('Operation', response)
+
+        if raw:
+            client_raw_response = ClientRawResponse(deserialized, response)
+            return client_raw_response
+
+        return deserialized
+    get_operation.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}/operations/{operationId}'}
