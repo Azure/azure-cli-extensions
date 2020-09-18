@@ -14,7 +14,7 @@ from knack.help_files import helps
 
 helps['stack-hci cluster'] = """
     type: group
-    short-summary: stack-hci cluster
+    short-summary: Commands to manage stack-hci cluster
 """
 
 helps['stack-hci cluster list'] = """
