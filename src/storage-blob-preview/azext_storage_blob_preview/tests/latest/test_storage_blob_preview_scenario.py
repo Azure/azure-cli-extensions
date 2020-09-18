@@ -318,7 +318,7 @@ class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
         next_marker = result[1]['nextMarker']
 
         # Test with marker
-        self.storage_cmd('storage container list --marker {} ', account_info,  next_marker) \
+        self.storage_cmd('storage container list --marker {} ', account_info, next_marker) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
 
         # Test with prefix
