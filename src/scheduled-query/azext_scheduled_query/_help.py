@@ -30,7 +30,7 @@ parameters:
                             [resource id RESOURCEID]
                             [where DIMENSION {includes,excludes} VALUE [or VALUE ...]
                             [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]
-                            [at least MinTimeToFail out of EvaluationPeriod]'
+                            [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
 
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 examples:
@@ -58,7 +58,7 @@ parameters:
                             [resource id RESOURCEID]
                             [where DIMENSION {includes,excludes} VALUE [or VALUE ...]
                             [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]
-                            [at least MinTimeToFail out of EvaluationPeriod]'
+                            [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
 
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 """

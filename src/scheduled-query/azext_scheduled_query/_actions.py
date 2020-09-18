@@ -23,7 +23,7 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
                 '                         [resource id RESOURCEID]\n' \
                 '                         [where DIMENSION {includes,excludes} VALUE [or VALUE ...]\n' \
                 '                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]' \
-                '                         [at least MinTimeToFail out of EvaluationPeriod]'
+                '                         [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
         string_val = ' '.join(values)
 
         lexer = ScheduleQueryConditionLexer(antlr4.InputStream(string_val))

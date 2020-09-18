@@ -162,6 +162,15 @@ class ScheduleQueryConditionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ScheduleQueryConditionParser#violations.
+    def enterViolations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#violations.
+    def exitViolations(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ScheduleQueryConditionParser#out.
     def enterOut(self, ctx):
         pass
@@ -186,6 +195,24 @@ class ScheduleQueryConditionListener(ParseTreeListener):
 
     # Exit a parse tree produced by ScheduleQueryConditionParser#min_times.
     def exitMin_times(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#aggregated.
+    def enterAggregated(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#aggregated.
+    def exitAggregated(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#points.
+    def enterPoints(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#points.
+    def exitPoints(self, ctx):
         pass
 
 
