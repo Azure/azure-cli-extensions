@@ -11,7 +11,7 @@ from knack.util import CLIError
 
 class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_file_soft_delete')
-    @StorageAccountPreparer(name_prefix='filesoftdelete', kind='StorageV2', location='eastus2euap')
+    @StorageAccountPreparer(name_prefix='filesoftdelete', kind='FileStorage', sku='Premium_LRS', location='eastus')
     def test_storage_account_file_delete_retention_policy(self, resource_group, storage_account):
         self.kwargs.update({
             'sa': storage_account,
@@ -40,11 +40,6 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('shareDeleteRetentionPolicy.days', 1))
 
         self.cmd('{cmd} update --enable-delete-retention false -n {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
-            JMESPathCheck('shareDeleteRetentionPolicy.days', None))
-
-        self.cmd(
-            '{cmd} update --set shareDeleteRetentionPolicy.enabled=false -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
             JMESPathCheck('shareDeleteRetentionPolicy.days', None))
 
