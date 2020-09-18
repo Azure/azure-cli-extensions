@@ -10,7 +10,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
-from msrestazure.tools import parse_resource_id
+from msrestazure.tools import parse_resource_id, is_valid_resource_id
 import datetime
 
 from ._client_factory import (
@@ -333,24 +333,22 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name,
 
     workspace_resource_id = workspace_resource_id.strip()
 
-    if  'proxyEndpoint' in configuration_settings:
+    if  'proxyEndpoint' in configuration_protected_settings:
          # current supported format for proxy endpoint is  http(s)://<user>:<pwd>@<proxyhost>:<port>
          # do some basic validation since the ci agent does the complete validation
-         proxy = configuration_settings['proxyEndpoint'].strip().lower()
+         proxy = configuration_protected_settings['proxyEndpoint'].strip().lower()
          proxyparts = proxy.split('://')
          if (not proxy) or (not proxy.startswith('http://') and not proxy.startswith('https://')) or (len(proxyparts) != 2):
              raise CLIError('proxyEndpoint url should in this format http(s)://<user>:<pwd>@<proxyhost>:<port>')
-         configuration_settings['omsagent.proxy'] = configuration_settings['proxyEndpoint']
+         logger.info("successfully validated proxyEndpoint url hence passing proxy endpoint to extension")
+         configuration_protected_settings['omsagent.proxy'] = configuration_protected_settings['proxyEndpoint']
 
     if not workspace_resource_id:
         workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
             cmd, subscription_id, cluster_resource_group_name, cluster_name)
-
-    if not workspace_resource_id.startswith('/'):
-        workspace_resource_id = '/' + workspace_resource_id
-
-    if workspace_resource_id.endswith('/'):
-        workspace_resource_id = workspace_resource_id.rstrip('/')
+    else:
+        if not is_valid_resource_id(workspace_resource_id):
+            raise CLIError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
 
     _ensure_container_insights_for_monitoring(cmd, workspace_resource_id)
 
