@@ -6,16 +6,16 @@ import json
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import ScopeNamespace
 from azext_k8s_extension.vendored_sdks.models import Scope
-from .containerinsights  import _get_container_insights_settings
+from .containerinsights import _get_container_insights_settings
 
 logger = get_logger(__name__)
+
 
 def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type):
     """Get an existing K8s Extension.
@@ -46,7 +46,7 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
 
 
 def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type,
-                         extension_type, scope, auto_upgrade_minor_version=True, release_train='Stable',
+                         extension_type, scope, auto_upgrade_minor_version=None, release_train=None,
                          version=None, target_namespace=None, release_namespace=None, configuration_settings=None,
                          configuration_protected_settings=None, configuration_settings_file=None,
                          configuration_protected_settings_file=None, location=None, tags=None):
@@ -96,7 +96,8 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     if extension_type.lower() == 'azuremonitor-containers':
         # hardcoding  name, release_namespace and scope since ci only supports one instance and cluster scope
         # and platform doesnt have support yet extension specific constraints like this
-        logger.warn('Ignoring name, release_namespace and scope parameters since azuremonitor-containers only supports cluster scope and single instance of this extension')
+        logger.warn('Ignoring name, release_namespace and scope parameters since azuremonitor-containers only supports '
+                    'cluster scope and single instance of this extension')
         name = 'azuremonitor-containers'
         release_namespace = 'azuremonitor-containers'
         scope = 'cluster'
@@ -193,13 +194,12 @@ def __validate_version_and_release_train(version, release_train, auto_upgrade_mi
         if release_train is not None:
             message = "Both release_train and version cannot be given. To pin to specific version, give only version."
             raise CLIError(message)
-        if auto_upgrade_minor_version is True:
-            message = "To pin to specific version, auto_upgrade_minor_version must be set to 'false'."
+        if auto_upgrade_minor_version is not False:
+            message = "To pin to specific version, auto-upgrade-minor-version must be set to 'false'."
             raise CLIError(message)
 
 
 def __get_config_settings_from_file(file_path):
-    settings = {}
     try:
         config_file = open(file_path,)
         settings = json.load(config_file)
@@ -210,4 +210,3 @@ def __get_config_settings_from_file(file_path):
         raise Exception("File {} is empty".format(file_path))
 
     return settings
-

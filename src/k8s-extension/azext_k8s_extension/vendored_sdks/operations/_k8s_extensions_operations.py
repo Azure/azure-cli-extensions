@@ -199,7 +199,9 @@ class K8sExtensionsOperations(object):
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/extensions/{extensionInstanceName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}'
+                              '/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/'
+                              'extensions/{extensionInstanceName}'}
 
     def update(
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, extension_instance_name,
@@ -284,7 +286,9 @@ class K8sExtensionsOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/extensions/{extensionInstanceName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}'
+                              '/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/'
+                              'extensions/{extensionInstanceName}'}
 
     def delete(
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, extension_instance_name,
@@ -354,7 +358,9 @@ class K8sExtensionsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/extensions/{extensionInstanceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}'
+                              '/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/'
+                              'extensions/{extensionInstanceName}'}
 
     def list(
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, custom_headers=None, raw=False,
@@ -441,4 +447,6 @@ class K8sExtensionsOperations(object):
                                                             header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/extensions'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{clusterRp}'
+                            '/{clusterResourceName}/{clusterName}/providers/Microsoft.KubernetesConfiguration/'
+                            'extensions'}
