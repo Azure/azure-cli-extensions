@@ -33,7 +33,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity, AuthenticationDetailsValue, AuthenticationCertificateDetails
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity, AuthenticationDetailsValue
 
 
 logger = get_logger(__name__)
@@ -760,31 +760,16 @@ def list_cluster_user_credentials(cmd,
                                   resource_group_name,
                                   cluster_name,
                                   context_name=None,
-                                  authentication_method=None,
                                   token=None,
-                                  certificate_data=None,
-                                  key_data=None,
                                   path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                                   overwrite_existing=False):
-    if authentication_method is not None:
-        if (authentication_method != 'Token') and (authentication_method != 'ClientCertificate'):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='invalid Authentication method value', fault_type=consts.Invalid_Auth_Method_Fault,
-                                    summary="Authentication_method can only either be 'Token' or 'ClientCertificate'")
-            raise CLIError("Authentication_method can only either be 'Token' or 'ClientCertificate'")
-
-        if token is not None:
-            value = AuthenticationDetailsValue(token=token)
-        elif (certificate_data is not None) and (key_data is not None):
-            client_certificate = AuthenticationCertificateDetails(certificate_data=certificate_data, key_data=key_data)
-            value = AuthenticationDetailsValue(client_certificate=client_certificate)
-        else:
-            value = None
+    if token is not None:
+        value = AuthenticationDetailsValue(token=token)
     else:
         value = None
 
     try:
-        credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name, authentication_method, value)
+        credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name, value)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
                                 summary='Unable to list cluster user credentials')

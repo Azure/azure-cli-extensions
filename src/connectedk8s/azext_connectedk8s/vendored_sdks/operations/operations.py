@@ -18,8 +18,6 @@ from .. import models
 class Operations(object):
     """Operations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
-
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -54,7 +52,8 @@ class Operations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
-        def prepare_request(next_link=None):
+        def internal_paging(next_link=None, raw=False):
+
             if not next_link:
                 # Construct URL
                 url = self.get.metadata['url']
@@ -79,11 +78,6 @@ class Operations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def internal_paging(next_link=None):
-            request = prepare_request(next_link)
-
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -92,10 +86,12 @@ class Operations(object):
             return response
 
         # Deserialize response
-        header_dict = None
+        deserialized = models.OperationPaged(internal_paging, self._deserialize.dependencies)
+
         if raw:
             header_dict = {}
-        deserialized = models.OperationPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.OperationPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            return client_raw_response
 
         return deserialized
     get.metadata = {'url': '/providers/Microsoft.Kubernetes/operations'}
