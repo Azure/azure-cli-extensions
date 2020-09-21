@@ -623,6 +623,19 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
+helps['aks nodepool get-upgrades'] = """
+type: command
+short-summary: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+examples:
+  - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+    text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+parameters:
+  - name: --nodepool-name
+    type: string
+    short-summary: name of the node pool.
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
