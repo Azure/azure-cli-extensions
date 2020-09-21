@@ -44,6 +44,7 @@ except (SyntaxError, ImportError):
 from ._footprint_monitoring_management_client_enums import (
     Operator,
     ProvisioningState,
+    Type,
 )
 
 __all__ = [
@@ -65,4 +66,5 @@ __all__ = [
     'SubResource',
     'Operator',
     'ProvisioningState',
+    'Type',
 ]

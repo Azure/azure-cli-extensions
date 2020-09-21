@@ -50,9 +50,9 @@ class OperationOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.ResourceProviderOperationList"]
-        """Retrieves a list of available API operations.
+        """Retrieves a list of available API operations under this Resource Provider.
 
-        Retrieves a list of available API operations under this Resource Provider.
+        Retrieves a list of available API operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourceProviderOperationList or the result of cls(response)
@@ -65,6 +65,10 @@ class OperationOperations(object):
         api_version = "2020-02-01-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -72,15 +76,11 @@ class OperationOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):

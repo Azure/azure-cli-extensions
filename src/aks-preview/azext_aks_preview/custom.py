@@ -24,9 +24,9 @@ import time
 import uuid
 import base64
 import webbrowser
+from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
-from math import isnan
 import requests
 from knack.log import get_logger
 from knack.util import CLIError
@@ -49,7 +49,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -82,11 +82,13 @@ from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
+from ._consts import CONST_KUBE_DASHBOARD_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
+from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -599,7 +601,10 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
-    addon_profile = addon_profiles.get("kubeDashboard", ManagedClusterAddonProfile(enabled=True))
+    # addon name is case insensitive
+    addon_profile = next((addon_profiles[k] for k in addon_profiles
+                         if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
+                         ManagedClusterAddonProfile(enabled=True))
     if not addon_profile.enabled:
         raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
                        'To use "az aks browse" first enable the add-on\n'
@@ -784,6 +789,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_password=None,
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
+               node_osdisk_type=None,
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
@@ -843,6 +849,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_aad=False,
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
+               disable_sgxquotehelper=False,
                assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
@@ -893,6 +900,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
+
+    if node_osdisk_type:
+        agent_pool_profile.os_disk_type = node_osdisk_type
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool_profile)
 
@@ -1004,7 +1014,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_subnet_prefix,
         appgw_id,
         appgw_subnet_id,
-        appgw_watch_namespace
+        appgw_watch_namespace,
+        disable_sgxquotehelper
     )
     monitoring = False
     if 'omsagent' in addon_profiles:
@@ -1727,7 +1738,8 @@ def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_n
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None):
+                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None,
+                        appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1735,7 +1747,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
         addon_profiles['httpApplicationRouting'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('http_application_routing')
     if 'kube-dashboard' in addons:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+        addon_profiles[CONST_KUBE_DASHBOARD_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
@@ -1772,6 +1784,13 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
         addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME] = addon_profile
         addons.remove('ingress-appgw')
+    if 'confcom' in addons:
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
+        if disable_sgxquotehelper:
+            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+        addon_profiles[CONST_CONFCOM_ADDON_NAME] = addon_profile
+        addons.remove('confcom')
+
     # error out if any (unrecognized) addons remain
     if addons:
         raise CLIError('"{}" {} not recognized by the --enable-addons argument.'.format(
@@ -2184,6 +2203,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_zones=None,
                       enable_node_public_ip=False,
                       node_vm_size=None,
+                      node_osdisk_type=None,
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
@@ -2259,6 +2279,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     if node_osdisk_size:
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
+
+    if node_osdisk_type:
+        agent_pool.os_disk_type = node_osdisk_type
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
@@ -2424,12 +2447,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
-                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None, no_wait=False):
+                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
-                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
+                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
+                              disable_sgxquotehelper=disable_sgxquotehelper, no_wait=no_wait)
 
     if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
@@ -2479,19 +2503,20 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_id=None,
                    appgw_subnet_id=None,
                    appgw_watch_namespace=None,
+                   disable_sgxquotehelper=False,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
-    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
 
     os_type = 'Linux'
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg not in ADDONS:
+            raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag
@@ -2544,10 +2569,22 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
                 if appgw_watch_namespace is not None:
                     addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
+            elif addon.lower() == CONST_CONFCOM_ADDON_NAME.lower():
+                if addon_profile.enabled:
+                    raise CLIError('The confcom addon is already enabled for this managed cluster.\n'
+                                   'To change confcom configuration, run '
+                                   f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
+                if disable_sgxquotehelper:
+                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
-                raise CLIError("The addon {} is not installed.".format(addon))
+                if addon == CONST_KUBE_DASHBOARD_ADDON_NAME:
+                    addon_profiles[addon] = ManagedClusterAddonProfile(enabled=False)
+                else:
+                    raise CLIError("The addon {} is not installed.".format(addon))
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 

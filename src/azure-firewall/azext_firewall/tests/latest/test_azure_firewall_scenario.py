@@ -145,8 +145,8 @@ class AzureFirewallScenario(ScenarioTest):
                 self.is_empty()
             ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_whitelist')
-    def test_azure_firewall_threat_intel_whitelist(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_allowlist')
+    def test_azure_firewall_threat_intel_allowlist(self, resource_group):
 
         self.kwargs.update({
             'af': 'af1',
@@ -154,22 +154,22 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af} --private-ranges 10.0.0.0 10.0.0.0/24 IANAPrivateRanges', checks=[
             self.check('"Network.SNAT.PrivateRanges"', '10.0.0.0, 10.0.0.0/24, IANAPrivateRanges')
         ])
-        self.cmd('network firewall threat-intel-whitelist create -g {rg} -n {af} --ip-addresses 10.0.0.0 10.0.0.1 --fqdns www.bing.com *.microsoft.com *google.com', checks=[
+        self.cmd('network firewall threat-intel-allowlist create -g {rg} -n {af} --ip-addresses 10.0.0.0 10.0.0.1 --fqdns www.bing.com *.microsoft.com *google.com', checks=[
             self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
             self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
         ])
-        self.cmd('network firewall threat-intel-whitelist show -g {rg} -n {af}', checks=[
+        self.cmd('network firewall threat-intel-allowlist show -g {rg} -n {af}', checks=[
             self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
             self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
         ])
-        self.cmd('network firewall threat-intel-whitelist update -g {rg} -n {af} --ip-addresses 10.0.0.1 10.0.0.0 --fqdns *google.com www.bing.com *.microsoft.com', checks=[
+        self.cmd('network firewall threat-intel-allowlist update -g {rg} -n {af} --ip-addresses 10.0.0.1 10.0.0.0 --fqdns *google.com www.bing.com *.microsoft.com', checks=[
             self.check('"ThreatIntel.Whitelist.FQDNs"', '*google.com, www.bing.com, *.microsoft.com'),
             self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.1, 10.0.0.0')
         ])
         self.cmd('network firewall update -g {rg} -n {af} --private-ranges IANAPrivateRanges 10.0.0.1 10.0.0.0/16', checks=[
             self.check('"Network.SNAT.PrivateRanges"', 'IANAPrivateRanges, 10.0.0.1, 10.0.0.0/16')
         ])
-        self.cmd('network firewall threat-intel-whitelist delete -g {rg} -n {af}')
+        self.cmd('network firewall threat-intel-allowlist delete -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_rules')
     def test_azure_firewall_rules(self, resource_group):
@@ -331,8 +331,8 @@ class AzureFirewallScenario(ScenarioTest):
         ])
         self.cmd('network firewall update -g {rg} -n {af2} --firewall-policy {policy2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_whitelist', location='eastus2euap')
-    def test_azure_firewall_policy_with_threat_intel_whitelist(self, resource_group, resource_group_location):
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='eastus2')
+    def test_azure_firewall_policy_with_threat_intel_allowlist(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
             'policy': 'myclipolicy',
@@ -356,7 +356,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
                  ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -399,25 +399,25 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
         self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}')
         ])
 
         self.cmd('network firewall policy rule-collection-group show -g {rg} --policy-name {policy} -n {collectiongroup}', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}'),
             self.check('priority', '{collection_group_priority}')
         ])
 
         self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
             self.check('length(@)', 1),
-            self.check('@[0].type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('@[0].type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('@[0].name', '{collectiongroup}'),
             self.check('@[0].priority', '{collection_group_priority}')
         ])
 
         self.cmd('network firewall policy rule-collection-group update -g {rg} --policy-name {policy} -n {collectiongroup} --priority 12000', checks=[
-            self.check('type', 'Microsoft.Network/RuleCollectionGroups'),
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
             self.check('name', '{collectiongroup}'),
             self.check('priority', 12000)
         ])
