@@ -38,7 +38,7 @@ az group create --name $rg --location westus
 
 ```sh
 env={standard_environment_name}
-az timeseriesinsights environment standard create -g $rg --name $env --location westus --sku-name S1 --sku-capacity 1 --data-retention-time P31D --partition-key DeviceId1 --storage-limit-exceeded-behavior PauseIngress
+az timeseriesinsights environment standard create -g $rg --name $env --location westus --sku-name S1 --sku-capacity 1 --data-retention-time 31 --partition-key-properties DeviceId1 --storage-limit-exceeded-behavior PauseIngress
 ```
 
 ### Create a storage account and use it to create a long-term environment

@@ -115,6 +115,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
 
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+
     # Validate location
     utils.validate_location(cmd, location)
     resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
@@ -687,6 +692,11 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Check helm version
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):

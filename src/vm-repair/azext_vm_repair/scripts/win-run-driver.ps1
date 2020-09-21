@@ -19,8 +19,6 @@ if ($init)
 		# Normal GitHub script scenario
 		if ($script_path -ne 'no-op')
 		{
-			# Work around for passing space characters through run-command
-			$params = $params.replace('%20', ' ')
 			$command = "$script_path $params | $logToFile"
 			Invoke-Expression -Command $command 
 		}
