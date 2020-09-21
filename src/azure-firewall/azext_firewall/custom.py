@@ -107,9 +107,10 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             if firewall.additional_properties is None:
                 firewall.additional_properties = {}
             if enable_dns_proxy is not None:
+                # service side requires lowercase
                 firewall.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
-
             if require_dns_proxy_for_network_rules:
+                # service side requires lowercase
                 firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
                     str(require_dns_proxy_for_network_rules).lower()
             if dns_servers is not None:
@@ -157,8 +158,10 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
             instance.virtual_hub = SubResource(id=virtual_hub)
 
     if enable_dns_proxy is not None:
+        # service side requires lowercase
         instance.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
     if require_dns_proxy_for_network_rules is not None:
+        # service side requires lowercase
         instance.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
             str(require_dns_proxy_for_network_rules).lower()
     if dns_servers is not None:
