@@ -106,10 +106,12 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         if firewall_policy is None:
             if firewall.additional_properties is None:
                 firewall.additional_properties = {}
-            firewall.additional_properties['Network.DNS.EnableProxy'] = \
-                enable_dns_proxy if enable_dns_proxy is not None else False
-            firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-                require_dns_proxy_for_network_rules if require_dns_proxy_for_network_rules is not None else True
+            if enable_dns_proxy is not None:
+                firewall.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
+
+            if require_dns_proxy_for_network_rules:
+                firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
+                    str(require_dns_proxy_for_network_rules).lower()
             if dns_servers is not None:
                 firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
@@ -155,9 +157,10 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
             instance.virtual_hub = SubResource(id=virtual_hub)
 
     if enable_dns_proxy is not None:
-        instance.additional_properties['Network.DNS.EnableProxy'] = enable_dns_proxy
+        instance.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
     if require_dns_proxy_for_network_rules is not None:
-        instance.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = require_dns_proxy_for_network_rules
+        instance.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
+            str(require_dns_proxy_for_network_rules).lower()
     if dns_servers is not None:
         instance.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
     if threat_intel_mode is not None:
