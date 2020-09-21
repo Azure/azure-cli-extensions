@@ -59,8 +59,9 @@ class CustomDomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -124,15 +125,16 @@ class CustomDomainsOperations(object):
         :type domain_name: str
         :param properties: Properties of the custom domain resource.
         :type properties:
-         ~azure.mgmt.appplatform.models.CustomDomainProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         domain_resource = models.CustomDomainResource(properties=properties)
@@ -263,15 +265,16 @@ class CustomDomainsOperations(object):
         :type domain_name: str
         :param properties: Properties of the custom domain resource.
         :type properties:
-         ~azure.mgmt.appplatform.models.CustomDomainProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         domain_resource = models.CustomDomainResource(properties=properties)
@@ -344,7 +347,7 @@ class CustomDomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of CustomDomainResource
         :rtype:
-         ~azure.mgmt.appplatform.models.CustomDomainResourcePaged[~azure.mgmt.appplatform.models.CustomDomainResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -422,8 +425,9 @@ class CustomDomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainValidateResult or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainValidateResult or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainValidateResult
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         validate_payload = models.CustomDomainValidatePayload(name=name)

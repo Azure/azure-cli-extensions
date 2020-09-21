@@ -179,7 +179,7 @@ class TestMaxSurge(unittest.TestCase):
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
-        valid = [5, 5.12345, -1.0]
+        valid = [5, 5.12345, -1.0, 0.068, 0.071, 5.00000000]
         for v in valid:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(v))
 
@@ -191,6 +191,9 @@ class TestSpotMaxPrice(unittest.TestCase):
     def test_throws_if_non_valid_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(-2))
+        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_spot_max_price(SpotMaxPriceNamespace(0))
         self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_if_input_max_price_for_regular(self):
