@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -30,7 +30,7 @@ class DimensionOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -54,76 +54,77 @@ class DimensionOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DimensionsListResult"
+        # type: (...) -> Iterable["models.DimensionsListResult"]
         """Lists the dimensions by the defined scope.
 
         :param scope: The scope associated with dimension operations. This includes
-     '/subscriptions/{subscriptionId}/' for subscription scope,
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for resourceGroup scope,
-     '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}' for Billing Account scope,
-     '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments/{departmentId}'
-     for Department scope,
-     '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}'
-     for EnrollmentAccount scope,
-     '/providers/Microsoft.Management/managementGroups/{managementGroupId}' for Management Group
-     scope,
-     '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}'
-     for billingProfile scope,
-     'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}'
-     for invoiceSection scope, and
-     'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}'
-     specific for partners.
+         '/subscriptions/{subscriptionId}/' for subscription scope,
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for resourceGroup scope,
+         '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}' for Billing Account scope,
+         '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/departments/{departmentId}'
+         for Department scope,
+         '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/enrollmentAccounts/{enrollmentAccountId}'
+         for EnrollmentAccount scope,
+         '/providers/Microsoft.Management/managementGroups/{managementGroupId}' for Management Group
+         scope,
+         '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}'
+         for billingProfile scope,
+         'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/billingProfiles/{billingProfileId}/invoiceSections/{invoiceSectionId}'
+         for invoiceSection scope, and
+         'providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}'
+         specific for partners.
         :type scope: str
         :param filter: May be used to filter dimensions by properties/category, properties/usageStart,
-     properties/usageEnd. Supported operators are 'eq','lt', 'gt', 'le', 'ge'.
+         properties/usageEnd. Supported operators are 'eq','lt', 'gt', 'le', 'ge'.
         :type filter: str
         :param expand: May be used to expand the properties/data within a dimension category. By
-     default, data is not included when listing dimensions.
+         default, data is not included when listing dimensions.
         :type expand: str
         :param skiptoken: Skiptoken is only used if a previous operation returned a partial result. If
-     a previous response contains a nextLink element, the value of the nextLink element will include
-     a skiptoken parameter that specifies a starting point to use for subsequent calls.
+         a previous response contains a nextLink element, the value of the nextLink element will include
+         a skiptoken parameter that specifies a starting point to use for subsequent calls.
         :type skiptoken: str
         :param top: May be used to limit the number of results to the most recent N dimension data.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DimensionsListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.DimensionsListResult
+        :return: An iterator like instance of either DimensionsListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~cost_management_client.models.DimensionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DimensionsListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-11-01"
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-06-01"
 
         def prepare_request(next_link=None):
-            if not next_link:
-                # Construct URL
-                url = self.list.metadata['url']
-                path_format_arguments = {
-                    'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-            else:
-                url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-            if expand is not None:
-                query_parameters['$expand'] = self._serialize.query("expand", expand, 'str')
-            if skiptoken is not None:
-                query_parameters['$skiptoken'] = self._serialize.query("skiptoken", skiptoken, 'str')
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int', maximum=1000, minimum=1)
-
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            if not next_link:
+                # Construct URL
+                url = self.list.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                if expand is not None:
+                    query_parameters['$expand'] = self._serialize.query("expand", expand, 'str')
+                if skiptoken is not None:
+                    query_parameters['$skiptoken'] = self._serialize.query("skiptoken", skiptoken, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int', maximum=1000, minimum=1)
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -149,7 +150,7 @@ class DimensionOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/dimensions'}
+    list.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/dimensions'}  # type: ignore
 
     def by_external_cloud_provider_type(
         self,
@@ -161,67 +162,68 @@ class DimensionOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DimensionsListResult"
+        # type: (...) -> Iterable["models.DimensionsListResult"]
         """Lists the dimensions by the external cloud provider type.
 
         :param external_cloud_provider_type: The external cloud provider type associated with
-     dimension/query operations. This includes 'externalSubscriptions' for linked account and
-     'externalBillingAccounts' for consolidated account.
-        :type external_cloud_provider_type: str or ~azure.mgmt.costmanagement.models.ExternalCloudProviderType
+         dimension/query operations. This includes 'externalSubscriptions' for linked account and
+         'externalBillingAccounts' for consolidated account.
+        :type external_cloud_provider_type: str or ~cost_management_client.models.ExternalCloudProviderType
         :param external_cloud_provider_id: This can be '{externalSubscriptionId}' for linked account or
-     '{externalBillingAccountId}' for consolidated account used with dimension/query operations.
+         '{externalBillingAccountId}' for consolidated account used with dimension/query operations.
         :type external_cloud_provider_id: str
         :param filter: May be used to filter dimensions by properties/category, properties/usageStart,
-     properties/usageEnd. Supported operators are 'eq','lt', 'gt', 'le', 'ge'.
+         properties/usageEnd. Supported operators are 'eq','lt', 'gt', 'le', 'ge'.
         :type filter: str
         :param expand: May be used to expand the properties/data within a dimension category. By
-     default, data is not included when listing dimensions.
+         default, data is not included when listing dimensions.
         :type expand: str
         :param skiptoken: Skiptoken is only used if a previous operation returned a partial result. If
-     a previous response contains a nextLink element, the value of the nextLink element will include
-     a skiptoken parameter that specifies a starting point to use for subsequent calls.
+         a previous response contains a nextLink element, the value of the nextLink element will include
+         a skiptoken parameter that specifies a starting point to use for subsequent calls.
         :type skiptoken: str
         :param top: May be used to limit the number of results to the most recent N dimension data.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DimensionsListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.DimensionsListResult
+        :return: An iterator like instance of either DimensionsListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~cost_management_client.models.DimensionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DimensionsListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-11-01"
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-06-01"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
-                url = self.by_external_cloud_provider_type.metadata['url']
+                url = self.by_external_cloud_provider_type.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'externalCloudProviderType': self._serialize.url("external_cloud_provider_type", external_cloud_provider_type, 'str'),
                     'externalCloudProviderId': self._serialize.url("external_cloud_provider_id", external_cloud_provider_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                if expand is not None:
+                    query_parameters['$expand'] = self._serialize.query("expand", expand, 'str')
+                if skiptoken is not None:
+                    query_parameters['$skiptoken'] = self._serialize.query("skiptoken", skiptoken, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int', maximum=1000, minimum=1)
+
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-            if filter is not None:
-                query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-            if expand is not None:
-                query_parameters['$expand'] = self._serialize.query("expand", expand, 'str')
-            if skiptoken is not None:
-                query_parameters['$skiptoken'] = self._serialize.query("skiptoken", skiptoken, 'str')
-            if top is not None:
-                query_parameters['$top'] = self._serialize.query("top", top, 'int', maximum=1000, minimum=1)
-
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -247,4 +249,4 @@ class DimensionOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/dimensions'}
+    by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/dimensions'}  # type: ignore
