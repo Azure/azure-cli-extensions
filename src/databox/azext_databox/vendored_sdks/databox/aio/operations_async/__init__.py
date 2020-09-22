@@ -6,9 +6,9 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations import OperationOperations
-from ._job_operations import JobOperations
-from ._service_operations import ServiceOperations
+from ._operation_operations_async import OperationOperations
+from ._job_operations_async import JobOperations
+from ._service_operations_async import ServiceOperations
 
 __all__ = [
     'OperationOperations',
