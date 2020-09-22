@@ -404,7 +404,7 @@ def validate_addons(namespace):
             matches = str(matches)[1:-1]
             all_addons = list(ADDONS)
             all_addons = str(all_addons)[1:-1]
-            if len(matches) == 0:
+            if not matches:
                 raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
 
