@@ -26,7 +26,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'desktopvirtualization_workspace_show')
         g.custom_command('create', 'desktopvirtualization_workspace_create')
         g.custom_command('update', 'desktopvirtualization_workspace_update')
-        g.custom_command('delete', 'desktopvirtualization_workspace_delete')
+        g.custom_command('delete', 'desktopvirtualization_workspace_delete', confirmation=True)
 
     from azext_desktopvirtualization.generated._client_factory import cf_application_group
     desktopvirtualization_application_group = CliCommandType(
@@ -39,7 +39,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'desktopvirtualization_applicationgroup_show')
         g.custom_command('create', 'desktopvirtualization_applicationgroup_create')
         g.custom_command('update', 'desktopvirtualization_applicationgroup_update')
-        g.custom_command('delete', 'desktopvirtualization_applicationgroup_delete')
+        g.custom_command('delete', 'desktopvirtualization_applicationgroup_delete', confirmation=True)
 
     from azext_desktopvirtualization.generated._client_factory import cf_host_pool
     desktopvirtualization_host_pool = CliCommandType(
@@ -52,4 +52,4 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'desktopvirtualization_hostpool_show')
         g.custom_command('create', 'desktopvirtualization_hostpool_create')
         g.custom_command('update', 'desktopvirtualization_hostpool_update')
-        g.custom_command('delete', 'desktopvirtualization_hostpool_delete')
+        g.custom_command('delete', 'desktopvirtualization_hostpool_delete', confirmation=True)
