@@ -61,7 +61,7 @@ class AppsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: AppResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.AppResource or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.AppResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -179,7 +179,8 @@ class AppsOperations(object):
         :param app_name: The name of the App resource.
         :type app_name: str
         :param app_resource: Parameters for the create or update operation
-        :type app_resource: ~azure.mgmt.appplatform.models.AppResource
+        :type app_resource:
+         ~azure.mgmt.appplatform.v2020_07_01.models.AppResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -188,9 +189,9 @@ class AppsOperations(object):
         :return: An instance of LROPoller that returns AppResource or
          ClientRawResponse<AppResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.AppResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.AppResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -372,7 +373,8 @@ class AppsOperations(object):
         :param app_name: The name of the App resource.
         :type app_name: str
         :param app_resource: Parameters for the update operation
-        :type app_resource: ~azure.mgmt.appplatform.models.AppResource
+        :type app_resource:
+         ~azure.mgmt.appplatform.v2020_07_01.models.AppResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -381,9 +383,9 @@ class AppsOperations(object):
         :return: An instance of LROPoller that returns AppResource or
          ClientRawResponse<AppResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.AppResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.AppResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -431,7 +433,7 @@ class AppsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of AppResource
         :rtype:
-         ~azure.mgmt.appplatform.models.AppResourcePaged[~azure.mgmt.appplatform.models.AppResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.AppResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.AppResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -507,7 +509,8 @@ class AppsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ResourceUploadDefinition or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.ResourceUploadDefinition or
+        :rtype:
+         ~azure.mgmt.appplatform.v2020_07_01.models.ResourceUploadDefinition or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -575,8 +578,9 @@ class AppsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainValidateResult or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainValidateResult or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainValidateResult
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         validate_payload = models.CustomDomainValidatePayload(name=name)

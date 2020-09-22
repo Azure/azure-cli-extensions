@@ -61,7 +61,8 @@ class CustomDomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CustomDomainResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CustomDomainResource or
+        :rtype:
+         ~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -184,7 +185,7 @@ class CustomDomainsOperations(object):
         :type domain_name: str
         :param properties: Properties of the custom domain resource.
         :type properties:
-         ~azure.mgmt.appplatform.models.CustomDomainProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -193,9 +194,9 @@ class CustomDomainsOperations(object):
         :return: An instance of LROPoller that returns CustomDomainResource or
          ClientRawResponse<CustomDomainResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.CustomDomainResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.CustomDomainResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -388,7 +389,7 @@ class CustomDomainsOperations(object):
         :type domain_name: str
         :param properties: Properties of the custom domain resource.
         :type properties:
-         ~azure.mgmt.appplatform.models.CustomDomainProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -397,9 +398,9 @@ class CustomDomainsOperations(object):
         :return: An instance of LROPoller that returns CustomDomainResource or
          ClientRawResponse<CustomDomainResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.CustomDomainResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.CustomDomainResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -450,7 +451,7 @@ class CustomDomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of CustomDomainResource
         :rtype:
-         ~azure.mgmt.appplatform.models.CustomDomainResourcePaged[~azure.mgmt.appplatform.models.CustomDomainResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.CustomDomainResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

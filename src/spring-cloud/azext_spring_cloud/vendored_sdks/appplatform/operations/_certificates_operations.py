@@ -59,8 +59,8 @@ class CertificatesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CertificateResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CertificateResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -177,7 +177,8 @@ class CertificatesOperations(object):
         :param certificate_name: The name of the certificate resource.
         :type certificate_name: str
         :param properties: Properties of the certificate resource payload.
-        :type properties: ~azure.mgmt.appplatform.models.CertificateProperties
+        :type properties:
+         ~azure.mgmt.appplatform.v2020_07_01.models.CertificateProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -186,9 +187,9 @@ class CertificatesOperations(object):
         :return: An instance of LROPoller that returns CertificateResource or
          ClientRawResponse<CertificateResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.CertificateResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.CertificateResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -321,7 +322,7 @@ class CertificatesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of CertificateResource
         :rtype:
-         ~azure.mgmt.appplatform.models.CertificateResourcePaged[~azure.mgmt.appplatform.models.CertificateResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.CertificateResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

@@ -675,6 +675,16 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
 
+def validate_config_server_settings(client, resource_group, name, git_property):
+    result = sdk_no_wait(False, client.validate, resource_group, name, git_property).result()
+    if not result.is_valid:
+        for item in result.details:
+            if not item.name:
+                logger.error("Default Repository with uri \"%s\" meet error:", item.uri)
+            else:
+                logger.error("Pattern Repository with name \"%s\", uri \"%s\" meet error:", item.name, item.uri)
+            logger.error("\n".join(item.messages))
+        raise CLIError("Config server settings validate with error.")
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     def standardization(dic):
@@ -716,6 +726,8 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     git_property = client._deserialize('ConfigServerGitProperty', config_property)
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    validate_config_server_settings(client, resource_group, name, git_property)
     return sdk_no_wait(no_wait, client.update_put, resource_group, name, config_server_properties)
 
 
@@ -758,8 +770,8 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
+    validate_config_server_settings(client, resource_group, name, git_property)
     return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
-
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     pattern=None,
@@ -806,6 +818,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
 
+    validate_config_server_settings(client, resource_group, name, git_property)
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
@@ -826,6 +839,7 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
 
+    validate_config_server_settings(client, resource_group, name, git_property)
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
@@ -874,6 +888,7 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
+    validate_config_server_settings(client, resource_group, name, git_property)
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 

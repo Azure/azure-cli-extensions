@@ -61,7 +61,7 @@ class BindingsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.BindingResource or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.BindingResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -184,7 +184,7 @@ class BindingsOperations(object):
         :type binding_name: str
         :param properties: Properties of the Binding resource
         :type properties:
-         ~azure.mgmt.appplatform.models.BindingResourceProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -193,9 +193,9 @@ class BindingsOperations(object):
         :return: An instance of LROPoller that returns BindingResource or
          ClientRawResponse<BindingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.BindingResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.BindingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.BindingResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.BindingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -388,7 +388,7 @@ class BindingsOperations(object):
         :type binding_name: str
         :param properties: Properties of the Binding resource
         :type properties:
-         ~azure.mgmt.appplatform.models.BindingResourceProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -397,9 +397,9 @@ class BindingsOperations(object):
         :return: An instance of LROPoller that returns BindingResource or
          ClientRawResponse<BindingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.BindingResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.BindingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.BindingResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.BindingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -450,7 +450,7 @@ class BindingsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of BindingResource
         :rtype:
-         ~azure.mgmt.appplatform.models.BindingResourcePaged[~azure.mgmt.appplatform.models.BindingResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.BindingResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.BindingResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

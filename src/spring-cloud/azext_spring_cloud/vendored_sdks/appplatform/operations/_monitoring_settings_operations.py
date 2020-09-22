@@ -57,8 +57,9 @@ class MonitoringSettingsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: MonitoringSettingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.MonitoringSettingResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -170,7 +171,7 @@ class MonitoringSettingsOperations(object):
         :type service_name: str
         :param properties: Properties of the Monitoring Setting resource
         :type properties:
-         ~azure.mgmt.appplatform.models.MonitoringSettingProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -180,9 +181,9 @@ class MonitoringSettingsOperations(object):
          MonitoringSettingResource or
          ClientRawResponse<MonitoringSettingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.MonitoringSettingResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.MonitoringSettingResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_put_initial(
@@ -278,7 +279,7 @@ class MonitoringSettingsOperations(object):
         :type service_name: str
         :param properties: Properties of the Monitoring Setting resource
         :type properties:
-         ~azure.mgmt.appplatform.models.MonitoringSettingProperties
+         ~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -288,9 +289,9 @@ class MonitoringSettingsOperations(object):
          MonitoringSettingResource or
          ClientRawResponse<MonitoringSettingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.MonitoringSettingResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.MonitoringSettingResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.MonitoringSettingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_patch_initial(
