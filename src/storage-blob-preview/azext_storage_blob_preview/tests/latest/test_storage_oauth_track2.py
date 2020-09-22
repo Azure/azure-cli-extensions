@@ -106,3 +106,115 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('properties.contentLength', length),
             JMESPathCheck('properties.blobType', 'AppendBlob')
         )
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_storage_blob_show_oauth(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+
+        self.kwargs.update({
+            'rg': resource_group,
+            'account': storage_account,
+            'container': self.create_container(account_info=account_info),
+            'local_file': self.create_temp_file(128),
+            'block': self.create_random_name(prefix='block', length=12),
+            'page': self.create_random_name(prefix='page', length=12),
+        })
+
+        # test block blob
+        self.oauth_cmd('storage blob upload -c {container} -n {block} -f "{local_file}" --account-name {sa}')
+
+        self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa}')\
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['block']),
+                                JMESPathCheck('deleted', False),
+                                JMESPathCheck('encryptionScope', None),
+                                JMESPathCheck('properties.appendBlobCommittedBlockCount', None),
+                                JMESPathCheck('properties.blobTier', None),
+                                JMESPathCheck('properties.blobTierChangeTime', None),
+                                JMESPathCheck('properties.blobTierInferred', None),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.contentSettings.cacheControl', None),
+                                JMESPathCheck('properties.contentSettings.contentDisposition', None),
+                                JMESPathCheck('properties.contentSettings.contentEncooding', None),
+                                JMESPathCheck('properties.contentSettings.contentLanguage', None),
+                                JMESPathCheckExists('properties.contentSettings.contentMd5'),
+                                JMESPathCheck('properties.copy.completionTime', None),
+                                JMESPathCheck('properties.copy.id', None),
+                                JMESPathCheck('properties.copy.progress', None),
+                                JMESPathCheck('properties.copy.source', None),
+                                JMESPathCheck('properties.copy.status', None),
+                                JMESPathCheck('properties.copy.statusDescription', None),
+                                JMESPathCheck('properties.pageRanges', None),
+                                JMESPathCheckExists('properties.etag'),
+                                JMESPathCheckExists('properties.creationTime'),
+                                JMESPathCheck('properties.deletedTime', None),
+                                JMESPathCheckExists('properties.etag'),
+                                JMESPathCheckExists('properties.lastModified'),
+                                JMESPathCheck('properties.lease.duration', None),
+                                JMESPathCheck('properties.lease.state', 'available'),
+                                JMESPathCheck('properties.lease.status', 'unlocked'),
+                                JMESPathCheck('snapshot', None),
+                                JMESPathCheck('objectReplicationDestinationPolicy', None),
+                                JMESPathCheck('objectReplicationSourceProperties', []),
+                                JMESPathCheck('rehydratePriority', None),
+                                JMESPathCheck('tags', None),
+                                JMESPathCheck('tagCount', None),
+                                JMESPathCheck('versionId', None),
+                                JMESPathCheck('lastAccessOn', None))
+
+        self.kwargs['etag'] = self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa}')\
+            .get_output_in_json()['properties']['etag']
+
+        # test page blob
+        self.oauth_cmd('storage blob upload -c {container} -n {page} -f "{local_file}" --type page --account-name {sa}')
+        self.oauth_cmd('storage blob show -c {container} -n {page} --account-name {sa}') \
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['page']),
+                                JMESPathCheck('properties.blobType', 'PageBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.pageBlobSequenceNumber', 0),
+                                JMESPathCheckExists('properties.pageRanges'))
+
+        # test snapshot
+        self.kwargs['snapshot'] = self.oauth_cmd('storage blob snapshot -c {container} -n {block} --account-name {sa}')\
+            .get_output_in_json()['snapshot']
+        self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa}') \
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['block']),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.pageRanges', None))
+
+        # test precondition
+        self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-match {etag}') \
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['block']),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.pageRanges', None))
+
+        self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-match *') \
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['block']),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.pageRanges', None))
+
+        from azure.core.exceptions import ResourceModifiedError, HttpResponseError
+        with self.assertRaisesRegex(ResourceModifiedError, 'ErrorCode:ConditionNotMet'):
+            self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-none-match {etag}')
+
+        with self.assertRaisesRegex(HttpResponseError, 'ErrorCode:UnsatisfiableCondition'):
+            self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-none-match *')
+
+        with self.assertRaisesRegex(ResourceModifiedError, 'ErrorCode:ConditionNotMet'):
+            self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-unmodified-since "2020-06-29T06:32Z"')
+
+        self.oauth_cmd('storage blob show -c {container} -n {block} --account-name {sa} --if-modified-since "2020-06-29T06:32Z"') \
+            .assert_with_checks(JMESPathCheck('name', self.kwargs['block']),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024),
+                                JMESPathCheck('properties.contentSettings.contentType', 'application/octet-stream'),
+                                JMESPathCheck('properties.pageRanges', None))
