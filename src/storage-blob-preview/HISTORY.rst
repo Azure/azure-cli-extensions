@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.0
+++++++
+* az storage container list: Add --include-deleted to list soft-deleted containers and --show-next-marker to show marker
+* az storage container restore: Restore soft-deleted container.
 
 0.2.0
 ++++++
