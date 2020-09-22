@@ -77,6 +77,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_DATA_STORAGE_BLOB
     )
 
+    blob_service_custom_sdk = get_custom_sdk('blob', client_factory=cf_blob_service,
+                                             resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
     with self.command_group('storage blob', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-02-02',
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_client,
@@ -93,9 +96,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('download', 'download_blob')
         g.storage_custom_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
-                                       custom_command_type=get_custom_sdk(
-                                           'blob', client_factory=cf_blob_service,
-                                           resource_type=CUSTOM_DATA_STORAGE_BLOB))
+                                       custom_command_type=blob_service_custom_sdk)
         g.storage_command_oauth('metadata show', 'get_blob_properties', exception_handler=show_exception_handler,
                                 transform=transform_metadata)
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
@@ -109,8 +110,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',
-                            custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
-                                                               resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
+                            custom_command_type=blob_service_custom_sdk) as g:
         g.storage_command_oauth('filter', 'find_blobs_by_tags', is_preview=True)
 
     blob_lease_client_sdk = CliCommandType(
@@ -136,10 +136,16 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('list', 'get_blob_tags')
         g.storage_custom_command_oauth('set', 'set_blob_tags')
 
-    with self.command_group('storage container', blob_client_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
+    with self.command_group('storage container', resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-02-02',
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_container_client,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
+        from ._transformers import transform_container_list_output
+        from azure.cli.command_modules.storage._format import transform_container_list
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_container_uri',
-                                       custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_service,
-                                                                          resource_type=CUSTOM_DATA_STORAGE_BLOB))
+                                       custom_command_type=blob_service_custom_sdk)
+        g.storage_custom_command_oauth('list', 'list_containers', custom_command_type=blob_service_custom_sdk,
+                                       transform=transform_container_list_output,
+                                       table_transformer=transform_container_list)
+        g.storage_command_oauth('restore', 'undelete_container', command_type=blob_service_sdk,
+                                min_api='2020-02-10', is_preview=True)
