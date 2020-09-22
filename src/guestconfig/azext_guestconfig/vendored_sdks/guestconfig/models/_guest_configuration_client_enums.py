@@ -6,51 +6,75 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class ActionAfterReboot(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class ActionAfterReboot(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specifies what happens after a reboot during the application of a configuration. The possible
     values are ContinueConfiguration and StopConfiguration
     """
 
-    continue_configuration = "ContinueConfiguration"
-    stop_configuration = "StopConfiguration"
+    CONTINUE_CONFIGURATION = "ContinueConfiguration"
+    STOP_CONFIGURATION = "StopConfiguration"
 
-class AllowModuleOverwrite(str, Enum):
+class AllowModuleOverwrite(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """If true - new configurations downloaded from the pull service are allowed to overwrite the old
     ones on the target node. Otherwise, false
     """
 
-    true = "True"
-    false = "False"
+    TRUE = "True"
+    FALSE = "False"
 
-class ComplianceStatus(str, Enum):
+class ComplianceStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """A value indicating compliance status of the machine for the assigned guest configuration.
     """
 
-    compliant = "Compliant"
-    non_compliant = "NonCompliant"
-    pending = "Pending"
+    COMPLIANT = "Compliant"
+    NON_COMPLIANT = "NonCompliant"
+    PENDING = "Pending"
 
-class ConfigurationMode(str, Enum):
+class ConfigurationMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specifies how the LCM(Local Configuration Manager) actually applies the configuration to the
     target nodes. Possible values are ApplyOnly, ApplyAndMonitor, and ApplyAndAutoCorrect.
     """
 
-    apply_only = "ApplyOnly"
-    apply_and_monitor = "ApplyAndMonitor"
-    apply_and_auto_correct = "ApplyAndAutoCorrect"
+    APPLY_ONLY = "ApplyOnly"
+    APPLY_AND_MONITOR = "ApplyAndMonitor"
+    APPLY_AND_AUTO_CORRECT = "ApplyAndAutoCorrect"
 
-class ProvisioningState(str, Enum):
+class Kind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of the guest configuration. For example:DSC
+    """
+
+    DSC = "DSC"
+
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state, which only appears in the response.
     """
 
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-    created = "Created"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    CREATED = "Created"
 
-class RebootIfNeeded(str, Enum):
+class RebootIfNeeded(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Set this to true to automatically reboot the node after a configuration that requires reboot is
     applied. Otherwise, you will have to manually reboot the node for any configuration that
     requires it. The default value is false. To use this setting when a reboot condition is enacted
@@ -58,12 +82,12 @@ class RebootIfNeeded(str, Enum):
     xPendingReboot module.
     """
 
-    true = "True"
-    false = "False"
+    TRUE = "True"
+    FALSE = "False"
 
-class Type(str, Enum):
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Type of report, Consistency or Initial
     """
 
-    consistency = "Consistency"
-    initial = "Initial"
+    CONSISTENCY = "Consistency"
+    INITIAL = "Initial"
