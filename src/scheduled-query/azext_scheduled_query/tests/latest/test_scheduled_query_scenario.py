@@ -135,11 +135,11 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
         self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
-        self.check_falling_period(ns, 1.1, 10.1)
+        self.check_falling_period(ns, 1, 10)
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
         self.check_condition(ns, 'Average', 'Perf and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
-        self.check_falling_period(ns, 1.1, 10.1)
+        self.check_falling_period(ns, 1, 10)
