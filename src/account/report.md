@@ -1,75 +1,209 @@
 # Azure CLI Module Creation Report
 
-### account operation list
+### account alias create
 
-list a account operation.
+create a account alias.
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account alias|Alias|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|create|Create|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
+|**--properties**|object|Put alias request properties.|properties|properties|
+
+### account alias delete
+
+delete a account alias.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account alias|Alias|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|delete|Delete|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
+
+### account alias list
+
+list a account alias.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account alias|Alias|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|list|List|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+
+### account alias show
+
+show a account alias.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account alias|Alias|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|show|Get|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
+
 ### account subscription cancel
 
 cancel a account subscription.
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-### account subscription create-csp-subscription
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscription|
 
-create-csp-subscription a account subscription.
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|cancel|Cancel|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|**--display-name**|string|The friendly name of the subscription.|/something/my_option|/something/myOption|
-|**--sku-id**|string|The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.|/something/my_option|/something/myOption|
-|--reseller-id**|string|Reseller ID, basically MPN Id.|/something/my_option|/something/myOption|
-### account subscription create-subscription
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
 
-create-subscription a account subscription.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|**--display-name**|string|The friendly name of the subscription.|/something/my_option|/something/myOption|
-|**--sku-id**|string|The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.|/something/my_option|/something/myOption|
-|--cost-center**|string|If set, the cost center will show up on the Azure usage and charges file.|/something/my_option|/something/myOption|
-|--owner**|object|Active Directory Principal who’ll get owner access on the new subscription.|/something/my_option|/something/myOption|
-|--management-group-id**|string|The identifier of the management group to which this subscription will be associated.|/something/my_option|/something/myOption|
-### account subscription create-subscription-in-enrollment-account
-
-create-subscription-in-enrollment-account a account subscription.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|--display-name**|string|The display name of the subscription.|/something/my_option|/something/myOption|
-|--management-group-id**|string|The Management Group Id.|/something/my_option|/something/myOption|
-|--owners**|array|The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.|/something/my_option|/something/myOption|
-|--offer-type**|choice|The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.|/something/my_option|/something/myOption|
 ### account subscription enable
 
 enable a account subscription.
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscription|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|enable|Enable|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
+
+### account subscription list
+
+list a account subscription.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscriptions|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|list|List|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+
+### account subscription list-location
+
+list-location a account subscription.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscriptions|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|list-location|ListLocations|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|The ID of the target subscription.|subscription_id|subscriptionId|
+
 ### account subscription rename
 
 rename a account subscription.
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|Subscription Name|/something/my_option|/something/myOption|
-|--subscription-name**|string|New subscription name|/something/my_option|/something/myOption|
-### account subscription-operation show
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscription|
 
-show a account subscription-operation.
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|rename|Rename|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
+|**--subscription-name**|string|New subscription name|subscription_name|subscriptionName|
+
+### account subscription show
+
+show a account subscription.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account subscription|Subscriptions|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|show|Get|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|The ID of the target subscription.|subscription_id|subscriptionId|
+
+### account tenant list
+
+list a account tenant.
+
+#### Command group
+|Name (az)|Swagger name|
+|---------|------------|
+|account tenant|Tenants|
+
+#### Methods
+|Name (az)|Swagger name|
+|---------|------------|
+|list|List|
+
+#### Parameters
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|

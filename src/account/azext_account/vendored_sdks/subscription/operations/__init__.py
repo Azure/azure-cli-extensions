@@ -8,12 +8,14 @@
 
 from ._subscription_operations import SubscriptionOperations
 from ._tenant_operations import TenantOperations
+from ._subscription_operations import SubscriptionOperations
 from ._operation_operations import OperationOperations
 from ._alias_operations import AliasOperations
 
 __all__ = [
     'SubscriptionOperations',
     'TenantOperations',
+    'SubscriptionOperations',
     'OperationOperations',
     'AliasOperations',
 ]
