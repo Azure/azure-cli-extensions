@@ -87,7 +87,6 @@ class ClusterOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -111,8 +110,8 @@ class ClusterOperations(object):
         location,  # type: str
         sku,  # type: "models.AzureSku"
         tags=None,  # type: Optional[Dict[str, str]]
-        trusted_external_tenants=None,  # type: Optional[List["models.TrustedExternalTenant"]]
         zones=None,  # type: Optional[List[str]]
+        trusted_external_tenants=None,  # type: Optional[List["models.TrustedExternalTenant"]]
         optimized_autoscale=None,  # type: Optional["models.OptimizedAutoscale"]
         enable_disk_encryption=None,  # type: Optional[bool]
         enable_streaming_ingest=False,  # type: Optional[bool]
@@ -151,7 +150,6 @@ class ClusterOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'Cluster')
         body_content_kwargs['content'] = body_content
@@ -164,7 +162,6 @@ class ClusterOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Cluster', pipeline_response)
 
@@ -197,7 +194,7 @@ class ClusterOperations(object):
         user_assigned_identities=None,  # type: Optional[Dict[str, "models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.Cluster"]
         """Create or update a Kusto cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -217,10 +214,10 @@ class ClusterOperations(object):
         :param optimized_autoscale: Optimized auto scale definition.
         :type optimized_autoscale: ~kusto_management_client.models.OptimizedAutoscale
         :param enable_disk_encryption: A boolean value that indicates if the cluster's disks are
-     encrypted.
+         encrypted.
         :type enable_disk_encryption: bool
         :param enable_streaming_ingest: A boolean value that indicates if the streaming ingest is
-     enabled.
+         enabled.
         :type enable_streaming_ingest: bool
         :param virtual_network_configuration: Virtual network definition.
         :type virtual_network_configuration: ~kusto_management_client.models.VirtualNetworkConfiguration
@@ -229,15 +226,16 @@ class ClusterOperations(object):
         :param enable_purge: A boolean value that indicates if the purge operations are enabled.
         :type enable_purge: bool
         :param enable_double_encryption: A boolean value that indicates if double encryption is
-     enabled.
+         enabled.
         :type enable_double_encryption: bool
         :param type: The identity type.
         :type type: str or ~kusto_management_client.models.IdentityType
         :param user_assigned_identities: The list of user identities associated with the Kusto cluster.
-     The user identity dictionary key references will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+         The user identity dictionary key references will be ARM resource ids in the form:
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
         :type user_assigned_identities: dict[str, ~kusto_management_client.models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties]
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -252,26 +250,28 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._create_or_update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            location=location,
-            sku=sku,
-            tags=tags,
-            zones=zones,
-            trusted_external_tenants=trusted_external_tenants,
-            optimized_autoscale=optimized_autoscale,
-            enable_disk_encryption=enable_disk_encryption,
-            enable_streaming_ingest=enable_streaming_ingest,
-            virtual_network_configuration=virtual_network_configuration,
-            key_vault_properties=key_vault_properties,
-            enable_purge=enable_purge,
-            enable_double_encryption=enable_double_encryption,
-            type=type,
-            user_assigned_identities=user_assigned_identities,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                location=location,
+                sku=sku,
+                tags=tags,
+                zones=zones,
+                trusted_external_tenants=trusted_external_tenants,
+                optimized_autoscale=optimized_autoscale,
+                enable_disk_encryption=enable_disk_encryption,
+                enable_streaming_ingest=enable_streaming_ingest,
+                virtual_network_configuration=virtual_network_configuration,
+                key_vault_properties=key_vault_properties,
+                enable_purge=enable_purge,
+                enable_double_encryption=enable_double_encryption,
+                type=type,
+                user_assigned_identities=user_assigned_identities,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -286,7 +286,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}'}  # type: ignore
 
     def _update_initial(
@@ -335,7 +343,6 @@ class ClusterOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'ClusterUpdate')
         body_content_kwargs['content'] = body_content
@@ -348,7 +355,6 @@ class ClusterOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Cluster', pipeline_response)
 
@@ -383,7 +389,7 @@ class ClusterOperations(object):
         user_assigned_identities=None,  # type: Optional[Dict[str, "models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.Cluster"]
         """Update a Kusto cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -401,10 +407,10 @@ class ClusterOperations(object):
         :param optimized_autoscale: Optimized auto scale definition.
         :type optimized_autoscale: ~kusto_management_client.models.OptimizedAutoscale
         :param enable_disk_encryption: A boolean value that indicates if the cluster's disks are
-     encrypted.
+         encrypted.
         :type enable_disk_encryption: bool
         :param enable_streaming_ingest: A boolean value that indicates if the streaming ingest is
-     enabled.
+         enabled.
         :type enable_streaming_ingest: bool
         :param virtual_network_configuration: Virtual network definition.
         :type virtual_network_configuration: ~kusto_management_client.models.VirtualNetworkConfiguration
@@ -413,15 +419,16 @@ class ClusterOperations(object):
         :param enable_purge: A boolean value that indicates if the purge operations are enabled.
         :type enable_purge: bool
         :param enable_double_encryption: A boolean value that indicates if double encryption is
-     enabled.
+         enabled.
         :type enable_double_encryption: bool
         :param type: The identity type.
         :type type: str or ~kusto_management_client.models.IdentityType
         :param user_assigned_identities: The list of user identities associated with the Kusto cluster.
-     The user identity dictionary key references will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+         The user identity dictionary key references will be ARM resource ids in the form:
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
         :type user_assigned_identities: dict[str, ~kusto_management_client.models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties]
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -436,25 +443,27 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            tags=tags,
-            location=location,
-            sku=sku,
-            trusted_external_tenants=trusted_external_tenants,
-            optimized_autoscale=optimized_autoscale,
-            enable_disk_encryption=enable_disk_encryption,
-            enable_streaming_ingest=enable_streaming_ingest,
-            virtual_network_configuration=virtual_network_configuration,
-            key_vault_properties=key_vault_properties,
-            enable_purge=enable_purge,
-            enable_double_encryption=enable_double_encryption,
-            type=type,
-            user_assigned_identities=user_assigned_identities,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                tags=tags,
+                location=location,
+                sku=sku,
+                trusted_external_tenants=trusted_external_tenants,
+                optimized_autoscale=optimized_autoscale,
+                enable_disk_encryption=enable_disk_encryption,
+                enable_streaming_ingest=enable_streaming_ingest,
+                virtual_network_configuration=virtual_network_configuration,
+                key_vault_properties=key_vault_properties,
+                enable_purge=enable_purge,
+                enable_double_encryption=enable_double_encryption,
+                type=type,
+                user_assigned_identities=user_assigned_identities,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -469,7 +478,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}'}  # type: ignore
 
     def _delete_initial(
@@ -500,7 +517,6 @@ class ClusterOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -520,7 +536,7 @@ class ClusterOperations(object):
         cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Deletes a Kusto cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -528,6 +544,7 @@ class ClusterOperations(object):
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -542,12 +559,14 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -559,7 +578,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}'}  # type: ignore
 
     def _stop_initial(
@@ -590,7 +617,6 @@ class ClusterOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -610,7 +636,7 @@ class ClusterOperations(object):
         cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Stops a Kusto cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -618,6 +644,7 @@ class ClusterOperations(object):
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -632,12 +659,14 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._stop_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._stop_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -649,7 +678,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/stop'}  # type: ignore
 
     def _start_initial(
@@ -680,7 +717,6 @@ class ClusterOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -700,7 +736,7 @@ class ClusterOperations(object):
         cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Starts a Kusto cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -708,6 +744,7 @@ class ClusterOperations(object):
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -722,12 +759,14 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._start_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._start_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -739,7 +778,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/start'}  # type: ignore
 
     def list_follower_database(
@@ -749,7 +796,8 @@ class ClusterOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.FollowerDatabaseListResult"]
-        """Returns a list of databases that are owned by this cluster and were followed by another cluster.
+        """Returns a list of databases that are owned by this cluster and were followed by another
+        cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
@@ -766,6 +814,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_follower_database.metadata['url']  # type: ignore
@@ -779,15 +831,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.post(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -848,7 +896,6 @@ class ClusterOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_follower_database_to_remove, 'FollowerDatabaseDefinition')
         body_content_kwargs['content'] = body_content
@@ -874,7 +921,7 @@ class ClusterOperations(object):
         attached_database_configuration_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Detaches all followers of a database owned by this cluster.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -882,12 +929,13 @@ class ClusterOperations(object):
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param cluster_resource_id: Resource id of the cluster that follows a database owned by this
-     cluster.
+         cluster.
         :type cluster_resource_id: str
         :param attached_database_configuration_name: Resource name of the attached database
-     configuration in the follower cluster.
+         configuration in the follower cluster.
         :type attached_database_configuration_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -902,14 +950,16 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._detach_follower_database_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            cluster_resource_id=cluster_resource_id,
-            attached_database_configuration_name=attached_database_configuration_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._detach_follower_database_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                cluster_resource_id=cluster_resource_id,
+                attached_database_configuration_name=attached_database_configuration_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -921,7 +971,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_detach_follower_database.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/detachFollowerDatabases'}  # type: ignore
 
     def _diagnose_virtual_network_initial(
@@ -930,8 +988,8 @@ class ClusterOperations(object):
         cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DiagnoseVirtualNetworkResult"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DiagnoseVirtualNetworkResult"]
+        # type: (...) -> Optional["models.DiagnoseVirtualNetworkResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.DiagnoseVirtualNetworkResult"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-14"
@@ -953,7 +1011,6 @@ class ClusterOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -978,14 +1035,16 @@ class ClusterOperations(object):
         cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
-        """Diagnoses network connectivity status for external resources on which the service is dependent on.
+        # type: (...) -> LROPoller["models.DiagnoseVirtualNetworkResult"]
+        """Diagnoses network connectivity status for external resources on which the service is dependent
+        on.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -1000,12 +1059,14 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._diagnose_virtual_network_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._diagnose_virtual_network_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -1020,7 +1081,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'location'},  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_diagnose_virtual_network.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/diagnoseVirtualNetwork'}  # type: ignore
 
     def list_by_resource_group(
@@ -1044,6 +1113,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
@@ -1056,15 +1129,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -1109,6 +1178,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -1120,15 +1193,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -1173,6 +1242,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_sku.metadata['url']  # type: ignore
@@ -1184,15 +1257,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -1265,7 +1334,6 @@ class ClusterOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_cluster_name, 'ClusterCheckNameRequest')
         body_content_kwargs['content'] = body_content
@@ -1310,6 +1378,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_sku_by_resource.metadata['url']  # type: ignore
@@ -1323,15 +1395,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -1382,6 +1450,10 @@ class ClusterOperations(object):
         api_version = "2020-06-14"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_language_extension.metadata['url']  # type: ignore
@@ -1395,15 +1467,11 @@ class ClusterOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.post(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -1463,7 +1531,6 @@ class ClusterOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_language_extensions_to_add, 'LanguageExtensionsList')
         body_content_kwargs['content'] = body_content
@@ -1488,7 +1555,7 @@ class ClusterOperations(object):
         value=None,  # type: Optional[List["models.LanguageExtension"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Add a list of language extensions that can run within KQL queries.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -1498,6 +1565,7 @@ class ClusterOperations(object):
         :param value: The list of language extensions.
         :type value: list[~kusto_management_client.models.LanguageExtension]
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -1512,13 +1580,15 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._add_language_extension_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            value=value,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._add_language_extension_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                value=value,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -1530,7 +1600,15 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_add_language_extension.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/addLanguageExtensions'}  # type: ignore
 
     def _remove_language_extension_initial(
@@ -1566,7 +1644,6 @@ class ClusterOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_language_extensions_to_remove, 'LanguageExtensionsList')
         body_content_kwargs['content'] = body_content
@@ -1591,7 +1668,7 @@ class ClusterOperations(object):
         value=None,  # type: Optional[List["models.LanguageExtension"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Remove a list of language extensions that can run within KQL queries.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -1601,6 +1678,7 @@ class ClusterOperations(object):
         :param value: The list of language extensions.
         :type value: list[~kusto_management_client.models.LanguageExtension]
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -1615,13 +1693,15 @@ class ClusterOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._remove_language_extension_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            value=value,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._remove_language_extension_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                value=value,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -1633,5 +1713,13 @@ class ClusterOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_remove_language_extension.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/removeLanguageExtensions'}  # type: ignore

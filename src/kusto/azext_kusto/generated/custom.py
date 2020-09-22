@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-import json
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
@@ -52,8 +51,6 @@ def kusto_cluster_create(client,
         enable_purge = False
     if enable_double_encryption is None:
         enable_double_encryption = False
-    if isinstance(identity_user_assigned_identities, str):
-        identity_user_assigned_identities = json.loads(identity_user_assigned_identities)
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -97,8 +94,6 @@ def kusto_cluster_update(client,
         enable_purge = False
     if enable_double_encryption is None:
         enable_double_encryption = False
-    if isinstance(identity_user_assigned_identities, str):
-        identity_user_assigned_identities = json.loads(identity_user_assigned_identities)
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -318,8 +313,8 @@ def kusto_database_create(client,
     if len(all_parameters) > 1:
         raise CLIError('at most one of  read_write_database, read_only_following_database is needed for parameters!')
     if len(all_parameters) != 1:
-        raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is provid'
-                       'ed!')
+        raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is '
+                       'provided!')
     parameters = all_parameters[0] if len(all_parameters) == 1 else None
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
@@ -344,8 +339,8 @@ def kusto_database_update(client,
     if len(all_parameters) > 1:
         raise CLIError('at most one of  read_write_database, read_only_following_database is needed for parameters!')
     if len(all_parameters) != 1:
-        raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is provid'
-                       'ed!')
+        raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is '
+                       'provided!')
     parameters = all_parameters[0] if len(all_parameters) == 1 else None
     return sdk_no_wait(no_wait,
                        client.begin_update,

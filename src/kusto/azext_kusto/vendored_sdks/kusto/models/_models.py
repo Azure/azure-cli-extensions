@@ -920,7 +920,7 @@ class Database(Resource):
     ):
         super(Database, self).__init__(**kwargs)
         self.location = kwargs.get('location', None)
-        self.kind = 'Database'
+        self.kind = 'Database'  # type: str
 
 
 class DatabaseListResult(msrest.serialization.Model):
@@ -1228,7 +1228,7 @@ class DataConnection(Resource):
     ):
         super(DataConnection, self).__init__(**kwargs)
         self.location = kwargs.get('location', None)
-        self.kind = 'DataConnection'
+        self.kind = 'DataConnection'  # type: str
 
 
 class DataConnectionCheckNameRequest(msrest.serialization.Model):
@@ -1441,7 +1441,7 @@ class EventGridDataConnection(DataConnection):
         **kwargs
     ):
         super(EventGridDataConnection, self).__init__(**kwargs)
-        self.kind = 'EventGrid'
+        self.kind = 'EventGrid'  # type: str
         self.storage_account_resource_id = kwargs.get('storage_account_resource_id', None)
         self.event_hub_resource_id = kwargs.get('event_hub_resource_id', None)
         self.consumer_group = kwargs.get('consumer_group', None)
@@ -1522,7 +1522,7 @@ class EventHubDataConnection(DataConnection):
         **kwargs
     ):
         super(EventHubDataConnection, self).__init__(**kwargs)
-        self.kind = 'EventHub'
+        self.kind = 'EventHub'  # type: str
         self.event_hub_resource_id = kwargs.get('event_hub_resource_id', None)
         self.consumer_group = kwargs.get('consumer_group', None)
         self.table_name = kwargs.get('table_name', None)
@@ -1660,7 +1660,7 @@ class IotHubDataConnection(DataConnection):
         **kwargs
     ):
         super(IotHubDataConnection, self).__init__(**kwargs)
-        self.kind = 'IotHub'
+        self.kind = 'IotHub'  # type: str
         self.iot_hub_resource_id = kwargs.get('iot_hub_resource_id', None)
         self.consumer_group = kwargs.get('consumer_group', None)
         self.table_name = kwargs.get('table_name', None)
@@ -1998,7 +1998,7 @@ class ReadOnlyFollowingDatabase(Database):
         **kwargs
     ):
         super(ReadOnlyFollowingDatabase, self).__init__(**kwargs)
-        self.kind = 'ReadOnlyFollowing'
+        self.kind = 'ReadOnlyFollowing'  # type: str
         self.provisioning_state = None
         self.soft_delete_period = None
         self.hot_cache_period = kwargs.get('hot_cache_period', None)
@@ -2071,7 +2071,7 @@ class ReadWriteDatabase(Database):
         **kwargs
     ):
         super(ReadWriteDatabase, self).__init__(**kwargs)
-        self.kind = 'ReadWrite'
+        self.kind = 'ReadWrite'  # type: str
         self.provisioning_state = None
         self.soft_delete_period = kwargs.get('soft_delete_period', None)
         self.hot_cache_period = kwargs.get('hot_cache_period', None)
