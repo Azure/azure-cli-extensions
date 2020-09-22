@@ -7,17 +7,17 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import ADLSGen1FileDataSet
+    from ._models_py3 import ADLSGen1FolderDataSet
+    from ._models_py3 import ADLSGen2FileDataSet
+    from ._models_py3 import ADLSGen2FileDataSetMapping
+    from ._models_py3 import ADLSGen2FileSystemDataSet
+    from ._models_py3 import ADLSGen2FileSystemDataSetMapping
+    from ._models_py3 import ADLSGen2FolderDataSet
+    from ._models_py3 import ADLSGen2FolderDataSetMapping
     from ._models_py3 import Account
     from ._models_py3 import AccountList
     from ._models_py3 import AccountUpdateParameters
-    from ._models_py3 import AdlsGen1FileDataSet
-    from ._models_py3 import AdlsGen1FolderDataSet
-    from ._models_py3 import AdlsGen2FileDataSet
-    from ._models_py3 import AdlsGen2FileDataSetMapping
-    from ._models_py3 import AdlsGen2FileSystemDataSet
-    from ._models_py3 import AdlsGen2FileSystemDataSetMapping
-    from ._models_py3 import AdlsGen2FolderDataSet
-    from ._models_py3 import AdlsGen2FolderDataSetMapping
     from ._models_py3 import BlobContainerDataSet
     from ._models_py3 import BlobContainerDataSetMapping
     from ._models_py3 import BlobDataSet
@@ -36,7 +36,6 @@ try:
     from ._models_py3 import DataShareErrorInfo
     from ._models_py3 import DefaultDto
     from ._models_py3 import DimensionProperties
-    from ._models_py3 import Identity
     from ._models_py3 import Invitation
     from ._models_py3 import InvitationList
     from ._models_py3 import KustoClusterDataSet
@@ -53,6 +52,10 @@ try:
     from ._models_py3 import ProviderShareSubscription
     from ._models_py3 import ProviderShareSubscriptionList
     from ._models_py3 import ProxyDto
+    from ._models_py3 import SQLDBTableDataSet
+    from ._models_py3 import SQLDBTableDataSetMapping
+    from ._models_py3 import SQLDWTableDataSet
+    from ._models_py3 import SQLDWTableDataSetMapping
     from ._models_py3 import ScheduledSourceSynchronizationSetting
     from ._models_py3 import ScheduledSynchronizationSetting
     from ._models_py3 import ScheduledTrigger
@@ -66,10 +69,6 @@ try:
     from ._models_py3 import ShareSynchronizationList
     from ._models_py3 import SourceShareSynchronizationSetting
     from ._models_py3 import SourceShareSynchronizationSettingList
-    from ._models_py3 import SqlDBTableDataSet
-    from ._models_py3 import SqlDBTableDataSetMapping
-    from ._models_py3 import SqlDwTableDataSet
-    from ._models_py3 import SqlDwTableDataSetMapping
     from ._models_py3 import SynchronizationDetails
     from ._models_py3 import SynchronizationDetailsList
     from ._models_py3 import SynchronizationSetting
@@ -78,17 +77,17 @@ try:
     from ._models_py3 import Trigger
     from ._models_py3 import TriggerList
 except (SyntaxError, ImportError):
+    from ._models import ADLSGen1FileDataSet  # type: ignore
+    from ._models import ADLSGen1FolderDataSet  # type: ignore
+    from ._models import ADLSGen2FileDataSet  # type: ignore
+    from ._models import ADLSGen2FileDataSetMapping  # type: ignore
+    from ._models import ADLSGen2FileSystemDataSet  # type: ignore
+    from ._models import ADLSGen2FileSystemDataSetMapping  # type: ignore
+    from ._models import ADLSGen2FolderDataSet  # type: ignore
+    from ._models import ADLSGen2FolderDataSetMapping  # type: ignore
     from ._models import Account  # type: ignore
     from ._models import AccountList  # type: ignore
     from ._models import AccountUpdateParameters  # type: ignore
-    from ._models import AdlsGen1FileDataSet  # type: ignore
-    from ._models import AdlsGen1FolderDataSet  # type: ignore
-    from ._models import AdlsGen2FileDataSet  # type: ignore
-    from ._models import AdlsGen2FileDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FileSystemDataSet  # type: ignore
-    from ._models import AdlsGen2FileSystemDataSetMapping  # type: ignore
-    from ._models import AdlsGen2FolderDataSet  # type: ignore
-    from ._models import AdlsGen2FolderDataSetMapping  # type: ignore
     from ._models import BlobContainerDataSet  # type: ignore
     from ._models import BlobContainerDataSetMapping  # type: ignore
     from ._models import BlobDataSet  # type: ignore
@@ -107,7 +106,6 @@ except (SyntaxError, ImportError):
     from ._models import DataShareErrorInfo  # type: ignore
     from ._models import DefaultDto  # type: ignore
     from ._models import DimensionProperties  # type: ignore
-    from ._models import Identity  # type: ignore
     from ._models import Invitation  # type: ignore
     from ._models import InvitationList  # type: ignore
     from ._models import KustoClusterDataSet  # type: ignore
@@ -124,6 +122,10 @@ except (SyntaxError, ImportError):
     from ._models import ProviderShareSubscription  # type: ignore
     from ._models import ProviderShareSubscriptionList  # type: ignore
     from ._models import ProxyDto  # type: ignore
+    from ._models import SQLDBTableDataSet  # type: ignore
+    from ._models import SQLDBTableDataSetMapping  # type: ignore
+    from ._models import SQLDWTableDataSet  # type: ignore
+    from ._models import SQLDWTableDataSetMapping  # type: ignore
     from ._models import ScheduledSourceSynchronizationSetting  # type: ignore
     from ._models import ScheduledSynchronizationSetting  # type: ignore
     from ._models import ScheduledTrigger  # type: ignore
@@ -137,10 +139,6 @@ except (SyntaxError, ImportError):
     from ._models import ShareSynchronizationList  # type: ignore
     from ._models import SourceShareSynchronizationSetting  # type: ignore
     from ._models import SourceShareSynchronizationSettingList  # type: ignore
-    from ._models import SqlDBTableDataSet  # type: ignore
-    from ._models import SqlDBTableDataSetMapping  # type: ignore
-    from ._models import SqlDwTableDataSet  # type: ignore
-    from ._models import SqlDwTableDataSetMapping  # type: ignore
     from ._models import SynchronizationDetails  # type: ignore
     from ._models import SynchronizationDetailsList  # type: ignore
     from ._models import SynchronizationSetting  # type: ignore
@@ -162,20 +160,21 @@ from ._data_share_management_client_enums import (
     Status,
     SynchronizationMode,
     TriggerStatus,
+    Type,
 )
 
 __all__ = [
+    'ADLSGen1FileDataSet',
+    'ADLSGen1FolderDataSet',
+    'ADLSGen2FileDataSet',
+    'ADLSGen2FileDataSetMapping',
+    'ADLSGen2FileSystemDataSet',
+    'ADLSGen2FileSystemDataSetMapping',
+    'ADLSGen2FolderDataSet',
+    'ADLSGen2FolderDataSetMapping',
     'Account',
     'AccountList',
     'AccountUpdateParameters',
-    'AdlsGen1FileDataSet',
-    'AdlsGen1FolderDataSet',
-    'AdlsGen2FileDataSet',
-    'AdlsGen2FileDataSetMapping',
-    'AdlsGen2FileSystemDataSet',
-    'AdlsGen2FileSystemDataSetMapping',
-    'AdlsGen2FolderDataSet',
-    'AdlsGen2FolderDataSetMapping',
     'BlobContainerDataSet',
     'BlobContainerDataSetMapping',
     'BlobDataSet',
@@ -194,7 +193,6 @@ __all__ = [
     'DataShareErrorInfo',
     'DefaultDto',
     'DimensionProperties',
-    'Identity',
     'Invitation',
     'InvitationList',
     'KustoClusterDataSet',
@@ -211,6 +209,10 @@ __all__ = [
     'ProviderShareSubscription',
     'ProviderShareSubscriptionList',
     'ProxyDto',
+    'SQLDBTableDataSet',
+    'SQLDBTableDataSetMapping',
+    'SQLDWTableDataSet',
+    'SQLDWTableDataSetMapping',
     'ScheduledSourceSynchronizationSetting',
     'ScheduledSynchronizationSetting',
     'ScheduledTrigger',
@@ -224,10 +226,6 @@ __all__ = [
     'ShareSynchronizationList',
     'SourceShareSynchronizationSetting',
     'SourceShareSynchronizationSettingList',
-    'SqlDBTableDataSet',
-    'SqlDBTableDataSetMapping',
-    'SqlDwTableDataSet',
-    'SqlDwTableDataSetMapping',
     'SynchronizationDetails',
     'SynchronizationDetailsList',
     'SynchronizationSetting',
@@ -247,4 +245,5 @@ __all__ = [
     'Status',
     'SynchronizationMode',
     'TriggerStatus',
+    'Type',
 ]
