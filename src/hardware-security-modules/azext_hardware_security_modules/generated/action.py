@@ -10,8 +10,8 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
 class AddNetworkProfileSubnet(argparse.Action):
