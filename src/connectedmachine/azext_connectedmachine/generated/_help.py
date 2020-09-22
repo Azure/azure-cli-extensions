@@ -19,7 +19,8 @@ helps['connectedmachine machine'] = """
 
 helps['connectedmachine machine list'] = """
     type: command
-    short-summary: "Lists all the hybrid machines in the specified subscription."
+    short-summary: "Lists all the hybrid machines in the specified subscription. Use the nextLink property in the \
+response to get the next page of hybrid machines."
     examples:
       - name: List Machines by resource group
         text: |-
@@ -53,7 +54,7 @@ helps['connectedmachine machine-extension list'] = """
     type: command
     short-summary: "The operation to get all extensions of a non-Azure machine"
     examples:
-      - name: Get all Machine Extensions
+      - name: GET all Machine Extensions
         text: |-
                az connectedmachine machine-extension list --machine-name "myMachine" --resource-group \
 "myResourceGroup"
@@ -63,7 +64,7 @@ helps['connectedmachine machine-extension show'] = """
     type: command
     short-summary: "The operation to get the extension."
     examples:
-      - name: Get Machine Extension
+      - name: GET Machine Extension
         text: |-
                az connectedmachine machine-extension show --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup"
@@ -83,9 +84,9 @@ helps['connectedmachine machine-extension create'] = """
 
 helps['connectedmachine machine-extension update'] = """
     type: command
-    short-summary: "The operation to update the extension."
+    short-summary: "The operation to create or update the extension."
     examples:
-      - name: Update a Machine Extension
+      - name: Create or Update a Machine Extension
         text: |-
                az connectedmachine machine-extension update --machine-name "myMachine" --name "CustomScriptExtension" \
 --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe \

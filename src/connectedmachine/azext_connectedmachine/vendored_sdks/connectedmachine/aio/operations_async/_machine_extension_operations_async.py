@@ -297,7 +297,7 @@ class MachineExtensionOperations:
         protected_settings: Optional[object] = None,
         **kwargs
     ) -> AsyncLROPoller["models.MachineExtension"]:
-        """The operation to update the extension.
+        """The operation to create or update the extension.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
