@@ -8,1356 +8,1613 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-# import os
-# import unittest
-
-# from azure_devtools.scenario_tests import AllowLargeResponse
-# from azure.cli.testsdk import ScenarioTest
-# from .. import try_manual
-# from azure.cli.testsdk import ResourceGroupPreparer
-# from azure.cli.testsdk import StorageAccountPreparer
-
-
-# TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-# @try_manual
-# def setup(test, rg):
-#     pass
-
-
-# # EXAMPLE: /Exports/put/BillingAccountCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_billingaccountcreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/BillingAccountAlerts
-# @try_manual
-# def step__alerts_get_billingaccountalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/DepartmentAlerts
-# @try_manual
-# def step__alerts_get_departmentalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/EnrollmentAccountAlerts
-# @try_manual
-# def step__alerts_get_enrollmentaccountalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/ExternalBillingAccountAlerts
-# @try_manual
-# def step__alerts_get_externalbillingaccountalerts(test, rg):
-#     test.cmd('az costmanagement alert list-external '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalBillingAccounts"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/ExternalSubscriptionAlerts
-# @try_manual
-# def step__alerts_get_externalsubscriptionalerts(test, rg):
-#     test.cmd('az costmanagement alert list-external '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalSubscriptions"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/InvoiceSectionAlerts
-# @try_manual
-# def step__alerts_get_invoicesectionalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/ResourceGroupAlerts
-# @try_manual
-# def step__alerts_get_resourcegroupalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/SubscriptionAlerts
-# @try_manual
-# def step__alerts_get_subscriptionalerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsList-Modern
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslist_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsListExpandAndTop-Legacy
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslistexpandandtop_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsListExpandAndTop-Modern
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslistexpandandtop_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsListWithFilter-Legacy
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslistwithfilter_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingAccountDimensionsListWithFilter-Modern
-# @try_manual
-# def step__dimensions_get_billingaccountdimensionslistwithfilter_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingProfileDimensionsList-Modern
-# @try_manual
-# def step__dimensions_get_billingprofiledimensionslist_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingProfileDimensionsListExpandAndTop-Modern
-# @try_manual
-# def step__dimensions_get_billingprofiledimensionslistexpandandtop_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/BillingProfileDimensionsListWithFilter-Modern
-# @try_manual
-# def step__dimensions_get_billingprofiledimensionslistwithfilter_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/CustomerDimensionsList-Modern
-# @try_manual
-# def step__dimensions_get_customerdimensionslist_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/CustomerDimensionsListExpandAndTop-Modern
-# @try_manual
-# def step__dimensions_get_customerdimensionslistexpandandtop_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/CustomerDimensionsListWithFilter-Modern
-# @try_manual
-# def step__dimensions_get_customerdimensionslistwithfilter_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/DepartmentDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_departmentdimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/DepartmentDimensionsListExpandAndTop-Legacy
-# @try_manual
-# def step__dimensions_get_departmentdimensionslistexpandandtop_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/DepartmentDimensionsListWithFilter-Legacy
-# @try_manual
-# def step__dimensions_get_departmentdimensionslistwithfilter_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_enrollmentaccountdimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsListExpandAndTop-Legacy
-# @try_manual
-# def step__dimensions_get_enrollmentaccountdimensionslistexpandandtop_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsListWithFilter-Legacy
-# @try_manual
-# def step__dimensions_get_enrollmentaccountdimensionslistwithfilter_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ExternalBillingAccountDimensionList
-# @try_manual
-# def step__dimensions_get_externalbillingaccountdimensionlist(test, rg):
-#     test.cmd('az costmanagement dimension by-external-cloud-provider-type '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalBillingAccounts"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ExternalSubscriptionDimensionList
-# @try_manual
-# def step__dimensions_get_externalsubscriptiondimensionlist(test, rg):
-#     test.cmd('az costmanagement dimension by-external-cloud-provider-type '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalSubscriptions"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsList-Modern
-# @try_manual
-# def step__dimensions_get_invoicesectiondimensionslist_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsListExpandAndTop-Modern
-# @try_manual
-# def step__dimensions_get_invoicesectiondimensionslistexpandandtop_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsListWithFilter-Modern
-# @try_manual
-# def step__dimensions_get_invoicesectiondimensionslistwithfilter_modern(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ManagementGroupDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_managementgroupdimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ManagementGroupDimensionsListExpandAndTop-Legacy
-# @try_manual
-# def step__dimensions_get_managementgroupdimensionslistexpandandtop_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ManagementGroupDimensionsListWithFilter-Legacy
-# @try_manual
-# def step__dimensions_get_managementgroupdimensionslistwithfilter_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--filter "properties/category eq \'resourceId\'" '
-#              '--top 5 '
-#              '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/ResourceGroupDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_resourcegroupdimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/system.orlando"',
-#              checks=[])
-
-
-# # EXAMPLE: /Dimensions/get/SubscriptionDimensionsList-Legacy
-# @try_manual
-# def step__dimensions_get_subscriptiondimensionslist_legacy(test, rg):
-#     test.cmd('az costmanagement dimension list '
-#              '--expand "properties/data" '
-#              '--top 5 '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/put/DepartmentCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_departmentcreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/put/EnrollmentAccountCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_enrollmentaccountcreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/put/ManagementGroupCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_managementgroupcreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/put/ResourceGroupCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_resourcegroupcreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/put/SubscriptionCreateOrUpdateExport
-# @try_manual
-# def step__exports_put_subscriptioncreateorupdateexport(test, rg):
-#     test.cmd('az costmanagement export create '
-#              '--export-name "{TestExport}" '
-#              '--definition-type "Usage" '
-#              '--definition-dataset-aggregation "{{\\"costSum\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}'
-#              '}}}" '
-#              '--definition-dataset-configuration columns="Date" columns="MeterId" columns="InstanceId" columns="Resourc'
-#              'eLocation" columns="PreTaxCost" '
-#              '--definition-dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation'
-#              '\\",\\"operator\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":'
-#              '\\"Environment\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{'
-#              '\\"name\\":\\"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--definition-dataset-grouping name="SubscriptionName" type="Dimension" '
-#              '--definition-dataset-grouping name="Environment" type="Tag" '
-#              '--definition-timeframe "MonthToDate" '
-#              '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
-#              'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
-#              '--schedule-recurrence "Weekly" '
-#              '--schedule-recurrence-period from="2018-06-01T00:00:00Z" to="2018-10-31T00:00:00Z" '
-#              '--schedule-status "Active" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ManagementGroupExecutionHistoryExport
-# @try_manual
-# def step__exports_get_managementgroupexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/BillingAccountExecutionHistoryExport
-# @try_manual
-# def step__exports_get_billingaccountexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/BillingAccountExport
-# @try_manual
-# def step__exports_get_billingaccountexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/BillingAccountExportList
-# @try_manual
-# def step__exports_get_billingaccountexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/DepartmentExecutionHistoryExport
-# @try_manual
-# def step__exports_get_departmentexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/DepartmentExport
-# @try_manual
-# def step__exports_get_departmentexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/DepartmentExportList
-# @try_manual
-# def step__exports_get_departmentexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/EnrollmentAccountExecutionHistoryExport
-# @try_manual
-# def step__exports_get_enrollmentaccountexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/EnrollmentAccountExport
-# @try_manual
-# def step__exports_get_enrollmentaccountexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/EnrollmentAccountExportList
-# @try_manual
-# def step__exports_get_enrollmentaccountexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Alerts/get/BillingProfileAlerts
-# @try_manual
-# def step__alerts_get_billingprofilealerts(test, rg):
-#     test.cmd('az costmanagement alert list '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ManagementGroupExport
-# @try_manual
-# def step__exports_get_managementgroupexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ManagementGroupExportList
-# @try_manual
-# def step__exports_get_managementgroupexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ResourceGroupExecutionHistoryExport
-# @try_manual
-# def step__exports_get_resourcegroupexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ResourceGroupExport
-# @try_manual
-# def step__exports_get_resourcegroupexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/ResourceGroupExportList
-# @try_manual
-# def step__exports_get_resourcegroupexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/SubscriptionExecutionHistoryExport
-# @try_manual
-# def step__exports_get_subscriptionexecutionhistoryexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/SubscriptionExport
-# @try_manual
-# def step__exports_get_subscriptionexport(test, rg):
-#     test.cmd('az costmanagement export show '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/get/SubscriptionExportList
-# @try_manual
-# def step__exports_get_subscriptionexportlist(test, rg):
-#     test.cmd('az costmanagement export list '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/BillingAccountExecuteExport
-# @try_manual
-# def step__exports_post_billingaccountexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/DepartmentExecuteExport
-# @try_manual
-# def step__exports_post_departmentexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/EnrollmentAccountExecuteExport
-# @try_manual
-# def step__exports_post_enrollmentaccountexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/ManagementGroupExecuteExport
-# @try_manual
-# def step__exports_post_managementgroupexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/ResourceGroupExecuteExport
-# @try_manual
-# def step__exports_post_resourcegroupexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/post/SubscriptionExecuteExport
-# @try_manual
-# def step__exports_post_subscriptionexecuteexport(test, rg):
-#     test.cmd('az costmanagement export execute '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/BillingAccountForecast
-# @try_manual
-# def step__forecast_post_billingaccountforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/BillingProfileForecast
-# @try_manual
-# def step__forecast_post_billingprofileforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/DepartmentForecast
-# @try_manual
-# def step__forecast_post_departmentforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/EnrollmentAccountForecast
-# @try_manual
-# def step__forecast_post_enrollmentaccountforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/ExternalBillingAccountForecast
-# @try_manual
-# def step__forecast_post_externalbillingaccountforecast(test, rg):
-#     test.cmd('az costmanagement forecast external-cloud-provider-usage '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalBillingAccounts" '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/ExternalSubscriptionForecast
-# @try_manual
-# def step__forecast_post_externalsubscriptionforecast(test, rg):
-#     test.cmd('az costmanagement forecast external-cloud-provider-usage '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalSubscriptions" '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/InvoiceSectionForecast
-# @try_manual
-# def step__forecast_post_invoicesectionforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/ResourceGroupForecast
-# @try_manual
-# def step__forecast_post_resourcegroupforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
-#              checks=[])
-
-
-# # EXAMPLE: /Forecast/post/SubscriptionForecast
-# @try_manual
-# def step__forecast_post_subscriptionforecast(test, rg):
-#     test.cmd('az costmanagement forecast usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--include-actual-cost false '
-#              '--include-fresh-partial-cost false '
-#              '--timeframe "MonthToDate" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingAccountQuery-Legacy
-# @try_manual
-# def step__query_post_billingaccountquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/70664866"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingAccountQuery-Modern
-# @try_manual
-# def step__query_post_billingaccountquery_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingAccountQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_billingaccountquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/70664866"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingAccountQueryGrouping-Modern
-# @try_manual
-# def step__query_post_billingaccountquerygrouping_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingProfileQuery-Modern
-# @try_manual
-# def step__query_post_billingprofilequery_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/BillingProfileQueryGrouping-Modern
-# @try_manual
-# def step__query_post_billingprofilequerygrouping_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/CustomerQuery-Modern
-# @try_manual
-# def step__query_post_customerquery_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/CustomerQueryGrouping-Modern
-# @try_manual
-# def step__query_post_customerquerygrouping_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/DepartmentQuery-Legacy
-# @try_manual
-# def step__query_post_departmentquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/DepartmentQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_departmentquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/EnrollmentAccountQuery-Legacy
-# @try_manual
-# def step__query_post_enrollmentaccountquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/EnrollmentAccountQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_enrollmentaccountquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ExternalBillingAccountQueryList
-# @try_manual
-# def step__query_post_externalbillingaccountquerylist(test, rg):
-#     test.cmd('az costmanagement query usage-by-external-cloud-provider-type '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalBillingAccounts" '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ExternalSubscriptionsQuery
-# @try_manual
-# def step__query_post_externalsubscriptionsquery(test, rg):
-#     test.cmd('az costmanagement query usage-by-external-cloud-provider-type '
-#              '--external-cloud-provider-id "100" '
-#              '--external-cloud-provider-type "externalSubscriptions" '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/InvoiceSectionQuery-Modern
-# @try_manual
-# def step__query_post_invoicesectionquery_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/InvoiceSectionQueryGrouping-Modern
-# @try_manual
-# def step__query_post_invoicesectionquerygrouping_modern(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
-#              '6"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ManagementGroupQuery-Legacy
-# @try_manual
-# def step__query_post_managementgroupquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ManagementGroupQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_managementgroupquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ResourceGroupQuery-Legacy
-# @try_manual
-# def step__query_post_resourcegroupquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/ResourceGroupQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_resourcegroupquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceType" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/SubscriptionQuery-Legacy
-# @try_manual
-# def step__query_post_subscriptionquery_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
-#              'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
-#              't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
-#              '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
-#              '--timeframe "MonthToDate" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Query/post/SubscriptionQueryGrouping-Legacy
-# @try_manual
-# def step__query_post_subscriptionquerygrouping_legacy(test, rg):
-#     test.cmd('az costmanagement query usage '
-#              '--type "Usage" '
-#              '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
-#              '--dataset-grouping name="ResourceGroup" type="Dimension" '
-#              '--timeframe "TheLastMonth" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/DepartmentDeleteExport
-# @try_manual
-# def step__exports_delete_departmentdeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/SubscriptionDeleteExport
-# @try_manual
-# def step__exports_delete_subscriptiondeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/ResourceGroupDeleteExport
-# @try_manual
-# def step__exports_delete_resourcegroupdeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/ManagementGroupDeleteExport
-# @try_manual
-# def step__exports_delete_managementgroupdeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/EnrollmentAccountDeleteExport
-# @try_manual
-# def step__exports_delete_enrollmentaccountdeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
-#              checks=[])
-
-
-# # EXAMPLE: /Exports/delete/BillingAccountDeleteExport
-# @try_manual
-# def step__exports_delete_billingaccountdeleteexport(test, rg):
-#     test.cmd('az costmanagement export delete '
-#              '--export-name "{TestExport}" '
-#              '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
-#              checks=[])
-
-
-# @try_manual
-# def cleanup(test, rg):
-#     pass
-
-
-# @try_manual
-# def call_scenario(test, rg):
-#     setup(test, rg)
-#     step__exports_put_billingaccountcreateorupdateexport(test, rg)
-#     step__alerts_get_billingaccountalerts(test, rg)
-#     step__alerts_get_departmentalerts(test, rg)
-#     step__alerts_get_enrollmentaccountalerts(test, rg)
-#     step__alerts_get_externalbillingaccountalerts(test, rg)
-#     step__alerts_get_externalsubscriptionalerts(test, rg)
-#     step__alerts_get_invoicesectionalerts(test, rg)
-#     step__alerts_get_resourcegroupalerts(test, rg)
-#     step__alerts_get_subscriptionalerts(test, rg)
-#     step__dimensions_get_billingaccountdimensionslist_legacy(test, rg)
-#     step__dimensions_get_billingaccountdimensionslist_modern(test, rg)
-#     step__dimensions_get_billingaccountdimensionslistexpandandtop_legacy(test, rg)
-#     step__dimensions_get_billingaccountdimensionslistexpandandtop_modern(test, rg)
-#     step__dimensions_get_billingaccountdimensionslistwithfilter_legacy(test, rg)
-#     step__dimensions_get_billingaccountdimensionslistwithfilter_modern(test, rg)
-#     step__dimensions_get_billingprofiledimensionslist_modern(test, rg)
-#     step__dimensions_get_billingprofiledimensionslistexpandandtop_modern(test, rg)
-#     step__dimensions_get_billingprofiledimensionslistwithfilter_modern(test, rg)
-#     step__dimensions_get_customerdimensionslist_modern(test, rg)
-#     step__dimensions_get_customerdimensionslistexpandandtop_modern(test, rg)
-#     step__dimensions_get_customerdimensionslistwithfilter_modern(test, rg)
-#     step__dimensions_get_departmentdimensionslist_legacy(test, rg)
-#     step__dimensions_get_departmentdimensionslistexpandandtop_legacy(test, rg)
-#     step__dimensions_get_departmentdimensionslistwithfilter_legacy(test, rg)
-#     step__dimensions_get_enrollmentaccountdimensionslist_legacy(test, rg)
-#     step__dimensions_get_enrollmentaccountdimensionslistexpandandtop_legacy(test, rg)
-#     step__dimensions_get_enrollmentaccountdimensionslistwithfilter_legacy(test, rg)
-#     step__dimensions_get_externalbillingaccountdimensionlist(test, rg)
-#     step__dimensions_get_externalsubscriptiondimensionlist(test, rg)
-#     step__dimensions_get_invoicesectiondimensionslist_modern(test, rg)
-#     step__dimensions_get_invoicesectiondimensionslistexpandandtop_modern(test, rg)
-#     step__dimensions_get_invoicesectiondimensionslistwithfilter_modern(test, rg)
-#     step__dimensions_get_managementgroupdimensionslist_legacy(test, rg)
-#     step__dimensions_get_managementgroupdimensionslistexpandandtop_legacy(test, rg)
-#     step__dimensions_get_managementgroupdimensionslistwithfilter_legacy(test, rg)
-#     step__dimensions_get_resourcegroupdimensionslist_legacy(test, rg)
-#     step__dimensions_get_subscriptiondimensionslist_legacy(test, rg)
-#     step__exports_put_departmentcreateorupdateexport(test, rg)
-#     step__exports_put_enrollmentaccountcreateorupdateexport(test, rg)
-#     step__exports_put_managementgroupcreateorupdateexport(test, rg)
-#     step__exports_put_resourcegroupcreateorupdateexport(test, rg)
-#     step__exports_put_subscriptioncreateorupdateexport(test, rg)
-#     step__exports_get_managementgroupexecutionhistoryexport(test, rg)
-#     step__exports_get_billingaccountexecutionhistoryexport(test, rg)
-#     step__exports_get_billingaccountexport(test, rg)
-#     step__exports_get_billingaccountexportlist(test, rg)
-#     step__exports_get_departmentexecutionhistoryexport(test, rg)
-#     step__exports_get_departmentexport(test, rg)
-#     step__exports_get_departmentexportlist(test, rg)
-#     step__exports_get_enrollmentaccountexecutionhistoryexport(test, rg)
-#     step__exports_get_enrollmentaccountexport(test, rg)
-#     step__exports_get_enrollmentaccountexportlist(test, rg)
-#     step__alerts_get_billingprofilealerts(test, rg)
-#     step__exports_get_managementgroupexport(test, rg)
-#     step__exports_get_managementgroupexportlist(test, rg)
-#     step__exports_get_resourcegroupexecutionhistoryexport(test, rg)
-#     step__exports_get_resourcegroupexport(test, rg)
-#     step__exports_get_resourcegroupexportlist(test, rg)
-#     step__exports_get_subscriptionexecutionhistoryexport(test, rg)
-#     step__exports_get_subscriptionexport(test, rg)
-#     step__exports_get_subscriptionexportlist(test, rg)
-#     step__exports_post_billingaccountexecuteexport(test, rg)
-#     step__exports_post_departmentexecuteexport(test, rg)
-#     step__exports_post_enrollmentaccountexecuteexport(test, rg)
-#     step__exports_post_managementgroupexecuteexport(test, rg)
-#     step__exports_post_resourcegroupexecuteexport(test, rg)
-#     step__exports_post_subscriptionexecuteexport(test, rg)
-#     step__forecast_post_billingaccountforecast(test, rg)
-#     step__forecast_post_billingprofileforecast(test, rg)
-#     step__forecast_post_departmentforecast(test, rg)
-#     step__forecast_post_enrollmentaccountforecast(test, rg)
-#     step__forecast_post_externalbillingaccountforecast(test, rg)
-#     step__forecast_post_externalsubscriptionforecast(test, rg)
-#     step__forecast_post_invoicesectionforecast(test, rg)
-#     step__forecast_post_resourcegroupforecast(test, rg)
-#     step__forecast_post_subscriptionforecast(test, rg)
-#     step__query_post_billingaccountquery_legacy(test, rg)
-#     step__query_post_billingaccountquery_modern(test, rg)
-#     step__query_post_billingaccountquerygrouping_legacy(test, rg)
-#     step__query_post_billingaccountquerygrouping_modern(test, rg)
-#     step__query_post_billingprofilequery_modern(test, rg)
-#     step__query_post_billingprofilequerygrouping_modern(test, rg)
-#     step__query_post_customerquery_modern(test, rg)
-#     step__query_post_customerquerygrouping_modern(test, rg)
-#     step__query_post_departmentquery_legacy(test, rg)
-#     step__query_post_departmentquerygrouping_legacy(test, rg)
-#     step__query_post_enrollmentaccountquery_legacy(test, rg)
-#     step__query_post_enrollmentaccountquerygrouping_legacy(test, rg)
-#     step__query_post_externalbillingaccountquerylist(test, rg)
-#     step__query_post_externalsubscriptionsquery(test, rg)
-#     step__query_post_invoicesectionquery_modern(test, rg)
-#     step__query_post_invoicesectionquerygrouping_modern(test, rg)
-#     step__query_post_managementgroupquery_legacy(test, rg)
-#     step__query_post_managementgroupquerygrouping_legacy(test, rg)
-#     step__query_post_resourcegroupquery_legacy(test, rg)
-#     step__query_post_resourcegroupquerygrouping_legacy(test, rg)
-#     step__query_post_subscriptionquery_legacy(test, rg)
-#     step__query_post_subscriptionquerygrouping_legacy(test, rg)
-#     step__exports_delete_departmentdeleteexport(test, rg)
-#     step__exports_delete_subscriptiondeleteexport(test, rg)
-#     step__exports_delete_resourcegroupdeleteexport(test, rg)
-#     step__exports_delete_managementgroupdeleteexport(test, rg)
-#     step__exports_delete_enrollmentaccountdeleteexport(test, rg)
-#     step__exports_delete_billingaccountdeleteexport(test, rg)
-#     cleanup(test, rg)
-
-
-# @try_manual
-# class CostManagementClientScenarioTest(ScenarioTest):
-
-#     @ResourceGroupPreparer(name_prefix='clitestcostmanagement_MYDEVTESTRG'[:7], key='rg', parameter_name='rg')
-#     @StorageAccountPreparer(name_prefix='clitestcostmanagement_ccmeastusdiag182'[:7], key='sa',
-#                             resource_group_parameter_name='rg')
-#     def test_costmanagement(self, rg):
-
-#         self.kwargs.update({
-#             'subscription_id': self.get_subscription_id()
-#         })
-
-#         self.kwargs.update({
-#             'TestExport': 'TestExport',
-#         })
-
-#         call_scenario(self, rg)
+import os
+from azure.cli.testsdk import ScenarioTest
+from .. import try_manual, raise_if, calc_coverage
+from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import StorageAccountPreparer
+
+
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+@try_manual
+def setup(test, rg):
+    pass
+
+
+# EXAMPLE: /Alerts/get/BillingAccountAlerts
+@try_manual
+def step__alerts_get_billingaccountalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/BillingProfileAlerts
+@try_manual
+def step__alerts_get_billingprofilealerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/DepartmentAlerts
+@try_manual
+def step__alerts_get_departmentalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/EnrollmentAccountAlerts
+@try_manual
+def step__alerts_get_enrollmentaccountalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/ExternalBillingAccountAlerts
+@try_manual
+def step__alerts_get_externalbillingaccountalerts(test, rg):
+    test.cmd('az costmanagement alert list-external '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalBillingAccounts"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/ExternalSubscriptionAlerts
+@try_manual
+def step__alerts_get_externalsubscriptionalerts(test, rg):
+    test.cmd('az costmanagement alert list-external '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalSubscriptions"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/InvoiceSectionAlerts
+@try_manual
+def step__alerts_get_invoicesectionalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/ResourceGroupAlerts
+@try_manual
+def step__alerts_get_resourcegroupalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/ResourceGroupAlerts
+@try_manual
+def step__alerts_get_resourcegroupalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/SubscriptionAlerts
+@try_manual
+def step__alerts_get_subscriptionalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/get/SubscriptionAlerts
+@try_manual
+def step__alerts_get_subscriptionalerts(test, rg):
+    test.cmd('az costmanagement alert list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/patch/ResourceGroupAlerts
+@try_manual
+def step__alerts_patch_resourcegroupalerts(test, rg):
+    test.cmd('az costmanagement alert dismiss '
+             '--alert-id "22222222-2222-2222-2222-222222222222" '
+             '--status "Dismissed" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Alerts/patch/SubscriptionAlerts
+@try_manual
+def step__alerts_patch_subscriptionalerts(test, rg):
+    test.cmd('az costmanagement alert dismiss '
+             '--alert-id "22222222-2222-2222-2222-222222222222" '
+             '--status "Dismissed" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsList-Legacy
+@try_manual
+def step__dimensions_get(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsList-Modern
+@try_manual
+def step__dimensions_get2(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsListExpandAndTop-Legacy
+@try_manual
+def step__dimensions_get3(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsListExpandAndTop-Modern
+@try_manual
+def step__dimensions_get4(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsListWithFilter-Legacy
+@try_manual
+def step__dimensions_get5(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingAccountDimensionsListWithFilter-Modern
+@try_manual
+def step__dimensions_get6(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingProfileDimensionsList-Modern
+@try_manual
+def step__dimensions_get7(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingProfileDimensionsListExpandAndTop-Modern
+@try_manual
+def step__dimensions_get8(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/BillingProfileDimensionsListWithFilter-Modern
+@try_manual
+def step__dimensions_get9(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/CustomerDimensionsList-Modern
+@try_manual
+def step__dimensions_get_customerdimensionslist_modern(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/CustomerDimensionsListExpandAndTop-Modern
+@try_manual
+def step__dimensions_get10(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/CustomerDimensionsListWithFilter-Modern
+@try_manual
+def step__dimensions_get11(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/DepartmentDimensionsList-Legacy
+@try_manual
+def step__dimensions_get12(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/DepartmentDimensionsListExpandAndTop-Legacy
+@try_manual
+def step__dimensions_get13(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/DepartmentDimensionsListWithFilter-Legacy
+@try_manual
+def step__dimensions_get14(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsList-Legacy
+@try_manual
+def step__dimensions_get15(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsListExpandAndTop-Legacy
+@try_manual
+def step__dimensions_get16(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/EnrollmentAccountDimensionsListWithFilter-Legacy
+@try_manual
+def step__dimensions_get17(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ExternalBillingAccountDimensionList
+@try_manual
+def step__dimensions_get18(test, rg):
+    test.cmd('az costmanagement dimension by-external-cloud-provider-type '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalBillingAccounts"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ExternalSubscriptionDimensionList
+@try_manual
+def step__dimensions_get19(test, rg):
+    test.cmd('az costmanagement dimension by-external-cloud-provider-type '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalSubscriptions"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsList-Modern
+@try_manual
+def step__dimensions_get20(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsListExpandAndTop-Modern
+@try_manual
+def step__dimensions_get21(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/InvoiceSectionDimensionsListWithFilter-Modern
+@try_manual
+def step__dimensions_get22(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ManagementGroupDimensionsList-Legacy
+@try_manual
+def step__dimensions_get23(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ManagementGroupDimensionsListExpandAndTop-Legacy
+@try_manual
+def step__dimensions_get24(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ManagementGroupDimensionsListWithFilter-Legacy
+@try_manual
+def step__dimensions_get25(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--filter "properties/category eq \'resourceId\'" '
+             '--top 5 '
+             '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/ResourceGroupDimensionsList-Legacy
+@try_manual
+def step__dimensions_get26(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/system.orlando"',
+             checks=[])
+
+
+# EXAMPLE: /Dimensions/get/SubscriptionDimensionsList-Legacy
+@try_manual
+def step__dimensions_get27(test, rg):
+    test.cmd('az costmanagement dimension list '
+             '--expand "properties/data" '
+             '--top 5 '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateByBillingAccount
+@try_manual
+def step__exports_put(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateByDepartment
+@try_manual
+def step__exports_put_exportcreateorupdatebydepartment(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateByEnrollmentAccount
+@try_manual
+def step__exports_put2(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateByManagementGroup
+@try_manual
+def step__exports_put3(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateByResourceGroup
+@try_manual
+def step__exports_put4(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/put/ExportCreateOrUpdateBySubscription
+@try_manual
+def step__exports_put5(test, rg):
+    test.cmd('az costmanagement export create '
+             '--name "{myExport}" '
+             '--definition-type "ActualCost" '
+             '--definition-data-set-configuration columns="Date" columns="MeterId" columns="ResourceId" '
+             'columns="ResourceLocation" columns="Quantity" '
+             '--definition-timeframe "MonthToDate" '
+             '--delivery-info-destination container="exports" resource-id="/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}" root-folder-path="ad-hoc" '
+             '--schedule-recurrence "Weekly" '
+             '--schedule-recurrence-period from="2020-06-01T00:00:00Z" to="2020-10-31T00:00:00Z" '
+             '--schedule-status "Active" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("definition.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+                 test.check("schedule.recurrence", "Weekly", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.from", "2020-06-01T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.recurrencePeriod.to", "2020-10-31T00:00:00Z", case_sensitive=False),
+                 test.check("schedule.status", "Active", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetByBillingAccount
+@try_manual
+def step__exports_get_exportgetbybillingaccount(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetByDepartment
+@try_manual
+def step__exports_get_exportgetbydepartment(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetByEnrollmentAccount
+@try_manual
+def step__exports_get_exportgetbyenrollmentaccount(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetByManagementGroup
+@try_manual
+def step__exports_get_exportgetbymanagementgroup(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetByResourceGroup
+@try_manual
+def step__exports_get_exportgetbyresourcegroup(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportGetBySubscription
+@try_manual
+def step__exports_get_exportgetbysubscription(test, rg):
+    test.cmd('az costmanagement export show '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[
+                 test.check("name", "{myExport}", case_sensitive=False),
+                 test.check("definition.type", "ActualCost", case_sensitive=False),
+                 test.check("deliveryInfo.destination.container", "exports", case_sensitive=False),
+                 test.check("deliveryInfo.destination.resourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg"
+                            "}/providers/Microsoft.Storage/storageAccounts/{sa}", case_sensitive=False),
+                 test.check("deliveryInfo.destination.rootFolderPath", "ad-hoc", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetByBillingAccount
+@try_manual
+def step__exports_get(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetByDepartment
+@try_manual
+def step__exports_get_exportrunhistorygetbydepartment(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetByEnrollmentAccount
+@try_manual
+def step__exports_get2(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetByManagementGroup
+@try_manual
+def step__exports_get3(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetByResourceGroup
+@try_manual
+def step__exports_get4(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportRunHistoryGetBySubscription
+@try_manual
+def step__exports_get5(test, rg):
+    test.cmd('az costmanagement export get-execution-history '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetByBillingAccount
+@try_manual
+def step__exports_get_exportsgetbybillingaccount(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetByDepartment
+@try_manual
+def step__exports_get_exportsgetbydepartment(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetByEnrollmentAccount
+@try_manual
+def step__exports_get_exportsgetbyenrollmentaccount(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetByManagementGroup
+@try_manual
+def step__exports_get_exportsgetbymanagementgroup(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetByResourceGroup
+@try_manual
+def step__exports_get_exportsgetbyresourcegroup(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/get/ExportsGetBySubscription
+@try_manual
+def step__exports_get_exportsgetbysubscription(test, rg):
+    test.cmd('az costmanagement export list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[
+                 test.check('length(@)', 1),
+             ])
+
+
+# EXAMPLE: /Exports/post/ExportRunByBillingAccount
+@try_manual
+def step__exports_post_exportrunbybillingaccount(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/post/ExportRunByDepartment
+@try_manual
+def step__exports_post_exportrunbydepartment(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/post/ExportRunByEnrollmentAccount
+@try_manual
+def step__exports_post_exportrunbyenrollmentaccount(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/post/ExportRunByManagementGroup
+@try_manual
+def step__exports_post_exportrunbymanagementgroup(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/post/ExportRunByResourceGroup
+@try_manual
+def step__exports_post_exportrunbyresourcegroup(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/post/ExportRunBySubscription
+@try_manual
+def step__exports_post_exportrunbysubscription(test, rg):
+    test.cmd('az costmanagement export execute '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/BillingAccountForecast
+@try_manual
+def step__forecast_post_billingaccountforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/BillingProfileForecast
+@try_manual
+def step__forecast_post_billingprofileforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/DepartmentForecast
+@try_manual
+def step__forecast_post_departmentforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/EnrollmentAccountForecast
+@try_manual
+def step__forecast_post_enrollmentaccountforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/ExternalBillingAccountForecast
+@try_manual
+def step__forecast_post_externalbillingaccountforecast(test, rg):
+    test.cmd('az costmanagement forecast external-cloud-provider-usage '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalBillingAccounts" '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/ExternalSubscriptionForecast
+@try_manual
+def step__forecast_post_externalsubscriptionforecast(test, rg):
+    test.cmd('az costmanagement forecast external-cloud-provider-usage '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalSubscriptions" '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/InvoiceSectionForecast
+@try_manual
+def step__forecast_post_invoicesectionforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/ResourceGroupForecast
+@try_manual
+def step__forecast_post_resourcegroupforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Forecast/post/SubscriptionForecast
+@try_manual
+def step__forecast_post_subscriptionforecast(test, rg):
+    test.cmd('az costmanagement forecast usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--include-actual-cost false '
+             '--include-fresh-partial-cost false '
+             '--timeframe "MonthToDate" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingAccountQuery-Legacy
+@try_manual
+def step__query_post_billingaccountquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/70664866"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingAccountQuery-Modern
+@try_manual
+def step__query_post_billingaccountquery_modern(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingAccountQueryGrouping-Legacy
+@try_manual
+def step__query_post(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/70664866"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingAccountQueryGrouping-Modern
+@try_manual
+def step__query_post2(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingProfileQuery-Modern
+@try_manual
+def step__query_post_billingprofilequery_modern(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/BillingProfileQueryGrouping-Modern
+@try_manual
+def step__query_post3(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/CustomerQuery-Modern
+@try_manual
+def step__query_post_customerquery_modern(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/CustomerQueryGrouping-Modern
+@try_manual
+def step__query_post_customerquerygrouping_modern(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/customers/5678"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/DepartmentQuery-Legacy
+@try_manual
+def step__query_post_departmentquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/DepartmentQueryGrouping-Legacy
+@try_manual
+def step__query_post_departmentquerygrouping_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/departments/123"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/EnrollmentAccountQuery-Legacy
+@try_manual
+def step__query_post_enrollmentaccountquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/EnrollmentAccountQueryGrouping-Legacy
+@try_manual
+def step__query_post4(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ExternalBillingAccountQueryList
+@try_manual
+def step__query_post_externalbillingaccountquerylist(test, rg):
+    test.cmd('az costmanagement query usage-by-external-cloud-provider-type '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalBillingAccounts" '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ExternalSubscriptionsQuery
+@try_manual
+def step__query_post_externalsubscriptionsquery(test, rg):
+    test.cmd('az costmanagement query usage-by-external-cloud-provider-type '
+             '--external-cloud-provider-id "100" '
+             '--external-cloud-provider-type "externalSubscriptions" '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/InvoiceSectionQuery-Modern
+@try_manual
+def step__query_post_invoicesectionquery_modern(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/InvoiceSectionQueryGrouping-Modern
+@try_manual
+def step__query_post5(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12345:6789/billingProfiles/13579/invoiceSections/987'
+             '6"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ManagementGroupQuery-Legacy
+@try_manual
+def step__query_post_managementgroupquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ManagementGroupQueryGrouping-Legacy
+@try_manual
+def step__query_post6(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "providers/Microsoft.Management/managementGroups/MyMgId"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ResourceGroupQuery-Legacy
+@try_manual
+def step__query_post_resourcegroupquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/ResourceGroupQueryGrouping-Legacy
+@try_manual
+def step__query_post_resourcegroupquerygrouping_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceType" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ScreenSharingTest-peer"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/SubscriptionQuery-Legacy
+@try_manual
+def step__query_post_subscriptionquery_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-filter "{{\\"and\\":[{{\\"or\\":[{{\\"dimension\\":{{\\"name\\":\\"ResourceLocation\\",\\"opera'
+             'tor\\":\\"In\\",\\"values\\":[\\"East US\\",\\"West Europe\\"]}}}},{{\\"tag\\":{{\\"name\\":\\"Environmen'
+             't\\",\\"operator\\":\\"In\\",\\"values\\":[\\"UAT\\",\\"Prod\\"]}}}}]}},{{\\"dimension\\":{{\\"name\\":\\'
+             '"ResourceGroup\\",\\"operator\\":\\"In\\",\\"values\\":[\\"API\\"]}}}}]}}" '
+             '--timeframe "MonthToDate" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Query/post/SubscriptionQueryGrouping-Legacy
+@try_manual
+def step__query_post_subscriptionquerygrouping_legacy(test, rg):
+    test.cmd('az costmanagement query usage '
+             '--type "Usage" '
+             '--dataset-aggregation "{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Sum\\"}}}}" '
+             '--dataset-grouping name="ResourceGroup" type="Dimension" '
+             '--timeframe "TheLastMonth" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Views/put/CreateOrUpdatePrivateView
+@try_manual
+def step__views_put_createorupdateprivateview(test, rg):
+    test.cmd('az costmanagement view create '
+             '--e-tag "\\"1d4ff9fe66f1d10\\"" '
+             '--accumulated "true" '
+             '--chart "Table" '
+             '--display-name "swagger Example" '
+             '--kpis type="Forecast" enabled=true id=null '
+             '--kpis type="Budget" enabled=true id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Micr'
+             'osoft.Consumption/budgets/swaggerDemo" '
+             '--metric "ActualCost" '
+             '--pivots name="ServiceName" type="Dimension" '
+             '--pivots name="MeterCategory" type="Dimension" '
+             '--pivots name="swaggerTagKey" type="TagKey" '
+             '--query-dataset "{{\\"aggregation\\":{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Su'
+             'm\\"}}}},\\"granularity\\":\\"Daily\\",\\"grouping\\":[],\\"sorting\\":[{{\\"name\\":\\"UsageDate\\",\\"d'
+             'irection\\":\\"Ascending\\"}}]}}" '
+             '--query-timeframe "MonthToDate" '
+             '--name "{myView}"',
+             checks=[
+                 test.check("accumulated", "true", case_sensitive=False),
+                 test.check("chart", "Table", case_sensitive=False),
+                 test.check("displayName", "swagger Example", case_sensitive=False),
+                 test.check("metric", "ActualCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.name", "PreTaxCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.function", "Sum", case_sensitive=False),
+                 test.check("query.dataset.granularity", "Daily", case_sensitive=False),
+                 test.check("query.dataset.grouping", []),
+                 test.check("query.dataset.sorting[0].name", "UsageDate", case_sensitive=False),
+                 test.check("query.dataset.sorting[0].direction", "Ascending", case_sensitive=False),
+                 test.check("query.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("name", "{myView}", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Views/put/ResourceGroupCreateOrUpdateView
+@try_manual
+def step__views_put_resourcegroupcreateorupdateview(test, rg):
+    test.cmd('az costmanagement view create '
+             '--e-tag "\\"1d4ff9fe66f1d10\\"" '
+             '--accumulated "true" '
+             '--chart "Table" '
+             '--display-name "swagger Example" '
+             '--kpis type="Forecast" enabled=true id=null '
+             '--kpis type="Budget" enabled=true id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Micr'
+             'osoft.Consumption/budgets/swaggerDemo" '
+             '--metric "ActualCost" '
+             '--pivots name="ServiceName" type="Dimension" '
+             '--pivots name="MeterCategory" type="Dimension" '
+             '--pivots name="swaggerTagKey" type="TagKey" '
+             '--query-dataset "{{\\"aggregation\\":{{\\"totalCost\\":{{\\"name\\":\\"PreTaxCost\\",\\"function\\":\\"Su'
+             'm\\"}}}},\\"granularity\\":\\"Daily\\",\\"grouping\\":[],\\"sorting\\":[{{\\"name\\":\\"UsageDate\\",\\"d'
+             'irection\\":\\"Ascending\\"}}]}}" '
+             '--query-timeframe "MonthToDate" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" '
+             '--name "{myView}"',
+             checks=[
+                 test.check("accumulated", "true", case_sensitive=False),
+                 test.check("chart", "Table", case_sensitive=False),
+                 test.check("displayName", "swagger Example", case_sensitive=False),
+                 test.check("metric", "ActualCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.name", "PreTaxCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.function", "Sum", case_sensitive=False),
+                 test.check("query.dataset.granularity", "Daily", case_sensitive=False),
+                 test.check("query.dataset.grouping", []),
+                 test.check("query.dataset.sorting[0].name", "UsageDate", case_sensitive=False),
+                 test.check("query.dataset.sorting[0].direction", "Ascending", case_sensitive=False),
+                 test.check("query.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("name", "{myView}", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Views/get/PrivateView
+@try_manual
+def step__views_get_privateview(test, rg):
+    test.cmd('az costmanagement view show '
+             '--name "{myView}"',
+             checks=[
+                 test.check("eTag", "\"1d4ff9fe66f1d10\"", case_sensitive=False),
+                 test.check("accumulated", "true", case_sensitive=False),
+                 test.check("chart", "Table", case_sensitive=False),
+                 test.check("displayName", "swagger Example", case_sensitive=False),
+                 test.check("metric", "ActualCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.name", "PreTaxCost", case_sensitive=False),
+                 test.check("query.dataset.aggregation.totalCost.function", "Sum", case_sensitive=False),
+                 test.check("query.dataset.granularity", "Daily", case_sensitive=False),
+                 test.check("query.dataset.grouping", []),
+                 test.check("query.dataset.sorting[0].name", "UsageDate", case_sensitive=False),
+                 test.check("query.dataset.sorting[0].direction", "Ascending", case_sensitive=False),
+                 test.check("query.timeframe", "MonthToDate", case_sensitive=False),
+                 test.check("name", "{myView}", case_sensitive=False),
+             ])
+
+
+# EXAMPLE: /Views/get/PrivateViewList
+@try_manual
+def step__views_get_privateviewlist(test, rg):
+    test.cmd('az costmanagement view list',
+             checks=[
+                 test.check('length(@)', 1),
+             ])
+
+
+# EXAMPLE: /Views/get/ResourceGroupView
+@try_manual
+def step__views_get_resourcegroupview(test, rg):
+    test.cmd('az costmanagement view get-by-scope '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" '
+             '--name "{myView}"',
+             checks=[])
+
+
+# EXAMPLE: /Views/get/ResourceGroupViewList
+@try_manual
+def step__views_get_resourcegroupviewlist(test, rg):
+    test.cmd('az costmanagement view list '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[
+                 test.check('length(@)', 1),
+             ])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteBySubscription
+@try_manual
+def step__exports_delete_exportdeletebysubscription(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteByResourceGroup
+@try_manual
+def step__exports_delete_exportdeletebyresourcegroup(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteByManagementGroup
+@try_manual
+def step__exports_delete_exportdeletebymanagementgroup(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Management/managementGroups/TestMG"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteByEnrollmentAccount
+@try_manual
+def step__exports_delete(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/100/enrollmentAccounts/456"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteByDepartment
+@try_manual
+def step__exports_delete_exportdeletebydepartment(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/12/departments/1234"',
+             checks=[])
+
+
+# EXAMPLE: /Exports/delete/ExportDeleteByBillingAccount
+@try_manual
+def step__exports_delete_exportdeletebybillingaccount(test, rg):
+    test.cmd('az costmanagement export delete -y '
+             '--name "{myExport}" '
+             '--scope "providers/Microsoft.Billing/billingAccounts/123456"',
+             checks=[])
+
+
+# EXAMPLE: /Views/delete/ResourceGroupDeleteView
+@try_manual
+def step__views_delete_resourcegroupdeleteview(test, rg):
+    test.cmd('az costmanagement view delete -y '
+             '--scope "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MYDEVTESTRG" '
+             '--name "{myView2}"',
+             checks=[])
+
+
+# EXAMPLE: /Views/delete/DeletePrivateView
+@try_manual
+def step__views_delete_deleteprivateview(test, rg):
+    test.cmd('az costmanagement view delete -y '
+             '--name "{myView2}"',
+             checks=[])
+
+
+@try_manual
+def cleanup(test, rg):
+    pass
+
+
+@try_manual
+def call_scenario(test, rg):
+    setup(test, rg)
+    step__alerts_get_billingaccountalerts(test, rg)
+    step__alerts_get_billingprofilealerts(test, rg)
+    step__alerts_get_departmentalerts(test, rg)
+    step__alerts_get_enrollmentaccountalerts(test, rg)
+    step__alerts_get_externalbillingaccountalerts(test, rg)
+    step__alerts_get_externalsubscriptionalerts(test, rg)
+    step__alerts_get_invoicesectionalerts(test, rg)
+    step__alerts_get_resourcegroupalerts(test, rg)
+    step__alerts_get_resourcegroupalerts(test, rg)
+    step__alerts_get_subscriptionalerts(test, rg)
+    step__alerts_get_subscriptionalerts(test, rg)
+    step__alerts_patch_resourcegroupalerts(test, rg)
+    step__alerts_patch_subscriptionalerts(test, rg)
+    step__dimensions_get(test, rg)
+    step__dimensions_get2(test, rg)
+    step__dimensions_get3(test, rg)
+    step__dimensions_get4(test, rg)
+    step__dimensions_get5(test, rg)
+    step__dimensions_get6(test, rg)
+    step__dimensions_get7(test, rg)
+    step__dimensions_get8(test, rg)
+    step__dimensions_get9(test, rg)
+    step__dimensions_get_customerdimensionslist_modern(test, rg)
+    step__dimensions_get10(test, rg)
+    step__dimensions_get11(test, rg)
+    step__dimensions_get12(test, rg)
+    step__dimensions_get13(test, rg)
+    step__dimensions_get14(test, rg)
+    step__dimensions_get15(test, rg)
+    step__dimensions_get16(test, rg)
+    step__dimensions_get17(test, rg)
+    step__dimensions_get18(test, rg)
+    step__dimensions_get19(test, rg)
+    step__dimensions_get20(test, rg)
+    step__dimensions_get21(test, rg)
+    step__dimensions_get22(test, rg)
+    step__dimensions_get23(test, rg)
+    step__dimensions_get24(test, rg)
+    step__dimensions_get25(test, rg)
+    step__dimensions_get26(test, rg)
+    step__dimensions_get27(test, rg)
+    step__exports_put(test, rg)
+    step__exports_put_exportcreateorupdatebydepartment(test, rg)
+    step__exports_put2(test, rg)
+    step__exports_put3(test, rg)
+    step__exports_put4(test, rg)
+    step__exports_put5(test, rg)
+    step__exports_get_exportgetbybillingaccount(test, rg)
+    step__exports_get_exportgetbydepartment(test, rg)
+    step__exports_get_exportgetbyenrollmentaccount(test, rg)
+    step__exports_get_exportgetbymanagementgroup(test, rg)
+    step__exports_get_exportgetbyresourcegroup(test, rg)
+    step__exports_get_exportgetbysubscription(test, rg)
+    step__exports_get(test, rg)
+    step__exports_get_exportrunhistorygetbydepartment(test, rg)
+    step__exports_get2(test, rg)
+    step__exports_get3(test, rg)
+    step__exports_get4(test, rg)
+    step__exports_get5(test, rg)
+    step__exports_get_exportsgetbybillingaccount(test, rg)
+    step__exports_get_exportsgetbydepartment(test, rg)
+    step__exports_get_exportsgetbyenrollmentaccount(test, rg)
+    step__exports_get_exportsgetbymanagementgroup(test, rg)
+    step__exports_get_exportsgetbyresourcegroup(test, rg)
+    step__exports_get_exportsgetbysubscription(test, rg)
+    step__exports_post_exportrunbybillingaccount(test, rg)
+    step__exports_post_exportrunbydepartment(test, rg)
+    step__exports_post_exportrunbyenrollmentaccount(test, rg)
+    step__exports_post_exportrunbymanagementgroup(test, rg)
+    step__exports_post_exportrunbyresourcegroup(test, rg)
+    step__exports_post_exportrunbysubscription(test, rg)
+    step__forecast_post_billingaccountforecast(test, rg)
+    step__forecast_post_billingprofileforecast(test, rg)
+    step__forecast_post_departmentforecast(test, rg)
+    step__forecast_post_enrollmentaccountforecast(test, rg)
+    step__forecast_post_externalbillingaccountforecast(test, rg)
+    step__forecast_post_externalsubscriptionforecast(test, rg)
+    step__forecast_post_invoicesectionforecast(test, rg)
+    step__forecast_post_resourcegroupforecast(test, rg)
+    step__forecast_post_subscriptionforecast(test, rg)
+    step__query_post_billingaccountquery_legacy(test, rg)
+    step__query_post_billingaccountquery_modern(test, rg)
+    step__query_post(test, rg)
+    step__query_post2(test, rg)
+    step__query_post_billingprofilequery_modern(test, rg)
+    step__query_post3(test, rg)
+    step__query_post_customerquery_modern(test, rg)
+    step__query_post_customerquerygrouping_modern(test, rg)
+    step__query_post_departmentquery_legacy(test, rg)
+    step__query_post_departmentquerygrouping_legacy(test, rg)
+    step__query_post_enrollmentaccountquery_legacy(test, rg)
+    step__query_post4(test, rg)
+    step__query_post_externalbillingaccountquerylist(test, rg)
+    step__query_post_externalsubscriptionsquery(test, rg)
+    step__query_post_invoicesectionquery_modern(test, rg)
+    step__query_post5(test, rg)
+    step__query_post_managementgroupquery_legacy(test, rg)
+    step__query_post6(test, rg)
+    step__query_post_resourcegroupquery_legacy(test, rg)
+    step__query_post_resourcegroupquerygrouping_legacy(test, rg)
+    step__query_post_subscriptionquery_legacy(test, rg)
+    step__query_post_subscriptionquerygrouping_legacy(test, rg)
+    step__views_put_createorupdateprivateview(test, rg)
+    step__views_put_resourcegroupcreateorupdateview(test, rg)
+    step__views_get_privateview(test, rg)
+    step__views_get_privateviewlist(test, rg)
+    step__views_get_resourcegroupview(test, rg)
+    step__views_get_resourcegroupviewlist(test, rg)
+    step__exports_delete_exportdeletebysubscription(test, rg)
+    step__exports_delete_exportdeletebyresourcegroup(test, rg)
+    step__exports_delete_exportdeletebymanagementgroup(test, rg)
+    step__exports_delete(test, rg)
+    step__exports_delete_exportdeletebydepartment(test, rg)
+    step__exports_delete_exportdeletebybillingaccount(test, rg)
+    step__views_delete_resourcegroupdeleteview(test, rg)
+    step__views_delete_deleteprivateview(test, rg)
+    cleanup(test, rg)
+
+
+@try_manual
+class CostManagementClientScenarioTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix='clitestcostmanagement_MYDEVTESTRG'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitestcostmanagement_ccmeastusdiag182'[:7], key='sa',
+                            resource_group_parameter_name='rg')
+    def test_costmanagement(self, rg):
+
+        self.kwargs.update({
+            'subscription_id': self.get_subscription_id()
+        })
+
+        self.kwargs.update({
+            'myView': 'swaggerExample',
+            'myView2': 'TestView',
+            'myExport': 'TestExport',
+        })
+
+        call_scenario(self, rg)
+        calc_coverage(__file__)
+        raise_if()

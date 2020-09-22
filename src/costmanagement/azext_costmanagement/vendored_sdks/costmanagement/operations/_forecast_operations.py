@@ -17,7 +17,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -29,7 +29,7 @@ class ForecastOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -53,9 +53,9 @@ class ForecastOperations(object):
         time_period=None,  # type: Optional["models.QueryTimePeriod"]
         include_actual_cost=None,  # type: Optional[bool]
         include_fresh_partial_cost=None,  # type: Optional[bool]
+        granularity=None,  # type: Optional[Union[str, "models.GranularityType"]]
         configuration=None,  # type: Optional["models.QueryDatasetConfiguration"]
-        aggregation=None,  # type: Optional[Dict[str, "QueryAggregation"]]
-        grouping=None,  # type: Optional[List["QueryGrouping"]]
+        aggregation=None,  # type: Optional[Dict[str, "models.QueryAggregation"]]
         query_filter=None,  # type: Optional["models.QueryFilter"]
         **kwargs  # type: Any
     ):
@@ -80,46 +80,46 @@ class ForecastOperations(object):
          specific for partners.
         :type scope: str
         :param type: The type of the forecast.
-        :type type: str or ~azure.mgmt.costmanagement.models.ForecastType
+        :type type: str or ~cost_management_client.models.ForecastType
         :param timeframe: The time frame for pulling data for the forecast. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.ForecastTimeframeType
+        :type timeframe: str or ~cost_management_client.models.ForecastTimeframeType
         :param filter: May be used to filter forecasts by properties/usageDate (Utc time),
          properties/chargeType or properties/grain. The filter supports 'eq', 'lt', 'gt', 'le', 'ge',
          and 'and'. It does not currently support 'ne', 'or', or 'not'.
         :type filter: str
         :param time_period: Has time period for pulling data for the forecast.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
+        :type time_period: ~cost_management_client.models.QueryTimePeriod
         :param include_actual_cost: a boolean determining if actualCost will be included.
         :type include_actual_cost: bool
         :param include_fresh_partial_cost: a boolean determining if FreshPartialCost will be included.
         :type include_fresh_partial_cost: bool
+        :param granularity: The granularity of rows in the forecast.
+        :type granularity: str or ~cost_management_client.models.GranularityType
         :param configuration: Has configuration information for the data in the export. The
          configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
-        :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
-         item in the dictionary is the alias for the aggregated column. Query can have up to 2
+        :type configuration: ~cost_management_client.models.QueryDatasetConfiguration
+        :param aggregation: Dictionary of aggregation expression to use in the forecast. The key of
+         each item in the dictionary is the alias for the aggregated column. forecast can have up to 2
          aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
-        :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
-         by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
-        :param query_filter: Has filter expression to use in the query.
-        :type query_filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :type aggregation: dict[str, ~cost_management_client.models.QueryAggregation]
+        :param query_filter: Has filter expression to use in the forecast.
+        :type query_filter: ~cost_management_client.models.QueryFilter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.QueryResult
+        :return: QueryResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.ForecastDefinition(type=type, timeframe=timeframe, time_period=time_period, include_actual_cost=include_actual_cost, include_fresh_partial_cost=include_fresh_partial_cost, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=query_filter)
-        api_version = "2019-11-01"
+        _parameters = models.ForecastDefinition(type=type, timeframe=timeframe, time_period=time_period, include_actual_cost=include_actual_cost, include_fresh_partial_cost=include_fresh_partial_cost, granularity=granularity, configuration=configuration, aggregation=aggregation, filter=query_filter)
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.usage.metadata['url']
+        url = self.usage.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
@@ -136,7 +136,6 @@ class ForecastOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'ForecastDefinition')
         body_content_kwargs['content'] = body_content
@@ -153,10 +152,10 @@ class ForecastOperations(object):
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/forecast'}
+    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/forecast'}  # type: ignore
 
     def external_cloud_provider_usage(
         self,
@@ -168,9 +167,9 @@ class ForecastOperations(object):
         time_period=None,  # type: Optional["models.QueryTimePeriod"]
         include_actual_cost=None,  # type: Optional[bool]
         include_fresh_partial_cost=None,  # type: Optional[bool]
+        granularity=None,  # type: Optional[Union[str, "models.GranularityType"]]
         configuration=None,  # type: Optional["models.QueryDatasetConfiguration"]
-        aggregation=None,  # type: Optional[Dict[str, "QueryAggregation"]]
-        grouping=None,  # type: Optional[List["QueryGrouping"]]
+        aggregation=None,  # type: Optional[Dict[str, "models.QueryAggregation"]]
         query_filter=None,  # type: Optional["models.QueryFilter"]
         **kwargs  # type: Any
     ):
@@ -180,51 +179,51 @@ class ForecastOperations(object):
         :param external_cloud_provider_type: The external cloud provider type associated with
          dimension/query operations. This includes 'externalSubscriptions' for linked account and
          'externalBillingAccounts' for consolidated account.
-        :type external_cloud_provider_type: str or ~azure.mgmt.costmanagement.models.ExternalCloudProviderType
+        :type external_cloud_provider_type: str or ~cost_management_client.models.ExternalCloudProviderType
         :param external_cloud_provider_id: This can be '{externalSubscriptionId}' for linked account or
          '{externalBillingAccountId}' for consolidated account used with dimension/query operations.
         :type external_cloud_provider_id: str
         :param type: The type of the forecast.
-        :type type: str or ~azure.mgmt.costmanagement.models.ForecastType
+        :type type: str or ~cost_management_client.models.ForecastType
         :param timeframe: The time frame for pulling data for the forecast. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.ForecastTimeframeType
+        :type timeframe: str or ~cost_management_client.models.ForecastTimeframeType
         :param filter: May be used to filter forecasts by properties/usageDate (Utc time),
          properties/chargeType or properties/grain. The filter supports 'eq', 'lt', 'gt', 'le', 'ge',
          and 'and'. It does not currently support 'ne', 'or', or 'not'.
         :type filter: str
         :param time_period: Has time period for pulling data for the forecast.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
+        :type time_period: ~cost_management_client.models.QueryTimePeriod
         :param include_actual_cost: a boolean determining if actualCost will be included.
         :type include_actual_cost: bool
         :param include_fresh_partial_cost: a boolean determining if FreshPartialCost will be included.
         :type include_fresh_partial_cost: bool
+        :param granularity: The granularity of rows in the forecast.
+        :type granularity: str or ~cost_management_client.models.GranularityType
         :param configuration: Has configuration information for the data in the export. The
          configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
-        :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
-         item in the dictionary is the alias for the aggregated column. Query can have up to 2
+        :type configuration: ~cost_management_client.models.QueryDatasetConfiguration
+        :param aggregation: Dictionary of aggregation expression to use in the forecast. The key of
+         each item in the dictionary is the alias for the aggregated column. forecast can have up to 2
          aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
-        :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
-         by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
-        :param query_filter: Has filter expression to use in the query.
-        :type query_filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :type aggregation: dict[str, ~cost_management_client.models.QueryAggregation]
+        :param query_filter: Has filter expression to use in the forecast.
+        :type query_filter: ~cost_management_client.models.QueryFilter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.QueryResult
+        :return: QueryResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.ForecastDefinition(type=type, timeframe=timeframe, time_period=time_period, include_actual_cost=include_actual_cost, include_fresh_partial_cost=include_fresh_partial_cost, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=query_filter)
-        api_version = "2019-11-01"
+        _parameters = models.ForecastDefinition(type=type, timeframe=timeframe, time_period=time_period, include_actual_cost=include_actual_cost, include_fresh_partial_cost=include_fresh_partial_cost, granularity=granularity, configuration=configuration, aggregation=aggregation, filter=query_filter)
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.external_cloud_provider_usage.metadata['url']
+        url = self.external_cloud_provider_usage.metadata['url']  # type: ignore
         path_format_arguments = {
             'externalCloudProviderType': self._serialize.url("external_cloud_provider_type", external_cloud_provider_type, 'str'),
             'externalCloudProviderId': self._serialize.url("external_cloud_provider_id", external_cloud_provider_id, 'str'),
@@ -242,7 +241,6 @@ class ForecastOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'ForecastDefinition')
         body_content_kwargs['content'] = body_content
@@ -259,7 +257,7 @@ class ForecastOperations(object):
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    external_cloud_provider_usage.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/forecast'}
+    external_cloud_provider_usage.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/forecast'}  # type: ignore

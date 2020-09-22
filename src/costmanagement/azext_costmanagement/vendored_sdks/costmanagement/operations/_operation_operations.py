@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -30,7 +30,7 @@ class OperationOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -49,35 +49,36 @@ class OperationOperations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.OperationListResult"
+        # type: (...) -> Iterable["models.OperationListResult"]
         """Lists all of the available cost management REST API operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: OperationListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.OperationListResult
+        :return: An iterator like instance of either OperationListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~cost_management_client.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-11-01"
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-06-01"
 
         def prepare_request(next_link=None):
-            if not next_link:
-                # Construct URL
-                url = self.list.metadata['url']
-            else:
-                url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
             header_parameters['Accept'] = 'application/json'
 
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            if not next_link:
+                # Construct URL
+                url = self.list.metadata['url']  # type: ignore
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -103,4 +104,4 @@ class OperationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.CostManagement/operations'}
+    list.metadata = {'url': '/providers/Microsoft.CostManagement/operations'}  # type: ignore

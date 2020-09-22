@@ -25,7 +25,7 @@ class QueryOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.costmanagement.models
+    :type models: ~cost_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -46,9 +46,10 @@ class QueryOperations:
         type: Union[str, "models.ExportType"],
         timeframe: Union[str, "models.TimeframeType"],
         time_period: Optional["models.QueryTimePeriod"] = None,
+        granularity: Optional[Union[str, "models.GranularityType"]] = None,
         configuration: Optional["models.QueryDatasetConfiguration"] = None,
-        aggregation: Optional[Dict[str, "QueryAggregation"]] = None,
-        grouping: Optional[List["QueryGrouping"]] = None,
+        aggregation: Optional[Dict[str, "models.QueryAggregation"]] = None,
+        grouping: Optional[List["models.QueryGrouping"]] = None,
         filter: Optional["models.QueryFilter"] = None,
         **kwargs
     ) -> "models.QueryResult":
@@ -72,38 +73,41 @@ class QueryOperations:
          specific for partners.
         :type scope: str
         :param type: The type of the query.
-        :type type: str or ~azure.mgmt.costmanagement.models.ExportType
+        :type type: str or ~cost_management_client.models.ExportType
         :param timeframe: The time frame for pulling data for the query. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.TimeframeType
+        :type timeframe: str or ~cost_management_client.models.TimeframeType
         :param time_period: Has time period for pulling data for the query.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
+        :type time_period: ~cost_management_client.models.QueryTimePeriod
+        :param granularity: The granularity of rows in the query.
+        :type granularity: str or ~cost_management_client.models.GranularityType
         :param configuration: Has configuration information for the data in the export. The
          configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
+        :type configuration: ~cost_management_client.models.QueryDatasetConfiguration
         :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
          item in the dictionary is the alias for the aggregated column. Query can have up to 2
          aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
+        :type aggregation: dict[str, ~cost_management_client.models.QueryAggregation]
         :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
          by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
+        :type grouping: list[~cost_management_client.models.QueryGrouping]
         :param filter: Has filter expression to use in the query.
-        :type filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :type filter: ~cost_management_client.models.QueryFilter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.QueryResult
+        :return: QueryResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
-        api_version = "2019-11-01"
+        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, granularity=granularity, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.usage.metadata['url']
+        url = self.usage.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
@@ -118,7 +122,6 @@ class QueryOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'QueryDefinition')
         body_content_kwargs['content'] = body_content
@@ -135,10 +138,10 @@ class QueryOperations:
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/query'}
+    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/query'}  # type: ignore
 
     async def usage_by_external_cloud_provider_type(
         self,
@@ -147,9 +150,10 @@ class QueryOperations:
         type: Union[str, "models.ExportType"],
         timeframe: Union[str, "models.TimeframeType"],
         time_period: Optional["models.QueryTimePeriod"] = None,
+        granularity: Optional[Union[str, "models.GranularityType"]] = None,
         configuration: Optional["models.QueryDatasetConfiguration"] = None,
-        aggregation: Optional[Dict[str, "QueryAggregation"]] = None,
-        grouping: Optional[List["QueryGrouping"]] = None,
+        aggregation: Optional[Dict[str, "models.QueryAggregation"]] = None,
+        grouping: Optional[List["models.QueryGrouping"]] = None,
         filter: Optional["models.QueryFilter"] = None,
         **kwargs
     ) -> "models.QueryResult":
@@ -158,43 +162,46 @@ class QueryOperations:
         :param external_cloud_provider_type: The external cloud provider type associated with
          dimension/query operations. This includes 'externalSubscriptions' for linked account and
          'externalBillingAccounts' for consolidated account.
-        :type external_cloud_provider_type: str or ~azure.mgmt.costmanagement.models.ExternalCloudProviderType
+        :type external_cloud_provider_type: str or ~cost_management_client.models.ExternalCloudProviderType
         :param external_cloud_provider_id: This can be '{externalSubscriptionId}' for linked account or
          '{externalBillingAccountId}' for consolidated account used with dimension/query operations.
         :type external_cloud_provider_id: str
         :param type: The type of the query.
-        :type type: str or ~azure.mgmt.costmanagement.models.ExportType
+        :type type: str or ~cost_management_client.models.ExportType
         :param timeframe: The time frame for pulling data for the query. If custom, then a specific
          time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.TimeframeType
+        :type timeframe: str or ~cost_management_client.models.TimeframeType
         :param time_period: Has time period for pulling data for the query.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
+        :type time_period: ~cost_management_client.models.QueryTimePeriod
+        :param granularity: The granularity of rows in the query.
+        :type granularity: str or ~cost_management_client.models.GranularityType
         :param configuration: Has configuration information for the data in the export. The
          configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
+        :type configuration: ~cost_management_client.models.QueryDatasetConfiguration
         :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
          item in the dictionary is the alias for the aggregated column. Query can have up to 2
          aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
+        :type aggregation: dict[str, ~cost_management_client.models.QueryAggregation]
         :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
          by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
+        :type grouping: list[~cost_management_client.models.QueryGrouping]
         :param filter: Has filter expression to use in the query.
-        :type filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :type filter: ~cost_management_client.models.QueryFilter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
-        :rtype: ~azure.mgmt.costmanagement.models.QueryResult
+        :return: QueryResult, or the result of cls(response)
+        :rtype: ~cost_management_client.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
-        api_version = "2019-11-01"
+        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, granularity=granularity, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.usage_by_external_cloud_provider_type.metadata['url']
+        url = self.usage_by_external_cloud_provider_type.metadata['url']  # type: ignore
         path_format_arguments = {
             'externalCloudProviderType': self._serialize.url("external_cloud_provider_type", external_cloud_provider_type, 'str'),
             'externalCloudProviderId': self._serialize.url("external_cloud_provider_id", external_cloud_provider_id, 'str'),
@@ -210,7 +217,6 @@ class QueryOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'QueryDefinition')
         body_content_kwargs['content'] = body_content
@@ -227,7 +233,7 @@ class QueryOperations:
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    usage_by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/query'}
+    usage_by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/query'}  # type: ignore

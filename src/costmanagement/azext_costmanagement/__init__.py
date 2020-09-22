@@ -9,20 +9,23 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-# from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
-from azext_costmanagement.manual._help import helps  # pylint: disable=unused-import
+from azext_costmanagement.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_costmanagement.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class CostManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_costmanagement.generated._client_factory import cf_costmanagement
+        from azext_costmanagement.generated._client_factory import cf_costmanagement_cl
         costmanagement_custom = CliCommandType(
             operations_tmpl='azext_costmanagement.custom#{}',
-            client_factory=cf_costmanagement)
-        super(CostManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                 custom_command_type=costmanagement_custom)
+            client_factory=cf_costmanagement_cl)
+        parent = super(CostManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=costmanagement_custom)
 
     def load_command_table(self, args):
         from azext_costmanagement.generated.commands import load_command_table
