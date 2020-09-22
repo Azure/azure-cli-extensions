@@ -10,18 +10,22 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_blockchain.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_blockchain.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class BlockchainManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_blockchain.generated._client_factory import cf_blockchain
+        from azext_blockchain.generated._client_factory import cf_blockchain_cl
         blockchain_custom = CliCommandType(
             operations_tmpl='azext_blockchain.custom#{}',
-            client_factory=cf_blockchain)
-        super(BlockchainManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                       custom_command_type=blockchain_custom)
+            client_factory=cf_blockchain_cl)
+        parent = super(BlockchainManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=blockchain_custom)
 
     def load_command_table(self, args):
         from azext_blockchain.generated.commands import load_command_table

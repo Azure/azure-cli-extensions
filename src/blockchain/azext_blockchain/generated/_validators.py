@@ -7,16 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-
-def process_blockchain_member_sku(namespace):
-    if namespace.sku == "Basic":
-        namespace.sku = {
-            'name': 'B0',
-            'tier': 'Basic'
-        }
-    else:
-        namespace.sku = {
-            'name': 'S0',
-            'tier': 'Standard'
-        }

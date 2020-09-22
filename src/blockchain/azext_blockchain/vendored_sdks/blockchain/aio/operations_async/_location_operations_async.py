@@ -25,7 +25,7 @@ class LocationOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.blockchain.models
+    :type models: ~blockchain_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,19 +56,20 @@ class LocationOperations:
         :param type: Gets or sets the type of the resource to check.
         :type type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NameAvailability or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.NameAvailability
+        :return: NameAvailability, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.NameAvailability
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.NameAvailability"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
 
         _name_availability_request = models.NameAvailabilityRequest(name=name, type=type)
         api_version = "2018-06-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
-        url = self.check_name_availability.metadata['url']
+        url = self.check_name_availability.metadata['url']  # type: ignore
         path_format_arguments = {
             'locationName': self._serialize.url("location_name", location_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -84,7 +85,6 @@ class LocationOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         if _name_availability_request is not None:
             body_content = self._serialize.body(_name_availability_request, 'NameAvailabilityRequest')
@@ -103,10 +103,10 @@ class LocationOperations:
         deserialized = self._deserialize('NameAvailability', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{locationName}/checkNameAvailability'}
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{locationName}/checkNameAvailability'}  # type: ignore
 
     async def list_consortium(
         self,
@@ -118,16 +118,17 @@ class LocationOperations:
         :param location_name: Location Name.
         :type location_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ConsortiumCollection or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.ConsortiumCollection
+        :return: ConsortiumCollection, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.ConsortiumCollection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConsortiumCollection"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self.list_consortium.metadata['url']
+        url = self.list_consortium.metadata['url']  # type: ignore
         path_format_arguments = {
             'locationName': self._serialize.url("location_name", location_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -142,7 +143,6 @@ class LocationOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -154,7 +154,7 @@ class LocationOperations:
         deserialized = self._deserialize('ConsortiumCollection', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_consortium.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{locationName}/listConsortiums'}
+    list_consortium.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{locationName}/listConsortiums'}  # type: ignore

@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import BlockchainManagementClientConfiguration
 from .operations import BlockchainMemberOperations
 from .operations import BlockchainMemberOperationResultOperations
@@ -29,22 +31,23 @@ class BlockchainManagementClient(object):
     """REST API for Azure Blockchain Service.
 
     :ivar blockchain_member: BlockchainMemberOperations operations
-    :vartype blockchain_member: azure.mgmt.blockchain.operations.BlockchainMemberOperations
+    :vartype blockchain_member: blockchain_management_client.operations.BlockchainMemberOperations
     :ivar blockchain_member_operation_result: BlockchainMemberOperationResultOperations operations
-    :vartype blockchain_member_operation_result: azure.mgmt.blockchain.operations.BlockchainMemberOperationResultOperations
+    :vartype blockchain_member_operation_result: blockchain_management_client.operations.BlockchainMemberOperationResultOperations
     :ivar location: LocationOperations operations
-    :vartype location: azure.mgmt.blockchain.operations.LocationOperations
+    :vartype location: blockchain_management_client.operations.LocationOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.blockchain.operations.OperationOperations
+    :vartype operation: blockchain_management_client.operations.OperationOperations
     :ivar sku: SkuOperations operations
-    :vartype sku: azure.mgmt.blockchain.operations.SkuOperations
+    :vartype sku: blockchain_management_client.operations.SkuOperations
     :ivar transaction_node: TransactionNodeOperations operations
-    :vartype transaction_node: azure.mgmt.blockchain.operations.TransactionNodeOperations
+    :vartype transaction_node: blockchain_management_client.operations.TransactionNodeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Gets the subscription Id which uniquely identifies the Microsoft Azure subscription. The subscription ID is part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

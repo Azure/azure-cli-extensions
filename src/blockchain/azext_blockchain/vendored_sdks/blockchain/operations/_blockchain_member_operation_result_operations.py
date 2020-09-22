@@ -29,7 +29,7 @@ class BlockchainMemberOperationResultOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.blockchain.models
+    :type models: ~blockchain_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,7 +50,7 @@ class BlockchainMemberOperationResultOperations(object):
         operation_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.OperationResult"
+        # type: (...) -> Optional["models.OperationResult"]
         """Get Async operation result.
 
         :param location_name: Location name.
@@ -58,16 +58,17 @@ class BlockchainMemberOperationResultOperations(object):
         :param operation_id: Operation Id.
         :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: OperationResult or the result of cls(response)
-        :rtype: ~azure.mgmt.blockchain.models.OperationResult or None
+        :return: OperationResult, or the result of cls(response)
+        :rtype: ~blockchain_management_client.models.OperationResult or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.OperationResult"]]
+        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01-preview"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'locationName': self._serialize.url("location_name", location_name, 'str'),
             'operationId': self._serialize.url("operation_id", operation_id, 'str'),
@@ -83,7 +84,6 @@ class BlockchainMemberOperationResultOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -97,7 +97,7 @@ class BlockchainMemberOperationResultOperations(object):
             deserialized = self._deserialize('OperationResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{location}/blockchainMemberOperationResults/{operationId}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Blockchain/locations/{location}/blockchainMemberOperationResults/{operationId}'}  # type: ignore

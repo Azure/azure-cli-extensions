@@ -12,34 +12,35 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def blockchain_member_list(client,
-                           resource_group_name=None):
-    if resource_group_name:
-        return client.list(resource_group_name=resource_group_name)
-    return client.list_all()
+def blockchain_blockchain_member_list(client,
+                                      resource_group_name):
+    return client.list(resource_group_name=resource_group_name)
 
 
-def blockchain_member_show(client,
-                           blockchain_member_name,
-                           resource_group_name):
+def blockchain_blockchain_member_show(client,
+                                      blockchain_member_name,
+                                      resource_group_name):
     return client.get(blockchain_member_name=blockchain_member_name,
                       resource_group_name=resource_group_name)
 
 
-def blockchain_member_create(client,
-                             blockchain_member_name,
-                             resource_group_name,
-                             location=None,
-                             tags=None,
-                             sku=None,
-                             protocol=None,
-                             validator_nodes_sku=None,
-                             password=None,
-                             consortium=None,
-                             consortium_management_account_password=None,
-                             firewall_rules=None,
-                             no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_create,
+def blockchain_blockchain_member_create(client,
+                                        blockchain_member_name,
+                                        resource_group_name,
+                                        location=None,
+                                        tags=None,
+                                        sku=None,
+                                        protocol=None,
+                                        validator_nodes_sku=None,
+                                        password=None,
+                                        consortium=None,
+                                        consortium_management_account_password=None,
+                                        consortium_role=None,
+                                        consortium_member_display_name=None,
+                                        firewall_rules=None,
+                                        no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
                        blockchain_member_name=blockchain_member_name,
                        resource_group_name=resource_group_name,
                        location=location,
@@ -50,16 +51,18 @@ def blockchain_member_create(client,
                        password=password,
                        consortium=consortium,
                        consortium_management_account_password=consortium_management_account_password,
+                       consortium_role=consortium_role,
+                       consortium_member_display_name=consortium_member_display_name,
                        firewall_rules=firewall_rules)
 
 
-def blockchain_member_update(client,
-                             blockchain_member_name,
-                             resource_group_name,
-                             tags=None,
-                             password=None,
-                             firewall_rules=None,
-                             consortium_management_account_password=None):
+def blockchain_blockchain_member_update(client,
+                                        blockchain_member_name,
+                                        resource_group_name,
+                                        tags=None,
+                                        password=None,
+                                        firewall_rules=None,
+                                        consortium_management_account_password=None):
     return client.update(blockchain_member_name=blockchain_member_name,
                          resource_group_name=resource_group_name,
                          tags=tags,
@@ -68,41 +71,59 @@ def blockchain_member_update(client,
                          consortium_management_account_password=consortium_management_account_password)
 
 
-def blockchain_member_delete(client,
-                             blockchain_member_name,
-                             resource_group_name,
-                             no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete,
+def blockchain_blockchain_member_delete(client,
+                                        blockchain_member_name,
+                                        resource_group_name,
+                                        no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
                        blockchain_member_name=blockchain_member_name,
                        resource_group_name=resource_group_name)
 
 
-def blockchain_member_list_api_key(client,
-                                   blockchain_member_name,
-                                   resource_group_name):
+def blockchain_blockchain_member_list_all(client):
+    return client.list_all()
+
+
+def blockchain_blockchain_member_list_api_key(client,
+                                              blockchain_member_name,
+                                              resource_group_name):
     return client.list_api_key(blockchain_member_name=blockchain_member_name,
                                resource_group_name=resource_group_name)
 
 
-def blockchain_member_list_consortium_member(client,
-                                             blockchain_member_name,
-                                             resource_group_name):
+def blockchain_blockchain_member_list_consortium_member(client,
+                                                        blockchain_member_name,
+                                                        resource_group_name):
     return client.list_consortium_member(blockchain_member_name=blockchain_member_name,
                                          resource_group_name=resource_group_name)
 
 
-def blockchain_member_regenerate_api_key(client,
-                                         blockchain_member_name,
-                                         resource_group_name,
-                                         key_name=None):
+def blockchain_blockchain_member_regenerate_api_key(client,
+                                                    blockchain_member_name,
+                                                    resource_group_name,
+                                                    key_name=None,
+                                                    value=None):
     return client.regenerate_api_key(blockchain_member_name=blockchain_member_name,
                                      resource_group_name=resource_group_name,
-                                     key_name=key_name)
+                                     key_name=key_name,
+                                     value=value)
+
+
+def blockchain_blockchain_member_operation_result_show(client,
+                                                       location_name,
+                                                       operation_id):
+    return client.get(location_name=location_name,
+                      operation_id=operation_id)
 
 
 def blockchain_consortium_list(client,
-                               location):
-    return client.list_consortium(location_name=location)
+                               location_name):
+    return client.list_consortium(location_name=location_name)
+
+
+def blockchain_sku_list(client):
+    return client.list()
 
 
 def blockchain_transaction_node_list(client,
@@ -129,7 +150,8 @@ def blockchain_transaction_node_create(client,
                                        password=None,
                                        firewall_rules=None,
                                        no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_create,
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
                        blockchain_member_name=blockchain_member_name,
                        transaction_node_name=transaction_node_name,
                        resource_group_name=resource_group_name,
@@ -156,7 +178,8 @@ def blockchain_transaction_node_delete(client,
                                        transaction_node_name,
                                        resource_group_name,
                                        no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete,
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
                        blockchain_member_name=blockchain_member_name,
                        transaction_node_name=transaction_node_name,
                        resource_group_name=resource_group_name)

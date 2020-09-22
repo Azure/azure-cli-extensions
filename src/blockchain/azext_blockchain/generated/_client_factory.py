@@ -9,19 +9,28 @@
 # --------------------------------------------------------------------------
 
 
-def cf_blockchain(cli_ctx, *_):
+def cf_blockchain_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.blockchain import BlockchainManagementClient
-    return get_mgmt_service_client(cli_ctx, BlockchainManagementClient)
+    return get_mgmt_service_client(cli_ctx,
+                                   BlockchainManagementClient)
 
 
-def cf_member(cli_ctx, *_):
-    return cf_blockchain(cli_ctx).blockchain_member
+def cf_blockchain_member(cli_ctx, *_):
+    return cf_blockchain_cl(cli_ctx).blockchain_member
+
+
+def cf_blockchain_member_operation_result(cli_ctx, *_):
+    return cf_blockchain_cl(cli_ctx).blockchain_member_operation_result
 
 
 def cf_consortium(cli_ctx, *_):
-    return cf_blockchain(cli_ctx).location
+    return cf_blockchain_cl(cli_ctx).location
+
+
+def cf_sku(cli_ctx, *_):
+    return cf_blockchain_cl(cli_ctx).sku
 
 
 def cf_transaction_node(cli_ctx, *_):
-    return cf_blockchain(cli_ctx).transaction_node
+    return cf_blockchain_cl(cli_ctx).transaction_node
