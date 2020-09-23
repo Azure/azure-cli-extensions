@@ -65,7 +65,7 @@ helps['connectedmachine machine-extension show'] = """
     examples:
       - name: Get Machine Extension
         text: |-
-               az connectedmachine machine-extension show --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension show --machine-name "myMachine" --n "CustomScriptExtension" \
 --resource-group "myResourceGroup"
 """
 
@@ -75,7 +75,7 @@ helps['connectedmachine machine-extension create'] = """
     examples:
       - name: Create or Update a Machine Extension
         text: |-
-               az connectedmachine machine-extension create --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension create --machine-name "myMachine" --n "CustomScriptExtension" \
 --location "eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings \
 "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" \
 --type-handler-version "1.10" --resource-group "myResourceGroup"
@@ -85,9 +85,9 @@ helps['connectedmachine machine-extension update'] = """
     type: command
     short-summary: "The operation to update the extension."
     examples:
-      - name: Update a Machine Extension
+      - name: Create or Update a Machine Extension
         text: |-
-               az connectedmachine machine-extension update --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension update --machine-name "myMachine" --n "CustomScriptExtension" \
 --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe \
 -c \\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --resource-group \
 "myResourceGroup"
@@ -99,7 +99,7 @@ helps['connectedmachine machine-extension delete'] = """
     examples:
       - name: Delete a Machine Extension
         text: |-
-               az connectedmachine machine-extension delete --machine-name "myMachine" --name "MMA" --resource-group \
+               az connectedmachine machine-extension delete --machine-name "myMachine" --n "MMA" --resource-group \
 "myResourceGroup"
 """
 
@@ -111,16 +111,16 @@ met.
       - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
 created.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
 --resource-group "myResourceGroup" --created
       - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
 updated.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
 --resource-group "myResourceGroup" --updated
       - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
 deleted.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine machine-extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
 --resource-group "myResourceGroup" --deleted
 """

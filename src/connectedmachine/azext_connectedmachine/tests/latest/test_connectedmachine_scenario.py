@@ -12,210 +12,136 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
-from azure_devtools.scenario_tests import AllowLargeResponse
+
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-CUSTOM_SCRIPT_EXTENSION_NAME = 'customScript'
-DEPENDENCY_AGENT_EXTENSION_NAME = 'dependencyAgent'
-
-# Constants for Machine tests
-MACHINES_RESOURCE_GROUP_NAME = 'AzcmagentTest'
-MACHINES_MACHINE_NAME = '0.10.20225.002'
-MACHINES_LOCATION = 'eastus2euap'
-
-# Constants for Machine Extension tests
-EXTENSIONS_RESOURCE_GROUP_NAME = 'csharp-sdk-test'
-EXTENSIONS_MACHINE_NAME = 'thinkpad'
-EXTENSIONS_LOCATION = 'eastus'
 
 
 @try_manual
-def setup(test):
-    # This machine needs to already exist
-    test.cmd('az connectedmachine machine show '
-             f'--name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', EXTENSIONS_MACHINE_NAME),
-                 test.check('location', EXTENSIONS_LOCATION)
-             ])
-
-
-@try_manual
-def cleanup(test):
+def setup(test, rg):
     pass
-
-
-# Machine tests
-
-
-# EXAMPLE: /Machines/get/Get Machine
-@try_manual
-def step__machines_get_get_machine(test):
-    test.cmd('az connectedmachine machine show '
-             f'--name "{MACHINES_MACHINE_NAME}" '
-             f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', MACHINES_MACHINE_NAME),
-                 test.check('location', MACHINES_LOCATION)
-             ])
-
-
-# EXAMPLE: /Machines/get/List Machines by resource group
-@try_manual
-def step__machines_get_list_machines_by_resource_group(test):
-    test.cmd('az connectedmachine machine list '
-             f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.greater_than('length(@)', 400)
-             ])
-
-
-# EXAMPLE: /Machines/delete/Delete a Machine
-@try_manual
-def step__machines_delete_delete_a_machine(test):
-    list = test.cmd('az connectedmachine machine list '
-                    f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
-                    checks=[
-                        test.greater_than('length(@)', 400)
-                    ]).get_output_in_json()
-
-    nameToDelete = next(machine['name'] for machine in list if machine['name'] != MACHINES_MACHINE_NAME)
-    test.cmd('az connectedmachine machine delete -y '
-             f'--name "{nameToDelete}" '
-             f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
-             checks=[])
-
-
-# Machine Extension tests
 
 
 # EXAMPLE: /MachineExtensions/put/Create or Update a Machine Extension
 @try_manual
-def step__machineextensions_put(test):
+def step__machineextensions_put(test, rg):
     test.cmd('az connectedmachine machine-extension create '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{DEPENDENCY_AGENT_EXTENSION_NAME}" '
-             f'--location "{EXTENSIONS_LOCATION}" '
-             '--type "DependencyAgentLinux" '
-             '--publisher "Microsoft.Azure.Monitoring.DependencyAgent" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', DEPENDENCY_AGENT_EXTENSION_NAME)
-             ])
+             '--machine-name "myMachine" '
+             '--n "CustomScriptExtension" '
+             '--location "eastus2euap" '
+             '--type "CustomScriptExtension" '
+             '--publisher "Microsoft.Compute" '
+             '--settings "{{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object {{ $_.CPU '
+             '-gt 10000 }}\\\\\\"\\"}}" '
+             '--type-handler-version "1.10" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /MachineExtensions/get/Get Machine Extension
+@try_manual
+def step__machineextensions_get_get_machine_extension(test, rg):
+    test.cmd('az connectedmachine machine-extension show '
+             '--machine-name "myMachine" '
+             '--n "CustomScriptExtension" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /MachineExtensions/get/Get all Machine Extensions
+@try_manual
+def step__machineextensions_get(test, rg):
+    test.cmd('az connectedmachine machine-extension list '
+             '--machine-name "myMachine" '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
 # EXAMPLE: /MachineExtensions/patch/Create or Update a Machine Extension
 @try_manual
-def step__machineextensions_patch(test):
-    # Create an extension to update
-    test.cmd('az connectedmachine machine-extension create '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
-             f'--location "{EXTENSIONS_LOCATION}" '
-             '--type "CustomScript" '
-             '--publisher "Microsoft.Azure.Extensions" '
-             r"""--settings '{{"commandToExecute":"ls"}}' """
-             '--type-handler-version "2.1" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', CUSTOM_SCRIPT_EXTENSION_NAME),
-                 test.check('provisioningState', 'Succeeded'),
-                 test.check('settings.commandToExecute', 'ls')
-             ])
-
-    # update the extension
+def step__machineextensions_patch(test, rg):
     test.cmd('az connectedmachine machine-extension update '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
-             r"""--settings '{{"commandToExecute":"ls -a"}}' """
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', CUSTOM_SCRIPT_EXTENSION_NAME),
-                 test.check('provisioningState', 'Succeeded'),
-                 test.check('settings.commandToExecute', 'ls -a')
-             ])
+             '--machine-name "myMachine" '
+             '--n "CustomScriptExtension" '
+             '--type "CustomScriptExtension" '
+             '--publisher "Microsoft.Compute" '
+             '--settings "{{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object {{ $_.CPU '
+             '-lt 100 }}\\\\\\"\\"}}" '
+             '--type-handler-version "1.10" '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
-# EXAMPLE: /MachineExtensions/get/GET Machine Extension
+# EXAMPLE: /Machines/get/Get Machine
 @try_manual
-def step__machineextensions_get_get_machine_extension(test):
-    print('this happened')
-    test.cmd('az connectedmachine machine-extension show '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', CUSTOM_SCRIPT_EXTENSION_NAME),
-                 test.check('provisioningState', 'Succeeded')
-             ])
+def step__machines_get_get_machine(test, rg):
+    test.cmd('az connectedmachine machine show '
+             '--name "myMachine" '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
-# EXAMPLE: /MachineExtensions/get/GET all Machine Extensions
+# EXAMPLE: /Machines/get/List Machines by resource group
 @try_manual
-def step__machineextensions_get(test):
-    test.cmd('az connectedmachine machine-extension list '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('length(@)', 2)
-             ])
+def step__machines_get_list_machines_by_resource_group(test, rg):
+    test.cmd('az connectedmachine machine list '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Machines/get/List Machines by resource group
+@try_manual
+def step__machines_get_list_machines_by_resource_group(test, rg):
+    test.cmd('az connectedmachine machine list '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
 # EXAMPLE: /MachineExtensions/delete/Delete a Machine Extension
 @try_manual
-def step__machineextensions_delete(test):
+def step__machineextensions_delete(test, rg):
     test.cmd('az connectedmachine machine-extension delete -y '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{DEPENDENCY_AGENT_EXTENSION_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
+             '--machine-name "myMachine" '
+             '--n "MMA" '
+             '--resource-group "{rg}"',
              checks=[])
 
-    test.cmd('az connectedmachine machine-extension list '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('length(@)', 1)
-             ])
 
-    test.cmd('az connectedmachine machine-extension delete -y '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
+# EXAMPLE: /Machines/delete/Delete a Machine
+@try_manual
+def step__machines_delete_delete_a_machine(test, rg):
+    test.cmd('az connectedmachine machine delete -y '
+             '--name "myMachine" '
+             '--resource-group "{rg}"',
              checks=[])
-
-    test.cmd('az connectedmachine machine-extension list '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('length(@)', 0)
-             ])
 
 
 @try_manual
-def call_scenario(test):
-    setup(test)
-    # Machines
-    step__machines_get_get_machine(test)
-    step__machines_get_list_machines_by_resource_group(test)
-    step__machines_get_list_machines_by_resource_group(test)
-    step__machines_delete_delete_a_machine(test)
+def cleanup(test, rg):
+    pass
 
-    # Machine Extensions
-    step__machineextensions_put(test)
-    step__machineextensions_patch(test)
-    step__machineextensions_get_get_machine_extension(test)
-    step__machineextensions_get(test)
-    step__machineextensions_delete(test)
 
-    cleanup(test)
+@try_manual
+def call_scenario(test, rg):
+    setup(test, rg)
+    step__machineextensions_put(test, rg)
+    step__machineextensions_get_get_machine_extension(test, rg)
+    step__machineextensions_get(test, rg)
+    step__machineextensions_patch(test, rg)
+    step__machines_get_get_machine(test, rg)
+    step__machines_get_list_machines_by_resource_group(test, rg)
+    step__machines_get_list_machines_by_resource_group(test, rg)
+    step__machineextensions_delete(test, rg)
+    step__machines_delete_delete_a_machine(test, rg)
+    cleanup(test, rg)
 
 
 @try_manual
 class ConnectedMachineScenarioTest(ScenarioTest):
 
-    @AllowLargeResponse()
-    def test_connectedmachine(self):
-        call_scenario(self)
+    @ResourceGroupPreparer(name_prefix='clitestconnectedmachine_myResourceGroup'[:7], key='rg', parameter_name='rg')
+    def test_connectedmachine(self, rg):
+
+        call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
