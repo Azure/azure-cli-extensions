@@ -603,7 +603,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     addon_profiles = instance.addon_profiles or {}
     # addon name is case insensitive
     addon_profile = next((addon_profiles[k] for k in addon_profiles
-                         if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
+                          if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
                          ManagedClusterAddonProfile(enabled=True))
     if not addon_profile.enabled:
         raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
