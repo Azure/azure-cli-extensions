@@ -2473,7 +2473,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              disable_sgxquotehelper=disable_sgxquotehelper, no_wait=no_wait, osm_mesh_name=osm_mesh_name)
+                              disable_sgxquotehelper=disable_sgxquotehelper, osm_mesh_name=osm_mesh_name, no_wait=no_wait)
 
     if 'omsagent' in instance.addon_profiles and instance.addon_profiles['omsagent'].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
