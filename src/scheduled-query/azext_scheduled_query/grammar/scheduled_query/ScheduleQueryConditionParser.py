@@ -2,9 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=all
 # Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
 # encoding: utf-8
-# pylint: disable=all
 from __future__ import print_function
 from antlr4 import *
 from io import StringIO
@@ -32,7 +32,7 @@ def serializedATN():
         buf.write(u"\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\21\3\21")
         buf.write(u"\3\21\3\22\3\22\3\22\3\23\3\23\3\23\3\24\3\24\3\24\3")
         buf.write(u"\25\3\25\3\25\3\26\3\26\3\26\3\27\3\27\3\27\3\30\3\30")
-        buf.write(u"\3\30\3\31\3\31\3\32\3\32\3\32\3\33\3\33\3\33\3\33\3")
+        buf.write(u"\3\31\3\31\3\31\3\32\3\32\3\32\3\33\3\33\3\33\3\33\3")
         buf.write(u"\33\7\33\u00da\n\33\f\33\16\33\u00dd\13\33\3\34\3\34")
         buf.write(u"\3\34\3\34\3\35\3\35\3\35\3\36\3\36\3\36\3\37\3\37\3")
         buf.write(u"\37\3 \3 \3 \3!\3!\3!\3!\7!\u00f3\n!\f!\16!\u00f6\13")
@@ -46,7 +46,7 @@ def serializedATN():
         buf.write(u"\3\2\2\2\34\u00aa\3\2\2\2\36\u00ad\3\2\2\2 \u00b7\3\2")
         buf.write(u"\2\2\"\u00ba\3\2\2\2$\u00bd\3\2\2\2&\u00c0\3\2\2\2(\u00c3")
         buf.write(u"\3\2\2\2*\u00c6\3\2\2\2,\u00c9\3\2\2\2.\u00cc\3\2\2\2")
-        buf.write(u"\60\u00cf\3\2\2\2\62\u00d1\3\2\2\2\64\u00d4\3\2\2\2\66")
+        buf.write(u"\60\u00ce\3\2\2\2\62\u00d1\3\2\2\2\64\u00d4\3\2\2\2\66")
         buf.write(u"\u00de\3\2\2\28\u00e2\3\2\2\2:\u00e5\3\2\2\2<\u00e8\3")
         buf.write(u"\2\2\2>\u00eb\3\2\2\2@\u00ee\3\2\2\2B\u00f8\3\2\2\2D")
         buf.write(u"H\5\4\3\2EF\5\n\6\2FG\5\6\4\2GI\3\2\2\2HE\3\2\2\2HI\3")
@@ -98,7 +98,7 @@ def serializedATN():
         buf.write(u"\u00c5\7&\2\2\u00c5)\3\2\2\2\u00c6\u00c7\7$\2\2\u00c7")
         buf.write(u"\u00c8\7&\2\2\u00c8+\3\2\2\2\u00c9\u00ca\7\35\2\2\u00ca")
         buf.write(u"\u00cb\7&\2\2\u00cb-\3\2\2\2\u00cc\u00cd\7\36\2\2\u00cd")
-        buf.write(u"\u00ce\7&\2\2\u00ce/\3\2\2\2\u00cf\u00d0\7$\2\2\u00d0")
+        buf.write(u"/\3\2\2\2\u00ce\u00cf\7$\2\2\u00cf\u00d0\7&\2\2\u00d0")
         buf.write(u"\61\3\2\2\2\u00d1\u00d2\7\24\2\2\u00d2\u00d3\7&\2\2\u00d3")
         buf.write(u"\63\3\2\2\2\u00d4\u00d5\5\62\32\2\u00d5\u00db\5\66\34")
         buf.write(u"\2\u00d6\u00d7\58\35\2\u00d7\u00d8\5\66\34\2\u00d8\u00da")
@@ -1602,9 +1602,6 @@ class ScheduleQueryConditionParser ( Parser ):
         def POINTS(self):
             return self.getToken(ScheduleQueryConditionParser.POINTS, 0)
 
-        def WHITESPACE(self):
-            return self.getToken(ScheduleQueryConditionParser.WHITESPACE, 0)
-
         def getRuleIndex(self):
             return ScheduleQueryConditionParser.RULE_points
 
@@ -1627,8 +1624,6 @@ class ScheduleQueryConditionParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 202
             self.match(ScheduleQueryConditionParser.POINTS)
-            self.state = 203
-            self.match(ScheduleQueryConditionParser.WHITESPACE)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1646,6 +1641,9 @@ class ScheduleQueryConditionParser ( Parser ):
 
         def NUMBER(self):
             return self.getToken(ScheduleQueryConditionParser.NUMBER, 0)
+
+        def WHITESPACE(self):
+            return self.getToken(ScheduleQueryConditionParser.WHITESPACE, 0)
 
         def getRuleIndex(self):
             return ScheduleQueryConditionParser.RULE_evaluation_period
@@ -1667,8 +1665,10 @@ class ScheduleQueryConditionParser ( Parser ):
         self.enterRule(localctx, 46, self.RULE_evaluation_period)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 205
+            self.state = 204
             self.match(ScheduleQueryConditionParser.NUMBER)
+            self.state = 205
+            self.match(ScheduleQueryConditionParser.WHITESPACE)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

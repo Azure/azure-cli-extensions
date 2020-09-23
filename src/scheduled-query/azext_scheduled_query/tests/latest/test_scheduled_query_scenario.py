@@ -37,7 +37,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                                   resource_group=resource_group),
         })
         time.sleep(180)
-        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule"',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
@@ -49,7 +49,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
                  ])
-        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule"',
                  checks=[
                      self.check('name', '{name2}'),
                      self.check('scopes[0]', '{rg_id}'),

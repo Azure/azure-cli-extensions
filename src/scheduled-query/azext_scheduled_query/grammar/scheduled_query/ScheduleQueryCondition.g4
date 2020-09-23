@@ -52,9 +52,9 @@ min_times           : NUMBER WHITESPACE ;
 
 aggregated          : AGGREGATED WHITESPACE ;
 
-points              : POINTS WHITESPACE ;
+points              : POINTS ;
 
-evaluation_period   : NUMBER ;
+evaluation_period   : NUMBER WHITESPACE ;
 
 /* Dimensions */
 

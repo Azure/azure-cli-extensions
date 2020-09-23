@@ -32,7 +32,7 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
         'evaluation_frequency': evaluation_frequency,
         'window_size': window_size,
         'criteria': criteria,
-        'target_resource_types': [target_resource_type],
+        'target_resource_types': [target_resource_type] if target_resource_type else None,
         'actions': actions,
         'tags': tags,
         'location': location,

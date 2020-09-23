@@ -35,9 +35,9 @@ parameters:
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 examples:
   - name: Create a scheduled query for a VM.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName == \"Error\" or SeverityLevel== \"err\"\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count 'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName==\"Error\" or SeverityLevel==\"err\"' > 360 at least 1 violations out of 5 aggregated points" --description "Test rule"
   - name: Create a scheduled query for VMs in a resource group.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count \'count \'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName == \"Error\" or SeverityLevel== \"err\"\' > 360 at least 1 out of 5" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count 'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName==\"Error\" or SeverityLevel==\"err\"' > 360 at least 1 violations out of 5 aggregated points" --description "Test rule"
 """
 
 helps['monitor scheduled-query update'] = """
