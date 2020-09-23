@@ -9,10 +9,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .connected_cluster_operations import ConnectedClusterOperations
-from .operations import Operations
+from enum import Enum
 
-__all__ = [
-    'ConnectedClusterOperations',
-    'Operations',
-]
+
+class ResourceIdentityType(str, Enum):
+
+    none = "None"
+    system_assigned = "SystemAssigned"
+
+
+class ProvisioningState(str, Enum):
+
+    succeeded = "Succeeded"
+    failed = "Failed"
+    canceled = "Canceled"
+    provisioning = "Provisioning"
+    updating = "Updating"
+    deleting = "Deleting"
+    accepted = "Accepted"

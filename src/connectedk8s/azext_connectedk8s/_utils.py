@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import shutil
 import subprocess
 from subprocess import Popen, PIPE
 
@@ -22,6 +23,7 @@ import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
+# pylint: disable=bare-except
 
 
 def validate_location(cmd, location):
@@ -50,10 +52,16 @@ def get_chart_path(registry_path, kube_config, kube_context):
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
     pull_helm_chart(registry_path, kube_config, kube_context)
 
-    # Exporting helm chart
+    # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    try:
+        if os.path.isdir(chart_export_path):
+            shutil.rmtree(chart_export_path)
+    except:
+        logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
     export_helm_chart(registry_path, chart_export_path, kube_config, kube_context)
-    # Helm Install
+
+    # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     return chart_path
@@ -74,7 +82,6 @@ def pull_helm_chart(registry_path, kube_config, kube_context):
 
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context):
-    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
     cmd_helm_chart_export = ["helm", "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])

@@ -33,7 +33,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity, AuthenticationDetailsValue, AuthenticationCertificateDetails
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity, AuthenticationDetailsValue
 
 
 logger = get_logger(__name__)
@@ -86,6 +86,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if (values_file.endswith("'") or values_file.endswith('"')):
             values_file = values_file[:-1]
 
+    extension_operator_enabled = get_extension_operator_flag(values_file, values_file_provided)
+
     # Validate the helm environment file for Dogfood.
     dp_endpoint_dogfood = None
     release_train_dogfood = None
@@ -128,6 +130,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Check helm version
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Validate location
     utils.validate_location(cmd, location)
@@ -228,13 +235,35 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled)
+                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled, extension_operator_enabled)
     return put_cc_response
 
 
 def send_cloud_telemetry(cmd):
     cloud_name = cmd.cli_ctx.cloud.name
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cloud_name})
+
+
+def get_extension_operator_flag(values_file, values_file_provided):
+    if not values_file_provided:
+        return True
+
+    with open(values_file, 'r') as f:
+        try:
+            env_dict = yaml.safe_load(f)
+        except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
+                                    summary='Problem loading the helm environment file')
+            raise CLIError("Problem loading the helm environment file: " + str(e))
+        if 'systemDefaultValues' not in env_dict:
+            return True
+        if 'extensionoperator' not in env_dict['systemDefaultValues']:
+            return True
+        if 'enabled' not in env_dict['systemDefaultValues']['extensionoperator']:
+            return True
+
+    return env_dict['systemDefaultValues']['extensionoperator']['enabled']
 
 
 def validate_env_file_dogfood(values_file, values_file_provided):
@@ -659,7 +688,8 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled,
+                         extension_operator_enabled):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -672,7 +702,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
-                        "--set", "systemDefaultValues.clusterconnect-agent.enabled={}".format(is_aad_enabled),
+                        "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
+                        "--set", "systemDefaultValues.extensionoperator.enabled={}".format(extension_operator_enabled),
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
@@ -760,31 +791,16 @@ def list_cluster_user_credentials(cmd,
                                   resource_group_name,
                                   cluster_name,
                                   context_name=None,
-                                  authentication_method=None,
                                   token=None,
-                                  certificate_data=None,
-                                  key_data=None,
                                   path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                                   overwrite_existing=False):
-    if authentication_method is not None:
-        if (authentication_method != 'Token') and (authentication_method != 'ClientCertificate'):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='invalid Authentication method value', fault_type=consts.Invalid_Auth_Method_Fault,
-                                    summary="Authentication_method can only either be 'Token' or 'ClientCertificate'")
-            raise CLIError("Authentication_method can only either be 'Token' or 'ClientCertificate'")
-
-        if token is not None:
-            value = AuthenticationDetailsValue(token=token)
-        elif (certificate_data is not None) and (key_data is not None):
-            client_certificate = AuthenticationCertificateDetails(certificate_data=certificate_data, key_data=key_data)
-            value = AuthenticationDetailsValue(client_certificate=client_certificate)
-        else:
-            value = None
+    if token is not None:
+        value = AuthenticationDetailsValue(token=token)
     else:
         value = None
 
     try:
-        credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name, authentication_method, value)
+        credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name, value)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
                                 summary='Unable to list cluster user credentials')
@@ -1019,6 +1035,11 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Check helm version
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):

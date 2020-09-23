@@ -9,10 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .connected_cluster_operations import ConnectedClusterOperations
-from .operations import Operations
+from msrest.serialization import Model
 
-__all__ = [
-    'ConnectedClusterOperations',
-    'Operations',
-]
+
+class AuthenticationDetailsValue(Model):
+    """AuthenticationDetailsValue.
+
+    :param token: Authentication token.
+    :type token: str
+    """
+
+    _attribute_map = {
+        'token': {'key': 'token', 'type': 'str'},
+    }
+
+    def __init__(self, *, token: str=None, **kwargs) -> None:
+        super(AuthenticationDetailsValue, self).__init__(**kwargs)
+        self.token = token

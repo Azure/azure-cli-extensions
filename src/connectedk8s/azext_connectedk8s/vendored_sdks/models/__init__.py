@@ -10,70 +10,65 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import AuthenticationCertificateDetails
-    from ._models_py3 import AuthenticationDetails
-    from ._models_py3 import AuthenticationDetailsValue
-    from ._models_py3 import AzureEntityResource
-    from ._models_py3 import ConnectedCluster
-    from ._models_py3 import ConnectedClusterAADProfile
-    from ._models_py3 import ConnectedClusterIdentity
-    from ._models_py3 import ConnectedClusterPatch
-    from ._models_py3 import CredentialResult
-    from ._models_py3 import CredentialResults
-    from ._models_py3 import ErrorDetails
-    from ._models_py3 import ErrorResponse, ErrorResponseException
-    from ._models_py3 import Operation
-    from ._models_py3 import OperationDisplay
-    from ._models_py3 import ProxyResource
-    from ._models_py3 import Resource
-    from ._models_py3 import TrackedResource
+    from .operation_display_py3 import OperationDisplay
+    from .operation_py3 import Operation
+    from .connected_cluster_identity_py3 import ConnectedClusterIdentity
+    from .connected_cluster_aad_profile_py3 import ConnectedClusterAADProfile
+    from .connected_cluster_py3 import ConnectedCluster
+    from .credential_result_py3 import CredentialResult
+    from .credential_results_py3 import CredentialResults
+    from .authentication_details_value_py3 import AuthenticationDetailsValue
+    from .authentication_details_py3 import AuthenticationDetails
+    from .connected_cluster_patch_py3 import ConnectedClusterPatch
+    from .error_details_py3 import ErrorDetails
+    from .error_response_py3 import ErrorResponse, ErrorResponseException
+    from .proxy_resource_py3 import ProxyResource
+    from .azure_entity_resource_py3 import AzureEntityResource
+    from .resource_py3 import Resource
+    from .tracked_resource_py3 import TrackedResource
 except (SyntaxError, ImportError):
-    from ._models import AuthenticationCertificateDetails
-    from ._models import AuthenticationDetails
-    from ._models import AuthenticationDetailsValue
-    from ._models import AzureEntityResource
-    from ._models import ConnectedCluster
-    from ._models import ConnectedClusterAADProfile
-    from ._models import ConnectedClusterIdentity
-    from ._models import ConnectedClusterPatch
-    from ._models import CredentialResult
-    from ._models import CredentialResults
-    from ._models import ErrorDetails
-    from ._models import ErrorResponse, ErrorResponseException
-    from ._models import Operation
-    from ._models import OperationDisplay
-    from ._models import ProxyResource
-    from ._models import Resource
-    from ._models import TrackedResource
-from ._paged_models import ConnectedClusterPaged
-from ._paged_models import OperationPaged
-from ._connected_kubernetes_client_enums import (
+    from .operation_display import OperationDisplay
+    from .operation import Operation
+    from .connected_cluster_identity import ConnectedClusterIdentity
+    from .connected_cluster_aad_profile import ConnectedClusterAADProfile
+    from .connected_cluster import ConnectedCluster
+    from .credential_result import CredentialResult
+    from .credential_results import CredentialResults
+    from .authentication_details_value import AuthenticationDetailsValue
+    from .authentication_details import AuthenticationDetails
+    from .connected_cluster_patch import ConnectedClusterPatch
+    from .error_details import ErrorDetails
+    from .error_response import ErrorResponse, ErrorResponseException
+    from .proxy_resource import ProxyResource
+    from .azure_entity_resource import AzureEntityResource
+    from .resource import Resource
+    from .tracked_resource import TrackedResource
+from .connected_cluster_paged import ConnectedClusterPaged
+from .operation_paged import OperationPaged
+from .connected_kubernetes_client_enums import (
     ResourceIdentityType,
     ProvisioningState,
-    AuthenticationMethod,
 )
 
 __all__ = [
-    'AuthenticationCertificateDetails',
-    'AuthenticationDetails',
-    'AuthenticationDetailsValue',
-    'AzureEntityResource',
-    'ConnectedCluster',
-    'ConnectedClusterAADProfile',
+    'OperationDisplay',
+    'Operation',
     'ConnectedClusterIdentity',
-    'ConnectedClusterPatch',
+    'ConnectedClusterAADProfile',
+    'ConnectedCluster',
     'CredentialResult',
     'CredentialResults',
+    'AuthenticationDetailsValue',
+    'AuthenticationDetails',
+    'ConnectedClusterPatch',
     'ErrorDetails',
     'ErrorResponse', 'ErrorResponseException',
-    'Operation',
-    'OperationDisplay',
     'ProxyResource',
+    'AzureEntityResource',
     'Resource',
     'TrackedResource',
     'ConnectedClusterPaged',
     'OperationPaged',
     'ResourceIdentityType',
     'ProvisioningState',
-    'AuthenticationMethod',
 ]

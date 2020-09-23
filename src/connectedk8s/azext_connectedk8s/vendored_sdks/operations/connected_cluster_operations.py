@@ -20,8 +20,6 @@ from .. import models
 class ConnectedClusterOperations(object):
     """ConnectedClusterOperations operations.
 
-    You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
-
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -214,6 +212,7 @@ class ConnectedClusterOperations(object):
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
+
         if response.status_code == 200:
             deserialized = self._deserialize('ConnectedCluster', response)
 
@@ -279,6 +278,7 @@ class ConnectedClusterOperations(object):
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
+
         if response.status_code == 200:
             deserialized = self._deserialize('ConnectedCluster', response)
 
@@ -373,7 +373,7 @@ class ConnectedClusterOperations(object):
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def list_cluster_user_credentials(
-            self, resource_group_name, cluster_name, authentication_method, value, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, cluster_name, value, custom_headers=None, raw=False, **operation_config):
         """Gets cluster user credentials of a connected cluster.
 
         Gets cluster user credentials of the connected cluster with a specified
@@ -385,10 +385,6 @@ class ConnectedClusterOperations(object):
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
-        :param authentication_method: The mode of client authentication.
-         Possible values include: 'Token', 'ClientCertificate'
-        :type authentication_method: str or
-         ~azure.mgmt.hybridkubernetes.models.AuthenticationMethod
         :param value:
         :type value:
          ~azure.mgmt.hybridkubernetes.models.AuthenticationDetailsValue
@@ -404,8 +400,8 @@ class ConnectedClusterOperations(object):
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
         client_authentication_details = None
-        if authentication_method is not None or value is not None:
-            client_authentication_details = models.AuthenticationDetails(authentication_method=authentication_method, value=value)
+        if value is not None:
+            client_authentication_details = models.AuthenticationDetails(value=value)
 
         # Construct URL
         url = self.list_cluster_user_credentials.metadata['url']
@@ -445,6 +441,7 @@ class ConnectedClusterOperations(object):
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
+
         if response.status_code == 200:
             deserialized = self._deserialize('CredentialResults', response)
 
@@ -476,7 +473,8 @@ class ConnectedClusterOperations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
-        def prepare_request(next_link=None):
+        def internal_paging(next_link=None, raw=False):
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']
@@ -506,11 +504,6 @@ class ConnectedClusterOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def internal_paging(next_link=None):
-            request = prepare_request(next_link)
-
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -519,10 +512,12 @@ class ConnectedClusterOperations(object):
             return response
 
         # Deserialize response
-        header_dict = None
+        deserialized = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies)
+
         if raw:
             header_dict = {}
-        deserialized = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            return client_raw_response
 
         return deserialized
     list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters'}
@@ -545,7 +540,8 @@ class ConnectedClusterOperations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
-        def prepare_request(next_link=None):
+        def internal_paging(next_link=None, raw=False):
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_subscription.metadata['url']
@@ -574,11 +570,6 @@ class ConnectedClusterOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def internal_paging(next_link=None):
-            request = prepare_request(next_link)
-
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
@@ -587,10 +578,12 @@ class ConnectedClusterOperations(object):
             return response
 
         # Deserialize response
-        header_dict = None
+        deserialized = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies)
+
         if raw:
             header_dict = {}
-        deserialized = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.ConnectedClusterPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            return client_raw_response
 
         return deserialized
     list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Kubernetes/connectedClusters'}
