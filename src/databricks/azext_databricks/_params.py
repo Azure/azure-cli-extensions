@@ -37,7 +37,7 @@ def load_arguments(self, _):
         c.argument('prepare_encryption', action='store_true', help='Flag to enable the Managed Identity for managed storage account to prepare for CMK encryption.')
         c.argument('encryption_key_source', options_list=['--key-source'], arg_group='Encryption', arg_type=get_enum_type(['Default', 'Microsoft.Keyvault']), validator=validate_encryption_values, help='The encryption key source (provider).')
         c.argument('encryption_key_name', options_list=['--key-name'], arg_group='Encryption', help='The name of KeyVault key.')
-        c.argument('encryption_key_version', options_list=['--key-version'], arg_group='Encryption', help='The version of KeyVault key.')
+        c.argument('encryption_key_version', options_list=['--key-version'], arg_group='Encryption', help='The version of KeyVault key. It is optional when updating CMK.')
         c.argument('encryption_key_vault', options_list=['--key-vault'], arg_group='Encryption', help='The Uri of KeyVault.')
 
     with self.argument_context('databricks workspace delete') as c:
