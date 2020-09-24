@@ -49,13 +49,13 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
                  ])
-        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule"',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule"',
                  checks=[
                      self.check('name', '{name2}'),
                      self.check('scopes[0]', '{rg_id}'),
                      self.check('severity', 2)
                  ])
-        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 at least 2 violations out of 3 aggregated points" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 resource id _ResourceId at least 2 violations out of 3 aggregated points" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
