@@ -427,16 +427,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        #nodepool get-upgrades
+        # nodepool get-upgrades
         self.cmd('aks nodepool get-upgrades '
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
                  '--nodepool-name={node_pool_name}',
                  checks=[
-            # if rerun the recording, please update latestNodeImageVersion to the latest value
-            self.check('latestNodeImageVersion', 'AKSUbuntu-1604-2020.09.03'),
-            self.check('type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
-        ])
+                     # if rerun the recording, please update latestNodeImageVersion to the latest value
+                     self.check('latestNodeImageVersion', 'AKSUbuntu-1604-2020.09.03'),
+                     self.check('type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
+                 ])
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
