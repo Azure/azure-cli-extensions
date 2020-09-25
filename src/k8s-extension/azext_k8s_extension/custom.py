@@ -46,7 +46,7 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
 
 
 def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type,
-                         extension_type, scope, auto_upgrade_minor_version=None, release_train=None,
+                         extension_type, scope='cluster', auto_upgrade_minor_version=None, release_train=None,
                          version=None, target_namespace=None, release_namespace=None, configuration_settings=None,
                          configuration_protected_settings=None, configuration_settings_file=None,
                          configuration_protected_settings_file=None, location=None, tags=None):
@@ -57,7 +57,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     cluster_rp = __get_cluster_type(cluster_type)
 
     # Validate scope and namespace
-    __validate_scope_and_namespace(scope, release_namespace, target_namespace)
+    __validate_scope_and_namespace(scope, release_namespace, target_namespace, name)
 
     # Validate version, release_train
     __validate_version_and_release_train(
@@ -96,8 +96,8 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     if extension_type.lower() == 'azuremonitor-containers':
         # hardcoding  name, release_namespace and scope since ci only supports one instance and cluster scope
         # and platform doesnt have support yet extension specific constraints like this
-        logger.warn('Ignoring name, release_namespace and scope parameters since azuremonitor-containers only supports '
-                    'cluster scope and single instance of this extension')
+        logger.warning('Ignoring name, release_namespace and scope parameters since azuremonitor-containers '
+                       'only supports cluster scope and single instance of this extension')
         name = 'azuremonitor-containers'
         release_namespace = 'azuremonitor-containers'
         scope = 'cluster'
@@ -178,11 +178,13 @@ def __get_cluster_type(cluster_type):
     return 'Microsoft.ContainerService'
 
 
-def __validate_scope_and_namespace(scope, release_namespace, target_namespace):
+def __validate_scope_and_namespace(scope, release_namespace, target_namespace, name):
     if scope == 'cluster':
         if target_namespace is not None:
             message = "When Scope is 'cluster', target_namespace must not be given."
             raise CLIError(message)
+        if release_namespace is None:
+            release_namespace = name
     else:
         if release_namespace is not None:
             message = "When Scope is 'namespace', release_namespace must not be given."
@@ -206,7 +208,8 @@ def __get_config_settings_from_file(file_path):
     except ValueError:
         raise Exception("File {} is not a valid JSON file".format(file_path))
 
-    if len(settings) == 0:
+    files = len(settings)
+    if files == 0:
         raise Exception("File {} is empty".format(file_path))
 
     return settings
