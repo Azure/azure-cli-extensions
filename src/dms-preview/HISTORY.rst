@@ -1,3 +1,9 @@
+0.12.0
+++++++++++++++++++
+
+* Allowing for table selection in PG migrations.
+* Added default settings for MySQL migrations when options aren't selected.
+
 0.11.0
 ++++++++++++++++++
 
