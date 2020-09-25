@@ -727,7 +727,9 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
+    logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
     return sdk_no_wait(no_wait, client.update_put, resource_group, name, config_server_properties)
 
 
@@ -770,7 +772,9 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
+    logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
     return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
@@ -818,7 +822,9 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
 
+    logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Adding config server settings repo, (this operation can take a while to complete)")
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
@@ -839,7 +845,9 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
 
+    logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Deleting config server settings repo, (this operation can take a while to complete)")
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
@@ -888,7 +896,9 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
+    logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings repo, (this operation can take a while to complete)")
     return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
