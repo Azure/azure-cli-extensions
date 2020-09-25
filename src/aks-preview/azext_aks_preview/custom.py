@@ -89,7 +89,7 @@ from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBN
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
-from ._consts import CONST_OSM_ADDON_NAME, CONST_OSM_MESH_NAME_KEY
+from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_OPEN_SERVICE_MESH_NAME_KEY
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -852,8 +852,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
                assign_identity=None,
-               no_wait=False,
-               osm_mesh_name=None):
+               osm_mesh_name=None,
+               no_wait=False):
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -1800,8 +1800,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
     if 'open-service-mesh' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         if osm_mesh_name is not None:
-            addon_profile.config[CONST_OSM_MESH_NAME_KEY] = osm_mesh_name
-        addon_profiles[CONST_OSM_ADDON_NAME] = addon_profile
+            addon_profile.config[CONST_OPEN_SERVICE_MESH_NAME_KEY] = osm_mesh_name
+        addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'confcom' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
@@ -2590,7 +2590,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
                 if appgw_watch_namespace is not None:
                     addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
-            elif addon.lower() == CONST_OSM_ADDON_NAME.lower():
+            elif addon.lower() == CONST_OPEN_SERVICE_MESH_ADDON_NAME.lower():
                 if addon_profile.enabled:
                     raise CLIError('The open-service-mesh addon is already enabled for this managed cluster.\n'
                                    'To change open-service-mesh configuration, run '
@@ -2598,7 +2598,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
                 if osm_mesh_name is not None:
-                    addon_profile.config[CONST_OSM_MESH_NAME_KEY] = osm_mesh_name
+                    addon_profile.config[CONST_OPEN_SERVICE_MESH_NAME_KEY] = osm_mesh_name
             elif addon.lower() == CONST_CONFCOM_ADDON_NAME.lower():
                 if addon_profile.enabled:
                     raise CLIError('The confcom addon is already enabled for this managed cluster.\n'
