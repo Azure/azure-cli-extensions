@@ -211,3 +211,12 @@ def _get_persistent_disk_size(tier):  # pylint: disable=too-many-return-statemen
     if tier == 'STANDARD':
         return 50
     return 50
+
+
+def get_portal_uri(cli_ctx):
+    """Get the Azure Portal URL in the current cloud."""
+    try:
+        return cli_ctx.cloud.endpoints.__getattribute__('portal_uri')
+    except Exception as e:
+        logger.debug("Could not get Azure Portal endpoint. Exception: %s", str(e))
+        return 'https://portal.azure.com'
