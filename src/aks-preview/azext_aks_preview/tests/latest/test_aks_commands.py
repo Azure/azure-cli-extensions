@@ -408,3 +408,35 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].osDiskType', 'Ephemeral'),
         ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_nodepool_get_upgrades(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_pool_name = self.create_random_name('c', 6)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'node_pool_name': node_pool_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--nodepool-name {node_pool_name} ' \
+                     '-c 1'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # nodepool get-upgrades
+        self.cmd('aks nodepool get-upgrades '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--nodepool-name={node_pool_name}',
+                 checks=[
+                     # if rerun the recording, please update latestNodeImageVersion to the latest value
+                     self.check('latestNodeImageVersion', 'AKSUbuntu-1604-2020.09.03'),
+                     self.check('type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
+                 ])
+
+        # delete
+        self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])

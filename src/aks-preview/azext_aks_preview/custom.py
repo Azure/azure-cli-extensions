@@ -2336,6 +2336,14 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
+def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name):
+    return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+
+
 def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          client,
                          resource_group_name,
