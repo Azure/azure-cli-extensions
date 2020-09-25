@@ -377,7 +377,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name,
     if not shared_keys:
         raise CLIError('Fails to retrieve shared key for workspace {}'.format(
             log_analytics_workspace))
-    configuration_settings['omsagent.secret.wsid'] = log_analytics_workspace.customer_id
+    configuration_protected_settings['omsagent.secret.wsid'] = log_analytics_workspace.customer_id
     configuration_settings['logAnalyticsWorkspaceResourceID'] = workspace_resource_id
     configuration_protected_settings['omsagent.secret.key'] = shared_keys.primary_shared_key
     # set the domain for the ci agent for non azure public clouds
