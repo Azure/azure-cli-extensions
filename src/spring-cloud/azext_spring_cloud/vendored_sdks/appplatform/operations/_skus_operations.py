@@ -50,7 +50,7 @@ class SkusOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ResourceSku
         :rtype:
-         ~azure.mgmt.appplatform.models.ResourceSkuPaged[~azure.mgmt.appplatform.models.ResourceSku]
+         ~azure.mgmt.appplatform.v2020_07_01.models.ResourceSkuPaged[~azure.mgmt.appplatform.v2020_07_01.models.ResourceSku]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
