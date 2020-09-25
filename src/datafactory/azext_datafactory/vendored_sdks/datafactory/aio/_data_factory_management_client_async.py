@@ -31,6 +31,8 @@ from .operations_async import TriggerOperations
 from .operations_async import TriggerRunOperations
 from .operations_async import DataFlowOperations
 from .operations_async import DataFlowDebugSessionOperations
+from .operations_async import ManagedVirtualNetworkOperations
+from .operations_async import ManagedPrivateEndpointOperations
 from .. import models
 
 
@@ -67,6 +69,10 @@ class DataFactoryManagementClient(object):
     :vartype data_flow: data_factory_management_client.aio.operations_async.DataFlowOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
     :vartype data_flow_debug_session: data_factory_management_client.aio.operations_async.DataFlowDebugSessionOperations
+    :ivar managed_virtual_network: ManagedVirtualNetworkOperations operations
+    :vartype managed_virtual_network: data_factory_management_client.aio.operations_async.ManagedVirtualNetworkOperations
+    :ivar managed_private_endpoint: ManagedPrivateEndpointOperations operations
+    :vartype managed_private_endpoint: data_factory_management_client.aio.operations_async.ManagedPrivateEndpointOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription identifier.
@@ -120,6 +126,10 @@ class DataFactoryManagementClient(object):
         self.data_flow = DataFlowOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.data_flow_debug_session = DataFlowDebugSessionOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.managed_virtual_network = ManagedVirtualNetworkOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.managed_private_endpoint = ManagedPrivateEndpointOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
