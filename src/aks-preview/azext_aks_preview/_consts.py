@@ -25,6 +25,10 @@ CONST_INGRESS_APPGW_SUBNET_ID = "subnetId"
 CONST_INGRESS_APPGW_SUBNET_PREFIX = "subnetPrefix"
 CONST_INGRESS_APPGW_WATCH_NAMESPACE = "watchNamespace"
 
+# Open Service Mesh configuration keys
+CONST_OPEN_SERVICE_MESH_ADDON_NAME = "openServiceMesh"
+CONST_OPEN_SERVICE_MESH_NAME_KEY = "meshName"
+
 CONST_NODEPOOL_MODE_SYSTEM = "System"
 CONST_NODEPOOL_MODE_USER = "User"
 
@@ -43,5 +47,6 @@ ADDONS = {
     'azure-policy': 'azurepolicy',
     'kube-dashboard': CONST_KUBE_DASHBOARD_ADDON_NAME,
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
+    'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     "confcom": CONST_CONFCOM_ADDON_NAME
 }
