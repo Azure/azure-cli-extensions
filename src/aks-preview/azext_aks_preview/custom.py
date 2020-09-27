@@ -605,11 +605,14 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     # addon name is case insensitive
     addon_profile = next((addon_profiles[k] for k in addon_profiles
                           if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
-                         ManagedClusterAddonProfile(enabled=True))
+                         ManagedClusterAddonProfile(enabled=False))
     if not addon_profile.enabled:
         raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
-                       'To use "az aks browse" first enable the add-on\n'
-                       'by running "az aks enable-addons --addons kube-dashboard".')
+                       'To use "az aks browse" first enable the add-on '
+                       'by running "az aks enable-addons --addons kube-dashboard".\n'
+                       'Starting with Kubernetes 1.19, AKS no longer support installation of '
+                       'the managed kube-dashboard addon.\n'
+                       'Please use the Kubernetes resources view in the Azure portal (preview) instead.')
 
     _, browse_path = tempfile.mkstemp()
 
