@@ -1142,11 +1142,13 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if not upload_url:
         raise CLIError("Failed to get a SAS URL to upload context.")
 
-    prase_result = parse.urlparse(upload_url)
-    storage_name = prase_result.netloc.split('.')[0]
-    split_path = prase_result.path.split('/')[1:3]
+    parse_result = parse.urlparse(upload_url)
+    storage_name = parse_result.netloc.split('.')[0]
+    split_path = parse_result.path.split('/')[1:3]
+    storage_suffix = parse_result.netloc.replace('{0}.'.format(storage_name), '')
+
     share_name = split_path[0]
-    sas_token = "?" + prase_result.query
+    sas_token = "?" + parse_result.query
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
@@ -1165,7 +1167,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
     # upload file
     logger.warning("[2/3] Uploading package to blob")
-    file_service = FileService(storage_name, sas_token=sas_token)
+    file_service = FileService(storage_name, sas_token=sas_token, endpoint_suffix=storage_suffix)
     file_service.create_file_from_path(share_name, None, relative_path, path)
 
     if file_type == "Source" and not no_wait:
