@@ -680,11 +680,11 @@ def validate_config_server_settings(client, resource_group, name, git_property):
     if not result.is_valid:
         for item in result.details:
             if not item.name:
-                logger.error("Default Repository with uri \"%s\" meet error:", item.uri)
+                logger.error("Default repository with URI \"%s\" meets error:", item.uri)
             else:
-                logger.error("Pattern Repository with name \"%s\", uri \"%s\" meet error:", item.name, item.uri)
+                logger.error("Repository named \"%s\" with URI \"%s\" meets error:", item.name, item.uri)
             logger.error("\n".join(item.messages))
-        raise CLIError("Config server settings validate with error.")
+        raise CLIError("Config Server settings contain error.")
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     def standardization(dic):
