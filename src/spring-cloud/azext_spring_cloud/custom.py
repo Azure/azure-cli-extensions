@@ -1145,7 +1145,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     parse_result = parse.urlparse(upload_url)
     storage_name = parse_result.netloc.split('.')[0]
     split_path = parse_result.path.split('/')[1:3]
-    storage_suffix = parse_result.netloc.replace('{0}.'.format(storage_name), '')
+    storage_suffix = parse_result.netloc.replace('{0}.file.'.format(storage_name), '')
 
     share_name = split_path[0]
     sas_token = "?" + parse_result.query
