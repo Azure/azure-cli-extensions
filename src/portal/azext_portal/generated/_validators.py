@@ -7,18 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-
-def cf_portal_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.portal import Portal
-    return get_mgmt_service_client(cli_ctx,
-                                   Portal)
-
-
-def cf_dashboard(cli_ctx, *_):
-    return cf_portal_cl(cli_ctx).dashboard
-
-
-def cf_tenant_configuration(cli_ctx, *_):
-    return cf_portal_cl(cli_ctx).tenant_configuration

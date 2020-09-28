@@ -8,8 +8,10 @@
 
 from ._operation_operations import OperationOperations
 from ._dashboard_operations import DashboardOperations
+from ._tenant_configuration_operations import TenantConfigurationOperations
 
 __all__ = [
     'OperationOperations',
     'DashboardOperations',
+    'TenantConfigurationOperations',
 ]

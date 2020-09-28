@@ -12,6 +12,110 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
+class Resource(msrest.serialization.Model):
+    """Resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class Configuration(Resource):
+    """Tenant configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param enforce_private_markdown_storage: When flag is set to true Markdown tile will require
+     external storage configuration (URI). The inline content configuration will be prohibited.
+    :type enforce_private_markdown_storage: bool
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'enforce_private_markdown_storage': {'key': 'properties.enforcePrivateMarkdownStorage', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enforce_private_markdown_storage: Optional[bool] = None,
+        **kwargs
+    ):
+        super(Configuration, self).__init__(**kwargs)
+        self.enforce_private_markdown_storage = enforce_private_markdown_storage
+
+
+class ConfigurationList(msrest.serialization.Model):
+    """List of tenant configurations.
+
+    :param value: The array of custom resource provider manifests.
+    :type value: list[~portal.models.Configuration]
+    :param next_link: The URL to use for getting the next set of results.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Configuration]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["Configuration"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(ConfigurationList, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class Dashboard(msrest.serialization.Model):
     """The shared dashboard resource definition.
 
@@ -30,7 +134,7 @@ class Dashboard(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param lenses: The dashboard lenses.
-    :type lenses: dict[str, ~portal.models.DashboardLens]
+    :type lenses: list[~portal.models.DashboardLens]
     :param metadata: The dashboard metadata.
     :type metadata: dict[str, object]
     """
@@ -48,7 +152,7 @@ class Dashboard(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        'lenses': {'key': 'properties.lenses', 'type': '{DashboardLens}'},
+        'lenses': {'key': 'properties.lenses', 'type': '[DashboardLens]'},
         'metadata': {'key': 'properties.metadata', 'type': '{object}'},
     }
 
@@ -57,7 +161,7 @@ class Dashboard(msrest.serialization.Model):
         *,
         location: str,
         tags: Optional[Dict[str, str]] = None,
-        lenses: Optional[Dict[str, "DashboardLens"]] = None,
+        lenses: Optional[List["DashboardLens"]] = None,
         metadata: Optional[Dict[str, object]] = None,
         **kwargs
     ):
@@ -79,7 +183,7 @@ class DashboardLens(msrest.serialization.Model):
     :param order: Required. The lens order.
     :type order: int
     :param parts: Required. The dashboard parts.
-    :type parts: dict[str, ~portal.models.DashboardParts]
+    :type parts: list[~portal.models.DashboardParts]
     :param metadata: The dashboard len's metadata.
     :type metadata: dict[str, object]
     """
@@ -91,7 +195,7 @@ class DashboardLens(msrest.serialization.Model):
 
     _attribute_map = {
         'order': {'key': 'order', 'type': 'int'},
-        'parts': {'key': 'parts', 'type': '{DashboardParts}'},
+        'parts': {'key': 'parts', 'type': '[DashboardParts]'},
         'metadata': {'key': 'metadata', 'type': '{object}'},
     }
 
@@ -99,7 +203,7 @@ class DashboardLens(msrest.serialization.Model):
         self,
         *,
         order: int,
-        parts: Dict[str, "DashboardParts"],
+        parts: List["DashboardParts"],
         metadata: Optional[Dict[str, object]] = None,
         **kwargs
     ):
@@ -135,6 +239,38 @@ class DashboardListResult(msrest.serialization.Model):
         self.next_link = next_link
 
 
+class DashboardPartMetadata(msrest.serialization.Model):
+    """A dashboard part metadata.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: MarkdownPartMetadata.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. The type of dashboard part.Constant filled by server.
+    :type type: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'type': {'Extension/HubsExtension/PartType/MarkdownPart': 'MarkdownPartMetadata'}
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DashboardPartMetadata, self).__init__(**kwargs)
+        self.type = None  # type: Optional[str]
+
+
 class DashboardParts(msrest.serialization.Model):
     """A dashboard part.
 
@@ -143,7 +279,7 @@ class DashboardParts(msrest.serialization.Model):
     :param position: Required. The dashboard's part position.
     :type position: ~portal.models.DashboardPartsPosition
     :param metadata: The dashboard part's metadata.
-    :type metadata: dict[str, object]
+    :type metadata: ~portal.models.DashboardPartMetadata
     """
 
     _validation = {
@@ -152,14 +288,14 @@ class DashboardParts(msrest.serialization.Model):
 
     _attribute_map = {
         'position': {'key': 'position', 'type': 'DashboardPartsPosition'},
-        'metadata': {'key': 'metadata', 'type': '{object}'},
+        'metadata': {'key': 'metadata', 'type': 'DashboardPartMetadata'},
     }
 
     def __init__(
         self,
         *,
         position: "DashboardPartsPosition",
-        metadata: Optional[Dict[str, object]] = None,
+        metadata: Optional["DashboardPartMetadata"] = None,
         **kwargs
     ):
         super(DashboardParts, self).__init__(**kwargs)
@@ -217,32 +353,6 @@ class DashboardPartsPosition(msrest.serialization.Model):
         self.metadata = metadata
 
 
-class DashboardProperties(msrest.serialization.Model):
-    """The shared dashboard properties.
-
-    :param lenses: The dashboard lenses.
-    :type lenses: dict[str, ~portal.models.DashboardLens]
-    :param metadata: The dashboard metadata.
-    :type metadata: dict[str, object]
-    """
-
-    _attribute_map = {
-        'lenses': {'key': 'lenses', 'type': '{DashboardLens}'},
-        'metadata': {'key': 'metadata', 'type': '{object}'},
-    }
-
-    def __init__(
-        self,
-        *,
-        lenses: Optional[Dict[str, "DashboardLens"]] = None,
-        metadata: Optional[Dict[str, object]] = None,
-        **kwargs
-    ):
-        super(DashboardProperties, self).__init__(**kwargs)
-        self.lenses = lenses
-        self.metadata = metadata
-
-
 class ErrorDefinition(msrest.serialization.Model):
     """Error definition.
 
@@ -278,38 +388,12 @@ class ErrorDefinition(msrest.serialization.Model):
         self.details = None
 
 
-class ErrorResponseException(HttpResponseError):
-    """Server responded with exception of type: 'ErrorResponse'.
-
-    :param response: Server response to be deserialized.
-    :param error_model: A deserialized model of the response body as model.
-    """
-
-    def __init__(self, response, error_model):
-        self.error = error_model
-        super(ErrorResponseException, self).__init__(response=response, error_model=error_model)
-
-    @classmethod
-    def from_response(cls, response, deserialize):
-        """Deserialize this response as this exception, or a subclass of this exception.
-
-        :param response: Server response to be deserialized.
-        :param deserialize: A deserializer
-        """
-        model_name = 'ErrorResponse'
-        error = deserialize(model_name, response)
-        if error is None:
-            error = deserialize.dependencies[model_name]()
-        return error._EXCEPTION_TYPE(response, error)
-
-
 class ErrorResponse(msrest.serialization.Model):
     """Error response.
 
-    :param error: Error definition.
+    :param error: The error details.
     :type error: ~portal.models.ErrorDefinition
     """
-    _EXCEPTION_TYPE = ErrorResponseException
 
     _attribute_map = {
         'error': {'key': 'error', 'type': 'ErrorDefinition'},
@@ -325,20 +409,139 @@ class ErrorResponse(msrest.serialization.Model):
         self.error = error
 
 
+class MarkdownPartMetadata(DashboardPartMetadata):
+    """Markdown part metadata.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. The type of dashboard part.Constant filled by server.
+    :type type: str
+    :param inputs: Input to dashboard part.
+    :type inputs: list[object]
+    :param settings: Markdown part settings.
+    :type settings: ~portal.models.MarkdownPartMetadataSettings
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'inputs': {'key': 'inputs', 'type': '[object]'},
+        'settings': {'key': 'settings', 'type': 'MarkdownPartMetadataSettings'},
+    }
+
+    def __init__(
+        self,
+        *,
+        inputs: Optional[List[object]] = None,
+        settings: Optional["MarkdownPartMetadataSettings"] = None,
+        **kwargs
+    ):
+        super(MarkdownPartMetadata, self).__init__(**kwargs)
+        self.type = 'Extension/HubsExtension/PartType/MarkdownPart'  # type: str
+        self.inputs = inputs
+        self.settings = settings
+
+
+class MarkdownPartMetadataSettings(msrest.serialization.Model):
+    """Markdown part settings.
+
+    :param content: The content of markdown part.
+    :type content: ~portal.models.MarkdownPartMetadataSettingsContent
+    """
+
+    _attribute_map = {
+        'content': {'key': 'content', 'type': 'MarkdownPartMetadataSettingsContent'},
+    }
+
+    def __init__(
+        self,
+        *,
+        content: Optional["MarkdownPartMetadataSettingsContent"] = None,
+        **kwargs
+    ):
+        super(MarkdownPartMetadataSettings, self).__init__(**kwargs)
+        self.content = content
+
+
+class MarkdownPartMetadataSettingsContent(msrest.serialization.Model):
+    """The content of markdown part.
+
+    :param settings: The setting of the content of markdown part.
+    :type settings: ~portal.models.MarkdownPartMetadataSettingsContentSettings
+    """
+
+    _attribute_map = {
+        'settings': {'key': 'settings', 'type': 'MarkdownPartMetadataSettingsContentSettings'},
+    }
+
+    def __init__(
+        self,
+        *,
+        settings: Optional["MarkdownPartMetadataSettingsContentSettings"] = None,
+        **kwargs
+    ):
+        super(MarkdownPartMetadataSettingsContent, self).__init__(**kwargs)
+        self.settings = settings
+
+
+class MarkdownPartMetadataSettingsContentSettings(msrest.serialization.Model):
+    """The setting of the content of markdown part.
+
+    :param content: The content of the markdown part.
+    :type content: str
+    :param title: The title of the markdown part.
+    :type title: str
+    :param subtitle: The subtitle of the markdown part.
+    :type subtitle: str
+    :param markdown_source: The source of the content of the markdown part.
+    :type markdown_source: object
+    :param markdown_uri: The uri of markdown content.
+    :type markdown_uri: str
+    """
+
+    _attribute_map = {
+        'content': {'key': 'content', 'type': 'str'},
+        'title': {'key': 'title', 'type': 'str'},
+        'subtitle': {'key': 'subtitle', 'type': 'str'},
+        'markdown_source': {'key': 'markdownSource', 'type': 'object'},
+        'markdown_uri': {'key': 'markdownUri', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        content: Optional[str] = None,
+        title: Optional[str] = None,
+        subtitle: Optional[str] = None,
+        markdown_source: Optional[object] = None,
+        markdown_uri: Optional[str] = None,
+        **kwargs
+    ):
+        super(MarkdownPartMetadataSettingsContentSettings, self).__init__(**kwargs)
+        self.content = content
+        self.title = title
+        self.subtitle = subtitle
+        self.markdown_source = markdown_source
+        self.markdown_uri = markdown_uri
+
+
 class PatchableDashboard(msrest.serialization.Model):
     """The shared dashboard resource definition.
 
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param lenses: The dashboard lenses.
-    :type lenses: dict[str, ~portal.models.DashboardLens]
+    :type lenses: list[~portal.models.DashboardLens]
     :param metadata: The dashboard metadata.
     :type metadata: dict[str, object]
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
-        'lenses': {'key': 'properties.lenses', 'type': '{DashboardLens}'},
+        'lenses': {'key': 'properties.lenses', 'type': '[DashboardLens]'},
         'metadata': {'key': 'properties.metadata', 'type': '{object}'},
     }
 
@@ -346,7 +549,7 @@ class PatchableDashboard(msrest.serialization.Model):
         self,
         *,
         tags: Optional[Dict[str, str]] = None,
-        lenses: Optional[Dict[str, "DashboardLens"]] = None,
+        lenses: Optional[List["DashboardLens"]] = None,
         metadata: Optional[Dict[str, object]] = None,
         **kwargs
     ):
@@ -354,6 +557,40 @@ class PatchableDashboard(msrest.serialization.Model):
         self.tags = tags
         self.lenses = lenses
         self.metadata = metadata
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyResource, self).__init__(**kwargs)
 
 
 class ResourceProviderOperation(msrest.serialization.Model):
