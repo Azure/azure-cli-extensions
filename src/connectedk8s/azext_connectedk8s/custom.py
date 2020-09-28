@@ -6,7 +6,7 @@
 import os
 import json
 import time
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, run, STDOUT
 from base64 import b64encode
 import yaml
 
@@ -107,6 +107,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
+    # Checking if it is an AKS cluster
+    is_aks_cluster = check_aks_cluster(kube_config, kube_context)
+    if is_aks_cluster:
+        logger.warning("The cluster being onboarded is an AKS cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -420,6 +425,37 @@ def generate_request_payload(configuration, location, public_key, tags):
         tags=tags
     )
     return cc
+
+
+def check_aks_cluster(kube_config, kube_context):
+    args = ['kubectl', 'cluster-info']
+    if kube_config:
+        args += ["--kubeconfig", kube_config]
+    if kube_context:
+        args += ["--context", kube_context]
+
+    try:
+        proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        if proc.returncode:
+            telemetry.set_exception(exception='Exception while running kubectl cluster-info', fault_type=consts.Cluster_Info_Not_Found_Type,
+                                    summary='Error while fetching cluster details from kubeconfig using kubectl cluster-info')
+            raise CLIError("Error running kubectl cluster-info." + str(proc.stdout))
+        output_str = proc.stdout.strip()
+        if output_str.startswith("error:"):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Error while checking cluster info', fault_type=consts.Cluster_Info_Not_Found_Type,
+                                    summary='Error while checking cluster info using kubectl cluster-info')
+            raise CLIError(output_str)
+        url_line = output_str.partition('\n')[0]
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Cluster_Info_Not_Found_Type,
+                                summary='Error while fetching cluster details from kubeconfig using kubectl cluster-info')
+        raise CLIError("Error while fetching cluster details from kubeconfig through kubectl." + str(ex))
+
+    if url_line.find(".azmk8s.io:") == -1:
+        return False
+    else:
+        return True
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
