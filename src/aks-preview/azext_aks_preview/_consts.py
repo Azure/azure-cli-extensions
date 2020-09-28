@@ -27,7 +27,6 @@ CONST_INGRESS_APPGW_WATCH_NAMESPACE = "watchNamespace"
 
 # Open Service Mesh configuration keys
 CONST_OPEN_SERVICE_MESH_ADDON_NAME = "openServiceMesh"
-CONST_OPEN_SERVICE_MESH_NAME_KEY = "meshName"
 
 CONST_NODEPOOL_MODE_SYSTEM = "System"
 CONST_NODEPOOL_MODE_USER = "User"
