@@ -445,14 +445,14 @@ def get_kubeconfig_dict(kube_config=None):
         proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
         if proc.returncode:
             telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                    summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+                                    summary='Error while fetching details from kubeconfig using kubectl')
             raise CLIError("Error running kubectl config view." + str(proc.stdout))
         config_doc_str = proc.stdout.strip()
         config_dict = yaml.safe_load(config_doc_str)
     except Exception as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
-        raise CLIError("Error while fetching merged kubeconfig through kubectl." + str(ex))
+                                summary='Error while fetching details from kubeconfig using kubectl')
+        raise CLIError("Error while fetching kubeconfig through kubectl." + str(ex))
 
     return config_dict
 
