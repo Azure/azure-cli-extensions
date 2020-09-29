@@ -38,7 +38,7 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -64,6 +64,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
@@ -223,7 +230,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                          kube_context, no_wait, values_file_provided, values_file)
 
     return put_cc_response
@@ -600,7 +607,7 @@ def get_release_namespace(kube_config, kube_context):
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
@@ -618,6 +625,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
+    if proxy_cert != "":
+        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -702,7 +711,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 # pylint: disable=line-too-long
 
 
-def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
+def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                   kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -721,6 +730,13 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
@@ -817,6 +833,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
                         "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
+    if proxy_cert != "":
+        cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

@@ -43,3 +43,5 @@ Update_Agent_Success = 'Agents for Connected Cluster {} have been updated succes
 Update_Agent_Failure = 'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 Cluster_Info_Not_Found_Type = 'Error while finding current cluster server details'
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
+Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
+Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
