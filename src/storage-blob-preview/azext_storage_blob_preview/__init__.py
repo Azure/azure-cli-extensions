@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
-from .profiles import CUSTOM_DATA_STORAGE_BLOB
+from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
 from ._help import helps  # pylint: disable=unused-import
 
@@ -14,7 +14,8 @@ from ._help import helps  # pylint: disable=unused-import
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2019-12-12')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-02-10')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2019-06-01')
         storage_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.storage.custom#{}')
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_DATA_STORAGE_BLOB,
@@ -107,10 +108,13 @@ class StorageArgumentContext(AzArgumentContext):
                        help='The share name for the source storage account.')
 
     def register_precondition_options(self, prefix=''):
+        from ._validators import (get_datetime_type)
         self.extra('{}if_modified_since'.format(prefix), arg_group='Precondition',
-                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').")
+                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').",
+                   type=get_datetime_type(False))
         self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition',
-                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').")
+                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').",
+                   type=get_datetime_type(False))
         self.extra('{}if_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform the "
                    "operation only if the resource's ETag matches the value specified.")
