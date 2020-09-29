@@ -111,7 +111,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
-        logger.warning("The cluster being onboarded is an AKS cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
