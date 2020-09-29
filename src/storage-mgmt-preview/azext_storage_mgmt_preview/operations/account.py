@@ -30,5 +30,8 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
 
     if enable_smb_multichannel is not None:
         instance.protocol_settings.smb.multichannel.enabled = enable_smb_multichannel
+    # TODO: Remove this part when server is ready
+    elif instance.protocol_settings.smb.multichannel.enabled is False:
+        instance.protocol_settings = None
 
     return instance
