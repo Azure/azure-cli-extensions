@@ -427,32 +427,75 @@ def generate_request_payload(configuration, location, public_key, tags):
     return cc
 
 
-def check_aks_cluster(kube_config, kube_context):
-    args = ['kubectl', 'cluster-info']
+def get_kubeconfig_dict(kube_config=None):
+    # Gets the kubeconfig as per kubectl(after applying all merging rules)
+    args = ['kubectl', 'config', 'view']
     if kube_config:
         args += ["--kubeconfig", kube_config]
-    if kube_context:
-        args += ["--context", kube_context]
 
+    # subprocess run
     try:
         proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
         if proc.returncode:
-            telemetry.set_exception(exception='Exception while running kubectl cluster-info', fault_type=consts.Cluster_Info_Not_Found_Type,
-                                    summary='Error while fetching cluster details from kubeconfig using kubectl cluster-info')
-            raise CLIError("Error running kubectl cluster-info." + str(proc.stdout))
-        output_str = proc.stdout.strip()
-        if output_str.startswith("error:"):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Error while checking cluster info', fault_type=consts.Cluster_Info_Not_Found_Type,
-                                    summary='Error while checking cluster info using kubectl cluster-info')
-            raise CLIError(output_str)
-        url_line = output_str.partition('\n')[0]
+            telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                    summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+            raise CLIError("Error running kubectl config view." + str(proc.stdout))
+        config_doc_str = proc.stdout.strip()
+        config_dict = yaml.safe_load(config_doc_str)
     except Exception as ex:
-        telemetry.set_exception(exception=ex, fault_type=consts.Cluster_Info_Not_Found_Type,
-                                summary='Error while fetching cluster details from kubeconfig using kubectl cluster-info')
-        raise CLIError("Error while fetching cluster details from kubeconfig through kubectl." + str(ex))
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+        raise CLIError("Error while fetching merged kubeconfig through kubectl." + str(ex))
 
-    if url_line.find(".azmk8s.io:") == -1:
+    return config_dict
+
+
+def check_aks_cluster(kube_config, kube_context):
+    try:
+        config_data = get_kubeconfig_dict(kube_config=kube_config)
+    except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                summary='Problem loading the kubeconfig file')
+        raise CLIError("Problem loading the kubeconfig file: " + str(e))
+
+    try:
+        all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
+    except Exception as e:  # pylint: disable=broad-except
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Problem listing kube contexts')
+        logger.warning("Exception while trying to list kube contexts: %s\n", e)
+        raise CLIError("Problem listing kube contexts." + str(e))
+
+    if kube_context is None:
+        # Get name of the cluster from current context as kube_context is none.
+        cluster_name = current_context.get('context').get('cluster')
+        if cluster_name is None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Cluster not found', fault_type=consts.Cluster_Info_Not_Found_Type,
+                                    summary='Cluster is not found in current context')
+            raise CLIError("Cluster not found in currentcontext: " + str(current_context))
+    else:
+        cluster_found = False
+        for context in all_contexts:
+            if context.get('name') == kube_context:
+                cluster_found = True
+                cluster_name = context.get('context').get('cluster')
+                break
+        if not cluster_found or cluster_name is None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Cluster not found', fault_type=consts.Cluster_Info_Not_Found_Type,
+                                    summary='Cluster in not found in kube context')
+            raise CLIError("Cluster not found in kubecontext: " + str(kube_context))
+
+    clusters = config_data.get('clusters')
+    for cluster in clusters:
+        if cluster.get('name') == cluster_name:
+            server_address = cluster.get('cluster').get('server')
+            break
+
+    if server_address.find(".azmk8s.io:") == -1:
         return False
     else:
         return True
