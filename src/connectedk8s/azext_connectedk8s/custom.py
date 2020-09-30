@@ -452,20 +452,13 @@ def check_aks_cluster(kube_config, kube_context):
     try:
         all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
     except Exception as e:  # pylint: disable=broad-except
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                summary='Problem listing kube contexts')
         logger.warning("Exception while trying to list kube contexts: %s\n", e)
-        raise CLIError("Problem listing kube contexts." + str(e))
 
     if kube_context is None:
         # Get name of the cluster from current context as kube_context is none.
         cluster_name = current_context.get('context').get('cluster')
         if cluster_name is None:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Cluster not found', fault_type=consts.Cluster_Info_Not_Found_Type,
-                                    summary='Cluster is not found in current context')
-            raise CLIError("Cluster not found in currentcontext: " + str(current_context))
+            logger.warning("Cluster not found in currentcontext: " + str(current_context))
     else:
         cluster_found = False
         for context in all_contexts:
@@ -474,10 +467,7 @@ def check_aks_cluster(kube_config, kube_context):
                 cluster_name = context.get('context').get('cluster')
                 break
         if not cluster_found or cluster_name is None:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Cluster not found', fault_type=consts.Cluster_Info_Not_Found_Type,
-                                    summary='Cluster in not found in kube context')
-            raise CLIError("Cluster not found in kubecontext: " + str(kube_context))
+            logger.warning("Cluster not found in kubecontext: " + str(kube_context))
 
     clusters = config_data.safe_get('clusters')
     server_address = ""
