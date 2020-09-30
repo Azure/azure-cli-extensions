@@ -55,6 +55,8 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
             c.argument('export_as_snapshot', options_list=['--export-as-snapshot'], action='store_true', default=False,
                        help='Include this switch to export the copies as snapshots instead of images.')
             c.argument('tags', tags_type)
+            c.argument('target_sku', options_list=['--target-sku'], default='Standard_LRS',
+                       help='Target images sku (e.g. Standard_LRS, Premium_LRS).')
 
 
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader

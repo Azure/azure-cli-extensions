@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 def imagecopy(cmd, source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name='image-copy-rg',
               source_type='image', cleanup=False, parallel_degree=-1, tags=None, target_name=None,
-              target_subscription=None, export_as_snapshot='false', timeout=3600):
+              target_subscription=None, export_as_snapshot='false', target_sku='Standard_LRS', timeout=3600):
     if cleanup:
         # If --cleanup is set, forbid using an existing temporary resource group name.
         # It is dangerous to clean up an existing resource group.
@@ -94,13 +94,15 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                        '--location', snapshot_location,
                                        '--resource-group', source_resource_group_name,
                                        '--source', source_os_disk_id,
-                                       '--source-storage-account-id', source_storage_account_id])
+                                       '--source-storage-account-id', source_storage_account_id,
+                                       '--sku', target_sku])
     else:
         cli_cmd = prepare_cli_command(['snapshot', 'create',
                                        '--name', source_os_disk_snapshot_name,
                                        '--location', snapshot_location,
                                        '--resource-group', source_resource_group_name,
-                                       '--source', source_os_disk_id])
+                                       '--source', source_os_disk_id,
+                                       '--sku', target_sku])
 
     run_cli_command(cli_cmd)
 
@@ -153,9 +155,10 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             for location in target_location:
                 location = location.strip()
                 create_target_image(cmd, location, transient_resource_group_name, source_type,
-                                    source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
-                                    source_os_type, target_resource_group_name, azure_pool_frequency,
-                                    tags, target_name, target_subscription, export_as_snapshot, timeout)
+                                    source_object_name, source_os_disk_snapshot_name,
+                                    source_os_disk_snapshot_url, source_os_type, target_resource_group_name,
+                                    azure_pool_frequency, tags, target_name, target_subscription, export_as_snapshot,
+                                    target_sku, timeout)
         else:
             if parallel_degree == -1:
                 pool = Pool(target_locations_count)
@@ -168,7 +171,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                 tasks.append((location, transient_resource_group_name, source_type,
                               source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                               source_os_type, target_resource_group_name, azure_pool_frequency,
-                              tags, target_name, target_subscription, export_as_snapshot, timeout))
+                              tags, target_name, target_subscription, export_as_snapshot, target_sku, timeout))
 
             logger.warning("Starting async process for all locations")
 
