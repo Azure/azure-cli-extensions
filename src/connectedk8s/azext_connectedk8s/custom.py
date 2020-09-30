@@ -440,21 +440,15 @@ def get_kubeconfig_node_dict(kube_config=None):
     try:
         kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
     except Exception as ex:
+        telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Error while fetching details from kubeconfig')
-        raise CLIError("Error while fetching details kubeconfig." + str(ex))
+        raise CLIError("Error while fetching details from kubeconfig." + str(ex))
     return kubeconfig_data
 
 
 def check_aks_cluster(kube_config, kube_context):
-    try:
-        config_data = get_kubeconfig_node_dict(kube_config=kube_config)
-    except Exception as e:
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
-                                summary='Problem loading the kubeconfig file')
-        raise CLIError("Problem loading the kubeconfig file: " + str(e))
-
+    config_data = get_kubeconfig_node_dict(kube_config=kube_config)
     try:
         all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
     except Exception as e:  # pylint: disable=broad-except
@@ -486,6 +480,7 @@ def check_aks_cluster(kube_config, kube_context):
             raise CLIError("Cluster not found in kubecontext: " + str(kube_context))
 
     clusters = config_data.safe_get('clusters')
+    server_address = ""
     for cluster in clusters:
         if cluster.safe_get('name') == cluster_name:
             server_address = cluster.safe_get('cluster').get('server')
