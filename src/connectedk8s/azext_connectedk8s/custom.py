@@ -6,7 +6,7 @@
 import os
 import json
 import time
-from subprocess import Popen, PIPE, run, STDOUT
+from subprocess import Popen, PIPE
 from base64 import b64encode
 import yaml
 
@@ -177,7 +177,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Connected cluster resource already exists')
             raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
@@ -434,32 +434,21 @@ def generate_request_payload(configuration, location, public_key, tags):
     return cc
 
 
-def get_kubeconfig_dict(kube_config=None):
-    # Gets the kubeconfig as per kubectl(after applying all merging rules)
-    args = ['kubectl', 'config', 'view']
-    if kube_config:
-        args += ["--kubeconfig", kube_config]
-
-    # subprocess run
+def get_kubeconfig_node_dict(kube_config=None):
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
     try:
-        proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
-        if proc.returncode:
-            telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                    summary='Error while fetching details from kubeconfig using kubectl')
-            raise CLIError("Error running kubectl config view." + str(proc.stdout))
-        config_doc_str = proc.stdout.strip()
-        config_dict = yaml.safe_load(config_doc_str)
+        kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
     except Exception as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                summary='Error while fetching details from kubeconfig using kubectl')
-        raise CLIError("Error while fetching kubeconfig through kubectl." + str(ex))
-
-    return config_dict
+                                summary='Error while fetching details from kubeconfig')
+        raise CLIError("Error while fetching details kubeconfig." + str(ex))
+    return kubeconfig_data
 
 
 def check_aks_cluster(kube_config, kube_context):
     try:
-        config_data = get_kubeconfig_dict(kube_config=kube_config)
+        config_data = get_kubeconfig_node_dict(kube_config=kube_config)
     except Exception as e:
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
@@ -496,10 +485,10 @@ def check_aks_cluster(kube_config, kube_context):
                                     summary='Cluster in not found in kube context')
             raise CLIError("Cluster not found in kubecontext: " + str(kube_context))
 
-    clusters = config_data.get('clusters')
+    clusters = config_data.safe_get('clusters')
     for cluster in clusters:
-        if cluster.get('name') == cluster_name:
-            server_address = cluster.get('cluster').get('server')
+        if cluster.safe_get('name') == cluster_name:
+            server_address = cluster.safe_get('cluster').get('server')
             break
 
     if server_address.find(".azmk8s.io:") == -1:
