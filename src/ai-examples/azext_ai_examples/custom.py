@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import json
 import re
 import requests
@@ -88,6 +89,10 @@ def call_aladdin_service(query):
     correlation_id = telemetry_core._session.correlation_id   # pylint: disable=protected-access
     subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
 
+    # Used for DDOS protection and rate limiting
+    user_id = telemetry_core._get_user_azure_id()  # pylint: disable=protected-access
+    hashed_user_id = hashlib.sha256(user_id.encode('utf-8')).hexdigest()
+
     context = {
         "versionNumber": version,
     }
@@ -100,7 +105,10 @@ def call_aladdin_service(query):
         context['subscriptionId'] = subscription_id
 
     api_url = 'https://app.aladdin.microsoft.com/api/v1.0/examples'
-    headers = {'Content-Type': 'application/json'}
+    headers = {
+        'Content-Type': 'application/json',
+        'X-UserId': hashed_user_id
+    }
 
     response = requests.get(
         api_url,

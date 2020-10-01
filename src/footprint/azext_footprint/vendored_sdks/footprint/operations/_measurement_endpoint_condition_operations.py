@@ -53,9 +53,10 @@ class MeasurementEndpointConditionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.MeasurementEndpointConditionList"]
-        """Retrieves the information about all measurement endpoint conditions under a Footprint measurement endpoint.
+        """Get all measurement endpoint conditions under a Footprint measurement endpoint.
 
-        Get all measurement endpoint conditions under a Footprint measurement endpoint.
+        Retrieves the information about all measurement endpoint conditions under a Footprint
+        measurement endpoint.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -74,13 +75,17 @@ class MeasurementEndpointConditionOperations(object):
         api_version = "2020-02-01-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_measurement_endpoint.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+                    'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
                     'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -88,15 +93,11 @@ class MeasurementEndpointConditionOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -133,9 +134,10 @@ class MeasurementEndpointConditionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.MeasurementEndpointCondition"
-        """Retrieves the information about a single measurement endpoint condition under a Footprint measurement endpoint.
+        """Get a measurement endpoint condition under a Footprint measurement endpoint resource.
 
-        Get a measurement endpoint condition under a Footprint measurement endpoint resource.
+        Retrieves the information about a single measurement endpoint condition under a Footprint
+        measurement endpoint.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -160,7 +162,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
@@ -174,7 +176,6 @@ class MeasurementEndpointConditionOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -198,15 +199,17 @@ class MeasurementEndpointConditionOperations(object):
         profile_name,  # type: str
         measurement_endpoint_name,  # type: str
         condition_name,  # type: str
+        type,  # type: Union[str, "models.Type"]
         variable,  # type: str
         operator,  # type: Union[str, "models.Operator"]
         constant,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.MeasurementEndpointCondition"
-        """Creates or updates a measurement endpoint condition under a Footprint measurement with the specified properties.
+        """Creates or updates a measurement endpoint condition under a Footprint measurement resource.
 
-        Creates or updates a measurement endpoint condition under a Footprint measurement resource.
+        Creates or updates a measurement endpoint condition under a Footprint measurement with the
+        specified properties.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -216,6 +219,8 @@ class MeasurementEndpointConditionOperations(object):
         :type measurement_endpoint_name: str
         :param condition_name: Name of the Footprint measurement endpoint condition resource.
         :type condition_name: str
+        :param type: The type of a Footprint measurement endpoint condition.
+        :type type: str or ~footprint_monitoring_management_client.models.Type
         :param variable: The variable of a Footprint measurement endpoint condition.
         :type variable: str
         :param operator: The operator of a Footprint measurement endpoint condition.
@@ -231,7 +236,7 @@ class MeasurementEndpointConditionOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.MeasurementEndpointCondition(variable=variable, operator=operator, constant=constant)
+        _parameters = models.MeasurementEndpointCondition(type_properties_type=type, variable=variable, operator=operator, constant=constant)
         api_version = "2020-02-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -240,7 +245,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
@@ -255,7 +260,6 @@ class MeasurementEndpointConditionOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(_parameters, 'MeasurementEndpointCondition')
         body_content_kwargs['content'] = body_content
@@ -269,7 +273,6 @@ class MeasurementEndpointConditionOperations(object):
             error = self._deserialize(models.DefaultErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('MeasurementEndpointCondition', pipeline_response)
 
@@ -291,9 +294,9 @@ class MeasurementEndpointConditionOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Deletes an existing measurement endpoint condition under a Footprint measurement.
+        """Deletes a measurement endpoint condition under a Footprint measurement resource.
 
-        Deletes a measurement endpoint condition under a Footprint measurement resource.
+        Deletes an existing measurement endpoint condition under a Footprint measurement.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -318,7 +321,7 @@ class MeasurementEndpointConditionOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', max_length=64, min_length=3, pattern=r'^[a-zA-Z0-9]'),
             'measurementEndpointName': self._serialize.url("measurement_endpoint_name", measurement_endpoint_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
             'conditionName': self._serialize.url("condition_name", condition_name, 'str', max_length=64, min_length=5, pattern=r'^[a-zA-Z0-9]'),
         }
@@ -331,7 +334,6 @@ class MeasurementEndpointConditionOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response

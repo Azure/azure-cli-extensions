@@ -50,10 +50,10 @@ examples:
 
 helps['hpc-cache update'] = """
 type: command
-short-summary: Create or update a Cache.
+short-summary: Update a Cache.
 examples:
   - name: Caches_Update
-    text: az hpc-cache update --resource-group "scgroup" --name "sc1" --location "eastus" --cache-size-gb "3072" --subnet "/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{virtual_network_name}/subnets/{subnet_name}" --sku-name "Standard_2G"
+    text: az hpc-cache update --resource-group "scgroup" --name "sc1" --tags "key=val"
 """
 
 helps['hpc-cache delete'] = """

@@ -2,6 +2,25 @@
 
 Release History
 ===============
+0.4.63
++++++
+* Enable the September (2020-09-01) for use with the AKS commands
+* Support Start/Stop cluster feature in preview
+* Support ephemeral OS functionality
+* Add new properties to the autoscaler profile: max-empty-bulk-delete, skip-nodes-with-local-storage, skip-nodes-with-system-pods, expander, max-total-unready-percentage, ok-total-unready-count and new-pod-scale-up-delay
+* Fix case sensitive issue for AKS dashboard addon
+* Remove PREVIEW from azure policy addon
+
+0.4.62
++++++
+* Add support for enable/disable confcom (sgx) addon.
+
+0.4.61
++++++
+* Fix AGIC typo and remove preview label from VN #2141
+* Set network profile when using basic load balancer. #2137
+* Fix bug that compare float number with 0 #2213
+
 0.4.60
 +++++
 * Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0

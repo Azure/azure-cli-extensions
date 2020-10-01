@@ -1,0 +1,169 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"policySigningCertificates": {"keys":
+      []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '82'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signer000001/providers/Microsoft.Attestation/attestationProviders/clitestattsigner000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signer000001/providers/Microsoft.Attestation/attestationProviders/clitestattsigner000002","name":"clitestattsigner000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattsigner000002.eus2.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://clitestattsigner000002.eus2.attest.azure.net/
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation signer list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-mgmt-attestation/0.1.0 Python/3.7.5 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signer000001/providers/Microsoft.Attestation/attestationProviders/clitestattsigner000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_att_signer000001/providers/Microsoft.Attestation/attestationProviders/clitestattsigner000002","name":"clitestattsigner000002","type":"Microsoft.Attestation/attestationProviders","location":"eastus2","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://clitestattsigner000002.eus2.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-attestation/0.1.0 Azure-SDK-For-Python
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://clitestattsigner000002.eus2.attest.azure.net/operations/policy/certificates?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '"eyJhbGciOiAiUlMyNTYiLCAiamt1IjogImh0dHBzOi8vY2xpdGVzdGF0dHNpZ25lcnhhazd5dmFoLmV1czIuYXR0ZXN0LmF6dXJlLm5ldC9jZXJ0cyIsICJraWQiOiAiUlRTOUs3SjZlMm9ZdFV4OGh1ZnlQa1R5ZXVVY2g0aVpxL2MxZDZJcFhJVT0iLCAidHlwIjogIkpXVCJ9.eyJhYXMtcG9saWN5Q2VydGlmaWNhdGVzIjogeyJrZXlzIjogW119LCAiZXhwIjogMTU5NzY1Mjg5MCwgImlhdCI6IDE1OTc2NDkyOTAsICJpc3MiOiAiaHR0cHM6Ly9jbGl0ZXN0YXR0c2lnbmVyeGFrN3l2YWguZXVzMi5hdHRlc3QuYXp1cmUubmV0IiwgIm1hYS1wb2xpY3lDZXJ0aWZpY2F0ZXMiOiB7ImtleXMiOiBbXX0sICJuYmYiOiAxNTk3NjQ5MjkwfQ.QCgaNaxa_41xhGw-Blvcjr5tuj1uxS3FNi6yIh3gg4fSMlpDSE9Tl0Dqb50UJsQVRrzgsZNlUevjeOGCDJtp--eA11Jc1IGte7hgah-vApMSOEaWMAu6Sgo1HGcQEVCuO0UrssKrzPQhxALBNcvmNvEWS8ILTiuDveL_9MRnSd07kY12W5qbEpSEfWFpA1KBy7O8n0VusBqpM3FKI9anAXqhbr262KxeLvxVM_ahv_M1Hr_Ij2HCOuubUjrHYTg_dih7Fl8vNEIcF3GVUwLGPsKGM1YxCHrRrseBXjO-mYaMdpvFRpurU_6FRsTdtAk2hLXyGMcFwNt3LtSLLzImfA"'
+    headers:
+      content-length:
+      - '824'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:09 GMT
+      server:
+      - Kestrel
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-attestation/0.1.0 Azure-SDK-For-Python
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://clitestattsigner000002.eus2.attest.azure.net/operations/policy/certificates?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '"eyJhbGciOiAiUlMyNTYiLCAiamt1IjogImh0dHBzOi8vY2xpdGVzdGF0dHNpZ25lcnhhazd5dmFoLmV1czIuYXR0ZXN0LmF6dXJlLm5ldC9jZXJ0cyIsICJraWQiOiAiUlRTOUs3SjZlMm9ZdFV4OGh1ZnlQa1R5ZXVVY2g0aVpxL2MxZDZJcFhJVT0iLCAidHlwIjogIkpXVCJ9.eyJhYXMtcG9saWN5Q2VydGlmaWNhdGVzIjogeyJrZXlzIjogW119LCAiZXhwIjogMTU5NzY1Mjg5MiwgImlhdCI6IDE1OTc2NDkyOTIsICJpc3MiOiAiaHR0cHM6Ly9jbGl0ZXN0YXR0c2lnbmVyeGFrN3l2YWguZXVzMi5hdHRlc3QuYXp1cmUubmV0IiwgIm1hYS1wb2xpY3lDZXJ0aWZpY2F0ZXMiOiB7ImtleXMiOiBbXX0sICJuYmYiOiAxNTk3NjQ5MjkyfQ.I_XcHuM0IuuQ3oNMm8QGNs1zl7XYXYl9tCbwol3IMmp0Y3RwnXo6Qe3L-WxECKDLKdq5IKXqC8PRsX7EP5Wwa6RPoOQ_Veq1ewBErrIAoumtQgeRc04_soZpoC-UFbA8r-idBDWsFuVRSHnDnqlePH2mcAvA8s8IhS2VuVluJszeRleVxCnSXuhjbf8Te6GpDyfDXG8ixiDrPhWMzJp3JII8Lo0HV731KsrmOOMxPdw3BP6tzfr-LkQzfsVidxEEjUCZ5KJpXSLBD8N5UaYepPtPqT8oju5yx0tFBd4YJMcK_uh4jd9o0m0yMfxFMlm2qYJDG6MQsRjVxnY9V85T9A"'
+    headers:
+      content-length:
+      - '824'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Aug 2020 07:28:11 GMT
+      server:
+      - Kestrel
+      x-ms-maa-service-version:
+      - 1.10.01287.0001
+    status:
+      code: 200
+      message: OK
+version: 1
