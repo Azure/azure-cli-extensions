@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 from ._configuration_async import SubscriptionClientConfiguration
 from .operations_async import SubscriptionOperations
 from .operations_async import TenantOperations
+from .operations_async import SubscriptionOperations
 from .operations_async import OperationOperations
 from .operations_async import AliasOperations
 from .. import models
@@ -30,6 +31,8 @@ class SubscriptionClient(object):
     :vartype subscription: subscription_client.aio.operations_async.SubscriptionOperations
     :ivar tenant: TenantOperations operations
     :vartype tenant: subscription_client.aio.operations_async.TenantOperations
+    :ivar subscription: SubscriptionOperations operations
+    :vartype subscription: subscription_client.aio.operations_async.SubscriptionOperations
     :ivar operation: OperationOperations operations
     :vartype operation: subscription_client.aio.operations_async.OperationOperations
     :ivar alias: AliasOperations operations
@@ -58,6 +61,8 @@ class SubscriptionClient(object):
         self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.tenant = TenantOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.operation = OperationOperations(
             self._client, self._config, self._serialize, self._deserialize)
