@@ -58,5 +58,6 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
+    scripts=['azext_appservice_kube/getfunctionsjson.sh'],
     package_data={'azext_appservice_kube': ['azext_metadata.json']},
 )

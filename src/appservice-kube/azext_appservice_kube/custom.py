@@ -1749,7 +1749,10 @@ def retrieve_update_function_triggers(container_image_name,
 
     #copy the getfunctionsjson.sh in the function image container
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    get_function_sh_script_file_path = os.path.join(dir_path, "getfunctionsjson.sh")    
+    get_function_sh_script_file_path = os.path.join(dir_path, "getfunctionsjson.sh")
+    if os.path.exists(get_function_sh_script_file_path) == False:
+        get_function_sh_script_file_path = os.path.join(dir_path, "..", "bin", "getfunctionsjson.sh")
+    
     try:
         tmp_dir = tempfile.mkdtemp()
         temp_filename = "getfunctionsjson.sh"
