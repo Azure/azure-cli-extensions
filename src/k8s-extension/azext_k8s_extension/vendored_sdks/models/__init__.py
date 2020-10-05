@@ -23,6 +23,7 @@ try:
     from ._models_py3 import Scope
     from ._models_py3 import ScopeCluster
     from ._models_py3 import ScopeNamespace
+    from ._models_py3 import ConfigurationIdentity
 except (SyntaxError, ImportError):
     from ._models import ErrorDefinition
     from ._models import ErrorResponse, ErrorResponseException
@@ -37,6 +38,7 @@ except (SyntaxError, ImportError):
     from ._models import Scope
     from ._models import ScopeCluster
     from ._models import ScopeNamespace
+    from ._models import ConfigurationIdentity
 from ._paged_models import ExtensionInstanceForListPaged
 from ._k8s_extension_client_enums import (
     MessageLevelType,
@@ -51,6 +53,7 @@ __all__ = [
     'ExtensionInstance',
     'ExtensionInstanceForCreate',
     'ExtensionInstanceForList',
+    'ConfigurationIdentity',
     'ExtensionInstanceUpdate',
     'ExtensionStatus',
     'ProxyResource',

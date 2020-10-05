@@ -20,6 +20,43 @@ class CloudError(Model):
     _attribute_map = {
     }
 
+class ConfigurationIdentity(Model):
+    """Identity for the managed cluster.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The principal id of the system assigned identity which
+     is used by the configuration.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant id of the system assigned identity which is
+     used by the configuration.
+    :vartype tenant_id: str
+    :param type: The type of identity used for the configuration. Type
+     'SystemAssigned' will use an implicitly created identity. Type 'None' will
+     not use Managed Identity for the configuration. Possible values include:
+     'SystemAssigned', 'None'
+    :type type: str or
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceIdentityType
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'ResourceIdentityType'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ConfigurationIdentity, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = kwargs.get('type', None)
+
 
 class ErrorDefinition(Model):
     """Error definition.
@@ -282,6 +319,7 @@ class ExtensionInstanceForCreate(ProxyResource):
     :param identity: The identity of the configuration.
     :type identity:
      ~azure.mgmt.kubernetesconfiguration.models.ConfigurationIdentity
+    :type location: str
     """
 
     _validation = {
@@ -302,6 +340,7 @@ class ExtensionInstanceForCreate(ProxyResource):
         'configuration_settings': {'key': 'properties.configurationSettings', 'type': '{str}'},
         'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': '{str}'},
         'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
+        'location': {'key': 'location', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -314,6 +353,7 @@ class ExtensionInstanceForCreate(ProxyResource):
         self.configuration_settings = kwargs.get('configuration_settings', None)
         self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.identity = kwargs.get('identity', None)
+        self.location = kwargs.get('location', None)
 
 
 class ExtensionInstanceForList(ProxyResource):
