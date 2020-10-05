@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.4
+++++++
+* Fix for including getfunctionsjson.sh in the extension package
+
 0.1.3
 ++++++
 * Add bring your own AKS cluster support
