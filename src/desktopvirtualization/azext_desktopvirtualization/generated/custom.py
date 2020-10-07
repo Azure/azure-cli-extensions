@@ -8,7 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
 
 
 def desktopvirtualization_workspace_list(client,
@@ -66,11 +65,11 @@ def desktopvirtualization_workspace_delete(client,
 
 def desktopvirtualization_applicationgroup_list(client,
                                                 resource_group_name=None,
-                                                filter=None):
+                                                filter_=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
-                                             filter=filter)
-    return client.list_by_subscription(filter=filter)
+                                             filter=filter_)
+    return client.list_by_subscription(filter=filter_)
 
 
 def desktopvirtualization_applicationgroup_show(client,
@@ -138,11 +137,12 @@ def desktopvirtualization_hostpool_create(client,
                                           host_pool_name,
                                           location,
                                           host_pool_type,
-                                          personal_desktop_assignment_type,
                                           load_balancer_type,
+                                          preferred_app_group_type,
                                           tags=None,
                                           friendly_name=None,
                                           description=None,
+                                          personal_desktop_assignment_type=None,
                                           custom_rdp_property=None,
                                           max_session_limit=None,
                                           ring=None,
@@ -165,7 +165,8 @@ def desktopvirtualization_hostpool_create(client,
                                    validation_environment=validation_environment,
                                    registration_info=registration_info,
                                    vm_template=vm_template,
-                                   sso_context=sso_context)
+                                   sso_context=sso_context,
+                                   preferred_app_group_type=preferred_app_group_type)
 
 
 def desktopvirtualization_hostpool_update(client,
@@ -181,7 +182,9 @@ def desktopvirtualization_hostpool_update(client,
                                           ring=None,
                                           validation_environment=None,
                                           registration_info=None,
-                                          sso_context=None):
+                                          vm_template=None,
+                                          sso_context=None,
+                                          preferred_app_group_type=None):
     return client.update(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
                          tags=tags,
@@ -194,7 +197,9 @@ def desktopvirtualization_hostpool_update(client,
                          ring=ring,
                          validation_environment=validation_environment,
                          registration_info=registration_info,
-                         sso_context=sso_context)
+                         vm_template=vm_template,
+                         sso_context=sso_context,
+                         preferred_app_group_type=preferred_app_group_type)
 
 
 def desktopvirtualization_hostpool_delete(client,
