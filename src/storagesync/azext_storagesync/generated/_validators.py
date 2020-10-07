@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -8,26 +7,3 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-from enum import Enum
-
-
-class Reason(str, Enum):
-
-    registered = "Registered"
-    unregistered = "Unregistered"
-    warned = "Warned"
-    suspended = "Suspended"
-    deleted = "Deleted"
-
-
-class ChangeDetectionMode(str, Enum):
-
-    default = "Default"
-    recursive = "Recursive"
-
-
-class NameAvailabilityReason(str, Enum):
-
-    invalid = "Invalid"
-    already_exists = "AlreadyExists"
