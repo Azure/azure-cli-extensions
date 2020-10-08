@@ -6,6 +6,7 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
                                api_version_constraint)
 from .storage_test_util import StorageScenarioMixin
 from ...profiles import CUSTOM_MGMT_STORAGE
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
@@ -14,7 +15,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='southcentralus')
     def test_create_storage_account_with_assigned_identity(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
-        cmd = 'az storage account create -n {} -g {} --sku Standard_LRS --assign-identity'.format(name, resource_group)
+        cmd = 'az storage account create -n {} -g {} --sku Standard_LRS --assign-identity --https-only'.format(name, resource_group)
         result = self.cmd(cmd).get_output_in_json()
 
         self.assertIn('identity', result)
@@ -25,7 +26,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='southcentralus')
     def test_update_storage_account_with_assigned_identity(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
-        create_cmd = 'az storage account create -n {} -g {} --sku Standard_LRS'.format(name, resource_group)
+        create_cmd = 'az storage account create -n {} -g {} --sku Standard_LRS --https-only '.format(name, resource_group)
         self.cmd(create_cmd, checks=[JMESPathCheck('identity', None)])
 
         update_cmd = 'az storage account update -n {} -g {} --assign-identity'.format(name, resource_group)
@@ -35,11 +36,12 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertTrue(result['identity']['principalId'])
         self.assertTrue(result['identity']['tenantId'])
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_create_storage_account(self, resource_group, location):
         name = self.create_random_name(prefix='cli', length=24)
 
-        self.cmd('az storage account create -n {} -g {} --sku {} -l {}'.format(
+        self.cmd('az storage account create -n {} -g {} --sku {} -l {} --https-only'.format(
             name, resource_group, 'Standard_LRS', location))
 
         self.cmd('storage account check-name --name {}'.format(name), checks=[
@@ -89,7 +91,8 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             'loc': location
         })
 
-        self.cmd('storage account create -n {name} -g {rg} -l {loc} --kind StorageV2 --hierarchical-namespace',
+        self.cmd('storage account create -n {name} -g {rg} -l {loc} --kind StorageV2 --hierarchical-namespace '
+                 '--https-only ',
                  checks=[JMESPathCheck('kind', 'StorageV2'),
                          JMESPathCheck('isHnsEnabled', True)])
 
@@ -106,7 +109,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             'sku': 'Premium_LRS'
         })
 
-        self.cmd('storage account create -n {name1} -g {rg} --kind BlockBlobStorage --sku {sku}',
+        self.cmd('storage account create -n {name1} -g {rg} --kind BlockBlobStorage --sku {sku} --https-only',
                  checks=[JMESPathCheck('kind', 'BlockBlobStorage'),
                          JMESPathCheck('sku.name', 'Premium_LRS')])
 
@@ -115,7 +118,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('reason', 'AlreadyExists')
         ])
 
-        self.cmd('storage account create -n {name2} -g {rg} --kind FileStorage --sku {sku}', checks=[
+        self.cmd('storage account create -n {name2} -g {rg} --kind FileStorage --sku {sku} --https-only ', checks=[
             JMESPathCheck('kind', 'FileStorage'),
             JMESPathCheck('sku.name', 'Premium_LRS')])
 
@@ -128,7 +131,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='southcentralus')
     def test_storage_create_default_sku(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
-        create_cmd = 'az storage account create -n {} -g {}'.format(name, resource_group)
+        create_cmd = 'az storage account create -n {} -g {} --https-only '.format(name, resource_group)
         self.cmd(create_cmd, checks=[JMESPathCheck('sku.name', 'Standard_RAGRS')])
 
     def test_show_usage(self):
@@ -144,7 +147,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         storage_account = self.create_random_name(prefix='cli', length=24)
 
         self.kwargs = {'rg': resource_group, 'sa': storage_account, 'policy': policy_file}
-        self.cmd('storage account create -g {rg} -n {sa} --kind StorageV2')
+        self.cmd('storage account create -g {rg} -n {sa} --kind StorageV2 --https-only ')
         self.cmd('storage account management-policy create --account-name {sa} -g {rg} --policy @"{policy}"')
         self.cmd('storage account management-policy update --account-name {sa} -g {rg}'
                  ' --set "policy.rules[0].name=newname"')

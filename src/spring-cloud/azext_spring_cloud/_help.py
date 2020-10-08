@@ -21,6 +21,10 @@ helps['spring-cloud create'] = """
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
     - name: Create a new Azure Spring Cloud with distributed tracing disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-distributed-tracing
+    - name: Create a new Azure Spring Cloud with VNet-inected via giving VNet name in current resource group
+      text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
+    - name: Create a new Azure Spring Cloud with VNet-inected via giving subnets resource ID
+      text: az spring-cloud create -n MyService -g MyResourceGroup --app-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app --service-runtime-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc --reserved-cidr-range 10.0.0.0/16,10.1.0.0/16,10.2.0.1/16
 """
 
 helps['spring-cloud update'] = """
@@ -235,7 +239,7 @@ helps['spring-cloud app deployment delete'] = """
 
 helps['spring-cloud app deployment create'] = """
     type: command
-    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use az spring-cloud app deploy/update --deployment <staging deployment>.
+    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use `az spring-cloud app deploy/update --deployment <staging deployment>`.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup

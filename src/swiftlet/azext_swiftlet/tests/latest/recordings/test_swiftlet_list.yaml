@@ -1,0 +1,126 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm list-bundle
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/swiftletBundles?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"swiftletBundleSku":"Linux_7","supportedImagePlatform":"Linux","memorySizeGB":32.0,"vcpus":8,"osDiskSizeGB":1024,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":7},{"swiftletBundleSku":"Linux_6","supportedImagePlatform":"Linux","memorySizeGB":16.0,"vcpus":4,"osDiskSizeGB":512,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":6},{"swiftletBundleSku":"Linux_5","supportedImagePlatform":"Linux","memorySizeGB":8.0,"vcpus":2,"osDiskSizeGB":256,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":5},{"swiftletBundleSku":"Linux_4","supportedImagePlatform":"Linux","memorySizeGB":4.0,"vcpus":2,"osDiskSizeGB":128,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":4},{"swiftletBundleSku":"Linux_3","supportedImagePlatform":"Linux","memorySizeGB":2.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":3},{"swiftletBundleSku":"Linux_2","supportedImagePlatform":"Linux","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":2},{"swiftletBundleSku":"Linux_1","supportedImagePlatform":"Linux","memorySizeGB":0.5,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},{"swiftletBundleSku":"Windows_2","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":2},{"swiftletBundleSku":"Windows_3","supportedImagePlatform":"Windows","memorySizeGB":2.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":3},{"swiftletBundleSku":"Windows_4","supportedImagePlatform":"Windows","memorySizeGB":4.0,"vcpus":2,"osDiskSizeGB":128,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":4},{"swiftletBundleSku":"Windows_5","supportedImagePlatform":"Windows","memorySizeGB":8.0,"vcpus":2,"osDiskSizeGB":256,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":5},{"swiftletBundleSku":"Windows_6","supportedImagePlatform":"Windows","memorySizeGB":16.0,"vcpus":4,"osDiskSizeGB":512,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":6},{"swiftletBundleSku":"Windows_7","supportedImagePlatform":"Windows","memorySizeGB":32.0,"vcpus":8,"osDiskSizeGB":1024,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":7}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2461'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 04:49:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm list-image
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/swiftletImages?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"swiftletImageId":"mongodb-4.2.6-0-debian-9-bitnami","appName":"MongoDB","appVersion":"4.2.6-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MongoDB
+        4.2.6-0 (Debian 9)","legalTermsUri":"https://catalogartifact.azureedge.net/publicartifacts/bitnami.mongodb-608c99aa-467a-44fa-9095-500c2487dec9/termsOfUse.html"},{"swiftletImageId":"windows-2016-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2016","displayPublisher":"Microsoft","summary":"A comprehensive
+        server operating system designed to run the applications and infrastructure
+        that power your business.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},{"swiftletImageId":"gitlab-ce-12.10.2-0-ubuntu-16.04-bitnami","appName":"GitLab
+        CE","appVersion":"12.10.2-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"GitLab CE 12.10.2-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4w7Md"},{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},{"swiftletImageId":"nodejs-12.16.3-4-r01-debian-9-bitnami","appName":"Node.js","appVersion":"12.16.3-4-r01","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Node.js
+        12.16.3-4-r01 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wvf4"},{"swiftletImageId":"wordpress-5.4.1-0-ubuntu-16.04-bitnami","appName":"Wordpress","appVersion":"5.4.1-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"WordPress 5.4.1-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4vRXb"},{"swiftletImageId":"ubuntu-18.04-lts","platform":"Linux","osName":"Ubuntu","osVersion":"18.04
+        LTS","displayPublisher":"Canonical","summary":"Ubuntu Server delivers high
+        value scale-out performance.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Canonical.UbuntuServer1804LTS.1.0.30/Content/LegalTerms0.DEFAULT.txt"},{"swiftletImageId":"mysql-8.0.20-0-r01-debian-9-bitnami","appName":"MySQL","appVersion":"8.0.20-0-r01","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MySQL
+        8.0.20-0-r01 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wo08"},{"swiftletImageId":"redis-6.0.3-0-debian-9-bitnami","appName":"Redis","appVersion":"6.0.3-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Redis
+        6.0.3-0 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wyEN"},{"swiftletImageId":"mean-4.2.6-14-r03-debian-9-bitnami","appName":"MEAN","appVersion":"4.2.6-14-r03","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MEAN
+        4.2.6-14-r03 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wAow"},{"swiftletImageId":"debian-10-stable","platform":"Linux","osName":"Debian","osVersion":"10","displayPublisher":"Debian","summary":"Debian:
+        The universal operating system","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/debian.debian-1010.1.0.11/Content/LegalTerms0.DEFAULT.txt"},{"swiftletImageId":"ubuntu-20.04-lts","platform":"Linux","osName":"Ubuntu","osVersion":"20.04
+        LTS","displayPublisher":"Canonical","summary":"Ubuntu Server delivers high
+        value scale-out performance.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/canonical.0001-com-ubuntu-server-focal20_04-lts.1.0.2/Content/LegalTerms0.DEFAULT.txt"},{"swiftletImageId":"lamp-7.3.18-0-ubuntu-16.04-bitnami","appName":"LAMP","appVersion":"7.3.18-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"LAMP 7.3.18-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wBa2"},{"swiftletImageId":"jenkins-2.204.4-0-debian-9-bitnami","appName":"Jenkins","appVersion":"2.204.4-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Jenkins
+        2.204.4-0 (Debian 9)","legalTermsUri":"https://catalogartifact.azureedge.net/publicartifacts/bitnami.jenkins-a26eec93-bf72-4929-8994-20b345626165/termsOfUse.html"},{"swiftletImageId":"nginx-open-source-1.18.0-1-ubuntu-16.04-bitnami","appName":"NGINX
+        Open Source","appVersion":"1.18.0-1","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"NGINX Open Source 1.18.0-2 (Ubuntu
+        16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wHBC"},{"swiftletImageId":"ruby-2.5.8-2-ubuntu-16.04-bitnami","appName":"Ruby","appVersion":"2.5.8-2","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"Ruby 2.5.8-2 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4woWG"},{"swiftletImageId":"ghost-3.16.0-0-ubuntu-16.04-bitnami","appName":"Ghost","appVersion":"3.16.0-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"Ghost 3.16.0-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wHLN"},{"swiftletImageId":"postgresql-12.3.0-0-debian-9-bitnami","appName":"PostgreSQL","appVersion":"12.3.0-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"PostgreSQL
+        12.3.0-0 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4woW7"},{"swiftletImageId":"debian-9-stable","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Debian","summary":"Debian
+        GNU/Linux is one of the most popular Linux distributions.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/credativ.Debian8.1.0.27/Content/LegalTerms0.DEFAULT.txt"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6794'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 04:49:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -8,11 +8,11 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from . import _non_arm_apis as cs_api
 from . import _config as cs_config
-from .vendored_sdks.vsonline.models import (
-    VSOnlinePlan,
-    VSOnlinePlanProperties,
+from .vendored_sdks.codespaces.models import (
+    CodespacesPlan,
+    CodespacesPlanProperties,
     VnetProperties,
-    VSOPlanUpdateParametersProperties)
+    CodespacesPlanUpdateParametersProperties)
 
 logger = get_logger(__name__)
 
@@ -44,30 +44,13 @@ def create_plan(cmd,
                 subnet_id=None,
                 default_sku_name=None,
                 default_autoshutdown_delay=None):
-    import jwt  # pylint: disable=import-error
-    from azure.cli.core._profile import Profile
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    creds, _, __ = profile.get_raw_token()
-    tokenType = creds[0]
-    accessToken = creds[1]
-    if tokenType != "Bearer":
-        logger.debug("Got unexpected token type: %s", tokenType)
-        raise CLIError("Unable to create plan. Use --debug for details.")
-    decoded_token = jwt.decode(accessToken, verify=False, algorithms=['RS256'])
-    tid = decoded_token.get('tid')
-    oid = decoded_token.get('oid')
-    if not tid or not oid:
-        logger.debug("Unable to determine 'tid' and 'oid' from token claims: %s", decoded_token)
-        raise CLIError("Unable to create plan. Use --debug for details.")
-    user_id = f"{tid}_{oid}"
     vnet_props = VnetProperties(subnet_id=subnet_id) if subnet_id else None
-    plan_props = VSOnlinePlanProperties(
-        user_id=user_id,
+    plan_props = CodespacesPlanProperties(
         default_auto_suspend_delay_minutes=default_autoshutdown_delay,
-        default_environment_sku=default_sku_name,
+        default_codespace_sku=default_sku_name,
         vnet_properties=vnet_props)
-    vsonline_plan = VSOnlinePlan(location=location, properties=plan_props, tags=tags)
-    return client.create(resource_group_name, plan_name, vsonline_plan)
+    codespaces_plan = CodespacesPlan(location=location, properties=plan_props, tags=tags)
+    return client.create(resource_group_name, plan_name, codespaces_plan)
 
 
 def update_plan(cmd,
@@ -76,12 +59,12 @@ def update_plan(cmd,
                 resource_group_name=None,
                 default_sku_name=None,
                 default_autoshutdown_delay=None):
-    vsonline_plan_update_parameters = VSOPlanUpdateParametersProperties(
+    codespaces_plan_update_parameters = CodespacesPlanUpdateParametersProperties(
         default_auto_suspend_delay_minutes=default_autoshutdown_delay,
-        default_environment_sku=default_sku_name)
+        default_codespace_sku=default_sku_name)
     return client.update(resource_group_name,
                          plan_name,
-                         vsonline_plan_update_parameters)
+                         codespaces_plan_update_parameters)
 
 
 def list_available_locations(cmd):
@@ -95,9 +78,9 @@ def get_location_details(cmd, location_name):
 def list_codespaces(cmd, client, plan_name, resource_group_name=None, list_all=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
     if list_all:
-        token = client.read_all_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+        token = client.read_all_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     else:
-        token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+        token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     return cs_api.list_codespaces(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
 
 
@@ -115,10 +98,10 @@ def create_codespace(cmd,
                      dotfiles_path=None,
                      dotfiles_command=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     # Use plan defaults if needed and available
     missing_args = []
-    sku_name = sku_name or plan.properties.default_environment_sku
+    sku_name = sku_name or plan.properties.default_codespace_sku
     if not sku_name:
         logger.warning("No default instance type specified for plan and no instance type specified in command.")
         missing_args.append("--instance-type")
@@ -155,7 +138,7 @@ def create_codespace(cmd,
 
 
 def get_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -163,7 +146,7 @@ def get_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id
 
 
 def delete_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -171,7 +154,7 @@ def delete_codespace(cmd, client, plan_name, resource_group_name=None, codespace
 
 
 def resume_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -179,7 +162,7 @@ def resume_codespace(cmd, client, plan_name, resource_group_name=None, codespace
 
 
 def suspend_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None, codespace_name=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -194,7 +177,7 @@ def update_codespace(cmd,
                      codespace_name=None,
                      sku_name=None,
                      autoshutdown_delay=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -212,7 +195,7 @@ def update_codespace(cmd,
 
 def open_codespace(cmd, client, plan_name, resource_group_name=None, codespace_id=None,
                    codespace_name=None, do_not_prompt=None):
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     if codespace_name:
         codespace_id = _determine_codespace_id(
             client, resource_group_name, plan_name, token, codespace_name, cli_ctx=cmd.cli_ctx)
@@ -244,7 +227,7 @@ def show_config(cmd):
 
 def list_plan_secrets(cmd, client, plan_name, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     return cs_api.list_secrets(token.access_token, plan.id, cli_ctx=cmd.cli_ctx)
 
 
@@ -252,7 +235,7 @@ def update_plan_secrets(cmd, client, plan_name, secret_id,
                         secret_name=None, secret_value=None, secret_note=None,
                         secret_filters=None, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     data = {}
     data['secretName'] = secret_name
     data['value'] = secret_value
@@ -266,7 +249,7 @@ def create_plan_secret(cmd, client, plan_name,
                        secret_name, secret_value, secret_note=None,
                        secret_filters=None, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     data = {}
     data['secretName'] = secret_name
     data['value'] = secret_value
@@ -279,5 +262,5 @@ def create_plan_secret(cmd, client, plan_name,
 
 def delete_plan_secret(cmd, client, plan_name, secret_id, resource_group_name=None):
     plan = client.get(resource_group_name=resource_group_name, plan_name=plan_name)
-    token = client.write_environments_action(resource_group_name=resource_group_name, plan_name=plan_name)
+    token = client.write_codespaces_action(resource_group_name=resource_group_name, plan_name=plan_name)
     cs_api.delete_secret(token.access_token, plan.id, secret_id, cs_api.SecretScope.USER.value, cli_ctx=cmd.cli_ctx)

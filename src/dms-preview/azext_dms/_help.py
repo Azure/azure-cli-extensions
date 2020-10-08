@@ -189,7 +189,13 @@ helps['dms project task create'] = """
                       "targetSetting": {
                           "setting1": "value1",
                           ...n
-                      }
+                      },
+                      // Applies only for PostgreSQL
+                      // List tables that you want included in the migration.
+                      "selectedTables": [
+                          "schemaName1.tableName1",
+                          ...n
+                      ]
                   },
                   ...n
               ]

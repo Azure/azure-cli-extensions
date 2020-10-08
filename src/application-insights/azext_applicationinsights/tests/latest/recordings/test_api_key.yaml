@@ -1,8 +1,7 @@
 interactions:
 - request:
     body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
-      "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
-      90}}'
+      "web", "Flow_Type": "Bluefield", "Request_Source": "rest"}}'
     headers:
       Accept:
       - application/json
@@ -13,32 +12,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '155'
+      - '132'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --app --location --kind -g --application-type
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2018-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"0800841c-0000-0700-0000-5ea2593e0000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"5a7cdf10-6b7e-4f29-b41e-545309ec2a09","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"fa2f0e5b-bf95-42fa-8e90-ba1ea72adb40","ConnectionString":"InstrumentationKey=fa2f0e5b-bf95-42fa-8e90-ba1ea72adb40","Name":"demoApp","CreationDate":"2020-04-24T03:13:02.8547884+00:00","TenantId":"114f01e8-de03-454a-ab74-723456e241cb","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"Retention":"P90D","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"130044c6-0000-0700-0000-5f3a403b0000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"47e201e9-e506-4a58-b0fb-a2452abc1bcb","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"8d4cf765-5729-4982-927a-7f9ced36511f","ConnectionString":"InstrumentationKey=8d4cf765-5729-4982-927a-7f9ced36511f","Name":"demoApp","CreationDate":"2020-08-17T08:30:51.750321+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":90,"IngestionMode":"ApplicationInsights","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
     headers:
       access-control-expose-headers:
       - Request-Context
       cache-control:
       - no-cache
       content-length:
-      - '957'
+      - '975'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:05 GMT
+      - Mon, 17 Aug 2020 08:30:54 GMT
       expires:
       - '-1'
       pragma:
@@ -56,16 +55,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: 'b''{"name": "demoKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
+    body: '{"name": "demoKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],
-      "linkedWriteProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"]}'''
+      "linkedWriteProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"]}'
     headers:
       Accept:
       - application/json
@@ -82,16 +81,16 @@ interactions:
       ParameterSetName:
       - --app -g --api-key
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/33d84fd7-1aa2-4626-8f54-07a2a7f625c3","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"apiKey":"hr0zj8fh1noyasqjf65j5jv8g2qnx7bdbb4t4rnm","createdDate":"Fri,
-        24 Apr 2020 03:13:08 GMT","integrationType":null,"integrationProperty":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/8645ddf9-e5d9-4e41-a99e-ebd61a51b016","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"apiKey":"glgr7ugsmynb03pczqcnqkp6qxkv28sz0krc1f2z","createdDate":"Mon,
+        17 Aug 2020 08:30:56 GMT","integrationType":null,"integrationProperty":null}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -102,7 +101,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:07 GMT
+      - Mon, 17 Aug 2020 08:30:56 GMT
       expires:
       - '-1'
       pragma:
@@ -138,16 +137,16 @@ interactions:
       ParameterSetName:
       - --app -g --api-key
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/33d84fd7-1aa2-4626-8f54-07a2a7f625c3","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:08 GMT","integrationType":null,"integrationProperty":null}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/8645ddf9-e5d9-4e41-a99e-ebd61a51b016","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:56 GMT","integrationType":null,"integrationProperty":null}]}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -158,7 +157,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:10 GMT
+      - Mon, 17 Aug 2020 08:30:57 GMT
       expires:
       - '-1'
       pragma:
@@ -179,9 +178,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''{"name": "otherKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
+    body: '{"name": "otherKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],
-      "linkedWriteProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"]}'''
+      "linkedWriteProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"]}'
     headers:
       Accept:
       - application/json
@@ -198,16 +197,16 @@ interactions:
       ParameterSetName:
       - --app -g --api-key
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/49870748-bf6a-4841-86de-09bf586c709d","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"apiKey":"wcffbrl38wmkgq4lp2mfrkb6aki76t8hmz6gcz0f","createdDate":"Fri,
-        24 Apr 2020 03:13:13 GMT","integrationType":null,"integrationProperty":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/dcc5199f-db63-414c-8fc9-f605dbfc305f","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"apiKey":"5ypd8eu7q2xtocjgy32axtbzfwqjhscbmo8hg4ny","createdDate":"Mon,
+        17 Aug 2020 08:30:59 GMT","integrationType":null,"integrationProperty":null}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -218,7 +217,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:12 GMT
+      - Mon, 17 Aug 2020 08:30:59 GMT
       expires:
       - '-1'
       pragma:
@@ -241,9 +240,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''{"name": "emptyKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
+    body: '{"name": "emptyKey", "linkedReadProperties": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api",
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],
-      "linkedWriteProperties": []}'''
+      "linkedWriteProperties": []}'
     headers:
       Accept:
       - application/json
@@ -260,16 +259,16 @@ interactions:
       ParameterSetName:
       - --app -g --api-key --write-properties
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/0101d573-96ad-49bd-b8bb-bfc810a6a7f8","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"apiKey":"lrdm01sidli8s1c22vj87vhz5wdew70x0kcxpnm7","createdDate":"Fri,
-        24 Apr 2020 03:13:16 GMT","integrationType":null,"integrationProperty":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/f24450d7-0293-4751-a3d8-a8117a8822bd","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"apiKey":"1yvi8evvhcpmnhdjrns4tzh210ogakkh7pxz4foj","createdDate":"Mon,
+        17 Aug 2020 08:31:00 GMT","integrationType":null,"integrationProperty":null}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -280,7 +279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:16 GMT
+      - Mon, 17 Aug 2020 08:31:00 GMT
       expires:
       - '-1'
       pragma:
@@ -298,7 +297,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -316,18 +315,18 @@ interactions:
       ParameterSetName:
       - --app -g
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/0101d573-96ad-49bd-b8bb-bfc810a6a7f8","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"createdDate":"Fri,
-        24 Apr 2020 03:13:16 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/49870748-bf6a-4841-86de-09bf586c709d","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:13 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/33d84fd7-1aa2-4626-8f54-07a2a7f625c3","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:08 GMT","integrationType":null,"integrationProperty":null}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/8645ddf9-e5d9-4e41-a99e-ebd61a51b016","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:56 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/f24450d7-0293-4751-a3d8-a8117a8822bd","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"createdDate":"Mon,
+        17 Aug 2020 08:31:00 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/dcc5199f-db63-414c-8fc9-f605dbfc305f","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:59 GMT","integrationType":null,"integrationProperty":null}]}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -338,7 +337,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:18 GMT
+      - Mon, 17 Aug 2020 08:31:01 GMT
       expires:
       - '-1'
       pragma:
@@ -372,18 +371,18 @@ interactions:
       ParameterSetName:
       - --app -g --api-key
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/ApiKeys?api-version=2015-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/0101d573-96ad-49bd-b8bb-bfc810a6a7f8","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"createdDate":"Fri,
-        24 Apr 2020 03:13:16 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/49870748-bf6a-4841-86de-09bf586c709d","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:13 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/33d84fd7-1aa2-4626-8f54-07a2a7f625c3","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:08 GMT","integrationType":null,"integrationProperty":null}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/8645ddf9-e5d9-4e41-a99e-ebd61a51b016","name":"demoKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:56 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/f24450d7-0293-4751-a3d8-a8117a8822bd","name":"emptyKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":[],"createdDate":"Mon,
+        17 Aug 2020 08:31:00 GMT","integrationType":null,"integrationProperty":null},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/dcc5199f-db63-414c-8fc9-f605dbfc305f","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:59 GMT","integrationType":null,"integrationProperty":null}]}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -394,7 +393,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:20 GMT
+      - Mon, 17 Aug 2020 08:31:02 GMT
       expires:
       - '-1'
       pragma:
@@ -430,16 +429,16 @@ interactions:
       ParameterSetName:
       - --app -g --api-key
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.3
-        azure-mgmt-applicationinsights/0.2.0 Azure-SDK-For-Python AZURECLI/2.4.0
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-applicationinsights/0.2.0
+        Azure-SDK-For-Python AZURECLI/2.10.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/APIKeys/49870748-bf6a-4841-86de-09bf586c709d?api-version=2015-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp/APIKeys/dcc5199f-db63-414c-8fc9-f605dbfc305f?api-version=2015-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/49870748-bf6a-4841-86de-09bf586c709d","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Fri,
-        24 Apr 2020 03:13:13 GMT","integrationType":null,"integrationProperty":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/apikeys/dcc5199f-db63-414c-8fc9-f605dbfc305f","name":"otherKey","linkedReadProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/api","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/draft","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/extendqueries","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/search","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/aggregate","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/agentconfig"],"linkedWriteProperties":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/annotations"],"createdDate":"Mon,
+        17 Aug 2020 08:30:59 GMT","integrationType":null,"integrationProperty":null}'
     headers:
       access-control-expose-headers:
       - Request-Context
@@ -450,7 +449,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Apr 2020 03:13:21 GMT
+      - Mon, 17 Aug 2020 08:31:03 GMT
       expires:
       - '-1'
       pragma:

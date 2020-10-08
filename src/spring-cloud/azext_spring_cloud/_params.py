@@ -9,7 +9,8 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku)
+                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
+                          validate_vnet, validate_vnet_required_parameters, validate_node_resource_group)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -33,6 +34,12 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+        c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
+        c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
+        c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network.', validator=validate_vnet_required_parameters)
+        c.argument('service_runtime_subnet', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
+        c.argument('service_runtime_network_resource_group', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
+        c.argument('app_network_resource_group', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
@@ -61,6 +68,12 @@ def load_arguments(self, _):
             'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
+        c.argument('cpu', type=int, default=1,
+                   help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, default=1,
+                   help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int,
+                   default=1, help='Number of instance.')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
@@ -70,6 +83,8 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+            c.argument('main_entry', options_list=[
+                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
@@ -102,37 +117,34 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
                        help='Runtime version of used language')
-            c.argument('jvm_options', type=str,
+            c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
 
-    for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:
-        with self.argument_context(scope) as c:
-            c.argument('cpu', type=int, default=1,
-                       help='Number of virtual cpu cores per instance.')
-            c.argument('memory', type=int, default=1,
-                       help='Number of GB of memory per instance.')
-            c.argument('instance_count', type=int,
-                       default=1, help='Number of instance.')
-
-    for scope in ['spring-cloud app deploy', 'spring-cloud app scale']:
-        with self.argument_context(scope) as c:
-            c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-            c.argument('memory', type=int, help='Number of GB of memory per instance.')
-            c.argument('instance_count', type=int, help='Number of instance.')
+    with self.argument_context('spring-cloud app scale') as c:
+        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
+                'artifact_path', options_list=[
+                    '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code')
+                'main_entry', options_list=[
+                    '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
+            c.argument(
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
 
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
+        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
+        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('instance_count', type=int, help='Number of instance.')
 
     with self.argument_context('spring-cloud app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',

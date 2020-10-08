@@ -57,8 +57,9 @@ class CertificatesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CertificateResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CertificateResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -118,15 +119,17 @@ class CertificatesOperations(object):
         :param certificate_name: The name of the certificate resource.
         :type certificate_name: str
         :param properties: Properties of the certificate resource payload.
-        :type properties: ~azure.mgmt.appplatform.models.CertificateProperties
+        :type properties:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CertificateResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CertificateResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         certificate_resource = models.CertificateResource(properties=properties)
@@ -254,7 +257,7 @@ class CertificatesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of CertificateResource
         :rtype:
-         ~azure.mgmt.appplatform.models.CertificateResourcePaged[~azure.mgmt.appplatform.models.CertificateResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
