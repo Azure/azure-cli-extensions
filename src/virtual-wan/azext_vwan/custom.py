@@ -90,7 +90,7 @@ def _find_item_at_path(instance, path):
 # region VirtualWAN
 def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, location=None,
                        security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
+                       office365_category=None, disable_vpn_encryption=None,
                        vwan_type=None):
     client = network_client_factory(cmd.cli_ctx).virtual_wans
     VirtualWAN = cmd.get_models('VirtualWAN')
@@ -100,7 +100,6 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
         disable_vpn_encryption=disable_vpn_encryption,
         security_provider_name=security_provider_name,
         allow_branch_to_branch_traffic=branch_to_branch_traffic,
-        allow_vnet_to_vnet_traffic=vnet_to_vnet_traffic,
         office365_local_breakout_category=office365_category,
         type=vwan_type
     )
@@ -108,13 +107,11 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
 
 
 def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_to_branch_traffic=None,
-                       vnet_to_vnet_traffic=None, office365_category=None, disable_vpn_encryption=None,
-                       vwan_type=None):
+                       office365_category=None, disable_vpn_encryption=None, vwan_type=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('security_provider_name', security_provider_name, False)
         c.update_param('allow_branch_to_branch_traffic', branch_to_branch_traffic, False)
-        c.update_param('allow_vnet_to_vnet_traffic', vnet_to_vnet_traffic, False)
         c.update_param('office365_local_breakout_category', office365_category, False)
         c.update_param('disable_vpn_encryption', disable_vpn_encryption, False)
         c.update_param('type', vwan_type, False)
@@ -156,18 +153,50 @@ def list_virtual_hubs(cmd, resource_group_name=None):
     return _generic_list(cmd.cli_ctx, 'virtual_hubs', resource_group_name)
 
 
+# pylint: disable=too-many-locals
 def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name,
                                remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
-                               allow_remote_vnet_to_use_hub_vnet_gateways=None,
-                               enable_internet_security=None, no_wait=False):
-    HubVirtualNetworkConnection, SubResource = cmd.get_models(
-        'HubVirtualNetworkConnection', 'SubResource')
+                               allow_remote_vnet_to_use_hub_vnet_gateways=None, enable_internet_security=None,
+                               associated_route_table=None, propagated_route_tables=None, labels=None,
+                               route_name=None, address_prefixes=None, next_hop_ip_address=None, no_wait=False):
+    (HubVirtualNetworkConnection,
+     SubResource,
+     RoutingConfiguration,
+     PropagatedRouteTable,
+     VnetRoute,
+     StaticRoute) = cmd.get_models('HubVirtualNetworkConnection',
+                                   'SubResource',
+                                   'RoutingConfiguration',
+                                   'PropagatedRouteTable',
+                                   'VnetRoute',
+                                   'StaticRoute')
+
+    propagated_route_tables = PropagatedRouteTable(
+        labels=labels,
+        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
+    )
+
+    routing_configuration = RoutingConfiguration(
+        associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
+        propagated_route_tables=propagated_route_tables
+    )
+
+    if route_name is not None:
+        static_route = StaticRoute(
+            name=route_name,
+            address_prefixes=address_prefixes,
+            next_hop_ip_address=next_hop_ip_address
+        )
+        vnet_routes = VnetRoute(static_routes=[static_route])
+        routing_configuration.vnet_routes = vnet_routes
+
     connection = HubVirtualNetworkConnection(
         name=connection_name,
         remote_virtual_network=SubResource(id=remote_virtual_network),
         allow_hub_to_remote_vnet_transit=allow_hub_to_remote_vnet_transit,
         allow_remote_vnet_to_use_hub_vnet_gateway=allow_remote_vnet_to_use_hub_vnet_gateways,
-        enable_internet_security=enable_internet_security
+        enable_internet_security=enable_internet_security,
+        routing_configuration=routing_configuration
     )
 
     client = network_client_factory(cmd.cli_ctx).hub_virtual_network_connections
@@ -194,6 +223,20 @@ def list_hub_routes(cmd, resource_group_name, virtual_hub_name):
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
     hub = client.get(resource_group_name, virtual_hub_name)
     return hub.route_table.routes
+
+
+def reset_hub_routes(cmd, resource_group_name, virtual_hub_name, no_wait=False):
+    client = network_client_factory(cmd.cli_ctx).virtual_hubs
+    hub = client.get(resource_group_name, virtual_hub_name)
+    if hub.routing_state == 'Failed':
+        logger.warning('Reset virtual hub')
+        poller = sdk_no_wait(no_wait, client.create_or_update,
+                             resource_group_name, virtual_hub_name, hub)
+        try:
+            return poller.result().route_table.routes
+        except AttributeError:
+            return
+    logger.warning("Virtual Hub's routing state is not `failed`. Skip this command")
 
 
 # pylint: disable=inconsistent-return-statements

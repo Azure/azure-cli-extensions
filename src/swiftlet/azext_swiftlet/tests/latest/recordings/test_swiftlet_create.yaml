@@ -1,0 +1,1080 @@
+interactions:
+- request:
+    body: '{"tags": {"key1": "value1", "key2": "value2"}, "location": "centraluseuap",
+      "properties": {"swiftletBundleSku": "Windows_1", "swiftletImageId": "windows-2019-datacenter",
+      "username": "SwiftletUser", "password": "testPassword0", "ports": [{"portRange":
+      "3389", "protocol": "*"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '279'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Creating","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1465'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:05:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"unknown","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"WaitingForVmToStart","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1604'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:06:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"WaitingForVmToStart","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1604'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:06:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"WaitingForVmToStart","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1604'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:07:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"WaitingForVmToStart","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1604'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:07:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"WaitingForVmToStart","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1604'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:08:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --password --ports --swiftlet-bundle-sku --swiftlet-image-id --username
+        --tags --resource-group --name
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:08:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"VM","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/VM","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"3389","protocol":"*"}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1606'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:08:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:05:30.1103757Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key1":"value1","key2":"value2"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"3389","protocol":"*"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:08:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"key3": "value3"}, "properties": {"ports": [{"portRange": "80",
+      "protocol": "TCP"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --ports --tags
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:08:39.2986103Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key3":"value3"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Updating","ports":[{"portRange":"80","protocol":"Tcp"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/e6a667c5-4dac-4cf8-8ebe-c11efbcbfab0?api-version=2020-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:08:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/e6a667c5-4dac-4cf8-8ebe-c11efbcbfab0?monitor=True&api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ports --tags
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/e6a667c5-4dac-4cf8-8ebe-c11efbcbfab0?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"e6a667c5-4dac-4cf8-8ebe-c11efbcbfab0","id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/e6a667c5-4dac-4cf8-8ebe-c11efbcbfab0","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '227'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ports --tags
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"vm","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:08:39.2986103Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key3":"value3"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"publicIPAddress":"52.253.238.154","publicIPv6Address":"2603:1030:8:1::8","privateIPAddress":"10.19.0.4","powerState":"running","swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"80","protocol":"Tcp"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1578'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm/stop?api-version=2020-03-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b?api-version=2020-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b?monitor=True&api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b","id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '227'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm stop
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/6ad82b8f-2723-4515-8dfa-90a4b9e6cd5b?monitor=True&api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"VM","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLITEST_SWIFTLETEHR3PODE4/providers/Microsoft.Swiftlet/virtualMachines/VM","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:08:39.2986103Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key3":"value3"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"80","protocol":"Tcp"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm/start?api-version=2020-03-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/c90bca0b-c280-4f6d-a47b-67faaf926776?api-version=2020-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:09:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/c90bca0b-c280-4f6d-a47b-67faaf926776?monitor=True&api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/c90bca0b-c280-4f6d-a47b-67faaf926776?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"c90bca0b-c280-4f6d-a47b-67faaf926776","id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/c90bca0b-c280-4f6d-a47b-67faaf926776","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '227'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:10:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/c90bca0b-c280-4f6d-a47b-67faaf926776?monitor=True&api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"VM","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLITEST_SWIFTLETEHR3PODE4/providers/Microsoft.Swiftlet/virtualMachines/VM","systemData":{"createdBy":"azureclitest@azuresdkteam.onmicrosoft.com","createdByType":"User","createdAt":"2020-08-19T05:05:30.1103757Z","lastModifiedBy":"azureclitest@azuresdkteam.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2020-08-19T05:08:39.2986103Z"},"type":"Microsoft.Swiftlet/virtualMachines","location":"CentralUSEUAP","tags":{"key3":"value3"},"properties":{"swiftletBundle":{"swiftletBundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1},"swiftletImage":{"swiftletImageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"},"swiftletBundleSku":"WINDOWS_1","swiftletImageId":"WINDOWS-2019-DATACENTER","username":"SwiftletUser","provisioningState":"Succeeded","ports":[{"portRange":"80","protocol":"Tcp"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:10:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_swiftlet000001/providers/Microsoft.Swiftlet/virtualMachines/vm?api-version=2020-03-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d?api-version=2020-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:10:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d?monitor=True&api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"4943ab43-3882-4ea5-9f3e-2724d4b1398d","id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '225'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:10:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"name":"4943ab43-3882-4ea5-9f3e-2724d4b1398d","id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Swiftlet/locations/CentralUSEUAP/operations/4943ab43-3882-4ea5-9f3e-2724d4b1398d","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '227'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Aug 2020 05:11:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

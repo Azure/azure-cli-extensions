@@ -51,7 +51,7 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of OperationDetail
         :rtype:
-         ~azure.mgmt.appplatform.models.OperationDetailPaged[~azure.mgmt.appplatform.models.OperationDetail]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationDetailPaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationDetail]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

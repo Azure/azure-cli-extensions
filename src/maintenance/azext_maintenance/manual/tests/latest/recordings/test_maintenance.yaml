@@ -1,0 +1,1959 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-09-02T02:11:33Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:11:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json
+  response:
+    body:
+      string: "{\n  \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json\",\n
+        \ \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {},\n  \"variables\":
+        {},\n  \"resources\": [],\n  \"outputs\": {\n    \"aliases\": {\n      \"type\":
+        \"object\",\n      \"value\": {\n        \"Linux\": {\n          \"CentOS\":
+        {\n            \"publisher\": \"OpenLogic\",\n            \"offer\": \"CentOS\",\n
+        \           \"sku\": \"7.5\",\n            \"version\": \"latest\"\n          },\n
+        \         \"CoreOS\": {\n            \"publisher\": \"CoreOS\",\n            \"offer\":
+        \"CoreOS\",\n            \"sku\": \"Stable\",\n            \"version\": \"latest\"\n
+        \         },\n          \"Debian\": {\n            \"publisher\": \"Debian\",\n
+        \           \"offer\": \"debian-10\",\n            \"sku\": \"10\",\n            \"version\":
+        \"latest\"\n          },\n          \"openSUSE-Leap\": {\n            \"publisher\":
+        \"SUSE\",\n            \"offer\": \"openSUSE-Leap\",\n            \"sku\":
+        \"42.3\",\n            \"version\": \"latest\"\n          },\n          \"RHEL\":
+        {\n            \"publisher\": \"RedHat\",\n            \"offer\": \"RHEL\",\n
+        \           \"sku\": \"7-LVM\",\n            \"version\": \"latest\"\n          },\n
+        \         \"SLES\": {\n            \"publisher\": \"SUSE\",\n            \"offer\":
+        \"SLES\",\n            \"sku\": \"15\",\n            \"version\": \"latest\"\n
+        \         },\n          \"UbuntuLTS\": {\n            \"publisher\": \"Canonical\",\n
+        \           \"offer\": \"UbuntuServer\",\n            \"sku\": \"18.04-LTS\",\n
+        \           \"version\": \"latest\"\n          }\n        },\n        \"Windows\":
+        {\n          \"Win2019Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
+        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2019-Datacenter\",\n
+        \           \"version\": \"latest\"\n          },\n          \"Win2016Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2016-Datacenter\",\n            \"version\":
+        \"latest\"\n          },\n          \"Win2012R2Datacenter\": {\n            \"publisher\":
+        \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n            \"sku\":
+        \"2012-R2-Datacenter\",\n            \"version\": \"latest\"\n          },\n
+        \         \"Win2012Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
+        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2012-Datacenter\",\n
+        \           \"version\": \"latest\"\n          },\n          \"Win2008R2SP1\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2008-R2-SP1\",\n            \"version\":
+        \"latest\"\n          }\n        }\n      }\n    }\n  }\n}\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '2501'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:11:34 GMT
+      etag:
+      - W/"540044b4084c3c314537f1baa1770f248628b2bc9ba0328f1004c33862e049da"
+      expires:
+      - Wed, 02 Sep 2020 02:16:34 GMT
+      source-age:
+      - '0'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding
+      via:
+      - 1.1 varnish (Varnish/6.0)
+      - 1.1 varnish
+      x-cache:
+      - HIT, HIT
+      x-cache-hits:
+      - 2, 1
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 8579b6c0eba58178640b5ab3f76cb4b1406a9551
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - CFDE:4809:5D89DA:6D773C:5F4EF1BC
+      x-served-by:
+      - cache-mdw17357-MDW
+      x-timer:
+      - S1599012695.534568,VS0,VE118
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-network/11.0.0 Azure-SDK-For-Python AZURECLI/2.11.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks?api-version=2018-01-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:11:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "parameters": {"adminPassword": {"type": "securestring",
+      "metadata": {"description": "Secure adminPassword"}}}, "variables": {}, "resources":
+      [{"name": "clitestvmssVNET", "type": "Microsoft.Network/virtualNetworks", "location":
+      "westus", "apiVersion": "2015-06-15", "dependsOn": [], "tags": {}, "properties":
+      {"addressSpace": {"addressPrefixes": ["10.0.0.0/16"]}, "subnets": [{"name":
+      "clitestvmssSubnet", "properties": {"addressPrefix": "10.0.0.0/24"}}]}}, {"apiVersion":
+      "2018-01-01", "type": "Microsoft.Network/publicIPAddresses", "name": "clitestvmssLBPublicIP",
+      "location": "westus", "tags": {}, "dependsOn": [], "properties": {"publicIPAllocationMethod":
+      "Dynamic"}}, {"type": "Microsoft.Network/loadBalancers", "name": "clitestvmssLB",
+      "location": "westus", "tags": {}, "apiVersion": "2018-01-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
+      "Microsoft.Network/publicIpAddresses/clitestvmssLBPublicIP"], "properties":
+      {"backendAddressPools": [{"name": "clitestvmssLBBEPool"}], "inboundNatPools":
+      [{"name": "clitestvmssLBNatPool", "properties": {"frontendIPConfiguration":
+      {"id": "[concat(resourceId(''Microsoft.Network/loadBalancers'', ''clitestvmssLB''),
+      ''/frontendIPConfigurations/'', ''loadBalancerFrontEnd'')]"}, "protocol": "tcp",
+      "frontendPortRangeStart": "50000", "frontendPortRangeEnd": "50119", "backendPort":
+      3389}}], "frontendIPConfigurations": [{"name": "loadBalancerFrontEnd", "properties":
+      {"publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP"}}}]}},
+      {"type": "Microsoft.Compute/virtualMachineScaleSets", "name": "clitestvmss",
+      "location": "westus", "tags": {}, "apiVersion": "2020-06-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
+      "Microsoft.Network/loadBalancers/clitestvmssLB"], "sku": {"name": "Standard_DS1_v2",
+      "capacity": 1}, "properties": {"overprovision": true, "upgradePolicy": {"mode":
+      "manual"}, "virtualMachineProfile": {"storageProfile": {"osDisk": {"createOption":
+      "FromImage", "caching": "ReadWrite", "managedDisk": {"storageAccountType": null}},
+      "imageReference": {"publisher": "MicrosoftWindowsServer", "offer": "WindowsServer",
+      "sku": "2016-Datacenter", "version": "latest"}, "dataDisks": [{"lun": 0, "managedDisk":
+      {"storageAccountType": null}, "createOption": "empty", "diskSizeGB": 2}]}, "networkProfile":
+      {"networkInterfaceConfigurations": [{"name": "clite3953Nic", "properties": {"primary":
+      "true", "ipConfigurations": [{"name": "clite3953IPConfig", "properties": {"subnet":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET/subnets/clitestvmssSubnet"},
+      "loadBalancerBackendAddressPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/backendAddressPools/clitestvmssLBBEPool"}],
+      "loadBalancerInboundNatPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/inboundNatPools/clitestvmssLBNatPool"}]}}]}}]},
+      "osProfile": {"computerNamePrefix": "clite3953", "adminUsername": "azureuser",
+      "adminPassword": "[parameters(''adminPassword'')]"}}, "singlePlacementGroup":
+      null}}], "outputs": {"VMSS": {"type": "object", "value": "[reference(resourceId(''Microsoft.Compute/virtualMachineScaleSets'',
+      ''clitestvmss''),providers(''Microsoft.Compute'', ''virtualMachineScaleSets'').apiVersions[0])]"}}},
+      "parameters": {"adminPassword": {"value": "PasswordCLIMaintenanceRP8!"}}, "mode":
+      "Incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '4085'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_kgiZuXZn7diwXlq8NQwT2xBeVr0t8Hqn","name":"vmss_deploy_kgiZuXZn7diwXlq8NQwT2xBeVr0t8Hqn","type":"Microsoft.Resources/deployments","properties":{"templateHash":"2606780367408474299","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-09-02T02:11:36.2685717Z","duration":"PT0.6467681S","correlationId":"d812fc6b-de40-4289-b657-d25bb76609ef","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["westus"]},{"resourceType":"publicIPAddresses","locations":["westus"]},{"resourceType":"loadBalancers","locations":["westus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachineScaleSets","locations":["westus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"clitestvmssLBPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss","resourceType":"Microsoft.Compute/virtualMachineScaleSets","resourceName":"clitestvmss"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_kgiZuXZn7diwXlq8NQwT2xBeVr0t8Hqn/operationStatuses/08586025941898558427?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2803'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:11:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:12:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:12:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:13:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:13:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:14:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:14:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:15:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:15:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:16:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:16:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:17:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:17:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586025941898558427?api-version=2020-06-01
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --instance-count --image --data-disk-sizes-gb --admin-password
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_kgiZuXZn7diwXlq8NQwT2xBeVr0t8Hqn","name":"vmss_deploy_kgiZuXZn7diwXlq8NQwT2xBeVr0t8Hqn","type":"Microsoft.Resources/deployments","properties":{"templateHash":"2606780367408474299","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-09-02T02:18:05.3398615Z","duration":"PT6M29.7180579S","correlationId":"d812fc6b-de40-4289-b657-d25bb76609ef","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["westus"]},{"resourceType":"publicIPAddresses","locations":["westus"]},{"resourceType":"loadBalancers","locations":["westus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachineScaleSets","locations":["westus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"clitestvmssLBPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss","resourceType":"Microsoft.Compute/virtualMachineScaleSets","resourceName":"clitestvmss"}],"outputs":{"vmss":{"type":"Object","value":{"singlePlacementGroup":true,"upgradePolicy":{"mode":"Manual"},"virtualMachineProfile":{"osProfile":{"computerNamePrefix":"clite3953","adminUsername":"azureuser","windowsConfiguration":{"provisionVMAgent":true,"enableAutomaticUpdates":true},"secrets":[],"allowExtensionOperations":true,"requireGuestProvisionSignal":true},"storageProfile":{"osDisk":{"createOption":"FromImage","caching":"ReadWrite","managedDisk":{"storageAccountType":"Premium_LRS"},"diskSizeGB":127},"imageReference":{"publisher":"MicrosoftWindowsServer","offer":"WindowsServer","sku":"2016-Datacenter","version":"latest"},"dataDisks":[{"lun":0,"createOption":"Empty","caching":"None","managedDisk":{"storageAccountType":"Premium_LRS"},"diskSizeGB":2}]},"networkProfile":{"networkInterfaceConfigurations":[{"name":"clite3953Nic","properties":{"primary":true,"enableAcceleratedNetworking":false,"dnsSettings":{"dnsServers":[]},"enableIPForwarding":false,"ipConfigurations":[{"name":"clite3953IPConfig","properties":{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET/subnets/clitestvmssSubnet"},"privateIPAddressVersion":"IPv4","loadBalancerBackendAddressPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/backendAddressPools/clitestvmssLBBEPool"}],"loadBalancerInboundNatPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/inboundNatPools/clitestvmssLBNatPool"}]}}]}}]},"extensionProfile":{"extensions":[{"name":"Microsoft.Azure.Geneva.GenevaMonitoring","properties":{"autoUpgradeMinorVersion":true,"publisher":"Microsoft.Azure.Geneva","type":"GenevaMonitoring","typeHandlerVersion":"2.0","settings":{}}}]}},"provisioningState":"Succeeded","overprovision":true,"doNotRunExtensionsOnOverprovisionedVMs":false,"uniqueId":"5cf122fd-355d-4adc-b07d-3f6484fc07d7"}}},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5948'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"namespace": "Microsoft.Maintenance",
+      "maintenanceScope": "OSImage", "visibility": "Custom", "maintenanceWindow":
+      {"startDateTime": "2020-09-30 08:00", "expirationDateTime": "9999-12-31 00:00",
+      "duration": "05:00", "timeZone": "Pacific Standard Time", "recurEvery": "Day"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '313'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --maintenance-scope --maintenance-window-duration --maintenance-window-expiration-date-time
+        --maintenance-window-recur-every --maintenance-window-start-date-time --maintenance-window-time-zone
+        --namespace --visibility --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"westus2\",\r\n  \"tags\": {},\r\n  \"properties\":
+        {\r\n    \"namespace\": \"Microsoft.Maintenance\",\r\n    \"extensionProperties\":
+        {},\r\n    \"maintenanceScope\": \"OSImage\",\r\n    \"maintenanceWindow\":
+        {\r\n      \"startDateTime\": \"2020-09-30 08:00\",\r\n      \"expirationDateTime\":
+        \"9999-12-31 00:00\",\r\n      \"duration\": \"05:00\",\r\n      \"timeZone\":
+        \"Pacific Standard Time\",\r\n      \"recurEvery\": \"Day\"\r\n    },\r\n
+        \   \"visibility\": \"Custom\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1\",\r\n
+        \ \"name\": \"configuration1\",\r\n  \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '755'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"westus2\",\r\n  \"tags\": {},\r\n  \"properties\":
+        {\r\n    \"namespace\": \"Microsoft.Maintenance\",\r\n    \"extensionProperties\":
+        {},\r\n    \"maintenanceScope\": \"OSImage\",\r\n    \"maintenanceWindow\":
+        {\r\n      \"startDateTime\": \"2020-09-30 08:00\",\r\n      \"expirationDateTime\":
+        \"9999-12-31 00:00\",\r\n      \"duration\": \"05:00\",\r\n      \"timeZone\":
+        \"Pacific Standard Time\",\r\n      \"recurEvery\": \"Day\"\r\n    },\r\n
+        \   \"visibility\": \"Custom\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/maintenanceconfigurations/configuration1\",\r\n
+        \ \"name\": \"configuration1\",\r\n  \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '755'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/maintenanceConfigurations?api-version=2020-07-01-preview
+  response:
+    body:
+      string: '{"value":[{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedkoreacentral","name":"policydgnsrsharedkoreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedkoreasouth","name":"policydgnsrsharedkoreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedjapaneast","name":"policydgnsrsharedjapaneast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedsouthcentralus","name":"policydgnsrsharedsouthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsoutH/providers/Microsoft.Maintenance/maintenanceConfigurations/configsotaneja","name":"configsotaneja","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouTH/providers/Microsoft.Maintenance/maintenanceConfigurations/configsotaneja","name":"configsotaneja","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedeastasia","name":"policydgnsrsharedeastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedwestindia","name":"policydgnsrsharedwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliaeast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedaustraliaeast","name":"policydgnsrsharedaustraliaeast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedsoutheastasia","name":"policydgnsrsharedsoutheastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedaustraliasoutheast","name":"policydgnsrsharedaustraliasoutheast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedcentralus","name":"policydgnsrsharedcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedcanadacentral","name":"policydgnsrsharedcanadacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedeastus","name":"policydgnsrsharedeastus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus2/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedwestus2","name":"policydgnsrsharedwestus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedbrazilsouth","name":"policydgnsrsharedbrazilsouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedeastus2","name":"policydgnsrsharedeastus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharednorthcentralus","name":"policydgnsrsharednorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnortheurope/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharednortheurope","name":"policydgnsrsharednortheurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrshareduksouth","name":"policydgnsrshareduksouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"ukwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrukwest/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedukwest","name":"policydgnsrsharedukwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedfrancecentral","name":"policydgnsrsharedfrancecentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwesteurope/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedwesteurope","name":"policydgnsrsharedwesteurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedsouthafricanorth","name":"policydgnsrsharedsouthafricanorth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedaustraliacentral","name":"policydgnsrsharedaustraliacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever15","name":"configjusiever15","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever","name":"configjusiever","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever","name":"configjusiever","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadaeast/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever","name":"configjusiever","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/pseastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/psconfigeastasia","name":"psconfigeastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clinorthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/clinorthusconfiguration","name":"clinorthusconfiguration","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clieastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/clieastasiaconfigurationdh","name":"clieastasiaconfigurationdh","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clieastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/clieastasiaconfigurationdng","name":"clieastasiaconfigurationdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/pseastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/pseastasiaconfigurationdh","name":"pseastasiaconfigurationdh","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/pseastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/pseastasiaconfigurationdng","name":"pseastasiaconfigurationdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhsouthcentralus","name":"policydgnsrdhsouthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japanwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapanwest/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhjapanwest","name":"policydgnsrdhjapanwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhjapaneast","name":"policydgnsrdhjapaneast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhkoreasouth","name":"policydgnsrdhkoreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhwestindia","name":"policydgnsrdhwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhaustraliasoutheast","name":"policydgnsrdhaustraliasoutheast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhaustraliacentral","name":"policydgnsrdhaustraliacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrfullwestindia","name":"policydgnsrfullwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliaeast/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhsoutheastasia","name":"policydgnsrdhsoutheastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhfrancecentral","name":"policydgnsrdhfrancecentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhcanadacentral","name":"policydgnsrdhcanadacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrfullnorthcentralus","name":"policydgnsrfullnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwesteurope/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhwesteurope","name":"policydgnsrdhwesteurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrfullbrazilsouth","name":"policydgnsrfullbrazilsouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus2/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhwestus2","name":"policydgnsrdhwestus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhnorthcentralus","name":"policydgnsrdhnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdhuksouth","name":"policydgnsrdhuksouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnortheurope/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever131","name":"configjusiever131","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedsouthcentralus","name":"policydgnsrsharedsouthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharednorthcentralus","name":"policydgnsrsharednorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedaustraliasoutheast","name":"policydgnsrsharedaustraliasoutheast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedaustraliacentral","name":"policydgnsrsharedaustraliacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwesteurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedwesteurope","name":"policydgnsrsharedwesteurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedwestus2","name":"policydgnsrsharedwestus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedbrazilsouth","name":"policydgnsrsharedbrazilsouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedsouthafricanorth","name":"policydgnsrsharedsouthafricanorth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrshareduksouth","name":"policydgnsrshareduksouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedcentralus","name":"policydgnsrsharedcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedeastus2","name":"policydgnsrsharedeastus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnortheurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharednortheurope","name":"policydgnsrsharednortheurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedkoreasouth","name":"policydgnsrsharedkoreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedeastus","name":"policydgnsrsharedeastus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedwestindia","name":"policydgnsrsharedwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedeastasia","name":"policydgnsrsharedeastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedcanadacentral","name":"policydgnsrsharedcanadacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliaeast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedaustraliaeast","name":"policydgnsrsharedaustraliaeast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedjapaneast","name":"policydgnsrsharedjapaneast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedkoreacentral","name":"policydgnsrsharedkoreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedfrancecentral","name":"policydgnsrsharedfrancecentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"ukwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrukwest/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedukwest","name":"policydgnsrsharedukwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedsoutheastasia","name":"policydgnsrsharedsoutheastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dbgkoreasouth/providers/microsoft.maintenance/maintenanceconfigurations/defaultmaintenanceconfiguration-koreasouth","name":"defaultMaintenanceConfiguration-koreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dbgkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/defaultmaintenanceconfiguration-koreacentral","name":"defaultMaintenanceConfiguration-koreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testatrg/providers/microsoft.maintenance/maintenanceconfigurations/defaultmcwestus2","name":"defaultmcwestus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testatrg/providers/microsoft.maintenance/maintenanceconfigurations/defaultmcnorthcentralus","name":"defaultmcnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/psnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/defaultmcnorthcentralus","name":"defaultmcnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testatrg/providers/microsoft.maintenance/maintenanceconfigurations/defaultmaintenanceconfiguration","name":"defaultMaintenanceConfiguration","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/psnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/defaultmaintenanceconfiguration","name":"defaultMaintenanceConfiguration","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clinorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/portaltestconfig","name":"portaltestconfig","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/netsdknorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/netsdknorthcentralusconfigurationfull","name":"netsdknorthcentralusconfigurationfull","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/abtest/providers/microsoft.maintenance/maintenanceconfigurations/testconfigfromportal","name":"testconfigfromportal","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{"tag1":"bugbash"},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/portalbugbash/providers/microsoft.maintenance/maintenanceconfigurations/scenario1","name":"scenario1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/defaultmaintenanceconfiguration-koreacentral","name":"defaultMaintenanceConfiguration-koreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwesteurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnortheurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/psnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/psnorthusconfigurationfull","name":"psnorthusconfigurationfull","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/pseastasia/providers/microsoft.maintenance/maintenanceconfigurations/pseastasiaconfigurationdh","name":"pseastasiaconfigurationdh","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Resource","maintenanceWindow":{"startDateTime":"0001-01-01
+        00:00","expirationDateTime":"0001-01-01 00:00","duration":"05:00","timeZone":"India
+        Standard Time","recurEvery":"0"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/afecflagkoreasouth","name":"afecFlagKoreaSouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Resource","maintenanceWindow":{"startDateTime":"0001-01-01
+        00:00","expirationDateTime":"0001-01-01 00:00","duration":"05:00","timeZone":"Eastern
+        Standard Time","recurEvery":"0"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/afecflagcanada","name":"afecFlagCanada","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"WESTEUROPE","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Resource","maintenanceWindow":{"startDateTime":"0001-01-01
+        00:00","expirationDateTime":"0001-01-01 00:00","duration":"05:00","timeZone":"Central
+        Europe standard Time","recurEvery":"0"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/afecflageurope","name":"afecFlagEurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Resource,
+        InResource","maintenanceWindow":{"startDateTime":"0001-01-01 00:00","expirationDateTime":"0001-01-01
+        00:00","duration":"05:00","timeZone":"Central standard Time","recurEvery":"0"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/afecflagus3","name":"afecFlagUS3","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/microsoft.maintenance/maintenanceconfigurations/testargconfiguration1","name":"testARGConfiguration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-08-09
+        20:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"week sunday,monday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/hosttestingscope","name":"HostTestingscope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/testpowershellconfig","name":"testpowershellconfig","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/soniapowershell","name":"soniapowershell","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps8596/providers/microsoft.maintenance/maintenanceconfigurations/ps5164","name":"ps5164","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps9969/providers/microsoft.maintenance/maintenanceconfigurations/ps227","name":"ps227","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps4851/providers/microsoft.maintenance/maintenanceconfigurations/ps132","name":"ps132","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps5895/providers/microsoft.maintenance/maintenanceconfigurations/ps4366","name":"ps4366","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps3332/providers/microsoft.maintenance/maintenanceconfigurations/ps404","name":"ps404","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps9548/providers/microsoft.maintenance/maintenanceconfigurations/ps567","name":"ps567","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps3221/providers/microsoft.maintenance/maintenanceconfigurations/ps5992","name":"ps5992","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps9573/providers/microsoft.maintenance/maintenanceconfigurations/ps575","name":"ps575","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{"publicMaintenanceConfigurationId":"ps4509","isAvailable":"true"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ps7939/providers/microsoft.maintenance/maintenanceconfigurations/ps4509","name":"ps4509","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{"isAvailable":"true","publicMaintenanceConfigurationId":"randomc"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/randogroup/providers/microsoft.maintenance/maintenanceconfigurations/randomc","name":"randomc","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{"isAvailable":"true","publicMaintenanceConfigurationId":"soniaps"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-01
+        12:30","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/randogroup/providers/microsoft.maintenance/maintenanceconfigurations/soniaps","name":"soniaps","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Month Third Sunday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests5f7aik4kielzdkgwmkwjyxpjzokzgfpgfivhyj7wne4w7wl6shvtm3xsunnzt76rcet/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{"publicMaintenanceConfigurationId":"configurationsql","isAvailable":"true"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/configurationsql","name":"configurationsql","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Month Third Sunday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestbjnoqkenrf5azew3kgnabym44odg7prhbgld62256xzyrysux4j7uag3cjosjnh4vr6o/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Month Third Sunday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest4m7giv6zpf3q5vef7j3msfh3nsgpzqdfsh4sh3daxxvfrnmb6guxwefrdjrgxeo3ojvw/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Month Third Sunday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestqm2p2j4y45bdhruz5u22egugnh2mbsfo7ycpzsy33taklfoaa7u4jte2dz2nghrd56oq/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","maintenanceWindow":{"startDateTime":"2020-09-01
+        00:00","expirationDateTime":"2021-08-04 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/pstest","name":"pstest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japanwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapanwest/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhjapanwest","name":"policydgnsrdhjapanwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Month Third Sunday"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestf5ivvpypbhqgzkft234pqqqm3rmaueztclxupbsi4it2tknktbbt5dogcp74ybrjjnmd/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhsouthindia","name":"policydgnsrdhsouthindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhsoutheastasia","name":"policydgnsrdhsoutheastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"ukwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrukwest/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhsouthcentralus","name":"policydgnsrdhsouthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhuksouth","name":"policydgnsrdhuksouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhbrazilsouth","name":"policydgnsrdhbrazilsouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfulljapaneast","name":"policydgnsrfulljapaneast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullsouthindia","name":"policydgnsrfullsouthindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwesteurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhwesteurope","name":"policydgnsrdhwesteurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhcanadacentral","name":"policydgnsrdhcanadacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhkoreacentral","name":"policydgnsrdhkoreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhsouthafricanorth","name":"policydgnsrdhsouthafricanorth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"ukwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrukwest/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhukwest","name":"policydgnsrdhukwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdheastasia","name":"policydgnsrdheastasia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhwestus","name":"policydgnsrdhwestus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliaeast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullkoreasouth","name":"policydgnsrfullkoreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhjapaneast","name":"policydgnsrdhjapaneast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullaustraliasoutheast","name":"policydgnsrfullaustraliasoutheast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"brazilsouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrbrazilsouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullbrazilsouth","name":"policydgnsrfullbrazilsouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhnorthcentralus","name":"policydgnsrdhnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdheastus2","name":"policydgnsrdheastus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadaeast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadaeast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhcanadaeast","name":"policydgnsrdhcanadaeast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"ukwest","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrukwest/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullukwest","name":"policydgnsrfullukwest","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnorthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullnorthcentralus","name":"policydgnsrfullnorthcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"northeurope","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrnortheurope/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhnortheurope","name":"policydgnsrdhnortheurope","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreasouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreasouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhkoreasouth","name":"policydgnsrdhkoreasouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdheastus","name":"policydgnsrdheastus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullwestindia","name":"policydgnsrfullwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"japaneast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrjapaneast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"koreacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrkoreacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullkoreacentral","name":"policydgnsrfullkoreacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southcentralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentralindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhcentralindia","name":"policydgnsrdhcentralindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhaustraliasoutheast","name":"policydgnsrdhaustraliasoutheast","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestus2/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhwestus2","name":"policydgnsrdhwestus2","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhaustraliacentral","name":"policydgnsrdhaustraliacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfullcanadacentral","name":"policydgnsrfullcanadacentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"uksouth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsruksouth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfulluksouth","name":"policydgnsrfulluksouth","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhfrancecentral","name":"policydgnsrdhfrancecentral","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southeastasia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsoutheastasia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"canadacentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcanadacentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westindia","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrwestindia/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhwestindia","name":"policydgnsrdhwestindia","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centralus","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentralus/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhcentralus","name":"policydgnsrdhcentralus","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"australiasoutheast","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsraustraliasoutheast/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"francecentral","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrfrancecentral/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"southafricanorth","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrsouthafricanorth/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"westus2","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{},"maintenanceScope":"OSImage","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/maintenanceconfigurations/configuration1","name":"configuration1","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedeastus2euap","name":"policydgnsrsharedeastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrsharedcentraluseuap","name":"policydgnsrsharedcentraluseuap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/Microsoft.Maintenance/maintenanceConfigurations/configjusiever","name":"configjusiever","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/Microsoft.Maintenance/maintenanceConfigurations/configshvenk","name":"configshvenk","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrdheastus2euap","name":"policydgnsrdheastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/Microsoft.Maintenance/maintenanceConfigurations/policydgnsrfulleastus2euap","name":"policydgnsrfulleastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedcentraluseuap","name":"policydgnsrsharedcentraluseuap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/Microsoft.Maintenance/maintenanceConfigurations/testARGConfiguration3","name":"testARGConfiguration3","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/Microsoft.Maintenance/maintenanceConfigurations/gautamdPolicy","name":"gautamdPolicy","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrfulleastus2euap","name":"policydgnsrfulleastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"Host","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrsharedeastus2euap","name":"policydgnsrsharedeastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdheastus2euap","name":"policydgnsrdheastus2euap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdng","name":"policydgnsrdng","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"centraluseuap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsrcentraluseuap/providers/microsoft.maintenance/maintenanceconfigurations/policydgnsrdhcentraluseuap","name":"policydgnsrdhcentraluseuap","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{},"maintenanceScope":"All","visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dgnsreastus2euap/providers/microsoft.maintenance/maintenanceconfigurations/testargconfiguration9","name":"testARGConfiguration9","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"extensionProperties":{"publicMaintenanceConfigurationId":"soniasql","isAvailable":"false"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-08-19
+        03:00","expirationDateTime":"9999-12-31 23:59","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/soniasql","name":"soniasql","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{"publicMaintenanceConfigurationId":"sqlcli","isAvailable":"true"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Public"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/sqlcli","name":"sqlcli","type":"Microsoft.Maintenance/maintenanceConfigurations"},{"location":"eastus2euap","tags":{},"properties":{"namespace":"Microsoft.Maintenance","extensionProperties":{"publicMaintenanceConfigurationId":"[''sqlcliv2'']","isAvailable":"[''true'']"},"maintenanceScope":"SQLDB","maintenanceWindow":{"startDateTime":"2020-09-30
+        08:00","expirationDateTime":"9999-12-31 00:00","duration":"05:00","timeZone":"Pacific
+        Standard Time","recurEvery":"Day"},"visibility":"Custom"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/sqlcliv2","name":"sqlcliv2","type":"Microsoft.Maintenance/maintenanceConfigurations"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '85789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 98fe099e-755b-425c-a675-994a4e539d37
+      - 98fe099e-755b-425c-a675-994a4e539d37
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"namespace": "Microsoft.Maintenance",
+      "maintenanceScope": "OSImage", "visibility": "Custom", "maintenanceWindow":
+      {"startDateTime": "2020-09-30 08:00", "expirationDateTime": "9999-12-31 00:00",
+      "duration": "05:00", "timeZone": "Pacific Standard Time", "recurEvery": "Month
+      Third Sunday"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '328'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --maintenance-scope --maintenance-window-duration --maintenance-window-expiration-date-time
+        --maintenance-window-recur-every --maintenance-window-start-date-time --maintenance-window-time-zone
+        --namespace --visibility --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"westus2\",\r\n  \"tags\": {},\r\n  \"properties\":
+        {\r\n    \"namespace\": \"Microsoft.Maintenance\",\r\n    \"extensionProperties\":
+        {},\r\n    \"maintenanceScope\": \"OSImage\",\r\n    \"maintenanceWindow\":
+        {\r\n      \"startDateTime\": \"2020-09-30 08:00\",\r\n      \"expirationDateTime\":
+        \"9999-12-31 00:00\",\r\n      \"duration\": \"05:00\",\r\n      \"timeZone\":
+        \"Pacific Standard Time\",\r\n      \"recurEvery\": \"Month Third Sunday\"\r\n
+        \   },\r\n    \"visibility\": \"Custom\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/maintenanceconfigurations/configuration1\",\r\n
+        \ \"name\": \"configuration1\",\r\n  \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '770'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --maintenance-configuration-id --provider-name --resource-group --resource-name
+        --name --resource-type
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-09-02T02:11:33Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"maintenanceConfigurationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '287'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --maintenance-configuration-id --provider-name --resource-group --resource-name
+        --name --resource-type
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/configurationAssignments/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"westus\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.compute/virtualmachinescalesets/clitestvmss\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.compute/virtualmachinescalesets/clitestvmss/providers/Microsoft.Maintenance/configurationAssignments/configuration1\",\r\n
+        \ \"name\": \"configuration1\",\r\n  \"type\": \"Microsoft.Maintenance/configurationAssignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '916'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-name --resource-group --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/configurationAssignments?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1\"\r\n
+        \     },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/configurationAssignments/configuration1\",\r\n
+        \     \"name\": \"configuration1\",\r\n      \"type\": \"Microsoft.Maintenance/configurationAssignments\"\r\n
+        \   }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '719'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance public-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/sql2?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus2euap\",\r\n  \"tags\": {},\r\n  \"properties\":
+        {\r\n    \"extensionProperties\": {\r\n      \"publicMaintenanceConfigurationId\":
+        \"sql2\",\r\n      \"isAvailable\": \"true\"\r\n    },\r\n    \"maintenanceScope\":
+        \"SQLDB\",\r\n    \"maintenanceWindow\": {\r\n      \"startDateTime\": \"2020-08-12
+        03:00\",\r\n      \"expirationDateTime\": \"9999-12-31 23:59\",\r\n      \"duration\":
+        \"05:00\",\r\n      \"timeZone\": \"Pacific Standard Time\",\r\n      \"recurEvery\":
+        \"Day\"\r\n    },\r\n    \"visibility\": \"Public\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/smdtest/providers/microsoft.maintenance/maintenanceconfigurations/sql2\",\r\n
+        \ \"name\": \"sql2\",\r\n  \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '712'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance public-configuration list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/publicMaintenanceConfigurations?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"location\": \"eastus2euap\",\r\n
+        \     \"tags\": {},\r\n      \"properties\": {\r\n        \"extensionProperties\":
+        {\r\n          \"publicMaintenanceConfigurationId\": \"sql2\",\r\n          \"isAvailable\":
+        \"true\"\r\n        },\r\n        \"maintenanceScope\": \"SQLDB\",\r\n        \"maintenanceWindow\":
+        {\r\n          \"startDateTime\": \"2020-08-12 03:00\",\r\n          \"expirationDateTime\":
+        \"9999-12-31 23:59\",\r\n          \"duration\": \"05:00\",\r\n          \"timeZone\":
+        \"Pacific Standard Time\",\r\n          \"recurEvery\": \"Day\"\r\n        },\r\n
+        \       \"visibility\": \"Public\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/smdtest/providers/microsoft.maintenance/maintenanceconfigurations/sql2\",\r\n
+        \     \"name\": \"sql2\",\r\n      \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n
+        \   },\r\n    {\r\n      \"location\": \"eastus2euap\",\r\n      \"tags\":
+        {},\r\n      \"properties\": {\r\n        \"extensionProperties\": {\r\n          \"publicMaintenanceConfigurationId\":
+        \"randomc\",\r\n          \"isAvailable\": \"true\"\r\n        },\r\n        \"maintenanceScope\":
+        \"SQLDB\",\r\n        \"maintenanceWindow\": {\r\n          \"startDateTime\":
+        \"2020-08-13 03:00\",\r\n          \"expirationDateTime\": \"9999-12-31 23:59\",\r\n
+        \         \"duration\": \"05:00\",\r\n          \"timeZone\": \"Pacific Standard
+        Time\",\r\n          \"recurEvery\": \"Day\"\r\n        },\r\n        \"visibility\":
+        \"Public\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/smdtest/providers/microsoft.maintenance/maintenanceconfigurations/randomc\",\r\n
+        \     \"name\": \"randomc\",\r\n      \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n
+        \   },\r\n    {\r\n      \"location\": \"eastus2euap\",\r\n      \"tags\":
+        {},\r\n      \"properties\": {\r\n        \"namespace\": \"Microsoft.Maintenance\",\r\n
+        \       \"extensionProperties\": {\r\n          \"publicMaintenanceConfigurationId\":
+        \"sqlcli\",\r\n          \"isAvailable\": \"true\"\r\n        },\r\n        \"maintenanceScope\":
+        \"SQLDB\",\r\n        \"maintenanceWindow\": {\r\n          \"startDateTime\":
+        \"2020-09-30 08:00\",\r\n          \"expirationDateTime\": \"9999-12-31 00:00\",\r\n
+        \         \"duration\": \"05:00\",\r\n          \"timeZone\": \"Pacific Standard
+        Time\",\r\n          \"recurEvery\": \"Day\"\r\n        },\r\n        \"visibility\":
+        \"Public\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/schedulerrg/providers/microsoft.maintenance/maintenanceconfigurations/sqlcli\",\r\n
+        \     \"name\": \"sqlcli\",\r\n      \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n
+        \   }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance update list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-name --resource-group --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/updates?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": []\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '19'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance applyupdate create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --provider-name --resource-group --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/applyUpdates/default?api-version=2020-07-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance applyupdate show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --provider-name --resource-group --resource-name --resource-type
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/applyUpdates/default?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"status\": \"Completed\",\r\n    \"resourceId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
+        \   \"lastUpdateTime\": \"0001-01-01T00:00:00\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/applyUpdates/default\",\r\n
+        \ \"name\": \"default\",\r\n  \"type\": \"Microsoft.Maintenance/applyUpdates\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --provider-name --resource-group --resource-name --resource-type --yes
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss/providers/Microsoft.Maintenance/configurationAssignments/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Sep 2020 02:18:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --resource-name --yes
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1?api-version=2020-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Sep 2020 02:18:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"namespace": "Microsoft.Maintenance",
+      "extensionProperties": {"publicMaintenanceConfigurationId": "sqlcli", "isAvailable":
+      "true"}, "maintenanceScope": "SQLDB", "visibility": "Public", "maintenanceWindow":
+      {"startDateTime": "2020-09-30 08:00", "expirationDateTime": "9999-12-31 00:00",
+      "duration": "05:00", "timeZone": "Pacific Standard Time", "recurEvery": "Day"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '409'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --maintenance-scope --maintenance-window-duration --maintenance-window-expiration-date-time
+        --maintenance-window-recur-every --maintenance-window-start-date-time --maintenance-window-time-zone
+        --namespace --visibility --resource-group --resource-name --extension-properties
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/sqlcli?api-version=2020-07-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus2euap\",\r\n  \"tags\": {},\r\n  \"properties\":
+        {\r\n    \"namespace\": \"Microsoft.Maintenance\",\r\n    \"extensionProperties\":
+        {\r\n      \"publicMaintenanceConfigurationId\": \"sqlcli\",\r\n      \"isAvailable\":
+        \"true\"\r\n    },\r\n    \"maintenanceScope\": \"SQLDB\",\r\n    \"maintenanceWindow\":
+        {\r\n      \"startDateTime\": \"2020-09-30 08:00\",\r\n      \"expirationDateTime\":
+        \"9999-12-31 00:00\",\r\n      \"duration\": \"05:00\",\r\n      \"timeZone\":
+        \"Pacific Standard Time\",\r\n      \"recurEvery\": \"Day\"\r\n    },\r\n
+        \   \"visibility\": \"Public\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/sqlcli\",\r\n
+        \ \"name\": \"sqlcli\",\r\n  \"type\": \"Microsoft.Maintenance/maintenanceConfigurations\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '829'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --resource-name --yes
+      User-Agent:
+      - AZURECLI/2.11.1 azsdk-python-maintenanceclient/unknown Python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/sqlcli?api-version=2020-07-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Sep 2020 02:18:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-compute/13.0.0 Azure-SDK-For-Python AZURECLI/2.11.1
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/7932b62f-846d-46ae-a9b7-20a8853c8c11?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Sep 2020 02:18:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/7932b62f-846d-46ae-a9b7-20a8853c8c11?monitor=true&api-version=2020-06-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/DeleteVMScaleSet3Min;79,Microsoft.Compute/DeleteVMScaleSet30Min;398,Microsoft.Compute/VMScaleSetBatchedVMRequests5Min;1198,Microsoft.Compute/VmssQueuedVMOperations;4798
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-request-charge:
+      - '2'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-compute/13.0.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/7932b62f-846d-46ae-a9b7-20a8853c8c11?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2020-09-02T02:18:27.5039331+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"7932b62f-846d-46ae-a9b7-20a8853c8c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperation3Min;14995,Microsoft.Compute/GetOperation30Min;29979
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-compute/13.0.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/7932b62f-846d-46ae-a9b7-20a8853c8c11?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2020-09-02T02:18:27.5039331+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"7932b62f-846d-46ae-a9b7-20a8853c8c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:18:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperation3Min;14994,Microsoft.Compute/GetOperation30Min;29978
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmss delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.7.6 (Linux-4.19.76-linuxkit-x86_64-with-debian-10.3) msrest/0.6.18
+        msrest_azure/0.6.4 azure-mgmt-compute/13.0.0 Azure-SDK-For-Python AZURECLI/2.11.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/7932b62f-846d-46ae-a9b7-20a8853c8c11?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2020-09-02T02:18:27.5039331+00:00\",\r\n  \"endTime\":
+        \"2020-09-02T02:18:57.4728431+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"7932b62f-846d-46ae-a9b7-20a8853c8c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Sep 2020 02:19:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperation3Min;14992,Microsoft.Compute/GetOperation30Min;29976
+    status:
+      code: 200
+      message: OK
+version: 1

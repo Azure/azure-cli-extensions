@@ -72,7 +72,7 @@ def load_command_table(self, _):
     with self.command_group('monitor app-insights component', command_type=components_sdk, custom_command_type=components_custom_sdk) as g:
         g.custom_command('create', 'create_or_update_component')
         g.custom_command('update', 'update_component')
-        g.custom_command('show', 'show_components')
+        g.custom_show_command('show', 'show_components')
         g.custom_command('delete', 'delete_component')
         g.custom_command('update-tags', 'update_component_tags')
 
@@ -82,15 +82,15 @@ def load_command_table(self, _):
 
     with self.command_group('monitor app-insights api-key', command_type=api_key_sdk, custom_command_type=api_key_custom_sdk) as g:
         g.custom_command('create', 'create_api_key')
-        g.custom_command('show', 'show_api_key')
+        g.custom_show_command('show', 'show_api_key')
         g.custom_command('delete', 'delete_api_key')
 
     with self.command_group('monitor app-insights metrics', metrics_sdk) as g:
-        g.custom_command('show', 'get_metric')
+        g.custom_show_command('show', 'get_metric')
         g.custom_command('get-metadata', 'get_metrics_metadata')
 
     with self.command_group('monitor app-insights events', events_sdk) as g:
-        g.custom_command('show', 'get_events')
+        g.custom_show_command('show', 'get_events')
 
     with self.command_group('monitor app-insights', query_sdk) as g:
         g.custom_command('query', 'execute_query')

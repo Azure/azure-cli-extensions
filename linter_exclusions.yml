@@ -1,23 +1,484 @@
+account create:
+  parameters:
+    enrollment_account_name:
+      rule_exclusions:
+      - option_length_too_long
+account subscription create-in-enrollment-account:
+  parameters:
+    enrollment_account_name:
+      rule_exclusions:
+      - option_length_too_long
 aks create:
   parameters:
-    node_resource_group:
+    aad_admin_group_object_ids:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
+    aad_server_app_secret:
+      rule_exclusions:
+      - option_length_too_long
+    api_server_authorized_ip_ranges:
+      rule_exclusions:
+      - option_length_too_long
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_autoscaler_profile:
+      rule_exclusions:
+      - option_length_too_long
+    docker_bridge_address:
+      rule_exclusions:
+      - option_length_too_long
+    enable_cluster_autoscaler:
+      rule_exclusions:
+      - option_length_too_long
+    enable_managed_identity:
+      rule_exclusions:
+      - option_length_too_long
+    enable_node_public_ip:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_security_policy:
+      rule_exclusions:
+      - option_length_too_long
+    enable_private_cluster:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ip_prefixes:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ips:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    node_osdisk_diskencryptionset_id:
+      rule_exclusions:
+      - option_length_too_long
+    skip_subnet_role_assignment:
+      rule_exclusions:
+      - option_length_too_long
+    windows_admin_password:
+      rule_exclusions:
+      - option_length_too_long
+    windows_admin_username:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+aks enable-addons:
+  parameters:
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+aks nodepool add:
+  parameters:
+    enable_node_public_ip:
+      rule_exclusions:
+      - option_length_too_long
+aks update:
+  parameters:
+    aad_admin_group_object_ids:
+      rule_exclusions:
+      - option_length_too_long
+    api_server_authorized_ip_ranges:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_autoscaler_profile:
+      rule_exclusions:
+      - option_length_too_long
+    disable_pod_security_policy:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_security_policy:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ip_prefixes:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ips:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+batch job create:
+  parameters:
+    job_manager_task_command_line:
+      rule_exclusions:
+      - option_length_too_long
+    job_manager_task_environment_settings:
+      rule_exclusions:
+      - option_length_too_long
+    job_manager_task_resource_files:
+      rule_exclusions:
+      - option_length_too_long
+    job_max_task_retry_count:
+      rule_exclusions:
+      - option_length_too_long
+    job_max_wall_clock_time:
+      rule_exclusions:
+      - option_length_too_long
+    uses_task_dependencies:
+      rule_exclusions:
+      - option_length_too_long
+batch pool create:
+  parameters:
+    application_package_references:
+      rule_exclusions:
+      - option_length_too_long
+    certificate_references:
+      rule_exclusions:
+      - option_length_too_long
+    disk_encryption_targets:
+      rule_exclusions:
+      - option_length_too_long
+    enable_inter_node_communication:
+      rule_exclusions:
+      - option_length_too_long
+    start_task_command_line:
+      rule_exclusions:
+      - option_length_too_long
+    start_task_resource_files:
+      rule_exclusions:
+      - option_length_too_long
+    start_task_wait_for_success:
+      rule_exclusions:
+      - option_length_too_long
+    target_dedicated_nodes:
+      rule_exclusions:
+      - option_length_too_long
+    target_low_priority_nodes:
+      rule_exclusions:
+      - option_length_too_long
+blockchain member create:
+  parameters:
+    consortium_management_account_password:
+      rule_exclusions:
+      - option_length_too_long
+blockchain member update:
+  parameters:
+    consortium_management_account_password:
+      rule_exclusions:
+      - option_length_too_long
+blueprint assignment create:
+  parameters:
+    identity_user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+    locks_excluded_principals:
+      rule_exclusions:
+      - option_length_too_long
 blueprint assignment update:
   parameters:
     identity_type:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+    identity_user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+    locks_excluded_principals:
+      rule_exclusions:
+      - option_length_too_long
+boards iteration team set-default-iteration:
+  parameters:
+    default_iteration_macro:
+      rule_exclusions:
+      - option_length_too_long
+codespace plan create:
+  parameters:
+    default_autoshutdown_delay:
+      rule_exclusions:
+      - option_length_too_long
+    default_sku_name:
+      rule_exclusions:
+      - option_length_too_long
+costmanagement export create:
+  parameters:
+    definition_dataset_configuration:
+      rule_exclusions:
+      - option_length_too_long
+costmanagement export update:
+  parameters:
+    definition_dataset_configuration:
+      rule_exclusions:
+      - option_length_too_long
+costmanagement query:
+  parameters:
+    dataset_configuration:
+      rule_exclusions:
+      - option_length_too_long
+databox job create:
+  parameters:
+    resource_group_for_managed_disk:
+      rule_exclusions:
+      - option_length_too_long
+    staging_storage_account:
+      rule_exclusions:
+      - option_length_too_long
 databricks workspace create:
   parameters:
     managed_resource_group:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
+    require_infrastructure_encryption:
+      rule_exclusions:
+      - option_length_too_long
+databricks workspace vnet-peering create:
+  parameters:
+    allow_forwarded_traffic:
+      rule_exclusions:
+      - option_length_too_long
+    allow_gateway_transit:
+      rule_exclusions:
+      - option_length_too_long
+    allow_virtual_network_access:
+      rule_exclusions:
+      - option_length_too_long
+databricks workspace vnet-peering update:
+  parameters:
+    allow_forwarded_traffic:
+      rule_exclusions:
+      - option_length_too_long
+    allow_gateway_transit:
+      rule_exclusions:
+      - option_length_too_long
+    allow_virtual_network_access:
+      rule_exclusions:
+      - option_length_too_long
+datafactory factory configure-factory-repo:
+  parameters:
+    factory_git_hub_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    factory_vsts_configuration:
+      rule_exclusions:
+      - option_length_too_long
+datafactory factory create:
+  parameters:
+    factory_git_hub_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    factory_vsts_configuration:
+      rule_exclusions:
+      - option_length_too_long
+datafactory factory get-git-hub-access-token:
+  parameters:
+    git_hub_access_token_base_url:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime linked-integration-runtime create:
+  parameters:
+    integration_runtime_name:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime managed create:
+  parameters:
+    type_properties_compute_properties:
+      rule_exclusions:
+      - option_length_too_long
+    type_properties_ssis_properties:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime self-hosted create:
+  parameters:
+    type_properties_linked_info:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime-node delete:
+  parameters:
+    integration_runtime_name:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime-node get-ip-address:
+  parameters:
+    integration_runtime_name:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime-node show:
+  parameters:
+    integration_runtime_name:
+      rule_exclusions:
+      - option_length_too_long
+datafactory integration-runtime-node update:
+  parameters:
+    concurrent_jobs_limit:
+      rule_exclusions:
+      - option_length_too_long
+    integration_runtime_name:
+      rule_exclusions:
+      - option_length_too_long
+datafactory pipeline create-run:
+  parameters:
+    reference_pipeline_run_id:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer dataset-mapping create:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer dataset-mapping delete:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer dataset-mapping list:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer dataset-mapping show:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription create:
+  parameters:
+    source_share_location:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription list-source-dataset:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription list-source-share-synchronization-setting:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription synchronization cancel:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription synchronization list:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription synchronization list-detail:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription synchronization start:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer share-subscription synchronization wait:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer trigger create:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer trigger delete:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer trigger list:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer trigger show:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare consumer trigger wait:
+  parameters:
+    share_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+datashare invitation create:
+  parameters:
+    target_active_directory_id:
+      rule_exclusions:
+      - option_length_too_long
+desktopvirtualization applicationgroup create:
+  parameters:
+    application_group_type:
+      rule_exclusions:
+      - option_length_too_long
+desktopvirtualization hostpool create:
+  parameters:
+    personal_desktop_assignment_type:
+      rule_exclusions:
+      - option_length_too_long
+    validation_environment:
+      rule_exclusions:
+      - option_length_too_long
+desktopvirtualization hostpool update:
+  parameters:
+    personal_desktop_assignment_type:
+      rule_exclusions:
+      - option_length_too_long
+    validation_environment:
+      rule_exclusions:
+      - option_length_too_long
+desktopvirtualization workspace create:
+  parameters:
+    application_group_references:
+      rule_exclusions:
+      - option_length_too_long
+desktopvirtualization workspace update:
+  parameters:
+    application_group_references:
+      rule_exclusions:
+      - option_length_too_long
+devops project list:
+  parameters:
+    get_default_team_image_url:
+      rule_exclusions:
+      - option_length_too_long
 devops security permission update:
   parameters:
     merge:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+devops service-endpoint azurerm create:
+  parameters:
+    azure_rm_service_principal_certificate_path:
+      rule_exclusions:
+      - option_length_too_long
+    azure_rm_service_principal_id:
+      rule_exclusions:
+      - option_length_too_long
+    azure_rm_subscription_id:
+      rule_exclusions:
+      - option_length_too_long
+    azure_rm_subscription_name:
+      rule_exclusions:
+      - option_length_too_long
+devops service-endpoint create:
+  parameters:
+    service_endpoint_configuration:
+      rule_exclusions:
+      - option_length_too_long
 devops wiki page update:
   parameters:
     comment:
@@ -26,49 +487,348 @@ devops wiki page update:
     encoding:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-dt endpoint create servicebus:
+dms project task create:
   parameters:
-    servicebus_resource_group:
+    database_options_json:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
-dt endpoint create eventgrid:
+      - option_length_too_long
+    enable_data_integrity_validation:
+      rule_exclusions:
+      - option_length_too_long
+    enable_query_analysis_validation:
+      rule_exclusions:
+      - option_length_too_long
+    enable_schema_validation:
+      rule_exclusions:
+      - option_length_too_long
+    source_connection_json:
+      rule_exclusions:
+      - option_length_too_long
+    target_connection_json:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid domain create:
   parameters:
-    eventgrid_resource_group:
+    input_mapping_default_values:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
-dt endpoint create eventhub:
+      - option_length_too_long
+    public_network_access:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid domain update:
   parameters:
-    eventhub_resource_group:
+    public_network_access:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
+eventgrid event-subscription create:
+  parameters:
+    azure_active_directory_application_id_or_uri:
+      rule_exclusions:
+      - option_length_too_long
+    azure_active_directory_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
+    deadletter_identity_endpoint:
+      rule_exclusions:
+      - option_length_too_long
+    delivery_identity_endpoint:
+      rule_exclusions:
+      - option_length_too_long
+    delivery_identity_endpoint_type:
+      rule_exclusions:
+      - option_length_too_long
+    event_delivery_schema:
+      rule_exclusions:
+      - option_length_too_long
+    is_subject_case_sensitive:
+      rule_exclusions:
+      - option_length_too_long
+    max_delivery_attempts:
+      rule_exclusions:
+      - option_length_too_long
+    preferred_batch_size_in_kilobytes:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid event-subscription show:
+  parameters:
+    include_full_endpoint_url:
+      rule_exclusions:
+      - option_length_too_long
 eventgrid event-subscription update:
   parameters:
-    endpoint_type:
+    deadletter_identity_endpoint:
       rule_exclusions:
-      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    delivery_identity_endpoint:
+      rule_exclusions:
+      - option_length_too_long
+    delivery_identity_endpoint_type:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace create:
+  parameters:
+    partner_registration_id:
+      rule_exclusions:
+      - option_length_too_long
 eventgrid partner namespace event-channel create:
   parameters:
+    activation_expiration_date:
+      rule_exclusions:
+      - option_length_too_long
+    desination_topic_name:
+      rule_exclusions:
+      - option_length_too_long
     destination_resource_group:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
-eventgrid partner topic event-subscription update:
-  parameters:
-    endpoint_type:
+      - option_length_too_long
+    destination_subscription_id:
       rule_exclusions:
-      - no_parameter_defaults_for_update_commands
-eventgrid system-topic event-subscription update:
-  parameters:
-    endpoint_type:
+      - option_length_too_long
+    partner_namespace_name:
       rule_exclusions:
-      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    partner_topic_description:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace event-channel delete:
+  parameters:
+    partner_namespace_name:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace event-channel list:
+  parameters:
+    partner_namespace_name:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace event-channel show:
+  parameters:
+    partner_namespace_name:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace key list:
+  parameters:
+    partner_namespace_name:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner namespace key regenerate:
+  parameters:
+    partner_namespace_name:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner registration create:
+  parameters:
+    authorized_subscription_ids:
+      rule_exclusions:
+      - option_length_too_long
+    customer_service_extension:
+      rule_exclusions:
+      - option_length_too_long
+    customer_service_number:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner topic event-subscription create:
+  parameters:
+    azure_active_directory_application_id_or_uri:
+      rule_exclusions:
+      - option_length_too_long
+    azure_active_directory_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
+    event_delivery_schema:
+      rule_exclusions:
+      - option_length_too_long
+    is_subject_case_sensitive:
+      rule_exclusions:
+      - option_length_too_long
+    max_delivery_attempts:
+      rule_exclusions:
+      - option_length_too_long
+    preferred_batch_size_in_kilobytes:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid partner topic event-subscription show:
+  parameters:
+    include_full_endpoint_url:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid system-topic event-subscription create:
+  parameters:
+    azure_active_directory_application_id_or_uri:
+      rule_exclusions:
+      - option_length_too_long
+    azure_active_directory_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
+    event_delivery_schema:
+      rule_exclusions:
+      - option_length_too_long
+    is_subject_case_sensitive:
+      rule_exclusions:
+      - option_length_too_long
+    max_delivery_attempts:
+      rule_exclusions:
+      - option_length_too_long
+    preferred_batch_size_in_kilobytes:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid system-topic event-subscription show:
+  parameters:
+    include_full_endpoint_url:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid topic create:
+  parameters:
+    input_mapping_default_values:
+      rule_exclusions:
+      - option_length_too_long
+    public_network_access:
+      rule_exclusions:
+      - option_length_too_long
+eventgrid topic update:
+  parameters:
+    public_network_access:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-assignment create:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_parameter:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_setting:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_version:
+      rule_exclusions:
+      - option_length_too_long
+    latest_assignment_report_assignment:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-assignment update:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_parameter:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_setting:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_version:
+      rule_exclusions:
+      - option_length_too_long
+    latest_assignment_report_assignment:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-assignment-report list:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-assignment-report show:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment create:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_parameter:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_setting:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_version:
+      rule_exclusions:
+      - option_length_too_long
+    latest_assignment_report_assignment:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment delete:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment show:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment update:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_parameter:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_configuration_setting:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    guest_configuration_version:
+      rule_exclusions:
+      - option_length_too_long
+    latest_assignment_report_assignment:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment wait:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment-report list:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+guestconfig guest-configuration-hcrp-assignment-report show:
+  parameters:
+    guest_configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
 image copy:
   parameters:
     source_resource_group_name:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
     target_resource_group_name:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
+    temporary_resource_group_name:
+      rule_exclusions:
+      - option_length_too_long
+      - option_should_not_contain_under_score
+import-export create:
+  parameters:
+    backup_drive_manifest:
+      rule_exclusions:
+      - option_length_too_long
+    incomplete_blob_list_uri:
+      rule_exclusions:
+      - option_length_too_long
+import-export update:
+  parameters:
+    backup_drive_manifest:
+      rule_exclusions:
+      - option_length_too_long
 iot pnp capability-model update:
   parameters:
     repo_endpoint:
@@ -79,53 +839,1196 @@ iot pnp interface update:
     repo_endpoint:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+k8sconfiguration create:
+  parameters:
+    helm_operator_version:
+      rule_exclusions:
+      - option_length_too_long
+    operator_instance_name:
+      rule_exclusions:
+      - option_length_too_long
+k8sconfiguration update:
+  parameters:
+    helm_operator_version:
+      rule_exclusions:
+      - option_length_too_long
+kusto attached-database-configuration create:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    default_principals_modification_kind:
+      rule_exclusions:
+      - option_length_too_long
+kusto attached-database-configuration delete:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto attached-database-configuration show:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto attached-database-configuration update:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+    default_principals_modification_kind:
+      rule_exclusions:
+      - option_length_too_long
+kusto attached-database-configuration wait:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster create:
+  parameters:
+    enable_disk_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    enable_double_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    enable_streaming_ingest:
+      rule_exclusions:
+      - option_length_too_long
+    identity_user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+    trusted_external_tenants:
+      rule_exclusions:
+      - option_length_too_long
+    virtual_network_configuration:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster detach-follower-database:
+  parameters:
+    attached_database_configuration_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster update:
+  parameters:
+    enable_disk_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    enable_double_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    enable_streaming_ingest:
+      rule_exclusions:
+      - option_length_too_long
+    identity_user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+    trusted_external_tenants:
+      rule_exclusions:
+      - option_length_too_long
+    virtual_network_configuration:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster-principal-assignment create:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster-principal-assignment delete:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster-principal-assignment show:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster-principal-assignment update:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto cluster-principal-assignment wait:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-grid create:
+  parameters:
+    blob_storage_event_type:
+      rule_exclusions:
+      - option_length_too_long
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-grid data-connection-validation:
+  parameters:
+    blob_storage_event_type:
+      rule_exclusions:
+      - option_length_too_long
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-grid update:
+  parameters:
+    blob_storage_event_type:
+      rule_exclusions:
+      - option_length_too_long
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-hub create:
+  parameters:
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-hub data-connection-validation:
+  parameters:
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection event-hub update:
+  parameters:
+    event_hub_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection iot-hub create:
+  parameters:
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+    shared_access_policy_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection iot-hub data-connection-validation:
+  parameters:
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+    shared_access_policy_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto data-connection iot-hub update:
+  parameters:
+    event_system_properties:
+      rule_exclusions:
+      - option_length_too_long
+    shared_access_policy_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto database create:
+  parameters:
+    read_only_following_database:
+      rule_exclusions:
+      - option_length_too_long
+kusto database update:
+  parameters:
+    read_only_following_database:
+      rule_exclusions:
+      - option_length_too_long
+kusto database-principal-assignment create:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto database-principal-assignment delete:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto database-principal-assignment show:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto database-principal-assignment update:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+kusto database-principal-assignment wait:
+  parameters:
+    principal_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+logic integration-account create:
+  parameters:
+    integration_service_environment:
+      rule_exclusions:
+      - option_length_too_long
+logic integration-account update:
+  parameters:
+    integration_service_environment:
+      rule_exclusions:
+      - option_length_too_long
+logic workflow create:
+  parameters:
+    endpoints_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    integration_service_environment:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment create:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment delete:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
 maintenance configuration update:
   parameters:
     maintenanceScope:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+ml computetarget create aks:
+  parameters:
+    ssl_leaf_domain_label:
+      rule_exclusions:
+      - option_length_too_long
+    vnet_resourcegroup_name:
+      rule_exclusions:
+      - option_length_too_long
+ml computetarget create amlcompute:
+  parameters:
+    idle_seconds_before_scaledown:
+      rule_exclusions:
+      - option_length_too_long
+    remote_login_port_public_access:
+      rule_exclusions:
+      - option_length_too_long
+    vnet_resourcegroup_name:
+      rule_exclusions:
+      - option_length_too_long
+ml computetarget create computeinstance:
+  parameters:
+    admin_user_ssh_public_key:
+      rule_exclusions:
+      - option_length_too_long
+    vnet_resourcegroup_name:
+      rule_exclusions:
+      - option_length_too_long
+ml computetarget update aks:
+  parameters:
+    ssl_leaf_domain_label:
+      rule_exclusions:
+      - option_length_too_long
+ml computetarget update amlcompute:
+  parameters:
+    idle_seconds_before_scaledown:
+      rule_exclusions:
+      - option_length_too_long
+ml endpoint realtime get-logs:
+  parameters:
+    num_lines:
+      rule_exclusions:
+      - option_should_not_contain_under_score
 ml endpoint realtime update:
   parameters:
     context:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+ml model register:
+  parameters:
+    model_framework_version:
+      rule_exclusions:
+      - option_length_too_long
+    sample_input_dataset_id:
+      rule_exclusions:
+      - option_length_too_long
+    sample_output_dataset_id:
+      rule_exclusions:
+      - option_length_too_long
 ml model update:
   parameters:
     context:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+    sample_input_dataset_id:
+      rule_exclusions:
+      - option_length_too_long
+    sample_output_dataset_id:
+      rule_exclusions:
+      - option_length_too_long
+ml service get-logs:
+  parameters:
+    num_lines:
+      rule_exclusions:
+      - option_should_not_contain_under_score
 ml service update:
   parameters:
     context:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+monitor action-rule create:
+  parameters:
+    suppression_recurrence:
+      rule_exclusions:
+      - option_length_too_long
+    suppression_recurrence_type:
+      rule_exclusions:
+      - option_length_too_long
+    suppression_start_date:
+      rule_exclusions:
+      - option_length_too_long
+    suppression_start_time:
+      rule_exclusions:
+      - option_length_too_long
 monitor action-rule list:
   parameters:
     target_resource_group:
       rule_exclusions:
-      - parameter_should_not_end_in_resource_group
+      - option_length_too_long
+network cross-connection peering create:
+  parameters:
+    advertised_public_prefixes:
+      rule_exclusions:
+      - option_length_too_long
+    cross_connection_name:
+      rule_exclusions:
+      - option_length_too_long
+    routing_registry_name:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_peer_address_prefix:
+      rule_exclusions:
+      - option_length_too_long
+network cross-connection peering delete:
+  parameters:
+    cross_connection_name:
+      rule_exclusions:
+      - option_length_too_long
+network cross-connection peering list:
+  parameters:
+    cross_connection_name:
+      rule_exclusions:
+      - option_length_too_long
+network cross-connection peering show:
+  parameters:
+    cross_connection_name:
+      rule_exclusions:
+      - option_length_too_long
 network cross-connection peering update:
   parameters:
+    advertised_public_prefixes:
+      rule_exclusions:
+      - option_length_too_long
+    cross_connection_name:
+      rule_exclusions:
+      - option_length_too_long
     ip_version:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+    routing_registry_name:
+      rule_exclusions:
+      - option_length_too_long
+    secondary_peer_address_prefix:
+      rule_exclusions:
+      - option_length_too_long
+network firewall create:
+  parameters:
+    require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
 network firewall management-ip-config update:
   parameters:
     subnet:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+network firewall nat-rule create:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+network firewall network-rule create:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    destination_ip_groups:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy create:
+  parameters:
+    require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection add-filter-collection:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    destination_ip_groups:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection add-nat-collection:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection list:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection remove:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection rule add:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    destination_ip_groups:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group collection rule remove:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy update:
+  parameters:
+    require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
+network firewall update:
+  parameters:
+    require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
+network front-door backend-pool backend add:
+  parameters:
+    private_link_approval_message:
+      rule_exclusions:
+      - option_length_too_long
+    private_link_location:
+      rule_exclusions:
+      - option_length_too_long
+    private_link_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+network front-door create:
+  parameters:
+    enforce_certificate_name_check:
+      rule_exclusions:
+      - option_length_too_long
+network front-door frontend-endpoint create:
+  parameters:
+    session_affinity_enabled:
+      rule_exclusions:
+      - option_length_too_long
+network front-door load-balancing create:
+  parameters:
+    successful_samples_required:
+      rule_exclusions:
+      - option_length_too_long
+network front-door routing-rule create:
+  parameters:
+    custom_forwarding_path:
+      rule_exclusions:
+      - option_length_too_long
+    query_parameter_strip_directive:
+      rule_exclusions:
+      - option_length_too_long
+network front-door routing-rule update:
+  parameters:
+    custom_forwarding_path:
+      rule_exclusions:
+      - option_length_too_long
+    query_parameter_strip_directive:
+      rule_exclusions:
+      - option_length_too_long
+network front-door rules-engine rule action add:
+  parameters:
+    custom_forwarding_path:
+      rule_exclusions:
+      - option_length_too_long
+    query_parameter_strip_directive:
+      rule_exclusions:
+      - option_length_too_long
+network front-door rules-engine rule create:
+  parameters:
+    match_processing_behavior:
+      rule_exclusions:
+      - option_length_too_long
+network front-door rules-engine rule update:
+  parameters:
+    match_processing_behavior:
+      rule_exclusions:
+      - option_length_too_long
+network front-door update:
+  parameters:
+    enforce_certificate_name_check:
+      rule_exclusions:
+      - option_length_too_long
+network front-door waf-policy create:
+  parameters:
+    custom_block_response_body:
+      rule_exclusions:
+      - option_length_too_long
+    custom_block_response_status_code:
+      rule_exclusions:
+      - option_length_too_long
+network front-door waf-policy update:
+  parameters:
+    custom_block_response_body:
+      rule_exclusions:
+      - option_length_too_long
+    custom_block_response_status_code:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set a remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set aaaa remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set cname remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set mx remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set ptr remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set srv remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network private-dns record-set txt remove-record:
+  parameters:
+    keep_empty_record_set:
+      rule_exclusions:
+      - option_length_too_long
+network vhub connection create:
+  parameters:
+    allow_remote_vnet_to_use_hub_vnet_gateways:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-server-config create:
+  parameters:
+    radius_client_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+    radius_server_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_client_revoked_certs:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_client_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-server-config set:
+  parameters:
+    radius_client_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+    radius_server_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_client_revoked_certs:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_client_root_certs:
+      rule_exclusions:
+      - option_length_too_long
+network vwan create:
+  parameters:
+    branch_to_branch_traffic:
+      rule_exclusions:
+      - option_length_too_long
+    disable_vpn_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    security_provider_name:
+      rule_exclusions:
+      - option_length_too_long
+network vwan update:
+  parameters:
+    branch_to_branch_traffic:
+      rule_exclusions:
+      - option_length_too_long
+    disable_vpn_encryption:
+      rule_exclusions:
+      - option_length_too_long
+    security_provider_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule create:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule delete:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule list:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule list-keys:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule regenerate-keys:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub authorization-rule show:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential adm update:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
 notification-hub credential apns update:
   parameters:
     endpoint:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential baidu update:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential gcm update:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential list:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential mpns update:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub credential wns update:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+notification-hub test-send:
+  parameters:
+    notification_hub_name:
+      rule_exclusions:
+      - option_length_too_long
+peering received-route list:
+  parameters:
+    origin_as_validation_state:
+      rule_exclusions:
+      - option_length_too_long
+    rpki_validation_state:
+      rule_exclusions:
+      - option_length_too_long
+peering registered-prefix create:
+  parameters:
+    registered_prefix_name:
+      rule_exclusions:
+      - option_length_too_long
+peering registered-prefix delete:
+  parameters:
+    registered_prefix_name:
+      rule_exclusions:
+      - option_length_too_long
+peering registered-prefix show:
+  parameters:
+    registered_prefix_name:
+      rule_exclusions:
+      - option_length_too_long
+peering registered-prefix update:
+  parameters:
+    registered_prefix_name:
+      rule_exclusions:
+      - option_length_too_long
+peering service create:
+  parameters:
+    peering_service_location:
+      rule_exclusions:
+      - option_length_too_long
+    peering_service_provider:
+      rule_exclusions:
+      - option_length_too_long
+peering service prefix create:
+  parameters:
+    peering_service_prefix_key:
+      rule_exclusions:
+      - option_length_too_long
+peering service prefix update:
+  parameters:
+    peering_service_prefix_key:
+      rule_exclusions:
+      - option_length_too_long
+pipelines agent list:
+  parameters:
+    include_assigned_request:
+      rule_exclusions:
+      - option_length_too_long
+    include_last_completed_request:
+      rule_exclusions:
+      - option_length_too_long
+pipelines agent show:
+  parameters:
+    include_assigned_request:
+      rule_exclusions:
+      - option_length_too_long
+    include_last_completed_request:
+      rule_exclusions:
+      - option_length_too_long
+pipelines release create:
+  parameters:
+    artifact_metadata_list:
+      rule_exclusions:
+      - option_length_too_long
+powerbi embedded-capacity create:
+  parameters:
+    administration_members:
+      rule_exclusions:
+      - option_length_too_long
+powerbi embedded-capacity update:
+  parameters:
+    administration_members:
+      rule_exclusions:
+      - option_length_too_long
+repos import create:
+  parameters:
+    git_service_endpoint_id:
+      rule_exclusions:
+      - option_length_too_long
+    requires_authorization:
+      rule_exclusions:
+      - option_length_too_long
+repos policy approver-count create:
+  parameters:
+    minimum_approver_count:
+      rule_exclusions:
+      - option_length_too_long
+repos policy approver-count update:
+  parameters:
+    minimum_approver_count:
+      rule_exclusions:
+      - option_length_too_long
+repos policy build create:
+  parameters:
+    queue_on_source_update_only:
+      rule_exclusions:
+      - option_length_too_long
+repos policy build update:
+  parameters:
+    queue_on_source_update_only:
+      rule_exclusions:
+      - option_length_too_long
+repos policy file-size create:
+  parameters:
+    maximum_git_blob_size:
+      rule_exclusions:
+      - option_length_too_long
+    use_uncompressed_size:
+      rule_exclusions:
+      - option_length_too_long
+repos policy file-size update:
+  parameters:
+    maximum_git_blob_size:
+      rule_exclusions:
+      - option_length_too_long
+    use_uncompressed_size:
+      rule_exclusions:
+      - option_length_too_long
+repos policy merge-strategy create:
+  parameters:
+    allow_no_fast_forward:
+      rule_exclusions:
+      - option_length_too_long
+repos policy merge-strategy update:
+  parameters:
+    allow_no_fast_forward:
+      rule_exclusions:
+      - option_length_too_long
+repos policy required-reviewer create:
+  parameters:
+    required_reviewer_ids:
+      rule_exclusions:
+      - option_length_too_long
+repos policy required-reviewer update:
+  parameters:
+    required_reviewer_ids:
+      rule_exclusions:
+      - option_length_too_long
+repos pr create:
+  parameters:
+    transition_work_items:
+      rule_exclusions:
+      - option_length_too_long
+repos pr update:
+  parameters:
+    transition_work_items:
+      rule_exclusions:
+      - option_length_too_long
+sapmonitor create:
+  parameters:
+    disable_customer_analytics:
+      rule_exclusions:
+      - option_should_not_contain_under_score
+sapmonitor provider-instance create:
+  parameters:
+    provider_instance_metadata:
+      rule_exclusions:
+      - option_length_too_long
+    provider_instance_name:
+      rule_exclusions:
+      - option_length_too_long
+    provider_instance_properties:
+      rule_exclusions:
+      - option_length_too_long
+    provider_instance_type:
+      rule_exclusions:
+      - option_length_too_long
+sapmonitor provider-instance delete:
+  parameters:
+    provider_instance_name:
+      rule_exclusions:
+      - option_length_too_long
+sapmonitor provider-instance show:
+  parameters:
+    provider_instance_name:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud app create:
+  parameters:
+    enable_persistent_storage:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud app update:
+  parameters:
+    enable_persistent_storage:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud certificate add:
+  parameters:
+    vault_certificate_name:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud config-server git repo add:
+  parameters:
+    strict_host_key_checking:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud config-server git repo update:
+  parameters:
+    strict_host_key_checking:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud config-server git set:
+  parameters:
+    strict_host_key_checking:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud create:
+  parameters:
+    disable_distributed_tracing:
+      rule_exclusions:
+      - option_length_too_long
+spring-cloud update:
+  parameters:
+    disable_distributed_tracing:
+      rule_exclusions:
+      - option_length_too_long
+storage account create:
+  parameters:
+    hierarchical_namespace:
+      rule_exclusions:
+      - option_length_too_long
+storage account or-policy create:
+  parameters:
+    destination_container:
+      rule_exclusions:
+      - option_length_too_long
 storage account update:
   parameters:
     encryption_key_source:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    encryption_key_version:
+      rule_exclusions:
+      - option_length_too_long
 storage azcopy run-command:
   parameters:
     command_args:
       rule_exclusions:
       - no_positional_parameters
+storage blob directory move:
+  parameters:
+    source_if_modified_since:
+      rule_exclusions:
+      - option_length_too_long
+    source_if_unmodified_since:
+      rule_exclusions:
+      - option_length_too_long
+storage blob move:
+  parameters:
+    source_if_modified_since:
+      rule_exclusions:
+      - option_length_too_long
+    source_if_unmodified_since:
+      rule_exclusions:
+      - option_length_too_long
+storagesync registered-server wait:
+  parameters:
+    storage_sync_service_name:
+      rule_exclusions:
+      - option_length_too_long
+storagesync sync-group cloud-endpoint create:
+  parameters:
+    azure_file_share_name:
+      rule_exclusions:
+      - option_length_too_long
+    storage_account_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
+storagesync sync-group cloud-endpoint wait:
+  parameters:
+    storage_sync_service_name:
+      rule_exclusions:
+      - option_length_too_long
+storagesync sync-group server-endpoint create:
+  parameters:
+    offline_data_transfer:
+      rule_exclusions:
+      - option_length_too_long
+    offline_data_transfer_share_name:
+      rule_exclusions:
+      - option_length_too_long
+    tier_files_older_than_days:
+      rule_exclusions:
+      - option_length_too_long
+    volume_free_space_percent:
+      rule_exclusions:
+      - option_length_too_long
+storagesync sync-group server-endpoint update:
+  parameters:
+    offline_data_transfer:
+      rule_exclusions:
+      - option_length_too_long
+    offline_data_transfer_share_name:
+      rule_exclusions:
+      - option_length_too_long
+    tier_files_older_than_days:
+      rule_exclusions:
+      - option_length_too_long
+    volume_free_space_percent:
+      rule_exclusions:
+      - option_length_too_long
+storagesync sync-group server-endpoint wait:
+  parameters:
+    storage_sync_service_name:
+      rule_exclusions:
+      - option_length_too_long
+stream-analytics job create:
+  parameters:
+    events_late_arrival_max_delay:
+      rule_exclusions:
+      - option_length_too_long
+    events_outoforder_max_delay:
+      rule_exclusions:
+      - option_length_too_long
+    events_outoforder_policy:
+      rule_exclusions:
+      - option_length_too_long
+stream-analytics job update:
+  parameters:
+    events_late_arrival_max_delay:
+      rule_exclusions:
+      - option_length_too_long
+    events_outoforder_max_delay:
+      rule_exclusions:
+      - option_length_too_long
+    events_outoforder_policy:
+      rule_exclusions:
+      - option_length_too_long
+support services problem-classifications show:
+  parameters:
+    problem_classification_name:
+      rule_exclusions:
+      - option_length_too_long
+support tickets communications create:
+  parameters:
+    communication_subject:
+      rule_exclusions:
+      - option_length_too_long
+support tickets create:
+  parameters:
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+    problem_classification:
+      rule_exclusions:
+      - option_length_too_long
+    require_24_by_7_response:
+      rule_exclusions:
+      - option_length_too_long
+support tickets update:
+  parameters:
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+synapse spark job submit:
+  parameters:
+    command_line_arguments:
+      rule_exclusions:
+      - option_length_too_long
+synapse spark pool create:
+  parameters:
+    default_spark_log_folder:
+      rule_exclusions:
+      - option_length_too_long
+    library_requirements_file:
+      rule_exclusions:
+      - option_length_too_long
+synapse spark pool update:
+  parameters:
+    library_requirements_file:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights environment longterm create:
+  parameters:
+    storage_management_key:
+      rule_exclusions:
+      - option_length_too_long
+    time_series_id_properties:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights environment longterm update:
+  parameters:
+    storage_management_key:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights environment standard create:
+  parameters:
+    partition_key_properties:
+      rule_exclusions:
+      - option_length_too_long
+    storage_limit_exceeded_behavior:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights environment standard update:
+  parameters:
+    partition_key_properties:
+      rule_exclusions:
+      - option_length_too_long
+    storage_limit_exceeded_behavior:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights event-source eventhub create:
+  parameters:
+    event_source_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    timestamp_property_name:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights event-source eventhub update:
+  parameters:
+    local_timestamp_format:
+      rule_exclusions:
+      - option_length_too_long
+    timestamp_property_name:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights event-source iothub create:
+  parameters:
+    event_source_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    timestamp_property_name:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights event-source iothub update:
+  parameters:
+    local_timestamp_format:
+      rule_exclusions:
+      - option_length_too_long
+    timestamp_property_name:
+      rule_exclusions:
+      - option_length_too_long
+timeseriesinsights reference-data-set create:
+  parameters:
+    data_string_comparison_behavior:
+      rule_exclusions:
+      - option_length_too_long
+vm aem set:
+  parameters:
+    skip_storage_analytics:
+      rule_exclusions:
+      - option_length_too_long
+vmware private-cloud create:
+  parameters:
+    circuit_primary_subnet:
+      rule_exclusions:
+      - option_length_too_long
+    circuit_secondary_subnet:
+      rule_exclusions:
+      - option_length_too_long

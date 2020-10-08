@@ -1,5 +1,34 @@
 Release History
 ===============
+1.1.1
+-----
+* Reimport the updated version of Python SDK.
+
+1.1.0
+-----
+* Support Steeltoe feature.
+
+1.0.1
+-----
+* Optimize VNet Injection validator
+
+1.0.0
+-----
+* Bump version to 1.0.0
+
+0.5.1
+-----
+* Stream the build logs when deploying from source code
+* Fix distributed tracing issues
+
+0.5.0
+-----
+* Support Virtual Network injection feature.
+
+0.4.0
+-----
+* Remove 'cpu', 'memory' and 'instance-count' from 'az spring-cloud app deploy' command
+* Fix log streaming feature proxy issues
 
 0.3.1
 -----
