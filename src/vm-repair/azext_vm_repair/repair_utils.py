@@ -124,7 +124,7 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
-def _fetch_compatible_sku(source_vm):
+def _fetch_compatible_sku(source_vm, hyperv):
 
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
@@ -145,11 +145,12 @@ def _fetch_compatible_sku(source_vm):
     # TODO, premium IO only when needed
     list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'8\')] && ' \
+                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
+                       'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+                       'capabilities[?name==\'HyperVGenerations\' && value==\'V1\']].name" -o json'\
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')

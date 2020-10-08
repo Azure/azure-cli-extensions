@@ -99,6 +99,7 @@ else
     "END: Installing Hyper-V" | out-file -FilePath $logFile -Append
     $return.ExitCode
     write-host $return.ExitCode
+    return $return.ExitCode
 }
 
 $scriptEndTime = get-date -f yyyyMMddHHmmss
