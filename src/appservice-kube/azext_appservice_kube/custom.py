@@ -1140,6 +1140,10 @@ def list_publish_profiles(cmd, resource_group_name, name, slot=None):
 
     profiles = xmltodict.parse(full_xml, xml_attribs=True)['publishData']['publishProfile']
     converted = []
+
+    if type(profiles) is not list:
+        profiles = [profiles]
+
     for profile in profiles:
         new = {}
         for key in profile:
@@ -1538,8 +1542,9 @@ def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, auth
 
 def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
     profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
-    url = next(p['publishUrl'] for p in profiles if p['publishMethod'] == 'FTP')
-    setattr(webapp, 'ftpPublishingUrl', url)
+    url = next((p['publishUrl'] for p in profiles if p['publishMethod'] == 'FTP'), None)
+    if url:
+        setattr(webapp, 'ftpPublishingUrl', url)
     return webapp
 
 def _get_url(cmd, resource_group_name, name, slot=None):
