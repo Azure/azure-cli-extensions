@@ -24,6 +24,30 @@ duplication_validation () {
 		fi
 }
 
+locatebekvol () {
+	trapper
+	echo "`date` Locating BEK volume" >> ${logpath}/${logfile}
+	export bekdisk=`lsblk -l -o LABEL,NAME| grep BEK | awk '{print $NF}'`
+	if [ -z ${bekdisk} ]
+	then
+		echo "`date` No BEK disk found, cannot continue" >> ${logpath}/${logfile}
+		exit
+	else
+		echo "`date` the BEK Volume is ${bekdisk}" >> ${logpath}/${logfile}
+		export bekdisk=/dev/${bekdisk}
+	fi
+}
+
+mountbekvol () {
+	trapper
+	echo "`date` Mounting BEK volume" >> ${logpath}/${logfile}
+	export bekmountpath=/mnt/azure_bek_disk/
+	mkdir -p ${bekmountpath}
+	mount ${bekdisk} ${bekmountpath}
+	echo "`date` BEK Volume ${bekdisk} mounted on ${bekmountpath}"  >> ${logpath}/${logfile}
+}
+
+
 get_data_disk () {
 	trapper
 	echo "`date` Getting data disk" >> ${logpath}/${logfile} 2>&1
@@ -175,6 +199,8 @@ remount_boot () {
 setlog
 duplication_validation
 create_mountpoints
+locatebekvol
+mountbekvol
 get_data_disk
 check_local_lvm
 data_os_lvm_check
@@ -184,9 +210,4 @@ mount_boot
 unlock_root
 verify_root_unlock
 mount_encrypted
-<<<<<<< HEAD
 remount_boot
-
-=======
-remount_boot
->>>>>>> upstream/master
