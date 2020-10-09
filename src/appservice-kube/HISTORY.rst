@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Fix webapp show command
+
 0.1.4
 ++++++
 * Fix for including getfunctionsjson.sh in the extension package
