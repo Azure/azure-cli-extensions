@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.0
++++++
+* GA databricks extension
+
 0.6.0
 +++++
 * GA CMK feature
