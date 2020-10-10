@@ -21,7 +21,7 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
             )
         else:
             if cond.failing_periods.min_failing_periods_to_alert > cond.failing_periods.number_of_evaluation_periods:
-                raise CLIError('EvaluationPeriod must be greater or equals MinTimeToFail.')
+                raise CLIError('EvaluationPeriod must be greater than or equals to MinTimeToFail.')
     criteria = ScheduledQueryRuleCriteria(all_of=condition)
 
     kwargs = {
