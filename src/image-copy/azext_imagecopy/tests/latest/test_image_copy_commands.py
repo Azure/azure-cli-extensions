@@ -27,5 +27,5 @@ class ImageCopyTests(ScenarioTest):
         self.cmd('image create -g {rg} -n {image} --source {vm}')
         self.cmd('group create -g {rg2} -l eastus')
         self.cmd('image copy --source-object-name {image} --source-resource-group {rg} '
-                 '--target-location eastus --target-resource-group {rg2} --target-name {image}')
+                 '--target-location eastus --target-resource-group {rg2} --target-name {image} --target_sku Premium_LRS')
         self.cmd('image show -g {rg2} -n {image}', checks=[self.check('name', '{image}')])
