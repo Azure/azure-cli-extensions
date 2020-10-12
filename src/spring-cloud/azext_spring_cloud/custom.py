@@ -675,16 +675,32 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
 
+def is_valid_Git_URI(uri):
+    return (uri.startswith("https://") or uri.startswith("git@"))
+
 def validate_config_server_settings(client, resource_group, name, git_property):
-    result = sdk_no_wait(False, client.validate, resource_group, name, git_property).result()
+    error_msg = "Git URI should start with \"https://\" or \"git@\""
+    if git_property:
+        if (not is_valid_Git_URI(git_property.uri)):
+            raise CLIError(error_msg)
+        if git_property.repositories:
+            for repository in git_property.repositories:
+                if (not is_valid_Git_URI(repository.uri)):
+                    raise CLIError(error_msg)
+
+    try:
+        result = sdk_no_wait(False, client.validate, resource_group, name, git_property).result()
+    except Exception as err:  # pylint: disable=broad-except
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+
     if not result.is_valid:
         for item in result.details:
             if not item.name:
-                logger.error("Default Repository with uri \"%s\" meet error:", item.uri)
+                logger.error("Default repository with URI \"%s\" meets error:", item.uri)
             else:
-                logger.error("Pattern Repository with name \"%s\", uri \"%s\" meet error:", item.name, item.uri)
+                logger.error("Repository named \"%s\" with URI \"%s\" meets error:", item.name, item.uri)
             logger.error("\n".join(item.messages))
-        raise CLIError("Config server settings validate with error.")
+        raise CLIError("Config Server settings contain error.")
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     def standardization(dic):
