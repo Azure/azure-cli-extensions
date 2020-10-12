@@ -1090,7 +1090,7 @@ def process_blob_download_batch_parameters(cmd, namespace):
     _process_blob_batch_container_parameters(cmd, namespace)
 
     # 3. Call validators
-    add_progress_callback(cmd, namespace)
+    add_progress_callback_v2(cmd, namespace)
 
 
 def process_blob_upload_batch_parameters(cmd, namespace):
@@ -1135,7 +1135,7 @@ def process_blob_delete_batch_parameters(cmd, namespace):
 def _process_blob_batch_container_parameters(cmd, namespace, source=True):
     """Process the container parameters for storage blob batch commands before populating args from environment."""
     if source:
-        container_arg, container_name_arg = 'source', 'source_container_name'
+        container_arg, container_name_arg = 'source', 'container_name'
     else:
         # destination
         container_arg, container_name_arg = 'destination', 'container_name'

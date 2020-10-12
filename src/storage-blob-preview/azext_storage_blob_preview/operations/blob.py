@@ -10,13 +10,11 @@ from datetime import datetime
 
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.command_modules.storage.url_quote_util import encode_for_url, make_encoded_file_url_and_params
-from azure.cli.command_modules.storage.util import (create_blob_service_from_storage_client,
-                                                    create_file_share_from_storage_client,
-                                                    create_short_lived_share_sas,
-                                                    create_short_lived_container_sas,
-                                                    filter_none, collect_blobs, collect_blob_objects, collect_files,
-                                                    mkdir_p, guess_content_type, normalize_blob_file_path,
-                                                    check_precondition_success)
+from ..util import (create_blob_service_from_storage_client, create_file_share_from_storage_client,
+                    create_short_lived_share_sas, create_short_lived_container_sas,
+                    filter_none, collect_blobs, collect_blob_objects, collect_files,
+                    mkdir_p, guess_content_type, normalize_blob_file_path,
+                    check_precondition_success)
 from knack.log import get_logger
 from knack.util import CLIError
 from ..profiles import CUSTOM_DATA_STORAGE_BLOB
@@ -170,21 +168,9 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
 
 # pylint: disable=unused-argument
-def storage_blob_download_batch(client, source, destination, source_container_name, pattern=None, dryrun=False,
-                                progress_callback=None, max_connections=2):
-
-    def _download_blob(blob_service, container, destination_folder, normalized_blob_name, blob_name):
-        # TODO: try catch IO exception
-        destination_path = os.path.join(destination_folder, normalized_blob_name)
-        destination_folder = os.path.dirname(destination_path)
-        if not os.path.exists(destination_folder):
-            mkdir_p(destination_folder)
-
-        blob = blob_service.get_blob_to_path(container, blob_name, destination_path, max_connections=max_connections,
-                                             progress_callback=progress_callback)
-        return blob.name
-
-    source_blobs = collect_blobs(client, source_container_name, pattern)
+def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
+                                progress_callback=None, **kwargs):
+    source_blobs = collect_blobs(client, container_name, pattern)
     blobs_to_download = {}
     for blob_name in source_blobs:
         # remove starting path seperator and normalize
@@ -198,12 +184,16 @@ def storage_blob_download_batch(client, source, destination, source_container_na
     if dryrun:
         logger.warning('download action: from %s to %s', source, destination)
         logger.warning('    pattern %s', pattern)
-        logger.warning('  container %s', source_container_name)
+        logger.warning('  container %s', container_name)
         logger.warning('      total %d', len(source_blobs))
         logger.warning(' operations')
         for b in source_blobs:
             logger.warning('  - %s', b)
         return []
+    else:
+        @check_precondition_success
+        def _download_blob(*args, **kwargs):
+            return download_blob(*args, **kwargs)
 
     # Tell progress reporter to reuse the same hook
     if progress_callback:
@@ -215,8 +205,14 @@ def storage_blob_download_batch(client, source, destination, source_container_na
         if progress_callback:
             progress_callback.message = '{}/{}: "{}"'.format(
                 index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
-        results.append(_download_blob(
-            client, source_container_name, destination, blob_normed, blobs_to_download[blob_normed]))
+        blob_client = client.get_blob_client(container=container_name,
+                                             blob=blobs_to_download[blob_normed])
+        destination_path = os.path.join(destination, normalized_blob_name)
+        destination_folder = os.path.dirname(destination_path)
+        if not os.path.exists(destination_folder):
+            mkdir_p(destination_folder)
+        results.append(_download_blob(client=blob_client, file_path=destination_path,
+                                      progress_callback=progress_callback, **kwargs))
 
     # end progress hook
     if progress_callback:

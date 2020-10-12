@@ -262,6 +262,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
+    with self.argument_context('storage blob download-batch') as c:
+        c.ignore('container_name')
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('source', options_list=('--source', '-s'))
+        c.extra('max_concurrency', options_list='--max-connections', type=int, default=2,
+                help='The number of parallel connections with which to download.')
+        c.extra('no_progress', progress_type)
+        c.extra('socket_timeout', socket_timeout_type)
+        c.argument('max_connections', type=int,
+                   help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
+
     with self.argument_context('storage blob exists') as c:
         c.register_blob_arguments()
 
