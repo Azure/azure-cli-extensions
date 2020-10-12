@@ -9,7 +9,8 @@ from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_th
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
-                          validate_blob_type, validate_included_datasets_v2, add_progress_callback,
+                          validate_blob_type, validate_included_datasets_v2,
+                          add_progress_callback_v2,
                           validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
                           validate_container_delete_retention_days, validate_delete_retention_days,
                           process_resource_group)
@@ -57,7 +58,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
                                       completer=get_storage_name_completion_list(t_table_service, 'list_tables'))
     progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
-                                    action='store_true', validator=add_progress_callback)
+                                    action='store_true')
+    socket_timeout_type = CLIArgumentType(help='The socket timeout(secs), used by the service to regulate data flow.',
+                                          type=int)
     sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
                'referenced with --policy-name that specifies this value. Can be combined.'
 
@@ -179,6 +182,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
+        c.argument('destination_path', help='The destination path that will be appended to the blob name.')
+        c.argument('socket_timeout', deprecate_info=c.deprecate(),
+                   help='The socket timeout(secs), used by the service to regulate data flow.')
 
     with self.argument_context('storage blob copy start') as c:
         from ._validators import validate_source_url
@@ -226,7 +232,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         '"include": Deletes the blob along with all snapshots.')
 
     with self.argument_context('storage blob download') as c:
-        from ._validators import add_progress_callback_v2
         c.register_blob_arguments()
         c.register_precondition_options()
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
@@ -406,8 +411,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob upload') as c:
-        from ._validators import validate_encryption_scope_client_params, \
-            add_progress_callback_v2, validate_upload_blob
+        from ._validators import validate_encryption_scope_client_params, validate_upload_blob
+
         from .sdkutil import get_blob_types
 
         t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
@@ -446,6 +451,23 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', arg_type=tags_type, arg_group="Additional Flags")
         c.argument('metadata', arg_group="Additional Flags")
         c.argument('timeout', arg_group="Additional Flags")
+
+    with self.argument_context('storage blob upload-batch') as c:
+        from .sdkutil import get_blob_types
+
+        t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        c.register_precondition_options()
+        c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group='Content Control')
+        c.ignore('source_files', 'destination_container_name')
+
+        c.argument('source', options_list=('--source', '-s'))
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', type=int,
+                   help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
+        c.argument('maxsize_condition', arg_group='Content Control')
+        c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group='Content Control')
+        c.argument('blob_type', options_list=('--type', '-t'), arg_type=get_enum_type(get_blob_types()))
+        c.extra('no_progress', progress_type)
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

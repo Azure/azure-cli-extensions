@@ -89,6 +89,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         from azure.cli.command_modules.storage._format import transform_blob_output
         from ._transformers import transform_blob_list_output, transform_blob_json_output, transform_metadata,\
             create_boolean_result_output_transformer
+        from ._validators import (process_blob_download_batch_parameters, process_blob_delete_batch_parameters,
+                                  process_blob_upload_batch_parameters)
         g.storage_custom_command_oauth('list', 'list_blobs', client_factory=cf_container_client,
                                        transform=transform_blob_list_output,
                                        table_transformer=transform_blob_output)
@@ -109,6 +111,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=show_exception_handler)
         g.storage_command_oauth('undelete', 'undelete_blob')
         g.storage_custom_command_oauth('upload', 'upload_blob')
+        g.storage_custom_command_oauth('upload-batch', 'storage_blob_upload_batch', client_factory=cf_blob_service,
+                                       validator=process_blob_upload_batch_parameters)
+        g.storage_custom_command_oauth('download-batch', 'storage_blob_download_batch',
+                                       validator=process_blob_download_batch_parameters)
+        g.storage_custom_command_oauth('delete-batch', 'storage_blob_delete_batch',
+                                       validator=process_blob_delete_batch_parameters)
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',
