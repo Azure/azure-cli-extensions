@@ -23,7 +23,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # EXAMPLE: kustoclusterscreateorupdate
 @try_manual
 def step_kustoclusterscreateorupdate2(test, rg):
-    
+
     test.cmd('az kusto cluster create '
              '--cluster-name "{Clusters_2}" '
              '--identity-type "SystemAssigned" '
@@ -37,7 +37,7 @@ def step_kustoclusterscreateorupdate2(test, rg):
     test.cmd('az kusto cluster wait --created '
              '--cluster-name "{Clusters_2}" '
              '--resource-group "{rg}"',
-             checks=[])         
+             checks=[])
 
 
 # EXAMPLE: kustoclusterscreateorupdate
@@ -402,6 +402,7 @@ def step_kustodataconnectionsdelete(test, rg):
              '--resource-group "{rg}"',
              checks=[])
 
+
 @try_manual
 def call_scenario(test, rg):
    
@@ -438,7 +439,7 @@ def call_scenario(test, rg):
     step_kustooperationslist(test, rg)
     step_kustodatabasesdelete(test, rg)
     step_kustoclustersdelete(test, rg)
-    
+ 
 
 @try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
