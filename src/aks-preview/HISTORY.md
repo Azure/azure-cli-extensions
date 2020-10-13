@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.64
++++++
+* Add support for Open Service Mesh as an AKS addon
+* Add support to get available upgrade versions for an agent pool in AKS
+
 0.4.63
 +++++
 * Enable the September (2020-09-01) for use with the AKS commands
