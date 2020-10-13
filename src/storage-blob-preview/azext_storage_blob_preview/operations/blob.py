@@ -344,21 +344,20 @@ def _blob_precondition_check(source_blobs, if_modified_since=None, if_unmodified
     if_unmodified_since_utc = if_unmodified_since.replace(tzinfo=timezone.utc) if if_unmodified_since else None
     result = []
     for blob in source_blobs:
-        if not if_modified_since or blob[1].properties.last_modified >= if_modified_since_utc:
-            if not if_unmodified_since or blob[1].properties.last_modified <= if_unmodified_since_utc:
+        if not if_modified_since or blob[1].last_modified >= if_modified_since_utc:
+            if not if_unmodified_since or blob[1].last_modified <= if_unmodified_since_utc:
                 result.append(blob[0])
     return result
 
 
-def storage_blob_delete_batch(client, source, source_container_name, pattern=None, lease_id=None,
+def storage_blob_delete_batch(client, source, container_name, pattern=None, lease_id=None,
                               delete_snapshots=None, if_modified_since=None, if_unmodified_since=None, if_match=None,
-                              if_none_match=None, timeout=None, dryrun=False):
+                              if_none_match=None, timeout=None, dryrun=False, **kwargs):
     @check_precondition_success
     def _delete_blob(blob_name):
+        blob_client = client.get_blob_client(container=container_name, blob=blob_name)
         delete_blob_args = {
-            'container_name': source_container_name,
-            'blob_name': blob_name,
-            'lease_id': lease_id,
+            'lease': lease_id,
             'delete_snapshots': delete_snapshots,
             'if_modified_since': if_modified_since,
             'if_unmodified_since': if_unmodified_since,
@@ -366,16 +365,16 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
             'if_none_match': if_none_match,
             'timeout': timeout
         }
-        return client.delete_blob(**delete_blob_args)
+        return blob_client.delete_blob(**delete_blob_args)
 
-    source_blobs = list(collect_blob_objects(client, source_container_name, pattern))
+    source_blobs = list(collect_blob_objects(client, container_name, pattern))
 
     if dryrun:
         delete_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
                                                 if_unmodified_since=if_unmodified_since)
         logger.warning('delete action: from %s', source)
         logger.warning('    pattern %s', pattern)
-        logger.warning('  container %s', source_container_name)
+        logger.warning('  container %s', container_name)
         logger.warning('      total %d', len(delete_blobs))
         logger.warning(' operations')
         for blob in delete_blobs:

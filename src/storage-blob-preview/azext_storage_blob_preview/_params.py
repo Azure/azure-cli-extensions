@@ -121,6 +121,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     timeout_type = CLIArgumentType(
         help='Request timeout in seconds. Applies to each call to the service.', type=int
     )
+    t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
+                                      resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    delete_snapshots_type = CLIArgumentType(
+        arg_type=get_enum_type(t_delete_snapshots),
+        help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
+             '"include": Deletes the blob along with all snapshots.')
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -219,17 +225,21 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', tags_type)
 
     with self.argument_context('storage blob delete') as c:
-        t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
-                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_blob_arguments()
         c.register_precondition_options()
 
         c.extra('lease', lease_type)
         c.extra('snapshot', snapshot_type)
         c.extra('version_id', version_id_type)
-        c.argument('delete_snapshots', arg_type=get_enum_type(t_delete_snapshots),
-                   help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
-                        '"include": Deletes the blob along with all snapshots.')
+        c.argument('delete_snapshots', delete_snapshots_type)
+
+    with self.argument_context('storage blob delete-batch') as c:
+        c.register_precondition_options()
+
+        c.ignore('container_name')
+        c.argument('source', options_list=('--source', '-s'))
+        c.argument('delete_snapshots', delete_snapshots_type)
+        c.argument('lease_id', help='The active lease id for the blob.')
 
     with self.argument_context('storage blob download') as c:
         c.register_blob_arguments()
