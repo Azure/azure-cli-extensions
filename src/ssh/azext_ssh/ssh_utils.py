@@ -21,7 +21,7 @@ def start_ssh_connection(ip, username, cert_file, private_key_file):
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 def create_ssh_keyfile(private_key_file):
-    command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", "\"\""]
+    command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
