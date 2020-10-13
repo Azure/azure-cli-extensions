@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class OperationOperations(object):
-    """OperationOperations operations.
+class ListTenantConfigurationViolationOperations(object):
+    """ListTenantConfigurationViolationOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -49,15 +49,15 @@ class OperationOperations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.ResourceProviderOperationList"]
-        """The Microsoft Portal operations API.
+        # type: (...) -> Iterable["models.ViolationsList"]
+        """Gets list of items that violate tenant's configuration.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ResourceProviderOperationList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~portal.models.ResourceProviderOperationList]
+        :return: An iterator like instance of either ViolationsList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~portal.models.ViolationsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderOperationList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ViolationsList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-01-preview"
@@ -74,7 +74,7 @@ class OperationOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.post(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
@@ -82,7 +82,7 @@ class OperationOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourceProviderOperationList', pipeline_response)
+            deserialized = self._deserialize('ViolationsList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -104,4 +104,4 @@ class OperationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.Portal/operations'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.Portal/listTenantConfigurationViolations'}  # type: ignore
