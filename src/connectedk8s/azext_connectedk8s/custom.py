@@ -50,8 +50,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     send_cloud_telemetry(cmd)
 
     # Fetching Tenant Id
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
+    custom_tenant_id = os.getenv('CUSTOMTENANTID')
+    if custom_tenant_id:
+        logger.warning("Custom Tenant Id '{}' is provided. Using that for onboarding purposes.".format(custom_tenant_id))
+        onboarding_tenant_id = custom_tenant_id
+    else:
+        graph_client = _graph_client_factory(cmd.cli_ctx)
+        onboarding_tenant_id = graph_client.config.tenant_id
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
