@@ -169,7 +169,8 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
 # pylint: disable=unused-argument
 def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
-                                progress_callback=None, **kwargs):
+                                progress_callback=None, if_modified_since=None, if_unmodified_since=None,
+                                if_match=None, if_none_match=None, **kwargs):
     source_blobs = collect_blobs(client, container_name, pattern)
     blobs_to_download = {}
     for blob_name in source_blobs:
@@ -182,6 +183,8 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
         blobs_to_download[normalized_blob_name] = blob_name
 
     if dryrun:
+        #download_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
+        #                                          if_unmodified_since=if_unmodified_since)
         logger.warning('download action: from %s to %s', source, destination)
         logger.warning('    pattern %s', pattern)
         logger.warning('  container %s', container_name)
@@ -191,6 +194,7 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
             logger.warning('  - %s', b)
         return []
     else:
+        @check_precondition_success
         def _download_blob(*args, **kwargs):
             blob = download_blob(*args, **kwargs)
             return blob.name
@@ -207,12 +211,18 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
                 index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
         blob_client = client.get_blob_client(container=container_name,
                                              blob=blobs_to_download[blob_normed])
-        destination_path = os.path.join(destination, normalized_blob_name)
+        destination_path = os.path.join(destination, os.path.normpath(blob_normed))
         destination_folder = os.path.dirname(destination_path)
+        # Failed when there is same name for file and folder
+        if os.path.isfile(destination_folder) and os.path.exists(destination_folder):
+            raise CLIError("There is a file having the same name with directory to create. Please rename the file and "
+                           "retry the command.")
         if not os.path.exists(destination_folder):
             mkdir_p(destination_folder)
         include, result = _download_blob(client=blob_client, file_path=destination_path,
-                                         progress_callback=progress_callback, **kwargs)
+                                         progress_callback=progress_callback, if_modified_since=if_modified_since,
+                                         if_unmodified_since=if_unmodified_since, if_match=if_match,
+                                         if_none_match=if_none_match, **kwargs)
         if include:
             results.append(result)
 
@@ -328,6 +338,18 @@ def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=No
     return blob
 
 
+def _blob_precondition_check(source_blobs, if_modified_since=None, if_unmodified_since=None):
+    from datetime import timezone
+    if_modified_since_utc = if_modified_since.replace(tzinfo=timezone.utc) if if_modified_since else None
+    if_unmodified_since_utc = if_unmodified_since.replace(tzinfo=timezone.utc) if if_unmodified_since else None
+    result = []
+    for blob in source_blobs:
+        if not if_modified_since or blob[1].properties.last_modified >= if_modified_since_utc:
+            if not if_unmodified_since or blob[1].properties.last_modified <= if_unmodified_since_utc:
+                result.append(blob[0])
+    return result
+
+
 def storage_blob_delete_batch(client, source, source_container_name, pattern=None, lease_id=None,
                               delete_snapshots=None, if_modified_since=None, if_unmodified_since=None, if_match=None,
                               if_none_match=None, timeout=None, dryrun=False):
@@ -349,14 +371,8 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
     source_blobs = list(collect_blob_objects(client, source_container_name, pattern))
 
     if dryrun:
-        from datetime import timezone
-        delete_blobs = []
-        if_modified_since_utc = if_modified_since.replace(tzinfo=timezone.utc) if if_modified_since else None
-        if_unmodified_since_utc = if_unmodified_since.replace(tzinfo=timezone.utc) if if_unmodified_since else None
-        for blob in source_blobs:
-            if not if_modified_since or blob[1].properties.last_modified >= if_modified_since_utc:
-                if not if_unmodified_since or blob[1].properties.last_modified <= if_unmodified_since_utc:
-                    delete_blobs.append(blob[0])
+        delete_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
+                                                if_unmodified_since=if_unmodified_since)
         logger.warning('delete action: from %s', source)
         logger.warning('    pattern %s', pattern)
         logger.warning('  container %s', source_container_name)

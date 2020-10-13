@@ -20,7 +20,8 @@ class StorageBatchOperationScenarios(StorageScenarioMixin, LiveScenarioTest):
         # upload test files to storage account when precondition failed
         self.storage_cmd('storage blob list -c {}', storage_account_info, src_container).assert_with_checks(
             JMESPathCheck('length(@)', 0))
-        self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --if-match * ',
+        self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --if-match * '
+                         '--if-unmodified-since "2020-06-29T06:32Z"',
                          storage_account_info, test_dir, src_container)
         self.storage_cmd('storage blob list -c {}', storage_account_info, src_container).assert_with_checks(
             JMESPathCheck('length(@)', 0))
