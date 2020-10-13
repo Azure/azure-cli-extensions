@@ -726,6 +726,7 @@ def add_upload_progress_callback(cmd, namespace):
         namespace.progress_callback = _update_progress
     del namespace.no_progress
 
+
 def process_container_delete_parameters(cmd, namespace):
     """Process the parameters for storage container delete command"""
     # check whether to use mgmt or data-plane

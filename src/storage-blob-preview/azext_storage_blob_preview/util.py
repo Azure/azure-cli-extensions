@@ -221,10 +221,10 @@ def normalize_blob_file_path(path, name):
 
 def check_precondition_success(func):
     def wrapper(*args, **kwargs):
-        from azure.common import AzureHttpError
+        from azure.core.exceptions import HttpResponseError
         try:
             return True, func(*args, **kwargs)
-        except AzureHttpError as ex:
+        except HttpResponseError as ex:
             # Precondition failed error
             # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/412
             # Not modified error

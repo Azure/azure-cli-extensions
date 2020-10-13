@@ -191,7 +191,6 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
             logger.warning('  - %s', b)
         return []
     else:
-        @check_precondition_success
         def _download_blob(*args, **kwargs):
             blob = download_blob(*args, **kwargs)
             return blob.name
@@ -212,12 +211,17 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
         destination_folder = os.path.dirname(destination_path)
         if not os.path.exists(destination_folder):
             mkdir_p(destination_folder)
-        results.append(_download_blob(client=blob_client, file_path=destination_path,
-                                      progress_callback=progress_callback, **kwargs))
+        include, result = _download_blob(client=blob_client, file_path=destination_path,
+                                         progress_callback=progress_callback, **kwargs)
+        if include:
+            results.append(result)
 
     # end progress hook
     if progress_callback:
         progress_callback.hook.end()
+    num_failures = len(blobs_to_download) - len(results)
+    if num_failures:
+        logger.warning('%s of %s files not downloaded due to "Failed Precondition"', num_failures, len(blobs_to_download))
 
     return results
 
@@ -610,12 +614,10 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
         upload_args['raw_response_hook'] = progress_callback
 
     check_blob_args = {
-        'lease': lease_id,
         'if_modified_since': if_modified_since,
         'if_unmodified_since': if_unmodified_since,
         'if_match': if_match,
         'if_none_match': if_none_match,
-        'timeout': timeout
     }
 
     # used to check for the preconditions as upload_append_blob() cannot

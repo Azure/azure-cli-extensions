@@ -17,6 +17,14 @@ class StorageBatchOperationScenarios(StorageScenarioMixin, LiveScenarioTest):
     def test_storage_blob_batch_download_scenarios(self, test_dir, storage_account_info):
         src_container = self.create_container(storage_account_info)
 
+        # upload test files to storage account when precondition failed
+        self.storage_cmd('storage blob list -c {}', storage_account_info, src_container).assert_with_checks(
+            JMESPathCheck('length(@)', 0))
+        self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --if-match * ',
+                         storage_account_info, test_dir, src_container)
+        self.storage_cmd('storage blob list -c {}', storage_account_info, src_container).assert_with_checks(
+            JMESPathCheck('length(@)', 0))
+
         # upload test files to storage account
         self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3', storage_account_info,
                          test_dir, src_container)
