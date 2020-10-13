@@ -28,7 +28,8 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
     public_key_file, _ = _check_or_create_public_private_files(public_key_file, None)
-    print(_get_and_write_certificate(public_key_file,cert_path)+"\n")
+    cert_file, _ = _get_and_write_certificate(cmd,public_key_file,cert_path)
+    print(cert_file+"\n")
 
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):
     _assert_args(resource_group, vm_name, ssh_ip)
@@ -38,11 +39,11 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
     if not ssh_ip:
         raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
 
-    cert_file = _get_and_write_certificate(public_key_file,None)
+    cert_file, username = _get_and_write_certificate(cmd,public_key_file,None)
     op_call(ssh_ip, username, cert_file, private_key_file)
 
 
-def _get_and_write_certificate(public_key_file, cert_file):
+def _get_and_write_certificate(cmd, public_key_file, cert_file):
     scopes = ["https://pas.windows.net/CheckMyAccess/Linux/user_impersonation"]
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
@@ -50,7 +51,7 @@ def _get_and_write_certificate(public_key_file, cert_file):
     username, certificate = profile.get_msal_token(scopes, data)
     if not cert_file:
         cert_file = os.path.join(*os.path.split(public_key_file), "-aadcert.pub")
-    return _write_cert_file(public_key_file, certificate, cert_file)
+    return _write_cert_file(certificate, cert_file), username
 
 def _prepare_jwk_data(public_key_file):
     modulus, exponent = _get_modulus_exponent(public_key_file)
@@ -88,7 +89,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
     #If nothing is passed in create a temporary directory with a ephemeral keypair 
     if not public_key_file and not private_key_file:
         temp_dir = tempfile.mkdtemp(prefix="aadsshcert")
-        public_key_file = os.path.expanduser(os.path.join(temp_dir, "id_rsa.pub")
+        public_key_file = os.path.join(temp_dir, "id_rsa.pub")
         private_key_file = os.path.join(temp_dir, "id_rsa")
         ssh_utils.create_ssh_keyfile(private_key_file)
 
@@ -103,7 +104,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
     return public_key_file, private_key_file
 
 
-def _write_cert_file(public_key_file, certificate_contents, cert_file):
+def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
 
