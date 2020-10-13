@@ -26,10 +26,12 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name)
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, op_call)
 
+
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
     public_key_file, _ = _check_or_create_public_private_files(public_key_file, None)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
-    print(cert_file+"\n")
+    print(cert_file + "\n")
+
 
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):
     _assert_args(resource_group, vm_name, ssh_ip)
@@ -50,8 +52,9 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
     profile = Profile(cli_ctx=cmd.cli_ctx)
     username, certificate = profile.get_msal_token(scopes, data)
     if not cert_file:
-        cert_file = public_key_file+"-aadcert.pub"
+        cert_file = public_key_file + "-aadcert.pub"
     return _write_cert_file(certificate, cert_file), username
+
 
 def _prepare_jwk_data(public_key_file):
     modulus, exponent = _get_modulus_exponent(public_key_file)
@@ -86,7 +89,7 @@ def _assert_args(resource_group, vm_name, ssh_ip):
 
 
 def _check_or_create_public_private_files(public_key_file, private_key_file):
-    #If nothing is passed in create a temporary directory with a ephemeral keypair
+    # If nothing is passed in create a temporary directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
         temp_dir = tempfile.mkdtemp(prefix="aadsshcert")
         public_key_file = os.path.join(temp_dir, "id_rsa.pub")
@@ -96,7 +99,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
     if not os.path.isfile(public_key_file):
         raise util.CLIError(f"Public key file {public_key_file} not found")
 
-    #The private key is not required as the user may be using a keypair
+    # The private key is not required as the user may be using a keypair
     # stored in ssh-agent (and possibly in a hardware token)
     if private_key_file:
         if not os.path.isfile(private_key_file):

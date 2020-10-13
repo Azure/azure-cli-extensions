@@ -25,13 +25,14 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.ssh_utils.write_ssh_config')
     def test_ssh_config(self, mock_ssh_utils, mock_do_op):
         cmd = mock.Mock()
+
         def do_op_side_effect(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):
             op_call(ssh_ip, "username", "cert_file", private_key_file)
-        
+
         mock_do_op.side_effect = do_op_side_effect
         custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private")
 
-        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm","ip","username","cert_file","private")
+        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm", "ip", "username", "cert_file", "private")
 
         mock_do_op.assert_called_once_with(
             cmd, "rg", "vm", "ip", "public", "private", mock.ANY)
@@ -99,7 +100,7 @@ class SshCustomCommandTest(unittest.TestCase):
     def test_check_or_create_public_private_files_defaults(self, mock_join, mock_isfile, mock_temp, mock_create):
         mock_isfile.return_value = True
         mock_temp.return_value = "/tmp/aadtemp"
-        mock_join.side_effect = ['/tmp/aadtemp/id_rsa.pub','/tmp/aadtemp/id_rsa']
+        mock_join.side_effect = ['/tmp/aadtemp/id_rsa.pub', '/tmp/aadtemp/id_rsa']
 
         public, private = custom._check_or_create_public_private_files(None, None)
 
@@ -145,7 +146,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_file = mock.Mock()
         mock_open.return_value.__enter__.return_value = mock_file
 
-        file_name = custom._write_cert_file("cert","publickey-aadcert.pub")
+        custom._write_cert_file("cert", "publickey-aadcert.pub")
 
         mock_open.assert_called_once_with("publickey-aadcert.pub", 'w')
         mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")

@@ -35,7 +35,7 @@ helps['ssh config'] = """
         - name: Create a generic config for use with any host
           text: |
             #Bash
-            az ssh config --ip \* --file ./sshconfig
+            az ssh config --ip \\* --file ./sshconfig
             #PowerShell
             az ssh config --ip * --file ./sshconfig
 """

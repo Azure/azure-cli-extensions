@@ -20,6 +20,7 @@ def start_ssh_connection(ip, username, cert_file, private_key_file):
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
+
 def create_ssh_keyfile(private_key_file):
     command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
@@ -38,7 +39,7 @@ def write_ssh_config(config_path, resource_group, vm_name,
         if private_key_file:
             lines.append("\tIdentityFile " + private_key_file)
 
-    #default to all hosts for config
+    # default to all hosts for config
     if not ip:
         ip = "*"
 
@@ -61,13 +62,13 @@ def _get_ssh_path(ssh_command="ssh"):
         sys_path = 'SysNative' if is_32bit else 'System32'
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
-        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command+".exe"))
+        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
         logger.debug("Platform architecture: %s", str(arch_data))
         logger.debug("System Root: %s", system_root)
         logger.debug("Attempting to run ssh from path %s", ssh_path)
 
         if not os.path.isfile(ssh_path):
-            raise util.CLIError("Could not find "+ssh_command+".exe. Is the OpenSSH client installed?")
+            raise util.CLIError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
 
     return ssh_path
 
