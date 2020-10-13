@@ -32,9 +32,12 @@ helps['ssh config'] = """
         - name: Give the public IP (or hostname) of a VM for which to create a config
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
-        - name: Create a generic config for use with any host (default)
+        - name: Create a generic config for use with any host
           text: |
+            #Bash
             az ssh config --ip \* --file ./sshconfig
+            #PowerShell
+            az ssh config --ip * --file ./sshconfig
 """
 
 helps['ssh cert'] = """
