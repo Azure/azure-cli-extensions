@@ -97,7 +97,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
         g.storage_custom_command_oauth('copy start', 'copy_blob')
         g.storage_command_oauth('delete', 'delete_blob')
-        g.storage_custom_command_oauth('download', 'download_blob')
+        g.storage_custom_command_oauth('download', 'download_blob', transform=transform_blob_json_output)
         g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
                                        custom_command_type=blob_service_custom_sdk)

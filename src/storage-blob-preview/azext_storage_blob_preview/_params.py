@@ -10,7 +10,7 @@ from azure.cli.core.local_context import LocalContextAttribute, LocalContextActi
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           validate_blob_type, validate_included_datasets_v2,
-                          add_progress_callback_v2,
+                          add_download_progress_callback, add_upload_progress_callback,
                           validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
                           validate_container_delete_retention_days, validate_delete_retention_days,
                           process_resource_group)
@@ -244,7 +244,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='End of byte range to use for downloading a section of the blob. If end_range is given, '
                 'start_range must be provided. The start_range and end_range params are inclusive. Ex: start_range=0, '
                 'end_range=511 will download first 512 bytes of blob.')
-        c.extra('no_progress', progress_type, validator=add_progress_callback_v2)
+        c.extra('no_progress', progress_type, validator=add_download_progress_callback)
         c.extra('snapshot', snapshot_type)
         c.extra('lease', lease_type)
         c.extra('version_id', version_id_type)
@@ -451,7 +451,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
                    arg_type=get_enum_type(get_blob_types()), arg_group="Additional Flags")
         c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group="Content Control")
-        c.extra('no_progress', progress_type, validator=add_progress_callback_v2, arg_group="Additional Flags")
+        c.extra('no_progress', progress_type, validator=add_upload_progress_callback, arg_group="Additional Flags")
         c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
                    help='The socket timeout(secs), used by the service to regulate data flow.')
         c.extra('tier', tier_type, validator=blob_tier_validator, arg_group="Additional Flags")

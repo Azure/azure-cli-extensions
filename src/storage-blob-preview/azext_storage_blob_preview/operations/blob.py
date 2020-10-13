@@ -193,7 +193,8 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
     else:
         @check_precondition_success
         def _download_blob(*args, **kwargs):
-            return download_blob(*args, **kwargs)
+            blob = download_blob(*args, **kwargs)
+            return blob.name
 
     # Tell progress reporter to reuse the same hook
     if progress_callback:
@@ -443,8 +444,8 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
         kwargs['raw_response_hook'] = progress_callback
     download_stream = client.download_blob(**kwargs)
     with open(file_path, open_mode) as stream:
-        blob = download_stream.readinto(stream)
-    return blob
+        download_stream.readinto(stream)
+    return client.get_blob_properties()
 
 
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
