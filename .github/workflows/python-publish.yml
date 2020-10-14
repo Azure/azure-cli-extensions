@@ -27,8 +27,9 @@ jobs:
         pip install setuptools wheel
         cd src/connectedk8s
         ls
-        python setup.py sdist bdist_wheel
+        python setup.py bdist_wheel
         cd dist
+        ls
     - name: publish .whl
       uses: actions/upload-artifact@v2
       with:
