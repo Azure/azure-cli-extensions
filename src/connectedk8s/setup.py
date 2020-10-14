@@ -14,6 +14,8 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
+long_description_content_type = 'text/markdown'
+
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
