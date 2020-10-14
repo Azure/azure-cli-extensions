@@ -27,7 +27,7 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         ls
-        cd /src/connectedk8s
+        cd src/connectedk8s
         ls
         python setup.py sdist bdist_wheel
         twine upload dist/*
