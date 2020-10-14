@@ -124,6 +124,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    # Checking if it is an AKS cluster
+    is_aks_cluster = check_aks_cluster(kube_config, kube_context)
+    if is_aks_cluster:
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
 
@@ -181,7 +186,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Connected cluster resource already exists')
             raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
@@ -459,27 +464,74 @@ def generate_request_payload(configuration, location, public_key, tags, aad_prof
     return cc
 
 
+def check_aks_cluster(kube_config, kube_context):
+    config_data = get_kubeconfig_node_dict(kube_config=kube_config)
+    try:
+        all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Exception while trying to list kube contexts: %s\n", e)
+
+    if kube_context is None:
+        # Get name of the cluster from current context as kube_context is none.
+        cluster_name = current_context.get('context').get('cluster')
+        if cluster_name is None:
+            logger.warning("Cluster not found in currentcontext: " + str(current_context))
+    else:
+        cluster_found = False
+        for context in all_contexts:
+            if context.get('name') == kube_context:
+                cluster_found = True
+                cluster_name = context.get('context').get('cluster')
+                break
+        if not cluster_found or cluster_name is None:
+            logger.warning("Cluster not found in kubecontext: " + str(kube_context))
+
+    clusters = config_data.safe_get('clusters')
+    server_address = ""
+    for cluster in clusters:
+        if cluster.safe_get('name') == cluster_name:
+            server_address = cluster.safe_get('cluster').get('server')
+            break
+
+    if server_address.find(".azmk8s.io:") == -1:
+        return False
+    else:
+        return True
+
+
 def get_kubeconfig_dict(kube_config=None):
-    #Gets the kubeconfig as per kubectl(after applying all merging rules)
+    # Gets the kubeconfig as per kubectl(after applying all merging rules)
     args = ['kubectl', 'config', 'view']
     if kube_config:
         args += ["--kubeconfig", kube_config]
 
-    #subprocess run
+    # subprocess run
     try:
         proc = run(args, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
         if proc.returncode:
             telemetry.set_exception(exception='Exception while running kubectl config view', fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                    summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
+                                    summary='Error while fetching details from kubeconfig using kubectl')
             raise CLIError("Error running kubectl config view." + str(proc.stdout))
         config_doc_str = proc.stdout.strip()
         config_dict = yaml.safe_load(config_doc_str)
     except Exception as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                summary='Error while fetching aad details from (merged) kubeconfig using kubectl')
-        raise CLIError("Error while fetching merged kubeconfig through kubectl." + str(ex))
+                                summary='Error while fetching details from kubeconfig using kubectl')
+        raise CLIError("Error while fetching kubeconfig through kubectl." + str(ex))
 
     return config_dict
+
+
+def get_kubeconfig_node_dict(kube_config=None):
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    try:
+        kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
+    except Exception as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching details from kubeconfig')
+        raise CLIError("Error while fetching details kubeconfig." + str(ex))
+    return kubeconfig_data
 
 
 def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app_id, aad_tenant_id):
@@ -487,7 +539,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
     if kube_config is None:
         kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
     try:
-        all_contexts, current_context = config.list_kube_config_contexts()
+        all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
     except Exception as e:  # pylint: disable=broad-except
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
@@ -530,7 +582,7 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
         telemetry.set_exception(exception=e, fault_type=consts.User_Not_Found_Type,
                                 summary='Failed to get aad profile from kube config')
         logger.warning("Exception while trying to fetch aad profile details: %s\n", e)
-        raise CLIError("Failed to fetch AAD profile details from kubecontext: " + str(kube_context))
+        raise CLIError("Failed to fetch AAD profile details from kubecontext: " + str(kube_context) + ". " + str(e))
 
     # Override retrieved values with passed values in cli.
     if aad_server_app_id:
@@ -565,22 +617,23 @@ def get_aad_profile(kube_config, kube_context, aad_server_app_id, aad_client_app
 
 def get_user_aad_details(kube_config, required_user):
     try:
-        config_data = get_kubeconfig_dict(kube_config=kube_config)
+        config_data = get_kubeconfig_node_dict(kube_config=kube_config)
     except Exception as e:
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
                                 summary='Problem loading the kubeconfig file while getting user aad details')
         raise CLIError("Problem loading the kubeconfig file while getting user aad details : " + str(e))
-    users = config_data.get('users')
+    users = config_data.safe_get('users')
     for user in users:
-        if user.get('name') == required_user:
-            user_details = user.get('user')
+        if user.safe_get('name') == required_user:
+            user_details = user.safe_get('user')
             # Check if user is AAD user or not.
             if 'auth-provider' not in user_details:
                 # The user is not a AAD user so return empty strings
                 return "", "", ""
             else:
                 auth_provider_config = user_details.get('auth-provider').get('config')
+                telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AutoDetectedAADProfile': True})
                 return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
     telemetry.set_user_fault()
     telemetry.set_exception(exception='User AAD details not found', fault_type=consts.Get_User_AAD_Details_Failed_Fault_Type,
@@ -723,6 +776,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+    else:
+        if is_aad_enabled:
+            telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.OnboardedAADEnabledCluster': True})
 
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
@@ -794,10 +850,33 @@ def list_cluster_user_credentials(cmd,
                                   token=None,
                                   path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                                   overwrite_existing=False):
-    if token is not None:
-        value = AuthenticationDetailsValue(token=token)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.GetCredentialsInvoked': True})
+
+    if token is None:
+        try:
+            clusterDetails = client.get(resource_group_name, cluster_name)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Get_Connected_Cluster_Details_Failed_Fault_Type,
+                                    summary='Unable to get connected cluster credentials')
+            raise CLIError("Failed to get connected cluster details." + str(e))
+        aadProfile = clusterDetails.aad_profile
+        if aadProfile is None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception="Requires token based auth", fault_type=consts.Get_Credentials_Invoked_Without_Token_For_NON_AAD_Fault_Type,
+                                    summary='For Non-AAD connected cluster, get-credentials requires client token for authentication.')
+            raise CLIError("Please pass in Kubernetes service account token in --auth-token parameter to get the kubeconfig or AAD enable the cluster to support seamless login using your AAD account.")
+        cc_tenant_id = aadProfile.tenant_id
+        cc_client_id = aadProfile.client_app_id
+        cc_server_id = aadProfile.server_app_id
+        if (cc_tenant_id == "" or cc_client_id == "" or cc_server_id == ""):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception="Requires token based auth", fault_type=consts.Get_Credentials_Invoked_Without_Token_For_NON_AAD_Fault_Type,
+                                    summary='For Non-AAD connected cluster, get-credentials requires client token for authentication.')
+            raise CLIError("Please pass in Kubernetes service account token in --auth-token parameter to get the kubeconfig or AAD enable the cluster to support seamless login using your AAD account.")
+
+        value = None  # AAD scenario doesn't requires token
     else:
-        value = None
+        value = AuthenticationDetailsValue(token=token)  # Non-AAD scenario token-based auth
 
     try:
         credentialResults = client.list_cluster_user_credentials(resource_group_name, cluster_name, value)
