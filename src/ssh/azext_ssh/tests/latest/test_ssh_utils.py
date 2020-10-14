@@ -39,7 +39,6 @@ class SSHUtilsTests(unittest.TestCase):
             "\tIdentityFile privatekey",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
@@ -60,7 +59,6 @@ class SSHUtilsTests(unittest.TestCase):
         expected_lines = [
             "Host 1.2.3.4",
             "\tUser username",
-            "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]

@@ -115,6 +115,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    # Checking if it is an AKS cluster
+    is_aks_cluster = check_aks_cluster(kube_config, kube_context)
+    if is_aks_cluster:
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
 
@@ -172,7 +177,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Connected cluster resource already exists')
             raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
@@ -427,6 +432,54 @@ def generate_request_payload(configuration, location, public_key, tags):
         tags=tags
     )
     return cc
+
+
+def get_kubeconfig_node_dict(kube_config=None):
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    try:
+        kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
+    except Exception as ex:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching details from kubeconfig')
+        raise CLIError("Error while fetching details from kubeconfig." + str(ex))
+    return kubeconfig_data
+
+
+def check_aks_cluster(kube_config, kube_context):
+    config_data = get_kubeconfig_node_dict(kube_config=kube_config)
+    try:
+        all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Exception while trying to list kube contexts: %s\n", e)
+
+    if kube_context is None:
+        # Get name of the cluster from current context as kube_context is none.
+        cluster_name = current_context.get('context').get('cluster')
+        if cluster_name is None:
+            logger.warning("Cluster not found in currentcontext: " + str(current_context))
+    else:
+        cluster_found = False
+        for context in all_contexts:
+            if context.get('name') == kube_context:
+                cluster_found = True
+                cluster_name = context.get('context').get('cluster')
+                break
+        if not cluster_found or cluster_name is None:
+            logger.warning("Cluster not found in kubecontext: " + str(kube_context))
+
+    clusters = config_data.safe_get('clusters')
+    server_address = ""
+    for cluster in clusters:
+        if cluster.safe_get('name') == cluster_name:
+            server_address = cluster.safe_get('cluster').get('server')
+            break
+
+    if server_address.find(".azmk8s.io:") == -1:
+        return False
+    else:
+        return True
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
