@@ -21,16 +21,15 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Install dependencies
+    - name: Install dependencies and build
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: arpgu
-        TWINE_PASSWORD: mynameispypi
-      run: |
+        pip install setuptools wheel
         cd src/connectedk8s
         ls
         python setup.py sdist bdist_wheel
-        twine upload --skip-existing dist/*
+    - name: publish .whl
+      uses: actions/upload-artifact@v2
+      with:
+        name: whl-file
+        path: dist/*
