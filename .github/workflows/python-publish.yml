@@ -28,8 +28,9 @@ jobs:
         cd src/connectedk8s
         ls
         python setup.py sdist bdist_wheel
+        cd dist
     - name: publish .whl
       uses: actions/upload-artifact@v2
       with:
         name: whl-file
-        path: dist/*
+        path: connectedk8s.*.whl
