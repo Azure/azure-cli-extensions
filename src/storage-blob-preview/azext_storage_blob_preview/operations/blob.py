@@ -123,10 +123,14 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
     if source_container:
         # copy blobs for blob container
-        from .._client_factory import cf_blob_service
-        account_kwargs = {'account_name': source_account_name,
-                          'account_key': source_account_key}
-        source_client = cf_blob_service(cmd.cli_ctx, account_kwargs)
+        if source_account_name != client.account_name:
+            from .._client_factory import cf_blob_service
+            account_kwargs = {'account_name': source_account_name,
+                              'account_key': source_account_key,
+                              'sas_token': source_sas}
+            source_client = cf_blob_service(cmd.cli_ctx, account_kwargs)
+        else:
+            source_client = client
 
         # pylint: disable=inconsistent-return-statements
         def action_blob_copy(blob_name):
@@ -148,7 +152,9 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
         # copy blob from file share
 
         # if the source client is None, recreate one from the destination client.
-        source_client = source_client or create_file_share_from_storage_client(cmd, client)
+        source_client = source_client or create_file_share_from_storage_client(cmd, account_name=source_account_name,
+                                                                               account_key=source_account_key,
+                                                                               sas_token=source_sas)
 
         if not source_sas:
             source_sas = create_short_lived_share_sas(cmd, source_client.account_name, source_client.account_key,
@@ -426,13 +432,13 @@ def _copy_blob_to_blob_container(cmd, blob_service, source_blob_service, destina
         blob_client.start_copy_from_url(source_url=source_blob_url, incremental_copy=False)
         return blob_client.url
     except HttpResponseError as ex:
-        error_template = 'Failed to copy blob {} to container {}.'
-        raise CLIError(error_template.format(source_blob_name, destination_container))
+        error_template = 'Failed to copy blob {} to container {}. {}'
+        raise CLIError(error_template.format(source_blob_name, destination_container, ex))
 
 
 def _copy_file_to_blob_container(blob_service, source_file_service, destination_container, destination_path,
                                  source_share, source_sas, source_file_dir, source_file_name):
-    from azure.common import AzureException
+    from azure.core.exceptions import HttpResponseError
     file_url, source_file_dir, source_file_name = \
         make_encoded_file_url_and_params(source_file_service, source_share, source_file_dir,
                                          source_file_name, source_sas)
@@ -441,9 +447,10 @@ def _copy_file_to_blob_container(blob_service, source_file_service, destination_
     destination_blob_name = normalize_blob_file_path(destination_path, source_path)
 
     try:
-        blob_service.copy_blob(destination_container, destination_blob_name, file_url)
-        return blob_service.make_blob_url(destination_container, destination_blob_name)
-    except AzureException as ex:
+        blob_client = blob_service.get_blob_client(container=destination_container, blob=destination_blob_name)
+        blob_client.start_copy_from_url(source_url=file_url, incremental_copy=False)
+        return blob_client.url
+    except HttpResponseError as ex:
         error_template = 'Failed to copy file {} to container {}. {}'
         raise CLIError(error_template.format(source_file_name, destination_container, ex))
 

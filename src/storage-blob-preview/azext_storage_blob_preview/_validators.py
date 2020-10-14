@@ -1228,11 +1228,7 @@ def get_source_file_or_blob_service_client(cmd, namespace):
         if source_key or source_sas:
             raise ValueError('invalid usage: --source-account-name is missing; the source account is assumed to be the'
                              ' same as the destination account. Do not provide --source-sas or --source-account-key')
-        ns['source_client'] = None
 
-        if 'token_credential' not in ns:  # not using oauth
-            return
-        # oauth is only possible through destination, must still get source creds
         source_account, source_key, source_sas = ns['account_name'], ns['account_key'], ns['sas_token']
 
     if source_account:

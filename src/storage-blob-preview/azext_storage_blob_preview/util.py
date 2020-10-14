@@ -65,11 +65,11 @@ def create_blob_service_from_storage_client(cmd, client):
                             sas_token=client.sas_token)
 
 
-def create_file_share_from_storage_client(cmd, client):
-    t_file_svc = cmd.get_models('file.fileservice#FileService')
-    return t_file_svc(account_name=client.account_name,
-                      account_key=client.account_key,
-                      sas_token=client.sas_token)
+def create_file_share_from_storage_client(cmd, account_name=None, account_key=None, sas_token=None):
+    t_file_svc = cmd.get_models('file.fileservice#FileService', resource_type=ResourceType.DATA_STORAGE)
+    return t_file_svc(account_name=account_name,
+                      account_key=account_key,
+                      sas_token=sas_token)
 
 
 def filter_none(iterable):
@@ -92,7 +92,7 @@ def glob_files_locally(folder_path, pattern):
 def glob_files_remotely(cmd, client, share_name, pattern):
     """glob the files in remote file share based on the given pattern"""
     from collections import deque
-    t_dir, t_file = cmd.get_models('file.models#Directory', 'file.models#File')
+    t_dir, t_file = cmd.get_models('file.models#Directory', 'file.models#File', resource_type=ResourceType.DATA_STORAGE)
 
     queue = deque([""])
     while queue:
