@@ -8,7 +8,6 @@
 
 from ._operation_operations_async import OperationOperations
 from ._workspace_operations_async import WorkspaceOperations
-from ._application_group_assignment_operations_async import ApplicationGroupAssignmentOperations
 from ._application_group_operations_async import ApplicationGroupOperations
 from ._start_menu_item_operations_async import StartMenuItemOperations
 from ._application_operations_async import ApplicationOperations
@@ -16,12 +15,12 @@ from ._desktop_operations_async import DesktopOperations
 from ._host_pool_operations_async import HostPoolOperations
 from ._user_session_operations_async import UserSessionOperations
 from ._session_host_operations_async import SessionHostOperations
-from ._active_application_operations_async import ActiveApplicationOperations
+from ._msix_package_operations_async import MsixPackageOperations
+from ._msix_image_operations_async import MsixImageOperations
 
 __all__ = [
     'OperationOperations',
     'WorkspaceOperations',
-    'ApplicationGroupAssignmentOperations',
     'ApplicationGroupOperations',
     'StartMenuItemOperations',
     'ApplicationOperations',
@@ -29,5 +28,6 @@ __all__ = [
     'HostPoolOperations',
     'UserSessionOperations',
     'SessionHostOperations',
-    'ActiveApplicationOperations',
+    'MsixPackageOperations',
+    'MsixImageOperations',
 ]

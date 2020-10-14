@@ -60,7 +60,7 @@ class UserSessionOperations(object):
         :param host_pool_name: The name of the host pool within the specified resource group.
         :type host_pool_name: str
         :param filter: OData filter expression. Valid properties for filtering are userprincipalname
-     and sessionstate.
+         and sessionstate.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either UserSessionList or the result of cls(response)
@@ -70,9 +70,13 @@ class UserSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSessionList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_host_pool.metadata['url']  # type: ignore
@@ -88,15 +92,11 @@ class UserSessionOperations(object):
                 if filter is not None:
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -150,7 +150,7 @@ class UserSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSession"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -171,7 +171,6 @@ class UserSessionOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -218,7 +217,7 @@ class UserSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -240,7 +239,6 @@ class UserSessionOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -278,9 +276,13 @@ class UserSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.UserSessionList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -295,15 +297,11 @@ class UserSessionOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -357,7 +355,7 @@ class UserSessionOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.disconnect.metadata['url']  # type: ignore
@@ -377,7 +375,6 @@ class UserSessionOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -425,8 +422,8 @@ class UserSessionOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _send_message = models.SendMessage(message_title=message_title, message_body=message_body)
-        api_version = "2019-12-10-preview"
+        send_message = models.SendMessage(message_title=message_title, message_body=message_body)
+        api_version = "2020-09-21-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -448,10 +445,9 @@ class UserSessionOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _send_message is not None:
-            body_content = self._serialize.body(_send_message, 'SendMessage')
+        if send_message is not None:
+            body_content = self._serialize.body(send_message, 'SendMessage')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content

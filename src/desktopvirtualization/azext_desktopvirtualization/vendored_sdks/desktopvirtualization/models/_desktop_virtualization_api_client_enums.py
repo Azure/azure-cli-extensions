@@ -6,90 +6,123 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class ApplicationGroupType(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class ApplicationGroupType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Resource Type of ApplicationGroup.
     """
 
-    remote_app = "RemoteApp"
-    desktop = "Desktop"
+    REMOTE_APP = "RemoteApp"
+    DESKTOP = "Desktop"
 
-class ApplicationType(str, Enum):
+class ApplicationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Application type of application.
     """
 
-    remote_app = "RemoteApp"
-    desktop = "Desktop"
+    REMOTE_APP = "RemoteApp"
+    DESKTOP = "Desktop"
 
-class CommandLineSetting(str, Enum):
+class CommandLineSetting(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specifies whether this published application can be launched with command line arguments
     provided by the client, command line arguments specified at publish time, or no command line
     arguments at all.
     """
 
-    do_not_allow = "DoNotAllow"
-    allow = "Allow"
-    require = "Require"
+    DO_NOT_ALLOW = "DoNotAllow"
+    ALLOW = "Allow"
+    REQUIRE = "Require"
 
-class HostPoolType(str, Enum):
+class HostPoolType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """HostPool type for desktop.
     """
 
-    personal = "Personal"
-    pooled = "Pooled"
+    PERSONAL = "Personal"
+    POOLED = "Pooled"
 
-class LoadBalancerType(str, Enum):
+class LoadBalancerType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of the load balancer.
     """
 
-    breadth_first = "BreadthFirst"
-    depth_first = "DepthFirst"
-    persistent = "Persistent"
+    BREADTH_FIRST = "BreadthFirst"
+    DEPTH_FIRST = "DepthFirst"
+    PERSISTENT = "Persistent"
 
-class PersonalDesktopAssignmentType(str, Enum):
+class PersonalDesktopAssignmentType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """PersonalDesktopAssignment type for HostPool.
     """
 
-    automatic = "Automatic"
-    direct = "Direct"
+    AUTOMATIC = "Automatic"
+    DIRECT = "Direct"
 
-class RegistrationTokenOperation(str, Enum):
+class PreferredAppGroupType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of preferred application group type, default to Desktop Application Group
+    """
+
+    NONE = "None"
+    DESKTOP = "Desktop"
+    RAIL_APPLICATIONS = "RailApplications"
+
+class RegistrationTokenOperation(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of resetting the token.
     """
 
-    delete = "Delete"
-    none = "None"
-    update = "Update"
+    DELETE = "Delete"
+    NONE = "None"
+    UPDATE = "Update"
 
-class SessionState(str, Enum):
+class RemoteApplicationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Resource Type of Application.
+    """
+
+    IN_BUILT = "InBuilt"
+    MSIX_APPLICATION = "MsixApplication"
+
+class SessionState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """State of user session.
     """
 
-    unknown = "Unknown"
-    active = "Active"
-    disconnected = "Disconnected"
-    pending = "Pending"
-    log_off = "LogOff"
-    user_profile_disk_mounted = "UserProfileDiskMounted"
+    UNKNOWN = "Unknown"
+    ACTIVE = "Active"
+    DISCONNECTED = "Disconnected"
+    PENDING = "Pending"
+    LOG_OFF = "LogOff"
+    USER_PROFILE_DISK_MOUNTED = "UserProfileDiskMounted"
 
-class Status(str, Enum):
+class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Status for a SessionHost.
     """
 
-    available = "Available"
-    unavailable = "Unavailable"
-    shutdown = "Shutdown"
-    disconnected = "Disconnected"
-    upgrading = "Upgrading"
-    upgrade_failed = "UpgradeFailed"
+    AVAILABLE = "Available"
+    UNAVAILABLE = "Unavailable"
+    SHUTDOWN = "Shutdown"
+    DISCONNECTED = "Disconnected"
+    UPGRADING = "Upgrading"
+    UPGRADE_FAILED = "UpgradeFailed"
 
-class UpdateState(str, Enum):
+class UpdateState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Update state of a SessionHost.
     """
 
-    initial = "Initial"
-    pending = "Pending"
-    started = "Started"
-    succeeded = "Succeeded"
-    failed = "Failed"
+    INITIAL = "Initial"
+    PENDING = "Pending"
+    STARTED = "Started"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"

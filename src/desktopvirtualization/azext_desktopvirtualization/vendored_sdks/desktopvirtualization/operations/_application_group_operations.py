@@ -66,7 +66,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -85,7 +85,6 @@ class ApplicationGroupOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -142,8 +141,8 @@ class ApplicationGroupOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _application_group = models.ApplicationGroup(tags=tags, location=location, description=description, friendly_name=friendly_name, host_pool_arm_path=host_pool_arm_path, application_group_type=application_group_type)
-        api_version = "2019-12-10-preview"
+        application_group = models.ApplicationGroup(tags=tags, location=location, description=description, friendly_name=friendly_name, host_pool_arm_path=host_pool_arm_path, application_group_type=application_group_type)
+        api_version = "2020-09-21-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -164,9 +163,8 @@ class ApplicationGroupOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_application_group, 'ApplicationGroup')
+        body_content = self._serialize.body(application_group, 'ApplicationGroup')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -177,7 +175,6 @@ class ApplicationGroupOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('ApplicationGroup', pipeline_response)
 
@@ -211,7 +208,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -229,7 +226,6 @@ class ApplicationGroupOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -274,8 +270,8 @@ class ApplicationGroupOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _application_group = models.ApplicationGroupPatch(tags=tags, description=description, friendly_name=friendly_name)
-        api_version = "2019-12-10-preview"
+        application_group = models.ApplicationGroupPatch(tags=tags, description=description, friendly_name=friendly_name)
+        api_version = "2020-09-21-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -296,10 +292,9 @@ class ApplicationGroupOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _application_group is not None:
-            body_content = self._serialize.body(_application_group, 'ApplicationGroupPatch')
+        if application_group is not None:
+            body_content = self._serialize.body(application_group, 'ApplicationGroupPatch')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
@@ -332,7 +327,7 @@ class ApplicationGroupOperations(object):
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param filter: OData filter expression. Valid properties for filtering are
-     applicationGroupType.
+         applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
@@ -342,9 +337,13 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
@@ -359,15 +358,11 @@ class ApplicationGroupOperations(object):
                 if filter is not None:
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -403,7 +398,7 @@ class ApplicationGroupOperations(object):
         """List applicationGroups in subscription.
 
         :param filter: OData filter expression. Valid properties for filtering are
-     applicationGroupType.
+         applicationGroupType.
         :type filter: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
@@ -413,9 +408,13 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_subscription.metadata['url']  # type: ignore
@@ -429,15 +428,11 @@ class ApplicationGroupOperations(object):
                 if filter is not None:
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
