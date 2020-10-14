@@ -4,7 +4,11 @@
 name: Upload Python Package
 
 on:
-  workflow_dispatch:
+  # Trigger the workflow on push,
+  # but only for the main branch
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
