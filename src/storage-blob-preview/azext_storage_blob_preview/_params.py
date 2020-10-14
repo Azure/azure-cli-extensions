@@ -21,7 +21,7 @@ from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
     from argcomplete.completers import FilesCompleter
 
-    from knack.arguments import CLIArgumentType
+    from knack.arguments import ignore_type, CLIArgumentType
 
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
@@ -192,6 +192,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('socket_timeout', deprecate_info=c.deprecate(),
                    help='The socket timeout(secs), used by the service to regulate data flow.')
 
+    with self.argument_context('storage blob copy') as c:
+        c.argument('container_name', container_name_type, options_list=('--destination-container', '-c'))
+        c.argument('blob_name', blob_name_type, options_list=('--destination-blob', '-b'),
+                   help='Name of the destination blob. If the exists, it will be overwritten.')
+
     with self.argument_context('storage blob copy start') as c:
         from ._validators import validate_source_url
 
@@ -223,6 +228,18 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='Enforce that the service will not return a response until the copy is complete.')
         c.extra('tier', tier_type)
         c.extra('tags', tags_type)
+
+    with self.argument_context('storage blob copy start-batch', arg_group='Copy Source') as c:
+        from ._validators import get_source_file_or_blob_service_client
+
+        c.argument('source_client', ignore_type, validator=get_source_file_or_blob_service_client)
+
+        c.extra('source_account_name')
+        c.extra('source_account_key')
+        c.extra('source_uri')
+        c.argument('source_sas')
+        c.argument('source_container')
+        c.argument('source_share')
 
     with self.argument_context('storage blob delete') as c:
         c.register_blob_arguments()

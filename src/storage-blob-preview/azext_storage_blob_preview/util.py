@@ -5,6 +5,7 @@
 
 
 import os
+from azure.cli.core.profiles import ResourceType
 
 
 def collect_blobs(blob_service, container, pattern=None):
@@ -135,25 +136,25 @@ def create_short_lived_file_sas(cmd, account_name, account_key, share, directory
 
 def create_short_lived_container_sas(cmd, account_name, account_key, container):
     from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('blob.sharedaccesssignature#BlobSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
-    t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
+    generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas')
+    t_blob_permissions = cmd.get_models('_models#ContainerSasPermissions')
 
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_container(container, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
+
+    sas_token = generate_container_sas(account_name=account_name, container_name=container, account_key=account_key,
+                                       permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
+
+    return sas_token
 
 
 def create_short_lived_share_sas(cmd, account_name, account_key, share):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature')
+        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
     else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
+        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
 
-    t_file_permissions = cmd.get_models('file.models#FilePermissions')
+    t_file_permissions = cmd.get_models('file.models#FilePermissions', resource_type=ResourceType.DATA_STORAGE)
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
     sas = t_sas(account_name, account_key)
     return sas.generate_share(share, permission=t_file_permissions(read=True), expiry=expiry, protocol='https')

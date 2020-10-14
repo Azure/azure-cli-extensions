@@ -117,6 +117,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        validator=process_blob_download_batch_parameters)
         g.storage_custom_command_oauth('delete-batch', 'storage_blob_delete_batch', client_factory=cf_blob_service,
                                        validator=process_blob_delete_batch_parameters)
+        g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch', client_factory=cf_blob_service)
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',
