@@ -6,11 +6,11 @@
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
 from knack.log import get_logger
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterLoadBalancerProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ManagedClusterLoadBalancerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ResourceReference
 
 logger = get_logger(__name__)
 

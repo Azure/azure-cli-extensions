@@ -83,6 +83,8 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+            c.argument('main_entry', options_list=[
+                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
@@ -127,9 +129,13 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
+                'artifact_path', options_list=[
+                    '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code')
+                'main_entry', options_list=[
+                    '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
+            c.argument(
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
 

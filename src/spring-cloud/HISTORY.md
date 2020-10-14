@@ -1,5 +1,21 @@
 Release History
 ===============
+1.1.1
+-----
+* Reimport the updated version of Python SDK.
+
+1.1.0
+-----
+* Support Steeltoe feature.
+
+1.0.1
+-----
+* Optimize VNet Injection validator
+
+1.0.0
+-----
+* Bump version to 1.0.0
+
 0.5.1
 -----
 * Stream the build logs when deploying from source code

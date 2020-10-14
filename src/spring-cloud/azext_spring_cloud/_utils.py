@@ -14,15 +14,16 @@ from re import (search, match)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
+from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
 from ._client_factory import cf_resource_groups
 
 
 logger = get_logger(__name__)
 
 
-def _get_upload_local_file(jar_path=None):
-    file_path = jar_path
-    file_type = "Jar"
+def _get_upload_local_file(runtime_version, artifact_path=None):
+    file_path = artifact_path
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
     if file_path is None:
         file_type = "Source"
