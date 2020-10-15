@@ -9,14 +9,15 @@ import os
 from datetime import datetime
 
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.command_modules.storage.url_quote_util import encode_for_url, make_encoded_file_url_and_params
-from ..util import (create_blob_service_from_storage_client, create_file_share_from_storage_client,
-                    create_short_lived_share_sas, create_short_lived_container_sas,
+from azure.cli.command_modules.storage.url_quote_util import make_encoded_file_url_and_params
+from knack.log import get_logger
+from knack.util import CLIError
+
+from ..util import (create_file_share_from_storage_client,
+                    create_short_lived_share_sas,
                     filter_none, collect_blobs, collect_blob_objects, collect_files,
                     mkdir_p, guess_content_type, normalize_blob_file_path,
                     check_precondition_success)
-from knack.log import get_logger
-from knack.util import CLIError
 from ..profiles import CUSTOM_DATA_STORAGE_BLOB
 
 logger = get_logger(__name__)
@@ -176,7 +177,7 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
     raise ValueError('Fail to find source. Neither blob container or file share is specified')
 
 
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument, too-many-locals
 def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
                                 progress_callback=None, if_modified_since=None, if_unmodified_since=None,
                                 if_match=None, if_none_match=None, **kwargs):
@@ -191,9 +192,10 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
                            'command instead to download individual blobs.'.format(normalized_blob_name))
         blobs_to_download[normalized_blob_name] = blob_name
 
+    results = []
     if dryrun:
-        #download_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
-        #                                          if_unmodified_since=if_unmodified_since)
+        # download_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
+        #                                           if_unmodified_since=if_unmodified_since)
         logger.warning('download action: from %s to %s', source, destination)
         logger.warning('    pattern %s', pattern)
         logger.warning('  container %s', container_name)
@@ -201,47 +203,46 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
         logger.warning(' operations')
         for b in source_blobs:
             logger.warning('  - %s', b)
-        return []
+
     else:
         @check_precondition_success
         def _download_blob(*args, **kwargs):
             blob = download_blob(*args, **kwargs)
             return blob.name
 
-    # Tell progress reporter to reuse the same hook
-    if progress_callback:
-        progress_callback.reuse = True
-
-    results = []
-    for index, blob_normed in enumerate(blobs_to_download):
-        # add blob name and number to progress message
+        # Tell progress reporter to reuse the same hook
         if progress_callback:
-            progress_callback.message = '{}/{}: "{}"'.format(
-                index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
-        blob_client = client.get_blob_client(container=container_name,
-                                             blob=blobs_to_download[blob_normed])
-        destination_path = os.path.join(destination, os.path.normpath(blob_normed))
-        destination_folder = os.path.dirname(destination_path)
-        # Failed when there is same name for file and folder
-        if os.path.isfile(destination_folder) and os.path.exists(destination_folder):
-            raise CLIError("There is a file having the same name with directory to create. Please rename the file and "
-                           "retry the command.")
-        if not os.path.exists(destination_folder):
-            mkdir_p(destination_folder)
-        include, result = _download_blob(client=blob_client, file_path=destination_path,
-                                         progress_callback=progress_callback, if_modified_since=if_modified_since,
-                                         if_unmodified_since=if_unmodified_since, if_match=if_match,
-                                         if_none_match=if_none_match, **kwargs)
-        if include:
-            results.append(result)
+            progress_callback.reuse = True
 
-    # end progress hook
-    if progress_callback:
-        progress_callback.hook.end()
-    num_failures = len(blobs_to_download) - len(results)
-    if num_failures:
-        logger.warning('%s of %s files not downloaded due to "Failed Precondition"', num_failures, len(blobs_to_download))
+        for index, blob_normed in enumerate(blobs_to_download):
+            # add blob name and number to progress message
+            if progress_callback:
+                progress_callback.message = '{}/{}: "{}"'.format(
+                    index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
+            blob_client = client.get_blob_client(container=container_name,
+                                                 blob=blobs_to_download[blob_normed])
+            destination_path = os.path.join(destination, os.path.normpath(blob_normed))
+            destination_folder = os.path.dirname(destination_path)
+            # Failed when there is same name for file and folder
+            if os.path.isfile(destination_folder) and os.path.exists(destination_folder):
+                raise CLIError("There is a file having the same name with directory to create. Please rename the file "
+                               "and retry the command.")
+            if not os.path.exists(destination_folder):
+                mkdir_p(destination_folder)
+            include, result = _download_blob(client=blob_client, file_path=destination_path,
+                                             progress_callback=progress_callback, if_modified_since=if_modified_since,
+                                             if_unmodified_since=if_unmodified_since, if_match=if_match,
+                                             if_none_match=if_none_match, **kwargs)
+            if include:
+                results.append(result)
 
+        # end progress hook
+        if progress_callback:
+            progress_callback.hook.end()
+        num_failures = len(blobs_to_download) - len(results)
+        if num_failures:
+            logger.warning('%s of %s files not downloaded due to "Failed Precondition"',
+                           num_failures, len(blobs_to_download))
     return results
 
 
@@ -652,7 +653,7 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
     # used to check for the preconditions as upload_append_blob() cannot
     if blob_type == 'append':
         if client.exists(timeout=timeout):
-            client.get_blob_properties(**check_blob_args)
+            client.get_blob_properties(lease=lease_id, timeout=timeout, **check_blob_args)
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems

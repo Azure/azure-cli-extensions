@@ -290,7 +290,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
     with self.argument_context('storage blob download-batch') as c:
-        #c.register_precondition_options()
+        # c.register_precondition_options()
         c.ignore('container_name')
         c.argument('destination', options_list=('--destination', '-d'))
         c.argument('source', options_list=('--source', '-s'))

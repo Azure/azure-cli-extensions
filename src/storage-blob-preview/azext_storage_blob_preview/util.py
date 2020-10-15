@@ -150,7 +150,8 @@ def create_short_lived_container_sas(cmd, account_name, account_key, container):
 def create_short_lived_share_sas(cmd, account_name, account_key, share):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
+        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature',
+                               resource_type=ResourceType.DATA_STORAGE)
     else:
         t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
 

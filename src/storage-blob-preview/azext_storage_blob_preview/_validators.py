@@ -11,7 +11,7 @@ import argparse
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import ResourceType, get_sdk
 
-from azure.cli.command_modules.storage._client_factory import storage_client_factory, get_storage_data_service_client
+from azure.cli.command_modules.storage._client_factory import storage_client_factory
 from azure.cli.command_modules.storage.util import guess_content_type
 from azure.cli.command_modules.storage.sdkutil import get_table_data_type
 from azure.cli.command_modules.storage.url_quote_util import encode_for_url
@@ -20,7 +20,7 @@ from azure.cli.command_modules.storage.oauth_token_util import TokenUpdater
 from knack.log import get_logger
 from knack.util import CLIError
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
-from ._client_factory import cf_blob_client, cf_blob_service, cf_share_service
+from ._client_factory import cf_blob_service
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
@@ -410,16 +410,12 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
                 container = ns.get('container_name')
                 blob = ns.get('blob_name')
                 lease_id = ns.get('lease_id')
-                client_kwargs = {
-                    'connection_string': cs,
-                    'account_name': account,
-                    'account_key': key,
-                    'token_credential': token_credential,
-                    'sas_token': sas,
-                    'container_name': container,
-                    'blob_name': blob}
-                client = cf_blob_client(cmd.cli_ctx, client_kwargs)
-
+                account_kwargs = {'connection_string': cs,
+                                  'account_name': account,
+                                  'account_key': key,
+                                  'token_credential': token_credential,
+                                  'sas_token': sas}
+                client = cf_blob_service(cmd.cli_ctx, account_kwargs).get_blob_client(container=container, blob=blob)
                 props = client.get_blob_properties(lease=lease_id).content_settings
 
         # create new properties
@@ -552,7 +548,6 @@ def get_file_path_validator(default_file_param=None):
     Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
-        import os
         if not hasattr(namespace, 'path'):
             return
 
@@ -741,8 +736,6 @@ def process_container_delete_parameters(cmd, namespace):
 
 
 def process_file_download_namespace(namespace):
-    import os
-
     get_file_path_validator()(namespace)
 
     dest = namespace.file_path
@@ -1277,4 +1270,3 @@ def get_source_file_or_blob_service_client(cmd, namespace):
                                                       account_key=source_key,
                                                       share=source_share)
     ns['source_sas'] = source_sas
-
