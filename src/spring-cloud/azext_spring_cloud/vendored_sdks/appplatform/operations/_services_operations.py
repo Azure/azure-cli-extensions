@@ -27,7 +27,7 @@ class ServicesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client Api Version. Constant value: "2019-05-01-preview".
+    :ivar api_version: Client Api Version. Constant value: "2020-07-01".
     """
 
     models = models
@@ -37,7 +37,7 @@ class ServicesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-05-01-preview"
+        self.api_version = "2020-07-01"
 
         self.config = config
 
@@ -57,8 +57,7 @@ class ServicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ServiceResource or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -139,7 +138,7 @@ class ServicesOperations(object):
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
@@ -149,6 +148,8 @@ class ServicesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('ServiceResource', response)
         if response.status_code == 201:
+            deserialized = self._deserialize('ServiceResource', response)
+        if response.status_code == 202:
             deserialized = self._deserialize('ServiceResource', response)
 
         if raw:
@@ -169,7 +170,7 @@ class ServicesOperations(object):
         :type service_name: str
         :param resource: Parameters for the create or update operation
         :type resource:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource
+         ~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -178,9 +179,9 @@ class ServicesOperations(object):
         :return: An instance of LROPoller that returns ServiceResource or
          ClientRawResponse<ServiceResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -355,7 +356,7 @@ class ServicesOperations(object):
         :type service_name: str
         :param resource: Parameters for the update operation
         :type resource:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource
+         ~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -364,9 +365,9 @@ class ServicesOperations(object):
         :return: An instance of LROPoller that returns ServiceResource or
          ClientRawResponse<ServiceResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -412,7 +413,7 @@ class ServicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TestKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeys or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.TestKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -472,14 +473,14 @@ class ServicesOperations(object):
         :param key_type: Type of the test key. Possible values include:
          'Primary', 'Secondary'
         :type key_type: str or
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeyType
+         ~azure.mgmt.appplatform.v2020_07_01.models.TestKeyType
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TestKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeys or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.TestKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -534,7 +535,7 @@ class ServicesOperations(object):
 
     def disable_test_endpoint(
             self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """
+        """Disable test endpoint functionality for a Service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -589,7 +590,7 @@ class ServicesOperations(object):
 
     def enable_test_endpoint(
             self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """
+        """Enable test endpoint functionality for a Service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -603,7 +604,7 @@ class ServicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TestKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeys or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.TestKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -666,8 +667,7 @@ class ServicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: NameAvailability or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.NameAvailability or
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.NameAvailability or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -730,7 +730,7 @@ class ServicesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ServiceResource
         :rtype:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.ServiceResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -800,7 +800,7 @@ class ServicesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ServiceResource
         :rtype:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.ServiceResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.ServiceResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

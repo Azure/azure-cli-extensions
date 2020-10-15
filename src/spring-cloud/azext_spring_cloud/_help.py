@@ -21,9 +21,9 @@ helps['spring-cloud create'] = """
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
     - name: Create a new Azure Spring Cloud with distributed tracing disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-distributed-tracing
-    - name: Create a new Azure Spring Cloud with VNet-inected via giving VNet name in current resource group
+    - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
       text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
-    - name: Create a new Azure Spring Cloud with VNet-inected via giving subnets resource ID
+    - name: Create a new Azure Spring Cloud with VNet-injected via giving subnets resource ID
       text: az spring-cloud create -n MyService -g MyResourceGroup --app-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app --service-runtime-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc --reserved-cidr-range 10.0.0.0/16,10.1.0.0/16,10.2.0.1/16
 """
 
@@ -284,22 +284,22 @@ helps['spring-cloud config-server git set'] = """
 
 helps['spring-cloud config-server git repo add'] = """
     type: command
-    short-summary: Set add a new repositry of git property of Config Server.
+    short-summary: Add a new repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo remove'] = """
     type: command
-    short-summary: Remove an existing repositry of git property of Config Server.
+    short-summary: Remove an existing repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo update'] = """
     type: command
-    short-summary: Override an existing repositry of git property of Config Server, will totally override the old one.
+    short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
 """
 
 helps['spring-cloud config-server git repo list'] = """
     type: command
-    short-summary: List all repositries of git property of Config Server.
+    short-summary: List all repositories of git property of Config Server.
 """
 
 helps['spring-cloud app binding'] = """

@@ -16,8 +16,8 @@ from msrestazure.azure_exceptions import CloudError
 from .. import models
 
 
-class SkuOperations(object):
-    """SkuOperations operations.
+class SkusOperations(object):
+    """SkusOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -25,7 +25,7 @@ class SkuOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client Api Version. Constant value: "2019-05-01-preview".
+    :ivar api_version: Client Api Version. Constant value: "2020-07-01".
     """
 
     models = models
@@ -35,13 +35,13 @@ class SkuOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-05-01-preview"
+        self.api_version = "2020-07-01"
 
         self.config = config
 
     def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """
+        """Lists all of the available skus of the Microsoft.AppPlatform provider.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -50,7 +50,7 @@ class SkuOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ResourceSku
         :rtype:
-         ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuPaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSku]
+         ~azure.mgmt.appplatform.v2020_07_01.models.ResourceSkuPaged[~azure.mgmt.appplatform.v2020_07_01.models.ResourceSku]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

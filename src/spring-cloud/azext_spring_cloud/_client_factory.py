@@ -32,6 +32,10 @@ def cf_bindings(cli_ctx, *_):
     return cf_spring_cloud(cli_ctx).bindings
 
 
+def cf_config_servers(cli_ctx, *_):
+    return cf_spring_cloud(cli_ctx).config_servers
+
+
 def cf_certificates(cli_ctx, *_):
     return cf_spring_cloud(cli_ctx).certificates
 
