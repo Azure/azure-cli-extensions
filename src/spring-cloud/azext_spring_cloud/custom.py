@@ -198,11 +198,10 @@ def app_create(cmd, client, resource_group, service, name,
         size_in_gb=5, mount_path="/tmp")
 
     resource = client.services.get(resource_group, service)
-    location = resource.location
 
     app_resource = models.AppResource()
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
     if assign_identity is True:
         app_resource.identity = models.ManagedIdentityProperties(type="systemassigned")
 
@@ -226,13 +225,13 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
-    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
 
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    poller = client.deployments.create_or_update(
-        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties=properties, sku=sku)
+    poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME,
+                                                 properties=properties,
+                                                 sku=models.Sku(name="S0", tier="STANDARD", capacity=instance_count))
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
@@ -246,7 +245,7 @@ def app_create(cmd, client, resource_group, service, name,
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
 
     app_poller = client.apps.update(resource_group, service, name, app_resource)
     logger.warning(
@@ -686,17 +685,19 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
 
-def is_valid_Git_URI(uri):
-    return (uri.startswith("https://") or uri.startswith("git@"))
+
+def is_valid_git_uri(uri):
+    return uri.startswith("https://") or uri.startswith("git@")
+
 
 def validate_config_server_settings(client, resource_group, name, git_property):
     error_msg = "Git URI should start with \"https://\" or \"git@\""
     if git_property:
-        if (not is_valid_Git_URI(git_property.uri)):
+        if not is_valid_git_uri(git_property.uri):
             raise CLIError(error_msg)
         if git_property.repositories:
             for repository in git_property.repositories:
-                if (not is_valid_Git_URI(repository.uri)):
+                if not is_valid_git_uri(repository.uri):
                     raise CLIError(error_msg)
 
     try:
@@ -712,6 +713,7 @@ def validate_config_server_settings(client, resource_group, name, git_property):
                 logger.error("Repository named \"%s\" with URI \"%s\" meets error:", item.name, item.uri)
             logger.error("\n".join(item.messages))
         raise CLIError("Config Server settings contain error.")
+
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     def standardization(dic):
@@ -803,6 +805,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
     validate_config_server_settings(client, resource_group, name, git_property)
     logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
     return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
+
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     pattern=None,
