@@ -405,7 +405,7 @@ def step_kustodataconnectionsdelete(test, rg):
 
 @try_manual
 def call_scenario(test, rg):
-   
+
     step_kustoclusterscreateorupdate(test, rg)
     step_kustoclusterscreateorupdate2(test, rg)
     step_kustodatabasescreateorupdate(test, rg)
@@ -439,7 +439,7 @@ def call_scenario(test, rg):
     step_kustooperationslist(test, rg)
     step_kustodatabasesdelete(test, rg)
     step_kustoclustersdelete(test, rg)
- 
+
 
 @try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
