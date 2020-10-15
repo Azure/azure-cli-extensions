@@ -12,7 +12,7 @@ from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri
+from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from knack.log import get_logger
@@ -1139,16 +1139,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         raise CLIError(
             "Failed to get a SAS URL to upload context. Error: {}".format(e.message))
 
-    if not upload_url:
-        raise CLIError("Failed to get a SAS URL to upload context.")
-
-    parse_result = parse.urlparse(upload_url)
-    storage_name = parse_result.netloc.split('.')[0]
-    split_path = parse_result.path.split('/')[1:3]
-    storage_suffix = parse_result.netloc.replace('{0}.file.'.format(storage_name), '')
-
-    share_name = split_path[0]
-    sas_token = "?" + parse_result.query
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
@@ -1166,9 +1156,12 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         source=user_source_info)
 
     # upload file
+    if not upload_url:
+        raise CLIError("Failed to get a SAS URL to upload context.")
+    account_name, endpoint_suffix, share_name, relative_name, sas_token = get_azure_files_info(upload_url)
     logger.warning("[2/3] Uploading package to blob")
-    file_service = FileService(storage_name, sas_token=sas_token, endpoint_suffix=storage_suffix)
-    file_service.create_file_from_path(share_name, None, relative_path, path)
+    file_service = FileService(account_name, sas_token=sas_token, endpoint_suffix=endpoint_suffix)
+    file_service.create_file_from_path(share_name, None, relative_name, path)
 
     if file_type == "Source" and not no_wait:
         def get_log_url():
