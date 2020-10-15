@@ -158,13 +158,14 @@ def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matchin
 
 
 def get_blob_info(blob_sas_url):
-    return get_azure_storage_client_info('blob', blob_sas_url)
+    return _get_azure_storage_client_info('blob', blob_sas_url)
 
 
 def get_azure_files_info(file_sas_url):
-    return get_azure_storage_client_info('file', file_sas_url)
+    return _get_azure_storage_client_info('file', file_sas_url)
 
-def get_azure_storage_client_info(account_type, sas_url):
+
+def _get_azure_storage_client_info(account_type, sas_url):
     regex = compile("http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
