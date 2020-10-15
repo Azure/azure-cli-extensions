@@ -8,6 +8,7 @@ import json
 import time
 from subprocess import Popen, PIPE
 from base64 import b64encode
+import yaml
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -37,7 +38,7 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -45,8 +46,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # Checking cloud
-    validate_cloud(cmd)
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -63,6 +64,31 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+
+    # Checking whether optional extra values file has been provided.
+    values_file_provided = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
+        # trimming required for windows os
+        if (values_file.startswith("'") or values_file.startswith('"')):
+            values_file = values_file[1:]
+        if (values_file.endswith("'") or values_file.endswith('"')):
+            values_file = values_file[:-1]
+
+    # Validate the helm environment file for Dogfood.
+    dp_endpoint_dogfood = None
+    release_train_dogfood = None
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     try:
@@ -89,12 +115,22 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    # Checking if it is an AKS cluster
+    is_aks_cluster = check_aks_cluster(kube_config, kube_context)
+    if is_aks_cluster:
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
 
     # Check helm version
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Validate location
     utils.validate_location(cmd, location)
@@ -141,7 +177,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Connected cluster resource already exists')
             raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster" +
+                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
@@ -157,7 +193,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, location)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, location, dp_endpoint_dogfood, release_train_dogfood)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -194,18 +230,45 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait)
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
+                         kube_context, no_wait, values_file_provided, values_file)
 
     return put_cc_response
 
 
-def validate_cloud(cmd):
-    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+def send_cloud_telemetry(cmd):
+    cloud_name = cmd.cli_ctx.cloud.name
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cloud_name})
+
+
+def validate_env_file_dogfood(values_file, values_file_provided):
+    if not values_file_provided:
         telemetry.set_user_fault()
-        telemetry.set_exception(exception='Dogfood cloud not supported.', fault_type=consts.Load_Kubeconfig_Fault_Type,
-                                summary='Dogfood cloud not supported.')
-        raise CLIError("Connectedk8s CLI is not supported for Dogfood environment. Please switch the cloud using 'az cloud set --name {cloudName}' and try again. For Dogfood cloud, use helm directly for onboarding.")
+        telemetry.set_exception(exception='Helm environment file not provided', fault_type=consts.Helm_Environment_File_Fault_Type,
+                                summary='Helm environment file missing')
+        raise CLIError("Helm environment file is required when using Dogfood environment for onboarding the cluster. Please set the environment variable 'HELMVALUESPATH' to point to the file.")
+
+    with open(values_file, 'r') as f:
+        try:
+            env_dict = yaml.safe_load(f)
+        except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
+                                    summary='Problem loading the helm environment file')
+            raise CLIError("Problem loading the helm environment file: " + str(e))
+        try:
+            assert env_dict.get('global').get('azureEnvironment') == 'AZUREDOGFOOD'
+            assert env_dict.get('systemDefaultValues').get('azureArcAgents').get('config_dp_endpoint_override')
+        except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
+                                    summary='Problem loading the helm environment variables')
+            raise CLIError("The required helm environment variables for dogfood onboarding are either not present in the file or incorrectly set. Please check the values 'global.azureEnvironment' and 'systemDefaultValues.azureArcAgents.config_dp_endpoint_override' in the file.")
+
+    # Return the dp endpoint and release train
+    dp_endpoint = env_dict.get('systemDefaultValues').get('azureArcAgents').get('config_dp_endpoint_override')
+    release_train = env_dict.get('systemDefaultValues').get('azureArcAgents').get('releaseTrain')
+    return dp_endpoint, release_train
 
 
 def set_kube_config(kube_config):
@@ -371,6 +434,54 @@ def generate_request_payload(configuration, location, public_key, tags):
     return cc
 
 
+def get_kubeconfig_node_dict(kube_config=None):
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    try:
+        kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
+    except Exception as ex:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching details from kubeconfig')
+        raise CLIError("Error while fetching details from kubeconfig." + str(ex))
+    return kubeconfig_data
+
+
+def check_aks_cluster(kube_config, kube_context):
+    config_data = get_kubeconfig_node_dict(kube_config=kube_config)
+    try:
+        all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Exception while trying to list kube contexts: %s\n", e)
+
+    if kube_context is None:
+        # Get name of the cluster from current context as kube_context is none.
+        cluster_name = current_context.get('context').get('cluster')
+        if cluster_name is None:
+            logger.warning("Cluster not found in currentcontext: " + str(current_context))
+    else:
+        cluster_found = False
+        for context in all_contexts:
+            if context.get('name') == kube_context:
+                cluster_found = True
+                cluster_name = context.get('context').get('cluster')
+                break
+        if not cluster_found or cluster_name is None:
+            logger.warning("Cluster not found in kubecontext: " + str(kube_context))
+
+    clusters = config_data.safe_get('clusters')
+    server_address = ""
+    for cluster in clusters:
+        if cluster.safe_get('name') == cluster_name:
+            server_address = cluster.safe_get('cluster').get('server')
+            break
+
+    if server_address.find(".azmk8s.io:") == -1:
+        return False
+    else:
+        return True
+
+
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
     return client.get(resource_group_name, cluster_name)
 
@@ -385,6 +496,9 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     logger.warning("This operation might take a while ...\n")
+
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -467,8 +581,8 @@ def get_release_namespace(kube_config, kube_context):
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
-                         kube_config, kube_context, no_wait):
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
+                         kube_config, kube_context, no_wait, values_file_provided, values_file):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -482,6 +596,11 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--output", "json"]
+    # To set some other helm parameters through file
+    if values_file_provided:
+        cmd_helm_install.extend(["-f", values_file])
+    if proxy_cert != "":
+        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -491,10 +610,11 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if 'forbidden' in error_helm_install.decode("ascii"):
+        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
+        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
 
@@ -565,13 +685,13 @@ def update_connectedk8s(cmd, instance, tags=None):
 # pylint: disable=line-too-long
 
 
-def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
+def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                   kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-    # Checking cloud
-    validate_cloud(cmd)
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -584,6 +704,31 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+
+    # Checking whether optional extra values file has been provided.
+    values_file_provided = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
+        # trimming required for windows os
+        if (values_file.startswith("'") or values_file.startswith('"')):
+            values_file = values_file[1:]
+        if (values_file.endswith("'") or values_file.endswith('"')):
+            values_file = values_file[:-1]
+
+    # Validate the helm environment file for Dogfood.
+    dp_endpoint_dogfood = None
+    release_train_dogfood = None
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     try:
@@ -617,6 +762,11 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     helm_version = check_helm_version(kube_config, kube_context)
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
 
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+
     # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):
         telemetry.set_user_fault()
@@ -634,7 +784,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         utils.add_helm_repo(kube_config, kube_context)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, connected_cluster.location)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, connected_cluster.location, dp_endpoint_dogfood, release_train_dogfood)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -655,6 +805,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
                         "--set", "global.httpProxy={}".format(http_proxy),
                         "--set", "global.noProxy={}".format(no_proxy),
                         "--wait", "--output", "json"]
+    if values_file_provided:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if proxy_cert != "":
+        cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -662,7 +816,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
-        if 'forbidden' in error_helm_upgrade.decode("ascii"):
+        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')

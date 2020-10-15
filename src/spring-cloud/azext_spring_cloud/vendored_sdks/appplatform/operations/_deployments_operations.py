@@ -61,8 +61,9 @@ class DeploymentsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DeploymentResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.DeploymentResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -182,7 +183,7 @@ class DeploymentsOperations(object):
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.appplatform.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -191,9 +192,9 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -358,7 +359,7 @@ class DeploymentsOperations(object):
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.appplatform.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -367,9 +368,9 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -422,7 +423,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -501,7 +502,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -847,8 +848,9 @@ class DeploymentsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: LogFileUrlResponse or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.LogFileUrlResponse or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.appplatform.v2019_05_01_preview.models.LogFileUrlResponse
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL

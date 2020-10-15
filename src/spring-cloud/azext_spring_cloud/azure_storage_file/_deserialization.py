@@ -203,16 +203,16 @@ def _convert_xml_to_directories_and_files(response):
 
     for file_element in entries_element.findall('File'):
         # Name element
-        file = File()
-        file.name = file_element.findtext('Name')
+        _file = File()
+        _file.name = file_element.findtext('Name')
 
         # Properties
         properties_element = file_element.find('Properties')
-        file.properties.content_length = int(
+        _file.properties.content_length = int(
             properties_element.findtext('Content-Length'))
 
         # Add file to list
-        entries.append(file)
+        entries.append(_file)
 
     for directory_element in entries_element.findall('Directory'):
         # Name element

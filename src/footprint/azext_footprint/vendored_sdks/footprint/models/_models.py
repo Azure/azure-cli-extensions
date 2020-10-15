@@ -282,9 +282,9 @@ class MeasurementEndpointCondition(SubResource):
     :vartype type: str
     :ivar condition_id: The id of a Footprint measurement endpoint condition.
     :vartype condition_id: str
-    :ivar type_properties_type: Required. The type of a Footprint measurement endpoint condition.
-     Default value: "RequestHeader".
-    :vartype type_properties_type: str
+    :param type_properties_type: Required. The type of a Footprint measurement endpoint condition.
+     Possible values include: "RequestHeader".
+    :type type_properties_type: str or ~footprint_monitoring_management_client.models.Type
     :param variable: Required. The variable of a Footprint measurement endpoint condition.
     :type variable: str
     :param operator: Required. The operator of a Footprint measurement endpoint condition. Possible
@@ -300,7 +300,7 @@ class MeasurementEndpointCondition(SubResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'condition_id': {'readonly': True, 'max_length': 32, 'min_length': 32, 'pattern': r'[a-f0-9]{32}'},
-        'type_properties_type': {'required': True, 'constant': True},
+        'type_properties_type': {'required': True},
         'variable': {'required': True},
         'operator': {'required': True},
         'constant': {'required': True},
@@ -317,8 +317,6 @@ class MeasurementEndpointCondition(SubResource):
         'constant': {'key': 'properties.constant', 'type': 'str'},
     }
 
-    type_properties_type = "RequestHeader"
-
     def __init__(
         self,
         **kwargs
@@ -327,6 +325,7 @@ class MeasurementEndpointCondition(SubResource):
         self.name = None
         self.type = None
         self.condition_id = None
+        self.type_properties_type = kwargs['type_properties_type']
         self.variable = kwargs['variable']
         self.operator = kwargs['operator']
         self.constant = kwargs['constant']

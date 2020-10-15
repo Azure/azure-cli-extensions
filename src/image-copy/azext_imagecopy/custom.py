@@ -84,19 +84,21 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
     # TODO: skip creating another snapshot when the source is a snapshot
     logger.warning("Creating source snapshot")
     source_os_disk_snapshot_name = source_object_name + '_os_disk_snapshot'
-
+    snapshot_location = json_cmd_output['location']
     if source_os_disk_type == "BLOB":
         source_storage_account_id = get_storage_account_id_from_blob_path(cmd,
                                                                           source_os_disk_id,
                                                                           source_resource_group_name)
         cli_cmd = prepare_cli_command(['snapshot', 'create',
                                        '--name', source_os_disk_snapshot_name,
+                                       '--location', snapshot_location,
                                        '--resource-group', source_resource_group_name,
                                        '--source', source_os_disk_id,
                                        '--source-storage-account-id', source_storage_account_id])
     else:
         cli_cmd = prepare_cli_command(['snapshot', 'create',
                                        '--name', source_os_disk_snapshot_name,
+                                       '--location', snapshot_location,
                                        '--resource-group', source_resource_group_name,
                                        '--source', source_os_disk_id])
 

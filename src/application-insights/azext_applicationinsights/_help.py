@@ -122,7 +122,7 @@ helps['monitor app-insights api-key show'] = """
     parameters:
       - name: --api-key
         type: string
-        short-summary: name of the API key to fetch. Can be found using `api-keys show`.
+        short-summary: name of the API key to fetch. Can be found using `api-key show`.
     examples:
       - name: Fetch API Key.
         text: |
@@ -138,7 +138,7 @@ helps['monitor app-insights api-key delete'] = """
     parameters:
       - name: --api-key
         type: string
-        short-summary: Name of the API key to delete. Can be found using `api-keys show`.
+        short-summary: Name of the API key to delete. Can be found using `api-key show`.
     examples:
       - name: Delete API Key.
         text: |
