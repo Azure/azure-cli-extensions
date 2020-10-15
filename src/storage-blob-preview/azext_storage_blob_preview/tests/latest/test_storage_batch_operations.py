@@ -478,14 +478,9 @@ class StorageBatchOperationScenarios(StorageScenarioMixin, LiveScenarioTest):
         temp_dir = self.create_temp_dir()
         expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
 
-        sas_token = self.storage_cmd('storage container generate-sas -n {} --permissions dwrl '
-                                     '--expiry {}', storage_account_info, container_name, expiry).get_output_in_json()
-
-        storage_account = self.cmd('storage account show -n {}'.format(storage_account_info[0])).get_output_in_json()
-
-        # create container url with sas token
-        container_url = storage_account.get('primaryEndpoints').get('blob') + container_name
-        container_url += '?' + sas_token
+        container_url = self.storage_cmd('storage container generate-sas -n {} --permissions dwrl '
+                                         '--expiry {} --full-uri -o tsv', storage_account_info, container_name,
+                                         expiry).output
 
         self.kwargs.update({
             'test_dir': test_dir,
