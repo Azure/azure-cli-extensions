@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.7
+++++++
+* Fix copying failure when location of source resource group and source image are different.
+
 0.2.6
 ++++++
 * Add validation on temporary resource group.

@@ -2,6 +2,14 @@
 
  Release History
 ===============
+0.4.0 (2020-10-15)
+++++++++++++++++
+* Add deprecate info for `az storage blob access`, `az storage blob directory`, `az storage blob move`
+* [BREAKING CHANGE] Remove `az storage account` related commands because they are supported in main azure cli
+
+0.3.0 (2020-09-15)
+++++++++++++++++
+* Remove `az storage blob list`
 
 0.2.12 (2020-07-29)
 ++++++++++++++++

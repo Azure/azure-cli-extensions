@@ -106,7 +106,7 @@ def load_arguments(self, _):
 
         with self.argument_context('network firewall {} create'.format(item['name']), arg_group='Collection') as c:
             c.argument('collection_name', collection_name_type, help='Name of the collection to create the rule in. Will create the collection if it does not exist.')
-            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low).', type=int)
+            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low). Supply only if you want to create the collection.', type=int)
 
         with self.argument_context('network firewall {} collection'.format(item['name'])) as c:
             c.argument('item_name', collection_name_type)
@@ -118,10 +118,10 @@ def load_arguments(self, _):
 
     for scope in ['network-rule', 'application-rule']:
         with self.argument_context('network firewall {}'.format(scope), arg_group='Collection') as c:
-            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection.')
+            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall nat-rule', arg_group='Collection') as c:
-        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection.')
+        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the IP configuration.', id_part='child_name_2')

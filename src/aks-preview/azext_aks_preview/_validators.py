@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil, isnan, isclose
+from math import isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
@@ -16,7 +16,7 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 from ._helpers import (_fuzzy_match)
 
@@ -214,7 +214,7 @@ def validate_spot_max_price(namespace):
     if not isnan(namespace.spot_max_price):
         if namespace.priority != "Spot":
             raise CLIError("--spot_max_price can only be set when --priority is Spot")
-        if namespace.spot_max_price > 0 and not isclose(namespace.spot_max_price * 100000 % 1, 0, rel_tol=1e-06):
+        if len(str(namespace.spot_max_price).split(".")) > 1 and len(str(namespace.spot_max_price).split(".")[1]) > 5:
             raise CLIError("--spot_max_price can only include up to 5 decimal places")
         if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
             raise CLIError(
@@ -404,9 +404,9 @@ def validate_addons(namespace):
             matches = str(matches)[1:-1]
             all_addons = list(ADDONS)
             all_addons = str(all_addons)[1:-1]
-            if len(matches) == 0:
+            if not matches:
                 raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
 
             raise CLIError(
-                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
