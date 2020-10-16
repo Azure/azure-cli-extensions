@@ -179,8 +179,7 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
 # pylint: disable=unused-argument, too-many-locals
 def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
-                                progress_callback=None, if_modified_since=None, if_unmodified_since=None,
-                                if_match=None, if_none_match=None, **kwargs):
+                                progress_callback=None, **kwargs):
     source_blobs = collect_blobs(client, container_name, pattern)
     blobs_to_download = {}
     for blob_name in source_blobs:
@@ -230,9 +229,7 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
             if not os.path.exists(destination_folder):
                 mkdir_p(destination_folder)
             include, result = _download_blob(client=blob_client, file_path=destination_path,
-                                             progress_callback=progress_callback, if_modified_since=if_modified_since,
-                                             if_unmodified_since=if_unmodified_since, if_match=if_match,
-                                             if_none_match=if_none_match, **kwargs)
+                                             progress_callback=progress_callback, **kwargs)
             if include:
                 results.append(result)
 
