@@ -35,4 +35,5 @@ jobs:
     - name: publish .whl
       uses: actions/upload-artifact@v2
       with:
-        path: src/connectedk8s/dist/connectedk8s-0.3.0-py2.py3-none-any.whl
+        name: connectedk8s-whl
+        path: src/connectedk8s/dist/connectedk8s-*.whl
