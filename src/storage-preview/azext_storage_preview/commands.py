@@ -5,9 +5,9 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_data_gen_update,
+from ._client_factory import (cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements

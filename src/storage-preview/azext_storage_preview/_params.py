@@ -3,24 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type,
-                                                get_three_state_flag)
+from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag)
 
-from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
-                          validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
+from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list)
-from .profiles import CUSTOM_MGMT_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
-    from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
-
-    from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
@@ -29,9 +22,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
 
-    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
-                                     id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
     blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
                                      completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
                                                                                 parent='container_name'))
