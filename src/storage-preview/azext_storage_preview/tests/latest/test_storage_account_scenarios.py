@@ -59,14 +59,14 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('name', name),
             JMESPathCheck('location', location),
             JMESPathCheck('sku.name', 'Standard_LRS'),
-            JMESPathCheck('kind', 'Storage')
+            JMESPathCheck('kind', 'StorageV2')
         ])
 
         self.cmd('az storage account show -n {}'.format(name), checks=[
             JMESPathCheck('name', name),
             JMESPathCheck('location', location),
             JMESPathCheck('sku.name', 'Standard_LRS'),
-            JMESPathCheck('kind', 'Storage')
+            JMESPathCheck('kind', 'StorageV2')
         ])
 
         self.cmd('storage account update -g {} -n {} --tags foo=bar cat'
@@ -101,7 +101,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('reason', 'AlreadyExists')
         ])
 
-    @ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
+    @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_create_storage_account_premium_sku(self, resource_group, location):
         self.kwargs.update({
             'name1': self.create_random_name(prefix='cli', length=24),
