@@ -29,6 +29,6 @@ azdev test codespaces
 Test extension on fresh set up:
 ```
 azdev extension build codespaces
-docker run -v .../azure-cli-extensions/dist:/ext -it microsoft/azure-cli
+docker run -v .../azure-cli-extensions/dist:/ext -it mcr.microsoft.com/azure-cli
 az extension add --source /ext/codespaces-VERSION-py2.py3-none-any.whl
 ```

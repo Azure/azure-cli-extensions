@@ -20,6 +20,7 @@ from .operations import CertificatesOperations
 from .operations import CustomDomainsOperations
 from .operations import DeploymentsOperations
 from .operations import Operations
+from .operations import RuntimeVersionsOperations
 from .operations import SkuOperations
 from . import models
 
@@ -31,21 +32,23 @@ class AppPlatformManagementClient(SDKClient):
     :vartype config: AppPlatformManagementClientConfiguration
 
     :ivar services: Services operations
-    :vartype services: azure.mgmt.appplatform.operations.ServicesOperations
+    :vartype services: azure.mgmt.appplatform.v2019_05_01_preview.operations.ServicesOperations
     :ivar apps: Apps operations
-    :vartype apps: azure.mgmt.appplatform.operations.AppsOperations
+    :vartype apps: azure.mgmt.appplatform.v2019_05_01_preview.operations.AppsOperations
     :ivar bindings: Bindings operations
-    :vartype bindings: azure.mgmt.appplatform.operations.BindingsOperations
+    :vartype bindings: azure.mgmt.appplatform.v2019_05_01_preview.operations.BindingsOperations
     :ivar certificates: Certificates operations
-    :vartype certificates: azure.mgmt.appplatform.operations.CertificatesOperations
+    :vartype certificates: azure.mgmt.appplatform.v2019_05_01_preview.operations.CertificatesOperations
     :ivar custom_domains: CustomDomains operations
-    :vartype custom_domains: azure.mgmt.appplatform.operations.CustomDomainsOperations
+    :vartype custom_domains: azure.mgmt.appplatform.v2019_05_01_preview.operations.CustomDomainsOperations
     :ivar deployments: Deployments operations
-    :vartype deployments: azure.mgmt.appplatform.operations.DeploymentsOperations
+    :vartype deployments: azure.mgmt.appplatform.v2019_05_01_preview.operations.DeploymentsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.appplatform.operations.Operations
+    :vartype operations: azure.mgmt.appplatform.v2019_05_01_preview.operations.Operations
+    :ivar runtime_versions: RuntimeVersions operations
+    :vartype runtime_versions: azure.mgmt.appplatform.v2019_05_01_preview.operations.RuntimeVersionsOperations
     :ivar sku: Sku operations
-    :vartype sku: azure.mgmt.appplatform.operations.SkuOperations
+    :vartype sku: azure.mgmt.appplatform.v2019_05_01_preview.operations.SkuOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -81,6 +84,8 @@ class AppPlatformManagementClient(SDKClient):
         self.deployments = DeploymentsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.operations = Operations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.runtime_versions = RuntimeVersionsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.sku = SkuOperations(
             self._client, self.config, self._serialize, self._deserialize)

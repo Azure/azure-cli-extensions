@@ -24,9 +24,9 @@ import time
 import uuid
 import base64
 import webbrowser
+from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
-from math import isnan
 import requests
 from knack.log import get_logger
 from knack.util import CLIError
@@ -49,7 +49,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_06_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -74,7 +74,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._client_factory import cf_agent_pools
+from ._client_factory import cf_managed_clusters
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -82,12 +82,14 @@ from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
+from ._consts import CONST_KUBE_DASHBOARD_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
 from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
 from ._consts import CONST_INGRESS_APPGW_SUBNET_PREFIX, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
+from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -600,11 +602,17 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
-    addon_profile = addon_profiles.get("kubeDashboard", ManagedClusterAddonProfile(enabled=True))
+    # addon name is case insensitive
+    addon_profile = next((addon_profiles[k] for k in addon_profiles
+                          if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
+                         ManagedClusterAddonProfile(enabled=False))
     if not addon_profile.enabled:
         raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
-                       'To use "az aks browse" first enable the add-on\n'
-                       'by running "az aks enable-addons --addons kube-dashboard".')
+                       'To use "az aks browse" first enable the add-on '
+                       'by running "az aks enable-addons --addons kube-dashboard".\n'
+                       'Starting with Kubernetes 1.19, AKS no longer support installation of '
+                       'the managed kube-dashboard addon.\n'
+                       'Please use the Kubernetes resources view in the Azure portal (preview) instead.')
 
     _, browse_path = tempfile.mkstemp()
 
@@ -785,6 +793,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_password=None,
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
+               node_osdisk_type=None,
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
                node_count=3,
@@ -895,6 +904,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
+
+    if node_osdisk_type:
+        agent_pool_profile.os_disk_type = node_osdisk_type
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool_profile)
 
@@ -1659,25 +1671,31 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     instance = client.get(resource_group_name, name)
 
-    if kubernetes_version != '' and node_image_only:
-        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
-
     vmas_cluster = False
     for agent_profile in instance.agent_pool_profiles:
         if agent_profile.type.lower() == "availabilityset":
             vmas_cluster = True
             break
 
+    if kubernetes_version != '' and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. '
+                       'If you only want to upgrade the node version please use the "--node-image-only" option only.')
+
     if node_image_only:
-        msg = "This node image upgrade operation will run across every node pool in the cluster and might take a while, do you wish to continue?"
+        msg = "This node image upgrade operation will run across every node pool in the cluster" \
+              "and might take a while, do you wish to continue?"
         if not yes and not prompt_y_n(msg, default="n"):
             return None
-        agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+
+        # This only provide convenience for customer at client side so they can run az aks upgrade to upgrade all
+        # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
         for agent_pool_profile in instance.agent_pool_profiles:
             if vmas_cluster:
-                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation can only be applied on VirtualMachineScaleSets cluster.')
-            _upgrade_single_agent_pool_node_image(agent_pool_client, resource_group_name, name, agent_pool_profile, no_wait)
-        return None
+                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
+                               'can only be applied on VirtualMachineScaleSets cluster.')
+            _upgrade_single_nodepool_image_version(True, client, resource_group_name, name, agent_pool_profile.name)
+        mc = client.get(resource_group_name, name)
+        return _remove_nulls([mc])[0]
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1723,15 +1741,22 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def _upgrade_single_agent_pool_node_image(client, resource_group_name, cluster_name, agent_pool_profile, no_wait):
-    instance = client.get(resource_group_name, cluster_name, agent_pool_profile.name)
-    instance.node_image_version = 'latest'
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, agent_pool_profile.name, instance)
+def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
+    return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
 
 
-def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None,
-                        appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False):
+def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
+                        addons_str,
+                        subscription_id,
+                        resource_group_name,
+                        addon_profiles=None,
+                        workspace_resource_id=None,
+                        appgw_name=None,
+                        appgw_subnet_prefix=None,
+                        appgw_id=None,
+                        appgw_subnet_id=None,
+                        appgw_watch_namespace=None,
+                        disable_sgxquotehelper=False):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1739,7 +1764,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
         addon_profiles['httpApplicationRouting'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('http_application_routing')
     if 'kube-dashboard' in addons:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+        addon_profiles[CONST_KUBE_DASHBOARD_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
@@ -1776,6 +1801,10 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
         addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME] = addon_profile
         addons.remove('ingress-appgw')
+    if 'open-service-mesh' in addons:
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
+        addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
+        addons.remove('open-service-mesh')
     if 'confcom' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
         if disable_sgxquotehelper:
@@ -2195,6 +2224,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_zones=None,
                       enable_node_public_ip=False,
                       node_vm_size=None,
+                      node_osdisk_type=None,
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
@@ -2271,6 +2301,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_osdisk_size:
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
 
+    if node_osdisk_type:
+        agent_pool.os_disk_type = node_osdisk_type
+
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
@@ -2300,20 +2333,21 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           kubernetes_version='',
                           no_wait=False,
                           node_image_only=False,
-                          max_surge=None,):
-
-    from knack.prompting import prompt_y_n
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+                          max_surge=None):
     if kubernetes_version != '' and node_image_only:
-        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version. If you only want to upgrade the node version please use the "--node-image-only" option only.')
+        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
+                       'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
-    instance.orchestrator_version = kubernetes_version
     if node_image_only:
-        msg = "This node image upgrade operation will run across every node in this node pool and might take a while, " \
-              "do you wish to continue? "
-        if not prompt_y_n(msg, default="n"):
-            return None
-        instance.node_image_version = 'latest'
+        managed_cluster_client = cf_managed_clusters(cmd.cli_ctx)
+        return _upgrade_single_nodepool_image_version(no_wait,
+                                                      managed_cluster_client,
+                                                      resource_group_name,
+                                                      cluster_name,
+                                                      nodepool_name)
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    instance.orchestrator_version = kubernetes_version
 
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()
@@ -2322,6 +2356,14 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
         instance.upgrade_settings.max_surge = max_surge
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+
+
+def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name):
+    return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
 
 
 def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
@@ -2435,7 +2477,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
-                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
+                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None,
+                      appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
@@ -2498,13 +2541,13 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
-    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
-        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
 
     os_type = 'Linux'
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg not in ADDONS:
+            raise CLIError("Invalid addon name: {}.".format(addon_arg))
         addon = ADDONS[addon_arg]
         if addon == 'aciConnector':
             # only linux is supported for now, in the future this will be a user flag
@@ -2557,6 +2600,13 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     addon_profile.config[CONST_INGRESS_APPGW_SUBNET_ID] = appgw_subnet_id
                 if appgw_watch_namespace is not None:
                     addon_profile.config[CONST_INGRESS_APPGW_WATCH_NAMESPACE] = appgw_watch_namespace
+            elif addon.lower() == CONST_OPEN_SERVICE_MESH_ADDON_NAME.lower():
+                if addon_profile.enabled:
+                    raise CLIError('The open-service-mesh addon is already enabled for this managed cluster.\n'
+                                   'To change open-service-mesh configuration, run '
+                                   f'"az aks disable-addons -a open-service-mesh -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
             elif addon.lower() == CONST_CONFCOM_ADDON_NAME.lower():
                 if addon_profile.enabled:
                     raise CLIError('The confcom addon is already enabled for this managed cluster.\n'
@@ -2569,7 +2619,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
-                raise CLIError("The addon {} is not installed.".format(addon))
+                if addon == CONST_KUBE_DASHBOARD_ADDON_NAME:
+                    addon_profiles[addon] = ManagedClusterAddonProfile(enabled=False)
+                else:
+                    raise CLIError("The addon {} is not installed.".format(addon))
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
 
