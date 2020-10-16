@@ -5,7 +5,7 @@
 import os
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer,
                                StorageAccountPreparer, api_version_constraint, live_only)
-from azure.cli.command_modules.storage.tests.storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
+from ..storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from knack.util import CLIError
 
 
