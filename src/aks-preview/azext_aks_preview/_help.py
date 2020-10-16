@@ -126,7 +126,7 @@ helps['aks create'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -358,7 +358,7 @@ helps['aks update'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
