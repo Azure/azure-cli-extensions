@@ -16,11 +16,11 @@ interactions:
       - -n -g --query -o
       User-Agent:
       - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.13.0
+        azure-mgmt-storage/11.2.0 Azure-SDK-For-Python AZURECLI/2.13.0
       accept-language:
       - en-US
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/queue000002/listKeys?api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/queue000002/listKeys?api-version=2019-06-01
   response:
     body:
       string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -32,7 +32,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 16 Oct 2020 07:49:27 GMT
+      - Fri, 16 Oct 2020 08:40:51 GMT
       expires:
       - '-1'
       pragma:
@@ -48,7 +48,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11998'
     status:
       code: 200
       message: OK
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 16 Oct 2020 07:49:28 GMT
+      - Fri, 16 Oct 2020 08:40:53 GMT
       expires:
       - '-1'
       pragma:
@@ -117,9 +117,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:28 GMT
+      - Fri, 16 Oct 2020 08:40:53 GMT
       x-ms-meta:
       - '{''a'': ''b'', ''c'': ''d''}'
       x-ms-meta-a:
@@ -137,7 +137,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 16 Oct 2020 07:49:29 GMT
+      - Fri, 16 Oct 2020 08:40:54 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -157,9 +157,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:30 GMT
+      - Fri, 16 Oct 2020 08:40:55 GMT
       x-ms-version:
       - '2018-03-28'
     method: PUT
@@ -167,14 +167,14 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>QueueAlreadyExists</Code><Message>The
-        specified queue already exists.\nRequestId:4f294b90-b003-0012-8090-a310b8000000\nTime:2020-10-16T07:49:31.5090780Z</Message></Error>"
+        specified queue already exists.\nRequestId:63b447e0-e003-002c-1698-a328f4000000\nTime:2020-10-16T08:40:56.3398178Z</Message></Error>"
     headers:
       content-length:
       - '222'
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:31 GMT
+      - Fri, 16 Oct 2020 08:40:56 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -194,9 +194,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:31 GMT
+      - Fri, 16 Oct 2020 08:40:56 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
@@ -210,7 +210,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 16 Oct 2020 07:49:31 GMT
+      - Fri, 16 Oct 2020 08:40:57 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-approximate-messages-count:
@@ -234,9 +234,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:32 GMT
+      - Fri, 16 Oct 2020 08:40:57 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
@@ -252,7 +252,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:33 GMT
+      - Fri, 16 Oct 2020 08:40:57 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -272,9 +272,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:34 GMT
+      - Fri, 16 Oct 2020 08:40:59 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
@@ -290,7 +290,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:35 GMT
+      - Fri, 16 Oct 2020 08:40:59 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -312,9 +312,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:35 GMT
+      - Fri, 16 Oct 2020 08:41:00 GMT
       x-ms-version:
       - '2018-03-28'
     method: DELETE
@@ -326,7 +326,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 16 Oct 2020 07:49:36 GMT
+      - Fri, 16 Oct 2020 08:41:00 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -344,9 +344,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:36 GMT
+      - Fri, 16 Oct 2020 08:41:01 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
@@ -354,14 +354,14 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>QueueNotFound</Code><Message>The
-        specified queue does not exist.\nRequestId:c3319066-9003-0048-4f90-a3765f000000\nTime:2020-10-16T07:49:38.0063940Z</Message></Error>"
+        specified queue does not exist.\nRequestId:79502673-0003-001b-4998-a3fa58000000\nTime:2020-10-16T08:41:02.7528553Z</Message></Error>"
     headers:
       content-length:
       - '217'
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:37 GMT
+      - Fri, 16 Oct 2020 08:41:02 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -383,9 +383,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-queue/12.1.2 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:38 GMT
+      - Fri, 16 Oct 2020 08:41:02 GMT
       x-ms-version:
       - '2018-03-28'
     method: DELETE
@@ -393,14 +393,14 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>QueueNotFound</Code><Message>The
-        specified queue does not exist.\nRequestId:aa34363d-7003-0022-0690-a3ae77000000\nTime:2020-10-16T07:49:39.2782481Z</Message></Error>"
+        specified queue does not exist.\nRequestId:b59e2e63-0003-0034-4598-a3f793000000\nTime:2020-10-16T08:41:04.0461091Z</Message></Error>"
     headers:
       content-length:
       - '217'
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:38 GMT
+      - Fri, 16 Oct 2020 08:41:03 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -413,26 +413,31 @@ interactions:
 - request:
     body: null
     headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.9; Windows 10) AZURECLI/2.13.0
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:39 GMT
+      - Fri, 16 Oct 2020 08:41:04 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
     uri: https://queue000002-secondary.queue.core.windows.net/?restype=service&comp=stats
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>unavailable</Status><LastSyncTime></LastSyncTime></GeoReplication></StorageServiceStats>"
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>live</Status><LastSyncTime>Fri,
+        16 Oct 2020 08:38:51 GMT</LastSyncTime></GeoReplication></StorageServiceStats>"
     headers:
       cache-control:
       - no-cache
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:40 GMT
+      - Fri, 16 Oct 2020 08:41:04 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
@@ -445,26 +450,31 @@ interactions:
 - request:
     body: null
     headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.9; Windows 10) AZURECLI/2.13.0
+      - azsdk-python-storage-queue/12.1.3 Python/3.7.9 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Fri, 16 Oct 2020 07:49:40 GMT
+      - Fri, 16 Oct 2020 08:41:05 GMT
       x-ms-version:
       - '2018-03-28'
     method: GET
     uri: https://queue000002-secondary.queue.core.windows.net/?restype=service&comp=stats
   response:
     body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>unavailable</Status><LastSyncTime></LastSyncTime></GeoReplication></StorageServiceStats>"
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>live</Status><LastSyncTime>Fri,
+        16 Oct 2020 08:38:51 GMT</LastSyncTime></GeoReplication></StorageServiceStats>"
     headers:
       cache-control:
       - no-cache
       content-type:
       - application/xml
       date:
-      - Fri, 16 Oct 2020 07:49:41 GMT
+      - Fri, 16 Oct 2020 08:41:05 GMT
       server:
       - Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
