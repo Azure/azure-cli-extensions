@@ -261,8 +261,8 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
         self.oauth_cmd('storage blob list -c {} --account-name {} '.format(src_container, storage_account))\
             .assert_with_checks(JMESPathCheck('length(@)', 0))
         self.oauth_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --if-match * '
-                       '--if-unmodified-since "2020-06-29T06:32Z" --account-name {} '.format(
-                        test_dir, src_container, storage_account))
+                       '--if-unmodified-since "2020-06-29T06:32Z" --account-name {} '.format(test_dir, src_container,
+                                                                                             storage_account))
         self.oauth_cmd('storage blob list -c {} --account-name {} '.format(src_container, storage_account))\
             .assert_with_checks(JMESPathCheck('length(@)', 0))
 
