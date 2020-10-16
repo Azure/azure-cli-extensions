@@ -120,3 +120,26 @@ def transform_storage_list_output(result):
         logger.warning('Next Marker:')
         logger.warning(result.next_marker)
     return list(result)
+
+
+def transform_queue_stats_output(result):
+    if type(result).__name__ == 'dict':
+        new_result = {}
+        for key in result.keys():
+            new_key = convert_to_camel_case(key)
+            new_result[new_key] = transform_queue_stats_output(result[key])
+        return new_result
+    return result
+
+
+def convert_to_camel_case(src):
+    string_arr = src.split('_')
+    first_flag = True
+    res = ''
+    for substring in string_arr:
+        if first_flag:
+            res += substring
+            first_flag = False
+        else:
+            res += substring.capitalize()
+    return res

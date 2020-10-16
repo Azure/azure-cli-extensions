@@ -76,59 +76,74 @@ def validate_bypass(namespace):
         namespace.bypass = ', '.join(namespace.bypass) if isinstance(namespace.bypass, list) else namespace.bypass
 
 
+def get_config_value(cmd, section, key, default):
+    return cmd.cli_ctx.config.get(section, key, default)
+
+
 def validate_client_parameters(cmd, namespace):
     """ Retrieves storage connection parameters from environment variables and parses out connection string into
     account name and key """
     n = namespace
 
-    def get_config_value(section, key, default):
-        return cmd.cli_ctx.config.get(section, key, default)
-
     if hasattr(n, 'auth_mode'):
-        auth_mode = n.auth_mode or get_config_value('storage', 'auth_mode', None)
+        auth_mode = n.auth_mode or get_config_value(cmd, 'storage', 'auth_mode', None)
         del n.auth_mode
         if not n.account_name:
-            n.account_name = get_config_value('storage', 'account', None)
+            n.account_name = get_config_value(cmd, 'storage', 'account', None)
         if auth_mode == 'login':
-            n.token_credential = _create_token_credential(cmd.cli_ctx)
+            from azure.cli.core._profile import Profile
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            n.token_credential, _, _ = profile.get_login_credentials(
+                resource="https://storage.azure.com", subscription_id=n._subscription)
 
-            # give warning if there are account key args being ignored
-            account_key_args = [n.account_key and "--account-key", n.sas_token and "--sas-token",
-                                n.connection_string and "--connection-string"]
-            account_key_args = [arg for arg in account_key_args if arg]
+    if hasattr(n, 'token_credential') and n.token_credential:
+        # give warning if there are account key args being ignored
+        account_key_args = [n.account_key and "--account-key", n.sas_token and "--sas-token",
+                            n.connection_string and "--connection-string"]
+        account_key_args = [arg for arg in account_key_args if arg]
 
-            if account_key_args:
-                logger.warning('In "login" auth mode, the following arguments are ignored: %s',
-                               ' ,'.join(account_key_args))
-            return
+        if account_key_args:
+            logger.warning('In "login" auth mode, the following arguments are ignored: %s',
+                           ' ,'.join(account_key_args))
+        return
 
     if not n.connection_string:
-        n.connection_string = get_config_value('storage', 'connection_string', None)
+        n.connection_string = get_config_value(cmd, 'storage', 'connection_string', None)
 
     # if connection string supplied or in environment variables, extract account key and name
     if n.connection_string:
         conn_dict = validate_key_value_pairs(n.connection_string)
         n.account_name = conn_dict.get('AccountName')
         n.account_key = conn_dict.get('AccountKey')
-        if not n.account_name or not n.account_key:
-            raise CLIError('Connection-string: %s, is malformed. Some shell environments require the '
-                           'connection string to be surrounded by quotes.' % n.connection_string)
+        n.sas_token = conn_dict.get('SharedAccessSignature')
 
     # otherwise, simply try to retrieve the remaining variables from environment variables
     if not n.account_name:
-        n.account_name = get_config_value('storage', 'account', None)
+        n.account_name = get_config_value(cmd, 'storage', 'account', None)
     if not n.account_key:
-        n.account_key = get_config_value('storage', 'key', None)
+        n.account_key = get_config_value(cmd, 'storage', 'key', None)
     if not n.sas_token:
-        n.sas_token = get_config_value('storage', 'sas_token', None)
+        n.sas_token = get_config_value(cmd, 'storage', 'sas_token', None)
 
     # strip the '?' from sas token. the portal and command line are returns sas token in different
     # forms
     if n.sas_token:
         n.sas_token = n.sas_token.lstrip('?')
 
+    # account name with secondary
+    if n.account_name and n.account_name.endswith('-secondary'):
+        n.location_mode = 'secondary'
+        n.account_name = n.account_name[:-10]
+
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
+        logger.warning('There is no credential provided in your command and environment, we will query account key '
+                       'for your storage account. \nPlease provide --connection-string, --account-key or --sas-token '
+                       'as credential, or use `--auth-mode login` if you have required RBAC roles in your command. '
+                       'For more information about RBAC roles in storage, you can see '
+                       'https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-cli. \n'
+                       'Setting corresponding environment variable can avoid inputting credential in your command. '
+                       'Please use --help to get more information.')
         n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
 
 
@@ -539,3 +554,37 @@ def validate_directory_name(cmd, namespace):
         raise ValueError('usage error: The specified --directory-path already exists in current container. '
                          'Please change to a valid blob directory name. If you want to rename a directory, '
                          'please use `az storage blob directory move` command.')
+
+
+def get_permission_allowed_values(permission_class):
+    if permission_class:
+        instance = permission_class()
+
+        allowed_values = [x.lower() for x in dir(instance) if not x.startswith('_')]
+        allowed_values.remove('from_string')
+        for i, item in enumerate(allowed_values):
+            if item == 'delete_previous_version':
+                allowed_values[i] = 'x' + item
+        return allowed_values
+    return None
+
+
+def get_permission_help_string(permission_class):
+    allowed_values = get_permission_allowed_values(permission_class)
+
+    return ' '.join(['({}){}'.format(x[0], x[1:]) for x in allowed_values])
+
+
+def get_permission_validator(permission_class):
+    allowed_values = get_permission_allowed_values(permission_class)
+    allowed_string = ''.join(x[0] for x in allowed_values)
+
+    def validator(namespace):
+        if namespace.permission:
+            if set(namespace.permission) - set(allowed_string):
+                help_string = get_permission_help_string(permission_class)
+                raise ValueError(
+                    'valid values are {} or a combination thereof.'.format(help_string))
+            namespace.permission = permission_class.from_string(namespace.permission)
+
+    return validator

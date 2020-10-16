@@ -12,3 +12,4 @@ CUSTOM_MGMT_STORAGE = CustomResourceType('azext_storage_preview.vendored_sdks.az
                                          'StorageManagementClient')
 CUSTOM_MGMT_PREVIEW_STORAGE = CustomResourceType('azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage',
                                                  'StorageManagementClient')
+CUSTOM_DATA_STORAGE_QUEUE = CustomResourceType('azext_storage_preview.vendored_sdks.azure_storage_queue', None)

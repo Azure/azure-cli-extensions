@@ -66,3 +66,13 @@ def get_container_name_completions(cmd, _, namespace):
         container_client = cf_blob_container_mgmt(cmd.cli_ctx, None)
         return [container.name for container in container_client.list(rg, namespace.account_name).value]
     return []
+
+
+def get_storage_acl_name_completion_list(service, func):
+    @Completer
+    def completer(cmd, _, namespace):
+        validate_client_parameters(cmd, namespace)
+        client = get_storage_client(cmd.cli_ctx, service, namespace)
+        return list(getattr(client, func)())
+
+    return completer

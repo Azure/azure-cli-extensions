@@ -12,8 +12,9 @@ from ._validators import (get_datetime_type, validate_metadata, validate_custom_
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list)
-from .profiles import CUSTOM_MGMT_STORAGE
+                          validate_storage_data_plane_list, ipv4_range_type,
+                          get_permission_help_string, get_permission_validator)
+from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_QUEUE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -28,6 +29,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
+    t_queue_service = self.get_sdk('_queue_service_client#QueueServiceClient')
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
@@ -43,6 +45,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                       completer=get_storage_name_completion_list(t_file_service, 'list_shares'))
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
                                       completer=get_storage_name_completion_list(t_table_service, 'list_tables'))
+    queue_name_type = CLIArgumentType(options_list=['--queue-name', '-q'], help='The queue name.',
+                                      completer=get_storage_name_completion_list(t_queue_service, 'list_queues'))
+    sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
+               'referenced with --policy-name that specifies this value. Can be combined.'
     num_results_type = CLIArgumentType(
         default=5000, help='Specifies the maximum number of results to return. Provide "*" to return all.',
         validator=validate_storage_data_plane_list)
@@ -347,3 +353,46 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
+
+    with self.argument_context('storage queue') as c:
+        c.argument('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
+
+    for item in ['stats', 'exists']:
+        with self.argument_context('storage queue {}'.format(item)) as c:
+            c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    for item in ['exists', 'generate-sas', 'create', 'delete']:
+        with self.argument_context('storage queue {}'.format(item)) as c:
+            c.extra('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
+
+    with self.argument_context('storage queue create') as c:
+        c.argument('fail_on_exist', help='Specifies whether to throw an exception if the queue already exists.')
+
+    with self.argument_context('storage queue delete') as c:
+        c.argument('fail_not_exist', help='Specifies whether to throw an exception if the queue doesn\'t exist.')
+
+    with self.argument_context('storage queue generate-sas') as c:
+        from .completers import get_storage_acl_name_completion_list
+        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+
+        c.argument('ip', type=ipv4_range_type,
+                   help='Specifies the IP address or range of IP addresses from which to accept requests. '
+                        'Supports only IPv4 style addresses.')
+        c.argument('expiry', type=get_datetime_type(True),
+                   help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes invalid. Do not '
+                        'use if a stored access policy is referenced with --policy-name that specifies this value.')
+        c.argument('start', type=get_datetime_type(True),
+                   help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes valid. Do not use '
+                        'if a stored access policy is referenced with --policy-name that specifies this value. '
+                        'Defaults to the time of the request.')
+        c.argument('protocol', options_list=('--https-only',), action='store_const', const='https',
+                   help='Only permit requests made with the HTTPS protocol. If omitted, requests from both the HTTP '
+                        'and HTTPS protocol are permitted.')
+        c.argument('policy_id', options_list='--policy-name',
+                   help='The name of a stored access policy within the queue\'s ACL.',
+                   completer=get_storage_acl_name_completion_list(t_queue_service, 'get_queue_access_policy'))
+        c.argument('permission', options_list='--permissions',
+                   help=sas_help.format(get_permission_help_string(t_queue_permissions)),
+                   validator=get_permission_validator(t_queue_permissions))
+        c.ignore('sas_token')
+

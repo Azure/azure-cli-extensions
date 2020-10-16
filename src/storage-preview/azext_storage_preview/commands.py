@@ -6,8 +6,9 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_data_gen_update,
-                              blob_data_service_factory, adls_blob_data_service_factory)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+                              blob_data_service_factory, adls_blob_data_service_factory,
+                              cf_queue_service, cf_queue_client)
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_DATA_STORAGE_QUEUE
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -161,3 +162,35 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.storage_command_oauth('set', 'set_path_access_control')
         g.storage_command_oauth('update', 'set_path_access_control')
         g.storage_command_oauth('show', 'get_path_access_control')
+
+    # pylint: disable=line-too-long
+    queue_service_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_queue._queue_service_client#QueueServiceClient.{}',
+        client_factory=cf_queue_service, resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+
+    queue_client_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_queue._queue_client#QueueClient.{}',
+        client_factory=cf_queue_client, resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+
+    # with self.command_group('storage queue', command_type=queue_service_sdk, is_preview=True,
+    #                         custom_command_type=get_custom_sdk('queue', cf_queue_service,
+    #                                                            CUSTOM_DATA_STORAGE_QUEUE),
+    #                         resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+    #     from ._transformers import transform_queue_stats_output
+    #     g.storage_command_oauth('stats', 'get_service_stats', transform=transform_queue_stats_output)
+
+    with self.command_group('storage queue', command_type=queue_client_sdk, is_preview=True,
+                            custom_command_type=get_custom_sdk('queue', cf_queue_client,
+                                                               CUSTOM_DATA_STORAGE_QUEUE),
+                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+        from ._format import transform_boolean_for_table
+        from ._transformers import create_boolean_result_output_transformer
+        g.storage_custom_command_oauth('exists', 'queue_exists',
+                                       transform=create_boolean_result_output_transformer('exists'))
+        g.storage_custom_command('generate-sas', 'generate_queue_sas')
+        g.storage_custom_command_oauth('create', 'create_queue',
+                                       transform=create_boolean_result_output_transformer('created'),
+                                       table_transformer=transform_boolean_for_table)
+        g.storage_custom_command_oauth('delete', 'delete_queue',
+                                       transform=create_boolean_result_output_transformer('deleted'),
+                                       table_transformer=transform_boolean_for_table)

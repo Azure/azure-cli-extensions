@@ -321,3 +321,51 @@ helps['storage blob directory upload'] = """
         - name: Upload a set of files in a local directory to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
 """
+
+helps['storage queue stats'] = """
+    type: command
+    short-summary: >
+        Retrieve statistics related to replication for the Queue service.
+        It is only available when read-access geo-redundant replication is enabled for the storage account.
+    examples:
+        - name: Show statistics related to replication for the Queue service.
+          text: az storage queue stats --account-name mystorageaccount
+"""
+
+helps['storage queue exists'] = """
+    type: command
+    short-summary: Return a boolean indicating whether the queue exists.
+    examples:
+        - name: Check whether the queue exists.
+          text: az storage queue exists -n myqueue --account-name mystorageaccount
+"""
+
+helps['storage queue generate-sas'] = """
+    type: command
+    short-summary: Generate a shared access signature for the queue.Use the returned signature with the sas_token parameter of QueueService.
+    examples:
+        - name: Generate a sas token for the queue with read-only permissions.
+          text: |
+              end=`date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ'`
+              az storage queue generate-sas -n myqueue --account-name mystorageaccount --permissions r --expiry $end --https-only
+        - name: Generate a sas token for the queue with ip range specified.
+          text: |
+              end=`date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ'`
+              az storage queue generate-sas -n myqueue --account-name mystorageaccount --ip "176.134.171.0-176.134.171.255" --permissions r --expiry $end --https-only
+"""
+
+helps['storage queue create'] = """
+    type: command
+    short-summary:  Create a queue under the given account.
+    examples:
+        - name: Create a queue under the given account with metadata.
+          text: az storage queue create -n myqueue --metadata key1=value1 key2=value2 --account-name mystorageaccount
+"""
+
+helps['storage queue delete'] = """
+    type: command
+    short-summary:  Delete the specified queue and any messages it contains.
+    examples:
+        - name: Delete the specified queue, throw an exception if the queue doesn't exist.
+          text: az storage queue delete -n myqueue --fail-not-exist --account-name mystorageaccount
+"""
