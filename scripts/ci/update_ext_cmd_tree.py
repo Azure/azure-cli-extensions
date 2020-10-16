@@ -49,7 +49,14 @@ def update_cmd_tree(ext_name):
     EXT_CMD_TREE_TO_UPLOAD = Session()
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
     root = {}
-    for cmd_name, _ in extension_command_table.items():
+    for cmd_name, ext_cmd in extension_command_table.items():
+        try:
+            # do not include hidden deprecated command
+            if ext_cmd.deprecate_info.hide:
+                print(f"Skip hidden deprecated command: {cmd_name}")
+                continue
+        except AttributeError:
+            pass
         parts = cmd_name.split()
         parent = root
         for i, part in enumerate(parts):
@@ -88,4 +95,5 @@ def upload_cmd_tree():
 if __name__ == '__main__':
     for ext in sys.argv[1:]:
         update_cmd_tree(ext)
+        print()
     upload_cmd_tree()
