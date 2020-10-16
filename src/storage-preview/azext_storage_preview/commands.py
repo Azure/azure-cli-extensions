@@ -51,7 +51,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     # pylint: disable=line-too-long
     adls_base_blob_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_adls_storage_preview.blob.baseblobservice#BaseBlobService.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_adls_storage_preview.blob.baseblobservice'
+                        '#BaseBlobService.{}',
         client_factory=adls_blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
