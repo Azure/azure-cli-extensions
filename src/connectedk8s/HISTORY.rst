@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* Fixed dependency version in setup file
+
 0.3.0
 ++++++
 * `az connectedk8s connect`: Added support for connect proxy
