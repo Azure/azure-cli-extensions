@@ -24,7 +24,7 @@ file_name = 'extCmdTreeToUpload.json'
 def merge(data, key, value):
     if isinstance(value, str):
         if key in data:
-            raise Exception(f"Key: {key} already exists. 2 extensions cannot have the same command!")
+            raise Exception(f"Key: {key} already exists in {data[key]}. 2 extensions cannot have the same command!")
         data[key] = value
     else:
         data.setdefault(key, {})
