@@ -37,7 +37,6 @@ class SubscriptionClientScenarioTest(ScenarioTest):
         sub_id = alias_sub['properties']['subscriptionId']
         self.kwargs.update({'subscription_id': sub_id})
 
-        # response different from swagger, causing deserialization error
         self.cmd('az account alias list',
                  checks=[self.exists('value')])
 
