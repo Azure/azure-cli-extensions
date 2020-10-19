@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type

@@ -16,7 +16,7 @@ class VmwareCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_vmware.custom#{}',
             client_factory=cf_vmware)
         super(VmwareCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=vmware_custom)
+                                                   custom_command_type=vmware_custom)
 
     def load_command_table(self, args):
         from azext_vmware.commands import load_command_table
@@ -26,5 +26,6 @@ class VmwareCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_vmware._params import load_arguments
         load_arguments(self, command)
+
 
 COMMAND_LOADER_CLS = VmwareCommandsLoader
