@@ -95,5 +95,11 @@ class SubscriptionClientScenarioTest(ScenarioTest):
                          self.check('properties.provisioningState', 'Succeeded')])
 
         time.sleep(600)
-        self.cmd('az account alias delete -n {new_alias_name}',
-                 checks=[])
+        for i in range(10):
+            try:
+                self.cmd('az account alias delete -n {new_alias_name}', checks=[])
+                break
+            except Exception as ex:
+                if i == 9:
+                    raise ex
+                time.sleep(180)
