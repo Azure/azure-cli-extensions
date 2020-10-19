@@ -123,7 +123,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.Cluster(tags=tags, location=location, sku=sku, zones=zones, trusted_external_tenants=trusted_external_tenants, optimized_autoscale=optimized_autoscale, enable_disk_encryption=enable_disk_encryption, enable_streaming_ingest=enable_streaming_ingest, virtual_network_configuration=virtual_network_configuration, key_vault_properties=key_vault_properties, enable_purge=enable_purge, enable_double_encryption=enable_double_encryption, engine_type=engine_type, type_identity_type=type, user_assigned_identities=user_assigned_identities)
+        parameters = models.Cluster(tags=tags, location=location, sku=sku, zones=zones, trusted_external_tenants=trusted_external_tenants, optimized_autoscale=optimized_autoscale, enable_disk_encryption=enable_disk_encryption, enable_streaming_ingest=enable_streaming_ingest, virtual_network_configuration=virtual_network_configuration, key_vault_properties=key_vault_properties, enable_purge=enable_purge, enable_double_encryption=enable_double_encryption, engine_type=engine_type, type_identity_type=type, user_assigned_identities=user_assigned_identities)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -146,7 +146,7 @@ class ClusterOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'Cluster')
+        body_content = self._serialize.body(parameters, 'Cluster')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -321,7 +321,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.ClusterUpdate(tags=tags, location=location, sku=sku, trusted_external_tenants=trusted_external_tenants, optimized_autoscale=optimized_autoscale, enable_disk_encryption=enable_disk_encryption, enable_streaming_ingest=enable_streaming_ingest, virtual_network_configuration=virtual_network_configuration, key_vault_properties=key_vault_properties, enable_purge=enable_purge, enable_double_encryption=enable_double_encryption, engine_type=engine_type, type_identity_type=type, user_assigned_identities=user_assigned_identities)
+        parameters = models.ClusterUpdate(tags=tags, location=location, sku=sku, trusted_external_tenants=trusted_external_tenants, optimized_autoscale=optimized_autoscale, enable_disk_encryption=enable_disk_encryption, enable_streaming_ingest=enable_streaming_ingest, virtual_network_configuration=virtual_network_configuration, key_vault_properties=key_vault_properties, enable_purge=enable_purge, enable_double_encryption=enable_double_encryption, engine_type=engine_type, type_identity_type=type, user_assigned_identities=user_assigned_identities)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -344,7 +344,7 @@ class ClusterOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'ClusterUpdate')
+        body_content = self._serialize.body(parameters, 'ClusterUpdate')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -872,7 +872,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _follower_database_to_remove = models.FollowerDatabaseDefinition(cluster_resource_id=cluster_resource_id, attached_database_configuration_name=attached_database_configuration_name)
+        follower_database_to_remove = models.FollowerDatabaseDefinition(cluster_resource_id=cluster_resource_id, attached_database_configuration_name=attached_database_configuration_name)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -894,7 +894,7 @@ class ClusterOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_follower_database_to_remove, 'FollowerDatabaseDefinition')
+        body_content = self._serialize.body(follower_database_to_remove, 'FollowerDatabaseDefinition')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -1303,7 +1303,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _cluster_name = models.ClusterCheckNameRequest(name=name, type=type)
+        cluster_name = models.ClusterCheckNameRequest(name=name, type=type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -1325,7 +1325,7 @@ class ClusterOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_cluster_name, 'ClusterCheckNameRequest')
+        body_content = self._serialize.body(cluster_name, 'ClusterCheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -1497,7 +1497,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _language_extensions_to_add = models.LanguageExtensionsList(value=value)
+        language_extensions_to_add = models.LanguageExtensionsList(value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -1519,7 +1519,7 @@ class ClusterOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_language_extensions_to_add, 'LanguageExtensionsList')
+        body_content = self._serialize.body(language_extensions_to_add, 'LanguageExtensionsList')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -1608,7 +1608,7 @@ class ClusterOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _language_extensions_to_remove = models.LanguageExtensionsList(value=value)
+        language_extensions_to_remove = models.LanguageExtensionsList(value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -1630,7 +1630,7 @@ class ClusterOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_language_extensions_to_remove, 'LanguageExtensionsList')
+        body_content = self._serialize.body(language_extensions_to_remove, 'LanguageExtensionsList')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 

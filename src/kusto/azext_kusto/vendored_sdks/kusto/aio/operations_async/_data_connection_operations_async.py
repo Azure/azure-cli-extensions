@@ -131,7 +131,7 @@ class DataConnectionOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.DataConnectionValidation(data_connection_name=data_connection_name, properties=properties)
+        parameters = models.DataConnectionValidation(data_connection_name=data_connection_name, properties=properties)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -155,7 +155,7 @@ class DataConnectionOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'DataConnectionValidation')
+        body_content = self._serialize.body(parameters, 'DataConnectionValidation')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -279,7 +279,7 @@ class DataConnectionOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _data_connection_name = models.DataConnectionCheckNameRequest(name=name, type=type)
+        data_connection_name = models.DataConnectionCheckNameRequest(name=name, type=type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -303,7 +303,7 @@ class DataConnectionOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_data_connection_name, 'DataConnectionCheckNameRequest')
+        body_content = self._serialize.body(data_connection_name, 'DataConnectionCheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 

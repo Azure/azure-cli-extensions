@@ -73,7 +73,7 @@ class DatabasePrincipalAssignmentOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _principal_assignment_name = models.DatabasePrincipalAssignmentCheckNameRequest(name=name, type=type)
+        principal_assignment_name = models.DatabasePrincipalAssignmentCheckNameRequest(name=name, type=type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -97,7 +97,7 @@ class DatabasePrincipalAssignmentOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_principal_assignment_name, 'DatabasePrincipalAssignmentCheckNameRequest')
+        body_content = self._serialize.body(principal_assignment_name, 'DatabasePrincipalAssignmentCheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -195,7 +195,7 @@ class DatabasePrincipalAssignmentOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.DatabasePrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
+        parameters = models.DatabasePrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -220,7 +220,7 @@ class DatabasePrincipalAssignmentOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'DatabasePrincipalAssignment')
+        body_content = self._serialize.body(parameters, 'DatabasePrincipalAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 

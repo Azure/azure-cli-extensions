@@ -70,7 +70,7 @@ class DatabaseOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _resource_name = models.CheckNameRequest(name=name, type=type)
+        resource_name = models.CheckNameRequest(name=name, type=type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -93,7 +93,7 @@ class DatabaseOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_resource_name, 'CheckNameRequest')
+        body_content = self._serialize.body(resource_name, 'CheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -706,7 +706,7 @@ class DatabaseOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _database_principals_to_add = models.DatabasePrincipalListRequest(value=value)
+        database_principals_to_add = models.DatabasePrincipalListRequest(value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -730,7 +730,7 @@ class DatabaseOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_database_principals_to_add, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(database_principals_to_add, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -776,7 +776,7 @@ class DatabaseOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _database_principals_to_remove = models.DatabasePrincipalListRequest(value=value)
+        database_principals_to_remove = models.DatabasePrincipalListRequest(value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -800,7 +800,7 @@ class DatabaseOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_database_principals_to_remove, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(database_principals_to_remove, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 

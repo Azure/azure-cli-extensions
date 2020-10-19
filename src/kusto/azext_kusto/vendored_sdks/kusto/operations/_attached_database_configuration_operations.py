@@ -195,7 +195,7 @@ class AttachedDatabaseConfigurationOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.AttachedDatabaseConfiguration(location=location, database_name=database_name, cluster_resource_id=cluster_resource_id, default_principals_modification_kind=default_principals_modification_kind)
+        parameters = models.AttachedDatabaseConfiguration(location=location, database_name=database_name, cluster_resource_id=cluster_resource_id, default_principals_modification_kind=default_principals_modification_kind)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -219,7 +219,7 @@ class AttachedDatabaseConfigurationOperations(object):
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'AttachedDatabaseConfiguration')
+        body_content = self._serialize.body(parameters, 'AttachedDatabaseConfiguration')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
