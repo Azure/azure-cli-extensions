@@ -15,7 +15,7 @@ def load_command_table(self, _):
 
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'privatecloud_list')
-        g.custom_command('show', 'privatecloud_show')
+        g.custom_show_command('show', 'privatecloud_show')
         g.custom_command('create', 'privatecloud_create')
         g.custom_command('update', 'privatecloud_update')
         g.custom_command('delete', 'privatecloud_delete')
@@ -29,19 +29,19 @@ def load_command_table(self, _):
         g.custom_command('update', 'cluster_update')
         g.custom_command('list', 'cluster_list')
         g.custom_command('delete', 'cluster_delete')
-        g.custom_command('show', 'cluster_show')
+        g.custom_show_command('show', 'cluster_show')
 
     with self.command_group('vmware authorization', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'authorization_create')
         g.custom_command('list', 'authorization_list')
         g.custom_command('delete', 'authorization_delete')
-        g.custom_command('show', 'authorization_show')
+        g.custom_show_command('show', 'authorization_show')
 
     with self.command_group('vmware hcx-enterprise-site', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'hcxenterprisesite_create')
         g.custom_command('list', 'hcxenterprisesite_list')
         g.custom_command('delete', 'hcxenterprisesite_delete')
-        g.custom_command('show', 'hcxenterprisesite_show')
+        g.custom_show_command('show', 'hcxenterprisesite_show')
 
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability')
