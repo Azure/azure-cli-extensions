@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 # HISTORY.rst entry.
 VERSION = '0.1.0'
 try:
-    from .manual.version import VERSION
+    from azext_datafactory.manual.version import VERSION
 except ImportError:
     pass
 
@@ -31,6 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
     from .manual.dependency import DEPENDENCIES
 except ImportError:
