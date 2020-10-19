@@ -196,8 +196,8 @@ def step__singlesignonconfigurations_get(test, rg):
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=[
-                test.check("name", "default", case_sensitive=False),
-                test.check("type", "Microsoft.Datadog/monitors/singleSignOnConfigurations", case_sensitive=False),
+                 test.check("name", "default", case_sensitive=False),
+                 test.check("type", "Microsoft.Datadog/monitors/singleSignOnConfigurations", case_sensitive=False),
              ])
 
 
@@ -225,8 +225,8 @@ def step__tagrules_put_tagrules_createorupdate(test, rg):
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
              checks=[
-                test.check("name", "default", case_sensitive=False),
-                test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
+                 test.check("name", "default", case_sensitive=False),
+                 test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
              ])
 
 
@@ -238,8 +238,8 @@ def step__tagrules_get_tagrules_get(test, rg):
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
              checks=[
-                test.check("name", "default", case_sensitive=False),
-                test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
+                 test.check("name", "default", case_sensitive=False),
+                 test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
              ])
 
 
