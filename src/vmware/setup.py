@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.7.0"
+VERSION = "1.0.0"
 
 DEPENDENCIES = [
 ]
@@ -16,8 +16,8 @@ DEPENDENCIES = [
 setup(
     name='vmware',
     version=VERSION,
-    description='Preview Azure VMware Solution commands.',
-    long_description='Additional commands providing support for preview Azure VMware Solution features.',
+    description='Azure VMware Solution commands.',
+    long_description='Additional commands providing support for Azure VMware Solution features.',
     license='MIT',
     author='Microsoft',
     author_email='azpycli@microsoft.com',
