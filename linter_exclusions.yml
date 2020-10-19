@@ -262,6 +262,48 @@ databricks workspace vnet-peering update:
     allow_virtual_network_access:
       rule_exclusions:
       - option_length_too_long
+datadog monitor create:
+  parameters:
+    datadog_organization_properties:
+      rule_exclusions:
+      - option_length_too_long
+    marketplace_subscription_status:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule create:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule update:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
 datafactory factory configure-factory-repo:
   parameters:
     factory_git_hub_configuration:

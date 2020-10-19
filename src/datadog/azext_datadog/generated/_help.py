@@ -323,14 +323,6 @@ helps['datadog single-sign-on-configuration create'] = """
 helps['datadog single-sign-on-configuration update'] = """
     type: command
     short-summary: "Configures single-sign-on for this resource."
-    parameters:
-      - name: --properties
-        long-summary: |
-            Usage: --properties single-sign-on-state=XX enterprise-app-id=XX single-sign-on-url=XX
-
-            single-sign-on-state: Various states of the SSO resource
-            enterprise-app-id: The Id of the Enterprise App used for Single sign-on.
-            single-sign-on-url: The login URL specific to this Datadog Organization.
 """
 
 helps['datadog single-sign-on-configuration wait'] = """

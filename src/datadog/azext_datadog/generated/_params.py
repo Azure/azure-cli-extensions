@@ -72,10 +72,10 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned']), help='')
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned']), help='Identity type')
         c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Updating', 'Deleting', ''
                                                                  'Succeeded', 'Failed', 'Canceled', 'Deleted', ''
-                                                                 'NotSpecified']), help='')
+                                                                 'NotSpecified']), help='Provisioning state')
         c.argument('monitoring_status', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Flag specifying if the '
                    'resource monitoring is enabled or disabled.')
         c.argument('marketplace_subscription_status', arg_type=get_enum_type(['Active', 'Suspended']), help='Flag '
@@ -114,12 +114,12 @@ def load_arguments(self, _):
     with self.argument_context('datadog tag-rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('rule_set_name', type=str, help='', id_part='child_name_1')
+        c.argument('rule_set_name', type=str, help='Rule set name', id_part='child_name_1')
 
     with self.argument_context('datadog tag-rule create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name')
-        c.argument('rule_set_name', type=str, help='')
+        c.argument('rule_set_name', type=str, help='Rule set name')
         c.argument('metric_rules_filtering_tags', action=AddMetricRulesFilteringTags, nargs='*', help='List of '
                    'filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only '
                    'Exclude action is specified, the rules will apply to the list of all available resources. If '
@@ -139,7 +139,7 @@ def load_arguments(self, _):
     with self.argument_context('datadog tag-rule update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('rule_set_name', type=str, help='', id_part='child_name_1')
+        c.argument('rule_set_name', type=str, help='Rule set name', id_part='child_name_1')
         c.argument('metric_rules_filtering_tags', action=AddMetricRulesFilteringTags, nargs='*', help='List of '
                    'filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only '
                    'Exclude action is specified, the rules will apply to the list of all available resources. If '
@@ -163,21 +163,21 @@ def load_arguments(self, _):
     with self.argument_context('datadog single-sign-on-configuration show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('configuration_name', type=str, help='', id_part='child_name_1')
+        c.argument('configuration_name', type=str, help='Configuration name', id_part='child_name_1')
 
     with self.argument_context('datadog single-sign-on-configuration create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name')
-        c.argument('configuration_name', type=str, help='')
+        c.argument('configuration_name', type=str, help='Configuration name')
         c.argument('properties', action=AddProperties, nargs='*', help='')
 
     with self.argument_context('datadog single-sign-on-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('configuration_name', type=str, help='', id_part='child_name_1')
+        c.argument('configuration_name', type=str, help='Configuration name', id_part='child_name_1')
         c.argument('properties', action=AddProperties, nargs='*', help='')
 
     with self.argument_context('datadog single-sign-on-configuration wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('configuration_name', type=str, help='', id_part='child_name_1')
+        c.argument('configuration_name', type=str, help='Configuration name', id_part='child_name_1')
