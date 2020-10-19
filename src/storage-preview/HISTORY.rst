@@ -1,33 +1,38 @@
 .. :changelog:
 
- Release History
+Release History
 ===============
+
+0.5.0 (2020-10-21)
+++++++++++++++++++
+* Add `az storage queue create/delete/list/exists/stats/generate-sas` commands
+
 0.4.0 (2020-10-15)
-++++++++++++++++
+++++++++++++++++++
 * Add deprecate info for `az storage blob access`, `az storage blob directory`, `az storage blob move`
 * [BREAKING CHANGE] Remove `az storage account` related commands because they are supported in main azure cli
 
 0.3.0 (2020-09-15)
-++++++++++++++++
+++++++++++++++++++
 * Remove `az storage blob list`
 
 0.2.12 (2020-07-29)
-++++++++++++++++
++++++++++++++++++++
 * Upgrade azcopy version to 10.5.0
 
 0.2.11 (2020-07-27)
-++++++++++++++++
++++++++++++++++++++
 * Fix the storage account name in examples
 * Fix the bug of `--num-results` for command `az storage blob directory list`
 * Fix the bug for command `az storage blob directory move`
 * Fix azcopy issue
 
 0.2.10 (2019-11-25)
-++++++++++++++++
++++++++++++++++++++
 * Fix bugs for ADLS Gen2
 
 0.2.9 (2019-10-31)
-++++++++++++++++
+++++++++++++++++++
 * Integrate Azcopy v10.3.1
 * Add `az storage blob directory` command group
 * Add blob move command and blob access command group
