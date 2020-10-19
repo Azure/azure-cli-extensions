@@ -43,6 +43,23 @@ class WorkspaceInfo(object):
             cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
             cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
 
+def delete(cmd, resource_group_name=None, workspace_name=None):
+    """
+    Deletes the given (or current) Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    if (not info.resource_group) or (not info.name):
+        raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    client.delete(info.resource_group, info.name, polling=False)
+    # If we deleted the current workspace, clear it
+    curr_ws = WorkspaceInfo(cmd)
+    if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):
+        curr_ws.clear()
+        curr_ws.save(cmd)
+    # Get updated information from the affected workspace
+    ws = client.get(info.resource_group, info.name)
+    return ws
 
 def list(cmd, resource_group_name=None, tag=None, location=None):
     """
