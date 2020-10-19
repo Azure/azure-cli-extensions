@@ -85,7 +85,7 @@ class StorageArgumentContext(AzArgumentContext):
         self.ignore('directory_name')
 
     def register_source_uri_arguments(self, validator, blob_only=False):
-        self.argument('copy_source', options_list=('--source-uri', '-u'), validator=validator, required=False,
+        self.argument('source_uri', options_list=('--source-uri', '-u'), validator=validator, required=False,
                       arg_group='Copy Source')
         self.extra('source_sas', default=None, arg_group='Copy Source',
                    help='The shared access signature for the source storage account.')

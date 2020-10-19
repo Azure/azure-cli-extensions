@@ -6,6 +6,7 @@
 from knack import util
 import mock
 import unittest
+import platform
 
 from azext_ssh import ssh_utils
 
@@ -26,7 +27,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")
         mock_build.assert_called_once_with("cert", "private")
-        mock_call.assert_called_once_with(expected_command, shell=True)
+        mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
     @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
     def test_write_ssh_config_ip_and_vm(self, mock_make_dirs):
@@ -38,7 +39,6 @@ class SSHUtilsTests(unittest.TestCase):
             "\tIdentityFile privatekey",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
@@ -59,7 +59,6 @@ class SSHUtilsTests(unittest.TestCase):
         expected_lines = [
             "Host 1.2.3.4",
             "\tUser username",
-            "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
