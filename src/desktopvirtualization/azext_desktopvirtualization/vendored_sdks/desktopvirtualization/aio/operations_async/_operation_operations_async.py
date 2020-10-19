@@ -54,7 +54,7 @@ class OperationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderOperationList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.list.metadata['url']  # type: ignore
@@ -67,7 +67,6 @@ class OperationOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response

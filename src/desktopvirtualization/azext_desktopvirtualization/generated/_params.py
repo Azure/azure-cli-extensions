@@ -20,7 +20,9 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_desktopvirtualization.action import (
     AddDesktopvirtualizationHostpoolCreateRegistrationInfo,
-    AddDesktopvirtualizationHostpoolUpdateRegistrationInfo
+    AddDesktopvirtualizationHostpoolUpdateRegistrationInfo,
+    AddPackageDependencies,
+    AddPackageApplications
 )
 
 
@@ -31,117 +33,182 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization workspace show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
+                   'the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization workspace create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace')
+        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
+                   'the workspace')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('description', help='Description of Workspace.')
-        c.argument('friendly_name', help='Friendly name of Workspace.')
-        c.argument('application_group_references', nargs='+', help='List of applicationGroup resource Ids.')
+        c.argument('description', type=str, help='Description of Workspace.')
+        c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
+        c.argument('application_group_references', nargs='*', help='List of applicationGroup resource Ids.')
 
     with self.argument_context('desktopvirtualization workspace update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
+                   'the workspace', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('description', help='Description of Workspace.')
-        c.argument('friendly_name', help='Friendly name of Workspace.')
-        c.argument('application_group_references', nargs='+', help='List of applicationGroup links.')
+        c.argument('description', type=str, help='Description of Workspace.')
+        c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
+        c.argument('application_group_references', nargs='*', help='List of applicationGroup links.')
 
     with self.argument_context('desktopvirtualization workspace delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
+                   'the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('filter', help='OData filter expression. Valid properties for filtering are applicationGroupType.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='OData filter expression. Valid properties for '
+                   'filtering are applicationGroupType.')
 
     with self.argument_context('desktopvirtualization applicationgroup show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group',
-                   id_part='name')
+        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+                   help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group')
+        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+                   help='The name of the application group')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('description', help='Description of ApplicationGroup.')
-        c.argument('friendly_name', help='Friendly name of ApplicationGroup.')
-        c.argument('host_pool_arm_path', help='HostPool arm path of ApplicationGroup.')
+        c.argument('description', type=str, help='Description of ApplicationGroup.')
+        c.argument('friendly_name', type=str, help='Friendly name of ApplicationGroup.')
+        c.argument('host_pool_arm_path', type=str, help='HostPool arm path of ApplicationGroup.')
         c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']), help='Resource Type of '
                    'ApplicationGroup.')
 
     with self.argument_context('desktopvirtualization applicationgroup update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group',
-                   id_part='name')
+        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+                   help='The name of the application group', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('description', help='Description of ApplicationGroup.')
-        c.argument('friendly_name', help='Friendly name of ApplicationGroup.')
+        c.argument('description', type=str, help='Description of ApplicationGroup.')
+        c.argument('friendly_name', type=str, help='Friendly name of ApplicationGroup.')
 
     with self.argument_context('desktopvirtualization applicationgroup delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group',
-                   id_part='name')
+        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+                   help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('desktopvirtualization hostpool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
+                   'the host pool within the specified resource group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group')
+        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
+                   'the host pool within the specified resource group')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
-        c.argument('friendly_name', help='Friendly name of HostPool.')
-        c.argument('description', help='Description of HostPool.')
+        c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
+        c.argument('description', type=str, help='Description of HostPool.')
         c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled']),
                    help='HostPool type for desktop.')
         c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help=''
                    'PersonalDesktopAssignment type for HostPool.')
-        c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
-        c.argument('max_session_limit', help='The max session limit of HostPool.')
+        c.argument('custom_rdp_property', type=str, help='Custom rdp property of HostPool.')
+        c.argument('max_session_limit', type=int, help='The max session limit of HostPool.')
         c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help=''
                    'The type of the load balancer.')
-        c.argument('ring', help='The ring number of HostPool.')
+        c.argument('ring', type=int, help='The ring number of HostPool.')
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
-        c.argument('registration_info', action=AddDesktopvirtualizationHostpoolCreateRegistrationInfo, nargs='+',
+        c.argument('registration_info', action=AddDesktopvirtualizationHostpoolCreateRegistrationInfo, nargs='*',
                    help='The registration info of HostPool.')
-        c.argument('vm_template', help='VM template for sessionhosts configuration within hostpool.')
-        c.argument('sso_context', help='Path to keyvault containing ssoContext secret.')
+        c.argument('vm_template', type=str, help='VM template for sessionhosts configuration within hostpool.')
+        c.argument('sso_context', type=str, help='Path to keyvault containing ssoContext secret.')
+        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']), help=''
+                   'The type of preferred application group type, default to Desktop Application Group')
 
     with self.argument_context('desktopvirtualization hostpool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
+                   'the host pool within the specified resource group', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('friendly_name', help='Friendly name of HostPool.')
-        c.argument('description', help='Description of HostPool.')
-        c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
-        c.argument('max_session_limit', help='The max session limit of HostPool.')
+        c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
+        c.argument('description', type=str, help='Description of HostPool.')
+        c.argument('custom_rdp_property', type=str, help='Custom rdp property of HostPool.')
+        c.argument('max_session_limit', type=int, help='The max session limit of HostPool.')
         c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']), help=''
                    'PersonalDesktopAssignment type for HostPool.')
         c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']), help=''
                    'The type of the load balancer.')
-        c.argument('ring', help='The ring number of HostPool.')
+        c.argument('ring', type=int, help='The ring number of HostPool.')
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
-        c.argument('registration_info', action=AddDesktopvirtualizationHostpoolUpdateRegistrationInfo, nargs='+',
+        c.argument('registration_info', action=AddDesktopvirtualizationHostpoolUpdateRegistrationInfo, nargs='*',
                    help='The registration info of HostPool.')
-        c.argument('sso_context', help='Path to keyvault containing ssoContext secret.')
+        c.argument('sso_context', type=str, help='Path to keyvault containing ssoContext secret.')
+        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']), help=''
+                   'The type of preferred application group type, default to Desktop Application Group')
 
     with self.argument_context('desktopvirtualization hostpool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], help='The name of the host pool within the '
-                   'specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
+                   'the host pool within the specified resource group', id_part='name')
         c.argument('force', arg_type=get_three_state_flag(), help='Force flag to delete sessionHost.')
+
+    with self.argument_context('desktopvirtualization msix-package list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
+
+    with self.argument_context('desktopvirtualization msix-package show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
+        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
+                   'package within specified hostpool')
+
+    with self.argument_context('desktopvirtualization msix-package create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
+        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
+                   'package within specified hostpool')
+        c.argument('image_path', type=str, help='VHD/CIM image path on Network Share.')
+        c.argument('package_name', type=str, help='Package Name from appxmanifest.xml.')
+        c.argument('package_family_name', type=str, help='Package Family Name from appxmanifest.xml. Contains Package '
+                   'Name and Publisher name.')
+        c.argument('display_name', type=str, help='User friendly Name to be displayed in the portal.')
+        c.argument('package_relative_path', type=str, help='Relative Path to the package inside the image.')
+        c.argument('is_regular_registration', arg_type=get_three_state_flag(), help='Specifies how to register Package '
+                   'in feed.')
+        c.argument('is_active', arg_type=get_three_state_flag(), help='Make this version of the package the active one '
+                   'across the hostpool.')
+        c.argument('package_dependencies', action=AddPackageDependencies, nargs='*', help='List of package '
+                   'dependencies.')
+        c.argument('version', type=str, help='Package Version found in the appxmanifest.xml.')
+        c.argument('last_updated', help='Date Package was last updated, found in the appxmanifest.xml.')
+        c.argument('package_applications', action=AddPackageApplications, nargs='*', help='List of package '
+                   'applications.')
+
+    with self.argument_context('desktopvirtualization msix-package update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
+        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
+                   'package within specified hostpool')
+        c.argument('is_active', arg_type=get_three_state_flag(), help='Set a version of the package to be active '
+                   'across hostpool.')
+        c.argument('is_regular_registration', arg_type=get_three_state_flag(), help='Set Registration mode. Regular or '
+                   'Delayed.')
+        c.argument('display_name', type=str, help='Display name for MSIX Package.')
+
+    with self.argument_context('desktopvirtualization msix-package delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
+        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
+                   'package within specified hostpool')
+
+    with self.argument_context('desktopvirtualization msix-image expand') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group',
+                   id_part='name')
+        c.argument('uri', type=str, help='URI to Image')

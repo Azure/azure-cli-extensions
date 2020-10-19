@@ -64,7 +64,7 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Application"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -84,7 +84,6 @@ class ApplicationOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -110,6 +109,9 @@ class ApplicationOperations:
         description: Optional[str] = None,
         friendly_name: Optional[str] = None,
         file_path: Optional[str] = None,
+        msix_package_family_name: Optional[str] = None,
+        msix_package_application_id: Optional[str] = None,
+        application_type: Optional[Union[str, "models.RemoteApplicationType"]] = None,
         command_line_arguments: Optional[str] = None,
         show_in_portal: Optional[bool] = None,
         icon_path: Optional[str] = None,
@@ -134,6 +136,12 @@ class ApplicationOperations:
         :type friendly_name: str
         :param file_path: Specifies a path for the executable file for the application.
         :type file_path: str
+        :param msix_package_family_name: Specifies the package family name for MSIX applications.
+        :type msix_package_family_name: str
+        :param msix_package_application_id: Specifies the package application Id for MSIX applications.
+        :type msix_package_application_id: str
+        :param application_type: Resource Type of Application.
+        :type application_type: str or ~desktop_virtualization_api_client.models.RemoteApplicationType
         :param command_line_arguments: Command Line Arguments for Application.
         :type command_line_arguments: str
         :param show_in_portal: Specifies whether to show the RemoteApp program in the RD Web Access
@@ -152,8 +160,8 @@ class ApplicationOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _application = models.Application(description=description, friendly_name=friendly_name, file_path=file_path, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index)
-        api_version = "2019-12-10-preview"
+        application = models.Application(description=description, friendly_name=friendly_name, file_path=file_path, msix_package_family_name=msix_package_family_name, msix_package_application_id=msix_package_application_id, application_type=application_type, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index)
+        api_version = "2020-09-21-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -175,9 +183,8 @@ class ApplicationOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_application, 'Application')
+        body_content = self._serialize.body(application, 'Application')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -188,7 +195,6 @@ class ApplicationOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Application', pipeline_response)
 
@@ -224,7 +230,7 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -243,7 +249,6 @@ class ApplicationOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -271,6 +276,9 @@ class ApplicationOperations:
         show_in_portal: Optional[bool] = None,
         icon_path: Optional[str] = None,
         icon_index: Optional[int] = None,
+        msix_package_family_name: Optional[str] = None,
+        msix_package_application_id: Optional[str] = None,
+        application_type: Optional[Union[str, "models.RemoteApplicationType"]] = None,
         **kwargs
     ) -> "models.Application":
         """Update an application.
@@ -302,6 +310,12 @@ class ApplicationOperations:
         :type icon_path: str
         :param icon_index: Index of the icon.
         :type icon_index: int
+        :param msix_package_family_name: Specifies the package family name for MSIX applications.
+        :type msix_package_family_name: str
+        :param msix_package_application_id: Specifies the package application Id for MSIX applications.
+        :type msix_package_application_id: str
+        :param application_type: Resource Type of Application.
+        :type application_type: str or ~desktop_virtualization_api_client.models.RemoteApplicationType
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Application, or the result of cls(response)
         :rtype: ~desktop_virtualization_api_client.models.Application
@@ -311,8 +325,8 @@ class ApplicationOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _application = models.ApplicationPatch(tags=tags, description=description, friendly_name=friendly_name, file_path=file_path, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index)
-        api_version = "2019-12-10-preview"
+        application = models.ApplicationPatch(tags=tags, description=description, friendly_name=friendly_name, file_path=file_path, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index, msix_package_family_name=msix_package_family_name, msix_package_application_id=msix_package_application_id, application_type=application_type)
+        api_version = "2020-09-21-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -334,10 +348,9 @@ class ApplicationOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _application is not None:
-            body_content = self._serialize.body(_application, 'ApplicationPatch')
+        if application is not None:
+            body_content = self._serialize.body(application, 'ApplicationPatch')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
@@ -378,9 +391,13 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2020-09-21-preview"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -394,15 +411,11 @@ class ApplicationOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
