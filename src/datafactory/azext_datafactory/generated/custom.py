@@ -66,7 +66,7 @@ def datafactory_factory_update(client,
     return client.update(resource_group_name=resource_group_name,
                          factory_name=factory_name,
                          tags=tags,
-                         identity=json.loads("{\"type\": \"SystemAssigned\"}"))
+                         identity={"type": "SystemAssigned"})
 
 
 def datafactory_factory_delete(client,
