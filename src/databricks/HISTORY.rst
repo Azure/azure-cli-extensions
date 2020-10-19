@@ -3,6 +3,19 @@
 Release History
 ===============
 
+0.7.0
++++++
+* GA databricks extension
+
+0.6.0
++++++
+* GA CMK feature
+* Make --key-version optional when updating CMK
+
+0.5.0
++++++
+* az databricks workspace create: add --require-infrastructure-encryption to enable double encryption
+
 0.4.0
 +++++
 * az databricks workspace vnet-peering: support vnet peering operations for workspaces

@@ -9,31 +9,34 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+import jwt
+
 from knack.util import CLIError
 
 
-def attestation_attestation_provider_list(cmd, client,
-                                          resource_group_name=None):
+def attestation_attestation_provider_list(client, resource_group_name=None):
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list()
+        return client.list_by_resource_group(resource_group_name=resource_group_name).value
+    return client.list().value
 
 
-def attestation_attestation_provider_show(cmd, client,
+def attestation_attestation_provider_show(client,
                                           resource_group_name,
                                           provider_name):
     return client.get(resource_group_name=resource_group_name,
                       provider_name=provider_name)
 
 
-def attestation_attestation_provider_create(cmd, client,
+def attestation_attestation_provider_create(client,
                                             resource_group_name,
                                             provider_name,
                                             location=None,
                                             tags=None,
                                             attestation_policy=None,
                                             certs_input_path=None):
-    certs = parse_pem(certs_input_path)
+    certs = []
+    if certs_input_path:
+        certs = parse_pem(certs_input_path)
     return client.create(resource_group_name=resource_group_name,
                          provider_name=provider_name,
                          location=location,
@@ -42,7 +45,7 @@ def attestation_attestation_provider_create(cmd, client,
                          keys=certs)
 
 
-def attestation_attestation_provider_delete(cmd, client,
+def attestation_attestation_provider_delete(client,
                                             resource_group_name,
                                             provider_name):
     return client.delete(resource_group_name=resource_group_name,
@@ -81,10 +84,27 @@ def parse_pem(input_file):
                     if pem_data[i].endswith('\n'):
                         pem_data[i] = pem_data[i][:-1]
                     cert += pem_data[i]
-                print(cert)
                 certs.append(cert)
                 start = end + 1
                 end = start
             return certs
     except FileNotFoundError as ex:
         raise CLIError('File not Found: {}'.format(str(ex)))
+
+
+def list_signers(client, tenant_base_url, resource_group_name=None, attestation_name=None):  # pylint: disable=unused-argument
+    signers = client.get(tenant_base_url=tenant_base_url)
+    result = jwt.decode(signers, verify=False)
+    result['jwt'] = signers
+    return result
+
+
+def get_policy(client, tee, tenant_base_url, resource_group_name=None, attestation_name=None):  # pylint: disable=unused-argument
+    raw_result = client.get(tenant_base_url=tenant_base_url, tee=tee).additional_properties['Policy']
+    result = {}
+    try:
+        result = jwt.decode(raw_result, verify=False)
+    except:  # pylint: disable=bare-except
+        pass
+    result['jwt'] = raw_result
+    return result

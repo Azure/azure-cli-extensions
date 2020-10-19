@@ -21,7 +21,7 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true --https-only ')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'testdirectory'
@@ -32,9 +32,9 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory)
         self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, directory)\
             .assert_with_checks(JMESPathCheck('exists', True))
-        self.storage_cmd('storage blob list -c {}', account_info, container) \
+        self.storage_cmd('storage fs file list -f {}', account_info, container) \
             .assert_with_checks(JMESPathCheck('length(@)', 1)) \
-            .assert_with_checks(JMESPathCheck('[0].metadata.hdi_isfolder', 'true'))
+            .assert_with_checks(JMESPathCheck('[0].isDirectory', True))
         self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
         self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, directory) \
@@ -191,7 +191,8 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus --https-only')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus '
+                 '--https-only')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -288,7 +289,7 @@ class StorageADLSDirectoryDownloadTests(StorageScenarioMixin, LiveScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true --https-only ')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'

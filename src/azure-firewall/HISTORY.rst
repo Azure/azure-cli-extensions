@@ -2,6 +2,20 @@
 
 Release History
 ===============
+0.6.2
+++++++
+* `az network firewall create`: improve documentation of application and network rules options
+0.6.1
+++++++
+* `az network firewall create`: make Network.DNS.EnableProxy option value lowercase
+0.6.0
+++++++
+* [Breaking Change] `az network firewall threat-intel-allowlist`: rename whitelist to allowlist
+
+0.5.1
+++++++
+* `az network firewall create/update`: support new `--allow-active-ftp` argument.
+* `az network firewall network-rule delete`: refine help message.
 
 0.5.0
 ++++++

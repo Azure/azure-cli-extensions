@@ -5,6 +5,7 @@
 
 import os
 import unittest
+import time
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -15,87 +16,77 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class SubscriptionClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_account')
-    def test_account(self, resource_group):
+    # @ResourceGroupPreparer(name_prefix='cli_test_account')
+    def test_account(self):
+        self.kwargs.update({
+            'alias_name': self.create_random_name(prefix='cli_alias', length=24),
+            'new_alias_name': self.create_random_name(prefix='cli_alias_new', length=24),
+            'display_name': "My Subscription",
+            'new_display_name': "My Big Subscription",
+            'billing_scope': "/providers/Microsoft.Billing/billingAccounts/9147924/enrollmentAccounts/253727"
+        })
 
-        self.cmd('az account subscription create '
-                 '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
-                 '--billing-profile-name "27VR-HDWX-BG7-TGB" '
-                 '--cost-center "135366376" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--invoice-section-name "JGF7-NSBG-PJA-TGB"',
+        self.cmd('az account alias create --name {alias_name} --billing-scope "{billing_scope}" --display-name "{display_name}" --workload "Production"',
+                 checks=[self.check('name', '{alias_name}'),
+                         self.check('properties.provisioningState', 'Succeeded')])
+
+        alias_sub = self.cmd('az account alias show -n {alias_name}',
+                             checks=[self.check('name', '{alias_name}'),
+                                     self.check('properties.provisioningState', 'Succeeded')]).get_output_in_json()
+        sub_id = alias_sub['properties']['subscriptionId']
+        self.kwargs.update({'subscription_id': sub_id})
+
+        # response different from swagger, causing deserialization error
+        # self.cmd('az account alias list',
+        #          checks=[])
+
+        self.cmd('az account subscription list',
+                 checks=[self.greater_than('length(@)', 0)])
+
+        self.cmd('az account subscription show --subscription-id {subscription_id}',
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Enabled'),
+                         self.check('subscriptionId', sub_id)])
+
+        self.cmd('az account subscription list-location --subscription-id {subscription_id}',
+                 checks=[self.greater_than('length(@)', 0)])
+
+        self.cmd('az account subscription cancel --subscription-id {subscription_id} --yes',
+                 checks=[self.check('subscriptionId', '{subscription_id}')])
+        time.sleep(300)
+        self.cmd('az account subscription show --subscription-id {subscription_id}',
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Warned'),
+                         self.check('subscriptionId', sub_id)])
+
+        self.cmd('az account subscription enable --subscription-id {subscription_id}',
+                 checks=[self.check('subscriptionId', '{subscription_id}')])
+        time.sleep(300)
+        self.cmd('az account subscription show --subscription-id {subscription_id}',
+                 checks=[self.check('displayName', '{display_name}'),
+                         self.check('state', 'Enabled'),
+                         self.check('subscriptionId', sub_id)])
+
+        self.cmd('az account subscription rename --subscription-id {subscription_id} --name "{new_display_name}"',
+                 checks=[self.check('subscriptionId', '{subscription_id}')])
+        # uncomment when request body match is supported in playback tests
+        # time.sleep(600)
+        # self.cmd('az account subscription show --subscription-id {subscription_id}',
+        #          checks=[
+        #          self.check('displayName', '{new_display_name}'),
+        #          self.check('state', 'Enabled'),
+        #          self.check('subscriptionId', sub_id)])
+
+        self.cmd('az account tenant list',
+                 checks=[self.exists('[0].tenantId')])
+
+        self.cmd('az account alias delete -n {alias_name}',
                  checks=[])
 
-        self.cmd('az account subscription create-subscription-in-enrollment-account '
-                 '--display-name "Test Ea Azure Sub" '
-                 '--offer-type "MS-AZR-0017P" '
-                 '--enrollment-account-name "73f8ab6e-cfa0-42be-b886-be6e77c2980c"',
-                 checks=[])
+        self.cmd('az account alias create --name {new_alias_name} --workload "Production" --subscription-id {subscription_id}',
+                 checks=[self.check('name', '{new_alias_name}'),
+                         self.check('properties.provisioningState', 'Succeeded')])
 
-        self.cmd('az account subscription create-csp-subscription '
-                 '--billing-account-name "2bc54a6f-8d8a-5be1-5bff-bb4f285f512b:11a72812-d9a4-446e-9a1e-70c8bcadf5c0_2019-05-31" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--customer-name "e33ba30d-3718-4b15-bfaa-5627a57cda6f"',
-                 checks=[])
-
-        self.cmd('az account subscription create '
-                 '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
-                 '--billing-profile-name "27VR-HDWX-BG7-TGB" '
-                 '--cost-center "135366376" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--invoice-section-name "JGF7-NSBG-PJA-TGB"',
-                 checks=[])
-
-        self.cmd('az account subscription create-subscription-in-enrollment-account '
-                 '--display-name "Test Ea Azure Sub" '
-                 '--offer-type "MS-AZR-0017P" '
-                 '--enrollment-account-name "73f8ab6e-cfa0-42be-b886-be6e77c2980c"',
-                 checks=[])
-
-        self.cmd('az account subscription create-csp-subscription '
-                 '--billing-account-name "2bc54a6f-8d8a-5be1-5bff-bb4f285f512b:11a72812-d9a4-446e-9a1e-70c8bcadf5c0_2019-05-31" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--customer-name "e33ba30d-3718-4b15-bfaa-5627a57cda6f"',
-                 checks=[])
-
-        self.cmd('az account subscription create '
-                 '--billing-account-name "0aa27f2b-ec7f-5a65-71f6-a5ff0897bd55:ae0dae1e-de9a-41f6-8257-76b055d98372_2019-05-31" '
-                 '--billing-profile-name "27VR-HDWX-BG7-TGB" '
-                 '--cost-center "135366376" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--invoice-section-name "JGF7-NSBG-PJA-TGB"',
-                 checks=[])
-
-        self.cmd('az account subscription create-subscription-in-enrollment-account '
-                 '--display-name "Test Ea Azure Sub" '
-                 '--offer-type "MS-AZR-0017P" '
-                 '--enrollment-account-name "73f8ab6e-cfa0-42be-b886-be6e77c2980c"',
-                 checks=[])
-
-        self.cmd('az account subscription create-csp-subscription '
-                 '--billing-account-name "2bc54a6f-8d8a-5be1-5bff-bb4f285f512b:11a72812-d9a4-446e-9a1e-70c8bcadf5c0_2019-05-31" '
-                 '--display-name "Contoso MCA subscription" '
-                 '--sku-id "0001" '
-                 '--customer-name "e33ba30d-3718-4b15-bfaa-5627a57cda6f"',
-                 checks=[])
-
-        self.cmd('az account subscription enable',
-                 checks=[])
-
-        self.cmd('az account subscription cancel',
-                 checks=[])
-
-        self.cmd('az account subscription rename',
-                 checks=[])
-
-        self.cmd('az account subscription-operation show '
-                 '--operation-id "e4b8d068-f574-462a-a76f-6fa0afc613c9"',
-                 checks=[])
-
-        self.cmd('az account operation list',
+        time.sleep(600)
+        self.cmd('az account alias delete -n {new_alias_name}',
                  checks=[])

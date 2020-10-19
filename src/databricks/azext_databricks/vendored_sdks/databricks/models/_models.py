@@ -709,6 +709,11 @@ class WorkspaceCustomParameters(Model):
      Key (CMK) enabled workspace.
     :type encryption:
      ~azure.mgmt.databricks.models.WorkspaceEncryptionParameter
+    :param require_infrastructure_encryption: A boolean indicating whether or not the DBFS root
+     file system will be enabled with secondary layer of encryption with platform managed keys for
+     data at rest.
+    :type require_infrastructure_encryption:
+     ~databricks_client.models.WorkspaceCustomBooleanParameter
     """
 
     _attribute_map = {
@@ -718,6 +723,7 @@ class WorkspaceCustomParameters(Model):
         'enable_no_public_ip': {'key': 'enableNoPublicIp', 'type': 'WorkspaceCustomBooleanParameter'},
         'prepare_encryption': {'key': 'prepareEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
         'encryption': {'key': 'encryption', 'type': 'WorkspaceEncryptionParameter'},
+        'require_infrastructure_encryption': {'key': 'requireInfrastructureEncryption', 'type': 'WorkspaceCustomBooleanParameter'},
     }
 
     def __init__(self, **kwargs):
@@ -728,6 +734,7 @@ class WorkspaceCustomParameters(Model):
         self.enable_no_public_ip = kwargs.get('enable_no_public_ip', None)
         self.prepare_encryption = kwargs.get('prepare_encryption', None)
         self.encryption = kwargs.get('encryption', None)
+        self.require_infrastructure_encryption = kwargs.get('require_infrastructure_encryption', None)
 
 
 class WorkspaceCustomStringParameter(Model):

@@ -7,3 +7,19 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+from knack.util import CLIError
+
+from ._client_factory import cf_attestation_provider
+
+
+def validate_attestation_name(cmd, ns):
+    if not ns.tenant_base_url:
+        if ns.attestation_name and ns.resource_group_name:
+            provider = cf_attestation_provider(cmd.cli_ctx).\
+                get(provider_name=ns.attestation_name, resource_group_name=ns.resource_group_name)
+            ns.tenant_base_url = provider.attest_uri
+            del ns.attestation_name
+            del ns.resource_group_name
+        else:
+            raise CLIError('incorrect usage: [--attestation-base-url | --name/-n --resource-group-name/-g]')

@@ -69,14 +69,12 @@ def aks_upgrades_table_format(result):
             if upgrade.get('isPreview', False):
                 preview[upgrade['kubernetesVersion']] = True
     find_preview_versions(result.get('controlPlaneProfile', {}))
-    find_preview_versions(result.get('agentPoolProfiles', [{}])[0])
 
     # This expression assumes there is one node pool, and that the master and nodes upgrade in lockstep.
     parsed = compile_jmes("""{
         name: name,
         resourceGroup: resourceGroup,
-        masterVersion: controlPlaneProfile.kubernetesVersion || `unknown` | set_preview(@),
-        nodePoolVersion: agentPoolProfiles[0].kubernetesVersion || `unknown` | set_preview(@),
+        masterVersion: controlPlaneProfile.kubernetesVersion || `unknown`,
         upgrades: controlPlaneProfile.upgrades[].kubernetesVersion || [`None available`] | sort_versions(@) | set_preview_array(@) | join(`, `, @)
     }""")
     # use ordered dicts so headers are predictable

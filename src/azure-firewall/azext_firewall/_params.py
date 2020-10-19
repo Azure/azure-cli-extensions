@@ -17,7 +17,7 @@ from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
-    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns,
+    process_threat_intel_allowlist_ip_addresses, process_threat_intel_allowlist_fqdns,
     validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
     validate_ip_groups)
 
@@ -59,6 +59,8 @@ def load_arguments(self, _):
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
         c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+        c.argument('allow_active_ftp', arg_type=get_three_state_flag(),
+                   help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.")
 
     with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
         c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,
@@ -73,9 +75,9 @@ def load_arguments(self, _):
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
         c.argument('require_dns_proxy_for_network_rules', arg_type=get_three_state_flag(), help='Requires DNS Proxy functionality for FQDNs within Network Rules')
 
-    with self.argument_context('network firewall threat-intel-whitelist') as c:
-        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
-        c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
+    with self.argument_context('network firewall threat-intel-allowlist') as c:
+        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', validator=process_threat_intel_allowlist_fqdns, help='Space-separated list of FQDNs.')
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:
@@ -104,7 +106,7 @@ def load_arguments(self, _):
 
         with self.argument_context('network firewall {} create'.format(item['name']), arg_group='Collection') as c:
             c.argument('collection_name', collection_name_type, help='Name of the collection to create the rule in. Will create the collection if it does not exist.')
-            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low).', type=int)
+            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low). Supply only if you want to create the collection.', type=int)
 
         with self.argument_context('network firewall {} collection'.format(item['name'])) as c:
             c.argument('item_name', collection_name_type)
@@ -116,10 +118,10 @@ def load_arguments(self, _):
 
     for scope in ['network-rule', 'application-rule']:
         with self.argument_context('network firewall {}'.format(scope), arg_group='Collection') as c:
-            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection.')
+            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall nat-rule', arg_group='Collection') as c:
-        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection.')
+        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the IP configuration.', id_part='child_name_2')
@@ -157,7 +159,7 @@ def load_arguments(self, _):
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
 
-    with self.argument_context('network firewall policy', arg_group='Threat Intel Whitelist') as c:
+    with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
 
