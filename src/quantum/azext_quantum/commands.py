@@ -82,6 +82,7 @@ def load_command_table(self, _):
     target_ops = CliCommandType(operations_tmpl='azext_quantum.operations.target#{}')
 
     with self.command_group('quantum workspace', workspace_ops) as w:
+        w.command('delete', 'delete', validator=validate_workspace_info)
         w.command('list', 'list')
         w.command('show', 'show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)

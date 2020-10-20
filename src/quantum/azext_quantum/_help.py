@@ -54,6 +54,9 @@ helps['quantum workspace'] = """
       - name: Get the list of Azure Quantum workspaces available
         text: |-
             az quantum workspace list
+      - name: Delete an Azure Quantum workspace that is no longer being used
+        text: |-
+            az quantum workspace delete -g MyResourceGroup -w MyWorkspace
       - name: Select a default Azure Quantum workspace for future commands
         text: |-
             az quantum workspace set -g MyResourceGroup -w MyWorkspace

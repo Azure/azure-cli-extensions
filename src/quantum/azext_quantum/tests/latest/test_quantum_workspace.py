@@ -45,3 +45,10 @@ class QuantumScenarioTest(ScenarioTest):
 
         # clear
         self.cmd(f'az quantum workspace clear')
+
+        # delete
+        ## TODO: This test is disabled until the 'create' command is added.
+        # self.cmd(f'az quantum workspace delete -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -o json'), checks=[
+        #    self.check("name", TEST_WORKSPACE_CREATE_DELETE),
+        #    self.check("provisioningState", )
+        #])
