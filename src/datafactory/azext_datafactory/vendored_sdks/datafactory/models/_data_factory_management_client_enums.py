@@ -86,6 +86,8 @@ class CompressionCodec(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     DEFLATE = "deflate"
     ZIP_DEFLATE = "zipDeflate"
     LZ4 = "lz4"
+    TAR = "tar"
+    TAR_G_ZIP = "tarGZip"
 
 class CopyBehaviorType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """All available types of copy behavior.
@@ -183,7 +185,7 @@ class DynamicsServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnum
     SERVICE_PRINCIPAL_CERT = "ServicePrincipalCert"
 
 class DynamicsSinkWriteBehavior(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The write behavior for the operation.
+    """Defines values for DynamicsSinkWriteBehavior.
     """
 
     UPSERT = "Upsert"
@@ -451,6 +453,7 @@ class OrcCompressionCodec(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     NONE = "none"
     ZLIB = "zlib"
     SNAPPY = "snappy"
+    LZO = "lzo"
 
 class ParameterType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Parameter type.
@@ -485,6 +488,13 @@ class PrestoAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enu
 
     ANONYMOUS = "Anonymous"
     LDAP = "LDAP"
+
+class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether or not public network access is allowed for the data factory.
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
 
 class RecurrenceFrequency(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enumerates possible frequency option for the schedule trigger.
@@ -746,6 +756,7 @@ class TumblingWindowFrequency(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
 
     MINUTE = "Minute"
     HOUR = "Hour"
+    MONTH = "Month"
 
 class VariableType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Variable type.

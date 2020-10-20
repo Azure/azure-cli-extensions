@@ -58,6 +58,12 @@ try:
     from ._models_py3 import AzureDataLakeStoreSink
     from ._models_py3 import AzureDataLakeStoreSource
     from ._models_py3 import AzureDataLakeStoreWriteSettings
+    from ._models_py3 import AzureDatabricksDeltaLakeDataset
+    from ._models_py3 import AzureDatabricksDeltaLakeExportCommand
+    from ._models_py3 import AzureDatabricksDeltaLakeImportCommand
+    from ._models_py3 import AzureDatabricksDeltaLakeLinkedService
+    from ._models_py3 import AzureDatabricksDeltaLakeSink
+    from ._models_py3 import AzureDatabricksDeltaLakeSource
     from ._models_py3 import AzureDatabricksLinkedService
     from ._models_py3 import AzureFileStorageLinkedService
     from ._models_py3 import AzureFileStorageLocation
@@ -127,6 +133,7 @@ try:
     from ._models_py3 import ConnectionStateProperties
     from ._models_py3 import ControlActivity
     from ._models_py3 import CopyActivity
+    from ._models_py3 import CopyActivityLogSettings
     from ._models_py3 import CopySink
     from ._models_py3 import CopySource
     from ._models_py3 import CopyTranslator
@@ -185,6 +192,8 @@ try:
     from ._models_py3 import DatasetResource
     from ._models_py3 import DatasetSchemaDataElement
     from ._models_py3 import DatasetStorageFormat
+    from ._models_py3 import DatasetTarCompression
+    from ._models_py3 import DatasetTarGZipCompression
     from ._models_py3 import DatasetZipDeflateCompression
     from ._models_py3 import Db2LinkedService
     from ._models_py3 import Db2Source
@@ -347,6 +356,8 @@ try:
     from ._models_py3 import LinkedServiceListResponse
     from ._models_py3 import LinkedServiceReference
     from ._models_py3 import LinkedServiceResource
+    from ._models_py3 import LogLocationSettings
+    from ._models_py3 import LogSettings
     from ._models_py3 import LogStorageSettings
     from ._models_py3 import LookupActivity
     from ._models_py3 import MagentoLinkedService
@@ -374,6 +385,9 @@ try:
     from ._models_py3 import MicrosoftAccessSink
     from ._models_py3 import MicrosoftAccessSource
     from ._models_py3 import MicrosoftAccessTableDataset
+    from ._models_py3 import MongoDBAtlasCollectionDataset
+    from ._models_py3 import MongoDBAtlasLinkedService
+    from ._models_py3 import MongoDBAtlasSource
     from ._models_py3 import MongoDBCollectionDataset
     from ._models_py3 import MongoDBCursorMethodsProperties
     from ._models_py3 import MongoDBLinkedService
@@ -419,12 +433,14 @@ try:
     from ._models_py3 import OrcFormat
     from ._models_py3 import OrcSink
     from ._models_py3 import OrcSource
+    from ._models_py3 import OrcWriteSettings
     from ._models_py3 import PackageStore
     from ._models_py3 import ParameterSpecification
     from ._models_py3 import ParquetDataset
     from ._models_py3 import ParquetFormat
     from ._models_py3 import ParquetSink
     from ._models_py3 import ParquetSource
+    from ._models_py3 import ParquetWriteSettings
     from ._models_py3 import PaypalLinkedService
     from ._models_py3 import PaypalObjectDataset
     from ._models_py3 import PaypalSource
@@ -577,6 +593,8 @@ try:
     from ._models_py3 import SybaseTableDataset
     from ._models_py3 import TabularSource
     from ._models_py3 import TabularTranslator
+    from ._models_py3 import TarGZipReadSettings
+    from ._models_py3 import TarReadSettings
     from ._models_py3 import TeradataLinkedService
     from ._models_py3 import TeradataPartitionSettings
     from ._models_py3 import TeradataSource
@@ -680,6 +698,12 @@ except (SyntaxError, ImportError):
     from ._models import AzureDataLakeStoreSink  # type: ignore
     from ._models import AzureDataLakeStoreSource  # type: ignore
     from ._models import AzureDataLakeStoreWriteSettings  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeDataset  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeExportCommand  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeImportCommand  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeLinkedService  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeSink  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeSource  # type: ignore
     from ._models import AzureDatabricksLinkedService  # type: ignore
     from ._models import AzureFileStorageLinkedService  # type: ignore
     from ._models import AzureFileStorageLocation  # type: ignore
@@ -749,6 +773,7 @@ except (SyntaxError, ImportError):
     from ._models import ConnectionStateProperties  # type: ignore
     from ._models import ControlActivity  # type: ignore
     from ._models import CopyActivity  # type: ignore
+    from ._models import CopyActivityLogSettings  # type: ignore
     from ._models import CopySink  # type: ignore
     from ._models import CopySource  # type: ignore
     from ._models import CopyTranslator  # type: ignore
@@ -807,6 +832,8 @@ except (SyntaxError, ImportError):
     from ._models import DatasetResource  # type: ignore
     from ._models import DatasetSchemaDataElement  # type: ignore
     from ._models import DatasetStorageFormat  # type: ignore
+    from ._models import DatasetTarCompression  # type: ignore
+    from ._models import DatasetTarGZipCompression  # type: ignore
     from ._models import DatasetZipDeflateCompression  # type: ignore
     from ._models import Db2LinkedService  # type: ignore
     from ._models import Db2Source  # type: ignore
@@ -969,6 +996,8 @@ except (SyntaxError, ImportError):
     from ._models import LinkedServiceListResponse  # type: ignore
     from ._models import LinkedServiceReference  # type: ignore
     from ._models import LinkedServiceResource  # type: ignore
+    from ._models import LogLocationSettings  # type: ignore
+    from ._models import LogSettings  # type: ignore
     from ._models import LogStorageSettings  # type: ignore
     from ._models import LookupActivity  # type: ignore
     from ._models import MagentoLinkedService  # type: ignore
@@ -996,6 +1025,9 @@ except (SyntaxError, ImportError):
     from ._models import MicrosoftAccessSink  # type: ignore
     from ._models import MicrosoftAccessSource  # type: ignore
     from ._models import MicrosoftAccessTableDataset  # type: ignore
+    from ._models import MongoDBAtlasCollectionDataset  # type: ignore
+    from ._models import MongoDBAtlasLinkedService  # type: ignore
+    from ._models import MongoDBAtlasSource  # type: ignore
     from ._models import MongoDBCollectionDataset  # type: ignore
     from ._models import MongoDBCursorMethodsProperties  # type: ignore
     from ._models import MongoDBLinkedService  # type: ignore
@@ -1041,12 +1073,14 @@ except (SyntaxError, ImportError):
     from ._models import OrcFormat  # type: ignore
     from ._models import OrcSink  # type: ignore
     from ._models import OrcSource  # type: ignore
+    from ._models import OrcWriteSettings  # type: ignore
     from ._models import PackageStore  # type: ignore
     from ._models import ParameterSpecification  # type: ignore
     from ._models import ParquetDataset  # type: ignore
     from ._models import ParquetFormat  # type: ignore
     from ._models import ParquetSink  # type: ignore
     from ._models import ParquetSource  # type: ignore
+    from ._models import ParquetWriteSettings  # type: ignore
     from ._models import PaypalLinkedService  # type: ignore
     from ._models import PaypalObjectDataset  # type: ignore
     from ._models import PaypalSource  # type: ignore
@@ -1199,6 +1233,8 @@ except (SyntaxError, ImportError):
     from ._models import SybaseTableDataset  # type: ignore
     from ._models import TabularSource  # type: ignore
     from ._models import TabularTranslator  # type: ignore
+    from ._models import TarGZipReadSettings  # type: ignore
+    from ._models import TarReadSettings  # type: ignore
     from ._models import TeradataLinkedService  # type: ignore
     from ._models import TeradataPartitionSettings  # type: ignore
     from ._models import TeradataSource  # type: ignore
@@ -1306,6 +1342,7 @@ from ._data_factory_management_client_enums import (
     PhoenixAuthenticationType,
     PolybaseSettingsRejectType,
     PrestoAuthenticationType,
+    PublicNetworkAccess,
     RecurrenceFrequency,
     RestServiceAuthenticationType,
     RunQueryFilterOperand,
@@ -1393,6 +1430,12 @@ __all__ = [
     'AzureDataLakeStoreSink',
     'AzureDataLakeStoreSource',
     'AzureDataLakeStoreWriteSettings',
+    'AzureDatabricksDeltaLakeDataset',
+    'AzureDatabricksDeltaLakeExportCommand',
+    'AzureDatabricksDeltaLakeImportCommand',
+    'AzureDatabricksDeltaLakeLinkedService',
+    'AzureDatabricksDeltaLakeSink',
+    'AzureDatabricksDeltaLakeSource',
     'AzureDatabricksLinkedService',
     'AzureFileStorageLinkedService',
     'AzureFileStorageLocation',
@@ -1462,6 +1505,7 @@ __all__ = [
     'ConnectionStateProperties',
     'ControlActivity',
     'CopyActivity',
+    'CopyActivityLogSettings',
     'CopySink',
     'CopySource',
     'CopyTranslator',
@@ -1520,6 +1564,8 @@ __all__ = [
     'DatasetResource',
     'DatasetSchemaDataElement',
     'DatasetStorageFormat',
+    'DatasetTarCompression',
+    'DatasetTarGZipCompression',
     'DatasetZipDeflateCompression',
     'Db2LinkedService',
     'Db2Source',
@@ -1682,6 +1728,8 @@ __all__ = [
     'LinkedServiceListResponse',
     'LinkedServiceReference',
     'LinkedServiceResource',
+    'LogLocationSettings',
+    'LogSettings',
     'LogStorageSettings',
     'LookupActivity',
     'MagentoLinkedService',
@@ -1709,6 +1757,9 @@ __all__ = [
     'MicrosoftAccessSink',
     'MicrosoftAccessSource',
     'MicrosoftAccessTableDataset',
+    'MongoDBAtlasCollectionDataset',
+    'MongoDBAtlasLinkedService',
+    'MongoDBAtlasSource',
     'MongoDBCollectionDataset',
     'MongoDBCursorMethodsProperties',
     'MongoDBLinkedService',
@@ -1754,12 +1805,14 @@ __all__ = [
     'OrcFormat',
     'OrcSink',
     'OrcSource',
+    'OrcWriteSettings',
     'PackageStore',
     'ParameterSpecification',
     'ParquetDataset',
     'ParquetFormat',
     'ParquetSink',
     'ParquetSource',
+    'ParquetWriteSettings',
     'PaypalLinkedService',
     'PaypalObjectDataset',
     'PaypalSource',
@@ -1912,6 +1965,8 @@ __all__ = [
     'SybaseTableDataset',
     'TabularSource',
     'TabularTranslator',
+    'TarGZipReadSettings',
+    'TarReadSettings',
     'TeradataLinkedService',
     'TeradataPartitionSettings',
     'TeradataSource',
@@ -2017,6 +2072,7 @@ __all__ = [
     'PhoenixAuthenticationType',
     'PolybaseSettingsRejectType',
     'PrestoAuthenticationType',
+    'PublicNetworkAccess',
     'RecurrenceFrequency',
     'RestServiceAuthenticationType',
     'RunQueryFilterOperand',

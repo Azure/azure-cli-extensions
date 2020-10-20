@@ -18,7 +18,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -253,6 +253,7 @@ class FactoryOperations(object):
         identity=None,  # type: Optional["models.FactoryIdentity"]
         repo_configuration=None,  # type: Optional["models.FactoryRepoConfiguration"]
         global_parameters=None,  # type: Optional[Dict[str, "models.GlobalParameterSpecification"]]
+        public_network_access=None,  # type: Optional[Union[str, "models.PublicNetworkAccess"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.Factory"
@@ -275,6 +276,9 @@ class FactoryOperations(object):
         :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
         :param global_parameters: List of parameters for factory.
         :type global_parameters: dict[str, ~data_factory_management_client.models.GlobalParameterSpecification]
+        :param public_network_access: Whether or not public network access is allowed for the data
+         factory.
+        :type public_network_access: str or ~data_factory_management_client.models.PublicNetworkAccess
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.Factory
@@ -284,7 +288,7 @@ class FactoryOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        factory = models.Factory(location=location, tags=tags, identity=identity, repo_configuration=repo_configuration, global_parameters=global_parameters)
+        factory = models.Factory(location=location, tags=tags, identity=identity, repo_configuration=repo_configuration, global_parameters=global_parameters, public_network_access=public_network_access)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
