@@ -35,13 +35,6 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage queue exists -n {}'.format(queue),
                  checks=JMESPathCheck('exists', True))
 
-        # Test list
-        res = self.cmd('storage queue list').get_output_in_json()
-        self.assertIn(queue, [x['name'] for x in res], 'The newly created queue is not listed.')
-        # Test list with connection-string
-        res = self.cmd('storage queue list --connection-string {}'.format(connection_string)).get_output_in_json()
-        self.assertIn(queue, [x['name'] for x in res], 'The newly created queue is not listed.')
-
         # Test generate-sas with start, expiry and permissions
         start = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
         expiry = (datetime.utcnow() + timedelta(hours=2)).strftime('%Y-%m-%dT%H:%MZ')

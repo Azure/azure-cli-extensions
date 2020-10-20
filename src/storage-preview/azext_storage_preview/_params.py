@@ -303,4 +303,3 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help=sas_help.format(get_permission_help_string(t_queue_permissions)),
                    validator=get_permission_validator(t_queue_permissions))
         c.ignore('sas_token')
-
