@@ -274,25 +274,25 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.extra('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
 
     with self.argument_context('storage queue create') as c:
-        c.argument('fail_on_exist', help='Specifies whether to throw an exception if the queue already exists.')
+        c.argument('fail_on_exist', help='Specify whether to throw an exception if the queue already exists.')
 
     with self.argument_context('storage queue delete') as c:
-        c.argument('fail_not_exist', help='Specifies whether to throw an exception if the queue doesn\'t exist.')
+        c.argument('fail_not_exist', help='Specify whether to throw an exception if the queue doesn\'t exist.')
 
     with self.argument_context('storage queue generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
         t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
 
         c.argument('ip', type=ipv4_range_type,
-                   help='Specifies the IP address or range of IP addresses from which to accept requests. '
-                        'Supports only IPv4 style addresses.')
+                   help='Specify the IP address or range of IP addresses from which to accept requests. '
+                        'Support only IPv4 style addresses.')
         c.argument('expiry', type=get_datetime_type(True),
-                   help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes invalid. Do not '
+                   help='Specify the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes invalid. Do not '
                         'use if a stored access policy is referenced with --policy-name that specifies this value.')
         c.argument('start', type=get_datetime_type(True),
-                   help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes valid. Do not use '
+                   help='Specify the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes valid. Do not use '
                         'if a stored access policy is referenced with --policy-name that specifies this value. '
-                        'Defaults to the time of the request.')
+                        'Default to the time of the request.')
         c.argument('protocol', options_list=('--https-only',), action='store_const', const='https',
                    help='Only permit requests made with the HTTPS protocol. If omitted, requests from both the HTTP '
                         'and HTTPS protocol are permitted.')
