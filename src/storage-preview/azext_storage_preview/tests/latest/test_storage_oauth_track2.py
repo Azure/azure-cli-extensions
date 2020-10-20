@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from datetime import datetime, timedelta
+
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer, StorageAccountPreparer)
 from .storage_test_util import StorageScenarioMixin
 
@@ -24,10 +24,6 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
         # Test exists oauth
         self.oauth_cmd('storage queue exists -n {queue_name} --account-name {account} ')\
             .assert_with_checks(JMESPathCheck('exists', True))
-
-        # Test list oauth
-        self.oauth_cmd('storage queue list --include-metadata --account-name {account} ') \
-            .assert_with_checks(JMESPathCheck('length(@)', 1), JMESPathCheck('[0].metadata.key1', 'value1'))
 
         # Test stats oauth
         queue_status = self.oauth_cmd('storage queue stats --account-name {account} ').get_output_in_json()
