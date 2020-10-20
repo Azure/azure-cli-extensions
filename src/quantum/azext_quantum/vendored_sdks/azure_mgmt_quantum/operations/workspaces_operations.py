@@ -97,7 +97,7 @@ class WorkspacesOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.quantum/workspaces/{workspaceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
 
     def _create_and_update_initial(
@@ -198,7 +198,7 @@ class WorkspacesOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_and_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.quantum/workspaces/{workspaceName}'}
+    create_and_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
     def update(
             self, resource_group_name, workspace_name, quantum_workspace, custom_headers=None, raw=False, **operation_config):
@@ -265,7 +265,7 @@ class WorkspacesOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.quantum/workspaces/{workspaceName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
 
     def _delete_initial(
@@ -297,12 +297,14 @@ class WorkspacesOperations(object):
         request = self._client.delete(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 202, 204]:
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
 
-        if response.status_code == 201:
+        if response.status_code == 202:
+            deserialized = self._deserialize('QuantumWorkspace', response)
+        if response.status_code == 204:
             deserialized = self._deserialize('QuantumWorkspace', response)
 
         if raw:
@@ -357,7 +359,70 @@ class WorkspacesOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.quantum/workspaces/{workspaceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
+
+    def list_by_subscription(
+            self, custom_headers=None, raw=False, **operation_config):
+        """Gets the list of Workspaces within a Subscription.
+
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: An iterator like instance of QuantumWorkspace
+        :rtype:
+         ~quantum.models.QuantumWorkspacePaged[~quantum.models.QuantumWorkspace]
+        :raises:
+         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+        """
+        def internal_paging(next_link=None, raw=False):
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_subscription.metadata['url']
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+
+                # Construct parameters
+                query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+            else:
+                url = next_link
+                query_parameters = {}
+
+            # Construct headers
+            header_parameters = {}
+            header_parameters['Accept'] = 'application/json'
+            if self.config.generate_client_request_id:
+                header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+            if custom_headers:
+                header_parameters.update(custom_headers)
+            if self.config.accept_language is not None:
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+            # Construct and send request
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
+
+            if response.status_code not in [200]:
+                raise models.ErrorResponseException(self._deserialize, response)
+
+            return response
+
+        # Deserialize response
+        deserialized = models.QuantumWorkspacePaged(internal_paging, self._deserialize.dependencies)
+
+        if raw:
+            header_dict = {}
+            client_raw_response = models.QuantumWorkspacePaged(internal_paging, self._deserialize.dependencies, header_dict)
+            return client_raw_response
+
+        return deserialized
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/workspaces'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -423,4 +488,4 @@ class WorkspacesOperations(object):
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.quantum/workspaces'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces'}

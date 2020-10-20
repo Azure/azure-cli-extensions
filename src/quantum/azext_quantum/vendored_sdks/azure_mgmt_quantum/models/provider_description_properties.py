@@ -17,6 +17,10 @@ class ProviderDescriptionProperties(ProviderProperties):
 
     :param description: Description about this Provider.
     :type description: str
+    :param provider_type: Provider type.
+    :type provider_type: str
+    :param company: Company name.
+    :type company: str
     :param default_endpoint: Provider's default endpoint.
     :type default_endpoint: str
     :param aad: Azure Active Directory info.
@@ -32,6 +36,8 @@ class ProviderDescriptionProperties(ProviderProperties):
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
+        'provider_type': {'key': 'providerType', 'type': 'str'},
+        'company': {'key': 'company', 'type': 'str'},
         'default_endpoint': {'key': 'defaultEndpoint', 'type': 'str'},
         'aad': {'key': 'aad', 'type': 'ProviderPropertiesAad'},
         'managed_application': {'key': 'managedApplication', 'type': 'ProviderPropertiesManagedApplication'},

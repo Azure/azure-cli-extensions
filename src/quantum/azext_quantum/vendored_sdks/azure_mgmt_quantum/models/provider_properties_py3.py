@@ -17,6 +17,10 @@ class ProviderProperties(Model):
 
     :param description: Description about this Provider.
     :type description: str
+    :param provider_type: Provider type.
+    :type provider_type: str
+    :param company: Company name.
+    :type company: str
     :param default_endpoint: Provider's default endpoint.
     :type default_endpoint: str
     :param aad: Azure Active Directory info.
@@ -32,6 +36,8 @@ class ProviderProperties(Model):
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
+        'provider_type': {'key': 'providerType', 'type': 'str'},
+        'company': {'key': 'company', 'type': 'str'},
         'default_endpoint': {'key': 'defaultEndpoint', 'type': 'str'},
         'aad': {'key': 'aad', 'type': 'ProviderPropertiesAad'},
         'managed_application': {'key': 'managedApplication', 'type': 'ProviderPropertiesManagedApplication'},
@@ -39,9 +45,11 @@ class ProviderProperties(Model):
         'skus': {'key': 'skus', 'type': '[SkuDescription]'},
     }
 
-    def __init__(self, *, description: str=None, default_endpoint: str=None, aad=None, managed_application=None, targets=None, skus=None, **kwargs) -> None:
+    def __init__(self, *, description: str=None, provider_type: str=None, company: str=None, default_endpoint: str=None, aad=None, managed_application=None, targets=None, skus=None, **kwargs) -> None:
         super(ProviderProperties, self).__init__(**kwargs)
         self.description = description
+        self.provider_type = provider_type
+        self.company = company
         self.default_endpoint = default_endpoint
         self.aad = aad
         self.managed_application = managed_application

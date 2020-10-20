@@ -31,10 +31,13 @@ class QuantumWorkspace(Model):
     :param usable: Whether the current workspace is usable. Possible values
      include: 'Yes', 'No', 'Partial'
     :type usable: str or ~quantum.models.UsableStatus
-    :param provisioning_state: The Workspace's current status. Possible values
+    :param provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'ProviderLaunching', 'ProviderUpdating',
      'ProviderDeleting', 'ProviderProvisioning', 'Deleted', 'Failed'
     :type provisioning_state: str or ~quantum.models.ProvisioningStatus
+    :param storage_account: ARM Resource Id of the storage account associated
+     with this workspace.
+    :type storage_account: str
     :param tags: Gets or sets the tags.
     :type tags: object
     """
@@ -53,10 +56,11 @@ class QuantumWorkspace(Model):
         'providers': {'key': 'properties.providers', 'type': '[Provider]'},
         'usable': {'key': 'properties.usable', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'storage_account': {'key': 'properties.storageAccount', 'type': 'str'},
         'tags': {'key': 'tags', 'type': 'object'},
     }
 
-    def __init__(self, *, location: str=None, providers=None, usable=None, provisioning_state=None, tags=None, **kwargs) -> None:
+    def __init__(self, *, location: str=None, providers=None, usable=None, provisioning_state=None, storage_account: str=None, tags=None, **kwargs) -> None:
         super(QuantumWorkspace, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -65,4 +69,5 @@ class QuantumWorkspace(Model):
         self.providers = providers
         self.usable = usable
         self.provisioning_state = provisioning_state
+        self.storage_account = storage_account
         self.tags = tags

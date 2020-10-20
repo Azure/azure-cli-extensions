@@ -100,4 +100,4 @@ class OfferingsOperations(object):
             return client_raw_response
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/microsoft.quantum/locations/{locationName}/offerings'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/locations/{locationName}/offerings'}

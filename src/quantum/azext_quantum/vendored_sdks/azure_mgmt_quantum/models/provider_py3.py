@@ -28,6 +28,8 @@ class Provider(Model):
      include: 'Succeeded', 'Launching', 'Updating', 'Deleting', 'Deleted',
      'Failed'
     :type provisioning_state: str or ~quantum.models.Status
+    :param resource_usage_id: Id to track resource usage for the provider.
+    :type resource_usage_id: str
     """
 
     _attribute_map = {
@@ -36,12 +38,14 @@ class Provider(Model):
         'instance_uri': {'key': 'instanceUri', 'type': 'str'},
         'application_name': {'key': 'applicationName', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'resource_usage_id': {'key': 'resourceUsageId', 'type': 'str'},
     }
 
-    def __init__(self, *, provider_id: str=None, provider_sku: str=None, instance_uri: str=None, application_name: str=None, provisioning_state=None, **kwargs) -> None:
+    def __init__(self, *, provider_id: str=None, provider_sku: str=None, instance_uri: str=None, application_name: str=None, provisioning_state=None, resource_usage_id: str=None, **kwargs) -> None:
         super(Provider, self).__init__(**kwargs)
         self.provider_id = provider_id
         self.provider_sku = provider_sku
         self.instance_uri = instance_uri
         self.application_name = application_name
         self.provisioning_state = provisioning_state
+        self.resource_usage_id = resource_usage_id
