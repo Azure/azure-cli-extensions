@@ -14,7 +14,6 @@ from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
-from .profiles import CUSTOM_MGMT_STORAGE
 
 logger = get_logger(__name__)
 
@@ -294,42 +293,6 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
 def validate_custom_domain(namespace):
     if namespace.use_subdomain and not namespace.custom_domain:
         raise ValueError('usage error: --custom-domain DOMAIN [--use-subdomain]')
-
-
-def validate_encryption_services(cmd, namespace):
-    """
-    Builds up the encryption services object for storage account operations based on the list of services passed in.
-    """
-    if namespace.encryption_services:
-        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE,
-                                                              'EncryptionServices', 'EncryptionService', mod='models')
-        services = {service: t_encryption_service(enabled=True) for service in namespace.encryption_services}
-
-        namespace.encryption_services = t_encryption_services(**services)
-
-
-def validate_encryption_source(cmd, namespace):
-    ns = vars(namespace)
-
-    key_name = ns.pop('encryption_key_name', None)
-    key_version = ns.pop('encryption_key_version', None)
-    key_vault_uri = ns.pop('encryption_key_vault', None)
-
-    if namespace.encryption_key_source == 'Microsoft.Keyvault' and not (key_name and key_version and key_vault_uri):
-        raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are required '
-                         'when --encryption-key-source=Microsoft.Keyvault is specified.')
-
-    if key_name or key_version or key_vault_uri:
-        if namespace.encryption_key_source != 'Microsoft.Keyvault':
-            raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
-                             'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE, 'KeyVaultProperties',
-                                     mod='models')
-        if not KeyVaultProperties:
-            return
-
-        kv_prop = KeyVaultProperties(key_name=key_name, key_version=key_version, key_vault_uri=key_vault_uri)
-        namespace.encryption_key_vault_properties = kv_prop
 
 
 def get_file_path_validator(default_file_param=None):

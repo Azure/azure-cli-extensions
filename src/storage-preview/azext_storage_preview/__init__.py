@@ -8,7 +8,7 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
 
 
 class StorageCommandsLoader(AzCommandsLoader):
