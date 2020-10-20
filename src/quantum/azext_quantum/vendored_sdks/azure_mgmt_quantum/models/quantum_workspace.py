@@ -31,10 +31,13 @@ class QuantumWorkspace(Model):
     :param usable: Whether the current workspace is usable. Possible values
      include: 'Yes', 'No', 'Partial'
     :type usable: str or ~quantum.models.UsableStatus
-    :param provisioning_state: The Workspace's current status. Possible values
+    :param provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'ProviderLaunching', 'ProviderUpdating',
      'ProviderDeleting', 'ProviderProvisioning', 'Deleted', 'Failed'
     :type provisioning_state: str or ~quantum.models.ProvisioningStatus
+    :param storage_account: ARM Resource Id of the storage account associated
+     with this workspace.
+    :type storage_account: str
     :param tags: Gets or sets the tags.
     :type tags: object
     """
@@ -53,6 +56,7 @@ class QuantumWorkspace(Model):
         'providers': {'key': 'properties.providers', 'type': '[Provider]'},
         'usable': {'key': 'properties.usable', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'storage_account': {'key': 'properties.storageAccount', 'type': 'str'},
         'tags': {'key': 'tags', 'type': 'object'},
     }
 
@@ -65,4 +69,5 @@ class QuantumWorkspace(Model):
         self.providers = kwargs.get('providers', None)
         self.usable = kwargs.get('usable', None)
         self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.storage_account = kwargs.get('storage_account', None)
         self.tags = kwargs.get('tags', None)

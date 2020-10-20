@@ -20,16 +20,20 @@ class WorkspaceResourceProperties(Model):
     :param usable: Whether the current workspace is usable. Possible values
      include: 'Yes', 'No', 'Partial'
     :type usable: str or ~quantum.models.UsableStatus
-    :param provisioning_state: The Workspace's current status. Possible values
+    :param provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'ProviderLaunching', 'ProviderUpdating',
      'ProviderDeleting', 'ProviderProvisioning', 'Deleted', 'Failed'
     :type provisioning_state: str or ~quantum.models.ProvisioningStatus
+    :param storage_account: ARM Resource Id of the storage account associated
+     with this workspace.
+    :type storage_account: str
     """
 
     _attribute_map = {
         'providers': {'key': 'providers', 'type': '[Provider]'},
         'usable': {'key': 'usable', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'storage_account': {'key': 'storageAccount', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -37,3 +41,4 @@ class WorkspaceResourceProperties(Model):
         self.providers = kwargs.get('providers', None)
         self.usable = kwargs.get('usable', None)
         self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.storage_account = kwargs.get('storage_account', None)
