@@ -162,3 +162,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('delete', 'delete_queue',
                                        transform=create_boolean_result_output_transformer('deleted'),
                                        table_transformer=transform_boolean_for_table)
+
+    with self.command_group('storage message', command_type=queue_client_sdk, is_preview=True,
+                            custom_command_type=get_custom_sdk('queue', cf_queue_client,
+                                                               CUSTOM_DATA_STORAGE_QUEUE),
+                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+        g.storage_command_oauth('put', 'send_message')
+        g.storage_command_oauth('get', 'receive_messages')
+        g.storage_command_oauth('peek', 'peek_messages')
+        g.storage_command_oauth('delete', 'delete_message')
+        g.storage_command_oauth('clear', 'clear_messages')
+        g.storage_command_oauth('update', 'update_message')

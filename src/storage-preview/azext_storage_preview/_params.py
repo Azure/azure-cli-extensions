@@ -303,3 +303,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help=sas_help.format(get_permission_help_string(t_queue_permissions)),
                    validator=get_permission_validator(t_queue_permissions))
         c.ignore('sas_token')
+
+    for item in ['get', 'peek', 'put', 'update', 'delete', 'clear']:
+        with self.argument_context('storage message {}'.format(item)) as c:
+            c.extra('queue_name', queue_name_type, required=True)
+            c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
