@@ -184,7 +184,7 @@ def add_network_rule(cmd, client, resource_group_name, account_name, action='All
 
 
 def remove_network_rule(cmd, client, resource_group_name, account_name, ip_address=None, subnet=None,
-                        vnet_name=None):  # pylint: disable=unused-argument
+                        vnet_name=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
     sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     if subnet:
@@ -192,6 +192,10 @@ def remove_network_rule(cmd, client, resource_group_name, account_name, ip_addre
                                        if not x.virtual_network_resource_id.endswith(subnet)]
     if ip_address:
         rules.ip_rules = [x for x in rules.ip_rules if x.ip_address_or_range != ip_address]
+
+    if resource_id:
+        rules.resource_access_rules = [x for x in rules.resource_access_rules if
+                                       not (x.tenant_id == tenant_id and x.resource_id == resource_id)]
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
