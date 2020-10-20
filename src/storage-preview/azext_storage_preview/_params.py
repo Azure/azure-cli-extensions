@@ -76,6 +76,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
         c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
         c.argument('action', help='The action of virtual network rule.')
+        c.argument('resource_id', help='The resource id to add in network rule.')
+        c.argument('tenant_id', help='The tenant id to add in network rule.')
 
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
