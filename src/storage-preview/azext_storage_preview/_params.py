@@ -308,3 +308,35 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         with self.argument_context('storage message {}'.format(item)) as c:
             c.extra('queue_name', queue_name_type, required=True)
             c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    for item in ['get', 'put', 'update']:
+        with self.argument_context('storage message {}'.format(item)) as c:
+            c.extra('visibility_timeout', type=int,
+                    help='Specify the new visibility timeout value, in seconds, relative to server time. '
+                         'The value must be larger than or equal to 0, and cannot be larger than 7 days. '
+                         'The visibility timeout of a message cannot be set to a value later than the expiry time. '
+                         'visibility_timeout should be set to a value smaller than the time_to_live value. '
+                         'If not specified, the default value is 0.')
+
+    for item in ['update', 'delete']:
+        with self.argument_context('storage message {}'.format(item)) as c:
+            c.argument('message', options_list='--id', help='The message id identifying the message to delete.')
+
+    with self.argument_context('storage message put') as c:
+        from six import u as unicode_string
+        c.argument('content', type=unicode_string, help='Message content, up to 64KB in size.')
+        c.extra('time_to_live', type=int,
+                help='Specify the time-to-live interval for the message, in seconds. '
+                     'The time-to-live may be any positive number or -1 for infinity. '
+                     'If this parameter is omitted, the default time-to-live is 7 days.')
+
+    with self.argument_context('storage message get') as c:
+        c.extra('messages_per_page', options_list='--num-messages', type=int,
+                help='A nonzero integer value that specifies the number of messages to retrieve from the queue, '
+                     'up to a maximum of 32. If fewer are visible, the visible messages are returned. '
+                     'By default, a single message is retrieved from the queue with this operation.')
+
+    with self.argument_context('storage message peek') as c:
+        c.extra('max_messages', options_list='--num-messages', type=int,
+                help='A nonzero integer value that specifies the number of messages to peek from the queue, up to '
+                     'a maximum of 32. By default, a single message is peeked from the queue with this operation.')
