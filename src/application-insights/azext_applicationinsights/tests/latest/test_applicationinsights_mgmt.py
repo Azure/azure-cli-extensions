@@ -65,6 +65,52 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    def test_connect_webapp(self, resource_group, location):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web'
+        })
+
+        self.cmd('az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+            self.check('location', '{loc}'),
+            self.check('kind', '{kind}'),
+            self.check('applicationType', '{application_type}'),
+            self.check('applicationId', '{ai_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # Create web app.
+        webapp_name = self.create_random_name('clitestwebapp', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'webapp_name': webapp_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group} -n {plan}')
+        self.cmd('az webapp create -g {resource_group} -n {webapp_name} --plan {plan}', checks=[
+            self.check('state', 'Running'),
+            self.check('name', webapp_name)
+        ])
+
+        # Connect AI to web app and update settings for web app.
+        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} -n {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
+            self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+        ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+        ])
+
     """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_api_key(self, resource_group, location):
