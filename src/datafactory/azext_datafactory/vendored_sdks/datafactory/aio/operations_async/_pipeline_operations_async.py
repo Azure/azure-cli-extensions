@@ -64,6 +64,10 @@ class PipelineOperations:
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_factory.metadata['url']  # type: ignore
@@ -77,15 +81,11 @@ class PipelineOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -166,7 +166,6 @@ class PipelineOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(pipeline, 'PipelineResource')
         body_content_kwargs['content'] = body_content
@@ -194,7 +193,7 @@ class PipelineOperations:
         pipeline_name: str,
         if_none_match: Optional[str] = None,
         **kwargs
-    ) -> "models.PipelineResource":
+    ) -> Optional["models.PipelineResource"]:
         """Gets a pipeline.
 
         :param resource_group_name: The resource group name.
@@ -211,7 +210,7 @@ class PipelineOperations:
         :rtype: ~data_factory_management_client.models.PipelineResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.PipelineResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.PipelineResource"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -236,7 +235,6 @@ class PipelineOperations:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -297,7 +295,6 @@ class PipelineOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -384,7 +381,6 @@ class PipelineOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         if parameters is not None:
             body_content = self._serialize.body(parameters, '{object}')
