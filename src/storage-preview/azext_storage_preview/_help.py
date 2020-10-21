@@ -369,3 +369,53 @@ helps['storage queue delete'] = """
         - name: Delete the specified queue, throw an exception if the queue doesn't exist.
           text: az storage queue delete -n myqueue --fail-not-exist --account-name mystorageaccount
 """
+
+helps['storage message put'] = """
+    type: command
+    short-summary:  Add a new message to the back of the message queue.
+    examples:
+        - name: Add a new message which will live one day.
+          text: az storage message put -q myqueue --content mymessagecontent --time-to-live 86400 --account-name mystorageaccount
+"""
+
+helps['storage message peek'] = """
+    type: command
+    short-summary:  Retrieve one or more messages from the front of the queue, but do not alter the visibility of the message.
+    examples:
+        - name: Retrieve 5 messages from the front of the queue (do not alter the visibility of the message).
+          text: az storage message peek -q myqueue --num-messages 5 --account-name mystorageaccount
+"""
+
+helps['storage message get'] = """
+    type: command
+    short-summary:  Retrieve one or more messages from the front of the queue.
+    examples:
+        - name: Retrieve one message from the front of the queue and reset the visibility timeout to 5 minutes later.
+          text: az storage message get -q myqueue --visibility-timeout 300 --account-name mystorageaccount
+"""
+
+helps['storage message update'] = """
+    type: command
+    short-summary:  Update the visibility timeout of a message.
+    examples:
+        - name: Update the visibility timeout and content of a message.
+          text: |
+              az storage message update --id messageid --pop-receipt popreceiptreturned -q myqueue 
+              --visibility-timeout 3600 --content newmessagecontent --account-name mystorageaccount
+"""
+
+helps['storage message delete'] = """
+    type: command
+    short-summary:  Delete the specified message.
+    examples:
+        - name: Delete the specified message.
+          text: az storage message delete --id messageid --pop-receipt popreceiptreturned -q myqueue --account-name mystorageaccount
+"""
+
+helps['storage message clear'] = """
+    type: command
+    short-summary:  Delete all messages from the specified queue.
+    examples:
+        - name: Delete all messages from the specified queue.
+          text: az storage message clear -q myqueue --account-name mystorageaccount
+"""
