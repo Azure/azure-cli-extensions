@@ -22,7 +22,7 @@ class ProviderStatus(Model):
     :vartype id: str
     :ivar current_availability: Provider availability. Possible values
      include: 'Available', 'Degraded', 'Unavailable'
-    :vartype current_availability: str or ~quantum.models.enum
+    :vartype current_availability: str or ~quantum.models.ProviderAvailability
     :ivar targets:
     :vartype targets: list[~quantum.models.TargetStatus]
     """

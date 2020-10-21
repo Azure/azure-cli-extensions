@@ -9,12 +9,27 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .jobs_operations import JobsOperations
-from .providers_operations import ProvidersOperations
-from .storage_operations import StorageOperations
+from enum import Enum
 
-__all__ = [
-    'JobsOperations',
-    'ProvidersOperations',
-    'StorageOperations',
-]
+
+class JobStatus(str, Enum):
+
+    waiting = "Waiting"
+    executing = "Executing"
+    succeeded = "Succeeded"
+    failed = "Failed"
+    cancelled = "Cancelled"
+
+
+class ProviderAvailability(str, Enum):
+
+    available = "Available"
+    degraded = "Degraded"
+    unavailable = "Unavailable"
+
+
+class TargetAvailability(str, Enum):
+
+    available = "Available"
+    degraded = "Degraded"
+    unavailable = "Unavailable"

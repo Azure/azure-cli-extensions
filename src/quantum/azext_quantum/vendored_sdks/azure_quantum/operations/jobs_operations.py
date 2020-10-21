@@ -164,7 +164,7 @@ class JobsOperations(object):
 
         :param job_id: Id of the job.
         :type job_id: str
-        :param job_definition:
+        :param job_definition: The complete metadata of the job to submit.
         :type job_definition: ~quantum.models.JobDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -227,7 +227,7 @@ class JobsOperations(object):
 
     def delete(
             self, job_id, custom_headers=None, raw=False, **operation_config):
-        """Delete a job.
+        """Cancel a job.
 
         :param job_id: Id of the job.
         :type job_id: str

@@ -14,7 +14,7 @@ from msrest.exceptions import HttpOperationError
 
 
 class RestError(Model):
-    """An Error response.
+    """An error response from Azure.
 
     :param code: An identifier for the error. Codes are invariant and are
      intended to be consumed programmatically.
@@ -25,8 +25,8 @@ class RestError(Model):
     """
 
     _attribute_map = {
-        'code': {'key': 'error.code', 'type': 'str'},
-        'message': {'key': 'error.message', 'type': 'str'},
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
