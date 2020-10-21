@@ -12,21 +12,35 @@
 try:
     from .rest_error_py3 import RestError, RestErrorException
     from .job_details_py3 import JobDetails
+    from .blob_details_py3 import BlobDetails
+    from .sas_uri_response_py3 import SasUriResponse
     from .target_status_py3 import TargetStatus
     from .provider_status_py3 import ProviderStatus
 except (SyntaxError, ImportError):
     from .rest_error import RestError, RestErrorException
     from .job_details import JobDetails
+    from .blob_details import BlobDetails
+    from .sas_uri_response import SasUriResponse
     from .target_status import TargetStatus
     from .provider_status import ProviderStatus
 from .job_details_paged import JobDetailsPaged
 from .provider_status_paged import ProviderStatusPaged
+from .quantum_client_enums import (
+    JobStatus,
+    ProviderAvailability,
+    TargetAvailability,
+)
 
 __all__ = [
     'RestError', 'RestErrorException',
     'JobDetails',
+    'BlobDetails',
+    'SasUriResponse',
     'TargetStatus',
     'ProviderStatus',
     'JobDetailsPaged',
     'ProviderStatusPaged',
+    'JobStatus',
+    'ProviderAvailability',
+    'TargetAvailability',
 ]

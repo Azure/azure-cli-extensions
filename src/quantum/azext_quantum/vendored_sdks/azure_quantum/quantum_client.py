@@ -15,6 +15,7 @@ from msrestazure import AzureConfiguration
 from .version import VERSION
 from .operations.jobs_operations import JobsOperations
 from .operations.providers_operations import ProvidersOperations
+from .operations.storage_operations import StorageOperations
 from . import models
 
 
@@ -71,6 +72,8 @@ class QuantumClient(SDKClient):
     :vartype jobs: quantum.operations.JobsOperations
     :ivar providers: Providers operations
     :vartype providers: quantum.operations.ProvidersOperations
+    :ivar storage: Storage operations
+    :vartype storage: quantum.operations.StorageOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -99,4 +102,6 @@ class QuantumClient(SDKClient):
         self.jobs = JobsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.providers = ProvidersOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.storage = StorageOperations(
             self._client, self.config, self._serialize, self._deserialize)

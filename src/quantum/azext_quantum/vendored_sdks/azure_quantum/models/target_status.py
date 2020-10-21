@@ -22,7 +22,7 @@ class TargetStatus(Model):
     :vartype id: str
     :ivar current_availability: Target availability. Possible values include:
      'Available', 'Degraded', 'Unavailable'
-    :vartype current_availability: str or ~quantum.models.enum
+    :vartype current_availability: str or ~quantum.models.TargetAvailability
     :ivar average_queue_time: Average queue time in seconds.
     :vartype average_queue_time: long
     :ivar status_page: A page with detailed status of the provider.

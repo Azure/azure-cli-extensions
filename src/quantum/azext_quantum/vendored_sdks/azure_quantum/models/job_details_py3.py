@@ -52,7 +52,7 @@ class JobDetails(Model):
     :type output_data_format: str
     :ivar status: The job status. Possible values include: 'Waiting',
      'Executing', 'Succeeded', 'Failed', 'Cancelled'
-    :vartype status: str or ~quantum.models.enum
+    :vartype status: str or ~quantum.models.JobStatus
     :ivar creation_time: The creation time of the job.
     :vartype creation_time: str
     :ivar begin_execution_time: The time when the job began execution.
