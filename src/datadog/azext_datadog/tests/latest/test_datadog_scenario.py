@@ -169,7 +169,7 @@ def step__monitoredresources_post(test, rg):
 # EXAMPLE: /RefreshSetPassword/post/RefreshSetPassword_Get
 @try_manual
 def step__refreshsetpassword_post(test, rg):
-    test.cmd('az datadog refresh-set-password get '
+    test.cmd('az datadog set-passward-link get '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=[
@@ -180,7 +180,7 @@ def step__refreshsetpassword_post(test, rg):
 # EXAMPLE: /SingleSignOnConfigurations/put/SingleSignOnConfigurations_CreateOrUpdate
 @try_manual
 def step__singlesignonconfigurations_put(test, rg):
-    test.cmd('az datadog single-sign-on-configuration create '
+    test.cmd('az datadog sso-config create '
              '--configuration-name "default" '
              '--monitor-name "{myMonitor}" '
              '--properties enterprise-app-id="ac754169-3489-42ae-bd06-8be89db12e58" single-sign-on-state="Enable" '
@@ -191,7 +191,7 @@ def step__singlesignonconfigurations_put(test, rg):
 # EXAMPLE: /SingleSignOnConfigurations/get/SingleSignOnConfigurations_Get
 @try_manual
 def step__singlesignonconfigurations_get(test, rg):
-    test.cmd('az datadog single-sign-on-configuration show '
+    test.cmd('az datadog sso-config show '
              '--configuration-name "default" '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
@@ -204,7 +204,7 @@ def step__singlesignonconfigurations_get(test, rg):
 # EXAMPLE: /SingleSignOnConfigurations/get/SingleSignOnConfigurations_List
 @try_manual
 def step__singlesignonconfigurations_get2(test, rg):
-    test.cmd('az datadog single-sign-on-configuration list '
+    test.cmd('az datadog sso-config list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=[

@@ -66,7 +66,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._refresh_set_password_operations#RefreshSetPass'
         'wordOperations.{}',
         client_factory=cf_refresh_set_password)
-    with self.command_group('datadog refresh-set-password', datadog_refresh_set_password,
+    with self.command_group('datadog set-passward-link', datadog_refresh_set_password,
                             client_factory=cf_refresh_set_password, is_experimental=True) as g:
         g.custom_command('get', 'datadog_refresh_set_password_get')
 
@@ -86,7 +86,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._single_sign_on_configuration_operations#Single'
         'SignOnConfigurationOperations.{}',
         client_factory=cf_single_sign_on_configuration)
-    with self.command_group('datadog single-sign-on-configuration', datadog_single_sign_on_configuration,
+    with self.command_group('datadog sso-config', datadog_single_sign_on_configuration,
                             client_factory=cf_single_sign_on_configuration, is_experimental=True) as g:
         g.custom_command('list', 'datadog_single_sign_on_configuration_list')
         g.custom_show_command('show', 'datadog_single_sign_on_configuration_show')

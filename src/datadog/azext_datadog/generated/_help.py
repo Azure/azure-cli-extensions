@@ -131,7 +131,7 @@ helps['datadog monitor create'] = """
     examples:
       - name: Monitors_Create
         text: |-
-               az datadog monitor create --name "myMonitor" --sku-name "myMonitor" --location "West US 2" \
+               az datadog monitor create --name "myMonitor" --location "West US 2" \
 --datadog-organization-properties name="myOrg" enterprise-app-id="00000000-0000-0000-0000-000000000000" \
 linking-auth-code="someAuthCode" linking-client-id="00000000-0000-0000-0000-000000000000" subscription="pro" \
 --monitoring-status "Enabled" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" \
@@ -169,18 +169,18 @@ helps['datadog monitor wait'] = """
                az datadog monitor wait --name "myMonitor" --resource-group "myResourceGroup" --deleted
 """
 
-helps['datadog refresh-set-password'] = """
+helps['datadog set-passward-link'] = """
     type: group
-    short-summary: datadog refresh-set-password
+    short-summary: datadog set-passward-link
 """
 
-helps['datadog refresh-set-password get'] = """
+helps['datadog set-passward-link get'] = """
     type: command
     short-summary: "Refresh the set password link and return a latest one."
     examples:
       - name: RefreshSetPassword_Get
         text: |-
-               az datadog refresh-set-password get --monitor-name "myMonitor" --resource-group "myResourceGroup"
+               az datadog set-passward-link get --monitor-name "myMonitor" --resource-group "myResourceGroup"
 """
 
 helps['datadog tag-rule'] = """
@@ -209,7 +209,7 @@ helps['datadog tag-rule show'] = """
 
 helps['datadog tag-rule create'] = """
     type: command
-    short-summary: "Create or update a tag rule set for a given monitor resource."
+    short-summary: "Create a tag rule set for a given monitor resource."
     parameters:
       - name: --metric-rules-filtering-tags
         short-summary: "List of filtering tags to be used for capturing metrics. If empty, all resources will be \
@@ -247,7 +247,7 @@ action="Include" value="Prod" --log-rules-filtering-tags name="Environment" acti
 
 helps['datadog tag-rule update'] = """
     type: command
-    short-summary: "Create or update a tag rule set for a given monitor resource."
+    short-summary: "Update a tag rule set for a given monitor resource."
     parameters:
       - name: --metric-rules-filtering-tags
         short-summary: "List of filtering tags to be used for capturing metrics. If empty, all resources will be \
@@ -276,32 +276,32 @@ resources with the associated tags."
             Multiple actions can be specified by using more than one --log-rules-filtering-tags argument.
 """
 
-helps['datadog single-sign-on-configuration'] = """
+helps['datadog sso-config'] = """
     type: group
-    short-summary: datadog single-sign-on-configuration
+    short-summary: datadog sso-config
 """
 
-helps['datadog single-sign-on-configuration list'] = """
+helps['datadog sso-config list'] = """
     type: command
     short-summary: "List the single sign-on configurations for a given monitor resource."
     examples:
       - name: SingleSignOnConfigurations_List
         text: |-
-               az datadog single-sign-on-configuration list --monitor-name "myMonitor" --resource-group \
+               az datadog sso-config list --monitor-name "myMonitor" --resource-group \
 "myResourceGroup"
 """
 
-helps['datadog single-sign-on-configuration show'] = """
+helps['datadog sso-config show'] = """
     type: command
     short-summary: "Gets the datadog single sign-on resource for the given Monitor."
     examples:
       - name: SingleSignOnConfigurations_Get
         text: |-
-               az datadog single-sign-on-configuration show --configuration-name "default" --monitor-name "myMonitor" \
+               az datadog sso-config show --configuration-name "default" --monitor-name "myMonitor" \
 --resource-group "myResourceGroup"
 """
 
-helps['datadog single-sign-on-configuration create'] = """
+helps['datadog sso-config create'] = """
     type: command
     short-summary: "Configures single-sign-on for this resource."
     parameters:
@@ -315,29 +315,29 @@ helps['datadog single-sign-on-configuration create'] = """
     examples:
       - name: SingleSignOnConfigurations_CreateOrUpdate
         text: |-
-               az datadog single-sign-on-configuration create --configuration-name "default" --monitor-name \
+               az datadog sso-config create --configuration-name "default" --monitor-name \
 "myMonitor" --properties enterprise-app-id="00000000-0000-0000-0000-000000000000" single-sign-on-state="Enable" \
 --resource-group "myResourceGroup"
 """
 
-helps['datadog single-sign-on-configuration update'] = """
+helps['datadog sso-config update'] = """
     type: command
     short-summary: "Configures single-sign-on for this resource."
 """
 
-helps['datadog single-sign-on-configuration wait'] = """
+helps['datadog sso-config wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the datadog single-sign-on-configuration is \
+    short-summary: Place the CLI in a waiting state until a condition of the datadog sso-config is \
 met.
     examples:
-      - name: Pause executing next line of CLI script until the datadog single-sign-on-configuration is successfully \
+      - name: Pause executing next line of CLI script until the datadog sso-config is successfully \
 created.
         text: |-
-               az datadog single-sign-on-configuration wait --configuration-name "default" --monitor-name "myMonitor" \
+               az datadog sso-config wait --configuration-name "default" --monitor-name "myMonitor" \
 --resource-group "myResourceGroup" --created
-      - name: Pause executing next line of CLI script until the datadog single-sign-on-configuration is successfully \
+      - name: Pause executing next line of CLI script until the datadog sso-config is successfully \
 updated.
         text: |-
-               az datadog single-sign-on-configuration wait --configuration-name "default" --monitor-name "myMonitor" \
+               az datadog sso-config wait --configuration-name "default" --monitor-name "myMonitor" \
 --resource-group "myResourceGroup" --updated
 """
