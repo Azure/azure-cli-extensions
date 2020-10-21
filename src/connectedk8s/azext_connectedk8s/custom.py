@@ -174,7 +174,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags)
+                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
@@ -239,7 +239,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags)
+    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
@@ -471,7 +471,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
         return ""
 
 
-def generate_request_payload(configuration, location, public_key, tags):
+def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
         tenant_id="",
@@ -488,7 +488,9 @@ def generate_request_payload(configuration, location, public_key, tags):
         identity=identity,
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
-        tags=tags
+        tags=tags,
+        kubernetes_distro=kubernetes_distro,
+        kubernetes_infra=kubernetes_infra
     )
     return cc
 
