@@ -66,7 +66,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._refresh_set_password_operations#RefreshSetPass'
         'wordOperations.{}',
         client_factory=cf_refresh_set_password)
-    with self.command_group('datadog set-passward-link', datadog_refresh_set_password,
+    with self.command_group('datadog set-password-link', datadog_refresh_set_password,
                             client_factory=cf_refresh_set_password, is_experimental=True) as g:
         g.custom_command('get', 'datadog_refresh_set_password_get')
 

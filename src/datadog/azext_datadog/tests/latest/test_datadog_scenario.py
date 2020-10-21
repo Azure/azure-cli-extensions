@@ -169,7 +169,7 @@ def step__monitoredresources_post(test, rg):
 # EXAMPLE: /RefreshSetPassword/post/RefreshSetPassword_Get
 @try_manual
 def step__refreshsetpassword_post(test, rg):
-    test.cmd('az datadog set-passward-link get '
+    test.cmd('az datadog set-password-link get '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=[

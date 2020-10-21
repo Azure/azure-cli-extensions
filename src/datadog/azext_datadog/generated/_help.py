@@ -169,18 +169,18 @@ helps['datadog monitor wait'] = """
                az datadog monitor wait --name "myMonitor" --resource-group "myResourceGroup" --deleted
 """
 
-helps['datadog set-passward-link'] = """
+helps['datadog set-password-link'] = """
     type: group
-    short-summary: datadog set-passward-link
+    short-summary: datadog set-password-link
 """
 
-helps['datadog set-passward-link get'] = """
+helps['datadog set-password-link get'] = """
     type: command
     short-summary: "Refresh the set password link and return a latest one."
     examples:
       - name: RefreshSetPassword_Get
         text: |-
-               az datadog set-passward-link get --monitor-name "myMonitor" --resource-group "myResourceGroup"
+               az datadog set-password-link get --monitor-name "myMonitor" --resource-group "myResourceGroup"
 """
 
 helps['datadog tag-rule'] = """

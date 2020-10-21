@@ -104,7 +104,7 @@ def load_arguments(self, _):
         c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
                    'name', id_part='name')
 
-    with self.argument_context('datadog set-passward-link get') as c:
+    with self.argument_context('datadog set-password-link get') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
 
