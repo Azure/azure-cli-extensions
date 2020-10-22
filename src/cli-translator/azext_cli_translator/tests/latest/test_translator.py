@@ -208,7 +208,8 @@ class CLITranslatorScenarioTest(ScenarioTest):
     }
 }
         '''
-        PARAMETERS_CONTENT= '''
+
+        PARAMETERS_CONTENT = '''
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
@@ -318,6 +319,6 @@ class CLITranslatorScenarioTest(ScenarioTest):
             'parameters': parameters_path,
             'template': template_path,
             'resource_group': 'test-rg',
-            'custom_subscription': '00000000-0000-0000-0000-000000000000'
+            'target_subscription': '00000000-0000-0000-0000-000000000000'
         })
-        self.cmd('cli-translator arm translate --custom-subscription {custom_subscription} --resource-group {resource_group} --template {template} --parameters {parameters}')
+        self.cmd('cli-translator arm translate --target-subscription {target_subscription} --resource-group {resource_group} --template {template} --parameters {parameters}')

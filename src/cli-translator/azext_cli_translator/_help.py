@@ -21,6 +21,6 @@ helps['cli-translator arm translate'] = """
     examples:
         - name: Translate ARM template.json and parameters.json to CLI scripts
           text: |
-            az cli-translator arm translate --subscription 00000000-0000-0000-0000-000000000000 
+            az cli-translator arm translate --target-subscription 00000000-0000-0000-0000-000000000000
             --resource-group groupName --template armTemplatePath --parameters armParametersPath
 """

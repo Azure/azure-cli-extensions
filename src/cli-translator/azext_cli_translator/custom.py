@@ -10,7 +10,7 @@ from knack.util import CLIError
 ARM_TRANSLATOR_URL = 'https://portal2cli.azurewebsites.net/api/v1'
 
 
-def translate_arm(cmd, template_path, parameters_path, resource_group_name, custom_subscription=None):
+def translate_arm(cmd, template_path, parameters_path, resource_group_name, target_subscription=None):
     if not os.path.exists(template_path) or not os.path.exists(parameters_path):
         raise CLIError('--template or --parameters file not found')
 
@@ -21,15 +21,15 @@ def translate_arm(cmd, template_path, parameters_path, resource_group_name, cust
     if not template_content or not parameters_content:
         raise CLIError('--template or --parameters file is empty')
 
-    if custom_subscription is None:
+    if target_subscription is None:
         from azure.cli.core.commands.client_factory import get_subscription_id
-        custom_subscription = get_subscription_id(cmd.cli_ctx)
+        target_subscription = get_subscription_id(cmd.cli_ctx)
     try:
         response = requests.post(
             ARM_TRANSLATOR_URL,
             json={
                 'resourceGroup': resource_group_name,
-                'subscriptionId': custom_subscription,
+                'subscriptionId': target_subscription,
                 'template': json.loads(template_content),
                 'parameters': json.loads(parameters_content)
             })
@@ -39,5 +39,4 @@ def translate_arm(cmd, template_path, parameters_path, resource_group_name, cust
         for script in scripts:
             print('{}\n\n'.format(script))
     except Exception as e:
-        raise CLIError('Meet exception while call translate service, please try a few minutes later.\n{}', str(e))
-
+        raise CLIError('Meet exception while call translate service, please try a few minutes later.\n' + str(e))
