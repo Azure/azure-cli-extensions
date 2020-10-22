@@ -244,3 +244,45 @@ def update_component_linked_storage_account(client, resource_group_name, applica
 
 def delete_component_linked_storage_account(client, resource_group_name, application):
     return client.delete(resource_group_name=resource_group_name, resource_name=application)
+
+
+def list_export_configurations(client, application, resource_group_name):
+    return client.list(resource_group_name, application)
+
+
+def create_export_configuration(client, application, resource_group_name, record_types, dest_address, dest_location=None,
+                                dest_account_id=None, dest_sub_id=None, dest_type=None, is_enabled=None):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+    export_config = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        destination_type=dest_type,
+        destination_address=dest_address,
+        destination_storage_subscription_id=dest_sub_id,
+        destination_storage_location_id=dest_location,
+        destination_account_id=dest_account_id,
+        is_enabled=is_enabled,
+    )
+    return client.create(resource_group_name, application, export_config)
+
+
+def update_export_configuration(client, application, resource_group_name, export_id, dest_address=None, dest_sub_id=None,
+                                dest_location=None, dest_account_id=None, record_types=None, dest_type=None, is_enabled=None):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+    export_config = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        destination_type=dest_type,
+        destination_address=dest_address,
+        destination_storage_subscription_id=dest_sub_id,
+        destination_storage_location_id=dest_location,
+        destination_account_id=dest_account_id,
+        is_enabled=is_enabled,
+    )
+    return client.update(resource_group_name, application, export_id, export_config)
+
+
+def get_export_configuration(client, application, resource_group_name, export_id):
+    return client.get(resource_group_name, application, export_id)
+
+
+def delete_export_configuration(client, application, resource_group_name, export_id):
+    return client.delete(resource_group_name, application, export_id)
