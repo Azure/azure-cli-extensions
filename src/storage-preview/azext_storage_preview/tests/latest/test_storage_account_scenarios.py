@@ -14,7 +14,7 @@ class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2017-06-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_service_endpoints')
     @StorageAccountPreparer()
-    def test_storage_account_resource_access_rules(self, resource_group):
+    def test_storage_account_network_rules(self, resource_group):
         kwargs = {
             'rg': resource_group,
             'acc': self.create_random_name(prefix='cli', length=24),
@@ -67,4 +67,56 @@ class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account network-rule list -g {rg} --account-name {acc}'.format(**kwargs), checks=[
             JMESPathCheck('length(ipRules)', 1),
             JMESPathCheck('length(virtualNetworkRules)', 0)
+        ])
+
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @ResourceGroupPreparer(name_prefix='cli_test_storage_service_endpoints')
+    @StorageAccountPreparer()
+    def test_storage_account_resource_access_rules(self, resource_group, storage_account):
+        self.kwargs = {
+            'rg': resource_group,
+            'sa': storage_account,
+            'rid1': "/subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1",
+            'rid2': "/subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace2",
+            'rid3': "/subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace3",
+            'tid1': "72f988bf-86f1-41af-91ab-2d7cd011db47",
+            'tid2': "72f988bf-86f1-41af-91ab-2d7cd011db47"
+        }
+
+        self.cmd(
+            'storage account network-rule add -g {rg} --account-name {sa} --resource-id {rid1} --tenant-id {tid1}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 1)
+        ])
+
+        # test network-rule add idempotent
+        self.cmd(
+            'storage account network-rule add -g {rg} --account-name {sa} --resource-id {rid1} --tenant-id {tid1}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 1)
+        ])
+
+        # test network-rule add more
+        self.cmd(
+            'storage account network-rule add -g {rg} --account-name {sa} --resource-id {rid2} --tenant-id {tid1}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 2)
+        ])
+
+        self.cmd(
+            'storage account network-rule add -g {rg} --account-name {sa} --resource-id {rid3} --tenant-id {tid2}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 3)
+        ])
+
+        # remove network-rule
+        self.cmd(
+            'storage account network-rule remove -g {rg} --account-name {sa} --resource-id {rid1} --tenant-id {tid1}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 2)
+        ])
+        self.cmd(
+            'storage account network-rule remove -g {rg} --account-name {sa} --resource-id {rid2} --tenant-id {tid2}')
+        self.cmd('storage account network-rule list -g {rg} --account-name {sa}', checks=[
+            JMESPathCheck('length(resourceAccessRules)', 1)
         ])
