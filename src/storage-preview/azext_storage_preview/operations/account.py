@@ -180,7 +180,6 @@ def add_network_rule(cmd, client, resource_group_name, account_name, action='All
                                        or r.tenant_id.lower() != tenant_id.lower()]
         rules.resource_access_rules.append(ResourceAccessRule(tenant_id=tenant_id, resource_id=resource_id))
 
-
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
     return client.update(resource_group_name, account_name, params)
