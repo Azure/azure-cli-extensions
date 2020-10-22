@@ -7,6 +7,7 @@
 
 import os
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
+from knack.util import CLIError
 from .._client_factory import storage_client_factory
 
 
@@ -34,7 +35,6 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
 
     if NetworkRuleSet and (bypass or default_action):
         if bypass and not default_action:
-            from knack.util import CLIError
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = NetworkRuleSet(bypass=bypass, default_action=default_action, ip_rules=None,
                                                  virtual_network_rules=None)
@@ -138,7 +138,6 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
             acl = NetworkRuleSet(bypass=bypass, virtual_network_rules=None, ip_rules=None,
                                  default_action=default_action)
         elif bypass:
-            from knack.util import CLIError
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = acl
     return params
