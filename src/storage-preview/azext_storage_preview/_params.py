@@ -4,13 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list, process_resource_group)
+                          validate_storage_data_plane_list)
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
