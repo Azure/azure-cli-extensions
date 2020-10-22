@@ -306,21 +306,28 @@ helps['monitor app-insights component continues-export create'] = """
         text: |
             az monitor app-insights component continues-export create \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
-            --record-types Requests Event Exceptions Metrics PageViews PageViewPerformance Rdd PerformanceCounters Availability \\
-            --dest-address https://myaccount.blob.core.windows.net/mycontainer?sv=2015-04-05&sr=c&sig=token
+            --record-types Requests Event Exceptions Metrics PageViews \\
+            --dest-account account --dest-container container --dest-sub-id sub-id \\
+            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
 """
 
 helps['monitor app-insights component continues-export update'] = """
     type: command
     short-summary: Update a Continuous Export configuration for an Application Insights component.
     examples:
-      - name: Update a Continuous Export configuration.
+      - name: Update a Continuous Export configuration record-types.
         text: |
             az monitor app-insights component continues-export update \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid \\
-            --record-types Requests Event Exceptions Metrics PageViews \\
-            --dest-address https://myaccount.blob.core.windows.net/mycontainer?sv=2015-04-05&sr=c&sig=token
+            --record-types Requests Event Exceptions Metrics PageViews
+      - name: Update a Continuous Export configuration storage destination.
+        text: |
+            az monitor app-insights component continues-export update \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --id exportid \\
+            --dest-account account --dest-container container --dest-sub-id sub-id \\
+            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
 """
 
 helps['monitor app-insights component continues-export show'] = """
