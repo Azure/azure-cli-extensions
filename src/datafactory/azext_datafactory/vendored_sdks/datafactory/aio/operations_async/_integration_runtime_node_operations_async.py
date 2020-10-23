@@ -87,7 +87,6 @@ class IntegrationRuntimeNodeOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -150,7 +149,6 @@ class IntegrationRuntimeNodeOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -195,7 +193,7 @@ class IntegrationRuntimeNodeOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _update_integration_runtime_node_request = models.UpdateIntegrationRuntimeNodeRequest(concurrent_jobs_limit=concurrent_jobs_limit)
+        update_integration_runtime_node_request = models.UpdateIntegrationRuntimeNodeRequest(concurrent_jobs_limit=concurrent_jobs_limit)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -219,9 +217,8 @@ class IntegrationRuntimeNodeOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_update_integration_runtime_node_request, 'UpdateIntegrationRuntimeNodeRequest')
+        body_content = self._serialize.body(update_integration_runtime_node_request, 'UpdateIntegrationRuntimeNodeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -287,7 +284,6 @@ class IntegrationRuntimeNodeOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
