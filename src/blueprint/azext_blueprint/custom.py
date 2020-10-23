@@ -499,9 +499,7 @@ def create_blueprint_assignment(cmd,
                                 scope=None,
                                 location=None,
                                 resource_groups=None,
-                                identity_principal_id=None,
-                                identity_tenant_id=None,
-                                identity_user_assigned_identities=None,
+                                user_assigned_identity=None,
                                 display_name=None,
                                 description=None,
                                 blueprint_id=None,
@@ -519,12 +517,10 @@ def create_blueprint_assignment(cmd,
     body = {}
     body['location'] = location  # str
     body.setdefault('identity', {})['type'] = identity_type  # str
-    body.setdefault('identity',
-                    {})['principal_id'] = identity_principal_id  # str
-    body.setdefault('identity', {})['tenant_id'] = identity_tenant_id  # str
-    body.setdefault(
-        'identity', {}
-    )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+    if user_assigned_identity is not None:
+        body.setdefault(
+            'identity', {}
+        )['user_assigned_identities'] = {user_assigned_identity:{}} # dictionary
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
@@ -562,9 +558,7 @@ def update_blueprint_assignment(cmd,
                                 scope=None,
                                 location=None,
                                 identity_type=None,
-                                identity_principal_id=None,
-                                identity_tenant_id=None,
-                                identity_user_assigned_identities=None,
+                                user_assigned_identity=None,
                                 display_name=None,
                                 description=None,
                                 blueprint_id=None,
@@ -578,17 +572,10 @@ def update_blueprint_assignment(cmd,
     if location is not None:
         body['location'] = location  # str
     if identity_type is not None:
-        body.setdefault('identity', {})['type'] = identity_type  # str
-    if identity_principal_id is not None:
-        body.setdefault('identity',
-                        {})['principal_id'] = identity_principal_id  # str
-    if identity_tenant_id is not None:
-        body.setdefault('identity',
-                        {})['tenant_id'] = identity_tenant_id  # str
-    if identity_user_assigned_identities is not None:
-        body.setdefault(
-            'identity', {}
-        )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+        body['identity'] = {}
+        body['identity']['type'] = identity_type  # str
+    if user_assigned_identity is not None:
+        body['identity']['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
     if display_name is not None:
         body['display_name'] = display_name  # str
     if description is not None:
