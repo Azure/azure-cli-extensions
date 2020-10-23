@@ -36,11 +36,13 @@ column              : COLUMN WHITESPACE ;
 
 /* Falling Period */
 
-falling_period      : at least min_times out of evaluation_period ;
+falling_period      : at least min_times violations out of evaluation_period aggregated points ;
 
 at                  : AT WHITESPACE ;
 
 least               : LEAST WHITESPACE ;
+
+violations          : VIOLATIONS WHITESPACE ;
 
 out                 : OUT WHITESPACE ;
 
@@ -48,7 +50,11 @@ of                  : OF WHITESPACE ;
 
 min_times           : NUMBER WHITESPACE ;
 
-evaluation_period   : NUMBER ;
+aggregated          : AGGREGATED WHITESPACE ;
+
+points              : POINTS ;
+
+evaluation_period   : NUMBER WHITESPACE ;
 
 /* Dimensions */
 
@@ -77,15 +83,18 @@ fragment C          : ('c'|'C') ;
 fragment D          : ('d'|'D') ;
 fragment E          : ('e'|'E') ;
 fragment F          : ('f'|'F') ;
+fragment G          : ('g'|'G') ;
 fragment H          : ('h'|'H') ;
 fragment I          : ('i'|'I') ;
 fragment L          : ('l'|'L') ;
 fragment M          : ('m'|'M') ;
 fragment N          : ('n'|'N') ;
 fragment O          : ('o'|'O') ;
+fragment P          : ('p'|'P') ;
 fragment R          : ('r'|'R') ;
 fragment S          : ('s'|'S') ;
 fragment U          : ('u'|'U') ;
+fragment V          : ('v'|'V') ;
 fragment W          : ('w'|'W') ;
 fragment X          : ('x'|'X') ;
 fragment T          : ('t'|'T') ;
@@ -102,6 +111,9 @@ AT                  : A T ;
 LEAST               : L E A S T ;
 OUT                 : O U T ;
 OF                  : O F ;
+VIOLATIONS          : V I O L A T I O N S ;
+AGGREGATED          : A G G R E G A T E D ;
+POINTS              : P O I N T S ;
 AND                 : A N D ;
 INCLUDES            : I N C L U D E S ;
 EXCLUDES            : E X C L U D E S ;

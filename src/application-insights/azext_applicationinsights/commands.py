@@ -75,6 +75,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_components')
         g.custom_command('delete', 'delete_component')
         g.custom_command('update-tags', 'update_component_tags')
+        g.custom_command('connect-webapp', 'connect_webapp')
 
     with self.command_group('monitor app-insights component billing', command_type=components_billing_sdk, custom_command_type=components_billing_custom_sdk) as g:
         g.custom_command('update', 'update_component_billing')

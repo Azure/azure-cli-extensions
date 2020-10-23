@@ -69,11 +69,11 @@ class ScheduleQueryConditionValidator(ScheduleQueryConditionListener):
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitMin_times(self, ctx):
-        self.parameters['failing_periods'].min_failing_periods_to_alert = float(ctx.getText().strip())
+        self.parameters['failing_periods'].min_failing_periods_to_alert = int(float(ctx.getText().strip()))
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitEvaluation_period(self, ctx):
-        self.parameters['failing_periods'].number_of_evaluation_periods = float(ctx.getText().strip())
+        self.parameters['failing_periods'].number_of_evaluation_periods = int(float(ctx.getText().strip()))
 
     # Enter a parse tree produced by MetricAlertConditionParser#dimensions.
     def enterDimensions(self, ctx):

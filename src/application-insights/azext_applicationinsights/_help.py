@@ -64,6 +64,18 @@ helps['monitor app-insights component update-tags'] = """
           az monitor app-insights component update-tags --app demoApp --tags name=value -g demoRg
 """
 
+helps['monitor app-insights component connect-webapp'] = """
+    type: command
+    short-summary: Connect AI to a web app.
+    examples:
+      - name: Connect AI to a web app and enable both profiler and snapshot debugger for the web app.
+        text: |
+          az monitor app-insights component connect-webapp -g myRG -n myApp --enable-profiler --enable-snapshot-debugger
+      - name: Connect AI to a web app using resource id and enable profiler and disable snapshot debugger for the web app.
+        text: |
+          az monitor app-insights component connect-webapp --ids /subscriptions/mySub/resourceGroups/myRG/providers/Microsoft.Web/sites/myApp --enable-profiler --enable-snapshot-debugger false
+"""
+
 helps['monitor app-insights component show'] = """
     type: command
     short-summary: Get an Application Insights resource.
@@ -122,7 +134,7 @@ helps['monitor app-insights api-key show'] = """
     parameters:
       - name: --api-key
         type: string
-        short-summary: name of the API key to fetch. Can be found using `api-keys show`.
+        short-summary: name of the API key to fetch. Can be found using `api-key show`.
     examples:
       - name: Fetch API Key.
         text: |
@@ -138,7 +150,7 @@ helps['monitor app-insights api-key delete'] = """
     parameters:
       - name: --api-key
         type: string
-        short-summary: Name of the API key to delete. Can be found using `api-keys show`.
+        short-summary: Name of the API key to delete. Can be found using `api-key show`.
     examples:
       - name: Delete API Key.
         text: |

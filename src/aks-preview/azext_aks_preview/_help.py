@@ -144,6 +144,7 @@ helps['aks create'] = """
                                             Learn more at aka.ms/aks/policy.
                 ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
+                open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -623,6 +624,19 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
+helps['aks nodepool get-upgrades'] = """
+type: command
+short-summary: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+examples:
+  - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+    text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+parameters:
+  - name: --nodepool-name
+    type: string
+    short-summary: name of the node pool.
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
@@ -640,6 +654,7 @@ long-summary: |-
         azure-policy              - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
+        open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -674,6 +689,9 @@ examples:
     crafted: true
   - name: Enable ingress-appgw addon with subnet prefix.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
+    crafted: true
+  - name: Enable open-service-mesh addon.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
     crafted: true
 """
 

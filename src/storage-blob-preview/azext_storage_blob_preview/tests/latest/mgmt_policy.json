@@ -1,0 +1,38 @@
+{
+    "rules": [
+        {
+            "enabled": true,
+            "name": "olcmtest",
+            "type": "Lifecycle",
+            "definition": {
+                "filters": {
+                    "blobTypes": [
+                        "blockBlob"
+                    ],
+                    "prefixMatch": [
+                        "olcmtestcontainer"
+                    ]
+                },
+                "actions": {
+                    "baseBlob": {
+                        "tierToCool": {
+                            "daysAfterLastAccessTimeGreaterThan": 30
+                        },
+                        "tierToArchive": {
+                            "daysAfterLastAccessTimeGreaterThan": 90
+                        },
+                        "delete": {
+                            "daysAfterLastAccessTimeGreaterThan": 1000
+                        },
+                        "enableAutoTierToHotFromCool": true
+                    },
+                    "snapshot": {
+                        "delete": {
+                            "daysAfterCreationGreaterThan": 30
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

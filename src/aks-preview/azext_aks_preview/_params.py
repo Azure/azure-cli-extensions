@@ -180,6 +180,7 @@ def load_arguments(self, _):
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
         c.argument('disable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)
