@@ -547,7 +547,9 @@ def _perform_onedeploy_internal(params):
 
 def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None, slot=None, branch='master', force=False):
     if not token:
-        token = get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"])
+        token = get_github_access_token()
+        if not token:
+            raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use the --token argument. Run 'az webapp deployment github-actions add --help' for more information.")
 
     # Verify resource group, app
     site_availability = get_site_availability(cmd, name)
@@ -663,11 +665,86 @@ def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None
                                    github_actions_secret_name=publish_profile_name, slot=slot)
 
     # Set site source control properties
-    logger.warning('Set site source control properties')
-    _set_site_source_control_properties(cmd=cmd, resource_group=resource_group, name=name, repo=repo, slot=slot)
+    _set_site_source_control_properties(cmd=cmd, resource_group=resource_group, name=name, repo=repo, branch=branch, slot=slot)
 
     github_actions_url = "https://github.com/{}/actions".format(repo)
     return github_actions_url
+
+
+def remove_github_actions(cmd, resource_group, name, repo, token=None, slot=None, branch='master'):
+    if not token:
+        token = get_github_access_token()
+        if not token:
+            raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use the --token argument. Run 'az webapp deployment github-actions add --help' for more information.")
+
+    # Verify resource group, app
+    site_availability = get_site_availability(cmd, name)
+    if site_availability.name_available or (not site_availability.name_available and site_availability.reason == 'Invalid'):
+        raise CLIError("The Resource 'Microsoft.Web/sites/{}' under resource group '{}' was not found.".format(name, resource_group))
+    app_details = get_app_details(cmd, name)
+    if app_details is None:
+        raise CLIError("Unable to retrieve details of the existing app {}. Please check that the app is a part of the current subscription".format(name))
+    current_rg = app_details.resource_group
+    if resource_group is not None and (resource_group.lower() != current_rg.lower()):
+        raise CLIError("The webapp {} exists in ResourceGroup {} and does not match the value entered {}. Please "
+                        "re-run command with the correct parameters.".format(name, current_rg, resource_group))
+
+    # Verify github repo
+    from github import Github, GithubException
+    from github.GithubException import BadCredentialsException, UnknownObjectException
+    import yaml
+
+    if repo.strip()[-1] == '/':
+        repo = repo.strip()[:-1]
+
+    g = Github(token)
+    github_repo = None
+    github_branch = None
+    try:
+        github_repo = g.get_repo(repo)
+        try:
+            github_branch = github_repo.get_branch(branch=branch)
+        except GithubException as e:
+            error_msg = "Encountered GitHub error when accessing {} branch in {} repo.".format(branch, repo)
+            if e.data and e.data['message']:
+                error_msg += " Error: {}".format(e.data['message'])
+            raise CLIError(error_msg)
+        logger.warning('Verified GitHub repo and branch')
+    except BadCredentialsException as e:
+        raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use the --token argument. Run 'az webapp deployment github-actions add --help' for more information.")
+    except GithubException as e:
+        error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
+        if e.data and e.data['message']:
+            error_msg += " Error: {}".format(e.data['message'])
+        raise CLIError(error_msg)
+
+    # Check if workflow exists in repo and remove
+    file_name = "{}_{}({}).yml".format(branch.replace('/', '-'), name.lower(), slot) if slot else "{}_{}.yml".format(branch.replace('/', '-'), name.lower())
+    dir_path = "{}/{}".format('.github', 'workflows')
+    file_path = "{}/{}".format(dir_path, file_name)
+    existing_publish_profile_name = None
+    try:
+        existing_workflow_file = github_repo.get_contents(path=file_path, ref=branch)
+        existing_publish_profile_name = _get_publish_profile_from_workflow_file(workflow_file=str(existing_workflow_file.decoded_content))
+        logger.warning("Removing the existing workflow file")
+        github_repo.delete_file(path=file_path, message="Removing workflow file, disconnecting github actions",
+                                sha=existing_workflow_file.sha, branch=branch)
+    except UnknownObjectException as e:
+        error_msg = "Error when removing workflow file."
+        if e.data and e.data['message']:
+            error_msg += " Error: {}".format(e.data['message'])
+        raise CLIError(error_msg)
+
+    # Remove publish profile from GitHub
+    if existing_publish_profile_name:
+        logger.warning('Removing publish profile from GitHub')
+        _remove_publish_profile_from_github(cmd=cmd, resource_group=resource_group, name=name, repo=repo, token=token,
+                                            github_actions_secret_name=existing_publish_profile_name, slot=slot)
+
+    # Remove site source control properties
+    _set_site_source_control_properties(cmd=cmd, resource_group=resource_group, name=name, repo=None, branch=None, slot=slot)
+
+    return "Disconnected successfully."
 
 
 def _get_publish_profile_from_workflow_file(workflow_file):
@@ -684,18 +761,29 @@ def _get_publish_profile_from_workflow_file(workflow_file):
     return None
 
 
-def _set_site_source_control_properties(cmd, resource_group, name, repo, slot):
-    repo_url = 'https://github.com/' + repo
+def _set_site_source_control_properties(cmd, resource_group, name, repo=None, branch="master", slot=None):
+    if repo:
+        repo_url = 'https://github.com/' + repo
+    else:
+        repo_url = None
+
     site_source_control = _generic_site_operation(cmd.cli_ctx, resource_group, name, 'get_source_control', slot)
     if not site_source_control:
-        site_source_control = SiteSourceControl(repo_url=repo_url)
+        site_source_control = SiteSourceControl(repo_url=repo_url, branch=branch)
     else:
+        site_source_control.branch = branch
         site_source_control.repo_url = repo_url
-    # TODO: Set is_github_action when new SDK is in
-    # TODO: Test create or update. If changing to new github repo works, then we can remove delete_source_control
+
+    # TODO calcha: Set is_github_action when new SDK is in and source control object has this property
+    # TODO calcha: Test create or update. If changing to new github repo works, then we can remove delete_source_control
     _generic_site_operation(cmd.cli_ctx, resource_group, name, 'delete_source_control', slot=slot)
-    _generic_site_operation(cmd.cli_ctx, resource_group, name, 'create_or_update_source_control',
-                            slot=slot, extra_parameter=site_source_control)
+
+    if repo and branch:
+        logger.warning('Set site source control properties')
+        _generic_site_operation(cmd.cli_ctx, resource_group, name, 'create_or_update_source_control',
+                                slot=slot, extra_parameter=site_source_control)
+    else:
+        logger.warning('Remove site source control properties')
 
 
 def _get_workflow_template(github, runtime_string, is_linux):
@@ -794,6 +882,15 @@ def _add_publish_profile_to_github(cmd, resource_group, name, repo, token, githu
     stored_secret = requests.put(store_secret_url, data=json.dumps(payload), headers=headers)
     if str(stored_secret.status_code)[0] != '2':
         raise CLIError('Unable to add publish profile to GitHub. Request status code: {}'.format(stored_secret.status_code))
+
+
+def _remove_publish_profile_from_github(cmd, resource_group, name, repo, token, github_actions_secret_name, slot=None):
+    headers = {}
+    headers['Authorization'] = 'Token {}'.format(token)
+
+    import json
+    store_secret_url = "https://api.github.com/repos/{}/actions/secrets/{}".format(repo, github_actions_secret_name)
+    requests.delete(store_secret_url, headers=headers)
 
 
 def _runtime_supports_github_actions(runtime_string, is_linux):
