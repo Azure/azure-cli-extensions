@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 from knack.help_files import helps
 
@@ -20,7 +21,6 @@ helps['cli-translator arm translate'] = """
     short-summary: Translate ARM template to CLI scripts
     examples:
         - name: Translate ARM template.json and parameters.json to CLI scripts
-          text: |
-            az cli-translator arm translate --target-subscription 00000000-0000-0000-0000-000000000000
-            --resource-group groupName --template armTemplatePath --parameters armParametersPath
+          text: |-
+            az cli-translator arm translate --target-subscription 00000000-0000-0000-0000-000000000000 --resource-group groupName --template armTemplatePath --parameters armParametersPath
 """
