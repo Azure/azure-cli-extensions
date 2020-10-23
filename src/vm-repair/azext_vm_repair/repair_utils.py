@@ -16,7 +16,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV
 # pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
@@ -65,6 +65,28 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
         return stdout
     return None
+
+def _invoke_nested(vm_name, rg_name):
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
+
+    # Build absoulte path of driver script
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, 'enable-nestedhyperv.ps1')
+    run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
+                '--scripts @"{run_script}" -o json' \
+                .format(rg=rg_name, vm=vm_name, command_id=RUN_COMMAND_RUN_PS_ID, run_script=run_script)
+    
+    return_str = _call_az_command(run_command)
+
+    # Extract stdout and stderr, if stderr exists then possible error
+    run_command_return = loads(return_str)
+    stdout = run_command_return['value'][0]['message']
+    stderr = run_command_return['value'][1]['message']
+    return stdout, stderr
 
 
 def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None, additional_custom_scripts=None):
@@ -177,28 +199,41 @@ def _fetch_compatible_sku(source_vm, hyperv):
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
 
+    if not (not source_vm_sku.endswith('v3') and hyperv):
     # First get the source_vm sku, if its available go with it
-    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
+        check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
 
-    logger.info('Checking if source VM size is available...')
-    sku_check = _call_az_command(check_sku_command).strip('\n')
+        logger.info('Checking if source VM size is available...')
+        sku_check = _call_az_command(check_sku_command).strip('\n')
 
-    if sku_check:
-        logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
-        return source_vm_sku
+        if sku_check:
+            logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
+            return source_vm_sku
 
-    logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
+        logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed
-    list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
+    if not hyperv:
+        list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
+                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+                        'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+                        'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+                        'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+                        'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+                        .format(loc=location)
+    
+    else:
+        list_sku_command = 'az vm list-skus -s _v3 -l {loc} --query ' \
                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
                        'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
                        'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
-                       'capabilities[?name==\'HyperVGenerations\' && value==\'V1\']].name" -o json'\
+                       'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
@@ -253,6 +288,15 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl, secreturl
     key_vault, kekurl, secreturl = key_vault[0], kekurl[0], secreturl[0]
     return Encryption.SINGLE_WITH_KEK, key_vault, kekurl, secreturl
+
+def _check_hyperV_gen(source_vm):
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
+                        .format(i=disk_id)
+    hyperVGen = loads(_call_az_command(show_disk_command))
+    
+    if hyperVGen == 'V2':
+        raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
