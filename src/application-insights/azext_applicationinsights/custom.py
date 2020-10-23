@@ -305,6 +305,8 @@ def update_export_configuration(cmd, client, application, resource_group_name, e
             dest_account = pre_config.storage_name
         if dest_container is None:
             dest_container = pre_config.container_name
+        if dest_type is None:
+            dest_type = 'Blob'
 
         sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
                                         subscription_id=dest_sub_id).storage_accounts

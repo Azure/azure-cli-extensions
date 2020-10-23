@@ -86,7 +86,8 @@ def load_arguments(self, _):
                    help='Name or ID of a linked storage account.')
 
     with self.argument_context('monitor app-insights component continues-export list') as c:
-        pass
+        c.argument('application', options_list=['--app', '-a'], id_part=None,
+                   help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
 
     with self.argument_context('monitor app-insights component continues-export create') as c:
         c.argument('record_types', nargs='+',
@@ -116,9 +117,9 @@ def load_arguments(self, _):
         c.argument('dest_container', help='The name of the destination storage container.')
         c.argument('dest_sas',
                    help='The SAS token for the destination storage container. It must grant write permission.')
-        c.argument('dest_type', arg_type=get_enum_type(['Blob'], default='Blob'),
+        c.argument('dest_type', arg_type=get_enum_type(['Blob']),
                    help='The Continuous Export destination type. This has to be \'Blob\'.')
-        c.argument('is_enabled', arg_type=get_enum_type(['true', 'false'], default='true'),
+        c.argument('is_enabled', arg_type=get_enum_type(['true', 'false']),
                    help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
 
     with self.argument_context('monitor app-insights component continues-export show') as c:

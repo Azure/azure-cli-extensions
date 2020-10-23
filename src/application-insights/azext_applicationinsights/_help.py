@@ -294,7 +294,7 @@ helps['monitor app-insights component continues-export list'] = """
     examples:
       - name: ExportConfigurationsList
         text: |
-            az monitor app-insights component continues-export list \\
+            az monitor app-insights component continues-export list -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633
 """
 
@@ -304,7 +304,7 @@ helps['monitor app-insights component continues-export create'] = """
     examples:
       - name: Create a Continuous Export configuration.
         text: |
-            az monitor app-insights component continues-export create \\
+            az monitor app-insights component continues-export create -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --record-types Requests Event Exceptions Metrics PageViews \\
             --dest-account account --dest-container container --dest-sub-id sub-id \\
@@ -317,13 +317,13 @@ helps['monitor app-insights component continues-export update'] = """
     examples:
       - name: Update a Continuous Export configuration record-types.
         text: |
-            az monitor app-insights component continues-export update \\
+            az monitor app-insights component continues-export update -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid \\
             --record-types Requests Event Exceptions Metrics PageViews
       - name: Update a Continuous Export configuration storage destination.
         text: |
-            az monitor app-insights component continues-export update \\
+            az monitor app-insights component continues-export update -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid \\
             --dest-account account --dest-container container --dest-sub-id sub-id \\
@@ -336,7 +336,7 @@ helps['monitor app-insights component continues-export show'] = """
     examples:
       - name: Get a Continuous Export configuration by ID.
         text: |
-            az monitor app-insights component continues-export show \\
+            az monitor app-insights component continues-export show -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid
 """
@@ -347,7 +347,7 @@ helps['monitor app-insights component continues-export delete'] = """
     examples:
       - name: Delete a Continuous Export configuration by ID.
         text: |
-            az monitor app-insights component continues-export delete \\
+            az monitor app-insights component continues-export delete -g rg \\
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid
 """
