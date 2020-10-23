@@ -15,7 +15,7 @@ az extension add --name cli-translator
 
 ```
 az cli-translator arm translate \
-    --subscription 00000000-0000-0000-0000-000000000000 \
+    --target-subscription 00000000-0000-0000-0000-000000000000 \
     --resource-group groupName \
     --template armTemplatePath \
     --parameters armParametersPath
