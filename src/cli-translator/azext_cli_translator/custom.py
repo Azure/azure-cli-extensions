@@ -5,21 +5,21 @@
 import os
 import json
 import requests
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
 ARM_TRANSLATOR_URL = 'https://portal2cli.azurewebsites.net/api/v1'
 
 
 def translate_arm(cmd, template_path, parameters_path, resource_group_name, target_subscription=None):
     if not os.path.exists(template_path) or not os.path.exists(parameters_path):
-        raise CLIError('--template or --parameters file not found')
+        raise InvalidArgumentValueError('--template or --parameters file not found')
 
     with open(template_path, 'r') as fp:
         template_content = fp.read()
     with open(parameters_path, 'r') as fp:
         parameters_content = fp.read()
     if not template_content or not parameters_content:
-        raise CLIError('--template or --parameters file is empty')
+        raise InvalidArgumentValueError('--template or --parameters file is empty')
 
     if target_subscription is None:
         from azure.cli.core.commands.client_factory import get_subscription_id
@@ -34,9 +34,11 @@ def translate_arm(cmd, template_path, parameters_path, resource_group_name, targ
                 'parameters': json.loads(parameters_content)
             })
         if response.status_code != 200:
-            raise CLIError('The service fail to translate ARM template to CLI scripts. \n{}'.format(response.text))
+            raise AzureInternalError(
+                'The service fail to translate ARM template to CLI scripts. \n{}'.format(response.text))
         scripts = response.json()
         for script in scripts:
             print('{}\n\n'.format(script))
     except Exception as e:
-        raise CLIError('Meet exception while call translate service, please try a few minutes later.\n' + str(e))
+        raise AzureInternalError(
+            'Meet exception while call translate service, please try a few minutes later.\n' + str(e))

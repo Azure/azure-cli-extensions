@@ -8,7 +8,7 @@ from knack.help_files import helps
 
 helps['cli-translator'] = """
     type: group
-    short-summary: Translate ARM template or REST api to CLI scripts
+    short-summary: Translate ARM template or REST API to CLI scripts
 """
 
 helps['cli-translator arm'] = """
@@ -22,5 +22,5 @@ helps['cli-translator arm translate'] = """
     examples:
         - name: Translate ARM template.json and parameters.json to CLI scripts
           text: |-
-            az cli-translator arm translate --target-subscription 00000000-0000-0000-0000-000000000000 --resource-group groupName --template armTemplatePath --parameters armParametersPath
+            az cli-translator arm translate --target-subscription 00000000-0000-0000-0000-000000000000 --resource-group groupName --template /path/to/local/template --parameters /path/to/local/parameters
 """
