@@ -253,7 +253,7 @@ def list_export_configurations(client, application, resource_group_name):
 
 
 def create_export_configuration(cmd, client, application, resource_group_name, record_types, dest_account,
-                                dest_container, dest_sas, dest_sub_id, dest_type=None, is_enabled=None):
+                                dest_container, dest_sas, dest_sub_id, dest_type=None, is_enabled='true'):
     from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
     sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
                                     subscription_id=dest_sub_id).storage_accounts

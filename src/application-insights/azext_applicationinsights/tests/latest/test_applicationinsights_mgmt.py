@@ -5,9 +5,17 @@
 
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
+from .recording_processors import StorageAccountSASReplacer
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
+
+    def __init__(self, method_name):
+        self.sas_replacer = StorageAccountSASReplacer()
+        super(ApplicationInsightsManagementClientTests, self).__init__(method_name, recording_processors=[
+            self.sas_replacer
+        ])
+
     """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component(self, resource_group, location):
@@ -212,22 +220,21 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('storage container create -n {container_name_b} --account-name {account_name_b}')
         self.kwargs['dest_sas_a'] = self.cmd('storage container generate-sas --account-name {account_name_a} --name {container_name_a} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.kwargs['dest_sas_b'] = self.cmd('storage container generate-sas --account-name {account_name_b} --name {container_name_b} --permissions w --expiry {expiry}').output.replace('"', '').strip()
+        self.sas_replacer.add_sas_token(self.kwargs['dest_sas_a'])
+        self.sas_replacer.add_sas_token(self.kwargs['dest_sas_b'])
         self.cmd('monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type} --retention-time {retention_time}').get_output_in_json()
         self.kwargs['export_id'] = self.cmd('monitor app-insights component continues-export create -g {resource_group} --app {name_a} --record-types {record_types_a} --dest-account {account_name_a} --dest-container {container_name_a} --dest-sub-id {dest_sub_id} --dest-sas {dest_sas_a}',
                                             checks=[
-                                                self.check('@[0].destinationStorageSubscriptionId', self.kwargs['dest_sub_id']),
                                                 self.check('@[0].storageName', self.kwargs['account_name_a']),
                                                 self.check('@[0].containerName', self.kwargs['container_name_a'])
                                             ]).get_output_in_json()[0]['exportId']
         self.cmd('monitor app-insights component continues-export show -g {resource_group} --app {name_a} --id {export_id}',
                  checks=[
-                     self.check('destinationStorageSubscriptionId', self.kwargs['dest_sub_id']),
                      self.check('storageName', self.kwargs['account_name_a']),
                      self.check('containerName', self.kwargs['container_name_a'])
                  ])
         self.cmd('monitor app-insights component continues-export update -g {resource_group} --app {name_a} --id {export_id} --record-types {record_types_b} --dest-account {account_name_b} --dest-container {container_name_b} --dest-sub-id {dest_sub_id} --dest-sas {dest_sas_b}',
                  checks=[
-                     self.check('destinationStorageSubscriptionId', self.kwargs['dest_sub_id']),
                      self.check('storageName', self.kwargs['account_name_b']),
                      self.check('containerName', self.kwargs['container_name_b'])
                  ])
@@ -235,7 +242,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                  checks=[
                      self.check('length(@)', 1)
                  ])
-        self.cmd('monitor app-insights component continues-export delete -g {resource_group} --app {name_a} --id {export_id}')
+        self.cmd('monitor app-insights component continues-export delete -y -g {resource_group} --app {name_a} --id {export_id}')
 
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component_with_linked_workspace(self, resource_group, location):

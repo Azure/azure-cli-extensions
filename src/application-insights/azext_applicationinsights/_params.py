@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long, too-many-statements
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
 from azure.cli.command_modules.monitor.actions import get_period_type
-from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id
+from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account
 
 
 def load_arguments(self, _):
@@ -86,41 +86,29 @@ def load_arguments(self, _):
                    help='Name or ID of a linked storage account.')
 
     with self.argument_context('monitor app-insights component continues-export list') as c:
-        c.argument('application', options_list=['--app', '-a'], id_part=None,
-                   help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
+        c.argument('application', id_part=None)
 
-    with self.argument_context('monitor app-insights component continues-export create') as c:
+    with self.argument_context('monitor app-insights component continues-export') as c:
         c.argument('record_types', nargs='+',
                    arg_type=get_enum_type(
                        ['Requests', 'Event', 'Exceptions', 'Metrics', 'PageViews', 'PageViewPerformance', 'Rdd',
                         'PerformanceCounters', 'Availability', 'Messages']),
                    help='The document types to be exported, as comma separated values. Allowed values include \'Requests\', \'Event\', \'Exceptions\', \'Metrics\', \'PageViews\', \'PageViewPerformance\', \'Rdd\', \'PerformanceCounters\', \'Availability\', \'Messages\'.')
-        c.argument('dest_sub_id', help='The subscription ID of the destination storage account.')
-        c.argument('dest_account', help='The name of destination storage account.')
-        c.argument('dest_container', help='The name of the destination storage container.')
-        c.argument('dest_sas', help='The SAS token for the destination storage container. It must grant write permission.')
-        c.argument('dest_type', arg_type=get_enum_type(['Blob'], default='Blob'),
+        c.argument('dest_sub_id', arg_group='Destination',
+                   help='The subscription ID of the destination storage account.')
+        c.argument('dest_account', validator=validate_dest_account, arg_group='Destination',
+                   help='The name of destination storage account.')
+        c.argument('dest_container', arg_group='Destination', help='The name of the destination storage container.')
+        c.argument('dest_sas', arg_group='Destination',
+                   help='The SAS token for the destination storage container. It must grant write permission.')
+        c.argument('dest_type', arg_group='Destination', arg_type=get_enum_type(['Blob'], default='Blob'),
                    help='The Continuous Export destination type. This has to be \'Blob\'.')
-        c.argument('is_enabled', arg_type=get_enum_type(['true', 'false'], default='true'),
+        c.argument('is_enabled', arg_type=get_three_state_flag(return_label=True),
                    help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
 
     with self.argument_context('monitor app-insights component continues-export update') as c:
         c.argument('export_id', options_list=['--id'],
                    help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
-        c.argument('record_types', nargs='+',
-                   arg_type=get_enum_type(
-                       ['Requests', 'Event', 'Exceptions', 'Metrics', 'PageViews', 'PageViewPerformance', 'Rdd',
-                        'PerformanceCounters', 'Availability', 'Messages']),
-                   help='The document types to be exported, as comma separated values. Allowed values include \'Requests\', \'Event\', \'Exceptions\', \'Metrics\', \'PageViews\', \'PageViewPerformance\', \'Rdd\', \'PerformanceCounters\', \'Availability\', \'Messages\'.')
-        c.argument('dest_sub_id', help='The subscription ID of the destination storage account.')
-        c.argument('dest_account', help='The name of destination storage account.')
-        c.argument('dest_container', help='The name of the destination storage container.')
-        c.argument('dest_sas',
-                   help='The SAS token for the destination storage container. It must grant write permission.')
-        c.argument('dest_type', arg_type=get_enum_type(['Blob']),
-                   help='The Continuous Export destination type. This has to be \'Blob\'.')
-        c.argument('is_enabled', arg_type=get_enum_type(['true', 'false']),
-                   help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
 
     with self.argument_context('monitor app-insights component continues-export show') as c:
         c.argument('export_id', options_list=['--id'],

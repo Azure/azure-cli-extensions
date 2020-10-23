@@ -8,6 +8,14 @@ from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id
 
 
+def validate_dest_account(namespace):
+    from msrestazure.tools import parse_resource_id
+    if is_valid_resource_id(namespace.dest_account):
+        parsed_storage = parse_resource_id(namespace.dest_account)
+        storage_name = parsed_storage['resource_name']
+        namespace.dest_account = storage_name
+
+
 def validate_applications(namespace):
     if namespace.resource_group_name:
         if isinstance(namespace.application, list):
