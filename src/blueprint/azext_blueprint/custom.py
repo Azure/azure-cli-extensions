@@ -520,7 +520,7 @@ def create_blueprint_assignment(cmd,
     if user_assigned_identity is not None:
         body.setdefault(
             'identity', {}
-        )['user_assigned_identities'] = {user_assigned_identity:{}} # dictionary
+        )['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
@@ -533,7 +533,7 @@ def create_blueprint_assignment(cmd,
     # Assign owner permission to Blueprint SPN only if assignment is being done using
     # system assigned identity.
     # This is a no-op for user assigned identity.
-    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+    if identity_type == ManagedServiceIdentityType.system_assigned.value:
         result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
         if result is None:
             raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
@@ -576,6 +576,10 @@ def update_blueprint_assignment(cmd,
         body['identity']['type'] = identity_type  # str
     if user_assigned_identity is not None:
         body['identity']['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
+    elif 'user_assigned_identities' in body['identity']:
+        for identity in body['identity']['user_assigned_identities']:
+            body['identity']['user_assigned_identities'][identity] = {}  # service only accept empty json of a user-assigned identity in request
+
     if display_name is not None:
         body['display_name'] = display_name  # str
     if description is not None:
@@ -594,7 +598,7 @@ def update_blueprint_assignment(cmd,
     # Assign owner permission to Blueprint SPN only if assignment is being done using
     # system assigned identity.
     # This is a no-op for user assigned identity.
-    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+    if identity_type == ManagedServiceIdentityType.system_assigned.value:
         result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
         if result is None:
             raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
