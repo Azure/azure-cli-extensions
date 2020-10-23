@@ -5,6 +5,7 @@
 
 import base64
 from knack.log import get_logger
+from knack.util import to_camel_case
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
@@ -143,3 +144,21 @@ def convert_to_camel_case(src):
         else:
             res += substring.capitalize()
     return res
+
+
+def transform_message_list_output(result):
+    for i, item in enumerate(result):
+        result[i] = transform_message_output(item)
+    return list(result)
+
+
+def transform_message_output(result):
+    result = dict(result)
+    from collections import OrderedDict
+    new_result = OrderedDict()
+    new_result['expirationTime'] = result.pop('expires_on', None)
+    new_result['insertionTime'] = result.pop('inserted_on', None)
+    new_result['timeNextVisible'] = result.pop('next_visible_on', None)
+    for key in sorted(result.keys()):
+        new_result[to_camel_case(key)] = result[key]
+    return new_result

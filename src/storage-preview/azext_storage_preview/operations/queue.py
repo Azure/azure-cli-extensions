@@ -57,3 +57,8 @@ def delete_queue(cmd, client, fail_not_exist=False, timeout=None, **kwargs):
         if not fail_not_exist:
             return _dont_fail_on_exist(ex, StorageErrorCode.queue_not_found)
         raise ex
+
+
+def receive_messages(client, **kwargs):
+    page_iter = client.receive_messages(**kwargs).by_page()
+    return list(next(page_iter))

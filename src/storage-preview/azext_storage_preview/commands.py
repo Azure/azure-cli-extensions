@@ -167,9 +167,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('queue', cf_queue_client,
                                                                CUSTOM_DATA_STORAGE_QUEUE),
                             resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
-        g.storage_command_oauth('put', 'send_message')
-        g.storage_command_oauth('get', 'receive_messages')
-        g.storage_command_oauth('peek', 'peek_messages')
-        g.storage_command_oauth('delete', 'delete_message')
+        from ._format import transform_message_show
+        from ._transformers import (transform_message_list_output, transform_message_output)
+        g.storage_command_oauth('put', 'send_message', transform=transform_message_output)
+        g.storage_custom_command_oauth('get', 'receive_messages', transform=transform_message_list_output,
+                                       table_transformer=transform_message_show)
+        g.storage_command_oauth('peek', 'peek_messages', transform=transform_message_list_output,
+                                table_transformer=transform_message_show)
+        g.storage_command_oauth('delete', 'delete_message',
+                                transform=create_boolean_result_output_transformer('deleted'),
+                                table_transformer=transform_boolean_for_table)
         g.storage_command_oauth('clear', 'clear_messages')
-        g.storage_command_oauth('update', 'update_message')
+        g.storage_command_oauth('update', 'update_message', transform=transform_message_output)
