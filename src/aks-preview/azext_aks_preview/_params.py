@@ -128,6 +128,8 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
+        c.argument('enable_managed_identity', action='store_true')
+        c.argument('assign_identity', type=str, validator=validate_assign_identity)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
