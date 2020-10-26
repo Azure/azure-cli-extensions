@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class OperationOperations(object):
-    """OperationOperations operations.
+class VirtualMachineImageOperations(object):
+    """VirtualMachineImageOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -45,19 +45,81 @@ class OperationOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list(
+    def get(
         self,
+        image_name,  # type: str
+        location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.AvailableOperations"]
-        """Gets a list of Swiftlet operations.
+        # type: (...) -> "models.VirtualMachineImage"
+        """Gets information about the virtual machine image.
 
+        :param image_name: The name of the virtual machine image.
+        :type image_name: str
+        :param location: The name of a supported Azure region.
+        :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either AvailableOperations or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.AvailableOperations]
+        :return: VirtualMachineImage, or the result of cls(response)
+        :rtype: ~swiftlet_management_client.models.VirtualMachineImage
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AvailableOperations"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineImage"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-03-01-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'imageName': self._serialize.url("image_name", image_name, 'str'),
+            'location': self._serialize.url("location", location, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('VirtualMachineImage', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/virtualMachineImages/{imageName}'}  # type: ignore
+
+    def list(
+        self,
+        location,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.VirtualMachineImageListResult"]
+        """List all Swiftlet VM images available for the specified subscription and Azure location.
+
+        :param location: The name of a supported Azure region.
+        :type location: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either VirtualMachineImageListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.VirtualMachineImageListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineImageListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -73,6 +135,11 @@ class OperationOperations(object):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'location': self._serialize.url("location", location, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -85,7 +152,7 @@ class OperationOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('AvailableOperations', pipeline_response)
+            deserialized = self._deserialize('VirtualMachineImageListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -106,4 +173,4 @@ class OperationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.Swiftlet/operations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/virtualMachineImages'}  # type: ignore

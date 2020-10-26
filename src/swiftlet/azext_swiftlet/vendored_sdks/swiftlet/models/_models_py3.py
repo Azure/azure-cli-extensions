@@ -11,6 +11,58 @@ from typing import Dict, List, Optional
 import msrest.serialization
 
 
+class AvailableOperations(msrest.serialization.Model):
+    """Available operations of the Microsoft.Swiftlet resource provider.
+
+    :param value: Collection of available operation details.
+    :type value: list[~swiftlet_management_client.models.OperationDetail]
+    :param next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[OperationDetail]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["OperationDetail"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(AvailableOperations, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class DiskSnapshot(msrest.serialization.Model):
+    """Describes a disk snapshot.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: The disk snapshot name.
+    :vartype name: str
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DiskSnapshot, self).__init__(**kwargs)
+        self.name = None
+
+
 class ErrorAdditionalInfo(msrest.serialization.Model):
     """The resource management error additional info.
 
@@ -86,6 +138,78 @@ class ErrorResponse(msrest.serialization.Model):
         self.additional_info = None
 
 
+class OperationDetail(msrest.serialization.Model):
+    """Operation detail payload.
+
+    :param name: Name of the operation.
+    :type name: str
+    :param is_data_action: Indicates whether the operation is a data action.
+    :type is_data_action: bool
+    :param display: Display of the operation.
+    :type display: ~swiftlet_management_client.models.OperationDisplay
+    :param origin: Origin of the operation.
+    :type origin: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
+        'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'origin': {'key': 'origin', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        is_data_action: Optional[bool] = None,
+        display: Optional["OperationDisplay"] = None,
+        origin: Optional[str] = None,
+        **kwargs
+    ):
+        super(OperationDetail, self).__init__(**kwargs)
+        self.name = name
+        self.is_data_action = is_data_action
+        self.display = display
+        self.origin = origin
+
+
+class OperationDisplay(msrest.serialization.Model):
+    """Operation display payload.
+
+    :param provider: Resource provider of the operation.
+    :type provider: str
+    :param resource: Resource of the operation.
+    :type resource: str
+    :param operation: Localized friendly name for the operation.
+    :type operation: str
+    :param description: Localized friendly description for the operation.
+    :type description: str
+    """
+
+    _attribute_map = {
+        'provider': {'key': 'provider', 'type': 'str'},
+        'resource': {'key': 'resource', 'type': 'str'},
+        'operation': {'key': 'operation', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        provider: Optional[str] = None,
+        resource: Optional[str] = None,
+        operation: Optional[str] = None,
+        description: Optional[str] = None,
+        **kwargs
+    ):
+        super(OperationDisplay, self).__init__(**kwargs)
+        self.provider = provider
+        self.resource = resource
+        self.operation = operation
+        self.description = description
+
+
 class Port(msrest.serialization.Model):
     """The port(s) to open.
 
@@ -152,255 +276,38 @@ class Resource(msrest.serialization.Model):
         self.type = None
 
 
-class SwiftletBundle(msrest.serialization.Model):
-    """Specifies information about the Swiftlet bundle to use.
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar swiftlet_bundle_sku: The ARM SKU name of the bundle.
-    :vartype swiftlet_bundle_sku: str
-    :ivar supported_image_platform: The OS image platforms that can be selected with this bundle.
-     Allowed values will be "windows" or "linux".
-    :vartype supported_image_platform: str
-    :ivar memory_size_gb: The amount of RAM in gigabytes (GB).
-    :vartype memory_size_gb: float
-    :ivar vcpus: The number of CPUs.
-    :vartype vcpus: int
-    :ivar os_disk_size_gb: The size of the OS disk in gigabytes (GB).
-    :vartype os_disk_size_gb: int
-    :ivar os_disk_storage_account_type: The storage account type for the OS disk.
-    :vartype os_disk_storage_account_type: str
-    :ivar transfer_tb: The amount of transfer bandwidth in terabytes (TB).
-    :vartype transfer_tb: int
-    """
-
-    _validation = {
-        'swiftlet_bundle_sku': {'readonly': True},
-        'supported_image_platform': {'readonly': True},
-        'memory_size_gb': {'readonly': True},
-        'vcpus': {'readonly': True},
-        'os_disk_size_gb': {'readonly': True},
-        'os_disk_storage_account_type': {'readonly': True},
-        'transfer_tb': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'swiftlet_bundle_sku': {'key': 'swiftletBundleSku', 'type': 'str'},
-        'supported_image_platform': {'key': 'supportedImagePlatform', 'type': 'str'},
-        'memory_size_gb': {'key': 'memorySizeGB', 'type': 'float'},
-        'vcpus': {'key': 'vcpus', 'type': 'int'},
-        'os_disk_size_gb': {'key': 'osDiskSizeGB', 'type': 'int'},
-        'os_disk_storage_account_type': {'key': 'osDiskStorageAccountType', 'type': 'str'},
-        'transfer_tb': {'key': 'transferTB', 'type': 'int'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(SwiftletBundle, self).__init__(**kwargs)
-        self.swiftlet_bundle_sku = None
-        self.supported_image_platform = None
-        self.memory_size_gb = None
-        self.vcpus = None
-        self.os_disk_size_gb = None
-        self.os_disk_storage_account_type = None
-        self.transfer_tb = None
-
-
-class SwiftletBundleListResult(msrest.serialization.Model):
-    """The list Swiftlet bundles response.
-
-    :param value: The list of Swiftlet bundles.
-    :type value: list[~swiftlet_management_client.models.SwiftletBundle]
-    :param next_link: The URI to fetch the next page of resources. Call ListNext() with this URI to
-     fetch the next page of resources.
-    :type next_link: str
-    """
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[SwiftletBundle]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        value: Optional[List["SwiftletBundle"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
-    ):
-        super(SwiftletBundleListResult, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
-
-
-class SwiftletImage(msrest.serialization.Model):
-    """Specifies information about the Swiftlet image to use.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar swiftlet_image_id: The image ID.
-    :vartype swiftlet_image_id: str
-    :ivar app_name: The app name if this is an "OS + Apps" image. Otherwise this will not be set.
-    :vartype app_name: str
-    :ivar app_version: The app version if this is an "OS + Apps" image. Otherwise this will not be
-     set.
-    :vartype app_version: str
-    :ivar platform: The OS platform. Allowed values will be "windows" or "linux".
-    :vartype platform: str
-    :ivar os_name: The OS name.
-    :vartype os_name: str
-    :ivar os_version: The OS version.
-    :vartype os_version: str
-    :ivar display_publisher: The publisher name.
-    :vartype display_publisher: str
-    :ivar summary: The image summary.
-    :vartype summary: str
-    :ivar legal_terms_uri: The legal terms URI.
-    :vartype legal_terms_uri: str
-    """
-
-    _validation = {
-        'swiftlet_image_id': {'readonly': True},
-        'app_name': {'readonly': True},
-        'app_version': {'readonly': True},
-        'platform': {'readonly': True},
-        'os_name': {'readonly': True},
-        'os_version': {'readonly': True},
-        'display_publisher': {'readonly': True},
-        'summary': {'readonly': True},
-        'legal_terms_uri': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'swiftlet_image_id': {'key': 'swiftletImageId', 'type': 'str'},
-        'app_name': {'key': 'appName', 'type': 'str'},
-        'app_version': {'key': 'appVersion', 'type': 'str'},
-        'platform': {'key': 'platform', 'type': 'str'},
-        'os_name': {'key': 'osName', 'type': 'str'},
-        'os_version': {'key': 'osVersion', 'type': 'str'},
-        'display_publisher': {'key': 'displayPublisher', 'type': 'str'},
-        'summary': {'key': 'summary', 'type': 'str'},
-        'legal_terms_uri': {'key': 'legalTermsUri', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(SwiftletImage, self).__init__(**kwargs)
-        self.swiftlet_image_id = None
-        self.app_name = None
-        self.app_version = None
-        self.platform = None
-        self.os_name = None
-        self.os_version = None
-        self.display_publisher = None
-        self.summary = None
-        self.legal_terms_uri = None
-
-
-class SwiftletImageListResult(msrest.serialization.Model):
-    """The list Swiftlet images response.
-
-    :param value: The list of Swiftlet images.
-    :type value: list[~swiftlet_management_client.models.SwiftletImage]
-    :param next_link: The URI to fetch the next page of resources. Call ListNext() with this URI to
-     fetch the next page of resources.
-    :type next_link: str
-    """
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[SwiftletImage]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        value: Optional[List["SwiftletImage"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
-    ):
-        super(SwiftletImageListResult, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
-
-
-class SwiftletOperationListResult(msrest.serialization.Model):
-    """The List Swiftlet Operation operation response.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar value: The list of Swiftlet operations.
-    :vartype value: list[~swiftlet_management_client.models.SwiftletOperationValue]
-    """
-
-    _validation = {
-        'value': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[SwiftletOperationValue]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(SwiftletOperationListResult, self).__init__(**kwargs)
-        self.value = None
-
-
-class SwiftletOperationValue(msrest.serialization.Model):
-    """Describes the properties of a Swiftlet Operation value.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar origin: The origin of the Swiftlet operation.
-    :vartype origin: str
-    :ivar name: The name of the Swiftlet operation.
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
     :vartype name: str
-    :ivar operation: The display name of the Swiftlet operation.
-    :vartype operation: str
-    :ivar resource: The display name of the resource the operation applies to.
-    :vartype resource: str
-    :ivar description: The description of the operation.
-    :vartype description: str
-    :ivar provider: The resource provider for the operation.
-    :vartype provider: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
     """
 
     _validation = {
-        'origin': {'readonly': True},
+        'id': {'readonly': True},
         'name': {'readonly': True},
-        'operation': {'readonly': True},
-        'resource': {'readonly': True},
-        'description': {'readonly': True},
-        'provider': {'readonly': True},
+        'type': {'readonly': True},
     }
 
     _attribute_map = {
-        'origin': {'key': 'origin', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'operation': {'key': 'display.operation', 'type': 'str'},
-        'resource': {'key': 'display.resource', 'type': 'str'},
-        'description': {'key': 'display.description', 'type': 'str'},
-        'provider': {'key': 'display.provider', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SwiftletOperationValue, self).__init__(**kwargs)
-        self.origin = None
-        self.name = None
-        self.operation = None
-        self.resource = None
-        self.description = None
-        self.provider = None
+        super(ProxyResource, self).__init__(**kwargs)
 
 
 class TrackedResource(Resource):
@@ -451,6 +358,38 @@ class TrackedResource(Resource):
         self.location = location
 
 
+class TrackedResourceCreateParameters(msrest.serialization.Model):
+    """The resource model definition for a ARM tracked top level resource.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    """
+
+    _validation = {
+        'location': {'required': True},
+    }
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(TrackedResourceCreateParameters, self).__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
 class UpdateResource(msrest.serialization.Model):
     """The Update Resource model definition.
 
@@ -491,38 +430,34 @@ class VirtualMachine(TrackedResource):
     :type tags: dict[str, str]
     :param location: Required. The geo-location where the resource lives.
     :type location: str
-    :param swiftlet_bundle_sku: Required. Specifies the Swiftlet bundle of this virtual machine
-     (which specifies the selected tier of memory, processing, and storage).
-    :type swiftlet_bundle_sku: str
-    :ivar swiftlet_bundle: The Swiftlet bundle.
-    :vartype swiftlet_bundle: ~swiftlet_management_client.models.SwiftletBundle
-    :param swiftlet_image_id: Required. The image ID to use. The image "platform" must match the
-     "supportedImagePlatform" of the specified swiftletBundleSku.
-    :type swiftlet_image_id: str
-    :ivar swiftlet_image: The Swiftlet image.
-    :vartype swiftlet_image: ~swiftlet_management_client.models.SwiftletImage
-    :param username: The username for connecting the the virtual machine.
-    :type username: str
-    :param ssh_public_key: The SSH public key used to connect to this virtual machine. Only
+    :ivar bundle_sku: Specifies the Swiftlet VM bundle of this virtual machine (which specifies the
+     selected tier of memory, processing, and storage).
+    :vartype bundle_sku: str
+    :ivar bundle: The Swiftlet VM bundle.
+    :vartype bundle: ~swiftlet_management_client.models.VirtualMachineBundleProperties
+    :ivar image_id: The image ID to use. The image "platform" must match the
+     "supportedImagePlatform" of the specified bundleSku.
+    :vartype image_id: str
+    :ivar snapshot_id: The ID of the VM snapshot from which this VM was created.
+    :vartype snapshot_id: str
+    :ivar image: The Swiftlet VM image.
+    :vartype image: ~swiftlet_management_client.models.VirtualMachineImageProperties
+    :ivar username: The username for connecting the the virtual machine.
+    :vartype username: str
+    :ivar ssh_public_key: The SSH public key used to connect to this virtual machine. Only
      supported on Linux images. If specified on a Windows image, an error will be returned.
-    :type ssh_public_key: str
-    :param password: The password for connecting to this Swiftlet. If the image platform type is
-     "linux", this is optional if sshPublicKey is set. If the image platform type is "windows", this
-     is required.
-    :type password: str
-    :param ports: The ports on which inbound traffic will be allowed.
-    :type ports: list[~swiftlet_management_client.models.Port]
-    :param startup_script: An inline script that will run upon startup of the virtual machine.
-    :type startup_script: str
+    :vartype ssh_public_key: str
+    :ivar ports: The ports on which inbound traffic will be allowed.
+    :vartype ports: list[~swiftlet_management_client.models.Port]
+    :ivar provisioning_state: The status of a user-initiated, control-plane operation on the
+     virtual machine.
+    :vartype provisioning_state: str
     :ivar public_ip_address: The public IP address of the virtual machine.
     :vartype public_ip_address: str
     :ivar public_i_pv6_address: The public IPv6 address of the virtual machine.
     :vartype public_i_pv6_address: str
     :ivar private_ip_address: The private IP address of the virtual machine.
     :vartype private_ip_address: str
-    :ivar provisioning_state: The status of a user-initiated, control-plane operation on the
-     virtual machine.
-    :vartype provisioning_state: str
     :ivar power_state: The last known state of the virtual machine.
     :vartype power_state: str
     """
@@ -532,14 +467,18 @@ class VirtualMachine(TrackedResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'location': {'required': True},
-        'swiftlet_bundle_sku': {'required': True},
-        'swiftlet_bundle': {'readonly': True},
-        'swiftlet_image_id': {'required': True},
-        'swiftlet_image': {'readonly': True},
+        'bundle_sku': {'readonly': True},
+        'bundle': {'readonly': True},
+        'image_id': {'readonly': True},
+        'snapshot_id': {'readonly': True},
+        'image': {'readonly': True},
+        'username': {'readonly': True},
+        'ssh_public_key': {'readonly': True},
+        'ports': {'readonly': True},
+        'provisioning_state': {'readonly': True},
         'public_ip_address': {'readonly': True},
         'public_i_pv6_address': {'readonly': True},
         'private_ip_address': {'readonly': True},
-        'provisioning_state': {'readonly': True},
         'power_state': {'readonly': True},
     }
 
@@ -549,19 +488,18 @@ class VirtualMachine(TrackedResource):
         'type': {'key': 'type', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
-        'swiftlet_bundle_sku': {'key': 'properties.swiftletBundleSku', 'type': 'str'},
-        'swiftlet_bundle': {'key': 'properties.swiftletBundle', 'type': 'SwiftletBundle'},
-        'swiftlet_image_id': {'key': 'properties.swiftletImageId', 'type': 'str'},
-        'swiftlet_image': {'key': 'properties.swiftletImage', 'type': 'SwiftletImage'},
+        'bundle_sku': {'key': 'properties.bundleSku', 'type': 'str'},
+        'bundle': {'key': 'properties.bundle', 'type': 'VirtualMachineBundleProperties'},
+        'image_id': {'key': 'properties.imageId', 'type': 'str'},
+        'snapshot_id': {'key': 'properties.snapshotId', 'type': 'str'},
+        'image': {'key': 'properties.image', 'type': 'VirtualMachineImageProperties'},
         'username': {'key': 'properties.username', 'type': 'str'},
         'ssh_public_key': {'key': 'properties.sshPublicKey', 'type': 'str'},
-        'password': {'key': 'properties.password', 'type': 'str'},
         'ports': {'key': 'properties.ports', 'type': '[Port]'},
-        'startup_script': {'key': 'properties.startupScript', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'public_ip_address': {'key': 'properties.publicIPAddress', 'type': 'str'},
         'public_i_pv6_address': {'key': 'properties.publicIPv6Address', 'type': 'str'},
         'private_ip_address': {'key': 'properties.privateIPAddress', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'power_state': {'key': 'properties.powerState', 'type': 'str'},
     }
 
@@ -569,31 +507,434 @@ class VirtualMachine(TrackedResource):
         self,
         *,
         location: str,
-        swiftlet_bundle_sku: str,
-        swiftlet_image_id: str,
         tags: Optional[Dict[str, str]] = None,
-        username: Optional[str] = None,
-        ssh_public_key: Optional[str] = None,
-        password: Optional[str] = None,
-        ports: Optional[List["Port"]] = None,
-        startup_script: Optional[str] = None,
         **kwargs
     ):
         super(VirtualMachine, self).__init__(tags=tags, location=location, **kwargs)
-        self.swiftlet_bundle_sku = swiftlet_bundle_sku
-        self.swiftlet_bundle = None
-        self.swiftlet_image_id = swiftlet_image_id
-        self.swiftlet_image = None
-        self.username = username
-        self.ssh_public_key = ssh_public_key
-        self.password = password
-        self.ports = ports
-        self.startup_script = startup_script
+        self.bundle_sku = None
+        self.bundle = None
+        self.image_id = None
+        self.snapshot_id = None
+        self.image = None
+        self.username = None
+        self.ssh_public_key = None
+        self.ports = None
+        self.provisioning_state = None
         self.public_ip_address = None
         self.public_i_pv6_address = None
         self.private_ip_address = None
-        self.provisioning_state = None
         self.power_state = None
+
+
+class VirtualMachineBundle(Resource):
+    """Specifies information about the Swiftlet VM bundle to use.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :ivar location: The supported Azure location of the resource.
+    :vartype location: str
+    :ivar bundle_sku: The ARM SKU name of the bundle.
+    :vartype bundle_sku: str
+    :ivar supported_image_platform: The OS image platforms that can be selected with this bundle.
+     Allowed values will be "windows" or "linux".
+    :vartype supported_image_platform: str
+    :ivar memory_size_gb: The amount of RAM in gigabytes (GB).
+    :vartype memory_size_gb: float
+    :ivar vcpus: The number of CPUs.
+    :vartype vcpus: int
+    :ivar os_disk_size_gb: The size of the OS disk in gigabytes (GB).
+    :vartype os_disk_size_gb: int
+    :ivar os_disk_storage_account_type: The storage account type for the OS disk.
+    :vartype os_disk_storage_account_type: str
+    :ivar transfer_tb: The amount of transfer bandwidth in terabytes (TB).
+    :vartype transfer_tb: int
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'readonly': True},
+        'bundle_sku': {'readonly': True},
+        'supported_image_platform': {'readonly': True},
+        'memory_size_gb': {'readonly': True},
+        'vcpus': {'readonly': True},
+        'os_disk_size_gb': {'readonly': True},
+        'os_disk_storage_account_type': {'readonly': True},
+        'transfer_tb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'bundle_sku': {'key': 'properties.bundleSku', 'type': 'str'},
+        'supported_image_platform': {'key': 'properties.supportedImagePlatform', 'type': 'str'},
+        'memory_size_gb': {'key': 'properties.memorySizeGB', 'type': 'float'},
+        'vcpus': {'key': 'properties.vcpus', 'type': 'int'},
+        'os_disk_size_gb': {'key': 'properties.osDiskSizeGB', 'type': 'int'},
+        'os_disk_storage_account_type': {'key': 'properties.osDiskStorageAccountType', 'type': 'str'},
+        'transfer_tb': {'key': 'properties.transferTB', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(VirtualMachineBundle, self).__init__(**kwargs)
+        self.location = None
+        self.bundle_sku = None
+        self.supported_image_platform = None
+        self.memory_size_gb = None
+        self.vcpus = None
+        self.os_disk_size_gb = None
+        self.os_disk_storage_account_type = None
+        self.transfer_tb = None
+
+
+class VirtualMachineBundleListResult(msrest.serialization.Model):
+    """The list Swiftlet VM bundles response.
+
+    :param value: The list of Swiftlet VM bundles.
+    :type value: list[~swiftlet_management_client.models.VirtualMachineBundle]
+    :param next_link: The URI to fetch the next page of resources. Call ListNext() with this URI to
+     fetch the next page of resources.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[VirtualMachineBundle]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["VirtualMachineBundle"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(VirtualMachineBundleListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class VirtualMachineBundleProperties(msrest.serialization.Model):
+    """Describes the properties of a virtual machine bundle.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar bundle_sku: The ARM SKU name of the bundle.
+    :vartype bundle_sku: str
+    :ivar supported_image_platform: The OS image platforms that can be selected with this bundle.
+     Allowed values will be "windows" or "linux".
+    :vartype supported_image_platform: str
+    :ivar memory_size_gb: The amount of RAM in gigabytes (GB).
+    :vartype memory_size_gb: float
+    :ivar vcpus: The number of CPUs.
+    :vartype vcpus: int
+    :ivar os_disk_size_gb: The size of the OS disk in gigabytes (GB).
+    :vartype os_disk_size_gb: int
+    :ivar os_disk_storage_account_type: The storage account type for the OS disk.
+    :vartype os_disk_storage_account_type: str
+    :ivar transfer_tb: The amount of transfer bandwidth in terabytes (TB).
+    :vartype transfer_tb: int
+    """
+
+    _validation = {
+        'bundle_sku': {'readonly': True},
+        'supported_image_platform': {'readonly': True},
+        'memory_size_gb': {'readonly': True},
+        'vcpus': {'readonly': True},
+        'os_disk_size_gb': {'readonly': True},
+        'os_disk_storage_account_type': {'readonly': True},
+        'transfer_tb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'bundle_sku': {'key': 'bundleSku', 'type': 'str'},
+        'supported_image_platform': {'key': 'supportedImagePlatform', 'type': 'str'},
+        'memory_size_gb': {'key': 'memorySizeGB', 'type': 'float'},
+        'vcpus': {'key': 'vcpus', 'type': 'int'},
+        'os_disk_size_gb': {'key': 'osDiskSizeGB', 'type': 'int'},
+        'os_disk_storage_account_type': {'key': 'osDiskStorageAccountType', 'type': 'str'},
+        'transfer_tb': {'key': 'transferTB', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(VirtualMachineBundleProperties, self).__init__(**kwargs)
+        self.bundle_sku = None
+        self.supported_image_platform = None
+        self.memory_size_gb = None
+        self.vcpus = None
+        self.os_disk_size_gb = None
+        self.os_disk_storage_account_type = None
+        self.transfer_tb = None
+
+
+class VirtualMachineCreateParameters(TrackedResourceCreateParameters):
+    """Describes the parameters used to create the virtual machine.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    :param bundle_sku: Specifies the Swiftlet VM bundle of this virtual machine (which specifies
+     the selected tier of memory, processing, and storage).
+    :type bundle_sku: str
+    :param image_id: The image ID to use. The image "platform" must match the
+     "supportedImagePlatform" of the specified bundleSku.
+    :type image_id: str
+    :param snapshot_id: The ID of the VM snapshot from which this VM was created.
+    :type snapshot_id: str
+    :param username: The username for connecting the the virtual machine.
+    :type username: str
+    :param ssh_public_key: The SSH public key used to connect to this virtual machine. Only
+     supported on Linux images. If specified on a Windows image, an error will be returned.
+    :type ssh_public_key: str
+    :param ports: The ports on which inbound traffic will be allowed.
+    :type ports: list[~swiftlet_management_client.models.Port]
+    :param password: The password for connecting to this Swiftlet. If the image platform type is
+     "linux", this is optional if sshPublicKey is set. If the image platform type is "windows", this
+     is required.
+    :type password: str
+    :param startup_script: An inline script that will run upon startup of the virtual machine.
+    :type startup_script: str
+    """
+
+    _validation = {
+        'location': {'required': True},
+    }
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'bundle_sku': {'key': 'properties.bundleSku', 'type': 'str'},
+        'image_id': {'key': 'properties.imageId', 'type': 'str'},
+        'snapshot_id': {'key': 'properties.snapshotId', 'type': 'str'},
+        'username': {'key': 'properties.username', 'type': 'str'},
+        'ssh_public_key': {'key': 'properties.sshPublicKey', 'type': 'str'},
+        'ports': {'key': 'properties.ports', 'type': '[Port]'},
+        'password': {'key': 'properties.password', 'type': 'str'},
+        'startup_script': {'key': 'properties.startupScript', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        bundle_sku: Optional[str] = None,
+        image_id: Optional[str] = None,
+        snapshot_id: Optional[str] = None,
+        username: Optional[str] = None,
+        ssh_public_key: Optional[str] = None,
+        ports: Optional[List["Port"]] = None,
+        password: Optional[str] = None,
+        startup_script: Optional[str] = None,
+        **kwargs
+    ):
+        super(VirtualMachineCreateParameters, self).__init__(tags=tags, location=location, **kwargs)
+        self.bundle_sku = bundle_sku
+        self.image_id = image_id
+        self.snapshot_id = snapshot_id
+        self.username = username
+        self.ssh_public_key = ssh_public_key
+        self.ports = ports
+        self.password = password
+        self.startup_script = startup_script
+
+
+class VirtualMachineImage(Resource):
+    """Specifies information about the Swiftlet VM image to use.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :ivar location: The supported Azure location of the resource.
+    :vartype location: str
+    :ivar image_id: The VM image ID.
+    :vartype image_id: str
+    :ivar display_name: The VM image name.
+    :vartype display_name: str
+    :ivar display_publisher: The VM image publisher name.
+    :vartype display_publisher: str
+    :ivar summary: The VM image summary.
+    :vartype summary: str
+    :ivar is_os_only: A value indicating whether the VM image is OS only. If false, the image
+     contains an app as well.
+    :vartype is_os_only: bool
+    :ivar platform: The OS platform. Allowed values will be "windows" or "linux".
+    :vartype platform: str
+    :ivar os_name: The OS name.
+    :vartype os_name: str
+    :ivar os_version: The OS version.
+    :vartype os_version: str
+    :ivar legal_terms_uri: The legal terms URI.
+    :vartype legal_terms_uri: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'readonly': True},
+        'image_id': {'readonly': True},
+        'display_name': {'readonly': True},
+        'display_publisher': {'readonly': True},
+        'summary': {'readonly': True},
+        'is_os_only': {'readonly': True},
+        'platform': {'readonly': True},
+        'os_name': {'readonly': True},
+        'os_version': {'readonly': True},
+        'legal_terms_uri': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'image_id': {'key': 'properties.imageId', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'display_publisher': {'key': 'properties.displayPublisher', 'type': 'str'},
+        'summary': {'key': 'properties.summary', 'type': 'str'},
+        'is_os_only': {'key': 'properties.isOsOnly', 'type': 'bool'},
+        'platform': {'key': 'properties.platform', 'type': 'str'},
+        'os_name': {'key': 'properties.osName', 'type': 'str'},
+        'os_version': {'key': 'properties.osVersion', 'type': 'str'},
+        'legal_terms_uri': {'key': 'properties.legalTermsUri', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(VirtualMachineImage, self).__init__(**kwargs)
+        self.location = None
+        self.image_id = None
+        self.display_name = None
+        self.display_publisher = None
+        self.summary = None
+        self.is_os_only = None
+        self.platform = None
+        self.os_name = None
+        self.os_version = None
+        self.legal_terms_uri = None
+
+
+class VirtualMachineImageListResult(msrest.serialization.Model):
+    """The list Swiftlet VM images response.
+
+    :param value: The list of Swiftlet VM images.
+    :type value: list[~swiftlet_management_client.models.VirtualMachineImage]
+    :param next_link: The URI to fetch the next page of resources. Call ListNext() with this URI to
+     fetch the next page of resources.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[VirtualMachineImage]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["VirtualMachineImage"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(VirtualMachineImageListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class VirtualMachineImageProperties(msrest.serialization.Model):
+    """Describes the properties of a virtual machine image.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar image_id: The VM image ID.
+    :vartype image_id: str
+    :ivar display_name: The VM image name.
+    :vartype display_name: str
+    :ivar display_publisher: The VM image publisher name.
+    :vartype display_publisher: str
+    :ivar summary: The VM image summary.
+    :vartype summary: str
+    :ivar is_os_only: A value indicating whether the VM image is OS only. If false, the image
+     contains an app as well.
+    :vartype is_os_only: bool
+    :ivar platform: The OS platform. Allowed values will be "windows" or "linux".
+    :vartype platform: str
+    :ivar os_name: The OS name.
+    :vartype os_name: str
+    :ivar os_version: The OS version.
+    :vartype os_version: str
+    :ivar legal_terms_uri: The legal terms URI.
+    :vartype legal_terms_uri: str
+    """
+
+    _validation = {
+        'image_id': {'readonly': True},
+        'display_name': {'readonly': True},
+        'display_publisher': {'readonly': True},
+        'summary': {'readonly': True},
+        'is_os_only': {'readonly': True},
+        'platform': {'readonly': True},
+        'os_name': {'readonly': True},
+        'os_version': {'readonly': True},
+        'legal_terms_uri': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'image_id': {'key': 'imageId', 'type': 'str'},
+        'display_name': {'key': 'displayName', 'type': 'str'},
+        'display_publisher': {'key': 'displayPublisher', 'type': 'str'},
+        'summary': {'key': 'summary', 'type': 'str'},
+        'is_os_only': {'key': 'isOsOnly', 'type': 'bool'},
+        'platform': {'key': 'platform', 'type': 'str'},
+        'os_name': {'key': 'osName', 'type': 'str'},
+        'os_version': {'key': 'osVersion', 'type': 'str'},
+        'legal_terms_uri': {'key': 'legalTermsUri', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(VirtualMachineImageProperties, self).__init__(**kwargs)
+        self.image_id = None
+        self.display_name = None
+        self.display_publisher = None
+        self.summary = None
+        self.is_os_only = None
+        self.platform = None
+        self.os_name = None
+        self.os_version = None
+        self.legal_terms_uri = None
 
 
 class VirtualMachineListResult(msrest.serialization.Model):
@@ -623,12 +964,172 @@ class VirtualMachineListResult(msrest.serialization.Model):
         self.next_link = next_link
 
 
+class VirtualMachineSnapshot(TrackedResource):
+    """Describes a virtual machine snapshot.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    :ivar virtual_machine_id: The ID of the VM that this snapshot represents.
+    :vartype virtual_machine_id: str
+    :ivar when_created: The timestamp that this snapshot was taken.
+    :vartype when_created: ~datetime.datetime
+    :ivar bundle: The Swiftlet VM bundle.
+    :vartype bundle: ~swiftlet_management_client.models.VirtualMachineBundleProperties
+    :ivar disk_snapshots: The list of disk snapshots.
+    :vartype disk_snapshots: list[~swiftlet_management_client.models.DiskSnapshot]
+    :ivar ports: The ports on which inbound traffic will be allowed.
+    :vartype ports: list[~swiftlet_management_client.models.Port]
+    :ivar provisioning_state: The status of a user-initiated, control-plane operation on the
+     virtual machine snapshot.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'required': True},
+        'virtual_machine_id': {'readonly': True},
+        'when_created': {'readonly': True},
+        'bundle': {'readonly': True},
+        'disk_snapshots': {'readonly': True},
+        'ports': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'virtual_machine_id': {'key': 'properties.virtualMachineId', 'type': 'str'},
+        'when_created': {'key': 'properties.whenCreated', 'type': 'iso-8601'},
+        'bundle': {'key': 'properties.bundle', 'type': 'VirtualMachineBundleProperties'},
+        'disk_snapshots': {'key': 'properties.diskSnapshots', 'type': '[DiskSnapshot]'},
+        'ports': {'key': 'properties.ports', 'type': '[Port]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(VirtualMachineSnapshot, self).__init__(tags=tags, location=location, **kwargs)
+        self.virtual_machine_id = None
+        self.when_created = None
+        self.bundle = None
+        self.disk_snapshots = None
+        self.ports = None
+        self.provisioning_state = None
+
+
+class VirtualMachineSnapshotCreateParameters(TrackedResourceCreateParameters):
+    """Describes the parameters used to create the virtual machine snapshot.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    :param virtual_machine_id: Required. The ID of the VM from which to create this snapshot.
+    :type virtual_machine_id: str
+    """
+
+    _validation = {
+        'location': {'required': True},
+        'virtual_machine_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'virtual_machine_id': {'key': 'properties.virtualMachineId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        virtual_machine_id: str,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(VirtualMachineSnapshotCreateParameters, self).__init__(tags=tags, location=location, **kwargs)
+        self.virtual_machine_id = virtual_machine_id
+
+
+class VirtualMachineSnapshotListResult(msrest.serialization.Model):
+    """The list virtual machine snapshot response.
+
+    :param value: The list of virtual machine snapshots.
+    :type value: list[~swiftlet_management_client.models.VirtualMachineSnapshot]
+    :param next_link: The URI to fetch the next page of resources. Call ListNext() with this URI to
+     fetch the next page of resources.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[VirtualMachineSnapshot]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["VirtualMachineSnapshot"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(VirtualMachineSnapshotListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class VirtualMachineSnapshotUpdate(UpdateResource):
+    """The request body for the Update Virtual Machine Snapshot operation.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(VirtualMachineSnapshotUpdate, self).__init__(tags=tags, **kwargs)
+
+
 class VirtualMachineUpdate(UpdateResource):
     """The request body for the Update Virtual Machine operation.
 
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
-    :param ports: Specifies the list of ports to be opened.
+    :param ports: The ports on which inbound traffic will be allowed.
     :type ports: list[~swiftlet_management_client.models.Port]
     """
 
