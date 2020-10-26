@@ -1,0 +1,126 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet virtual-machine-bundle list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"Linux_7","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_7","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_7","supportedImagePlatform":"Linux","memorySizeGB":32.0,"vcpus":8,"osDiskSizeGB":1024,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":7}},{"name":"Linux_6","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_6","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_6","supportedImagePlatform":"Linux","memorySizeGB":16.0,"vcpus":4,"osDiskSizeGB":512,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":6}},{"name":"Linux_5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_5","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_5","supportedImagePlatform":"Linux","memorySizeGB":8.0,"vcpus":2,"osDiskSizeGB":256,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":5}},{"name":"Linux_4","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_4","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_4","supportedImagePlatform":"Linux","memorySizeGB":4.0,"vcpus":2,"osDiskSizeGB":128,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":4}},{"name":"Linux_3","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_3","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_3","supportedImagePlatform":"Linux","memorySizeGB":2.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":3}},{"name":"Linux_2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_2","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_2","supportedImagePlatform":"Linux","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":2}},{"name":"Linux_1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Linux_1","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Linux_1","supportedImagePlatform":"Linux","memorySizeGB":0.5,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1}},{"name":"Windows_1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_1","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_1","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":32,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":1}},{"name":"Windows_2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_2","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_2","supportedImagePlatform":"Windows","memorySizeGB":1.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":2}},{"name":"Windows_3","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_3","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_3","supportedImagePlatform":"Windows","memorySizeGB":2.0,"vcpus":1,"osDiskSizeGB":64,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":3}},{"name":"Windows_4","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_4","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_4","supportedImagePlatform":"Windows","memorySizeGB":4.0,"vcpus":2,"osDiskSizeGB":128,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":4}},{"name":"Windows_5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_5","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_5","supportedImagePlatform":"Windows","memorySizeGB":8.0,"vcpus":2,"osDiskSizeGB":256,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":5}},{"name":"Windows_6","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_6","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_6","supportedImagePlatform":"Windows","memorySizeGB":16.0,"vcpus":4,"osDiskSizeGB":512,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":6}},{"name":"Windows_7","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineBundles/Windows_7","type":"Microsoft.Swiftlet/virtualMachineBundles","location":"centraluseuap","properties":{"bundleSku":"Windows_7","supportedImagePlatform":"Windows","memorySizeGB":32.0,"vcpus":8,"osDiskSizeGB":1024,"osDiskStorageAccountType":"StandardSSD_LRS","transferTB":7}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5891'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2020 07:03:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - swiftlet virtual-machine-image list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-swiftletmanagementclient/unknown Python/3.7.4
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"mongodb-4.2.6-0-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/mongodb-4.2.6-0-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"mongodb-4.2.6-0-debian-9-bitnami","appName":"MongoDB","appVersion":"4.2.6-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MongoDB
+        4.2.6-0 (Debian 9)","legalTermsUri":"https://catalogartifact.azureedge.net/publicartifacts/bitnami.mongodb-608c99aa-467a-44fa-9095-500c2487dec9/termsOfUse.html"}},{"name":"windows-2016-datacenter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/windows-2016-datacenter","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"windows-2016-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2016","displayPublisher":"Microsoft","summary":"A comprehensive
+        server operating system designed to run the applications and infrastructure
+        that power your business.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"}},{"name":"gitlab-ce-12.10.2-0-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/gitlab-ce-12.10.2-0-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"gitlab-ce-12.10.2-0-ubuntu-16.04-bitnami","appName":"GitLab
+        CE","appVersion":"12.10.2-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"GitLab CE 12.10.2-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4w7Md"}},{"name":"windows-2019-datacenter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/windows-2019-datacenter","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"windows-2019-datacenter","platform":"Windows","osName":"Windows
+        Server","osVersion":"2019","displayPublisher":"Microsoft","summary":"Windows
+        Server 2019 helps you modernize your applications and infrastructure, adds
+        additional layers of security and bridges on-premises and Azure.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Microsoft.smalldiskWindowsServer2008R2SP1.1.0.124/Content/LegalTerms0.DEFAULT.txt"}},{"name":"nodejs-12.16.3-4-r01-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/nodejs-12.16.3-4-r01-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"nodejs-12.16.3-4-r01-debian-9-bitnami","appName":"Node.js","appVersion":"12.16.3-4-r01","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Node.js
+        12.16.3-4-r01 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wvf4"}},{"name":"wordpress-5.4.1-0-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/wordpress-5.4.1-0-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"wordpress-5.4.1-0-ubuntu-16.04-bitnami","appName":"Wordpress","appVersion":"5.4.1-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"WordPress 5.4.1-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4vRXb"}},{"name":"ubuntu-18.04-lts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/ubuntu-18.04-lts","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"ubuntu-18.04-lts","platform":"Linux","osName":"Ubuntu","osVersion":"18.04
+        LTS","displayPublisher":"Canonical","summary":"Ubuntu Server delivers high
+        value scale-out performance.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/Canonical.UbuntuServer1804LTS.1.0.30/Content/LegalTerms0.DEFAULT.txt"}},{"name":"mysql-8.0.20-0-r01-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/mysql-8.0.20-0-r01-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"mysql-8.0.20-0-r01-debian-9-bitnami","appName":"MySQL","appVersion":"8.0.20-0-r01","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MySQL
+        8.0.20-0-r01 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wo08"}},{"name":"redis-6.0.3-0-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/redis-6.0.3-0-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"redis-6.0.3-0-debian-9-bitnami","appName":"Redis","appVersion":"6.0.3-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Redis
+        6.0.3-0 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wyEN"}},{"name":"mean-4.2.6-14-r03-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/mean-4.2.6-14-r03-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"mean-4.2.6-14-r03-debian-9-bitnami","appName":"MEAN","appVersion":"4.2.6-14-r03","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"MEAN
+        4.2.6-14-r03 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wAow"}},{"name":"debian-10-stable","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/debian-10-stable","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"debian-10-stable","platform":"Linux","osName":"Debian","osVersion":"10","displayPublisher":"Debian","summary":"Debian:
+        The universal operating system","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/debian.debian-1010.1.0.11/Content/LegalTerms0.DEFAULT.txt"}},{"name":"ubuntu-20.04-lts","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/ubuntu-20.04-lts","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"ubuntu-20.04-lts","platform":"Linux","osName":"Ubuntu","osVersion":"20.04
+        LTS","displayPublisher":"Canonical","summary":"Ubuntu Server delivers high
+        value scale-out performance.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/canonical.0001-com-ubuntu-server-focal20_04-lts.1.0.2/Content/LegalTerms0.DEFAULT.txt"}},{"name":"lamp-7.3.18-0-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/lamp-7.3.18-0-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"lamp-7.3.18-0-ubuntu-16.04-bitnami","appName":"LAMP","appVersion":"7.3.18-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"LAMP 7.3.18-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wBa2"}},{"name":"jenkins-2.204.4-0-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/jenkins-2.204.4-0-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"jenkins-2.204.4-0-debian-9-bitnami","appName":"Jenkins","appVersion":"2.204.4-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"Jenkins
+        2.204.4-0 (Debian 9)","legalTermsUri":"https://catalogartifact.azureedge.net/publicartifacts/bitnami.jenkins-a26eec93-bf72-4929-8994-20b345626165/termsOfUse.html"}},{"name":"nginx-open-source-1.18.0-1-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/nginx-open-source-1.18.0-1-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"nginx-open-source-1.18.0-1-ubuntu-16.04-bitnami","appName":"NGINX
+        Open Source","appVersion":"1.18.0-1","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"NGINX Open Source 1.18.0-2 (Ubuntu
+        16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wHBC"}},{"name":"ruby-2.5.8-2-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/ruby-2.5.8-2-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"ruby-2.5.8-2-ubuntu-16.04-bitnami","appName":"Ruby","appVersion":"2.5.8-2","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"Ruby 2.5.8-2 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4woWG"}},{"name":"ghost-3.16.0-0-ubuntu-16.04-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/ghost-3.16.0-0-ubuntu-16.04-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"ghost-3.16.0-0-ubuntu-16.04-bitnami","appName":"Ghost","appVersion":"3.16.0-0","platform":"Linux","osName":"Ubuntu","osVersion":"16.04
+        LTS","displayPublisher":"Bitnami","summary":"Ghost 3.16.0-0 (Ubuntu 16.04)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4wHLN"}},{"name":"postgresql-12.3.0-0-debian-9-bitnami","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/postgresql-12.3.0-0-debian-9-bitnami","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"postgresql-12.3.0-0-debian-9-bitnami","appName":"PostgreSQL","appVersion":"12.3.0-0","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Bitnami","summary":"PostgreSQL
+        12.3.0-0 (Debian 9)","legalTermsUri":"https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4woW7"}},{"name":"debian-9-stable","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Swiftlet/locations/centraluseuap/virtualMachineImages/debian-9-stable","type":"Microsoft.Swiftlet/virtualMachineImages","location":"centraluseuap","properties":{"imageId":"debian-9-stable","platform":"Linux","osName":"Debian","osVersion":"9","displayPublisher":"Debian","summary":"Debian
+        GNU/Linux is one of the most popular Linux distributions.","legalTermsUri":"https://106c4.wpc.azureedge.net/80106C4/Gallery-Prod/cdn/2015-02-24/prod20161101-microsoft-windowsazure-gallery/credativ.Debian8.1.0.27/Content/LegalTerms0.DEFAULT.txt"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2020 07:03:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

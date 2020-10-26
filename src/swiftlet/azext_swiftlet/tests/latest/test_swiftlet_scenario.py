@@ -8,50 +8,68 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+import time
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
 
 class SwiftletScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitest_swiftlet', random_name_length=25)
-    def test_swiftlet_create(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='clitest_swiftlet_vm', random_name_length=25)
+    def test_swiftlet_vm(self, resource_group):
         self.kwargs.update({
-            'vm': 'vm'
+            'vm': 'vm',
+            'vm2': 'vm2',
+            's1': 's1'
         })
-        self.cmd('swiftlet vm create '
-                 '--location "centraluseuap" '
-                 '--password "testPassword0" '
-                 '--ports port-range="3389" protocol="*" '
-                 '--swiftlet-bundle-sku "Windows_1" '
-                 '--swiftlet-image-id "windows-2019-datacenter" '
-                 '--username "SwiftletUser" '
-                 '--tags key1="value1" key2="value2" '
-                 '--resource-group {rg} '
-                 '--name {vm}',
-                 checks=[])
-        self.cmd('swiftlet vm list -g {rg}', checks=[
-            self.check('length(@)', 1),
+        vm_id = self.cmd('swiftlet virtual-machine create '
+                         '--location "centraluseuap" '
+                         '--password "testPassword0" '
+                         '--ports port-range="3389" protocol="*" '
+                         '--bundle-sku "Windows_1" '
+                         '--image-id "windows-2019-datacenter" '
+                         '--username "SwiftletUser" '
+                         '--tags key1="value1" key2="value2" '
+                         '--resource-group {rg} '
+                         '--vm-name {vm}').get_output_in_json()['id']
+        self.kwargs.update({
+            'vm_id': vm_id
+        })
+        self.cmd('swiftlet virtual-machine list -g {rg}', checks=[
+            self.check('length(@)', 1)
         ])
-        self.cmd('swiftlet vm show -g {rg} -n {vm}', checks=[
+        self.cmd('swiftlet virtual-machine show -g {rg} --vm-name {vm}', checks=[
             self.check('name', '{vm}'),
             self.check('tags.key1', 'value1'),
             self.check('tags.key2', 'value2')
         ])
-        self.cmd('swiftlet vm update -g {rg} -n {vm} --ports port-range=80 protocol=TCP --tags key3=value3', checks=[
+        self.cmd('swiftlet virtual-machine update -g {rg} --vm-name {vm} --ports port-range=80 protocol=TCP --tags key3=value3', checks=[
             self.check('ports[0].portRange', '80'),
             self.check('ports[0].protocol', 'TCP', False),
             self.check('tags.key3', 'value3')
         ])
-        self.cmd('swiftlet vm stop -g {rg} -n {vm}')
-        self.cmd('swiftlet vm start -g {rg} -n {vm}')
-        self.cmd('swiftlet vm delete -g {rg} -n {vm} --yes')
+        self.cmd('swiftlet virtual-machine wait -g {rg} --vm-name {vm} --created')
+        s_id = self.cmd('swiftlet virtual-machine-snapshot create -g {rg} --snapshot-name {s1} --virtual-machine-id {vm_id} -l centraluseuap').get_output_in_json()['id']
+        self.kwargs.update({
+            's_id': s_id
+        })
+        self.cmd('swiftlet virtual-machine-snapshot show -g {rg} --snapshot-name {s1}', checks=[
+            self.check('name', '{s1}'),
+        ])
+        self.cmd('swiftlet virtual-machine-snapshot list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('swiftlet virtual-machine create -g {rg} --vm-name {vm2} -l centraluseuap --snapshot-id {s_id} --bundle-sku Windows_1')
+        self.cmd('swiftlet virtual-machine-snapshot delete -g {rg} --snapshot-name {s1} -y')
+        self.cmd('swiftlet virtual-machine stop -g {rg} --vm-name {vm}')
+        self.cmd('swiftlet virtual-machine start -g {rg} --vm-name {vm}')
+        self.cmd('swiftlet virtual-machine delete -g {rg} --vm-name {vm} --yes')
 
-    @ResourceGroupPreparer(name_prefix='clitest_swiftlet', random_name_length=25)
+    @ResourceGroupPreparer(name_prefix='clitest_swiftlet_list', random_name_length=25)
     def test_swiftlet_list(self, resource_group):
-        self.cmd('swiftlet vm list-bundle -l centraluseuap', checks=[
+        self.cmd('swiftlet virtual-machine-bundle list -l centraluseuap', checks=[
             self.greater_than('length(@)', 0)
         ])
-        self.cmd('swiftlet vm list-image -l centraluseuap', checks=[
+        self.cmd('swiftlet virtual-machine-image list -l centraluseuap', checks=[
             self.greater_than('length(@)', 0)
         ])
