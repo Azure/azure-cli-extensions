@@ -797,6 +797,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                admin_username="azureuser",
                windows_admin_username=None,
                windows_admin_password=None,
+               enable_ahub=False,
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
                node_osdisk_type=None,
@@ -932,9 +933,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             except NoTTYException:
                 raise CLIError('Please specify both username and password in non-interactive mode.')
 
+        windows_license_type = None
+        if enable_ahub:
+            windows_license_type = 'Windows_Server'
+
         windows_profile = ManagedClusterWindowsProfile(
             admin_username=windows_admin_username,
-            admin_password=windows_admin_password)
+            admin_password=windows_admin_password,
+            license_type=windows_license_type)
 
     principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
                                                   service_principal=service_principal, client_secret=client_secret,
@@ -1213,6 +1219,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_aad=False,
                aad_tenant_id=None,
                aad_admin_group_object_ids=None,
+               enable_ahub=False,
+               disable_ahub=False,
                aks_custom_headers=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
@@ -1233,7 +1241,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_lb_profile and \
        not uptime_sla and \
        not enable_aad and \
-       not update_aad_profile:
+       not update_aad_profile and  \
+       not enable_ahub and  \
+       not disable_ahub:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1249,7 +1259,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--load-balancer-outbound-ip-prefixes" or '
                        '"--enable-aad" or '
                        '"--aad-tenant-id" or '
-                       '"--aad-admin-group-object-ids"')
+                       '"--aad-admin-group-object-ids" or '
+                       '"--enable-ahub" or '
+                       '"--disable-ahub"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1376,6 +1388,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(aad_admin_group_object_ids)
+
+    if enable_ahub and disable_ahub:
+        raise CLIError('Cannot specify "--enable-ahub" and "--disable-ahub" at the same time')
+
+    if enable_ahub:
+        instance.windows_profile.license_type = 'Windows_Server'
+    if disable_ahub:
+        instance.windows_profile.license_type = 'None'
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
