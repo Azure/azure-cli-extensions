@@ -1421,12 +1421,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         msg = ""
         if current_identity_type == "spn":
             msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
-                'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
-                'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
-                'Are you sure you want to perform this operation?').format(goal_identity_type)
+                   'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
+                   'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
+                   'Are you sure you want to perform this operation?').format(goal_identity_type)
         else:
             msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
-                'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
+                   'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
         if not prompt_y_n(msg, default="n"):
             return None
         if goal_identity_type == "systemassigned":
