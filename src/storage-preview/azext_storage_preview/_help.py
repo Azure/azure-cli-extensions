@@ -400,7 +400,7 @@ helps['storage message update'] = """
     examples:
         - name: Update the visibility timeout and content of a message.
           text: |
-              az storage message update --id messageid --pop-receipt popreceiptreturned -q myqueue 
+              az storage message update --id messageid --pop-receipt popreceiptreturned -q myqueue
               --visibility-timeout 3600 --content newmessagecontent --account-name mystorageaccount
 """
 

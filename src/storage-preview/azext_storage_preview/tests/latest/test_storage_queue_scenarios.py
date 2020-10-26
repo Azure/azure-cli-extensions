@@ -72,9 +72,6 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='message', kind='StorageV2', location='eastus2', sku='Standard_RAGRS')
     def test_storage_message_general_scenario(self, resource_group, storage_account):
-        from datetime import datetime, timedelta, timezone
-        import time
-
         account_info = self.get_account_info(resource_group, storage_account)
         connection_string = self.get_connection_string(resource_group, storage_account)
         queue = self.create_random_name('queue', 24)
@@ -89,19 +86,18 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
                                  JMESPathCheckExists('timeNextVisible')])
 
         # put message using connecting string, test `visibility_timeout`
-        result = self.cmd('storage message put -q {} --content "test message 2" '
-                          '--visibility-timeout 3600 --connection-string {}'
-                          .format(queue, connection_string)).get_output_in_json()
-        self.assertEqual(result.get('content'), 'test message 2')
-        self.assertEqual(datetime.fromisoformat(result.get('timeNextVisible')).hour,
-                         (datetime.utcnow() + timedelta(hours=1)).hour)
+        self.cmd('storage message put -q {} --content "test message 2" --visibility-timeout 3600 --connection-string {}'
+                 .format(queue, connection_string))\
+            .assert_with_checks([JMESPathCheck('content', "test message 2"),
+                                 JMESPathCheckExists('expirationTime'),
+                                 JMESPathCheckExists('timeNextVisible')])
 
         # put message using auth mode: login, test `time_to_live`
-        result = self.oauth_cmd('storage message put -q {} --content "test message 3" --time-to-live 3600 '
-                                '--account-name {}'.format(queue, storage_account)).get_output_in_json()
-        self.assertEqual(result.get('content'), 'test message 3')
-        self.assertEqual(datetime.fromisoformat(result.get('expirationTime')).hour,
-                         (datetime.utcnow() + timedelta(hours=1)).hour)
+        self.oauth_cmd('storage message put -q {} --content "test message 3" --time-to-live 3600 --account-name {}'
+                       .format(queue, storage_account))\
+            .assert_with_checks([JMESPathCheck('content', "test message 3"),
+                                 JMESPathCheckExists('expirationTime'),
+                                 JMESPathCheckExists('timeNextVisible')])
 
         # peek message
         self.storage_cmd('storage message peek -q {}', account_info, queue)\
@@ -127,9 +123,9 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(result[0]['dequeueCount'], 1)
         self.assertIsNotNone(result[0]['id'])
         self.assertIsNotNone(result[0]['popReceipt'])
-        self.assertGreater(datetime.fromisoformat(result[0]['timeNextVisible']), datetime.now(timezone.utc))
 
         # get message, test `num_messages`
+        import time
         time.sleep(35)
         result = self.storage_cmd('storage message get -q {} --num-messages 2', account_info, queue).get_output_in_json()
         self.assertEqual(len(result), 2)
@@ -144,7 +140,6 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
             account_info, queue, result[0]['id'], result[0]['popReceipt']).get_output_in_json()
         self.assertIsNotNone(update_result.get('id'))
         self.assertIsNotNone(update_result.get('popReceipt'))
-        self.assertGreater(datetime.fromisoformat(update_result.get('timeNextVisible')), datetime.now(timezone.utc))
 
         # update message, test `content`
         update_result = self.storage_cmd(
