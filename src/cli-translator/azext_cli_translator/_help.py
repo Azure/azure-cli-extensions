@@ -13,12 +13,12 @@ helps['cli-translator'] = """
 
 helps['cli-translator arm'] = """
     type: group
-    short-summary: Translate ARM template to CLI scripts
+    short-summary: Translate ARM template to CLI scripts(Currently only support Compute, Network and Storage)
 """
 
 helps['cli-translator arm translate'] = """
     type: command
-    short-summary: Translate ARM template to CLI scripts
+    short-summary: Translate ARM template to CLI scripts(Currently only support Compute, Network and Storage)
     examples:
         - name: Translate ARM template.json and parameters.json to CLI scripts
           text: |-

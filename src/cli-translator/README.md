@@ -8,7 +8,7 @@ az extension add --name cli-translator
 ```
 
 ### Included Features
-#### ARM template to Azure CLI scripts translator:
+#### ARM template to Azure CLI scripts translator(Currently only support Compute, Network and Storage):
 *Examples:*
 
 ##### Translate an ARM template to Azure CLI scripts

@@ -5,21 +5,39 @@
 import os
 import json
 import requests
+from urllib.parse import urlparse
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
 ARM_TRANSLATOR_URL = 'https://portal2cli.azurewebsites.net/api/v1'
 
 
-def translate_arm(cmd, template_path, parameters_path, resource_group_name, target_subscription=None):
-    if not os.path.exists(template_path) or not os.path.exists(parameters_path):
-        raise InvalidArgumentValueError('--template or --parameters file not found')
+def _is_url(url):
+    return urlparse(url).scheme != ""
 
-    with open(template_path, 'r') as fp:
-        template_content = fp.read()
-    with open(parameters_path, 'r') as fp:
-        parameters_content = fp.read()
-    if not template_content or not parameters_content:
-        raise InvalidArgumentValueError('--template or --parameters file is empty')
+
+def _read_json(path):
+    content = None
+    try:
+        if _is_url(path):
+            content = requests.get(path).text
+        else:
+            with open(path, 'r') as fp:
+                content = fp.read()
+        if content:
+            content = json.loads(content)
+    except Exception as e:
+        pass
+    return content
+
+
+def translate_arm(cmd, template_path, parameters_path, resource_group_name, target_subscription=None):
+    template_content = _read_json(template_path)
+    if not template_content:
+        raise InvalidArgumentValueError('Please make sure --template is a valid template file or url')
+
+    parameters_content = _read_json(parameters_path)
+    if not parameters_content:
+        raise InvalidArgumentValueError('Please make sure --parameters is a valid parameters file or url')
 
     if target_subscription is None:
         from azure.cli.core.commands.client_factory import get_subscription_id
@@ -30,8 +48,8 @@ def translate_arm(cmd, template_path, parameters_path, resource_group_name, targ
             json={
                 'resourceGroup': resource_group_name,
                 'subscriptionId': target_subscription,
-                'template': json.loads(template_content),
-                'parameters': json.loads(parameters_content)
+                'template': template_content,
+                'parameters': parameters_content
             })
         if response.status_code != 200:
             raise AzureInternalError(
