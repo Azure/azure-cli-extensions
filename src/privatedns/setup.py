@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Dibya Jyoti Roy',
     author_email='dijyotir@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/privatedns',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_privatedns': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),

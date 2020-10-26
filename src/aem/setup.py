@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Yugang Wang',
     author_email='yugangw@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aem',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_aem': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
