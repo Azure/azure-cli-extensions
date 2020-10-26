@@ -1404,29 +1404,29 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if not enable_managed_identity and assign_identity:
         raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
-    
+
     current_identity_type = "spn"
     if instance.identity is not None:
         current_identity_type = instance.identity.type.casefold()
-    
+
     goal_identity_type = current_identity_type
     if enable_managed_identity:
         if not assign_identity:
             goal_identity_type = "systemassigned"
         else:
             goal_identity_type = "userassigned"
-   
+
     if current_identity_type != goal_identity_type:
         from knack.prompting import prompt_y_n
         msg = ""
         if current_identity_type == "spn":
-            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n' 
-                  'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet ' 
-                  'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n ' 
-                  'Are you sure you want to perform this operation?').format(goal_identity_type)
+            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
+                'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
+                'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
+                'Are you sure you want to perform this operation?').format(goal_identity_type)
         else:
             msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
-                  'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
+                'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
         if not prompt_y_n(msg, default="n"):
             return None
         if goal_identity_type == "systemassigned":
