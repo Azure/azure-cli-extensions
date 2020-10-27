@@ -15,14 +15,16 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import CostManagementClientConfiguration
 from .operations import ViewOperations
 from .operations import AlertOperations
 from .operations import ForecastOperations
 from .operations import DimensionOperations
 from .operations import QueryOperations
-from .operations import ExportOperations
 from .operations import OperationOperations
+from .operations import ExportOperations
 from . import models
 
 
@@ -30,19 +32,19 @@ class CostManagementClient(object):
     """CostManagementClient.
 
     :ivar view: ViewOperations operations
-    :vartype view: azure.mgmt.costmanagement.operations.ViewOperations
+    :vartype view: cost_management_client.operations.ViewOperations
     :ivar alert: AlertOperations operations
-    :vartype alert: azure.mgmt.costmanagement.operations.AlertOperations
+    :vartype alert: cost_management_client.operations.AlertOperations
     :ivar forecast: ForecastOperations operations
-    :vartype forecast: azure.mgmt.costmanagement.operations.ForecastOperations
+    :vartype forecast: cost_management_client.operations.ForecastOperations
     :ivar dimension: DimensionOperations operations
-    :vartype dimension: azure.mgmt.costmanagement.operations.DimensionOperations
+    :vartype dimension: cost_management_client.operations.DimensionOperations
     :ivar query: QueryOperations operations
-    :vartype query: azure.mgmt.costmanagement.operations.QueryOperations
-    :ivar export: ExportOperations operations
-    :vartype export: azure.mgmt.costmanagement.operations.ExportOperations
+    :vartype query: cost_management_client.operations.QueryOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.costmanagement.operations.OperationOperations
+    :vartype operation: cost_management_client.operations.OperationOperations
+    :ivar export: ExportOperations operations
+    :vartype export: cost_management_client.operations.ExportOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param str base_url: Service URL
@@ -74,9 +76,9 @@ class CostManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.query = QueryOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.export = ExportOperations(
-            self._client, self._config, self._serialize, self._deserialize)
         self.operation = OperationOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.export = ExportOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

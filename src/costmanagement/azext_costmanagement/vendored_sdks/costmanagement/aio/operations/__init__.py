@@ -6,13 +6,13 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._view_operations_async import ViewOperations
-from ._alert_operations_async import AlertOperations
-from ._forecast_operations_async import ForecastOperations
-from ._dimension_operations_async import DimensionOperations
-from ._query_operations_async import QueryOperations
-from ._export_operations_async import ExportOperations
-from ._operation_operations_async import OperationOperations
+from ._view_operations import ViewOperations
+from ._alert_operations import AlertOperations
+from ._forecast_operations import ForecastOperations
+from ._dimension_operations import DimensionOperations
+from ._query_operations import QueryOperations
+from ._operation_operations import OperationOperations
+from ._export_operations import ExportOperations
 
 __all__ = [
     'ViewOperations',
@@ -20,6 +20,6 @@ __all__ = [
     'ForecastOperations',
     'DimensionOperations',
     'QueryOperations',
-    'ExportOperations',
     'OperationOperations',
+    'ExportOperations',
 ]
