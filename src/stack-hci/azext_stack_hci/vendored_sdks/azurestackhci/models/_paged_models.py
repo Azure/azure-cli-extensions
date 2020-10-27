@@ -9,10 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._operations import Operations
-from ._clusters_operations import ClustersOperations
+from msrest.paging import Paged
 
-__all__ = [
-    'Operations',
-    'ClustersOperations',
-]
+
+class ClusterPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Cluster <azure.mgmt.azurestackhci.models.Cluster>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Cluster]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ClusterPaged, self).__init__(*args, **kwargs)
