@@ -12,7 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -66,6 +66,10 @@ class TriggerOperations:
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_factory.metadata['url']  # type: ignore
@@ -79,15 +83,11 @@ class TriggerOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -118,7 +118,7 @@ class TriggerOperations:
         self,
         resource_group_name: str,
         factory_name: str,
-        continuation_token: Optional[str] = None,
+        continuation_token_parameter: Optional[str] = None,
         parent_trigger_name: Optional[str] = None,
         **kwargs
     ) -> "models.TriggerQueryResponse":
@@ -128,9 +128,9 @@ class TriggerOperations:
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param continuation_token: The continuation token for getting the next page of results. Null
-         for first page.
-        :type continuation_token: str
+        :param continuation_token_parameter: The continuation token for getting the next page of
+         results. Null for first page.
+        :type continuation_token_parameter: str
         :param parent_trigger_name: The name of the parent TumblingWindowTrigger to get the child rerun
          triggers.
         :type parent_trigger_name: str
@@ -143,7 +143,7 @@ class TriggerOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _filter_parameters = models.TriggerFilterParameters(continuation_token=continuation_token, parent_trigger_name=parent_trigger_name)
+        filter_parameters = models.TriggerFilterParameters(continuation_token=continuation_token_parameter, parent_trigger_name=parent_trigger_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -165,9 +165,8 @@ class TriggerOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_filter_parameters, 'TriggerFilterParameters')
+        body_content = self._serialize.body(filter_parameters, 'TriggerFilterParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -217,7 +216,7 @@ class TriggerOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _trigger = models.TriggerResource(properties=properties)
+        trigger = models.TriggerResource(properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -242,9 +241,8 @@ class TriggerOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_trigger, 'TriggerResource')
+        body_content = self._serialize.body(trigger, 'TriggerResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -270,7 +268,7 @@ class TriggerOperations:
         trigger_name: str,
         if_none_match: Optional[str] = None,
         **kwargs
-    ) -> "models.TriggerResource":
+    ) -> Optional["models.TriggerResource"]:
         """Gets a trigger.
 
         :param resource_group_name: The resource group name.
@@ -287,7 +285,7 @@ class TriggerOperations:
         :rtype: ~data_factory_management_client.models.TriggerResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.TriggerResource"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -312,7 +310,6 @@ class TriggerOperations:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -373,7 +370,6 @@ class TriggerOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -393,8 +389,8 @@ class TriggerOperations:
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> "models.TriggerSubscriptionOperationStatus":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerSubscriptionOperationStatus"]
+    ) -> Optional["models.TriggerSubscriptionOperationStatus"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.TriggerSubscriptionOperationStatus"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -417,7 +413,6 @@ class TriggerOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -436,13 +431,13 @@ class TriggerOperations:
         return deserialized
     _subscribe_to_event_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
 
-    async def subscribe_to_event(
+    async def begin_subscribe_to_event(
         self,
         resource_group_name: str,
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> "models.TriggerSubscriptionOperationStatus":
+    ) -> AsyncLROPoller["models.TriggerSubscriptionOperationStatus"]:
         """Subscribe event trigger to events.
 
         :param resource_group_name: The resource group name.
@@ -452,12 +447,13 @@ class TriggerOperations:
         :param trigger_name: The trigger name.
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: TriggerSubscriptionOperationStatus, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerSubscriptionOperationStatus
+        :return: An instance of AsyncLROPoller that returns either TriggerSubscriptionOperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.TriggerSubscriptionOperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -466,13 +462,15 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._subscribe_to_event_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            trigger_name=trigger_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._subscribe_to_event_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                trigger_name=trigger_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -487,8 +485,16 @@ class TriggerOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    subscribe_to_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_subscribe_to_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
 
     async def get_event_subscription_status(
         self,
@@ -533,7 +539,6 @@ class TriggerOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -556,8 +561,8 @@ class TriggerOperations:
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> "models.TriggerSubscriptionOperationStatus":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerSubscriptionOperationStatus"]
+    ) -> Optional["models.TriggerSubscriptionOperationStatus"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.TriggerSubscriptionOperationStatus"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -580,7 +585,6 @@ class TriggerOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -599,13 +603,13 @@ class TriggerOperations:
         return deserialized
     _unsubscribe_from_event_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
 
-    async def unsubscribe_from_event(
+    async def begin_unsubscribe_from_event(
         self,
         resource_group_name: str,
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> "models.TriggerSubscriptionOperationStatus":
+    ) -> AsyncLROPoller["models.TriggerSubscriptionOperationStatus"]:
         """Unsubscribe event trigger from events.
 
         :param resource_group_name: The resource group name.
@@ -615,12 +619,13 @@ class TriggerOperations:
         :param trigger_name: The trigger name.
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: TriggerSubscriptionOperationStatus, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerSubscriptionOperationStatus
+        :return: An instance of AsyncLROPoller that returns either TriggerSubscriptionOperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.TriggerSubscriptionOperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -629,13 +634,15 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._unsubscribe_from_event_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            trigger_name=trigger_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._unsubscribe_from_event_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                trigger_name=trigger_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -650,8 +657,16 @@ class TriggerOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    unsubscribe_from_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_unsubscribe_from_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
 
     async def _start_initial(
         self,
@@ -682,7 +697,6 @@ class TriggerOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -696,13 +710,13 @@ class TriggerOperations:
 
     _start_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/start'}  # type: ignore
 
-    async def start(
+    async def begin_start(
         self,
         resource_group_name: str,
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> None:
+    ) -> AsyncLROPoller[None]:
         """Starts a trigger.
 
         :param resource_group_name: The resource group name.
@@ -712,12 +726,13 @@ class TriggerOperations:
         :param trigger_name: The trigger name.
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -726,13 +741,15 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._start_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            trigger_name=trigger_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._start_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                trigger_name=trigger_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -744,8 +761,16 @@ class TriggerOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/start'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/start'}  # type: ignore
 
     async def _stop_initial(
         self,
@@ -776,7 +801,6 @@ class TriggerOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -790,13 +814,13 @@ class TriggerOperations:
 
     _stop_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/stop'}  # type: ignore
 
-    async def stop(
+    async def begin_stop(
         self,
         resource_group_name: str,
         factory_name: str,
         trigger_name: str,
         **kwargs
-    ) -> None:
+    ) -> AsyncLROPoller[None]:
         """Stops a trigger.
 
         :param resource_group_name: The resource group name.
@@ -806,12 +830,13 @@ class TriggerOperations:
         :param trigger_name: The trigger name.
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -820,13 +845,15 @@ class TriggerOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._stop_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            trigger_name=trigger_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._stop_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                trigger_name=trigger_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -838,5 +865,13 @@ class TriggerOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/stop'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/stop'}  # type: ignore

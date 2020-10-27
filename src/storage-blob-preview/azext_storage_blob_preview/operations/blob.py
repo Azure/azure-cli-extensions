@@ -545,6 +545,27 @@ def list_blobs(client, delimiter=None, include=None, marker=None, num_results=No
     return result
 
 
+def list_containers(client, include_metadata=False, include_deleted=False, marker=None,
+                    num_results=None, prefix=None, show_next_marker=None, **kwargs):
+    from ..track2_util import list_generator
+
+    generator = client.list_containers(name_starts_with=prefix, include_metadata=include_metadata,
+                                       include_deleted=include_deleted, results_per_page=num_results, **kwargs)
+
+    pages = generator.by_page(continuation_token=marker)  # ContainerPropertiesPaged
+    result = list_generator(pages=pages, num_results=num_results)
+
+    if show_next_marker:
+        next_marker = {"nextMarker": pages.continuation_token}
+        result.append(next_marker)
+    else:
+        if pages.continuation_token:
+            logger.warning('Next Marker:')
+            logger.warning(pages.continuation_token)
+
+    return result
+
+
 def show_blob_v2(cmd, client, version_id=None, **kwargs):
 
     blob = client.get_blob_properties(version_id=version_id, **kwargs)

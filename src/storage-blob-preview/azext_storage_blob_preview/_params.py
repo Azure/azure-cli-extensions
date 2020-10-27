@@ -87,7 +87,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
              'where the previous generator stopped.')
 
     num_results_type = CLIArgumentType(
-        default=5000, validator=validate_storage_data_plane_list,
+        default=5000, validator=validate_storage_data_plane_list, options_list='--num-results',
         help='Specify the maximum number to return. If the request does not specify '
         'num_results, or specifies a value greater than 5000, the server will return up to 5000 items. Note that '
         'if the listing operation crosses a partition boundary, then the service will return a continuation token '
@@ -115,6 +115,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     tags_condition_type = CLIArgumentType(
         options_list='--tags-condition', min_api='2019-12-12',
         help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
+    timeout_type = CLIArgumentType(
+        help='Request timeout in seconds. Applies to each call to the service.', type=int
+    )
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -348,7 +351,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('num_results', arg_type=num_results_type)
         c.argument('prefix',
                    help='Filter the results to return only blobs whose name begins with the specified prefix.')
-        c.argument('show_next_marker', action='store_true',
+        c.argument('show_next_marker', action='store_true', is_preview=True,
                    help='Show nextMarker in result when specified.')
 
     for item in ['show', 'update']:
@@ -465,3 +468,25 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.ignore('sas_token')
         c.argument('full_uri', action='store_true', is_preview=True,
                    help='Indicate that this command return the full blob URI and the shared access signature token.')
+
+    with self.argument_context('storage container list') as c:
+        c.extra('timeout', timeout_type)
+        c.argument('marker', arg_type=marker_type)
+        c.argument('num_results', arg_type=num_results_type)
+        c.argument('prefix',
+                   help='Filter the results to return only blobs whose name begins with the specified prefix.')
+        c.argument('include_metadata', arg_type=get_three_state_flag(),
+                   help='Specify that container metadata to be returned in the response.')
+        c.argument('show_next_marker', action='store_true', is_preview=True,
+                   help='Show nextMarker in result when specified.')
+        c.argument('include_deleted', arg_type=get_three_state_flag(), min_api='2020-02-10',
+                   help='Specify that deleted containers to be returned in the response. This is for container restore '
+                   'enabled account. The default value is `False`')
+
+    with self.argument_context('storage container restore') as c:
+        c.argument('deleted_container_name', options_list=['--name', '-n'],
+                   help='Specify the name of the deleted container to restore.')
+        c.argument('deleted_container_version', options_list=['--deleted-version'],
+                   help='Specify the version of the deleted container to restore.')
+        c.argument('new_name', help='The new name for the deleted container to be restored to.')
+        c.extra('timeout', timeout_type)

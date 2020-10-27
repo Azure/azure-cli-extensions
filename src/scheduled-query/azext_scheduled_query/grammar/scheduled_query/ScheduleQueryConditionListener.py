@@ -2,8 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
 # pylint: disable=all
+# Generated from ScheduleQueryCondition.g4 by ANTLR 4.7.2
 from antlr4 import *
 
 # This class defines a complete listener for a parse tree produced by ScheduleQueryConditionParser.
@@ -162,6 +162,15 @@ class ScheduleQueryConditionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ScheduleQueryConditionParser#violations.
+    def enterViolations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#violations.
+    def exitViolations(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ScheduleQueryConditionParser#out.
     def enterOut(self, ctx):
         pass
@@ -186,6 +195,24 @@ class ScheduleQueryConditionListener(ParseTreeListener):
 
     # Exit a parse tree produced by ScheduleQueryConditionParser#min_times.
     def exitMin_times(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#aggregated.
+    def enterAggregated(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#aggregated.
+    def exitAggregated(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ScheduleQueryConditionParser#points.
+    def enterPoints(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ScheduleQueryConditionParser#points.
+    def exitPoints(self, ctx):
         pass
 
 

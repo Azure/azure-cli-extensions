@@ -70,6 +70,9 @@ helps['aks create'] = """
         - name: --windows-admin-password
           type: string
           short-summary: User account password to use on windows node VMs.
+        - name: --enable-ahub
+          type: bool
+          short-summary: Enable Azure Hybrid User Benefits (AHUB) for Windows VMs.
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
@@ -144,6 +147,7 @@ helps['aks create'] = """
                                             Learn more at aka.ms/aks/policy.
                 ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
+                open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -279,6 +283,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
+        - name: Create a kubernetes cluster with supporting Windows agent pools with AHUB enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-ahub
         - name: Create a kubernetes cluster with managed AAD enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
         - name: Create a kubernetes cluster with ephemeral os enabled.
@@ -382,6 +388,12 @@ helps['aks update'] = """
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
+        - name: --enable-ahub
+          type: bool
+          short-summary: Enable Azure Hybrid User Benefits (AHUB) feature for cluster.
+        - name: --disable-ahub
+          type: bool
+          short-summary: Disable Azure Hybrid User Benefits (AHUB) feature for cluster.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -414,6 +426,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
       - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+      - name: Enable Azure Hybrid User Benefits featture for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
+      - name: Disable Azure Hybrid User Benefits featture for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-ahub
 """
 
 helps['aks kollect'] = """
@@ -623,6 +639,19 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
+helps['aks nodepool get-upgrades'] = """
+type: command
+short-summary: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+examples:
+  - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+    text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+parameters:
+  - name: --nodepool-name
+    type: string
+    short-summary: name of the node pool.
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
@@ -640,6 +669,7 @@ long-summary: |-
         azure-policy              - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
+        open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -674,6 +704,9 @@ examples:
     crafted: true
   - name: Enable ingress-appgw addon with subnet prefix.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
+    crafted: true
+  - name: Enable open-service-mesh addon.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
     crafted: true
 """
 
