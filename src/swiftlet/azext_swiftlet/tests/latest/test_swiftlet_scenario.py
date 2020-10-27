@@ -59,7 +59,7 @@ class SwiftletScenarioTest(ScenarioTest):
         self.cmd('swiftlet virtual-machine-snapshot list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
-        self.cmd('swiftlet virtual-machine create -g {rg} --vm-name {vm2} -l centraluseuap --snapshot-id {s_id} --bundle-sku Windows_1')
+        self.cmd('swiftlet virtual-machine create -g {rg} --vm-name {vm2} -l centraluseuap --snapshot-id {s_id}')
         self.cmd('swiftlet virtual-machine-snapshot delete -g {rg} --snapshot-name {s1} -y')
         self.cmd('swiftlet virtual-machine stop -g {rg} --vm-name {vm}')
         self.cmd('swiftlet virtual-machine start -g {rg} --vm-name {vm}')
