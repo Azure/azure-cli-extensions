@@ -54,3 +54,6 @@ Invalid_Auth_Method_Fault = "Invalid authentication method passed"
 Get_Connected_Cluster_Details_Failed_Fault_Type = "Failed to get connected cluster details"
 Get_Credentials_Invoked_Without_Token_For_NON_AAD_Fault_Type = "Get Credentials Invoked without client token for Non-AAD connected cluster"
 Cluster_Info_Not_Found_Type = 'Error while finding current cluster server details'
+Deleting_Arc_Agents_With_Proxy_Kubeconfig_Fault_Type = "The arc agents shouldn't be deleted with proxy kubeconfig"
+Incomplete_AAD_Profile_Details_Fault_Type = "AAD client app id or server app id is not provided."
+

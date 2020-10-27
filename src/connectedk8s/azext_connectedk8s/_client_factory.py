@@ -35,3 +35,7 @@ def _graph_client_factory(cli_ctx, **_):
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     configure_common_settings(cli_ctx, client)
     return client
+
+
+def get_graph_client_service_principals(cli_ctx, _):
+    return _graph_client_factory(cli_ctx).service_principals

@@ -20,7 +20,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, is_guid
 from azure.cli.core import telemetry
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
@@ -58,7 +58,38 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
+    custom_tenant_id = os.getenv('CUSTOMTENANTID')
+    if custom_tenant_id:
+        logger.warning("Custom Tenant Id '{}' is provided. Using that for onboarding purposes.".format(custom_tenant_id))
+        onboarding_tenant_id = custom_tenant_id
+        graph_client.config.tenant_id = custom_tenant_id
+    else:
+        onboarding_tenant_id = graph_client.config.tenant_id
+
+    if ((aad_server_app_id is None) and (aad_client_app_id is not None)) or ((aad_server_app_id is not None) and (aad_client_app_id is None)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='Incomplete aad details', fault_type=consts.Incomplete_AAD_Profile_Details_Fault_Type,
+                                summary='Please provide aad-server-app-id and aad-client-app-id together.')
+        raise CLIError("Please provide both aad-server-app-id and aad-client-app-id together. Note that these two inputs are only required for Cluster Connect feature on an AAD enabled Kubernetes cluster.")
+
+    if aad_server_app_id:
+        try:
+            object_id = _resolve_service_principal(graph_client.service_principals, aad_server_app_id)
+            graph_client.service_principals.get(object_id)
+        except Exception as e:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Invalid_AAD_Profile_Details_Type,
+                                    summary='Invalid AAD server app id.')
+            extra_error_details = ""
+            if custom_tenant_id:
+                extra_error_details += " Please check if the custom tenant id provided is correct."
+            raise CLIError("Invalid AAD server app id. " + str(e) + str(extra_error_details))
+    if aad_client_app_id:
+        try:
+            object_id = _resolve_service_principal(graph_client.service_principals, aad_client_app_id)
+            graph_client.service_principals.get(object_id)
+        except Exception as e:
+            logger.warning("Couldn't validate the AAD client app id. Continuing without validation...")
 
     aad_tenant_id = onboarding_tenant_id
 
@@ -464,7 +495,7 @@ def generate_request_payload(configuration, location, public_key, tags, aad_prof
     return cc
 
 
-def check_aks_cluster(kube_config, kube_context):
+def get_server_address(kube_config, kube_context):
     config_data = get_kubeconfig_node_dict(kube_config=kube_config)
     try:
         all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
@@ -492,7 +523,19 @@ def check_aks_cluster(kube_config, kube_context):
         if cluster.safe_get('name') == cluster_name:
             server_address = cluster.safe_get('cluster').get('server')
             break
+    return server_address
 
+
+def check_proxy_kubeconfig(kube_config, kube_context):
+    server_address = get_server_address(kube_config, kube_context)
+    if server_address.find(".k8sconnect.azure.") == -1:
+        return False
+    else:
+        return True
+
+
+def check_aks_cluster(kube_config, kube_context):
+    server_address = get_server_address(kube_config, kube_context)
     if server_address.find(".azmk8s.io:") == -1:
         return False
     else:
@@ -672,6 +715,14 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         raise CLIError("Problem loading the kubeconfig file." + str(e))
     configuration = kube_client.Configuration()
 
+    # Check if the arc agents are being deleted using proxy kubeconfig
+    is_proxy_kubeconfig = check_proxy_kubeconfig(kube_config=kube_config, kube_context=kube_context)
+    if is_proxy_kubeconfig:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception="The arc agents shouldn't be deleted with cluster connect credentials.", fault_type=consts.Deleting_Arc_Agents_With_Proxy_Kubeconfig_Fault_Type,
+                                summary="The arc agents shouldn't be deleted with cluster connect credentials.")
+        raise CLIError("The arc agents shouldn't be deleted/uninstalled with cluster connect credentials.")
+
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled
     # AKS clusters if the user had not logged in.
@@ -785,7 +836,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
         return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster=cc)
-    except CloudError as e:
+    except Exception as e:
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
 
 
@@ -795,7 +846,7 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
                     resource_group_name=resource_group_name,
                     cluster_name=cluster_name)
     except CloudError as e:
-        utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
+        utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
 
 def delete_arc_agents(release_namespace, kube_config, kube_context, configuration):
@@ -1174,3 +1225,15 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         raise CLIError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
+
+
+def _resolve_service_principal(client, identifier):  # Uses service principal graph client
+    # todo: confirm with graph team that a service principal name must be unique
+    result = list(client.list(filter="servicePrincipalNames/any(c:c eq '{}')".format(identifier)))
+    if result:
+        return result[0].object_id
+    if is_guid(identifier):
+        return identifier  # assume an object id
+    error = CLIError("Service principal '{}' doesn't exist".format(identifier))
+    error.status_code = 404  # Make sure CLI returns 3
+    raise error
