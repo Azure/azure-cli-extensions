@@ -31,8 +31,8 @@ az cli-translator arm translate \
 az cli-translator arm translate \
     --target-subscription 00000000-0000-0000-0000-000000000000 \
     --resource-group groupName \
-    --template https://github.com/Azure/azure-cli-extensions/tree/master/src/cli-translator/samples/template.json \
-    --parameters https://github.com/Azure/azure-cli-extensions/tree/master/src/cli-translator/samples/parameters.json
+    --template https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/cli-translator/samples/template.json \
+    --parameters https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/cli-translator/samples/parameters.json
 ```
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
