@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Update SDK to fix appservice kube delete command
+
 0.1.5
 ++++++
 * Fix webapp show command
