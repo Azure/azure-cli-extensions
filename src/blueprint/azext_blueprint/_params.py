@@ -219,10 +219,7 @@ def load_arguments(self, _):
             from .action import ResourceGroupAssignAddAction
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
-            c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), default='SystemAssigned', arg_group='Identity', help='Type of the managed identity.')
-            c.argument('identity_principal_id', options_list=['--principal-id'], arg_group='Identity', help='Azure Active Directory principal ID associated with this Identity.')
-            c.argument('identity_tenant_id', options_list=['--tenant-id'], arg_group='Identity', help='ID of the Azure Active Directory.')
-            c.argument('identity_user_assigned_identities', options_list=['--user-assigned-identities'], arg_group='Identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
+            c.argument('user_assigned_identity', arg_group='Identity', help='The user-assigned managed identity associated with the resource.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', options_list=['--blueprint-version'], help='Resource ID of the published version of a blueprint definition.')
@@ -230,6 +227,12 @@ def load_arguments(self, _):
             c.argument('resource_groups', options_list=['--resource-group-value'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
+
+    with self.argument_context('blueprint assignment create') as c:
+        c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), default='SystemAssigned', arg_group='Identity', help='Type of the managed identity.')
+
+    with self.argument_context('blueprint assignment update') as c:
+        c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), arg_group='Identity', help='Type of the managed identity.')
 
     with self.argument_context('blueprint assignment delete') as c:
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')

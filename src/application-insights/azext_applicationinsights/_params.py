@@ -37,6 +37,11 @@ def load_arguments(self, _):
     with self.argument_context('monitor app-insights component update-tags') as c:
         c.argument('tags', tags_type)
 
+    with self.argument_context('monitor app-insights component connect-webapp') as c:
+        c.argument('webapp_name', options_list=['--name', '-n'], help="Name of the web app.", id_part='name')
+        c.argument('enable_profiler', help='Enable collecting profiling traces that help you see where time is spent in code. Currently it is only supported for .NET/.NET Core Web Apps.', arg_type=get_three_state_flag())
+        c.argument('enable_snapshot_debugger', options_list=['--enable-snapshot-debugger', '--enable-debugger'], help='Enable snapshot debugger when an exception is thrown. Currently it is only supported for .NET/.NET Core Web Apps.', arg_type=get_three_state_flag())
+
     with self.argument_context('monitor app-insights component billing') as c:
         c.argument('stop_sending_notification_when_hitting_cap', options_list=['-s', '--stop'], arg_type=get_three_state_flag(),
                    help='Do not send a notification email when the daily data volume cap is met.')

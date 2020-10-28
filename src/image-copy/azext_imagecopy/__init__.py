@@ -55,6 +55,7 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
             c.argument('export_as_snapshot', options_list=['--export-as-snapshot'], action='store_true', default=False,
                        help='Include this switch to export the copies as snapshots instead of images.')
             c.argument('tags', tags_type)
+            c.ignore('_subscription')
 
 
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader
