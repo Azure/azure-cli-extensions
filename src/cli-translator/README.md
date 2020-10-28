@@ -25,7 +25,7 @@ az cli-translator arm translate \
 
 ##### Translate a remote ARM template(uri) to Azure CLI scripts
 
-> The template.json and parameters.json used here are just samples, you can use your own instead.
+> The template.json and parameters.json used here are just samples, you can use your own ones instead.
 
 ```
 az cli-translator arm translate \
