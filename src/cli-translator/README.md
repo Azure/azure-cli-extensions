@@ -19,7 +19,7 @@ az extension add --name cli-translator
 az cli-translator arm translate \
     --target-subscription 00000000-0000-0000-0000-000000000000 \
     --resource-group groupName \
-    --template /path/to/local/tempalte.json \
+    --template /path/to/local/template.json \
     --parameters /path/to/local/parameters.json
 ```
 
