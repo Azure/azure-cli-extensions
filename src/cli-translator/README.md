@@ -11,14 +11,28 @@ az extension add --name cli-translator
 #### ARM template to Azure CLI scripts translator(Currently only support Compute, Network and Storage):
 *Examples:*
 
-##### Translate an ARM template to Azure CLI scripts
+##### Translate a local ARM template to Azure CLI scripts
+
+> The ARM template can be downloaded in create & validation page or template page from portal.
 
 ```
 az cli-translator arm translate \
     --target-subscription 00000000-0000-0000-0000-000000000000 \
     --resource-group groupName \
-    --template armTemplatePath \
-    --parameters armParametersPath
+    --template /path/to/local/tempalte.json \
+    --parameters /path/to/local/parameters.json
+```
+
+##### Translate a remote ARM template(uri) to Azure CLI scripts
+
+> The template.json and parameters.json used here are just samples, you can use your own instead.
+
+```
+az cli-translator arm translate \
+    --target-subscription 00000000-0000-0000-0000-000000000000 \
+    --resource-group groupName \
+    --template https://github.com/Azure/azure-cli-extensions/tree/master/src/cli-translator/samples/template.json \
+    --parameters https://github.com/Azure/azure-cli-extensions/tree/master/src/cli-translator/samples/parameters.json
 ```
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
