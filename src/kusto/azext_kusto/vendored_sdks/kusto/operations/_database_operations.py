@@ -75,8 +75,8 @@ class DatabaseOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _resource_name = models.CheckNameRequest(name=name, type=type)
-        api_version = "2020-06-14"
+        resource_name = models.CheckNameRequest(name=name, type=type)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -97,9 +97,8 @@ class DatabaseOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_resource_name, 'CheckNameRequest')
+        body_content = self._serialize.body(resource_name, 'CheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -139,9 +138,13 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabaseListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_cluster.metadata['url']  # type: ignore
@@ -155,15 +158,11 @@ class DatabaseOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -214,7 +213,7 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -234,7 +233,6 @@ class DatabaseOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -263,7 +261,7 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -285,7 +283,6 @@ class DatabaseOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(parameters, 'Database')
         body_content_kwargs['content'] = body_content
@@ -298,7 +295,6 @@ class DatabaseOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Database', pipeline_response)
 
@@ -322,7 +318,7 @@ class DatabaseOperations(object):
         parameters,  # type: "models.Database"
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.Database"]
         """Creates or updates a database.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -334,6 +330,7 @@ class DatabaseOperations(object):
         :param parameters: The database parameters supplied to the CreateOrUpdate operation.
         :type parameters: ~kusto_management_client.models.Database
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -348,14 +345,16 @@ class DatabaseOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._create_or_update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            database_name=database_name,
-            parameters=parameters,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                database_name=database_name,
+                parameters=parameters,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -370,7 +369,15 @@ class DatabaseOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def _update_initial(
@@ -385,7 +392,7 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -407,7 +414,6 @@ class DatabaseOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(parameters, 'Database')
         body_content_kwargs['content'] = body_content
@@ -420,7 +426,6 @@ class DatabaseOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('Database', pipeline_response)
 
@@ -444,7 +449,7 @@ class DatabaseOperations(object):
         parameters,  # type: "models.Database"
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.Database"]
         """Updates a database.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -456,6 +461,7 @@ class DatabaseOperations(object):
         :param parameters: The database parameters supplied to the Update operation.
         :type parameters: ~kusto_management_client.models.Database
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -470,14 +476,16 @@ class DatabaseOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            database_name=database_name,
-            parameters=parameters,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                database_name=database_name,
+                parameters=parameters,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -492,7 +500,15 @@ class DatabaseOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def _delete_initial(
@@ -506,7 +522,7 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -525,7 +541,6 @@ class DatabaseOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -546,7 +561,7 @@ class DatabaseOperations(object):
         database_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Deletes the database with the given name.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -556,6 +571,7 @@ class DatabaseOperations(object):
         :param database_name: The name of the database in the Kusto cluster.
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -570,13 +586,15 @@ class DatabaseOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            database_name=database_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                database_name=database_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -588,7 +606,15 @@ class DatabaseOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def list_principal(
@@ -615,9 +641,13 @@ class DatabaseOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_principal.metadata['url']  # type: ignore
@@ -632,15 +662,11 @@ class DatabaseOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.post(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -695,8 +721,8 @@ class DatabaseOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _database_principals_to_add = models.DatabasePrincipalListRequest(value=value)
-        api_version = "2020-06-14"
+        database_principals_to_add = models.DatabasePrincipalListRequest(value=value)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -718,9 +744,8 @@ class DatabaseOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_database_principals_to_add, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(database_principals_to_add, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -767,8 +792,8 @@ class DatabaseOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _database_principals_to_remove = models.DatabasePrincipalListRequest(value=value)
-        api_version = "2020-06-14"
+        database_principals_to_remove = models.DatabasePrincipalListRequest(value=value)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -790,9 +815,8 @@ class DatabaseOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_database_principals_to_remove, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(database_principals_to_remove, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
