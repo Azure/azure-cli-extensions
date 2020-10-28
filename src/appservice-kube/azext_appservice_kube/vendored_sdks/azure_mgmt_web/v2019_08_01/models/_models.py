@@ -454,6 +454,27 @@ class ApplicationStackResource(ProxyOnlyResource):
         self.frameworks = kwargs.get('frameworks', None)
 
 
+class AppLogsConfiguration(Model):
+    """AppLogsConfiguration.
+
+    :param destination:
+    :type destination: str
+    :param log_analytics_configuration:
+    :type log_analytics_configuration:
+     ~azure.mgmt.web.v2019_08_01.models.LogAnalyticsConfiguration
+    """
+
+    _attribute_map = {
+        'destination': {'key': 'destination', 'type': 'str'},
+        'log_analytics_configuration': {'key': 'logAnalyticsConfiguration', 'type': 'LogAnalyticsConfiguration'},
+    }
+
+    def __init__(self, **kwargs):
+        super(AppLogsConfiguration, self).__init__(**kwargs)
+        self.destination = kwargs.get('destination', None)
+        self.log_analytics_configuration = kwargs.get('log_analytics_configuration', None)
+
+
 class AppServiceCertificate(Model):
     """Key Vault container for a certificate that is purchased through Azure.
 
@@ -2007,6 +2028,9 @@ class ArcConfiguration(Model):
     :param front_end_service_configuration:
     :type front_end_service_configuration:
      ~azure.mgmt.web.v2019_08_01.models.FrontEndConfiguration
+    :param app_logs_configuration:
+    :type app_logs_configuration:
+     ~azure.mgmt.web.v2019_08_01.models.AppLogsConfiguration
     :param kube_config:
     :type kube_config: str
     :param aks_engine_resource_group:
@@ -2019,6 +2043,7 @@ class ArcConfiguration(Model):
         'artifact_storage_mount_path': {'key': 'artifactStorageMountPath', 'type': 'str'},
         'artifact_storage_node_name': {'key': 'artifactStorageNodeName', 'type': 'str'},
         'front_end_service_configuration': {'key': 'frontEndServiceConfiguration', 'type': 'FrontEndConfiguration'},
+        'app_logs_configuration': {'key': 'appLogsConfiguration', 'type': 'AppLogsConfiguration'},
         'kube_config': {'key': 'kubeConfig', 'type': 'str'},
         'aks_engine_resource_group': {'key': 'aksEngineResourceGroup', 'type': 'str'},
     }
@@ -2030,6 +2055,7 @@ class ArcConfiguration(Model):
         self.artifact_storage_mount_path = kwargs.get('artifact_storage_mount_path', None)
         self.artifact_storage_node_name = kwargs.get('artifact_storage_node_name', None)
         self.front_end_service_configuration = kwargs.get('front_end_service_configuration', None)
+        self.app_logs_configuration = kwargs.get('app_logs_configuration', None)
         self.kube_config = kwargs.get('kube_config', None)
         self.aks_engine_resource_group = kwargs.get('aks_engine_resource_group', None)
 
@@ -5427,6 +5453,22 @@ class Experiments(Model):
         self.ramp_up_rules = kwargs.get('ramp_up_rules', None)
 
 
+class ExtendedLocation(Model):
+    """ExtendedLocation.
+
+    :param custom_location:
+    :type custom_location: str
+    """
+
+    _attribute_map = {
+        'custom_location': {'key': 'customLocation', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ExtendedLocation, self).__init__(**kwargs)
+        self.custom_location = kwargs.get('custom_location', None)
+
+
 class FileSystemApplicationLogsConfig(Model):
     """Application logs to file system configuration.
 
@@ -6467,6 +6509,9 @@ class KubeEnvironment(Resource):
     :vartype type: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param extended_location:
+    :type extended_location:
+     ~azure.mgmt.web.v2019_08_01.models.ExtendedLocation
     :ivar provisioning_state: Provisioning state of the Kubernetes
      Environment. Possible values include: 'Succeeded', 'Failed', 'Canceled',
      'Waiting', 'InitializationInProgress', 'ARMDeploymentInProgress',
@@ -6565,6 +6610,7 @@ class KubeEnvironment(Resource):
         'location': {'key': 'location', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'extended_location': {'key': 'properties.extendedLocation', 'type': 'ExtendedLocation'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'K8SEProvisioningState'},
         'node_pools': {'key': 'properties.nodePools', 'type': '[KubeNodePool]'},
         'subscription_id': {'key': 'properties.subscriptionId', 'type': 'str'},
@@ -6590,6 +6636,7 @@ class KubeEnvironment(Resource):
 
     def __init__(self, **kwargs):
         super(KubeEnvironment, self).__init__(**kwargs)
+        self.extended_location = kwargs.get('extended_location', None)
         self.provisioning_state = None
         self.node_pools = kwargs.get('node_pools', None)
         self.subscription_id = None
@@ -6691,6 +6738,26 @@ class LocalizableString(Model):
         super(LocalizableString, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.localized_value = kwargs.get('localized_value', None)
+
+
+class LogAnalyticsConfiguration(Model):
+    """LogAnalyticsConfiguration.
+
+    :param customer_id:
+    :type customer_id: str
+    :param shared_key:
+    :type shared_key: str
+    """
+
+    _attribute_map = {
+        'customer_id': {'key': 'customerId', 'type': 'str'},
+        'shared_key': {'key': 'sharedKey', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(LogAnalyticsConfiguration, self).__init__(**kwargs)
+        self.customer_id = kwargs.get('customer_id', None)
+        self.shared_key = kwargs.get('shared_key', None)
 
 
 class LogSpecification(Model):

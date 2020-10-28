@@ -368,7 +368,6 @@ class KubeEnvironmentsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -383,18 +382,9 @@ class KubeEnvironmentsOperations(object):
         if response.status_code not in [202, 204]:
             raise models.DefaultErrorResponseException(self._deserialize, response)
 
-        deserialized = None
-
-        if response.status_code == 202:
-            deserialized = self._deserialize('Operation', response)
-        if response.status_code == 204:
-            deserialized = self._deserialize('Operation', response)
-
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
+            client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-
-        return deserialized
 
     def delete(
             self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, polling=True, **operation_config):
@@ -416,12 +406,10 @@ class KubeEnvironmentsOperations(object):
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns Operation or
-         ClientRawResponse<Operation> if raw==True
-        :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2019_08_01.models.Operation]
-         or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2019_08_01.models.Operation]]
+        :return: An instance of LROPoller that returns None or
+         ClientRawResponse<None> if raw==True
+        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
          :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
         """
@@ -435,13 +423,9 @@ class KubeEnvironmentsOperations(object):
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('Operation', response)
-
             if raw:
-                client_raw_response = ClientRawResponse(deserialized, response)
+                client_raw_response = ClientRawResponse(None, response)
                 return client_raw_response
-
-            return deserialized
 
         lro_delay = operation_config.get(
             'long_running_operation_timeout',

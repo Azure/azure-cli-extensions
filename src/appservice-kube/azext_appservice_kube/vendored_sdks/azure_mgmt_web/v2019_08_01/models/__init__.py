@@ -21,6 +21,7 @@ try:
     from ._models_py3 import ApplicationLogsConfig
     from ._models_py3 import ApplicationStack
     from ._models_py3 import ApplicationStackResource
+    from ._models_py3 import AppLogsConfiguration
     from ._models_py3 import AppServiceCertificate
     from ._models_py3 import AppServiceCertificateOrder
     from ._models_py3 import AppServiceCertificateOrderPatchResource
@@ -108,6 +109,7 @@ try:
     from ._models_py3 import EndpointDetail
     from ._models_py3 import ErrorEntity
     from ._models_py3 import Experiments
+    from ._models_py3 import ExtendedLocation
     from ._models_py3 import FileSystemApplicationLogsConfig
     from ._models_py3 import FileSystemHttpLogsConfig
     from ._models_py3 import FrontEndConfiguration
@@ -137,6 +139,7 @@ try:
     from ._models_py3 import KubeEnvironmentProfile
     from ._models_py3 import KubeNodePool
     from ._models_py3 import LocalizableString
+    from ._models_py3 import LogAnalyticsConfiguration
     from ._models_py3 import LogSpecification
     from ._models_py3 import ManagedServiceIdentity
     from ._models_py3 import ManagedServiceIdentityUserAssignedIdentitiesValue
@@ -279,6 +282,7 @@ except (SyntaxError, ImportError):
     from ._models import ApplicationLogsConfig
     from ._models import ApplicationStack
     from ._models import ApplicationStackResource
+    from ._models import AppLogsConfiguration
     from ._models import AppServiceCertificate
     from ._models import AppServiceCertificateOrder
     from ._models import AppServiceCertificateOrderPatchResource
@@ -366,6 +370,7 @@ except (SyntaxError, ImportError):
     from ._models import EndpointDetail
     from ._models import ErrorEntity
     from ._models import Experiments
+    from ._models import ExtendedLocation
     from ._models import FileSystemApplicationLogsConfig
     from ._models import FileSystemHttpLogsConfig
     from ._models import FrontEndConfiguration
@@ -395,6 +400,7 @@ except (SyntaxError, ImportError):
     from ._models import KubeEnvironmentProfile
     from ._models import KubeNodePool
     from ._models import LocalizableString
+    from ._models import LogAnalyticsConfiguration
     from ._models import LogSpecification
     from ._models import ManagedServiceIdentity
     from ._models import ManagedServiceIdentityUserAssignedIdentitiesValue
@@ -675,6 +681,7 @@ __all__ = [
     'ApplicationLogsConfig',
     'ApplicationStack',
     'ApplicationStackResource',
+    'AppLogsConfiguration',
     'AppServiceCertificate',
     'AppServiceCertificateOrder',
     'AppServiceCertificateOrderPatchResource',
@@ -762,6 +769,7 @@ __all__ = [
     'EndpointDetail',
     'ErrorEntity',
     'Experiments',
+    'ExtendedLocation',
     'FileSystemApplicationLogsConfig',
     'FileSystemHttpLogsConfig',
     'FrontEndConfiguration',
@@ -791,6 +799,7 @@ __all__ = [
     'KubeEnvironmentProfile',
     'KubeNodePool',
     'LocalizableString',
+    'LogAnalyticsConfiguration',
     'LogSpecification',
     'ManagedServiceIdentity',
     'ManagedServiceIdentityUserAssignedIdentitiesValue',
