@@ -70,7 +70,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_user_fault()
         telemetry.set_exception(exception='Incomplete aad details', fault_type=consts.Incomplete_AAD_Profile_Details_Fault_Type,
                                 summary='Please provide aad-server-app-id and aad-client-app-id together.')
-        raise CLIError("Please provide both aad-server-app-id and aad-client-app-id together. Note that these two inputs are only required for Cluster Connect feature on an AAD enabled Kubernetes cluster.")
+        raise CLIError("AAD client app ID and server app ID are both required for using cluster connect feature with AAD credentials for authentication. Please note that both these inputs are only relevant for a cluster that uses AAD for authentication and is not required for clusters using other authentication mechanisms.")
 
     if aad_server_app_id:
         try:
@@ -158,7 +158,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
-        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format("https://go.microsoft.com/fwlink/?linkid=2144200"))
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -721,7 +721,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         telemetry.set_user_fault()
         telemetry.set_exception(exception="The arc agents shouldn't be deleted with cluster connect credentials.", fault_type=consts.Deleting_Arc_Agents_With_Proxy_Kubeconfig_Fault_Type,
                                 summary="The arc agents shouldn't be deleted with cluster connect credentials.")
-        raise CLIError("The arc agents shouldn't be deleted/uninstalled with cluster connect credentials.")
+        raise CLIError("The kubeconfig in use corresponds to the one fetched from the Azure Arc enabled Kubernetes resource to access the Cluster Connect feature. Deletion using this will not be possible as deleting the Arc agents on cluster will disrupt this communication channel.")
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled

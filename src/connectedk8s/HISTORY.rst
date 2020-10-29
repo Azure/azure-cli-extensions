@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.3.2
+++++++
+* Fixed aad server/client app id validation
+* Added descriptive error messages
+* Added block for delete connected cluster using cluster connect credentials
+
 0.3.1
 ++++++
 * Fixed dependency version in setup file
