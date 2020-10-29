@@ -1,75 +1,131 @@
 # Azure CLI Module Creation Report
 
-### account operation list
+## EXTENSION
+|CLI Extension|Command Groups|
+|---------|------------|
+|az account|[groups](#CommandGroups)
 
-list a account operation.
+## GROUPS
+### <a name="CommandGroups">Command groups in `az account` extension </a>
+|CLI Command Group|Group Swagger name|Commands|
+|---------|------------|--------|
+|az account subscription|Subscriptions|[commands](#CommandsInSubscriptions)|
+|az account tenant|Tenants|[commands](#CommandsInTenants)|
+|az account subscription|Subscription|[commands](#CommandsInSubscription)|
+|az account alias|Alias|[commands](#CommandsInAlias)|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-### account subscription cancel
+## COMMANDS
+### <a name="CommandsInAlias">Commands in `az account alias` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az account alias list](#AliasList)|List|[Parameters](#ParametersAliasList)|[Example](#ExamplesAliasList)|
+|[az account alias show](#AliasGet)|Get|[Parameters](#ParametersAliasGet)|[Example](#ExamplesAliasGet)|
+|[az account alias create](#AliasCreate)|Create|[Parameters](#ParametersAliasCreate)|[Example](#ExamplesAliasCreate)|
+|[az account alias delete](#AliasDelete)|Delete|[Parameters](#ParametersAliasDelete)|[Example](#ExamplesAliasDelete)|
 
-cancel a account subscription.
+### <a name="CommandsInSubscription">Commands in `az account subscription` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az account subscription cancel](#SubscriptionCancel)|Cancel|[Parameters](#ParametersSubscriptionCancel)|[Example](#ExamplesSubscriptionCancel)|
+|[az account subscription enable](#SubscriptionEnable)|Enable|[Parameters](#ParametersSubscriptionEnable)|[Example](#ExamplesSubscriptionEnable)|
+|[az account subscription rename](#SubscriptionRename)|Rename|[Parameters](#ParametersSubscriptionRename)|[Example](#ExamplesSubscriptionRename)|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-### account subscription create-csp-subscription
+### <a name="CommandsInTenants">Commands in `az account tenant` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az account tenant list](#TenantsList)|List|[Parameters](#ParametersTenantsList)|[Example](#ExamplesTenantsList)|
 
-create-csp-subscription a account subscription.
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|**--display-name**|string|The friendly name of the subscription.|/something/my_option|/something/myOption|
-|**--sku-id**|string|The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.|/something/my_option|/something/myOption|
-|--reseller-id**|string|Reseller ID, basically MPN Id.|/something/my_option|/something/myOption|
-### account subscription create-subscription
+## COMMAND DETAILS
 
-create-subscription a account subscription.
+### group `az account alias`
+#### <a name="AliasList">Command `az account alias list`</a>
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|**--display-name**|string|The friendly name of the subscription.|/something/my_option|/something/myOption|
-|**--sku-id**|string|The SKU ID of the Azure plan. Azure plan determines the pricing and service-level agreement of the subscription.  Use 001 for Microsoft Azure Plan and 002 for Microsoft Azure Plan for DevTest.|/something/my_option|/something/myOption|
-|--cost-center**|string|If set, the cost center will show up on the Azure usage and charges file.|/something/my_option|/something/myOption|
-|--owner**|object|Active Directory Principal who’ll get owner access on the new subscription.|/something/my_option|/something/myOption|
-|--management-group-id**|string|The identifier of the management group to which this subscription will be associated.|/something/my_option|/something/myOption|
-### account subscription create-subscription-in-enrollment-account
+##### <a name="ExamplesAliasList">Example</a>
+```
+az account alias list
+```
+##### <a name="ParametersAliasList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+#### <a name="AliasGet">Command `az account alias show`</a>
 
-create-subscription-in-enrollment-account a account subscription.
+##### <a name="ExamplesAliasGet">Example</a>
+```
+az account alias show --name "aliasForNewSub"
+```
+##### <a name="ParametersAliasGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|The subscription creation parameters.|/something/my_option|/something/myOption|
-|--display-name**|string|The display name of the subscription.|/something/my_option|/something/myOption|
-|--management-group-id**|string|The Management Group Id.|/something/my_option|/something/myOption|
-|--owners**|array|The list of principals that should be granted Owner access on the subscription. Principals should be of type User, Service Principal or Security Group.|/something/my_option|/something/myOption|
-|--offer-type**|choice|The offer type of the subscription. For example, MS-AZR-0017P (EnterpriseAgreement) and MS-AZR-0148P (EnterpriseAgreement devTest) are available. Only valid when creating a subscription in a enrollment account scope.|/something/my_option|/something/myOption|
-### account subscription enable
+#### <a name="AliasCreate">Command `az account alias create`</a>
 
-enable a account subscription.
+##### <a name="ExamplesAliasCreate">Example</a>
+```
+az account alias create --name "aliasForNewSub" --properties billing-scope="/providers/Microsoft.Billing/billingAccount\
+s/e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31/billingProfiles/PE2Q-NOIT-BG7-TG\
+B/invoiceSections/MTT4-OBS7-PJA-TGB" display-name="Contoso MCA subscription" workload="Production"
+```
+##### <a name="ParametersAliasCreate">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
+|**--properties**|object|Put alias request properties.|properties|properties|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-### account subscription rename
+#### <a name="AliasDelete">Command `az account alias delete`</a>
 
-rename a account subscription.
+##### <a name="ExamplesAliasDelete">Example</a>
+```
+az account alias delete --name "aliasForNewSub"
+```
+##### <a name="ParametersAliasDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--alias-name**|string|Alias Name|alias_name|aliasName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
-|**--body**|object|Subscription Name|/something/my_option|/something/myOption|
-|--subscription-name**|string|New subscription name|/something/my_option|/something/myOption|
-### account subscription-operation show
+### group `az account subscription`
+#### <a name="SubscriptionCancel">Command `az account subscription cancel`</a>
 
-show a account subscription-operation.
+##### <a name="ExamplesSubscriptionCancel">Example</a>
+```
+az account subscription cancel --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+```
+##### <a name="ParametersSubscriptionCancel">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--api-version**|constant|Api Version|/something/my_option|/something/myOption|
+#### <a name="SubscriptionEnable">Command `az account subscription enable`</a>
+
+##### <a name="ExamplesSubscriptionEnable">Example</a>
+```
+az account subscription enable --subscription-id "7948bcee-488c-47ce-941c-38e20ede803d"
+```
+##### <a name="ParametersSubscriptionEnable">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
+
+#### <a name="SubscriptionRename">Command `az account subscription rename`</a>
+
+##### <a name="ExamplesSubscriptionRename">Example</a>
+```
+az account subscription rename --name "Test Sub" --subscription-id "83aa47df-e3e9-49ff-877b-94304bf3d3ad"
+```
+##### <a name="ParametersSubscriptionRename">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription-id**|string|Subscription Id.|subscription_id|subscriptionId|
+|**--subscription-name**|string|New subscription name|subscription_name|subscriptionName|
+
+### group `az account tenant`
+#### <a name="TenantsList">Command `az account tenant list`</a>
+
+##### <a name="ExamplesTenantsList">Example</a>
+```
+az account tenant list
+```
+##### <a name="ParametersTenantsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|

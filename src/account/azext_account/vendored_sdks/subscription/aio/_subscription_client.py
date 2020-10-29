@@ -15,11 +15,12 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import SubscriptionClientConfiguration
-from .operations_async import SubscriptionOperations
-from .operations_async import TenantOperations
-from .operations_async import OperationOperations
-from .operations_async import AliasOperations
+from ._configuration import SubscriptionClientConfiguration
+from .operations import SubscriptionOperations
+from .operations import TenantOperations
+from .operations import SubscriptionOperations
+from .operations import OperationOperations
+from .operations import AliasOperations
 from .. import models
 
 
@@ -27,13 +28,15 @@ class SubscriptionClient(object):
     """The subscription client.
 
     :ivar subscription: SubscriptionOperations operations
-    :vartype subscription: subscription_client.aio.operations_async.SubscriptionOperations
+    :vartype subscription: subscription_client.aio.operations.SubscriptionOperations
     :ivar tenant: TenantOperations operations
-    :vartype tenant: subscription_client.aio.operations_async.TenantOperations
+    :vartype tenant: subscription_client.aio.operations.TenantOperations
+    :ivar subscription: SubscriptionOperations operations
+    :vartype subscription: subscription_client.aio.operations.SubscriptionOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: subscription_client.aio.operations_async.OperationOperations
+    :vartype operation: subscription_client.aio.operations.OperationOperations
     :ivar alias: AliasOperations operations
-    :vartype alias: subscription_client.aio.operations_async.AliasOperations
+    :vartype alias: subscription_client.aio.operations.AliasOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param str base_url: Service URL
@@ -58,6 +61,8 @@ class SubscriptionClient(object):
         self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.tenant = TenantOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.operation = OperationOperations(
             self._client, self._config, self._serialize, self._deserialize)
