@@ -1,3 +1,8 @@
+0.1.12
+++++++++++++++++++
+
+* `az monitor app-insights component connect-webapp`: Enable application insights on web app.
+
 0.1.11
 ++++++++++++++++++
 
