@@ -43,15 +43,15 @@ def load_arguments(self, _):
                    help='Parameters for the Operator')
         c.argument('ssh_private_key',
                    help='Specify private ssh key for private repository sync (either base64 encoded or raw)')
-        c.argument('ssh_private_key_filepath',
+        c.argument('ssh_private_key_file',
                    help='Specify filepath to private ssh key for private repository sync')
         c.argument('https_user',
                    help='Specify HTTPS username for private repository sync')
         c.argument('https_key',
                    help='Specify HTTPS token/password for private repository sync')
-        c.argument('ssh_known_hosts_contents',
+        c.argument('ssh_known_hosts',
                    help='Specify base64-encoded known_hosts contents containing public SSH keys required to access private Git instances')
-        c.argument('ssh_known_hosts_filepath',
+        c.argument('ssh_known_hosts_file',
                    help='Specify filepath to known_hosts contents containing public SSH keys required to access private Git instances')
         c.argument('operator_instance_name',
                    help='Instance name of the Operator')
