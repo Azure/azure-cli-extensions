@@ -10,8 +10,8 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
 class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
@@ -61,4 +61,64 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
                 d['expiration_time'] = v[0]
             elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
+        return d
+
+
+class AddPackageDependencies(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageDependencies, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'dependency-name':
+                d['dependency_name'] = v[0]
+            elif kl == 'publisher':
+                d['publisher'] = v[0]
+            elif kl == 'min-version':
+                d['min_version'] = v[0]
+        return d
+
+
+class AddPackageApplications(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageApplications, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'app-id':
+                d['app_id'] = v[0]
+            elif kl == 'description':
+                d['description'] = v[0]
+            elif kl == 'app-user-model-id':
+                d['app_user_model_id'] = v[0]
+            elif kl == 'friendly-name':
+                d['friendly_name'] = v[0]
+            elif kl == 'icon-image-name':
+                d['icon_image_name'] = v[0]
+            elif kl == 'raw-icon':
+                d['raw_icon'] = v[0]
+            elif kl == 'raw-png':
+                d['raw_png'] = v[0]
         return d

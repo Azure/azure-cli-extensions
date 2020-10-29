@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._desktop_virtualization_api_client_async import DesktopVirtualizationAPIClient
+from ._desktop_virtualization_api_client import DesktopVirtualizationAPIClient
 __all__ = ['DesktopVirtualizationAPIClient']

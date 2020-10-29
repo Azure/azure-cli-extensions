@@ -15,17 +15,17 @@ from ._desktop_virtualization_api_client_enums import *
 
 
 class Resource(msrest.serialization.Model):
-    """Resource.
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     """
 
@@ -58,13 +58,13 @@ class Application(Resource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param description: Description of Application.
     :type description: str
@@ -72,6 +72,13 @@ class Application(Resource):
     :type friendly_name: str
     :param file_path: Specifies a path for the executable file for the application.
     :type file_path: str
+    :param msix_package_family_name: Specifies the package family name for MSIX applications.
+    :type msix_package_family_name: str
+    :param msix_package_application_id: Specifies the package application Id for MSIX applications.
+    :type msix_package_application_id: str
+    :param application_type: Resource Type of Application. Possible values include: "InBuilt",
+     "MsixApplication".
+    :type application_type: str or ~desktop_virtualization_api_client.models.RemoteApplicationType
     :param command_line_setting: Required. Specifies whether this published application can be
      launched with command line arguments provided by the client, command line arguments specified
      at publish time, or no command line arguments at all. Possible values include: "DoNotAllow",
@@ -108,6 +115,9 @@ class Application(Resource):
         'description': {'key': 'properties.description', 'type': 'str'},
         'friendly_name': {'key': 'properties.friendlyName', 'type': 'str'},
         'file_path': {'key': 'properties.filePath', 'type': 'str'},
+        'msix_package_family_name': {'key': 'properties.msixPackageFamilyName', 'type': 'str'},
+        'msix_package_application_id': {'key': 'properties.msixPackageApplicationId', 'type': 'str'},
+        'application_type': {'key': 'properties.applicationType', 'type': 'str'},
         'command_line_setting': {'key': 'properties.commandLineSetting', 'type': 'str'},
         'command_line_arguments': {'key': 'properties.commandLineArguments', 'type': 'str'},
         'show_in_portal': {'key': 'properties.showInPortal', 'type': 'bool'},
@@ -124,6 +134,9 @@ class Application(Resource):
         description: Optional[str] = None,
         friendly_name: Optional[str] = None,
         file_path: Optional[str] = None,
+        msix_package_family_name: Optional[str] = None,
+        msix_package_application_id: Optional[str] = None,
+        application_type: Optional[Union[str, "RemoteApplicationType"]] = None,
         command_line_arguments: Optional[str] = None,
         show_in_portal: Optional[bool] = None,
         icon_path: Optional[str] = None,
@@ -134,6 +147,9 @@ class Application(Resource):
         self.description = description
         self.friendly_name = friendly_name
         self.file_path = file_path
+        self.msix_package_family_name = msix_package_family_name
+        self.msix_package_application_id = msix_package_application_id
+        self.application_type = application_type
         self.command_line_setting = command_line_setting
         self.command_line_arguments = command_line_arguments
         self.show_in_portal = show_in_portal
@@ -144,19 +160,19 @@ class Application(Resource):
 
 
 class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
+    """The resource model definition for an Azure Resource Manager tracked top level resource which has 'tags' and a 'location'.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -198,13 +214,13 @@ class ApplicationGroup(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -302,13 +318,13 @@ class ApplicationGroupPatch(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. tags to be updated.
     :type tags: dict[str, str]
@@ -403,6 +419,13 @@ class ApplicationPatch(msrest.serialization.Model):
     :type icon_path: str
     :param icon_index: Index of the icon.
     :type icon_index: int
+    :param msix_package_family_name: Specifies the package family name for MSIX applications.
+    :type msix_package_family_name: str
+    :param msix_package_application_id: Specifies the package application Id for MSIX applications.
+    :type msix_package_application_id: str
+    :param application_type: Resource Type of Application. Possible values include: "InBuilt",
+     "MsixApplication".
+    :type application_type: str or ~desktop_virtualization_api_client.models.RemoteApplicationType
     """
 
     _attribute_map = {
@@ -415,6 +438,9 @@ class ApplicationPatch(msrest.serialization.Model):
         'show_in_portal': {'key': 'properties.showInPortal', 'type': 'bool'},
         'icon_path': {'key': 'properties.iconPath', 'type': 'str'},
         'icon_index': {'key': 'properties.iconIndex', 'type': 'int'},
+        'msix_package_family_name': {'key': 'properties.msixPackageFamilyName', 'type': 'str'},
+        'msix_package_application_id': {'key': 'properties.msixPackageApplicationId', 'type': 'str'},
+        'application_type': {'key': 'properties.applicationType', 'type': 'str'},
     }
 
     def __init__(
@@ -429,6 +455,9 @@ class ApplicationPatch(msrest.serialization.Model):
         show_in_portal: Optional[bool] = None,
         icon_path: Optional[str] = None,
         icon_index: Optional[int] = None,
+        msix_package_family_name: Optional[str] = None,
+        msix_package_application_id: Optional[str] = None,
+        application_type: Optional[Union[str, "RemoteApplicationType"]] = None,
         **kwargs
     ):
         super(ApplicationPatch, self).__init__(**kwargs)
@@ -441,6 +470,35 @@ class ApplicationPatch(msrest.serialization.Model):
         self.show_in_portal = show_in_portal
         self.icon_path = icon_path
         self.icon_index = icon_index
+        self.msix_package_family_name = msix_package_family_name
+        self.msix_package_application_id = msix_package_application_id
+        self.application_type = application_type
+
+
+class CloudErrorProperties(msrest.serialization.Model):
+    """CloudErrorProperties.
+
+    :param code: Error code.
+    :type code: str
+    :param message: Error message indicating why the operation failed.
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        message: Optional[str] = None,
+        **kwargs
+    ):
+        super(CloudErrorProperties, self).__init__(**kwargs)
+        self.code = code
+        self.message = message
 
 
 class Desktop(Resource):
@@ -448,13 +506,13 @@ class Desktop(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param description: Description of Desktop.
     :type description: str
@@ -560,6 +618,140 @@ class DesktopPatch(msrest.serialization.Model):
         self.friendly_name = friendly_name
 
 
+class ExpandMsixImage(Resource):
+    """Represents the definition of contents retrieved after expanding the MSIX Image.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :param package_alias: Alias of MSIX Package.
+    :type package_alias: str
+    :param image_path: VHD/CIM image path on Network Share.
+    :type image_path: str
+    :param package_name: Package Name from appxmanifest.xml.
+    :type package_name: str
+    :param package_family_name: Package Family Name from appxmanifest.xml. Contains Package Name
+     and Publisher name.
+    :type package_family_name: str
+    :param package_full_name: Package Full Name from appxmanifest.xml.
+    :type package_full_name: str
+    :param display_name: User friendly Name to be displayed in the portal.
+    :type display_name: str
+    :param package_relative_path: Relative Path to the package inside the image.
+    :type package_relative_path: str
+    :param is_regular_registration: Specifies how to register Package in feed.
+    :type is_regular_registration: bool
+    :param is_active: Make this version of the package the active one across the hostpool.
+    :type is_active: bool
+    :param package_dependencies: List of package dependencies.
+    :type package_dependencies:
+     list[~desktop_virtualization_api_client.models.MsixPackageDependencies]
+    :param version: Package Version found in the appxmanifest.xml.
+    :type version: str
+    :param last_updated: Date Package was last updated, found in the appxmanifest.xml.
+    :type last_updated: ~datetime.datetime
+    :param package_applications: List of package applications.
+    :type package_applications:
+     list[~desktop_virtualization_api_client.models.MsixPackageApplications]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'package_alias': {'key': 'properties.packageAlias', 'type': 'str'},
+        'image_path': {'key': 'properties.imagePath', 'type': 'str'},
+        'package_name': {'key': 'properties.packageName', 'type': 'str'},
+        'package_family_name': {'key': 'properties.packageFamilyName', 'type': 'str'},
+        'package_full_name': {'key': 'properties.packageFullName', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'package_relative_path': {'key': 'properties.packageRelativePath', 'type': 'str'},
+        'is_regular_registration': {'key': 'properties.isRegularRegistration', 'type': 'bool'},
+        'is_active': {'key': 'properties.isActive', 'type': 'bool'},
+        'package_dependencies': {'key': 'properties.packageDependencies', 'type': '[MsixPackageDependencies]'},
+        'version': {'key': 'properties.version', 'type': 'str'},
+        'last_updated': {'key': 'properties.lastUpdated', 'type': 'iso-8601'},
+        'package_applications': {'key': 'properties.packageApplications', 'type': '[MsixPackageApplications]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        package_alias: Optional[str] = None,
+        image_path: Optional[str] = None,
+        package_name: Optional[str] = None,
+        package_family_name: Optional[str] = None,
+        package_full_name: Optional[str] = None,
+        display_name: Optional[str] = None,
+        package_relative_path: Optional[str] = None,
+        is_regular_registration: Optional[bool] = None,
+        is_active: Optional[bool] = None,
+        package_dependencies: Optional[List["MsixPackageDependencies"]] = None,
+        version: Optional[str] = None,
+        last_updated: Optional[datetime.datetime] = None,
+        package_applications: Optional[List["MsixPackageApplications"]] = None,
+        **kwargs
+    ):
+        super(ExpandMsixImage, self).__init__(**kwargs)
+        self.package_alias = package_alias
+        self.image_path = image_path
+        self.package_name = package_name
+        self.package_family_name = package_family_name
+        self.package_full_name = package_full_name
+        self.display_name = display_name
+        self.package_relative_path = package_relative_path
+        self.is_regular_registration = is_regular_registration
+        self.is_active = is_active
+        self.package_dependencies = package_dependencies
+        self.version = version
+        self.last_updated = last_updated
+        self.package_applications = package_applications
+
+
+class ExpandMsixImageList(msrest.serialization.Model):
+    """List of MSIX package properties retrieved from MSIX Image expansion.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param value: List of MSIX package properties from give MSIX Image.
+    :type value: list[~desktop_virtualization_api_client.models.ExpandMsixImage]
+    :ivar next_link: Link to the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[ExpandMsixImage]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["ExpandMsixImage"]] = None,
+        **kwargs
+    ):
+        super(ExpandMsixImageList, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
 class HostPool(TrackedResource):
     """Represents a HostPool definition.
 
@@ -567,13 +759,13 @@ class HostPool(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -586,8 +778,8 @@ class HostPool(TrackedResource):
     :param host_pool_type: Required. HostPool type for desktop. Possible values include:
      "Personal", "Pooled".
     :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
-    :param personal_desktop_assignment_type: Required. PersonalDesktopAssignment type for HostPool.
-     Possible values include: "Automatic", "Direct".
+    :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool. Possible
+     values include: "Automatic", "Direct".
     :type personal_desktop_assignment_type: str or
      ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
     :param custom_rdp_property: Custom rdp property of HostPool.
@@ -609,6 +801,22 @@ class HostPool(TrackedResource):
     :vartype application_group_references: list[str]
     :param sso_context: Path to keyvault containing ssoContext secret.
     :type sso_context: str
+    :param ssoadfs_authority: URL to customer ADFS server for signing WVD SSO certificates.
+    :type ssoadfs_authority: str
+    :param sso_client_id: ClientId for the registered Relying Party used to issue WVD SSO
+     certificates.
+    :type sso_client_id: str
+    :param sso_client_secret_key_vault_path: Path to Azure KeyVault storing the secret used for
+     communication to ADFS.
+    :type sso_client_secret_key_vault_path: str
+    :param sso_secret_type: The type of single sign on Secret Type. Possible values include:
+     "SharedKey", "Certificate", "SharedKeyInKeyVault", "CertificateInKeyVault".
+    :type sso_secret_type: str or ~desktop_virtualization_api_client.models.SsoSecretType
+    :param preferred_app_group_type: Required. The type of preferred application group type,
+     default to Desktop Application Group. Possible values include: "None", "Desktop",
+     "RailApplications".
+    :type preferred_app_group_type: str or
+     ~desktop_virtualization_api_client.models.PreferredAppGroupType
     """
 
     _validation = {
@@ -617,9 +825,9 @@ class HostPool(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'host_pool_type': {'required': True},
-        'personal_desktop_assignment_type': {'required': True},
         'load_balancer_type': {'required': True},
         'application_group_references': {'readonly': True},
+        'preferred_app_group_type': {'required': True},
     }
 
     _attribute_map = {
@@ -641,6 +849,11 @@ class HostPool(TrackedResource):
         'vm_template': {'key': 'properties.vmTemplate', 'type': 'str'},
         'application_group_references': {'key': 'properties.applicationGroupReferences', 'type': '[str]'},
         'sso_context': {'key': 'properties.ssoContext', 'type': 'str'},
+        'ssoadfs_authority': {'key': 'properties.ssoadfsAuthority', 'type': 'str'},
+        'sso_client_id': {'key': 'properties.ssoClientId', 'type': 'str'},
+        'sso_client_secret_key_vault_path': {'key': 'properties.ssoClientSecretKeyVaultPath', 'type': 'str'},
+        'sso_secret_type': {'key': 'properties.ssoSecretType', 'type': 'str'},
+        'preferred_app_group_type': {'key': 'properties.preferredAppGroupType', 'type': 'str'},
     }
 
     def __init__(
@@ -648,11 +861,12 @@ class HostPool(TrackedResource):
         *,
         location: str,
         host_pool_type: Union[str, "HostPoolType"],
-        personal_desktop_assignment_type: Union[str, "PersonalDesktopAssignmentType"],
         load_balancer_type: Union[str, "LoadBalancerType"],
+        preferred_app_group_type: Union[str, "PreferredAppGroupType"],
         tags: Optional[Dict[str, str]] = None,
         friendly_name: Optional[str] = None,
         description: Optional[str] = None,
+        personal_desktop_assignment_type: Optional[Union[str, "PersonalDesktopAssignmentType"]] = None,
         custom_rdp_property: Optional[str] = None,
         max_session_limit: Optional[int] = None,
         ring: Optional[int] = None,
@@ -660,6 +874,10 @@ class HostPool(TrackedResource):
         registration_info: Optional["RegistrationInfo"] = None,
         vm_template: Optional[str] = None,
         sso_context: Optional[str] = None,
+        ssoadfs_authority: Optional[str] = None,
+        sso_client_id: Optional[str] = None,
+        sso_client_secret_key_vault_path: Optional[str] = None,
+        sso_secret_type: Optional[Union[str, "SsoSecretType"]] = None,
         **kwargs
     ):
         super(HostPool, self).__init__(tags=tags, location=location, **kwargs)
@@ -676,6 +894,11 @@ class HostPool(TrackedResource):
         self.vm_template = vm_template
         self.application_group_references = None
         self.sso_context = sso_context
+        self.ssoadfs_authority = ssoadfs_authority
+        self.sso_client_id = sso_client_id
+        self.sso_client_secret_key_vault_path = sso_client_secret_key_vault_path
+        self.sso_secret_type = sso_secret_type
+        self.preferred_app_group_type = preferred_app_group_type
 
 
 class HostPoolList(msrest.serialization.Model):
@@ -714,13 +937,13 @@ class HostPoolPatch(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. tags to be updated.
     :type tags: dict[str, str]
@@ -745,8 +968,25 @@ class HostPoolPatch(Resource):
     :type validation_environment: bool
     :param registration_info: The registration info of HostPool.
     :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
+    :param vm_template: VM template for sessionhosts configuration within hostpool.
+    :type vm_template: str
     :param sso_context: Path to keyvault containing ssoContext secret.
     :type sso_context: str
+    :param ssoadfs_authority: URL to customer ADFS server for signing WVD SSO certificates.
+    :type ssoadfs_authority: str
+    :param sso_client_id: ClientId for the registered Relying Party used to issue WVD SSO
+     certificates.
+    :type sso_client_id: str
+    :param sso_client_secret_key_vault_path: Path to Azure KeyVault storing the secret used for
+     communication to ADFS.
+    :type sso_client_secret_key_vault_path: str
+    :param sso_secret_type: The type of single sign on Secret Type. Possible values include:
+     "SharedKey", "Certificate", "SharedKeyInKeyVault", "CertificateInKeyVault".
+    :type sso_secret_type: str or ~desktop_virtualization_api_client.models.SsoSecretType
+    :param preferred_app_group_type: The type of preferred application group type, default to
+     Desktop Application Group. Possible values include: "None", "Desktop", "RailApplications".
+    :type preferred_app_group_type: str or
+     ~desktop_virtualization_api_client.models.PreferredAppGroupType
     """
 
     _validation = {
@@ -769,7 +1009,13 @@ class HostPoolPatch(Resource):
         'ring': {'key': 'properties.ring', 'type': 'int'},
         'validation_environment': {'key': 'properties.validationEnvironment', 'type': 'bool'},
         'registration_info': {'key': 'properties.registrationInfo', 'type': 'RegistrationInfoPatch'},
+        'vm_template': {'key': 'properties.vmTemplate', 'type': 'str'},
         'sso_context': {'key': 'properties.ssoContext', 'type': 'str'},
+        'ssoadfs_authority': {'key': 'properties.ssoadfsAuthority', 'type': 'str'},
+        'sso_client_id': {'key': 'properties.ssoClientId', 'type': 'str'},
+        'sso_client_secret_key_vault_path': {'key': 'properties.ssoClientSecretKeyVaultPath', 'type': 'str'},
+        'sso_secret_type': {'key': 'properties.ssoSecretType', 'type': 'str'},
+        'preferred_app_group_type': {'key': 'properties.preferredAppGroupType', 'type': 'str'},
     }
 
     def __init__(
@@ -785,7 +1031,13 @@ class HostPoolPatch(Resource):
         ring: Optional[int] = None,
         validation_environment: Optional[bool] = None,
         registration_info: Optional["RegistrationInfoPatch"] = None,
+        vm_template: Optional[str] = None,
         sso_context: Optional[str] = None,
+        ssoadfs_authority: Optional[str] = None,
+        sso_client_id: Optional[str] = None,
+        sso_client_secret_key_vault_path: Optional[str] = None,
+        sso_secret_type: Optional[Union[str, "SsoSecretType"]] = None,
+        preferred_app_group_type: Optional[Union[str, "PreferredAppGroupType"]] = None,
         **kwargs
     ):
         super(HostPoolPatch, self).__init__(**kwargs)
@@ -799,7 +1051,291 @@ class HostPoolPatch(Resource):
         self.ring = ring
         self.validation_environment = validation_environment
         self.registration_info = registration_info
+        self.vm_template = vm_template
         self.sso_context = sso_context
+        self.ssoadfs_authority = ssoadfs_authority
+        self.sso_client_id = sso_client_id
+        self.sso_client_secret_key_vault_path = sso_client_secret_key_vault_path
+        self.sso_secret_type = sso_secret_type
+        self.preferred_app_group_type = preferred_app_group_type
+
+
+class MsixImageUri(msrest.serialization.Model):
+    """Represents URI referring to MSIX Image.
+
+    :param uri: URI to Image.
+    :type uri: str
+    """
+
+    _attribute_map = {
+        'uri': {'key': 'uri', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        uri: Optional[str] = None,
+        **kwargs
+    ):
+        super(MsixImageUri, self).__init__(**kwargs)
+        self.uri = uri
+
+
+class MsixPackage(Resource):
+    """Schema for MSIX Package properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :param image_path: VHD/CIM image path on Network Share.
+    :type image_path: str
+    :param package_name: Package Name from appxmanifest.xml.
+    :type package_name: str
+    :param package_family_name: Package Family Name from appxmanifest.xml. Contains Package Name
+     and Publisher name.
+    :type package_family_name: str
+    :param display_name: User friendly Name to be displayed in the portal.
+    :type display_name: str
+    :param package_relative_path: Relative Path to the package inside the image.
+    :type package_relative_path: str
+    :param is_regular_registration: Specifies how to register Package in feed.
+    :type is_regular_registration: bool
+    :param is_active: Make this version of the package the active one across the hostpool.
+    :type is_active: bool
+    :param package_dependencies: List of package dependencies.
+    :type package_dependencies:
+     list[~desktop_virtualization_api_client.models.MsixPackageDependencies]
+    :param version: Package Version found in the appxmanifest.xml.
+    :type version: str
+    :param last_updated: Date Package was last updated, found in the appxmanifest.xml.
+    :type last_updated: ~datetime.datetime
+    :param package_applications: List of package applications.
+    :type package_applications:
+     list[~desktop_virtualization_api_client.models.MsixPackageApplications]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'image_path': {'key': 'properties.imagePath', 'type': 'str'},
+        'package_name': {'key': 'properties.packageName', 'type': 'str'},
+        'package_family_name': {'key': 'properties.packageFamilyName', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'package_relative_path': {'key': 'properties.packageRelativePath', 'type': 'str'},
+        'is_regular_registration': {'key': 'properties.isRegularRegistration', 'type': 'bool'},
+        'is_active': {'key': 'properties.isActive', 'type': 'bool'},
+        'package_dependencies': {'key': 'properties.packageDependencies', 'type': '[MsixPackageDependencies]'},
+        'version': {'key': 'properties.version', 'type': 'str'},
+        'last_updated': {'key': 'properties.lastUpdated', 'type': 'iso-8601'},
+        'package_applications': {'key': 'properties.packageApplications', 'type': '[MsixPackageApplications]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        image_path: Optional[str] = None,
+        package_name: Optional[str] = None,
+        package_family_name: Optional[str] = None,
+        display_name: Optional[str] = None,
+        package_relative_path: Optional[str] = None,
+        is_regular_registration: Optional[bool] = None,
+        is_active: Optional[bool] = None,
+        package_dependencies: Optional[List["MsixPackageDependencies"]] = None,
+        version: Optional[str] = None,
+        last_updated: Optional[datetime.datetime] = None,
+        package_applications: Optional[List["MsixPackageApplications"]] = None,
+        **kwargs
+    ):
+        super(MsixPackage, self).__init__(**kwargs)
+        self.image_path = image_path
+        self.package_name = package_name
+        self.package_family_name = package_family_name
+        self.display_name = display_name
+        self.package_relative_path = package_relative_path
+        self.is_regular_registration = is_regular_registration
+        self.is_active = is_active
+        self.package_dependencies = package_dependencies
+        self.version = version
+        self.last_updated = last_updated
+        self.package_applications = package_applications
+
+
+class MsixPackageApplications(msrest.serialization.Model):
+    """Schema for MSIX Package Application properties.
+
+    :param app_id: Package Application Id, found in appxmanifest.xml.
+    :type app_id: str
+    :param description: Description of Package Application.
+    :type description: str
+    :param app_user_model_id: Used to activate Package Application. Consists of Package Name and
+     ApplicationID. Found in appxmanifest.xml.
+    :type app_user_model_id: str
+    :param friendly_name: User friendly name.
+    :type friendly_name: str
+    :param icon_image_name: User friendly name.
+    :type icon_image_name: str
+    :param raw_icon: the icon a 64 bit string as a byte array.
+    :type raw_icon: bytearray
+    :param raw_png: the icon a 64 bit string as a byte array.
+    :type raw_png: bytearray
+    """
+
+    _attribute_map = {
+        'app_id': {'key': 'appId', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'app_user_model_id': {'key': 'appUserModelID', 'type': 'str'},
+        'friendly_name': {'key': 'friendlyName', 'type': 'str'},
+        'icon_image_name': {'key': 'iconImageName', 'type': 'str'},
+        'raw_icon': {'key': 'rawIcon', 'type': 'bytearray'},
+        'raw_png': {'key': 'rawPng', 'type': 'bytearray'},
+    }
+
+    def __init__(
+        self,
+        *,
+        app_id: Optional[str] = None,
+        description: Optional[str] = None,
+        app_user_model_id: Optional[str] = None,
+        friendly_name: Optional[str] = None,
+        icon_image_name: Optional[str] = None,
+        raw_icon: Optional[bytearray] = None,
+        raw_png: Optional[bytearray] = None,
+        **kwargs
+    ):
+        super(MsixPackageApplications, self).__init__(**kwargs)
+        self.app_id = app_id
+        self.description = description
+        self.app_user_model_id = app_user_model_id
+        self.friendly_name = friendly_name
+        self.icon_image_name = icon_image_name
+        self.raw_icon = raw_icon
+        self.raw_png = raw_png
+
+
+class MsixPackageDependencies(msrest.serialization.Model):
+    """Schema for MSIX Package Dependencies properties.
+
+    :param dependency_name: Name of package dependency.
+    :type dependency_name: str
+    :param publisher: Name of dependency publisher.
+    :type publisher: str
+    :param min_version: Dependency version required.
+    :type min_version: str
+    """
+
+    _attribute_map = {
+        'dependency_name': {'key': 'dependencyName', 'type': 'str'},
+        'publisher': {'key': 'publisher', 'type': 'str'},
+        'min_version': {'key': 'minVersion', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        dependency_name: Optional[str] = None,
+        publisher: Optional[str] = None,
+        min_version: Optional[str] = None,
+        **kwargs
+    ):
+        super(MsixPackageDependencies, self).__init__(**kwargs)
+        self.dependency_name = dependency_name
+        self.publisher = publisher
+        self.min_version = min_version
+
+
+class MsixPackageList(msrest.serialization.Model):
+    """List of MSIX Package definitions.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param value: List of MSIX Package definitions.
+    :type value: list[~desktop_virtualization_api_client.models.MsixPackage]
+    :ivar next_link: Link to the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[MsixPackage]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["MsixPackage"]] = None,
+        **kwargs
+    ):
+        super(MsixPackageList, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class MsixPackagePatch(Resource):
+    """MSIX Package properties that can be patched.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :param is_active: Set a version of the package to be active across hostpool.
+    :type is_active: bool
+    :param is_regular_registration: Set Registration mode. Regular or Delayed.
+    :type is_regular_registration: bool
+    :param display_name: Display name for MSIX Package.
+    :type display_name: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'is_active': {'key': 'properties.isActive', 'type': 'bool'},
+        'is_regular_registration': {'key': 'properties.isRegularRegistration', 'type': 'bool'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        is_active: Optional[bool] = None,
+        is_regular_registration: Optional[bool] = None,
+        display_name: Optional[str] = None,
+        **kwargs
+    ):
+        super(MsixPackagePatch, self).__init__(**kwargs)
+        self.is_active = is_active
+        self.is_regular_registration = is_regular_registration
+        self.display_name = display_name
 
 
 class RegistrationInfo(msrest.serialization.Model):
@@ -977,13 +1513,13 @@ class SessionHost(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param last_heart_beat: Last heart beat from SessionHost.
     :type last_heart_beat: ~datetime.datetime
@@ -993,6 +1529,10 @@ class SessionHost(Resource):
     :type agent_version: str
     :param allow_new_session: Allow a new session.
     :type allow_new_session: bool
+    :ivar virtual_machine_id: Virtual Machine Id of SessionHost's underlying virtual machine.
+    :vartype virtual_machine_id: str
+    :ivar resource_id: Resource Id of SessionHost's underlying virtual machine.
+    :vartype resource_id: str
     :param assigned_user: User assigned to SessionHost.
     :type assigned_user: str
     :param status: Status for a SessionHost. Possible values include: "Available", "Unavailable",
@@ -1017,6 +1557,8 @@ class SessionHost(Resource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'virtual_machine_id': {'readonly': True},
+        'resource_id': {'readonly': True},
         'status_timestamp': {'readonly': True},
         'last_update_time': {'readonly': True},
     }
@@ -1029,6 +1571,8 @@ class SessionHost(Resource):
         'sessions': {'key': 'properties.sessions', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
         'allow_new_session': {'key': 'properties.allowNewSession', 'type': 'bool'},
+        'virtual_machine_id': {'key': 'properties.virtualMachineId', 'type': 'str'},
+        'resource_id': {'key': 'properties.resourceId', 'type': 'str'},
         'assigned_user': {'key': 'properties.assignedUser', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'status_timestamp': {'key': 'properties.statusTimestamp', 'type': 'iso-8601'},
@@ -1059,6 +1603,8 @@ class SessionHost(Resource):
         self.sessions = sessions
         self.agent_version = agent_version
         self.allow_new_session = allow_new_session
+        self.virtual_machine_id = None
+        self.resource_id = None
         self.assigned_user = assigned_user
         self.status = status
         self.status_timestamp = None
@@ -1105,13 +1651,13 @@ class SessionHostPatch(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param allow_new_session: Allow a new session.
     :type allow_new_session: bool
@@ -1150,13 +1696,13 @@ class StartMenuItem(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param app_alias: Alias of StartMenuItem.
     :type app_alias: str
@@ -1246,13 +1792,13 @@ class UserSession(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param user_principal_name: The user principal name.
     :type user_principal_name: str
@@ -1341,13 +1887,13 @@ class Workspace(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
