@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -9,4 +8,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "0.2.0"
+
+def cf_databox_cl(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from ..vendored_sdks.databox import DataBoxManagementClient
+    return get_mgmt_service_client(cli_ctx,
+                                   DataBoxManagementClient)
+
+
+def cf_job(cli_ctx, *_):
+    return cf_databox_cl(cli_ctx).job
+
+
+def cf_service(cli_ctx, *_):
+    return cf_databox_cl(cli_ctx).service
