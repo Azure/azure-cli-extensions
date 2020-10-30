@@ -6,6 +6,8 @@
 
 # pylint: disable=line-too-long
 
+infrastructure_types = ["generic", "azure", "AWS", "GCP", "Azure_Stack_HC", "Azure_Stack_Hub", "Azure_Stack_Edge", "vSphere"]
+
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
@@ -45,3 +47,4 @@ Cluster_Info_Not_Found_Type = 'Error while finding current cluster server detail
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
+Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'

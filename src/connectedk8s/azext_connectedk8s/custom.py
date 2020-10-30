@@ -39,9 +39,12 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto'):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    print(infrastructure)
+    print(distribution)
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -105,13 +108,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
-    # Get kubernetes cluster info for telemetry
+    # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
+    if distribution == 'auto':
+        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_distro = distribution
+    if infrastructure == 'auto':
+        kubernetes_infra = get_kubernetes_infra(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
@@ -158,7 +169,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags)
+                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
@@ -223,7 +234,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags)
+    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
@@ -397,22 +408,49 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):
+def get_kubernetes_distro(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
         if api_response.items:
             labels = api_response.items[0].metadata.labels
+            provider_id = str(api_response.items[0].spec.provider_id)
             if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
                 return "openshift"
-        return "default"
+            if labels.get("kubernetes.azure.com/node-image-version"):
+                if labels["kubernetes.azure.com/node-image-version"].startswith("AKS"):
+                    return "AKS"
+            if provider_id.startswith("kind://"):
+                return "kind"
+        return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
         utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
                                            raise_error=False)
+        return "generic"
 
 
-def generate_request_payload(configuration, location, public_key, tags):
+def get_kubernetes_infra(configuration):  # Heuristic
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        if api_response.items:
+            provider_id = str(api_response.items[0].spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "kind":
+                return "generic"
+            if infra in consts.infrastructure_types:
+                return infra
+            return "generic"
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Error occured while trying to fetch kubernetes infrastructure.")
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
+                                           raise_error=False)
+        return "generic"
+
+
+def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
         tenant_id="",
@@ -429,7 +467,9 @@ def generate_request_payload(configuration, location, public_key, tags):
         identity=identity,
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
-        tags=tags
+        tags=tags,
+        kubernetes_distro=kubernetes_distro,
+        kubernetes_infra=kubernetes_infra
     )
     return cc
 

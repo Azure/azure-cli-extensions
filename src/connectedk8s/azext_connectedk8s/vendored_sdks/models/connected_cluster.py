@@ -34,14 +34,14 @@ class ConnectedCluster(TrackedResource):
     :type location: str
     :param identity: Required. The identity of the connected cluster.
     :type identity:
-     ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterIdentity
     :param agent_public_key_certificate: Required. Base64 encoded public
      certificate used by the agent to do the initial handshake to the backend
      services in Azure.
     :type agent_public_key_certificate: str
     :param aad_profile: Required.
     :type aad_profile:
-     ~azure.mgmt.hybridkubernetes.models.ConnectedClusterAADProfile
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterAADProfile
     :ivar kubernetes_version: The Kubernetes version of the connected cluster
      resource
     :vartype kubernetes_version: str
@@ -54,7 +54,16 @@ class ConnectedCluster(TrackedResource):
     :param provisioning_state: Possible values include: 'Succeeded', 'Failed',
      'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
-     ~azure.mgmt.hybridkubernetes.models.ProvisioningState
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ProvisioningState
+    :param kubernetes_distro: The Kuberenetes distribution on which the agents
+     are running
+    :type kubernetes_distro: str
+    :param kubernetes_infra: The Kubernetes infrastructure on which the agents
+     are running
+    :type kubernetes_infra: str
+    :ivar offering: The 1P service name through which Arc onboarding has
+     happened in case of integrated onboarding
+    :vartype offering: str
     """
 
     _validation = {
@@ -68,6 +77,7 @@ class ConnectedCluster(TrackedResource):
         'kubernetes_version': {'readonly': True},
         'total_node_count': {'readonly': True},
         'agent_version': {'readonly': True},
+        'offering': {'readonly': True},
     }
 
     _attribute_map = {
@@ -83,6 +93,9 @@ class ConnectedCluster(TrackedResource):
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'kubernetes_distro': {'key': 'properties.kubernetesDistro', 'type': 'str'},
+        'kubernetes_infra': {'key': 'properties.kubernetesInfra', 'type': 'str'},
+        'offering': {'key': 'properties.offering', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -94,3 +107,6 @@ class ConnectedCluster(TrackedResource):
         self.total_node_count = None
         self.agent_version = None
         self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.kubernetes_distro = kwargs.get('kubernetes_distro', None)
+        self.kubernetes_infra = kwargs.get('kubernetes_infra', None)
+        self.offering = None
