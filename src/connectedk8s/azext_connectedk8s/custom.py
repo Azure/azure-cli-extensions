@@ -20,7 +20,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait, is_guid
+from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
@@ -1232,7 +1232,7 @@ def _resolve_service_principal(client, identifier):  # Uses service principal gr
     result = list(client.list(filter="servicePrincipalNames/any(c:c eq '{}')".format(identifier)))
     if result:
         return result[0].object_id
-    if is_guid(identifier):
+    if utils.is_guid(identifier):
         return identifier  # assume an object id
     error = CLIError("Service principal '{}' doesn't exist".format(identifier))
     error.status_code = 404  # Make sure CLI returns 3

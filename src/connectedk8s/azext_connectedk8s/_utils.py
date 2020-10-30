@@ -197,3 +197,12 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
+
+
+def is_guid(guid):
+    import uuid
+    try:
+        uuid.UUID(guid)
+        return True
+    except ValueError:
+        return False
