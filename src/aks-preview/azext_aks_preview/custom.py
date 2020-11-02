@@ -65,7 +65,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue)
+                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue,
+                                                                      ManagedClusterPodIdentityProfile)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -96,6 +97,7 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
+from ._consts import CONST_ADDON_POD_IDENTITY
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -2547,6 +2549,16 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
+def _update_addon_pod_identity(cmd, instance, enable):
+    if not enable:
+        # when disable, null out the profile
+        instance.pod_identity_profile = None
+        return
+    if not instance.pod_identity_profile:
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=False)
+    instance.pod_identity_profile.enabled = enable
+
+
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    instance,
                    subscription_id,
@@ -2575,6 +2587,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     for addon_arg in addon_args:
         if addon_arg not in ADDONS:
             raise CLIError("Invalid addon name: {}.".format(addon_arg))
+        if addon_arg == CONST_ADDON_POD_IDENTITY:
+            # pod identity addon instantinate with dedicated PodIdentityProfile
+            _update_addon_pod_identity(cmd, instance, enable)
+            continue
         addon = ADDONS[addon_arg]
         if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
             # only linux is supported for now, in the future this will be a user flag
