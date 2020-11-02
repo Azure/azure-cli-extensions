@@ -6,7 +6,7 @@
 """Custom operations for storage account commands"""
 
 import os
-from azure.cli.core.util import get_file_json, shell_safe_json_parse
+from azure.cli.core.util import get_file_json, shell_safe_json_parse, find_child_item
 from knack.util import CLIError
 from .._client_factory import storage_client_factory
 
@@ -141,6 +141,87 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = acl
     return params
+
+
+def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, blob_inventory_policy_name,
+                                 enabled, destination, type, **kwargs):
+    blob_inventory_policy, blob_inventory_policy_schema, blob_inventory_policy_rule = \
+        cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema', 'BlobInventoryPolicyRule')
+
+    blob_inventory_policy.policy = blob_inventory_policy_schema(enabled=enabled, destination=destination, type=type,
+                                                                rules=[])
+
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   blob_inventory_policy_name=blob_inventory_policy_name,
+                                   properties=blob_inventory_policy,
+                                   **kwargs)
+
+
+def add_blob_inventory_policy_rule(cmd, client, resource_group_name, account_name, policy_id,
+                source_container, destination_container, min_creation_time=None, prefix_match=None):
+
+    """
+    Add rule for blob inventory policy
+    """
+    policy_properties = client.get(resource_group_name, account_name, policy_id)
+
+    BlobInventoryPolicyRule, BlobInventoryPolicyFilter = \
+        cmd.get_models('BlobInventoryPolicyRule', 'BlobInventoryPolicyFilter')
+    new_or_rule = BlobInventoryPolicyRule(
+        source_container=source_container,
+        destination_container=destination_container,
+        filters=BlobInventoryPolicyFilter(prefix_match=prefix_match, min_creation_time=min_creation_time)
+    )
+    policy_properties.rules.append(new_or_rule)
+    return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
+
+
+def remove_blob_inventory_policy_rule(client, resource_group_name, account_name, policy_id, rule_id):
+
+    or_policy = client.get(resource_group_name=resource_group_name,
+                           account_name=account_name,
+                           object_replication_policy_id=policy_id)
+
+    rule = find_child_item(or_policy, rule_id, path='rules', key_path='rule_id')
+    or_policy.rules.remove(rule)
+
+    return client.create_or_update(resource_group_name, account_name, policy_id, or_policy)
+
+
+def get_blob_inventory_policy_rule(client, resource_group_name, account_name, policy_id, rule_id):
+    policy_properties = client.get(resource_group_name, account_name, policy_id)
+    for rule in policy_properties.rules:
+        if rule.rule_id == rule_id:
+            return rule
+    raise CLIError("{} does not exist.".format(rule_id))
+
+
+def list_blob_inventory_policy_rules(client, resource_group_name, account_name, policy_id):
+    policy_properties = client.get(resource_group_name, account_name, policy_id)
+    return policy_properties.rules
+
+
+def update_blob_inventory_policy_rule(client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
+                   destination_container=None, min_creation_time=None, prefix_match=None):
+
+    policy_properties = client.get(resource_group_name, account_name, policy_id)
+
+    for i, rule in enumerate(policy_properties.rules):
+        if rule.rule_id == rule_id:
+            if destination_container is not None:
+                policy_properties.rules[i].destination_container = destination_container
+            if source_container is not None:
+                policy_properties.rules[i].source_container = source_container
+            if min_creation_time is not None:
+                policy_properties.rules[i].filters.min_creation_time = min_creation_time
+            if prefix_match is not None:
+                policy_properties.rules[i].filters.prefix_match = prefix_match
+
+    client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                            object_replication_policy_id=policy_id, properties=policy_properties)
+
+    return get_blob_inventory_policy_rule(client, resource_group_name=resource_group_name, account_name=account_name,
+                       policy_id=policy_id, rule_id=rule_id)
 
 
 def list_network_rules(client, resource_group_name, account_name):
