@@ -193,6 +193,25 @@ def load_arguments(self, _):
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
+    with self.argument_context('aks pod-identity') as c:
+        c.argument('cluster_name', type=str, help='The cluster name.')
+
+    with self.argument_context('aks pod-identity add') as c:
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], help='The pod identity name. Generate if not specified.', default=None, required=False)
+        c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
+
+    with self.argument_context('aks pod-identity delete') as c:
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], help='The pod identity name.')
+        c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
+
+    with self.argument_context('aks pod-identity add-exception') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], help='The pod identity exception name. Generate if not specified.', default=None, required=False)
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], help='The pod identity exception namespace.')
+
+    with self.argument_context('aks pod-identity delete-exception') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], help='The pod identity exception name.')
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], help='The pod identity exception namespace.')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

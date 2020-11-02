@@ -2958,31 +2958,35 @@ def get_aks_custom_headers(aks_custom_headers=None):
     return headers
 
 
-def aks_pod_identity_add(cmd, client, resource_group_name, name):
+def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
+                         identity_name, identity_namespace):
     # TODO
     return
 
 
-def aks_pod_identity_delete(cmd, client, resource_group_name, name):
+def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
+                            identity_name, identity_namespace):
     # TODO
     return
 
 
-def aks_pod_identity_list(cmd, client, resource_group_name, name):
+def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):
     # TODO
     return
 
 
-def aks_pod_identity_exception_add(cmd, client, resource_group_name, name):
+def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
+                                   exc_name, exc_namespace):
     # TODO
     return
 
 
-def aks_pod_identity_exception_delete(cmd, client, resource_group_name, name):
+def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_name,
+                                      exc_name, exc_namespace):
     # TODO
     return
 
 
-def aks_pod_identity_exception_list(cmd, client, resource_group_name, name):
+def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
     # TODO
     return
