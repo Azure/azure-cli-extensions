@@ -581,7 +581,7 @@ def update_azure_firewall_policy_rule_collection_group(instance, priority=None, 
 def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, firewall_policy_name,
                                                   rule_collection_group_name,
                                                   rule_collection_name, rule_priority, translated_address=None,
-                                                  translated_port=None, nat_action=None,
+                                                  translated_fqdn=None, translated_port=None, nat_action=None,
                                                   rule_name=None, description=None, ip_protocols=None,
                                                   source_addresses=None, destination_addresses=None,
                                                   destination_ports=None, source_ip_groups=None):
@@ -600,6 +600,7 @@ def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, fire
                        destination_addresses=destination_addresses,
                        destination_ports=destination_ports,
                        translated_address=translated_address,
+                       translated_fqdn=translated_fqdn,
                        translated_port=translated_port,
                        source_ip_groups=source_ip_groups)
     nat_rule_collection = FirewallPolicyNatRuleCollection(name=rule_collection_name,
