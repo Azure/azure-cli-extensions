@@ -10,7 +10,8 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list)
+                          validate_storage_data_plane_list, process_resource_group)
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -68,6 +69,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    type=get_datetime_type(False))
         c.argument('if_match')
         c.argument('if_none_match')
+
+    with self.argument_context('storage account blob-inventory-policy') as c:
+        t_blob_inventory_name = self.get_models('BlobInventoryPolicyName', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+        c.argument('blob_inventory_policy_name', options_list=['--name', '-n'],
+                   arg_type=get_enum_type(t_blob_inventory_name), default='default', required=False)
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
 
     with self.argument_context('storage account network-rule') as c:
         from ._validators import validate_subnet
