@@ -2956,3 +2956,33 @@ def get_aks_custom_headers(aks_custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
+
+
+def aks_pod_identity_add(cmd, client, resource_group_name, name):
+    # TODO
+    return
+
+
+def aks_pod_identity_delete(cmd, client, resource_group_name, name):
+    # TODO
+    return
+
+
+def aks_pod_identity_list(cmd, client, resource_group_name, name):
+    # TODO
+    return
+
+
+def aks_pod_identity_exception_add(cmd, client, resource_group_name, name):
+    # TODO
+    return
+
+
+def aks_pod_identity_exception_delete(cmd, client, resource_group_name, name):
+    # TODO
+    return
+
+
+def aks_pod_identity_exception_list(cmd, client, resource_group_name, name):
+    # TODO
+    return
