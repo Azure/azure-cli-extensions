@@ -15,14 +15,14 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import KustoManagementClientConfiguration
-from .operations_async import ClusterOperations
-from .operations_async import ClusterPrincipalAssignmentOperations
-from .operations_async import DatabaseOperations
-from .operations_async import DatabasePrincipalAssignmentOperations
-from .operations_async import AttachedDatabaseConfigurationOperations
-from .operations_async import DataConnectionOperations
-from .operations_async import OperationOperations
+from ._configuration import KustoManagementClientConfiguration
+from .operations import ClusterOperations
+from .operations import ClusterPrincipalAssignmentOperations
+from .operations import DatabaseOperations
+from .operations import DatabasePrincipalAssignmentOperations
+from .operations import AttachedDatabaseConfigurationOperations
+from .operations import DataConnectionOperations
+from .operations import OperationOperations
 from .. import models
 
 
@@ -30,19 +30,19 @@ class KustoManagementClient(object):
     """The Azure Kusto management API provides a RESTful set of web services that interact with Azure Kusto services to manage your clusters and databases. The API enables you to create, update, and delete clusters and databases.
 
     :ivar cluster: ClusterOperations operations
-    :vartype cluster: kusto_management_client.aio.operations_async.ClusterOperations
+    :vartype cluster: kusto_management_client.aio.operations.ClusterOperations
     :ivar cluster_principal_assignment: ClusterPrincipalAssignmentOperations operations
-    :vartype cluster_principal_assignment: kusto_management_client.aio.operations_async.ClusterPrincipalAssignmentOperations
+    :vartype cluster_principal_assignment: kusto_management_client.aio.operations.ClusterPrincipalAssignmentOperations
     :ivar database: DatabaseOperations operations
-    :vartype database: kusto_management_client.aio.operations_async.DatabaseOperations
+    :vartype database: kusto_management_client.aio.operations.DatabaseOperations
     :ivar database_principal_assignment: DatabasePrincipalAssignmentOperations operations
-    :vartype database_principal_assignment: kusto_management_client.aio.operations_async.DatabasePrincipalAssignmentOperations
+    :vartype database_principal_assignment: kusto_management_client.aio.operations.DatabasePrincipalAssignmentOperations
     :ivar attached_database_configuration: AttachedDatabaseConfigurationOperations operations
-    :vartype attached_database_configuration: kusto_management_client.aio.operations_async.AttachedDatabaseConfigurationOperations
+    :vartype attached_database_configuration: kusto_management_client.aio.operations.AttachedDatabaseConfigurationOperations
     :ivar data_connection: DataConnectionOperations operations
-    :vartype data_connection: kusto_management_client.aio.operations_async.DataConnectionOperations
+    :vartype data_connection: kusto_management_client.aio.operations.DataConnectionOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: kusto_management_client.aio.operations_async.OperationOperations
+    :vartype operation: kusto_management_client.aio.operations.OperationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.

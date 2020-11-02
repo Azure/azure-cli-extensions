@@ -19,11 +19,15 @@ helps['kusto cluster'] = """
 
 helps['kusto cluster list'] = """
     type: command
-    short-summary: "Lists all Kusto clusters within a subscription."
+    short-summary: "Lists all Kusto clusters within a resource group. And Lists all Kusto clusters within a \
+subscription."
     examples:
       - name: KustoClustersListByResourceGroup
         text: |-
                az kusto cluster list --resource-group "kustorptest"
+      - name: KustoClustersList
+        text: |-
+               az kusto cluster list
 """
 
 helps['kusto cluster show'] = """
@@ -37,7 +41,7 @@ helps['kusto cluster show'] = """
 
 helps['kusto cluster create'] = """
     type: command
-    short-summary: "Create or update a Kusto cluster."
+    short-summary: "Create a Kusto cluster."
     parameters:
       - name: --sku
         short-summary: "The SKU of the cluster."
@@ -212,11 +216,15 @@ helps['kusto cluster list-language-extension'] = """
 
 helps['kusto cluster list-sku'] = """
     type: command
-    short-summary: "Lists eligible SKUs for Kusto resource provider."
+    short-summary: "Returns the SKUs available for the provided resource. And Lists eligible SKUs for Kusto resource \
+provider."
     examples:
       - name: KustoClustersListResourceSkus
         text: |-
                az kusto cluster list-sku --name "kustoclusterrptest4" --resource-group "kustorptest"
+      - name: KustoClustersListSkus
+        text: |-
+               az kusto cluster list-sku
 """
 
 helps['kusto cluster remove-language-extension'] = """
@@ -309,7 +317,7 @@ helps['kusto cluster-principal-assignment create'] = """
 
 helps['kusto cluster-principal-assignment update'] = """
     type: command
-    short-summary: "Create a Kusto cluster principalAssignment."
+    short-summary: "Update a Kusto cluster principalAssignment."
 """
 
 helps['kusto cluster-principal-assignment delete'] = """
@@ -370,7 +378,7 @@ helps['kusto database show'] = """
 
 helps['kusto database create'] = """
     type: command
-    short-summary: "Creates or updates a database."
+    short-summary: "Create a database."
     parameters:
       - name: --read-write-database
         short-summary: "Class representing a read write database."
@@ -558,7 +566,7 @@ helps['kusto database-principal-assignment create'] = """
 
 helps['kusto database-principal-assignment update'] = """
     type: command
-    short-summary: "Creates a Kusto cluster database principalAssignment."
+    short-summary: "Update a Kusto cluster database principalAssignment."
 """
 
 helps['kusto database-principal-assignment delete'] = """
@@ -620,7 +628,7 @@ helps['kusto attached-database-configuration show'] = """
 
 helps['kusto attached-database-configuration create'] = """
     type: command
-    short-summary: "Creates or updates an attached database configuration."
+    short-summary: "Create an attached database configuration."
     examples:
       - name: AttachedDatabaseConfigurationsCreateOrUpdate
         text: |-
@@ -632,7 +640,7 @@ sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" 
 
 helps['kusto attached-database-configuration update'] = """
     type: command
-    short-summary: "Creates or updates an attached database configuration."
+    short-summary: "Update an attached database configuration."
 """
 
 helps['kusto attached-database-configuration delete'] = """
@@ -699,7 +707,7 @@ helps['kusto data-connection event-grid'] = """
 
 helps['kusto data-connection event-grid create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
 """
 
 helps['kusto data-connection event-hub'] = """
@@ -709,7 +717,7 @@ helps['kusto data-connection event-hub'] = """
 
 helps['kusto data-connection event-hub create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
     examples:
       - name: KustoDataConnectionsCreateOrUpdate
         text: |-
@@ -726,7 +734,7 @@ helps['kusto data-connection iot-hub'] = """
 
 helps['kusto data-connection iot-hub create'] = """
     type: command
-    short-summary: "Creates or updates a data connection."
+    short-summary: "Create a data connection."
 """
 
 helps['kusto data-connection event-grid update'] = """

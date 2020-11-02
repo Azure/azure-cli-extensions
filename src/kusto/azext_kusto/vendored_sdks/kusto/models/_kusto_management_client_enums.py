@@ -108,6 +108,14 @@ class DatabasePrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     GROUP = "Group"
     USER = "User"
 
+class DataConnectionKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Kind of the endpoint for the data connection
+    """
+
+    EVENT_HUB = "EventHub"
+    EVENT_GRID = "EventGrid"
+    IOT_HUB = "IotHub"
+
 class DefaultPrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The default principals modification kind
     """
@@ -203,9 +211,6 @@ class Kind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     READ_WRITE = "ReadWrite"
     READ_ONLY_FOLLOWING = "ReadOnlyFollowing"
-    EVENT_HUB = "EventHub"
-    EVENT_GRID = "EventGrid"
-    IOT_HUB = "IotHub"
 
 class LanguageExtensionName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Language extension that can run within KQL query.
@@ -263,12 +268,8 @@ class State(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
 
 class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of resource, Microsoft.Kusto/clusters.
+    """The type of resource, for instance Microsoft.Kusto/clusters/databases.
     """
 
-    MICROSOFT_KUSTO_CLUSTERS = "Microsoft.Kusto/clusters"
     MICROSOFT_KUSTO_CLUSTERS_DATABASES = "Microsoft.Kusto/clusters/databases"
     MICROSOFT_KUSTO_CLUSTERS_ATTACHED_DATABASE_CONFIGURATIONS = "Microsoft.Kusto/clusters/attachedDatabaseConfigurations"
-    MICROSOFT_KUSTO_CLUSTERS_PRINCIPAL_ASSIGNMENTS = "Microsoft.Kusto/clusters/principalAssignments"
-    MICROSOFT_KUSTO_CLUSTERS_DATABASES_DATA_CONNECTIONS = "Microsoft.Kusto/clusters/databases/dataConnections"
-    MICROSOFT_KUSTO_CLUSTERS_DATABASES_PRINCIPAL_ASSIGNMENTS = "Microsoft.Kusto/clusters/databases/principalAssignments"

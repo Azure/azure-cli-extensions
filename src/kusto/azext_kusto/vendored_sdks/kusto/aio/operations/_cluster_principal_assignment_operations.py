@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
@@ -21,8 +21,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class DatabasePrincipalAssignmentOperations:
-    """DatabasePrincipalAssignmentOperations async operations.
+class ClusterPrincipalAssignmentOperations:
+    """ClusterPrincipalAssignmentOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,42 +47,38 @@ class DatabasePrincipalAssignmentOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         name: str,
-        type: Union[str, "models.Type"],
         **kwargs
     ) -> "models.CheckNameResult":
-        """Checks that the database principal assignment is valid and is not already in use.
+        """Checks that the principal assignment name is valid and is not already in use.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
-        :param database_name: The name of the database in the Kusto cluster.
-        :type database_name: str
         :param name: Principal Assignment resource name.
         :type name: str
-        :param type: The type of resource, Microsoft.Kusto/clusters/databases/principalAssignments.
-        :type type: str or ~kusto_management_client.models.Type
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameResult, or the result of cls(response)
         :rtype: ~kusto_management_client.models.CheckNameResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        principal_assignment_name = models.DatabasePrincipalAssignmentCheckNameRequest(name=name, type=type)
+        principal_assignment_name = models.ClusterPrincipalAssignmentCheckNameRequest(name=name)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.check_name_availability.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -94,13 +90,12 @@ class DatabasePrincipalAssignmentOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(principal_assignment_name, 'DatabasePrincipalAssignmentCheckNameRequest')
+        body_content = self._serialize.body(principal_assignment_name, 'ClusterPrincipalAssignmentCheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -114,35 +109,35 @@ class DatabasePrincipalAssignmentOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/checkPrincipalAssignmentNameAvailability'}  # type: ignore
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/checkPrincipalAssignmentNameAvailability'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         principal_assignment_name: str,
         **kwargs
-    ) -> "models.DatabasePrincipalAssignment":
-        """Gets a Kusto cluster database principalAssignment.
+    ) -> "models.ClusterPrincipalAssignment":
+        """Gets a Kusto cluster principalAssignment.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
-        :param database_name: The name of the database in the Kusto cluster.
-        :type database_name: str
         :param principal_assignment_name: The name of the Kusto principalAssignment.
         :type principal_assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DatabasePrincipalAssignment, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.DatabasePrincipalAssignment
+        :return: ClusterPrincipalAssignment, or the result of cls(response)
+        :rtype: ~kusto_management_client.models.ClusterPrincipalAssignment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignment"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-18"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -150,7 +145,6 @@ class DatabasePrincipalAssignmentOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'principalAssignmentName': self._serialize.url("principal_assignment_name", principal_assignment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -161,7 +155,7 @@ class DatabasePrincipalAssignmentOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -171,33 +165,35 @@ class DatabasePrincipalAssignmentOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('DatabasePrincipalAssignment', pipeline_response)
+        deserialized = self._deserialize('ClusterPrincipalAssignment', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         principal_assignment_name: str,
         principal_id: Optional[str] = None,
-        role: Optional[Union[str, "models.DatabasePrincipalRole"]] = None,
+        role: Optional[Union[str, "models.ClusterPrincipalRole"]] = None,
         tenant_id: Optional[str] = None,
         principal_type: Optional[Union[str, "models.PrincipalType"]] = None,
         **kwargs
-    ) -> "models.DatabasePrincipalAssignment":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+    ) -> "models.ClusterPrincipalAssignment":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignment"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        parameters = models.DatabasePrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
+        parameters = models.ClusterPrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
@@ -205,7 +201,6 @@ class DatabasePrincipalAssignmentOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'principalAssignmentName': self._serialize.url("principal_assignment_name", principal_assignment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -217,13 +212,12 @@ class DatabasePrincipalAssignmentOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'DatabasePrincipalAssignment')
+        body_content = self._serialize.body(parameters, 'ClusterPrincipalAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -232,44 +226,41 @@ class DatabasePrincipalAssignmentOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('DatabasePrincipalAssignment', pipeline_response)
+            deserialized = self._deserialize('ClusterPrincipalAssignment', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('DatabasePrincipalAssignment', pipeline_response)
+            deserialized = self._deserialize('ClusterPrincipalAssignment', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         principal_assignment_name: str,
         principal_id: Optional[str] = None,
-        role: Optional[Union[str, "models.DatabasePrincipalRole"]] = None,
+        role: Optional[Union[str, "models.ClusterPrincipalRole"]] = None,
         tenant_id: Optional[str] = None,
         principal_type: Optional[Union[str, "models.PrincipalType"]] = None,
         **kwargs
-    ) -> AsyncLROPoller["models.DatabasePrincipalAssignment"]:
-        """Creates a Kusto cluster database principalAssignment.
+    ) -> AsyncLROPoller["models.ClusterPrincipalAssignment"]:
+        """Create a Kusto cluster principalAssignment.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
-        :param database_name: The name of the database in the Kusto cluster.
-        :type database_name: str
         :param principal_assignment_name: The name of the Kusto principalAssignment.
         :type principal_assignment_name: str
-        :param principal_id: The principal ID assigned to the database principal. It can be a user
+        :param principal_id: The principal ID assigned to the cluster principal. It can be a user
          email, application ID, or security group name.
         :type principal_id: str
-        :param role: Database principal role.
-        :type role: str or ~kusto_management_client.models.DatabasePrincipalRole
+        :param role: Cluster principal role.
+        :type role: str or ~kusto_management_client.models.ClusterPrincipalRole
         :param tenant_id: The tenant id of the principal.
         :type tenant_id: str
         :param principal_type: Principal type.
@@ -280,12 +271,12 @@ class DatabasePrincipalAssignmentOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either DatabasePrincipalAssignment or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.DatabasePrincipalAssignment]
+        :return: An instance of AsyncLROPoller that returns either ClusterPrincipalAssignment or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.ClusterPrincipalAssignment]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalAssignment"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignment"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -295,7 +286,6 @@ class DatabasePrincipalAssignmentOperations:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
-                database_name=database_name,
                 principal_assignment_name=principal_assignment_name,
                 principal_id=principal_id,
                 role=role,
@@ -309,13 +299,20 @@ class DatabasePrincipalAssignmentOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('DatabasePrincipalAssignment', pipeline_response)
+            deserialized = self._deserialize('ClusterPrincipalAssignment', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+            'principalAssignmentName': self._serialize.url("principal_assignment_name", principal_assignment_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -327,20 +324,22 @@ class DatabasePrincipalAssignmentOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     async def _delete_initial(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         principal_assignment_name: str,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-18"
+        accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -348,7 +347,6 @@ class DatabasePrincipalAssignmentOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'principalAssignmentName': self._serialize.url("principal_assignment_name", principal_assignment_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -359,6 +357,7 @@ class DatabasePrincipalAssignmentOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -371,24 +370,21 @@ class DatabasePrincipalAssignmentOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     async def begin_delete(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         principal_assignment_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Deletes a Kusto principalAssignment.
+        """Deletes a Kusto cluster principalAssignment.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
-        :param database_name: The name of the database in the Kusto cluster.
-        :type database_name: str
         :param principal_assignment_name: The name of the Kusto principalAssignment.
         :type principal_assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -412,7 +408,6 @@ class DatabasePrincipalAssignmentOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
-                database_name=database_name,
                 principal_assignment_name=principal_assignment_name,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -425,7 +420,14 @@ class DatabasePrincipalAssignmentOperations:
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+            'principalAssignmentName': self._serialize.url("principal_assignment_name", principal_assignment_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -437,37 +439,37 @@ class DatabasePrincipalAssignmentOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     def list(
         self,
         resource_group_name: str,
         cluster_name: str,
-        database_name: str,
         **kwargs
-    ) -> AsyncIterable["models.DatabasePrincipalAssignmentListResult"]:
-        """Lists all Kusto cluster database principalAssignments.
+    ) -> AsyncIterable["models.ClusterPrincipalAssignmentListResult"]:
+        """Lists all Kusto cluster principalAssignments.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
-        :param database_name: The name of the database in the Kusto cluster.
-        :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either DatabasePrincipalAssignmentListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.DatabasePrincipalAssignmentListResult]
+        :return: An iterator like instance of either ClusterPrincipalAssignmentListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ClusterPrincipalAssignmentListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalAssignmentListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignmentListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-18"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -476,7 +478,6 @@ class DatabasePrincipalAssignmentOperations:
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-                    'databaseName': self._serialize.url("database_name", database_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -491,7 +492,7 @@ class DatabasePrincipalAssignmentOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatabasePrincipalAssignmentListResult', pipeline_response)
+            deserialized = self._deserialize('ClusterPrincipalAssignmentListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -512,4 +513,4 @@ class DatabasePrincipalAssignmentOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/principalAssignments'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments'}  # type: ignore

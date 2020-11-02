@@ -10,17 +10,17 @@ import msrest.serialization
 
 
 class Resource(msrest.serialization.Model):
-    """Resource.
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     """
 
@@ -51,13 +51,13 @@ class AttachedDatabaseConfiguration(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
@@ -247,11 +247,8 @@ class CheckNameRequest(msrest.serialization.Model):
     :param name: Required. Resource name.
     :type name: str
     :param type: Required. The type of resource, for instance Microsoft.Kusto/clusters/databases.
-     Possible values include: "Microsoft.Kusto/clusters", "Microsoft.Kusto/clusters/databases",
-     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations",
-     "Microsoft.Kusto/clusters/principalAssignments",
-     "Microsoft.Kusto/clusters/databases/dataConnections",
-     "Microsoft.Kusto/clusters/databases/principalAssignments".
+     Possible values include: "Microsoft.Kusto/clusters/databases",
+     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations".
     :type type: str or ~kusto_management_client.models.Type
     """
 
@@ -342,19 +339,19 @@ class CloudErrorBody(msrest.serialization.Model):
 
 
 class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
+    """The resource model definition for an Azure Resource Manager tracked top level resource which has 'tags' and a 'location'.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -393,13 +390,13 @@ class Cluster(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -537,22 +534,20 @@ class Cluster(TrackedResource):
 class ClusterCheckNameRequest(msrest.serialization.Model):
     """The result returned from a cluster check name availability request.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. Cluster name.
     :type name: str
-    :param type: Required. The type of resource, Microsoft.Kusto/clusters. Possible values include:
-     "Microsoft.Kusto/clusters", "Microsoft.Kusto/clusters/databases",
-     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations",
-     "Microsoft.Kusto/clusters/principalAssignments",
-     "Microsoft.Kusto/clusters/databases/dataConnections",
-     "Microsoft.Kusto/clusters/databases/principalAssignments".
-    :type type: str or ~kusto_management_client.models.Type
+    :ivar type: Required. The type of resource, Microsoft.Kusto/clusters. Default value:
+     "Microsoft.Kusto/clusters".
+    :vartype type: str
     """
 
     _validation = {
         'name': {'required': True},
-        'type': {'required': True},
+        'type': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
@@ -560,13 +555,14 @@ class ClusterCheckNameRequest(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
+    type = "Microsoft.Kusto/clusters"
+
     def __init__(
         self,
         **kwargs
     ):
         super(ClusterCheckNameRequest, self).__init__(**kwargs)
         self.name = kwargs['name']
-        self.type = kwargs['type']
 
 
 class ClusterListResult(msrest.serialization.Model):
@@ -593,13 +589,13 @@ class ClusterPrincipalAssignment(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param principal_id: The principal ID assigned to the cluster principal. It can be a user
      email, application ID, or security group name.
@@ -659,22 +655,20 @@ class ClusterPrincipalAssignment(Resource):
 class ClusterPrincipalAssignmentCheckNameRequest(msrest.serialization.Model):
     """A principal assignment check name availability request.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. Principal Assignment resource name.
     :type name: str
-    :param type: Required. The type of resource, Microsoft.Kusto/clusters/principalAssignments.
-     Possible values include: "Microsoft.Kusto/clusters", "Microsoft.Kusto/clusters/databases",
-     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations",
-     "Microsoft.Kusto/clusters/principalAssignments",
-     "Microsoft.Kusto/clusters/databases/dataConnections",
-     "Microsoft.Kusto/clusters/databases/principalAssignments".
-    :type type: str or ~kusto_management_client.models.Type
+    :ivar type: Required. The type of resource, Microsoft.Kusto/clusters/principalAssignments.
+     Default value: "Microsoft.Kusto/clusters/principalAssignments".
+    :vartype type: str
     """
 
     _validation = {
         'name': {'required': True},
-        'type': {'required': True},
+        'type': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
@@ -682,13 +676,14 @@ class ClusterPrincipalAssignmentCheckNameRequest(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
+    type = "Microsoft.Kusto/clusters/principalAssignments"
+
     def __init__(
         self,
         **kwargs
     ):
         super(ClusterPrincipalAssignmentCheckNameRequest, self).__init__(**kwargs)
         self.name = kwargs['name']
-        self.type = kwargs['type']
 
 
 class ClusterPrincipalAssignmentListResult(msrest.serialization.Model):
@@ -715,13 +710,13 @@ class ClusterUpdate(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -892,18 +887,18 @@ class Database(Resource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the database.Constant filled by server.  Possible values
-     include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
+     include: "ReadWrite", "ReadOnlyFollowing".
     :type kind: str or ~kusto_management_client.models.Kind
     """
 
@@ -1015,13 +1010,13 @@ class DatabasePrincipalAssignment(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param principal_id: The principal ID assigned to the database principal. It can be a user
      email, application ID, or security group name.
@@ -1081,23 +1076,21 @@ class DatabasePrincipalAssignment(Resource):
 class DatabasePrincipalAssignmentCheckNameRequest(msrest.serialization.Model):
     """A principal assignment check name availability request.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. Principal Assignment resource name.
     :type name: str
-    :param type: Required. The type of resource,
-     Microsoft.Kusto/clusters/databases/principalAssignments. Possible values include:
-     "Microsoft.Kusto/clusters", "Microsoft.Kusto/clusters/databases",
-     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations",
-     "Microsoft.Kusto/clusters/principalAssignments",
-     "Microsoft.Kusto/clusters/databases/dataConnections",
+    :ivar type: Required. The type of resource,
+     Microsoft.Kusto/clusters/databases/principalAssignments. Default value:
      "Microsoft.Kusto/clusters/databases/principalAssignments".
-    :type type: str or ~kusto_management_client.models.Type
+    :vartype type: str
     """
 
     _validation = {
         'name': {'required': True},
-        'type': {'required': True},
+        'type': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
@@ -1105,13 +1098,14 @@ class DatabasePrincipalAssignmentCheckNameRequest(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
+    type = "Microsoft.Kusto/clusters/databases/principalAssignments"
+
     def __init__(
         self,
         **kwargs
     ):
         super(DatabasePrincipalAssignmentCheckNameRequest, self).__init__(**kwargs)
         self.name = kwargs['name']
-        self.type = kwargs['type']
 
 
 class DatabasePrincipalAssignmentListResult(msrest.serialization.Model):
@@ -1200,19 +1194,19 @@ class DataConnection(Resource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the endpoint for the data connection.Constant filled by server.
-     Possible values include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
-    :type kind: str or ~kusto_management_client.models.Kind
+     Possible values include: "EventHub", "EventGrid", "IotHub".
+    :type kind: str or ~kusto_management_client.models.DataConnectionKind
     """
 
     _validation = {
@@ -1246,23 +1240,20 @@ class DataConnection(Resource):
 class DataConnectionCheckNameRequest(msrest.serialization.Model):
     """A data connection check name availability request.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. Data Connection name.
     :type name: str
-    :param type: Required. The type of resource,
-     Microsoft.Kusto/clusters/databases/dataConnections. Possible values include:
-     "Microsoft.Kusto/clusters", "Microsoft.Kusto/clusters/databases",
-     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations",
-     "Microsoft.Kusto/clusters/principalAssignments",
-     "Microsoft.Kusto/clusters/databases/dataConnections",
-     "Microsoft.Kusto/clusters/databases/principalAssignments".
-    :type type: str or ~kusto_management_client.models.Type
+    :ivar type: Required. The type of resource, Microsoft.Kusto/clusters/databases/dataConnections.
+     Default value: "Microsoft.Kusto/clusters/databases/dataConnections".
+    :vartype type: str
     """
 
     _validation = {
         'name': {'required': True},
-        'type': {'required': True},
+        'type': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
@@ -1270,13 +1261,14 @@ class DataConnectionCheckNameRequest(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
+    type = "Microsoft.Kusto/clusters/databases/dataConnections"
+
     def __init__(
         self,
         **kwargs
     ):
         super(DataConnectionCheckNameRequest, self).__init__(**kwargs)
         self.name = kwargs['name']
-        self.type = kwargs['type']
 
 
 class DataConnectionListResult(msrest.serialization.Model):
@@ -1385,19 +1377,19 @@ class EventGridDataConnection(DataConnection):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the endpoint for the data connection.Constant filled by server.
-     Possible values include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
-    :type kind: str or ~kusto_management_client.models.Kind
+     Possible values include: "EventHub", "EventGrid", "IotHub".
+    :type kind: str or ~kusto_management_client.models.DataConnectionKind
     :param storage_account_resource_id: The resource ID of the storage account where the data
      resides.
     :type storage_account_resource_id: str
@@ -1477,19 +1469,19 @@ class EventHubDataConnection(DataConnection):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the endpoint for the data connection.Constant filled by server.
-     Possible values include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
-    :type kind: str or ~kusto_management_client.models.Kind
+     Possible values include: "EventHub", "EventGrid", "IotHub".
+    :type kind: str or ~kusto_management_client.models.DataConnectionKind
     :param event_hub_resource_id: The resource ID of the event hub to be used to create a data
      connection.
     :type event_hub_resource_id: str
@@ -1622,19 +1614,19 @@ class IotHubDataConnection(DataConnection):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the endpoint for the data connection.Constant filled by server.
-     Possible values include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
-    :type kind: str or ~kusto_management_client.models.Kind
+     Possible values include: "EventHub", "EventGrid", "IotHub".
+    :type kind: str or ~kusto_management_client.models.DataConnectionKind
     :param iot_hub_resource_id: The resource ID of the Iot hub to be used to create a data
      connection.
     :type iot_hub_resource_id: str
@@ -1923,17 +1915,17 @@ class OptimizedAutoscale(msrest.serialization.Model):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     """
 
@@ -1963,18 +1955,18 @@ class ReadOnlyFollowingDatabase(Database):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the database.Constant filled by server.  Possible values
-     include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
+     include: "ReadWrite", "ReadOnlyFollowing".
     :type kind: str or ~kusto_management_client.models.Kind
     :ivar provisioning_state: The provisioned state of the resource. Possible values include:
      "Running", "Creating", "Deleting", "Succeeded", "Failed", "Moving".
@@ -2048,18 +2040,18 @@ class ReadWriteDatabase(Database):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param location: Resource location.
     :type location: str
     :param kind: Required. Kind of the database.Constant filled by server.  Possible values
-     include: "ReadWrite", "ReadOnlyFollowing", "EventHub", "EventGrid", "IotHub".
+     include: "ReadWrite", "ReadOnlyFollowing".
     :type kind: str or ~kusto_management_client.models.Kind
     :ivar provisioning_state: The provisioned state of the resource. Possible values include:
      "Running", "Creating", "Deleting", "Succeeded", "Failed", "Moving".
