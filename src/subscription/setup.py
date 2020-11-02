@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Wilco Bauwer',
     author_email='wilcob@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/subscription',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,
