@@ -240,7 +240,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Install azure-arc agents
-    helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+    helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                          kube_context, no_wait, values_file_provided, values_file)
 
@@ -620,12 +620,13 @@ def get_release_namespace(kube_config, kube_context):
     return None
 
 
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                        "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
