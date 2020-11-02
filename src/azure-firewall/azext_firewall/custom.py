@@ -66,9 +66,9 @@ def _find_item_at_path(instance, path):
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
-                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
+                          dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None):
-    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+    if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
@@ -109,10 +109,6 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
             if enable_dns_proxy is not None:
                 # service side requires lowercase
                 firewall.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
-            if require_dns_proxy_for_network_rules:
-                # service side requires lowercase
-                firewall.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-                    str(require_dns_proxy_for_network_rules).lower()
             if dns_servers is not None:
                 firewall.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
@@ -127,10 +123,10 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 # pylint: disable=too-many-branches
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
-                          dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None,
+                          dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
                           hub_public_ip_count=None, allow_active_ftp=None):
-    if firewall_policy and any([enable_dns_proxy, require_dns_proxy_for_network_rules, dns_servers]):
+    if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
         raise CLIError('Cannot add and remove public ip addresses at same time.')
@@ -160,10 +156,6 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
     if enable_dns_proxy is not None:
         # service side requires lowercase
         instance.additional_properties['Network.DNS.EnableProxy'] = str(enable_dns_proxy).lower()
-    if require_dns_proxy_for_network_rules is not None:
-        # service side requires lowercase
-        instance.additional_properties['Network.DNS.RequireProxyForNetworkRules'] = \
-            str(require_dns_proxy_for_network_rules).lower()
     if dns_servers is not None:
         instance.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
     if threat_intel_mode is not None:
@@ -499,7 +491,7 @@ def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
+                                   dns_servers=None, enable_dns_proxy=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
@@ -518,10 +510,9 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
     firewall_policy.threat_intel_whitelist = threat_intel_allowlist
 
     if cmd.supported_api_version(min_api='2020-05-01'):
-        if any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
+        if any([dns_servers, enable_dns_proxy]):
             dns_settings = DnsSettings(servers=dns_servers,
-                                       enable_proxy=enable_dns_proxy or False,
-                                       require_proxy_for_network_rules=require_dns_proxy_for_network_rules or True)
+                                       enable_proxy=enable_dns_proxy or False)
             firewall_policy.dns_settings = dns_settings
 
     return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
@@ -530,7 +521,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
 def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None, require_dns_proxy_for_network_rules=None):
+                                   dns_servers=None, enable_dns_proxy=None):
 
     (FirewallPolicyThreatIntelWhitelist) = cmd.get_models('FirewallPolicyThreatIntelWhitelist')
     if tags is not None:
@@ -539,15 +530,13 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_mode = threat_intel_mode
 
     if cmd.supported_api_version(min_api='2020-05-01'):
-        if instance.dns_settings is None and any([dns_servers, enable_dns_proxy, require_dns_proxy_for_network_rules]):
+        if instance.dns_settings is None and any([dns_servers, enable_dns_proxy]):
             DnsSettings = cmd.get_models('DnsSettings')
             instance.dns_settings = DnsSettings()
         if dns_servers is not None:
             instance.dns_settings.servers = dns_servers
         if enable_dns_proxy is not None:
             instance.dns_settings.enable_proxy = enable_dns_proxy
-        if require_dns_proxy_for_network_rules is not None:
-            instance.dns_settings.require_proxy_for_network_rules = require_dns_proxy_for_network_rules
 
     if instance.threat_intel_whitelist is None and any([ip_addresses, fqdns]):
         instance.threat_intel_whitelist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
