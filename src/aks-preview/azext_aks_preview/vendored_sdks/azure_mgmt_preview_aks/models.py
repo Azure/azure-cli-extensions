@@ -23,3 +23,4 @@ from .v2020_03_01.models import *
 from .v2020_04_01.models import *
 from .v2020_06_01.models import *
 from .v2020_09_01.models import *
+from .v2020_11_01.models import *
