@@ -2,7 +2,7 @@
 
  Release History
 ===============
-0.5.0 (2020-10-22)
+0.5.0 (2020-11-02)
 ++++++++++++++++
 * Support resource access rules in storage account
 
