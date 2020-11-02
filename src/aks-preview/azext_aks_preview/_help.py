@@ -506,7 +506,7 @@ helps['aks kanalyze'] = """
 
 helps['aks nodepool'] = """
     type: group
-    short-summary: Commands to manage node pools in Kubernetes kubernetes cluster.
+    short-summary: Commands to manage node pools in managed Kubernetes cluster.
 """
 helps['aks nodepool show'] = """
     type: command
@@ -767,4 +767,9 @@ helps['aks rotate-certs'] = """
     type: command
     short-summary: Rotate certificates and keys on a managed Kubernetes cluster
     long-summary: Kubernetes will be unavailable during cluster certificate rotation.
+"""
+
+helps['aks pod-identity'] = """
+    type: group
+    short-summary: Commands to manage pod identities in managed Kubernetes cluster.
 """
