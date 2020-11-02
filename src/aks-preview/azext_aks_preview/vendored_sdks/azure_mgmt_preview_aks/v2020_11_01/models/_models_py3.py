@@ -1988,24 +1988,32 @@ class ManagedClusterPodIdentityException(Model):
 class ManagedClusterPodIdentityProfile(Model):
     """ManagedClusterPodIdentityProfile.
 
-    :param user_assigned_pod_identities: User assigned pod identity settings.
-    :type user_assigned_pod_identities:
+    :param enabled: Whether pod identity addon is enabled.
+    :type enabled: boolean
+    :param user_assigned_identities: User assigned pod identity settings.
+    :type user_assigned_identities:
      list[~azure.mgmt.containerservice.v2020_11_01.models.ManagedClusterPodIdentity]
-    :param user_assigned_pod_identity_exceptions: User assigned pod identity
+    :param user_assigned_identity_exceptions: User assigned pod identity
      exception settings.
-    :type user_assigned_pod_identity_exceptions:
+    :type user_assigned_identity_exceptions:
      list[~azure.mgmt.containerservice.v2020_11_01.models.ManagedClusterPodIdentityException]
     """
 
-    _attribute_map = {
-        'user_assigned_pod_identities': {'key': 'userAssignedPodIdentities', 'type': '[ManagedClusterPodIdentity]'},
-        'user_assigned_pod_identity_exceptions': {'key': 'userAssignedPodIdentityExceptions', 'type': '[ManagedClusterPodIdentityException]'},
+    _validation = {
+        'enabled': {'required': True},
     }
 
-    def __init__(self, *, user_assigned_pod_identities=None, user_assigned_pod_identity_exceptions=None, **kwargs) -> None:
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '[ManagedClusterPodIdentity]'},
+        'user_assigned_identity_exceptions': {'key': 'userAssignedIdentityExceptions', 'type': '[ManagedClusterPodIdentityException]'},
+    }
+
+    def __init__(self, *, enabled: bool, user_assigned_identities=None, user_assigned_identity_exceptions=None, **kwargs) -> None:
         super(ManagedClusterPodIdentityProfile, self).__init__(**kwargs)
-        self.user_assigned_pod_identities = user_assigned_pod_identities
-        self.user_assigned_pod_identity_exceptions = user_assigned_pod_identity_exceptions
+        self.enabled = enabled
+        self.user_assigned_identities = user_assigned_identities
+        self.user_assigned_identity_exceptions = user_assigned_identity_exceptions
 
 
 class ManagedClusterPodIdentityProvisioningInfo(Model):
