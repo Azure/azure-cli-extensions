@@ -130,7 +130,7 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
     def test_storage_account_blob_inventory_policy(self, resource_group, storage_account):
         import os
         curr_dir = os.path.dirname(os.path.realpath(__file__))
-        policy_file = os.path.join(curr_dir, 'mgmt_policy.json').replace('\\', '\\\\')
+        policy_file = os.path.join(curr_dir, 'blob_inventory_policy.json').replace('\\', '\\\\')
         self.kwargs = {'rg': resource_group,
                        'sa': storage_account,
                        'policy': policy_file}
