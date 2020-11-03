@@ -124,122 +124,52 @@ class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
 
 class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest):
     @AllowLargeResponse()
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2019-06-01')
-    @ResourceGroupPreparer(name_prefix='cli_test_storage_account_ors', location='eastus2')
-    @StorageAccountPreparer(parameter_name='source_account', location='eastus2', kind='StorageV2')
-    @StorageAccountPreparer(parameter_name='destination_account', location='eastus2', kind='StorageV2')
-    @StorageAccountPreparer(parameter_name='new_account', location='eastus2', kind='StorageV2')
-    def test_storage_account_blob_inventory_policy(self, resource_group, source_account, destination_account, new_account):
-        src_account_info = self.get_account_info(resource_group, source_account)
-        src_container = self.create_container(src_account_info)
-        dest_account_info = self.get_account_info(resource_group, destination_account)
-        dest_container = self.create_container(dest_account_info)
-        self.kwargs.update({
-            'rg': resource_group,
-            'src_sc': source_account,
-            'dest_sc': destination_account,
-            'new_sc': new_account,
-            'scont': src_container,
-            'dcont': dest_container,
-        })
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @ResourceGroupPreparer(name_prefix='cli_test_blob_inventory', location='eastus2')
+    @StorageAccountPreparer(location='eastus2euap', kind='StorageV2')
+    def test_storage_account_blob_inventory_policy(self, resource_group, storage_account):
+        import os
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        policy_file = os.path.join(curr_dir, 'mgmt_policy.json').replace('\\', '\\\\')
+        self.kwargs = {'rg': resource_group,
+                       'sa': storage_account,
+                       'policy': policy_file}
 
-        # Enable ChangeFeed for Source Storage Accounts
-        self.cmd('storage account blob-service-properties update -n {src_sc} -g {rg} --enable-change-feed', checks=[
-                 JMESPathCheck('changeFeed.enabled', True)])
+        self.cmd('storage account blob-inventory-policy create --account-name {sa} -g {rg} --policy @"{policy}"',
+                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
+                         JMESPathCheck("policy.destination", "mycontainer"),
+                         JMESPathCheck("policy.destination", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[0]", "inventoryprefix1"),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[1]", "inventoryprefix2"),
+                         JMESPathCheck("policy.rules[0].enabled", True),
+                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
+                         JMESPathCheck("policy.type", "Inventory"),
+                         JMESPathCheck("resourceGroup", resource_group),
+                         JMESPathCheck("systemData", None)])
 
-        # Enable Versioning for two Storage Accounts
-        self.cmd('storage account blob-service-properties update -n {src_sc} -g {rg} --enable-versioning', checks=[
-                 JMESPathCheck('isVersioningEnabled', True)])
+        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
+                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
+                         JMESPathCheck("policy.destination", "mycontainer"),
+                         JMESPathCheck("policy.destination", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[0]", "inventoryprefix1"),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[1]", "inventoryprefix2"),
+                         JMESPathCheck("policy.rules[0].enabled", True),
+                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
+                         JMESPathCheck("policy.type", "Inventory"),
+                         JMESPathCheck("resourceGroup", resource_group),
+                         JMESPathCheck("systemData", None)])
 
-        self.cmd('storage account blob-service-properties update -n {dest_sc} -g {rg} --enable-versioning', checks=[
-                 JMESPathCheck('isVersioningEnabled', True)])
+        self.cmd('storage account blob-inventory-policy update --account-name {sa} -g {rg}'
+                 ' --set "policy.rules[0].name=newname"')
+        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
+                 checks=JMESPathCheck('policy.rules[0].name', 'newname'))
 
-        # Create ORS policy on destination account
-        result = self.cmd('storage account blob-inventory-policy create -n {dest_sc} -s {src_sc} --dcont {dcont} '
-                          '--scont {scont} -t "2020-02-19T16:05:00Z"').get_output_in_json()
-        self.assertIn('policyId', result)
-        self.assertIn('ruleId', result['rules'][0])
-        self.assertEqual(result["rules"][0]["filters"]["minCreationTime"], "2020-02-19T16:05:00Z")
+        self.cmd('storage account blob-inventory-policy delete --account-name {sa} -g {rg}')
+        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}', expect_failure=True)
 
-        self.kwargs.update({
-            'policy_id': result["policyId"],
-            'rule_id': result["rules"][0]["ruleId"]
-        })
-
-        # Get policy properties from destination account
-        self.cmd('storage account blob-inventory-policy show -g {rg} -n {dest_sc} --policy-id {policy_id}') \
-            .assert_with_checks(JMESPathCheck('type', "Microsoft.Storage/storageAccounts/objectReplicationPolicies")) \
-            .assert_with_checks(JMESPathCheck('sourceAccount', source_account)) \
-            .assert_with_checks(JMESPathCheck('destinationAccount', destination_account)) \
-            .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
-            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
-
-        # Add rules
-        src_container1 = self.create_container(src_account_info)
-        dest_container1 = self.create_container(dest_account_info)
-        self.cmd('storage account blob-inventory-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}')\
-            .assert_with_checks(JMESPathCheck('length(@)', 1))
-        self.cmd('storage account blob-inventory-policy rule show -g {rg} -n {dest_sc} --rule-id {rule_id} --policy-id {policy_id}')\
-            .assert_with_checks(JMESPathCheck('ruleId', result["rules"][0]["ruleId"])) \
-            .assert_with_checks(JMESPathCheck('sourceContainer', src_container)) \
-            .assert_with_checks(JMESPathCheck('destinationContainer', dest_container))
-
-        result = self.cmd('storage account blob-inventory-policy rule add -g {} -n {} --policy-id {} -d {} -s {} -t "2020-02-19T16:05:00Z"'.format(
-            resource_group, destination_account, self.kwargs["policy_id"], dest_container1, src_container1)).get_output_in_json()
-        self.assertEqual(result["rules"][0]["filters"]["minCreationTime"], "2020-02-19T16:05:00Z")
-
-        self.cmd('storage account blob-inventory-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}')\
-            .assert_with_checks(JMESPathCheck('length(@)', 2))
-
-        # Update rules
-        self.cmd('storage account blob-inventory-policy rule update -g {} -n {} --policy-id {} --rule-id {} --prefix-match blobA blobB -t "2020-02-20T16:05:00Z"'.format(
-            resource_group, destination_account, result['policyId'], result['rules'][1]['ruleId'])) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[0]', 'blobA')) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB')) \
-            .assert_with_checks(JMESPathCheck('filters.minCreationTime', '2020-02-20T16:05:00Z'))
-
-        self.cmd('storage account blob-inventory-policy rule show -g {} -n {} --policy-id {} --rule-id {}'.format(
-            resource_group, destination_account, result['policyId'], result['rules'][1]['ruleId'])) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[0]', 'blobA')) \
-            .assert_with_checks(JMESPathCheck('filters.prefixMatch[1]', 'blobB')) \
-            .assert_with_checks(JMESPathCheck('filters.minCreationTime', '2020-02-20T16:05:00Z'))
-
-        # Remove rules
-        self.cmd('storage account blob-inventory-policy rule remove -g {} -n {} --policy-id {} --rule-id {}'.format(
-            resource_group, destination_account, result['policyId'], result['rules'][1]['ruleId']))
-        self.cmd('storage account blob-inventory-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}') \
-            .assert_with_checks(JMESPathCheck('length(@)', 1))
-
-        # Set ORS policy to source account
-        with self.assertRaisesRegex(CLIError, 'ValueError: Please specify --policy-id with auto-generated policy id'):
-            self.cmd('storage account blob-inventory-policy create -g {rg} -n {src_sc} -d {dest_sc} -s {src_sc} --dcont {dcont} --scont {scont}')
-
-        import json
-        temp_dir = self.create_temp_dir()
-        policy_file = os.path.join(temp_dir, "policy.json")
-        with open(policy_file, "w") as f:
-            policy = self.cmd('storage account blob-inventory-policy show -g {rg} -n {dest_sc} --policy-id {policy_id}')\
-                .get_output_in_json()
-            json.dump(policy, f)
-        self.kwargs['policy'] = policy_file
-        self.cmd('storage account blob-inventory-policy create -g {rg} -n {src_sc} -p @"{policy}"')\
-            .assert_with_checks(JMESPathCheck('type', "Microsoft.Storage/storageAccounts/objectReplicationPolicies")) \
-            .assert_with_checks(JMESPathCheck('sourceAccount', source_account)) \
-            .assert_with_checks(JMESPathCheck('destinationAccount', destination_account)) \
-            .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
-            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container)) \
-            .assert_with_checks(JMESPathCheck('rules[0].filters.minCreationTime', '2020-02-19T16:05:00Z'))
-
-        # Update ORS policy
-        self.cmd('storage account blob-inventory-policy update -g {} -n {} --policy-id {} --source-account {}'.format(
-            resource_group, destination_account, self.kwargs["policy_id"], new_account)) \
-            .assert_with_checks(JMESPathCheck('sourceAccount', new_account))
-
-        # Delete policy from destination and source account
-        self.cmd('storage account blob-inventory-policy delete -g {rg} -n {src_sc} --policy-id {policy_id}')
-        self.cmd('storage account blob-inventory-policy list -g {rg} -n {src_sc}') \
-            .assert_with_checks(JMESPathCheck('length(@)', 0))
-
-        self.cmd('storage account blob-inventory-policy delete -g {rg} -n {dest_sc} --policy-id {policy_id}')
-        self.cmd('storage account blob-inventory-policy list -g {rg} -n {dest_sc}') \
-            .assert_with_checks(JMESPathCheck('length(@)', 0))

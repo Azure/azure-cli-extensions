@@ -143,26 +143,36 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     return params
 
 
-def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, blob_inventory_policy_name,
-                                 enabled, destination, type, rule_name, blob_types, prefix_match=None,
-                                 include_blob_versions=None, include_snapshots=None, **kwargs):
-    BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
-    BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
-                                               'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
-                                               'BlobInventoryPolicyFilter')
-    filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
-                                        include_blob_versions=include_blob_versions,
-                                        include_snapshots=include_snapshots)
-    rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
-                                   definition=BlobInventoryPolicyDefinition(filters=filters))
-    policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
-                                       type=type, rules=[rule])
-    blob_inventory_policy = BlobInventoryPolicy(policy=policy)
+def create_blob_inventory_policy(client, resource_group_name, account_name, policy):
+    # TODO: add again with rule management if bandwidth is allowed
+    # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
+    # BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
+    #                                            'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
+    #                                            'BlobInventoryPolicyFilter')
+    # filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
+    #                                     include_blob_versions=include_blob_versions,
+    #                                     include_snapshots=include_snapshots)
+    # rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
+    #                                definition=BlobInventoryPolicyDefinition(filters=filters))
+    # policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
+    #                                    type=type, rules=[rule])
+    # blob_inventory_policy = BlobInventoryPolicy(policy=policy)
+    #
+    # return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+    #                                blob_inventory_policy_name=blob_inventory_policy_name,
+    #                                properties=blob_inventory_policy,
+    #                                **kwargs)
+    if os.path.exists(policy):
+        policy = get_file_json(policy)
+    else:
+        policy = shell_safe_json_parse(policy)
+    return client.create_or_update(resource_group_name, account_name, policy=policy)
 
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   blob_inventory_policy_name=blob_inventory_policy_name,
-                                   properties=blob_inventory_policy,
-                                   **kwargs)
+
+def update_blob_inventory_policy(client, resource_group_name, account_name, parameters=None):
+    if parameters:
+        parameters = parameters.policy
+    return client.create_or_update(resource_group_name, account_name, policy=parameters)
 
 
 def add_blob_inventory_policy_rule(cmd, client, resource_group_name, account_name, policy_id,

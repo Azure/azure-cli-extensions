@@ -36,30 +36,32 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
-    storage_blob_inventory_sdk = CliCommandType(
+    blob_inventory_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
                         'BlobInventoryPoliciesOperations.{}',
         client_factory=cf_sa_blob_inventory,
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
-    storage_blob_inventory_custom_type = CliCommandType(
+    blob_inventory_custom_type = CliCommandType(
         operations_tmpl='azext_storage_preview.operations.account#{}',
         client_factory=cf_sa_blob_inventory,
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
-    with self.command_group('storage account blob-inventory-policy', storage_blob_inventory_sdk,
-                            custom_command_type=storage_blob_inventory_custom_type, is_preview=True,
+    with self.command_group('storage account blob-inventory-policy', blob_inventory_sdk,
+                            custom_command_type=blob_inventory_custom_type, is_preview=True,
                             resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
         g.custom_command('create', 'create_blob_inventory_policy')
-        #g.command('update', 'update_blob_inventory_policy')
+        g.generic_update_command('update', getter_name='get',
+                                 setter_name='update_blob_inventory_policy',
+                                 setter_type=blob_inventory_custom_type)
         g.command('list', 'list')
         g.command('delete', 'delete')
         g.show_command('show', 'get')
 
-    with self.command_group('storage account blob-inventory-policy rule', storage_blob_inventory_sdk,
-                            custom_command_type=storage_blob_inventory_custom_type, is_preview=True,
+    with self.command_group('storage account blob-inventory-policy rule', blob_inventory_sdk,
+                            custom_command_type=blob_inventory_custom_type, is_preview=True,
                             resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
         g.custom_command('add', 'add_blob_inventory_policy_rule')
         g.custom_command('list', 'list_blob_inventory_policy_rules')
