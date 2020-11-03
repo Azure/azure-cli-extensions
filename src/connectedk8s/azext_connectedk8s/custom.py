@@ -439,9 +439,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
             infra = provider_id.split(':')[0]
             if infra == "kind":
                 return "generic"
-            if infra in consts.infrastructure_types:
-                return infra
-            return "generic"
+            return utils.validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes infrastructure.")
