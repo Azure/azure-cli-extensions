@@ -73,7 +73,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage account blob-inventory-policy') as c:
         t_blob_inventory_name = self.get_models('BlobInventoryPolicyName', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
         c.argument('blob_inventory_policy_name', options_list=['--name', '-n'],
-                   arg_type=get_enum_type(t_blob_inventory_name), default='default', required=False)
+                   arg_type=get_enum_type(t_blob_inventory_name), default='default', required=False,
+                   help='')
         c.argument('resource_group_name', required=False, validator=process_resource_group)
         c.argument('account_name',
                    help='The name of the storage account within the specified resource group. Storage account names '
@@ -81,7 +82,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account blob-inventory-policy create') as c:
         t_inventory_rule_type = self.get_models('InventoryRuleType', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
-
+        c.argument('policy')
         c.argument('destination',
                    help='Container name where blob inventory files are stored. Must be pre-created.')
         c.argument('enabled', arg_type=get_three_state_flag(), help='Policy is enabled if set to true.')
