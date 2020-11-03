@@ -155,7 +155,8 @@ def create_blob_inventory_policy(cmd, client, resource_group_name, account_name,
                                         include_snapshots=include_snapshots)
     rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
                                    definition=BlobInventoryPolicyDefinition(filters=filters))
-    policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination, type=type, rules=[rule])
+    policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
+                                       type=type, rules=[rule])
     blob_inventory_policy = BlobInventoryPolicy(policy=policy)
 
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
