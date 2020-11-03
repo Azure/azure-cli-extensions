@@ -287,6 +287,7 @@ class UpgradeChannel(str, Enum):
     rapid = "rapid"
     stable = "stable"
     patch = "patch"
+    none = "none"
 
 
 class Expander(str, Enum):
