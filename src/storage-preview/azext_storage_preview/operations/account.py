@@ -144,12 +144,19 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
 
 
 def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, blob_inventory_policy_name,
-                                 enabled, destination, type, **kwargs):
-    blob_inventory_policy, blob_inventory_policy_schema, blob_inventory_policy_rule = \
-        cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema', 'BlobInventoryPolicyRule')
-
-    blob_inventory_policy.policy = blob_inventory_policy_schema(enabled=enabled, destination=destination, type=type,
-                                                                rules=[])
+                                 enabled, destination, type, rule_name, blob_types, prefix_match=None,
+                                 include_blob_versions=None, include_snapshots=None, **kwargs):
+    BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
+    BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
+                                               'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
+                                               'BlobInventoryPolicyFilter')
+    filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
+                                        include_blob_versions=include_blob_versions,
+                                        include_snapshots=include_snapshots)
+    rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
+                                   definition=BlobInventoryPolicyDefinition(filters=filters))
+    policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination, type=type, rules=[rule])
+    blob_inventory_policy = BlobInventoryPolicy(policy=policy)
 
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    blob_inventory_policy_name=blob_inventory_policy_name,

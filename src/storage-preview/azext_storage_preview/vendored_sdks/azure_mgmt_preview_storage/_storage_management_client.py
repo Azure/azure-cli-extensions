@@ -165,6 +165,19 @@ class StorageManagementClient(MultiApiClientMixin, _SDKClient):
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
+    def blob_inventory_policies(self):
+        """Instance depends on the API version:
+
+           * 2020-08-01-preview: :class:`BlobInventoryPoliciesOperations<azure.mgmt.storage.v2020_08_01_preview.operations.BlobInventoryPoliciesOperations>`
+        """
+        api_version = self._get_api_version('blob_inventory_policies')
+        if api_version == '2020-08-01-preview':
+            from .v2020_08_01_preview.operations import BlobInventoryPoliciesOperations as OperationClass
+        else:
+            raise ValueError("API version {} does not have operation group 'blob_inventory_policies'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def blob_services(self):
         """Instance depends on the API version:
 
