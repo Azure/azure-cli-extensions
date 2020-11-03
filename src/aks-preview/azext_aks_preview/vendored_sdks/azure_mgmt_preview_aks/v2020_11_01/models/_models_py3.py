@@ -1702,7 +1702,7 @@ class ManagedClusterAutoUpgradeProfile(Model):
     """Auto upgrade profile for a managed cluster.
 
     :param upgrade_channel: upgrade channel for auto upgrade. Possible values
-     include: 'rapid', 'stable', 'patch'
+     include: 'rapid', 'stable', 'patch', 'none'
     :type upgrade_channel: str or
      ~azure.mgmt.containerservice.v2020_11_01.models.UpgradeChannel
     """
@@ -1988,8 +1988,8 @@ class ManagedClusterPodIdentityException(Model):
 class ManagedClusterPodIdentityProfile(Model):
     """ManagedClusterPodIdentityProfile.
 
-    :param enabled: Whether pod identity addon is enabled.
-    :type enabled: boolean
+    :param enabled: Whether the pod identity addon is enabled.
+    :type enabled: bool
     :param user_assigned_identities: User assigned pod identity settings.
     :type user_assigned_identities:
      list[~azure.mgmt.containerservice.v2020_11_01.models.ManagedClusterPodIdentity]
@@ -1999,17 +1999,13 @@ class ManagedClusterPodIdentityProfile(Model):
      list[~azure.mgmt.containerservice.v2020_11_01.models.ManagedClusterPodIdentityException]
     """
 
-    _validation = {
-        'enabled': {'required': True},
-    }
-
     _attribute_map = {
         'enabled': {'key': 'enabled', 'type': 'bool'},
         'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '[ManagedClusterPodIdentity]'},
         'user_assigned_identity_exceptions': {'key': 'userAssignedIdentityExceptions', 'type': '[ManagedClusterPodIdentityException]'},
     }
 
-    def __init__(self, *, enabled: bool, user_assigned_identities=None, user_assigned_identity_exceptions=None, **kwargs) -> None:
+    def __init__(self, *, enabled: bool=None, user_assigned_identities=None, user_assigned_identity_exceptions=None, **kwargs) -> None:
         super(ManagedClusterPodIdentityProfile, self).__init__(**kwargs)
         self.enabled = enabled
         self.user_assigned_identities = user_assigned_identities
