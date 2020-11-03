@@ -43,9 +43,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-    print(infrastructure)
-    print(distribution)
-
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
