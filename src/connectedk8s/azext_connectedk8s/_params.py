@@ -12,6 +12,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 distribution_types = ["auto", "generic", "openshift", "rancher_RKE", "kind", "GKE", "EKS", "AKS", "AKS-HCI", "CAPZ", "AKS-engine", "TKG"]
 infrastructure_types = ["auto", "generic", "azure", "AWS", "GCP", "Azure_Stack_HC", "Azure_Stack_Hub", "Azure_Stack_Edge", "vSphere"]
 
+
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import tags_type
