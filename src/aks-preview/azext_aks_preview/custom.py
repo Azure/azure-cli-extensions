@@ -14,6 +14,7 @@ import os
 import os.path
 import platform
 import re
+import semver
 import ssl
 import stat
 import subprocess
@@ -602,9 +603,6 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
                disable_browser=False,
                listen_address='127.0.0.1',
                listen_port='8001'):
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
@@ -612,13 +610,26 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     addon_profile = next((addon_profiles[k] for k in addon_profiles
                           if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
                          ManagedClusterAddonProfile(enabled=False))
-    if not addon_profile.enabled:
-        raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
-                       'To use "az aks browse" first enable the add-on '
-                       'by running "az aks enable-addons --addons kube-dashboard".\n'
-                       'Starting with Kubernetes 1.19, AKS no longer support installation of '
-                       'the managed kube-dashboard addon.\n'
-                       'Please use the Kubernetes resources view in the Azure portal (preview) instead.')
+
+    # open portal view if addon is not enabled or k8s version >= 1.19.0
+    if semver.compare(instance.kubernetes_version, '1.19.0') >= 0 or (not addon_profile.enabled):
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        dashboardURL = (('https://portal.azure.com/#resource/subscriptions/{0}/resourceGroups/{1}/providers/'
+                         'Microsoft.ContainerService/managedClusters/{2}/workloads')
+                        .format(subscription_id, resource_group_name, name))
+
+        if in_cloud_console():
+            logger.warning('To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
+        else:
+            logger.warning('Kubernetes resources view on %s', dashboardURL)
+            if not disable_browser:
+                wait_then_open_async(dashboardURL)
+
+        return
+
+    # otherwise open the kube-dashboard addon
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
 
     _, browse_path = tempfile.mkstemp()
 
