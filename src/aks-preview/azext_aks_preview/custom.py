@@ -3069,5 +3069,5 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
 
 
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
-    # TODO
-    return
+    instance = client.get(resource_group_name, cluster_name)
+    return _remove_nulls([instance])[0]
