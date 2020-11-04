@@ -134,11 +134,17 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
         self.kwargs = {'rg': resource_group,
                        'sa': storage_account,
                        'policy': policy_file}
+        account_info = self.get_account_info(resource_group, storage_account)
+        self.storage_cmd('storage container create -n mycontainer', account_info)
+
+        # Enable Versioning for Storage Account when includeBlobInventory=true in policy
+        self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --enable-versioning', checks=[
+                 JMESPathCheck('isVersioningEnabled', True)])
 
         self.cmd('storage account blob-inventory-policy create --account-name {sa} -g {rg} --policy @"{policy}"',
                  checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
                          JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.destination", True),
+                         JMESPathCheck("policy.enabled", True),
                          JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
                          JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
                          JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
@@ -153,7 +159,7 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
         self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
                  checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
                          JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.destination", True),
+                         JMESPathCheck("policy.enabled", True),
                          JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
                          JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
                          JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
