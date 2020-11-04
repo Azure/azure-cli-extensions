@@ -3039,6 +3039,35 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
 
 
+def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_name,
+                                      exc_name, exc_namespace, pod_labels, no_wait=False):
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    found_target = False
+    updated_exc = ManagedClusterPodIdentityException(name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
+    pod_identity_exceptions = []
+    if instance.pod_identity_profile.user_assigned_identity_exceptions:
+        for exc in instance.pod_identity_profile.user_assigned_identity_exceptions:
+            if exc.name == exc_name and exc.namespace == exc_namespace:
+                found_target = True
+                pod_identity_exceptions.append(updated_exc)
+            else:
+                pod_identity_exceptions.append(exc)
+
+    if not found_target:
+        raise CLIError('pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
+
+    _update_addon_pod_identity(
+        cmd, instance, enable=True,
+        pod_identities=instance.pod_identity_profile.user_assigned_identities,
+        pod_identity_exceptions=pod_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
     # TODO
     return

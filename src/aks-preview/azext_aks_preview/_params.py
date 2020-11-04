@@ -224,6 +224,17 @@ def load_arguments(self, _):
                    help='The pod identity exception namespace to remove.',
                    validator=validate_pod_identity_resource_namespace)
 
+    with self.argument_context('aks pod-identity update-exception') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
+                   help='The pod identity exception name to remove.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=True))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace to remove.',
+                   validator=validate_pod_identity_resource_namespace)
+        c.argument('pod_labels', nargs='*', required=True,
+                   help='pod labels in key=value] [key[=value] ...].', 
+                   validator=validate_pod_identity_pod_labels)
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

@@ -420,6 +420,7 @@ def validate_pod_identity_pod_labels(namespace):
     if labels is None:
         # no specify any labels
         namespace.pod_labels = {}
+        return
 
     if isinstance(labels, list):
         labels_dict = {}

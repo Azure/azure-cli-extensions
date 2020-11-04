@@ -78,4 +78,5 @@ def load_command_table(self, _):
         g.custom_command('list', 'aks_pod_identity_list')
         g.custom_command('add-exception', 'aks_pod_identity_exception_add')
         g.custom_command('delete-exception', 'aks_pod_identity_exception_delete')
+        g.custom_command('update-exception', 'aks_pod_identity_exception_update')
         g.custom_command('list-exceptions', 'aks_pod_identity_exception_list')
