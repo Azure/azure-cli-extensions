@@ -56,18 +56,17 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.generic_update_command('update', getter_name='get',
                                  setter_name='update_blob_inventory_policy',
                                  setter_type=blob_inventory_custom_type)
-        g.command('list', 'list')
-        g.command('delete', 'delete')
+        g.command('delete', 'delete', confirmation=True)
         g.show_command('show', 'get')
 
-    with self.command_group('storage account blob-inventory-policy rule', blob_inventory_sdk,
-                            custom_command_type=blob_inventory_custom_type, is_preview=True,
-                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
-        g.custom_command('add', 'add_blob_inventory_policy_rule')
-        g.custom_command('list', 'list_blob_inventory_policy_rules')
-        g.custom_command('remove', 'remove_blob_inventory_policy_rule')
-        g.custom_command('show', 'get_blob_inventory_policy_rule')
-        g.custom_command('update', 'update_blob_inventory_policy_rule')
+    # with self.command_group('storage account blob-inventory-policy rule', blob_inventory_sdk,
+    #                         custom_command_type=blob_inventory_custom_type, is_preview=True,
+    #                         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
+    #     g.custom_command('add', 'add_blob_inventory_policy_rule')
+    #     g.custom_command('list', 'list_blob_inventory_policy_rules')
+    #     g.custom_command('remove', 'remove_blob_inventory_policy_rule')
+    #     g.custom_command('show', 'get_blob_inventory_policy_rule')
+    #     g.custom_command('update', 'update_blob_inventory_policy_rule')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,

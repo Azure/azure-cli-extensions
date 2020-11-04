@@ -27,67 +27,24 @@ helps['storage account blob-inventory-policy create'] = """
 type: command
 short-summary: Create Blob Inventory Policy for storage account.
 examples:
-  - name: Create Blob Inventory Policy for storage account.
-    text: az storage account blob-inventory-policy create -g ResourceGroupName \\
-          --account-name mystorageaccount --destination mycontainer --enabled --blob-types blockBlob \\
-          --rule-name myrule
   - name: Create Blob Inventory Policy trough json file for storage account.
     text: az storage account blob-inventory-policy create -g ResourceGroupName -n storageAccountName --policy @policy.json
-  - name: Create Blob Inventory Policy to source storage account through policy associated with destination storage account.
-    text: az storage account blob-inventory-policy show -g ResourceGroupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account blob-inventory-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 """
 
-helps['storage account blob-inventory-policy list'] = """
+helps['storage account blob-inventory-policy update'] = """
 type: command
-short-summary: List Blob Inventory Policies associated with the specified storage account.
+short-summary: Update Blob Inventory Policy associated with the specified storage account.
 examples:
-  - name: List Blob Inventory Policies associated with the specified storage account.
-    text: az storage account blob-inventory-policy list -g ResourceGroupName -n StorageAccountName
+  - name: Update Blob Inventory Policy associated with the specified storage account.
+    text: az storage account blob-inventory-policy update -g ResourceGroupName -n storageAccountName --set "policy.rules[0].name=newname"
 """
 
-helps['storage account blob-inventory-policy rule'] = """
-type: group
-short-summary: Manage Blob Inventory Policy Rules.
-"""
-
-helps['storage account blob-inventory-policy rule add'] = """
+helps['storage account blob-inventory-policy delete'] = """
 type: command
-short-summary: Add rule to the specified Blob Inventory Policy.
+short-summary: Delete Blob Inventory Policy associated with the specified storage account.
 examples:
-  - name: Add rule to the specified Blob Inventory Policy.
-    text: az storage account blob-inventory-policy rule add -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" -d destContainer -s srcContainer
-"""
-
-helps['storage account blob-inventory-policy rule list'] = """
-type: command
-short-summary: List all the rules in the specified Blob Inventory Policy.
-examples:
-  - name: List all the rules in the specified Blob Inventory Policy.
-    text: az storage account blob-inventory-policy rule list -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
-"""
-
-helps['storage account blob-inventory-policy rule remove'] = """
-type: command
-short-summary: Remove the specified rule from the specified Blob Inventory Policy.
-examples:
-  - name: Remove the specified rule from the specified Blob Inventory Policy.
-    text: az storage account blob-inventory-policy rule remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332"
-"""
-
-helps['storage account blob-inventory-policy rule show'] = """
-type: command
-short-summary: Show the properties of specified rule in Blob Inventory Policy.
-examples:
-  - name: Show the properties of specified rule in Blob Inventory Policy.
-    text: az storage account blob-inventory-policy rule show -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332"
-"""
-
-helps['storage account blob-inventory-policy rule update'] = """
-type: command
-short-summary: Update rule properties to Blob Inventory Policy.
-examples:
-  - name: Update rule properties to Blob Inventory Policy.
-    text: az storage account blob-inventory-policy rule update -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --prefix-match blobA blobB
+  - name: Delete Blob Inventory Policy associated with the specified storage account without prompt.
+    text: az storage account blob-inventory-policy delete -g ResourceGroupName -n storageAccountName -y
 """
 
 helps['storage account keys list'] = """
