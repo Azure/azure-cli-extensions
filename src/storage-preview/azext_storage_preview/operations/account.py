@@ -144,12 +144,12 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
 
 
 def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy):
-    BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
+    #BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
     # TODO: add again with rule management if bandwidth is allowed
-    # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
-    # BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
-    #                                            'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
-    #                                            'BlobInventoryPolicyFilter')
+    BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
+    BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
+                                               'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
+                                               'BlobInventoryPolicyFilter')
     # filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
     #                                     include_blob_versions=include_blob_versions,
     #                                     include_snapshots=include_snapshots)
@@ -167,8 +167,14 @@ def create_blob_inventory_policy(cmd, client, resource_group_name, account_name,
         policy = get_file_json(policy)
     else:
         policy = shell_safe_json_parse(policy)
-    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
-    properties = BlobInventoryPolicy(policy=policy)
+
+    BlobInventoryPolicy, BlobInventoryPolicyName, InventoryRuleType = \
+        cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicyName', 'InventoryRuleType')
+    properties = BlobInventoryPolicy()
+    if 'type' not in policy:
+        policy['type'] = InventoryRuleType.INVENTORY
+    properties.policy = policy
+
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=properties)
 
