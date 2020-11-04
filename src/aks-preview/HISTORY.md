@@ -2,10 +2,6 @@
 
 Release History
 ===============
-0.4.65
-+++++
-* Update standard load balancer idle timeout max to be 100 minutes
-
 0.4.64
 +++++
 * Add support for Open Service Mesh as an AKS addon
