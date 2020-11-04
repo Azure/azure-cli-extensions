@@ -198,11 +198,18 @@ def load_arguments(self, _):
         c.argument('cluster_name', type=str, help='The cluster name.')
 
     with self.argument_context('aks pod-identity add') as c:
-        c.argument('identity_name', type=str, options_list=['--name', '-n'], help='The pod identity name. Generate if not specified.', default=None, required=False)
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=False,
+                   help='The pod identity name. Generate if not specified.',
+                   validator=validate_pod_identity_resource_name('identity_name', required=False))
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
+        c.argument('identity_resource_id', type=str, options_list=['--identity-resource-id'], help='Resource id of the identity to use.')
+        c.argument('identity_client_id', type=str, options_list=['--identity-client-id'], help='Client id of the identity to use.')
+        c.argument('identity_object_id', type=str, options_list=['--identity-object-id'], help='Object id of the identity to use.')
 
     with self.argument_context('aks pod-identity delete') as c:
-        c.argument('identity_name', type=str, options_list=['--name', '-n'], help='The pod identity name.')
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=True,
+                    help='The pod identity name.',
+                    validator=validate_pod_identity_resource_name('identity_name', required=True))
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
 
     with self.argument_context('aks pod-identity add-exception') as c:
@@ -213,7 +220,7 @@ def load_arguments(self, _):
                    help='The pod identity exception namespace.',
                    validator=validate_pod_identity_resource_namespace)
         c.argument('pod_labels', nargs='*', required=True,
-                   help='space-separated labels: key[=value] [key[=value] ...].', 
+                   help='space-separated labels: key=value [key=value ...].', 
                    validator=validate_pod_identity_pod_labels)
 
     with self.argument_context('aks pod-identity delete-exception') as c:
@@ -232,7 +239,7 @@ def load_arguments(self, _):
                    help='The pod identity exception namespace to remove.',
                    validator=validate_pod_identity_resource_namespace)
         c.argument('pod_labels', nargs='*', required=True,
-                   help='pod labels in key=value] [key[=value] ...].', 
+                   help='pod labels in key=value [key=value ...].', 
                    validator=validate_pod_identity_pod_labels)
 
 

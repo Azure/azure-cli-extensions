@@ -164,3 +164,16 @@ def aks_pod_identity_exceptions_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+
+
+def aks_pod_identities_table_format(result):
+    """Format pod identities results as a summary for display with "-o table"."""
+    preview = {}
+    parsed = compile_jmes("""podIdentityProfile.userAssignedIdentities[].{
+        name: name,
+        namespace: namespace,
+        provisioningState: provisioningState
+        identity: identity.resourceId
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))

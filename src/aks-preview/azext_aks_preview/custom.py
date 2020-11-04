@@ -67,7 +67,9 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerS
                                                                       ManagedClusterSKU,
                                                                       ManagedClusterIdentityUserAssignedIdentitiesValue,
                                                                       ManagedClusterPodIdentityProfile,
-                                                                      ManagedClusterPodIdentityException)
+                                                                      ManagedClusterPodIdentity,
+                                                                      ManagedClusterPodIdentityException,
+                                                                      UserAssignedIdentity)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -2979,20 +2981,63 @@ def get_aks_custom_headers(aks_custom_headers=None):
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
-                         identity_name, identity_namespace):
-    # TODO
-    return
+                         identity_name, identity_namespace,
+                         identity_resource_id, identity_client_id, identity_object_id,
+                         no_wait=False):
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    pod_identities = []
+    if instance.pod_identity_profile.user_assigned_identities:
+        pod_identities = instance.pod_identity_profile.user_assigned_identities
+    # TODO: check permission
+    pod_identity = ManagedClusterPodIdentity(
+        name=identity_name,
+        namespace=identity_namespace,
+        identity=UserAssignedIdentity(
+            resource_id=identity_resource_id,
+            client_id=identity_client_id,
+            object_id=identity_object_id,
+        )
+    )
+    pod_identities.append(pod_identity)
+
+    _update_addon_pod_identity(
+        cmd, instance, enable=True,
+        pod_identities=pod_identities,
+        pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
-                            identity_name, identity_namespace):
-    # TODO
-    return
+                            identity_name, identity_namespace,
+                            no_wait=False):
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
 
+    pod_identities = []
+    if instance.pod_identity_profile.user_assigned_identities:
+        for pod_identity in instance.pod_identity_profile.user_assigned_identities:
+            if pod_identity.name == identity_name and pod_identity.namespace == identity_namespace:
+                # to remove
+                continue
+            pod_identities.append(pod_identity)
+
+    _update_addon_pod_identity(
+        cmd, instance, enable=True,
+        pod_identities=pod_identities,
+        pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
 
 def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):
-    # TODO
-    return
+    instance = client.get(resource_group_name, cluster_name)
+    return _remove_nulls([instance])[0]
 
 
 def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
