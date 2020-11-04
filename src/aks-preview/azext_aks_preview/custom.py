@@ -14,7 +14,6 @@ import os
 import os.path
 import platform
 import re
-import semver
 import ssl
 import stat
 import subprocess
@@ -25,6 +24,7 @@ import time
 import uuid
 import base64
 import webbrowser
+from distutils.version import StrictVersion
 from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
@@ -612,7 +612,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
                          ManagedClusterAddonProfile(enabled=False))
 
     # open portal view if addon is not enabled or k8s version >= 1.19.0
-    if semver.compare(instance.kubernetes_version, '1.19.0') >= 0 or (not addon_profile.enabled):
+    if StrictVersion(instance.kubernetes_version) >= StrictVersion('1.19.0') or (not addon_profile.enabled):
         subscription_id = get_subscription_id(cmd.cli_ctx)
         dashboardURL = (('https://portal.azure.com/#resource/subscriptions/{0}/resourceGroups/{1}/providers/'
                          'Microsoft.ContainerService/managedClusters/{2}/workloads')
