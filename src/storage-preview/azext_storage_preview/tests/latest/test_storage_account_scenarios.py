@@ -131,11 +131,42 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
         import os
         curr_dir = os.path.dirname(os.path.realpath(__file__))
         policy_file = os.path.join(curr_dir, 'blob_inventory_policy.json').replace('\\', '\\\\')
+        policy_file_no_type = os.path.join(curr_dir, 'blob_inventory_policy_no_type.json').replace('\\', '\\\\')
         self.kwargs = {'rg': resource_group,
                        'sa': storage_account,
-                       'policy': policy_file}
+                       'policy': policy_file,
+                       'policy_no_type': policy_file_no_type}
         account_info = self.get_account_info(resource_group, storage_account)
         self.storage_cmd('storage container create -n mycontainer', account_info)
+
+        # Create policy without type specified
+        self.cmd('storage account blob-inventory-policy create --account-name {sa} -g {rg} --policy @"{policy_no_type}"',
+                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
+                         JMESPathCheck("policy.destination", "mycontainer"),
+                         JMESPathCheck("policy.enabled", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", None),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", None),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch", None),
+                         JMESPathCheck("policy.rules[0].enabled", True),
+                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
+                         JMESPathCheck("policy.type", "Inventory"),
+                         JMESPathCheck("resourceGroup", resource_group),
+                         JMESPathCheck("systemData", None)])
+
+        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
+                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
+                         JMESPathCheck("policy.destination", "mycontainer"),
+                         JMESPathCheck("policy.enabled", True),
+                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", None),
+                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", None),
+                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch", None),
+                         JMESPathCheck("policy.rules[0].enabled", True),
+                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
+                         JMESPathCheck("policy.type", "Inventory"),
+                         JMESPathCheck("resourceGroup", resource_group),
+                         JMESPathCheck("systemData", None)])
 
         # Enable Versioning for Storage Account when includeBlobInventory=true in policy
         self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --enable-versioning', checks=[
