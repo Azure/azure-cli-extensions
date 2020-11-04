@@ -21,7 +21,7 @@ def load_command_table(self, _):
         'ommunicationServiceOperations.{}',
         client_factory=cf_service)
     with self.command_group('communication service', communication_service, client_factory=cf_service,
-                            is_preview=True) as g:
+                            is_experimental=True) as g:
         g.custom_command('list', 'communication_service_list')
         g.custom_show_command('show', 'communication_service_show')
         g.custom_command('create', 'communication_service_create', supports_no_wait=True)
@@ -38,5 +38,5 @@ def load_command_table(self, _):
         'ationStatusesOperations.{}',
         client_factory=cf_status)
     with self.command_group('communication status', communication_status, client_factory=cf_status,
-                            is_preview=True) as g:
+                            is_experimental=True) as g:
         g.custom_show_command('show', 'communication_status_show')
