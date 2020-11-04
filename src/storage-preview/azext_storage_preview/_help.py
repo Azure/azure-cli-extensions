@@ -370,6 +370,22 @@ helps['storage queue delete'] = """
           text: az storage queue delete -n myqueue --fail-not-exist --account-name mystorageaccount
 """
 
+helps['storage queue metadata show'] = """
+    type: command
+    short-summary:  Return all user-defined metadata for the specified queue.
+    examples:
+        - name: Return all user-defined metadata for the specified queue.
+          text: az storage queue metadata show -n myqueue --account-name mystorageaccount
+"""
+
+helps['storage queue metadata update'] = """
+    type: command
+    short-summary:  Set user-defined metadata on the specified queue.
+    examples:
+        - name: Set user-defined metadata on the specified queue.
+          text: az storage queue metadata update -n myqueue --metadata a=b c=d --account-name mystorageaccount
+"""
+
 helps['storage message put'] = """
     type: command
     short-summary:  Add a new message to the back of the message queue.

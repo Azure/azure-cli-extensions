@@ -265,11 +265,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage queue') as c:
         c.argument('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
 
-    for item in ['stats', 'exists']:
+    for item in ['stats', 'exists', 'metadata show', 'metadata update']:
         with self.argument_context('storage queue {}'.format(item)) as c:
             c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
-    for item in ['exists', 'generate-sas', 'create', 'delete']:
+    for item in ['exists', 'generate-sas', 'create', 'delete', 'metadata show', 'metadata update']:
         with self.argument_context('storage queue {}'.format(item)) as c:
             c.extra('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
 

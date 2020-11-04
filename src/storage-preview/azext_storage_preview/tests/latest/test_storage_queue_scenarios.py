@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, api_version_constraint,
-                               JMESPathCheck, JMESPathCheckExists, NoneCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer)
+from azure.cli.testsdk.checkers import (JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
 from .storage_test_util import StorageScenarioMixin
 
 
@@ -68,6 +68,38 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
         queue_status = self.cmd('storage queue stats --connection-string {}'.format(connection_string)) \
             .get_output_in_json()
         self.assertIn('lastSyncTime', queue_status['geoReplication'])
+
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(name_prefix='queue', kind='StorageV2', location='eastus2', sku='Standard_RAGRS')
+    def test_storage_queue_metadata_scenario(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+        connection_string = self.get_connection_string(resource_group, storage_account)
+
+        queue = self.create_random_name('queue', 24)
+        # prepare queue
+        self.storage_cmd('storage queue create -n {}', account_info, queue)\
+            .assert_with_checks(JMESPathCheck('created', True))
+        # metadata show using account name
+        self.storage_cmd('storage queue metadata show -n {}', account_info, queue)\
+            .assert_with_checks(JMESPathCheck('length(@)', 0))
+        # metadata update using account name
+        self.storage_cmd('storage queue metadata update -n {} --metadata key1=value1', account_info, queue)
+        # metadata show using connection string
+        self.cmd('storage queue metadata show -n {} --connection-string {}'.format(queue, connection_string))\
+            .assert_with_checks(JMESPathCheck('key1', 'value1'))
+        # metadata update using connection string
+        self.cmd('storage queue metadata update -n {} --metadata newkey=newvalue oldkey=oldvalue --connection-string {}'
+                 .format(queue, connection_string))
+        # metadata show using auth mode: login
+        self.oauth_cmd('storage queue metadata show -n {} --account-name {}'.format(queue, storage_account),
+                       checks=[JMESPathCheck('newkey', 'newvalue'),
+                               JMESPathCheck('oldkey', 'oldvalue'),
+                               JMESPathCheckNotExists('key1')])
+        # metadata update using auth mode: login
+        self.oauth_cmd('storage queue metadata update -n {} --metadata a=b c=d --account-name {}'
+                       .format(queue, storage_account))
+        self.storage_cmd('storage queue metadata show -n {}', account_info, queue) \
+            .assert_with_checks([JMESPathCheck('a', 'b'), JMESPathCheck('c', 'd'), JMESPathCheckNotExists('newkey')])
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='message', kind='StorageV2', location='eastus2', sku='Standard_RAGRS')

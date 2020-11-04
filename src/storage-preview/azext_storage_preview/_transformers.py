@@ -123,6 +123,10 @@ def transform_storage_list_output(result):
     return list(result)
 
 
+def transform_metadata(result):
+    return result.metadata
+
+
 def transform_queue_stats_output(result):
     if type(result).__name__ == 'dict':
         new_result = {}
