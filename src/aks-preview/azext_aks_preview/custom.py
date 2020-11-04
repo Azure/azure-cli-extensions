@@ -66,7 +66,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerS
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
                                                                       ManagedClusterIdentityUserAssignedIdentitiesValue,
-                                                                      ManagedClusterPodIdentityProfile)
+                                                                      ManagedClusterPodIdentityProfile,
+                                                                      ManagedClusterPodIdentityException)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -2549,14 +2550,33 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addon_pod_identity(cmd, instance, enable):
+def _ensure_pod_identity_addon_is_enabled(instance):
+    addon_enabled = False
+    if instance and instance.pod_identity_profile:
+        addon_enabled = instance.pod_identity_profile.enabled
+    if not addon_enabled:
+        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
+                       'To enable, run "az aks enable-addons -a pod-identity')
+
+
+def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None):
     if not enable:
         # when disable, null out the profile
         instance.pod_identity_profile = None
         return
+
     if not instance.pod_identity_profile:
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=False)
-    instance.pod_identity_profile.enabled = enable
+        # not set before
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
+            enabled=True,
+            user_assigned_identities=pod_identities,
+            user_assigned_identity_exceptions=pod_identity_exceptions,
+        )
+        return
+
+    instance.pod_identity_profile.enabled = True
+    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
+    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
 
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
@@ -2976,9 +2996,28 @@ def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):
 
 
 def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
-                                   exc_name, exc_namespace):
-    # TODO
-    return
+                                   exc_name, exc_namespace, pod_labels, no_wait=False):
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    if exc_name is None:
+        # generate from server end
+        exc_name = ''
+
+    pod_identity_exceptions = []
+    if instance.pod_identity_profile.user_assigned_identity_exceptions:
+        pod_identity_exceptions = instance.pod_identity_profile.user_assigned_identity_exceptions
+    exc = ManagedClusterPodIdentityException(name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
+    pod_identity_exceptions.append(exc)
+
+    _update_addon_pod_identity(
+        cmd, instance, enable=True,
+        pod_identities=instance.pod_identity_profile.user_assigned_identities,
+        pod_identity_exceptions=pod_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_name,
