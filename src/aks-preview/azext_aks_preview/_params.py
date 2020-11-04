@@ -23,7 +23,7 @@ from ._validators import (
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
-    validate_pod_identity_pod_labels)
+    validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -206,13 +206,23 @@ def load_arguments(self, _):
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
 
     with self.argument_context('aks pod-identity add-exception') as c:
-        c.argument('exc_name', type=str, options_list=['--name', '-n'], help='The pod identity exception name. Generate if not specified.', default=None, required=False)
-        c.argument('exc_namespace', type=str, options_list=['--namespace'], help='The pod identity exception namespace.')
-        c.argument('pod_labels', nargs='*', validator=validate_pod_identity_pod_labels, help='space-separated labels: key[=value] [key[=value] ...].', required=False)
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], default=None, required=False,
+                   help='The pod identity exception name. Generate if not specified.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=False))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace.',
+                   validator=validate_pod_identity_resource_namespace)
+        c.argument('pod_labels', nargs='*', required=True,
+                   help='space-separated labels: key[=value] [key[=value] ...].', 
+                   validator=validate_pod_identity_pod_labels)
 
     with self.argument_context('aks pod-identity delete-exception') as c:
-        c.argument('exc_name', type=str, options_list=['--name', '-n'], help='The pod identity exception name.')
-        c.argument('exc_namespace', type=str, options_list=['--namespace'], help='The pod identity exception namespace.')
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
+                   help='The pod identity exception name to remove.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=True))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace to remove.',
+                   validator=validate_pod_identity_resource_namespace)
 
 
 def _get_default_install_location(exe_name):

@@ -430,3 +430,37 @@ def validate_pod_identity_pod_labels(namespace):
         after_validation_labels = validate_label(labels)
 
     namespace.pod_labels = after_validation_labels
+
+
+def validate_pod_identity_resource_name(attr_name, required):
+    "Validate custom resource name for pod identity addon."
+    
+    def validator(namespace):
+        if not hasattr(namespace, attr_name):
+            return
+
+        attr_value = getattr(namespace, attr_name)
+        if not attr_value:
+            if required:
+                raise CLIError('--name is required')
+            # set empty string for the resource name
+            attr_value = ''
+
+        # TODO(hbc): validate with dns name
+
+        setattr(namespace, attr_name, attr_value)
+
+    return validator
+
+
+def validate_pod_identity_resource_namespace(namespace):
+    "Validate custom resource name for pod identity addon."
+    if not hasattr(namespace, 'namespace'):
+        return
+
+    namespace_value = namespace.namespace
+    if not namespace_value:
+        # namespace cannot be empty
+        raise CLIError('--namespace is required')
+
+    # TODO(hbc): validate with dns name
