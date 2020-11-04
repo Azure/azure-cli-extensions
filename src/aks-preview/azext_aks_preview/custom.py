@@ -596,7 +596,7 @@ def _update_dict(dict1, dict2):
     return cp
 
 
-def aks_browse(cmd,     # pylint: disable=too-many-statements
+def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
                resource_group_name,
                name,
@@ -622,9 +622,9 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
             logger.warning('To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
         else:
             logger.warning('Kubernetes resources view on %s', dashboardURL)
-            if not disable_browser:
-                wait_then_open_async(dashboardURL)
 
+        if not disable_browser:
+            wait_then_open_async(dashboardURL)
         return
 
     # otherwise open the kube-dashboard addon
