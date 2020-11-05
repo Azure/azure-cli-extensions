@@ -162,22 +162,52 @@ def call_scenario(test, rg_2, rg):
     cleanup(test, rg_2, rg)
 
 
-@try_manual
-class CommunicationServiceManagementClientScenarioTest(ScenarioTest):
+# @try_manual
+# class CommunicationServiceManagementClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2', parameter_name=''
-                           'rg_2')
-    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_communication(self, rg_2, rg):
+#     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2', parameter_name=''
+#                            'rg_2')
+#     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+#     def test_communication(self, rg_2, rg):
+
+#         self.kwargs.update({
+#             'subscription_id': self.get_subscription_id()
+#         })
+
+#         self.kwargs.update({
+#             'myCommunicationService': 'MyCommunicationResource',
+#         })
+
+#         call_scenario(self, rg_2, rg)
+#         calc_coverage(__file__)
+#         raise_if()
+
+
+class CommunicationServiceScenarioTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix="test_service_create_and_update_")
+    def test_service_create_and_update(self, resource_group):
 
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            "myCommunicationService": "comm-100001",
         })
 
-        self.kwargs.update({
-            'myCommunicationService': 'MyCommunicationResource',
-        })
+        # create a communication service
+        step__communicationservice_put(self, rg_2=None, rg=resource_group)
 
-        call_scenario(self, rg_2, rg)
-        calc_coverage(__file__)
-        raise_if()
+        # show that communication service
+        step__communicationservice_get_get_resource(self, rg_2=None, rg=resource_group)
+
+        # list all communication services by resource group
+        step__communicationservice_get(self, rg_2=None, rg=resource_group)
+
+        # update tag of that service
+        step__communicationservice_patch_update_resource(self, rg_2=None, rg=resource_group)
+        # show that communication service
+        step__communicationservice_get_get_resource(self, rg_2=None, rg=resource_group)
+
+        # delete that service
+        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
+
+        # list current all communication services by resource group
+        step__communicationservice_get(self, rg_2=None, rg=resource_group)
