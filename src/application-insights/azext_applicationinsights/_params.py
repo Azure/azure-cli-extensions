@@ -101,7 +101,7 @@ def load_arguments(self, _):
         c.argument('dest_container', arg_group='Destination', help='The name of the destination storage container.')
         c.argument('dest_sas', arg_group='Destination',
                    help='The SAS token for the destination storage container. It must grant write permission.')
-        c.argument('dest_type', arg_group='Destination', arg_type=get_enum_type(['Blob'], default='Blob'),
+        c.argument('dest_type', arg_group='Destination', arg_type=get_enum_type(['Blob']),
                    help='The Continuous Export destination type. This has to be \'Blob\'.')
         c.argument('is_enabled', arg_type=get_three_state_flag(return_label=True),
                    help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
