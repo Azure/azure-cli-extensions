@@ -28,7 +28,7 @@ DEPENDENCIES = []
 setup(
     name='dev-spaces',
     version=VERSION,
-    description='(DEPRECATED) Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.',
+    description='Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.',
     long_description='Iteratively develop and debug containers in a Azure Kubernetes Service cluster using Dev Spaces. \
     Share an AKS cluster with your team and collaborate together. You can test code end-to-end without replicating or \
     mocking up dependencies. Onboard new team members faster by minimizing their local dev machine setup and have them \

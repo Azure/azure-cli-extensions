@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None,
                        endpoint_type='Public', do_not_prompt=False):
     """
-    [Deprecated] Use Azure Dev Spaces with a managed Kubernetes cluster.
+    Use Azure Dev Spaces with a managed Kubernetes cluster.
 
     :param cluster_name: Name of the managed cluster.
     :type cluster_name: String
@@ -38,7 +38,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     :param do_not_prompt: Do not prompt for confirmation. Requires --space.
     :type do_not_prompt: bool
     """
-    logger.error("use-dev-spaces is deprecated. Please see https://github.com/Azure/dev-spaces/issues/410")
+    logger.warning("For more information on this deprecation, please see https://github.com/Azure/dev-spaces/issues/410")
     azds_cli = _install_dev_spaces_cli(update, do_not_prompt)
 
     use_command_arguments = [azds_cli, 'use', '--name', cluster_name,
@@ -56,7 +56,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
 
 def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False):
     """
-    [Deprecated] Remove Azure Dev Spaces from a managed Kubernetes cluster.
+    Remove Azure Dev Spaces from a managed Kubernetes cluster.
 
     :param cluster_name: Name of the managed cluster.
     :type cluster_name: String
@@ -66,7 +66,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False
     :param do_not_prompt: Do not prompt for confirmation.
     :type do_not_prompt: bool
     """
-    logger.error("remove-dev-spaces is deprecated. Please see https://github.com/Azure/dev-spaces/issues/410")
+    logger.warning("For more information on this deprecation, please see https://github.com/Azure/dev-spaces/issues/410")
     azds_cli = _install_dev_spaces_cli(False, do_not_prompt)
 
     remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,
