@@ -412,11 +412,13 @@ def get_kubernetes_distro(configuration):  # Heuristic
         if api_response.items:
             labels = api_response.items[0].metadata.labels
             provider_id = str(api_response.items[0].spec.provider_id)
-            if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
+            if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
                 if labels["kubernetes.azure.com/node-image-version"].startswith("AKS"):
                     return "AKS"
+            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
+                return "GKE"
             if provider_id.startswith("kind://"):
                 return "kind"
         return "generic"
@@ -436,6 +438,8 @@ def get_kubernetes_infra(configuration):  # Heuristic
             infra = provider_id.split(':')[0]
             if infra == "kind":
                 return "generic"
+            if infra == "gce":
+                return "GCP"
             return utils.validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
