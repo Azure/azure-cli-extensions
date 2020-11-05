@@ -272,15 +272,15 @@ def create_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item
                                          endpoint, 'name')
 
 
-def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enabled=None,
-                                 session_affinity_ttl=None, waf_policy=None):
-    from azext_front_door.vendored_sdks.models import SubResource
-    with UpdateContext(instance) as c:
-        c.update_param('hostName', host_name, False)
-        c.update_param('sessionAffinityEnabledState', session_affinity_enabled, False)
-        c.update_param('sessionAffinityTtlSeconds', session_affinity_ttl, False)
-        c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
-    return instance
+# def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enabled=None,
+#                                  session_affinity_ttl=None, waf_policy=None):
+#     from azext_front_door.vendored_sdks.models import SubResource
+#     with UpdateContext(instance) as c:
+#         c.update_param('hostName', host_name, False)
+#         c.update_param('sessionAffinityEnabledState', session_affinity_enabled, False)
+#         c.update_param('sessionAffinityTtlSeconds', session_affinity_ttl, False)
+#         c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
+#     return instance
 
 
 def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front_door_name, item_name):
@@ -371,13 +371,13 @@ def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'backend_pools', pool, 'name')
 
 
-def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settings=None):
-    from azext_front_door.vendored_sdks.models import SubResource
-    with UpdateContext(instance) as c:
-        c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings)
-                       if load_balancing_settings else None, False)
-        c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
-    return instance
+# def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settings=None):
+#     from azext_front_door.vendored_sdks.models import SubResource
+#     with UpdateContext(instance) as c:
+#         c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings)
+#                        if load_balancing_settings else None, False)
+#         c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
+#     return instance
 
 
 def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, address,
@@ -494,13 +494,13 @@ def create_fd_load_balancing_settings(cmd, resource_group_name, front_door_name,
                                          settings, 'name')
 
 
-def update_fd_load_balancing_settings(instance, sample_size=None, successful_samples_required=None,
+def update_fd_load_balancing_settings(parent, instance, item_name, sample_size=None, successful_samples_required=None,  # pylint: disable=unused-argument
                                       additional_latency=None):
     with UpdateContext(instance) as c:
         c.update_param('sample_size', sample_size, False)
         c.update_param('successful_samples_required', successful_samples_required, False)
         c.update_param('additional_latency_milliseconds', additional_latency, False)
-    return instance
+    return parent
 
 
 def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_path=None,

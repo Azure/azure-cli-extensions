@@ -570,7 +570,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_windows(self, resource_group, resource_group_location):
+    @RoleBasedServicePrincipalPreparer()
+    def test_aks_create_with_windows(self, resource_group, resource_group_location, sp_name, sp_password):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -580,9 +581,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'dns_name_prefix': self.create_random_name('cliaksdns', 16),
             'location': resource_group_location,
+            'service_principal': sp_name,
+            'client_secret': sp_password,
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'windows_admin_username': 'azureuser1',
-            'windows_admin_password': 'replacePassword1234$',
+            'windows_admin_password': 'replace-Password1234$',
             'nodepool2_name': 'npwin',
         })
 
@@ -590,6 +593,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
+                     '--service-principal={service_principal} --client-secret={client_secret} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
@@ -618,7 +622,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_ahub(self, resource_group, resource_group_location):
+    @RoleBasedServicePrincipalPreparer()
+    def test_aks_create_with_ahub(self, resource_group, resource_group_location, sp_name, sp_password):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -628,9 +633,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'dns_name_prefix': self.create_random_name('cliaksdns', 16),
             'location': resource_group_location,
+            'service_principal': sp_name,
+            'client_secret': sp_password,
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'windows_admin_username': 'azureuser1',
-            'windows_admin_password': 'replacePassword1234$',
+            'windows_admin_password': 'replace-Password1234$',
             'nodepool2_name': 'npwin',
         })
 
@@ -638,6 +645,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
+                     '--service-principal={service_principal} --client-secret={client_secret} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure --enable-ahub'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
