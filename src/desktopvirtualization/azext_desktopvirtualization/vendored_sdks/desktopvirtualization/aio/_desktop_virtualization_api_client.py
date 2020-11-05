@@ -15,18 +15,18 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import DesktopVirtualizationAPIClientConfiguration
-from .operations_async import OperationOperations
-from .operations_async import WorkspaceOperations
-from .operations_async import ApplicationGroupAssignmentOperations
-from .operations_async import ApplicationGroupOperations
-from .operations_async import StartMenuItemOperations
-from .operations_async import ApplicationOperations
-from .operations_async import DesktopOperations
-from .operations_async import HostPoolOperations
-from .operations_async import UserSessionOperations
-from .operations_async import SessionHostOperations
-from .operations_async import ActiveApplicationOperations
+from ._configuration import DesktopVirtualizationAPIClientConfiguration
+from .operations import OperationOperations
+from .operations import WorkspaceOperations
+from .operations import ApplicationGroupOperations
+from .operations import StartMenuItemOperations
+from .operations import ApplicationOperations
+from .operations import DesktopOperations
+from .operations import HostPoolOperations
+from .operations import UserSessionOperations
+from .operations import SessionHostOperations
+from .operations import MsixPackageOperations
+from .operations import MsixImageOperations
 from .. import models
 
 
@@ -34,33 +34,32 @@ class DesktopVirtualizationAPIClient(object):
     """DesktopVirtualizationAPIClient.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: desktop_virtualization_api_client.aio.operations_async.OperationOperations
+    :vartype operation: desktop_virtualization_api_client.aio.operations.OperationOperations
     :ivar workspace: WorkspaceOperations operations
-    :vartype workspace: desktop_virtualization_api_client.aio.operations_async.WorkspaceOperations
-    :ivar application_group_assignment: ApplicationGroupAssignmentOperations operations
-    :vartype application_group_assignment: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupAssignmentOperations
+    :vartype workspace: desktop_virtualization_api_client.aio.operations.WorkspaceOperations
     :ivar application_group: ApplicationGroupOperations operations
-    :vartype application_group: desktop_virtualization_api_client.aio.operations_async.ApplicationGroupOperations
+    :vartype application_group: desktop_virtualization_api_client.aio.operations.ApplicationGroupOperations
     :ivar start_menu_item: StartMenuItemOperations operations
-    :vartype start_menu_item: desktop_virtualization_api_client.aio.operations_async.StartMenuItemOperations
+    :vartype start_menu_item: desktop_virtualization_api_client.aio.operations.StartMenuItemOperations
     :ivar application: ApplicationOperations operations
-    :vartype application: desktop_virtualization_api_client.aio.operations_async.ApplicationOperations
+    :vartype application: desktop_virtualization_api_client.aio.operations.ApplicationOperations
     :ivar desktop: DesktopOperations operations
-    :vartype desktop: desktop_virtualization_api_client.aio.operations_async.DesktopOperations
+    :vartype desktop: desktop_virtualization_api_client.aio.operations.DesktopOperations
     :ivar host_pool: HostPoolOperations operations
-    :vartype host_pool: desktop_virtualization_api_client.aio.operations_async.HostPoolOperations
+    :vartype host_pool: desktop_virtualization_api_client.aio.operations.HostPoolOperations
     :ivar user_session: UserSessionOperations operations
-    :vartype user_session: desktop_virtualization_api_client.aio.operations_async.UserSessionOperations
+    :vartype user_session: desktop_virtualization_api_client.aio.operations.UserSessionOperations
     :ivar session_host: SessionHostOperations operations
-    :vartype session_host: desktop_virtualization_api_client.aio.operations_async.SessionHostOperations
-    :ivar active_application: ActiveApplicationOperations operations
-    :vartype active_application: desktop_virtualization_api_client.aio.operations_async.ActiveApplicationOperations
+    :vartype session_host: desktop_virtualization_api_client.aio.operations.SessionHostOperations
+    :ivar msix_package: MsixPackageOperations operations
+    :vartype msix_package: desktop_virtualization_api_client.aio.operations.MsixPackageOperations
+    :ivar msix_image: MsixImageOperations operations
+    :vartype msix_image: desktop_virtualization_api_client.aio.operations.MsixImageOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -83,8 +82,6 @@ class DesktopVirtualizationAPIClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.workspace = WorkspaceOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.application_group_assignment = ApplicationGroupAssignmentOperations(
-            self._client, self._config, self._serialize, self._deserialize)
         self.application_group = ApplicationGroupOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.start_menu_item = StartMenuItemOperations(
@@ -99,7 +96,9 @@ class DesktopVirtualizationAPIClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.session_host = SessionHostOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.active_application = ActiveApplicationOperations(
+        self.msix_package = MsixPackageOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.msix_image = MsixImageOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:

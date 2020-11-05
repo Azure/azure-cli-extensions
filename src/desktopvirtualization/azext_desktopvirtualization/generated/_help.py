@@ -19,49 +19,52 @@ helps['desktopvirtualization workspace'] = """
 
 helps['desktopvirtualization workspace list'] = """
     type: command
-    short-summary: List workspaces in subscription.
+    short-summary: "List workspaces. And List workspaces in subscription."
     examples:
       - name: Workspace_ListByResourceGroup
         text: |-
-               az desktopvirtualization workspace list --resource-group "MyResourceGroup"
+               az desktopvirtualization workspace list --resource-group "resourceGroup1"
+      - name: Workspace_ListBySubscription
+        text: |-
+               az desktopvirtualization workspace list
 """
 
 helps['desktopvirtualization workspace show'] = """
     type: command
-    short-summary: Get a workspace.
+    short-summary: "Get a workspace."
     examples:
       - name: Workspace_Get
         text: |-
-               az desktopvirtualization workspace show --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace show --resource-group "resourceGroup1" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace create'] = """
     type: command
-    short-summary: Create or update a workspace.
+    short-summary: "Create a workspace."
     examples:
       - name: Workspace_Create
         text: |-
-               az desktopvirtualization workspace create --resource-group "MyResourceGroup" --location "centralus" \
---description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace create --resource-group "resourceGroup1" --location "centralus" \
+--description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace update'] = """
     type: command
-    short-summary: Update a workspace.
+    short-summary: "Update a workspace."
     examples:
       - name: Workspace_Update
         text: |-
-               az desktopvirtualization workspace update --resource-group "MyResourceGroup" --description "des1" \
---friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace update --resource-group "resourceGroup1" --description "des1" \
+--friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace delete'] = """
     type: command
-    short-summary: Remove a workspace.
+    short-summary: "Remove a workspace."
     examples:
       - name: Workspace_Delete
         text: |-
-               az desktopvirtualization workspace delete --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace delete --resource-group "resourceGroup1" --name "workspace1"
 """
 
 helps['desktopvirtualization applicationgroup'] = """
@@ -71,54 +74,57 @@ helps['desktopvirtualization applicationgroup'] = """
 
 helps['desktopvirtualization applicationgroup list'] = """
     type: command
-    short-summary: List applicationGroups in subscription.
+    short-summary: "List applicationGroups. And List applicationGroups in subscription."
     examples:
       - name: ApplicationGroup_ListByResourceGroup
         text: |-
                az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'" \
---resource-group "MyResourceGroup"
+--resource-group "resourceGroup1"
+      - name: ApplicationGroup_List
+        text: |-
+               az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'"
 """
 
 helps['desktopvirtualization applicationgroup show'] = """
     type: command
-    short-summary: Get an application group.
+    short-summary: "Get an application group."
     examples:
       - name: ApplicationGroup_Get
         text: |-
-               az desktopvirtualization applicationgroup show --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup show --name "applicationGroup1" --resource-group \
+"resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup create'] = """
     type: command
-    short-summary: Create or update an applicationGroup.
+    short-summary: "Create an applicationGroup."
     examples:
       - name: ApplicationGroup_Create
         text: |-
                az desktopvirtualization applicationgroup create --location "centralus" --description "des1" \
 --application-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3\
--b645-8a753a63c4fa/resourceGroups/MyResourceGroup/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool" \
---tags tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+-b645-8a753a63c4fa/resourceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" --tags \
+tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup update'] = """
     type: command
-    short-summary: Update an applicationGroup.
+    short-summary: "Update an applicationGroup."
     examples:
       - name: ApplicationGroups_Update
         text: |-
                az desktopvirtualization applicationgroup update --description "des1" --friendly-name "friendly" --tags \
-tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup delete'] = """
     type: command
-    short-summary: Remove an applicationGroup.
+    short-summary: "Remove an applicationGroup."
     examples:
       - name: ApplicationGroup_Delete
         text: |-
-               az desktopvirtualization applicationgroup delete --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup delete --name "applicationGroup1" --resource-group \
+"resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool'] = """
@@ -128,28 +134,31 @@ helps['desktopvirtualization hostpool'] = """
 
 helps['desktopvirtualization hostpool list'] = """
     type: command
-    short-summary: List hostPools in subscription.
+    short-summary: "List hostPools. And List hostPools in subscription."
     examples:
       - name: HostPool_ListByResourceGroup
         text: |-
-               az desktopvirtualization hostpool list --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool list --resource-group "resourceGroup1"
+      - name: HostPool_List
+        text: |-
+               az desktopvirtualization hostpool list
 """
 
 helps['desktopvirtualization hostpool show'] = """
     type: command
-    short-summary: Get a host pool.
+    short-summary: "Get a host pool."
     examples:
       - name: HostPool_Get
         text: |-
-               az desktopvirtualization hostpool show --name "MyHostPool" --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool show --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool create'] = """
     type: command
-    short-summary: Create or update a host pool.
+    short-summary: "Create a host pool."
     parameters:
       - name: --registration-info
-        short-summary: The registration info of HostPool.
+        short-summary: "The registration info of HostPool."
         long-summary: |
             Usage: --registration-info expiration-time=XX token=XX registration-token-operation=XX
 
@@ -161,17 +170,19 @@ helps['desktopvirtualization hostpool create'] = """
         text: |-
                az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name \
 "friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
---personal-desktop-assignment-type "Automatic" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" \
-registration-token-operation="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name \
-"MyHostPool" --resource-group "MyResourceGroup"
+--personal-desktop-assignment-type "Automatic" --preferred-app-group-type "Desktop" --registration-info \
+expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" --sso-client-id "client" \
+--sso-client-secret-key-vault-path "https://keyvault/secret" --sso-context "KeyVaultPath" --sso-secret-type \
+"SharedKey" --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags \
+tag1="value1" tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool update'] = """
     type: command
-    short-summary: Update a host pool.
+    short-summary: "Update a host pool."
     parameters:
       - name: --registration-info
-        short-summary: The registration info of HostPool.
+        short-summary: "The registration info of HostPool."
         long-summary: |
             Usage: --registration-info expiration-time=XX registration-token-operation=XX
 
@@ -182,16 +193,122 @@ helps['desktopvirtualization hostpool update'] = """
         text: |-
                az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" \
 --load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" \
---registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context \
-"KeyVaultPath" --tags tag1="value1" tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
+--registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" \
+--sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-context "KeyVaultPath" \
+--sso-secret-type "SharedKey" --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template \
+"{json:json}" --tags tag1="value1" tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
     type: command
-    short-summary: Remove a host pool.
+    short-summary: "Remove a host pool."
     examples:
       - name: HostPool_Delete
         text: |-
-               az desktopvirtualization hostpool delete --force true --name "MyHostPool" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization hostpool delete --force true --name "hostPool1" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package'] = """
+    type: group
+    short-summary: desktopvirtualization msix-package
+"""
+
+helps['desktopvirtualization msix-package list'] = """
+    type: command
+    short-summary: "List MSIX packages in hostpool."
+    examples:
+      - name: MSIXPackage_List
+        text: |-
+               az desktopvirtualization msix-package list --host-pool-name "hostpool1" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package show'] = """
+    type: command
+    short-summary: "Get a msixpackage."
+    examples:
+      - name: MSIXPackage_Get
+        text: |-
+               az desktopvirtualization msix-package show --host-pool-name "hostpool1" --msix-package-full-name \
+"packagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package create'] = """
+    type: command
+    short-summary: "Create a MSIX package."
+    parameters:
+      - name: --package-dependencies
+        short-summary: "List of package dependencies."
+        long-summary: |
+            Usage: --package-dependencies dependency-name=XX publisher=XX min-version=XX
+
+            dependency-name: Name of package dependency.
+            publisher: Name of dependency publisher.
+            min-version: Dependency version required.
+
+            Multiple actions can be specified by using more than one --package-dependencies argument.
+      - name: --package-applications
+        short-summary: "List of package applications."
+        long-summary: |
+            Usage: --package-applications app-id=XX description=XX app-user-model-id=XX friendly-name=XX \
+icon-image-name=XX raw-icon=XX raw-png=XX
+
+            app-id: Package Application Id, found in appxmanifest.xml.
+            description: Description of Package Application.
+            app-user-model-id: Used to activate Package Application. Consists of Package Name and ApplicationID. Found \
+in appxmanifest.xml.
+            friendly-name: User friendly name.
+            icon-image-name: User friendly name.
+            raw-icon: the icon a 64 bit string as a byte array.
+            raw-png: the icon a 64 bit string as a byte array.
+
+            Multiple actions can be specified by using more than one --package-applications argument.
+    examples:
+      - name: MSIXPackage_Create
+        text: |-
+               az desktopvirtualization msix-package create --host-pool-name "hostpool1" --display-name "displayname" \
+--image-path "imagepath" --is-active false --is-regular-registration false --last-updated \
+"2008-09-22T14:01:54.9571247Z" --package-applications description="application-desc" app-id="ApplicationId" \
+app-user-model-id="AppUserModelId" friendly-name="friendlyname" icon-image-name="Apptile" \
+raw-icon="VGhpcyBpcyBhIHN0cmluZyB0byBoYXNo" raw-png="VGhpcyBpcyBhIHN0cmluZyB0byBoYXNo" --package-dependencies \
+dependency-name="MsixTest_Dependency_Name" min-version="version" publisher="PublishedName" --package-family-name \
+"MsixPackage_FamilyName" --package-name "MsixPackage_name" --package-relative-path "packagerelativepath" --version \
+"version" --msix-package-full-name "msixpackagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package update'] = """
+    type: command
+    short-summary: "Update an  MSIX Package."
+    examples:
+      - name: MSIXPackage_Update
+        text: |-
+               az desktopvirtualization msix-package update --host-pool-name "hostpool1" --display-name "displayname" \
+--is-active true --is-regular-registration false --msix-package-full-name "msixpackagefullname" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package delete'] = """
+    type: command
+    short-summary: "Remove an MSIX Package."
+    examples:
+      - name: MSIXPackage_Delete
+        text: |-
+               az desktopvirtualization msix-package delete --host-pool-name "hostpool1" --msix-package-full-name \
+"packagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-image'] = """
+    type: group
+    short-summary: desktopvirtualization msix-image
+"""
+
+helps['desktopvirtualization msix-image expand'] = """
+    type: command
+    short-summary: "Expands and Lists MSIX packages in an Image, given the Image Path."
+    examples:
+      - name: MsixImage_Expand
+        text: |-
+               az desktopvirtualization msix-image expand --host-pool-name "hostpool1" --uri "imagepath" \
+--resource-group "resourceGroup1"
 """

@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class ApplicationGroupAssignmentOperations:
-    """ApplicationGroupAssignmentOperations async operations.
+class MsixImageOperations:
+    """MsixImageOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -41,61 +41,70 @@ class ApplicationGroupAssignmentOperations:
         self._deserialize = deserializer
         self._config = config
 
-    def workspace_level_list(
+    def expand(
         self,
         resource_group_name: str,
-        workspace_name: str,
-        filter: Optional[str] = None,
+        host_pool_name: str,
+        uri: Optional[str] = None,
         **kwargs
-    ) -> AsyncIterable["models.ApplicationGroupList"]:
-        """List application group that user can use.
+    ) -> AsyncIterable["models.ExpandMsixImageList"]:
+        """Expands and Lists MSIX packages in an Image, given the Image Path.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param workspace_name: The name of the workspace.
-        :type workspace_name: str
-        :param filter: OData filter expression. Valid properties for filtering are
-     applicationGroupType.
-        :type filter: str
+        :param host_pool_name: The name of the host pool within the specified resource group.
+        :type host_pool_name: str
+        :param uri: URI to Image.
+        :type uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ApplicationGroupList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.ApplicationGroupList]
+        :return: An iterator like instance of either ExpandMsixImageList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~desktop_virtualization_api_client.models.ExpandMsixImageList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ExpandMsixImageList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        msix_image_uri = models.MsixImageUri(uri=uri)
+        api_version = "2020-11-02-preview"
+        content_type = "application/json"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
-                url = self.workspace_level_list.metadata['url']  # type: ignore
+                url = self.expand.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+                    'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-                if filter is not None:
-                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
 
+                body_content_kwargs = {}  # type: Dict[str, Any]
+                body_content = self._serialize.body(msix_image_uri, 'MsixImageUri')
+                body_content_kwargs['content'] = body_content
+                request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                body_content_kwargs = {}  # type: Dict[str, Any]
+                body_content = self._serialize.body(msix_image_uri, 'MsixImageUri')
+                body_content_kwargs['content'] = body_content
+                request = self._client.get(url, query_parameters, header_parameters, **body_content_kwargs)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ApplicationGroupList', pipeline_response)
+            deserialized = self._deserialize('ExpandMsixImageList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -116,4 +125,4 @@ class ApplicationGroupAssignmentOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    workspace_level_list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/workspaces/{workspaceName}/userApplicationGroupAssignments'}  # type: ignore
+    expand.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/expandMsixImage'}  # type: ignore
