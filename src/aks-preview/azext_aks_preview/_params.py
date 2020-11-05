@@ -27,7 +27,8 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
-    CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL
+    CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
+    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
 
 
 def load_arguments(self, _):
@@ -108,6 +109,8 @@ def load_arguments(self, _):
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('disable_sgxquotehelper', action='store_true')
+        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
+
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -128,6 +131,7 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
+        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
