@@ -862,6 +862,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
                assign_identity=None,
+               auto_upgrade_channel=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -1131,6 +1132,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             tier="Paid"
         )
 
+    if auto_upgrade_channel is not None:
+        mc.auto_scaler_profile.upgrade_channel = auto_upgrade_channel
+
     headers = get_aks_custom_headers(aks_custom_headers)
 
     # Due to SPN replication latency, we do a few retries here
@@ -1221,7 +1225,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                aad_admin_group_object_ids=None,
                enable_ahub=False,
                disable_ahub=False,
-               aks_custom_headers=None):
+               aks_custom_headers=None,
+               auto_upgrade_channel=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1396,6 +1401,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'Windows_Server'
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
+
+    if auto_upgrade_channel is not None:
+        instance.auto_scaler_profile.upgrade_channel = auto_upgrade_channel
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
