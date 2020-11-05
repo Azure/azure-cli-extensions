@@ -211,3 +211,18 @@ class CommunicationServiceScenarioTest(ScenarioTest):
 
         # list current all communication services by resource group
         step__communicationservice_get(self, rg_2=None, rg=resource_group)
+
+    @ResourceGroupPreparer(name_prefix="test_service_link_keys_")
+    def test_service_link_key(self, resource_group):
+
+        self.kwargs.update({
+            "myCommunicationService": "comm-100002",
+        })
+
+        # create a communication service
+        step__communicationservice_put(self, rg_2=None, rg=resource_group)
+
+        step__communicationservice_post_list_keys(self, rg_2=None, rg=resource_group)
+
+        # delete that service
+        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
