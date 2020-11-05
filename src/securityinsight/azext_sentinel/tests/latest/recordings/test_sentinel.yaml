@@ -1,5 +1,179 @@
 interactions:
 - request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.14.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-10-28T08:16:25Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '471'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2020 08:16:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"sku": {"name": "PerGB2018"}, "retentionInDays":
+      30, "workspaceCapping": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '115'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-loganalytics/0.7.0 Azure-SDK-For-Python AZURECLI/2.14.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002?api-version=2020-03-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
+        \"cb1b649d-58fd-4579-ab70-e314c5f5ebfc\",\r\n    \"provisioningState\": \"Creating\",\r\n
+        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"maxCapacityReservationLevel\":
+        3000,\r\n      \"lastSkuUpdate\": \"Wed, 28 Oct 2020 08:16:36 GMT\"\r\n    },\r\n
+        \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\n
+        \     \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\":
+        true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n
+        \     \"quotaNextResetTime\": \"Wed, 28 Oct 2020 11:00:00 GMT\",\r\n      \"dataIngestionStatus\":
+        \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n
+        \   \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"createdDate\":
+        \"Wed, 28 Oct 2020 08:16:36 GMT\",\r\n    \"modifiedDate\": \"Wed, 28 Oct
+        2020 08:16:36 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/cli-test-ws-000002\",\r\n
+        \ \"name\": \"cli-test-ws-000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
+        \ \"location\": \"westus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1185'
+      content-type:
+      - application/json
+      date:
+      - Wed, 28 Oct 2020 08:16:37 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+      x-powered-by:
+      - ASP.NET
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.5 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-loganalytics/0.7.0 Azure-SDK-For-Python AZURECLI/2.14.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002?api-version=2020-03-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
+        \"cb1b649d-58fd-4579-ab70-e314c5f5ebfc\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"maxCapacityReservationLevel\":
+        3000,\r\n      \"lastSkuUpdate\": \"Wed, 28 Oct 2020 08:16:36 GMT\"\r\n    },\r\n
+        \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\n
+        \     \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\":
+        true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n
+        \     \"quotaNextResetTime\": \"Wed, 28 Oct 2020 11:00:00 GMT\",\r\n      \"dataIngestionStatus\":
+        \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n
+        \   \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"createdDate\":
+        \"Wed, 28 Oct 2020 08:16:36 GMT\",\r\n    \"modifiedDate\": \"Wed, 28 Oct
+        2020 08:16:38 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/cli-test-ws-000002\",\r\n
+        \ \"name\": \"cli-test-ws-000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
+        \ \"location\": \"westus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1186'
+      content-type:
+      - application/json
+      date:
+      - Wed, 28 Oct 2020 08:17:09 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"etag": "3d00c3ca-0000-0100-0000-5d42d5010000", "kind": "Fusion", "properties":
       {"alertRuleTemplateName": "f71aba3d-28fb-450b-b192-4e76a83015c8", "enabled":
       true}}'
@@ -19,38 +193,58 @@ interactions:
       ParameterSetName:
       - --fusion-alert-rule --resource-group --rule-id --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"90011302-0000-0100-0000-5f9929090000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+        Multistage Attack Detection","description":"Using Fusion technology based
+        on machine learning, Azure Sentinel automatically detects multistage attacks
+        by identifying combinations of anomalous behaviors and suspicious activities
+        observed at various stages of the kill chain. On the basis of these discoveries,
+        Azure Sentinel generates incidents that would otherwise be very difficult
+        to catch. By design, these incidents are low-volume, high-fidelity, and high-severity,
+        which is why this detection is turned ON by default.\n\nThere are a total
+        of 70 Fusion incident types detected by Azure Sentinel.\n- 65 of these show
+        the combination of suspicious Azure Active Directory sign-in events followed
+        by anomalous Office 365 activity. Out of these 65, 30 are in public preview.
+        \n- The remaining five incident types show the combination of anomalous signals
+        from Microsoft Defender Advanced Threat Protection and from Palo Alto Networks
+        firewalls. These five types are all in public preview.\n\nTo detect these
+        multistage attacks, the following data connectors must be configured:\n- Azure
+        Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
+        Microsoft Defender Advanced Threat Protection.\n- Palo Alto Networks.\n\nFor
+        a full list and description of each scenario that is supported for these multistage
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2020-10-28T08:17:13.2592617Z"}}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '2165'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:48 GMT
+      - Wed, 28 Oct 2020 08:17:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
     status:
-      code: 404
-      message: Not Found
+      code: 201
+      message: Created
 - request:
-    body: '{"etag": "\"260097e0-0000-0d00-0000-5d6fa88f0000\"", "kind": "MicrosoftSecurityIncidentCreation",
+    body: '{"etag": "260097e0-0000-0d00-0000-5d6fa88f0000", "kind": "MicrosoftSecurityIncidentCreation",
       "properties": {"productFilter": "Microsoft Cloud App Security", "displayName":
       "testing displayname", "enabled": true}}'
     headers:
@@ -63,94 +257,47 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '217'
+      - '213'
       Content-Type:
       - application/json
       ParameterSetName:
       - --microsoft-security-incident-creation-alert-rule --resource-group --rule-id
         --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"90012303-0000-0100-0000-5f99290c0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+        Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2020-10-28T08:17:16.2057934Z"}}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '822'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:48 GMT
+      - Wed, 28 Oct 2020 08:17:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
     status:
-      code: 404
-      message: Not Found
-- request:
-    body: '{"etag": "\"0300bf09-0000-0000-0000-5c37296e0000\"", "properties": {"logicAppResourceId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Logic/workflows/MyAlerts",
-      "triggerUri": "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd7681ded1d48d7/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sentinel alert-rule create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '495'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --etag --logic-app-resource-id --trigger-uri --action-id --resource-group
-        --rule-id --workspace-name
-      User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/73e01a99-5cd7-4139-a149-9f2736ff2ab5/actions/912bec42-cb66-4c03-ac63-1761b6898c3e?api-version=2020-01-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '299'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 23 Oct 2020 08:03:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -165,36 +312,58 @@ interactions:
       ParameterSetName:
       - --resource-group --rule-id --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"90011302-0000-0100-0000-5f9929090000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+        Multistage Attack Detection","description":"Using Fusion technology based
+        on machine learning, Azure Sentinel automatically detects multistage attacks
+        by identifying combinations of anomalous behaviors and suspicious activities
+        observed at various stages of the kill chain. On the basis of these discoveries,
+        Azure Sentinel generates incidents that would otherwise be very difficult
+        to catch. By design, these incidents are low-volume, high-fidelity, and high-severity,
+        which is why this detection is turned ON by default.\n\nThere are a total
+        of 70 Fusion incident types detected by Azure Sentinel.\n- 65 of these show
+        the combination of suspicious Azure Active Directory sign-in events followed
+        by anomalous Office 365 activity. Out of these 65, 30 are in public preview.
+        \n- The remaining five incident types show the combination of anomalous signals
+        from Microsoft Defender Advanced Threat Protection and from Palo Alto Networks
+        firewalls. These five types are all in public preview.\n\nTo detect these
+        multistage attacks, the following data connectors must be configured:\n- Azure
+        Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
+        Microsoft Defender Advanced Threat Protection.\n- Palo Alto Networks.\n\nFor
+        a full list and description of each scenario that is supported for these multistage
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2020-10-28T08:17:13.2592617Z"}}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '2165'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:51 GMT
+      - Wed, 28 Oct 2020 08:17:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -209,80 +378,42 @@ interactions:
       ParameterSetName:
       - --resource-group --rule-id --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"90012303-0000-0100-0000-5f99290c0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+        Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2020-10-28T08:17:16.2057934Z"}}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '822'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:51 GMT
+      - Wed, 28 Oct 2020 08:17:20 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
     status:
-      code: 404
-      message: Not Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sentinel alert-rule show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --rule-id --workspace-name
-      User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '299'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 23 Oct 2020 08:03:51 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -297,126 +428,60 @@ interactions:
       ParameterSetName:
       - --resource-group --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"90011302-0000-0100-0000-5f9929090000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+        Multistage Attack Detection","description":"Using Fusion technology based
+        on machine learning, Azure Sentinel automatically detects multistage attacks
+        by identifying combinations of anomalous behaviors and suspicious activities
+        observed at various stages of the kill chain. On the basis of these discoveries,
+        Azure Sentinel generates incidents that would otherwise be very difficult
+        to catch. By design, these incidents are low-volume, high-fidelity, and high-severity,
+        which is why this detection is turned ON by default.\n\nThere are a total
+        of 70 Fusion incident types detected by Azure Sentinel.\n- 65 of these show
+        the combination of suspicious Azure Active Directory sign-in events followed
+        by anomalous Office 365 activity. Out of these 65, 30 are in public preview.
+        \n- The remaining five incident types show the combination of anomalous signals
+        from Microsoft Defender Advanced Threat Protection and from Palo Alto Networks
+        firewalls. These five types are all in public preview.\n\nTo detect these
+        multistage attacks, the following data connectors must be configured:\n- Azure
+        Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
+        Microsoft Defender Advanced Threat Protection.\n- Palo Alto Networks.\n\nFor
+        a full list and description of each scenario that is supported for these multistage
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2020-10-28T08:17:13.2592617Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"90012303-0000-0100-0000-5f99290c0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+        Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2020-10-28T08:17:16.2057934Z"}}]}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '3000'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:53 GMT
+      - Wed, 28 Oct 2020 08:17:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
     status:
-      code: 404
-      message: Not Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sentinel alert-rule get-action
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --action-id --resource-group --rule-id --workspace-name
-      User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/73e01a99-5cd7-4139-a149-9f2736ff2ab5/actions/912bec42-cb66-4c03-ac63-1761b6898c3e?api-version=2020-01-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '299'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 23 Oct 2020 08:03:53 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - sentinel alert-rule delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -y --action-id --resource-group --rule-id --workspace-name
-      User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/73e01a99-5cd7-4139-a149-9f2736ff2ab5/actions/912bec42-cb66-4c03-ac63-1761b6898c3e?api-version=2020-01-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '299'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 23 Oct 2020 08:03:53 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -433,34 +498,40 @@ interactions:
       ParameterSetName:
       - -y --resource-group --rule-id --workspace-name
       User-Agent:
-      - AZURECLI/2.13.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.14.0 azsdk-python-securityinsights/unknown Python/3.8.5 (Windows-10-10.0.19041-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/cli-test-ws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.OperationalInsights/workspaces/myWorkspace''
-        under resource group ''clitest000001'' was not found. For more details please
-        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+      string: '{}'
     headers:
+      api-supported-versions:
+      - 2019-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '299'
+      - '2'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 23 Oct 2020 08:03:55 GMT
+      - Wed, 28 Oct 2020 08:17:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 version: 1

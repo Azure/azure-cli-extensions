@@ -108,6 +108,7 @@ def load_arguments(self, _):
         c.argument('bookmark_id', type=str, help='Bookmark ID', id_part='child_name_1')
 
     with self.argument_context('sentinel bookmark create') as c:
+        c.ignore('_query')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of the workspace.')
         c.argument('bookmark_id', type=str, help='Bookmark ID')

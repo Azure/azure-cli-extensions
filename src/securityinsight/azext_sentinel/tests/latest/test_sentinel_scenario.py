@@ -20,7 +20,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup
 @try_manual
 def setup(test, rg):
-    pass
+    test.kwargs.update({
+        'workspace': test.create_random_name('cli-test-ws-', 24)
+    })
+    test.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
 
 
 # EXAMPLE: /Actions/get/Get all actions of alert rule.
@@ -29,7 +32,7 @@ def step__actions_get_get_all_actions_of_alert_rule_(test, rg):
     test.cmd('az sentinel action list '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -41,33 +44,44 @@ def step__alertrules_put(test, rg):
              '50b-b192-4e76a83015c8" enabled=true '
              '--resource-group "{rg}" '
              '--rule-id "myFirstFusionRule" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('enabled', True),
+                 test.check('kind', 'Fusion'),
+                 test.check('name', 'myFirstFusionRule')
+             ])
 
 
 # EXAMPLE: /AlertRules/put/Creates or updates a MicrosoftSecurityIncidentCreation rule.
 @try_manual
 def step__alertrules_put2(test, rg):
     test.cmd('az sentinel alert-rule create '
-             '--microsoft-security-incident-creation-alert-rule etag="\\"260097e0-0000-0d00-0000-5d6fa88f0000\\"" '
+             '--microsoft-security-incident-creation-alert-rule etag="260097e0-0000-0d00-0000-5d6fa88f0000" '
              'product-filter="Microsoft Cloud App Security" display-name="testing displayname" enabled=true '
              '--resource-group "{rg}" '
              '--rule-id "microsoftSecurityIncidentCreationRuleExample" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('enabled', True),
+                 test.check('kind', 'MicrosoftSecurityIncidentCreation'),
+                 test.check('name', 'microsoftSecurityIncidentCreationRuleExample'),
+                 test.check('productFilter', 'Microsoft Cloud App Security'),
+                 test.check('displayName', 'testing displayname')
+             ])
 
 
 # EXAMPLE: /AlertRules/put/Creates or updates a Scheduled alert rule.
 @try_manual
 def step__alertrules_put3(test, rg):
+    # BadRequestError: (BadRequest) Failed to run the alert rule query. One of the tables does not exist.
     test.cmd('az sentinel alert-rule create '
-             '--scheduled-alert-rule etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" query="ProtectionStatus | '
-             'extend HostCustomEntity  query-frequency="PT1H" query-period="P2DT1H30M" severity="High" '
+             '--scheduled-alert-rule etag="0300bf09-0000-0000-0000-5c37296e0000" query="ProtectionStatus | extend HostCustomEntity = Computer | extend IPCustomEntity = ComputerIP_Hidden“ '
+             'query-frequency="PT1H" query-period="P2DT1H30M" severity="High" '
              'trigger-operator="GreaterThan" trigger-threshold=0 description="" display-name="Rule2" enabled=true '
              'suppression-duration="PT1H" suppression-enabled=false tactics="Persistence" tactics="LateralMovement" '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -75,7 +89,7 @@ def step__alertrules_put3(test, rg):
 @try_manual
 def step__alertrules_put4(test, rg):
     test.cmd('az sentinel alert-rule create '
-             '--etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" '
+             '--etag "0300bf09-0000-0000-0000-5c37296e0000" '
              '--logic-app-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Logic/w'
              'orkflows/MyAlerts" '
              '--trigger-uri "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd7681ded1d4'
@@ -84,7 +98,7 @@ def step__alertrules_put4(test, rg):
              '--action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -94,8 +108,12 @@ def step__alertrules_get_get_a_fusion_alert_rule_(test, rg):
     test.cmd('az sentinel alert-rule show '
              '--resource-group "{rg}" '
              '--rule-id "myFirstFusionRule" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('enabled', True),
+                 test.check('kind', 'Fusion'),
+                 test.check('name', 'myFirstFusionRule')
+             ])
 
 
 # EXAMPLE: /AlertRules/get/Get a MicrosoftSecurityIncidentCreation rule.
@@ -104,8 +122,14 @@ def step__alertrules_get(test, rg):
     test.cmd('az sentinel alert-rule show '
              '--resource-group "{rg}" '
              '--rule-id "microsoftSecurityIncidentCreationRuleExample" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('enabled', True),
+                 test.check('kind', 'MicrosoftSecurityIncidentCreation'),
+                 test.check('name', 'microsoftSecurityIncidentCreationRuleExample'),
+                 test.check('productFilter', 'Microsoft Cloud App Security'),
+                 test.check('displayName', 'testing displayname')
+             ])
 
 
 # EXAMPLE: /AlertRules/get/Get a Scheduled alert rule.
@@ -114,7 +138,7 @@ def step__alertrules_get_get_a_scheduled_alert_rule_(test, rg):
     test.cmd('az sentinel alert-rule show '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -123,8 +147,10 @@ def step__alertrules_get_get_a_scheduled_alert_rule_(test, rg):
 def step__alertrules_get_get_all_alert_rules_(test, rg):
     test.cmd('az sentinel alert-rule list '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('length(@)', 2)
+             ])
 
 
 # EXAMPLE: /AlertRules/get/Get an action of alert rule.
@@ -134,7 +160,7 @@ def step__alertrules_get_get_an_action_of_alert_rule_(test, rg):
              '--action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -145,7 +171,7 @@ def step__alertrules_delete(test, rg):
              '--action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -155,8 +181,21 @@ def step__alertrules_delete_delete_an_alert_rule_(test, rg):
     test.cmd('az sentinel alert-rule delete -y '
              '--resource-group "{rg}" '
              '--rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
+
+
+@try_manual
+def step__alertrules_delete_delete_a_fusion_alert_rule_(test, rg):
+    test.cmd('az sentinel alert-rule delete -y '
+             '--resource-group "{rg}" '
+             '--rule-id "myFirstFusionRule" '
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('enabled', True),
+                 test.check('kind', 'Fusion'),
+                 test.check('name', 'myFirstFusionRule')
+             ])
 
 
 # EXAMPLE: /AlertRuleTemplates/get/Get alert rule template by Id.
@@ -165,17 +204,19 @@ def step__alertruletemplates_get(test, rg):
     test.cmd('az sentinel alert-rule-template show '
              '--alert-rule-template-id "65360bb0-8986-4ade-a89d-af3cf44d28aa" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}',
+             checks=[
+                 test.check('kind', 'Scheduled'),
+                 test.check('name', '65360bb0-8986-4ade-a89d-af3cf44d28aa')
+             ])
 
 
 # EXAMPLE: /AlertRuleTemplates/get/Get all alert rule templates.
 @try_manual
-def step__alertruletemplates_get2(test, rg):
+def step__alertruletemplates_list(test, rg):
     test.cmd('az sentinel alert-rule-template list '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
-             checks=[])
+             '--workspace-name {workspace}')
 
 
 # EXAMPLE: /Bookmarks/put/Creates or updates a bookmark.
@@ -193,7 +234,7 @@ def step__bookmarks_put_creates_or_updates_a_bookmark_(test, rg):
              '--updated "2019-01-01T13:15:30Z" '
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -203,7 +244,7 @@ def step__bookmarks_get_get_a_bookmark_(test, rg):
     test.cmd('az sentinel bookmark show '
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -212,7 +253,7 @@ def step__bookmarks_get_get_a_bookmark_(test, rg):
 def step__bookmarks_get_get_all_bookmarks_(test, rg):
     test.cmd('az sentinel bookmark list '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -222,7 +263,7 @@ def step__bookmarks_delete_delete_a_bookmark_(test, rg):
     test.cmd('az sentinel bookmark delete -y '
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -234,7 +275,7 @@ def step__dataconnectors_put(test, rg):
              'daa-936fa1954fa8" '
              '--data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -244,7 +285,7 @@ def step__dataconnectors_get_get_a_asc_data_connector_(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "763f9fa1-c2d3-4fa2-93e9-bccd4899aa12" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -254,7 +295,7 @@ def step__dataconnectors_get(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "b96d014d-b5c2-4a01-9aba-a8058f629d42" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -264,7 +305,7 @@ def step__dataconnectors_get2(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "06b3ccb8-1384-4bcc-aec7-852f6d57161b" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -274,7 +315,7 @@ def step__dataconnectors_get_get_a_ti_data_connector_(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -283,7 +324,7 @@ def step__dataconnectors_get_get_a_ti_data_connector_(test, rg):
 def step__dataconnectors_get_get_all_data_connectors_(test, rg):
     test.cmd('az sentinel data-connector list '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -293,7 +334,7 @@ def step__dataconnectors_get3(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "f0cd27d2-5f03-4c06-ba31-d2dc82dcb51d" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -303,7 +344,7 @@ def step__dataconnectors_get4(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "07e42cb3-e658-4e90-801c-efa0f29d3d44" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -313,7 +354,7 @@ def step__dataconnectors_get5(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -323,7 +364,7 @@ def step__dataconnectors_get6(test, rg):
     test.cmd('az sentinel data-connector show '
              '--data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -333,7 +374,7 @@ def step__dataconnectors_delete(test, rg):
     test.cmd('az sentinel data-connector delete -y '
              '--data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -345,7 +386,7 @@ def step__incidentcomments_put(test, rg):
              '--incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -355,7 +396,7 @@ def step__incidentcomments_get(test, rg):
     test.cmd('az sentinel incident-comment list '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -366,7 +407,7 @@ def step__incidentcomments_get2(test, rg):
              '--incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -387,7 +428,7 @@ def step__incidents_put(test, rg):
              '--title "My incident" '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -398,7 +439,7 @@ def step__incidents_get_get_all_incidents_(test, rg):
              '--orderby "properties/createdTimeUtc desc" '
              '--top 1 '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -408,7 +449,7 @@ def step__incidents_get_get_an_incident_(test, rg):
     test.cmd('az sentinel incident show '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -418,7 +459,7 @@ def step__incidents_delete_delete_an_incident_(test, rg):
     test.cmd('az sentinel incident delete -y '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name "myWorkspace"',
+             '--workspace-name {workspace}',
              checks=[])
 
 
@@ -434,19 +475,20 @@ def call_scenario(test, rg):
     setup(test, rg)
     step__alertrules_put(test, rg)
     step__alertrules_put2(test, rg)
-    step__alertrules_put3(test, rg)
-    step__alertrules_put4(test, rg)
+    # step__alertrules_put3(test, rg)
+    # step__alertrules_put4(test, rg)
     step__alertrules_get_get_a_fusion_alert_rule_(test, rg)
     step__alertrules_get(test, rg)
-    step__alertrules_get_get_a_scheduled_alert_rule_(test, rg)
+    # step__alertrules_get_get_a_scheduled_alert_rule_(test, rg)
     step__alertrules_get_get_all_alert_rules_(test, rg)
-    step__alertrules_get_get_an_action_of_alert_rule_(test, rg)
-    step__alertrules_delete(test, rg)
-    step__alertrules_delete_delete_an_alert_rule_(test, rg)
-    """
+    # step__alertrules_get_get_an_action_of_alert_rule_(test, rg)
+    # step__alertrules_delete(test, rg)
+    # step__alertrules_delete_delete_an_alert_rule_(test, rg)
+    step__alertrules_delete_delete_a_fusion_alert_rule_(test, rg)
     step__alertruletemplates_get(test, rg)
-    step__alertruletemplates_get2(test, rg)
-    step__actions_get_get_all_actions_of_alert_rule_(test, rg)
+    step__alertruletemplates_list(test, rg)
+    # step__actions_get_get_all_actions_of_alert_rule_(test, rg)
+    """
     step__bookmarks_put_creates_or_updates_a_bookmark_(test, rg)
     step__bookmarks_get_get_a_bookmark_(test, rg)
     step__bookmarks_get_get_all_bookmarks_(test, rg)
