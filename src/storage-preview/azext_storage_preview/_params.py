@@ -114,8 +114,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_none_match')
 
     with self.argument_context('storage account create', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
-        t_account_type, t_sku_name, t_kind, t_tls_version = \
-            self.get_models('AccountType', 'SkuName', 'Kind', 'MinimumTlsVersion',
+        t_account_type, t_sku_name, t_kind, t_tls_version, t_extended_location = \
+            self.get_models('AccountType', 'SkuName', 'Kind', 'MinimumTlsVersion', 'ExtendedLocationTypes',
                             resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
 
         c.register_common_storage_account_options()
@@ -176,6 +176,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('min_tls_version', arg_type=get_enum_type(t_tls_version),
                    help='The minimum TLS version to be permitted on requests to storage. '
                         'The default interpretation is TLS 1.0 for this property')
+        c.argument('extended_location_name', options_list=['--extended-location-name', '--ext-name'],
+                   arg_group='Extended Location', is_preview=True,
+                   help='The name of the extended location.')
+        c.argument('extended_location_type', options_list=['--extended-location-type', '--ext-type'],
+                   arg_group='Extended Location', is_preview=True,
+                   arg_type=get_enum_type(t_extended_location, default=t_extended_location.EDGE_ZONE),
+                   help='The type of the extended location.')
 
     with self.argument_context('storage account blob-inventory-policy') as c:
         t_blob_inventory_name = self.get_models('BlobInventoryPolicyName', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
