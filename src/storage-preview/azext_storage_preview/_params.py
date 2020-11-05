@@ -3,8 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, file_type)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
+from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type,
+                                                get_three_state_flag)
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
 
 from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
@@ -50,6 +52,46 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
+    large_file_share_type = CLIArgumentType(
+        action='store_true', min_api='2019-04-01',
+        help='Enable the capability to support large file shares with more than 5 TiB capacity for storage account.'
+             'Once the property is enabled, the feature cannot be disabled. Currently only supported for LRS and '
+             'ZRS replication types, hence account conversions to geo-redundant accounts would not be possible. '
+             'For more information, please refer to https://go.microsoft.com/fwlink/?linkid=2086047.')
+    adds_type = CLIArgumentType(arg_type=get_three_state_flag(), min_api='2019-04-01',
+                                help='Enable Azure Files Active Directory Domain Service Authentication for '
+                                     'storage account. When --enable-files-adds is set to true, Azure Active '
+                                     'Directory Properties arguments must be provided.')
+    aadds_type = CLIArgumentType(arg_type=get_three_state_flag(), min_api='2018-11-01',
+                                 help='Enable Azure Active Directory Domain Services authentication for Azure Files')
+    domain_name_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                       help="Specify the primary domain that the AD DNS server is authoritative for. "
+                                            "Required when --enable-files-adds is set to True")
+    net_bios_domain_name_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                                help="Specify the NetBIOS domain name. "
+                                                     "Required when --enable-files-adds is set to True")
+    forest_name_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                       help="Specify the Active Directory forest to get. "
+                                            "Required when --enable-files-adds is set to True")
+    domain_guid_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                       help="Specify the domain GUID. Required when --enable-files-adds is set to True")
+    domain_sid_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                      help="Specify the security identifier (SID). Required when --enable-files-adds "
+                                           "is set to True")
+    azure_storage_sid_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
+                                             help="Specify the security identifier (SID) for Azure Storage. "
+                                                  "Required when --enable-files-adds is set to True")
+    t_routing_choice = self.get_models('RoutingChoice', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+    routing_choice_type = CLIArgumentType(
+        arg_group='Routing Preference', arg_type=get_enum_type(t_routing_choice),
+        help='Routing Choice defines the kind of network routing opted by the user.',
+        is_preview=True, min_api='2019-06-01')
+    publish_microsoft_endpoints_type = CLIArgumentType(
+        arg_group='Routing Preference', arg_type=get_three_state_flag(), is_preview=True, min_api='2019-06-01',
+        help='A boolean flag which indicates whether microsoft routing storage endpoints are to be published.')
+    publish_internet_endpoints_type = CLIArgumentType(
+        arg_group='Routing Preference', arg_type=get_three_state_flag(), is_preview=True, min_api='2019-06-01',
+        help='A boolean flag which indicates whether internet routing storage endpoints are to be published.')
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -70,6 +112,70 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    type=get_datetime_type(False))
         c.argument('if_match')
         c.argument('if_none_match')
+
+    with self.argument_context('storage account create', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
+        t_account_type, t_sku_name, t_kind, t_tls_version = \
+            self.get_models('AccountType', 'SkuName', 'Kind', 'MinimumTlsVersion',
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+
+        c.register_common_storage_account_options()
+        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('account_type', help='The storage account type', arg_type=get_enum_type(t_account_type))
+        c.argument('account_name', acct_name_type, options_list=['--name', '-n'], completer=None,
+                   local_context_attribute=LocalContextAttribute(
+                       name='storage_account_name', actions=[LocalContextAction.SET], scopes=[ALL]))
+        c.argument('kind', help='Indicates the type of storage account.', min_api="2018-02-01",
+                   arg_type=get_enum_type(t_kind), default='StorageV2')
+        c.argument('kind', help='Indicates the type of storage account.', max_api="2017-10-01",
+                   arg_type=get_enum_type(t_kind), default='Storage')
+        c.argument('https_only', arg_type=get_three_state_flag(), min_api='2019-04-01',
+                   help='Allow https traffic only to storage service if set to true. The default value is true.')
+        c.argument('https_only', arg_type=get_three_state_flag(), max_api='2018-11-01',
+                   help='Allow https traffic only to storage service if set to true. The default value is false.')
+        c.argument('tags', tags_type)
+        c.argument('custom_domain', help='User domain assigned to the storage account. Name is the CNAME source.')
+        c.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name, default='standard_ragrs'))
+        c.argument('enable_files_aadds', aadds_type)
+        c.argument('enable_files_adds', adds_type)
+        c.argument('enable_large_file_share', arg_type=large_file_share_type)
+        c.argument('domain_name', domain_name_type)
+        c.argument('net_bios_domain_name', net_bios_domain_name_type)
+        c.argument('forest_name', forest_name_type)
+        c.argument('domain_guid', domain_guid_type)
+        c.argument('domain_sid', domain_sid_type)
+        c.argument('azure_storage_sid', azure_storage_sid_type)
+        c.argument('enable_hierarchical_namespace', arg_type=get_three_state_flag(),
+                   options_list=['--enable-hierarchical-namespace', '--hns',
+                                 c.deprecate(target='--hierarchical-namespace', redirect='--hns', hide=True)],
+                   help=" Allow the blob service to exhibit filesystem semantics. This property can be enabled only "
+                   "when storage account kind is StorageV2.",
+                   min_api='2018-02-01')
+        c.argument('encryption_key_type_for_table', arg_type=get_enum_type(['Account', 'Service']),
+                   help='Set the encryption key type for Table service. "Account": Table will be encrypted '
+                        'with account-scoped encryption key. "Service": Table will always be encrypted with '
+                        'service-scoped keys. Currently the default encryption key type is "Service".',
+                   min_api='2019-06-01', options_list=['--encryption-key-type-for-table', '-t'])
+        c.argument('encryption_key_type_for_queue', arg_type=get_enum_type(['Account', 'Service']),
+                   help='Set the encryption key type for Queue service. "Account": Queue will be encrypted '
+                        'with account-scoped encryption key. "Service": Queue will always be encrypted with '
+                        'service-scoped keys. Currently the default encryption key type is "Service".',
+                   min_api='2019-06-01', options_list=['--encryption-key-type-for-queue', '-q'])
+        c.argument('routing_choice', routing_choice_type)
+        c.argument('publish_microsoft_endpoints', publish_microsoft_endpoints_type)
+        c.argument('publish_internet_endpoints', publish_internet_endpoints_type)
+        c.argument('require_infrastructure_encryption', options_list=['--require-infrastructure-encryption', '-i'],
+                   arg_type=get_three_state_flag(),
+                   help='A boolean indicating whether or not the service applies a secondary layer of encryption with '
+                   'platform managed keys for data at rest.')
+        c.argument('allow_blob_public_access', arg_type=get_three_state_flag(), min_api='2019-04-01',
+                   help='Allow or disallow public access to all blobs or containers in the storage account. '
+                   'The default value for this property is null, which is equivalent to true. When true, containers '
+                   'in the account may be configured for public access. Note that setting this property to true does '
+                   'not enable anonymous access to any data in the account. The additional step of configuring the '
+                   'public access setting for a container is required to enable anonymous access.')
+        c.argument('min_tls_version', arg_type=get_enum_type(t_tls_version),
+                   help='The minimum TLS version to be permitted on requests to storage. '
+                        'The default interpretation is TLS 1.0 for this property')
 
     with self.argument_context('storage account blob-inventory-policy') as c:
         t_blob_inventory_name = self.get_models('BlobInventoryPolicyName', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)

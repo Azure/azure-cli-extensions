@@ -7,31 +7,92 @@
 
 import os
 from azure.cli.core.util import get_file_json, shell_safe_json_parse, find_child_item
+from knack.log import get_logger
 from knack.util import CLIError
 from .._client_factory import storage_client_factory
 
+logger = get_logger(__name__)
 
-# pylint: disable=too-many-locals
+
+def str2bool(v):
+    if v is not None:
+        return v.lower() == "true"
+    return v
+
+
+# pylint: disable=too-many-locals, too-many-statements, too-many-branches
 def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,
                            tags=None, custom_domain=None, encryption_services=None, access_tier=None, https_only=None,
-                           hierarchical_namespace=None, bypass=None, default_action=None, assign_identity=False):
+                           enable_files_aadds=None, bypass=None, default_action=None, assign_identity=False,
+                           enable_large_file_share=None, enable_files_adds=None, domain_name=None,
+                           net_bios_domain_name=None, forest_name=None, domain_guid=None, domain_sid=None,
+                           azure_storage_sid=None, enable_hierarchical_namespace=None,
+                           encryption_key_type_for_table=None, encryption_key_type_for_queue=None,
+                           routing_choice=None, publish_microsoft_endpoints=None, publish_internet_endpoints=None,
+                           require_infrastructure_encryption=None, allow_blob_public_access=None,
+                           min_tls_version=None):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
     scf = storage_client_factory(cmd.cli_ctx)
-    params = StorageAccountCreateParameters(sku=Sku(name=sku), kind=Kind(kind), location=location, tags=tags)
+    if kind is None:
+        logger.warning("The default kind for created storage account will change to 'StorageV2' from 'Storage' "
+                       "in the future")
+    params = StorageAccountCreateParameters(sku=Sku(name=sku), kind=Kind(kind), location=location, tags=tags,
+                                            encryption=Encryption())
+    # TODO: remove this part when server side remove the constraint
+    if encryption_services is None:
+        params.encryption.services = {'blob': {}}
+
     if custom_domain:
-        params.custom_domain = CustomDomain(name=custom_domain, use_sub_domain_name=None)
+        params.custom_domain = CustomDomain(name=custom_domain, use_sub_domain=None)
     if encryption_services:
         params.encryption = Encryption(services=encryption_services)
     if access_tier:
         params.access_tier = AccessTier(access_tier)
     if assign_identity:
         params.identity = Identity()
-    if https_only:
+    if https_only is not None:
         params.enable_https_traffic_only = https_only
-    if hierarchical_namespace:
-        params.is_hns_enabled = hierarchical_namespace
+    if enable_hierarchical_namespace is not None:
+        params.is_hns_enabled = enable_hierarchical_namespace
+
+    AzureFilesIdentityBasedAuthentication = cmd.get_models('AzureFilesIdentityBasedAuthentication')
+    if enable_files_aadds is not None:
+        params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+            directory_service_options='AADDS' if enable_files_aadds else 'None')
+    if enable_files_adds is not None:
+        ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
+        if enable_files_adds:  # enable AD
+            if not (domain_name and net_bios_domain_name and forest_name and domain_guid and domain_sid and
+                    azure_storage_sid):
+                raise CLIError("To enable ActiveDirectoryDomainServicesForFile, user must specify all of: "
+                               "--domain-name, --net-bios-domain-name, --forest-name, --domain-guid, --domain-sid and "
+                               "--azure_storage_sid arguments in Azure Active Directory Properties Argument group.")
+
+            active_directory_properties = ActiveDirectoryProperties(domain_name=domain_name,
+                                                                    net_bios_domain_name=net_bios_domain_name,
+                                                                    forest_name=forest_name, domain_guid=domain_guid,
+                                                                    domain_sid=domain_sid,
+                                                                    azure_storage_sid=azure_storage_sid)
+            # TODO: Enabling AD will automatically disable AADDS. Maybe we should throw error message
+
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='AD',
+                active_directory_properties=active_directory_properties)
+
+        else:  # disable AD
+            if domain_name or net_bios_domain_name or forest_name or domain_guid or domain_sid or azure_storage_sid:  # pylint: disable=too-many-boolean-expressions
+                raise CLIError("To disable ActiveDirectoryDomainServicesForFile, user can't specify any of: "
+                               "--domain-name, --net-bios-domain-name, --forest-name, --domain-guid, --domain-sid and "
+                               "--azure_storage_sid arguments in Azure Active Directory Properties Argument group.")
+
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='None')
+
+    if enable_large_file_share:
+        LargeFileSharesState = cmd.get_models('LargeFileSharesState')
+        params.large_file_shares_state = LargeFileSharesState("Enabled")
 
     if NetworkRuleSet and (bypass or default_action):
         if bypass and not default_action:
@@ -39,7 +100,35 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
         params.network_rule_set = NetworkRuleSet(bypass=bypass, default_action=default_action, ip_rules=None,
                                                  virtual_network_rules=None)
 
-    return scf.storage_accounts.create(resource_group_name, account_name, params)
+    if encryption_key_type_for_table is not None or encryption_key_type_for_queue is not None:
+        EncryptionServices = cmd.get_models('EncryptionServices')
+        EncryptionService = cmd.get_models('EncryptionService')
+        params.encryption = Encryption()
+        params.encryption.services = EncryptionServices()
+        if encryption_key_type_for_table is not None:
+            table_encryption_service = EncryptionService(enabled=True, key_type=encryption_key_type_for_table)
+            params.encryption.services.table = table_encryption_service
+        if encryption_key_type_for_queue is not None:
+            queue_encryption_service = EncryptionService(enabled=True, key_type=encryption_key_type_for_queue)
+            params.encryption.services.queue = queue_encryption_service
+
+    if any([routing_choice, publish_microsoft_endpoints, publish_internet_endpoints]):
+        RoutingPreference = cmd.get_models('RoutingPreference')
+        params.routing_preference = RoutingPreference(
+            routing_choice=routing_choice,
+            publish_microsoft_endpoints=str2bool(publish_microsoft_endpoints),
+            publish_internet_endpoints=str2bool(publish_internet_endpoints)
+        )
+    if allow_blob_public_access is not None:
+        params.allow_blob_public_access = allow_blob_public_access
+
+    if require_infrastructure_encryption:
+        params.encryption.require_infrastructure_encryption = require_infrastructure_encryption
+
+    if min_tls_version:
+        params.minimum_tls_version = min_tls_version
+
+    return scf.storage_accounts.begin_create(resource_group_name, account_name, params)
 
 
 def list_storage_accounts(cmd, resource_group_name=None):

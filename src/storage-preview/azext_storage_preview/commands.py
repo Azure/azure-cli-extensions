@@ -36,6 +36,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
+    with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_PREVIEW_STORAGE,
+                            custom_command_type=storage_account_custom_type) as g:
+        g.custom_command('create', 'create_storage_account')
+
     blob_inventory_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
                         'BlobInventoryPoliciesOperations.{}',
