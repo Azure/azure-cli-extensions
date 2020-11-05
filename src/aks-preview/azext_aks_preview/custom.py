@@ -624,7 +624,7 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
             logger.warning('Kubernetes resources view on %s', dashboardURL)
 
         if not disable_browser:
-            wait_then_open_async(dashboardURL)
+            webbrowser.open_new_tab(dashboardURL)
         return
 
     # otherwise open the kube-dashboard addon
