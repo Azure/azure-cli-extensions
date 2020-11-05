@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, record_only
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 
@@ -18,9 +18,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 # Env setup
-@try_manual
-def setup(test, rg_2, rg):
-    pass
+# @try_manual
+# def setup(test, rg_2, rg):
+#     pass
 
 
 # EXAMPLE: /CommunicationService/put/Create or update resource
@@ -140,26 +140,26 @@ def step__operationstatuses_get_get_operationstatus(test, rg_2, rg):
 
 
 # Env cleanup
-@try_manual
-def cleanup(test, rg_2, rg):
-    pass
+# @try_manual
+# def cleanup(test, rg_2, rg):
+#     pass
 
 
-# Testcase
-@try_manual
-def call_scenario(test, rg_2, rg):
-    setup(test, rg_2, rg)
-    step__communicationservice_put(test, rg_2, rg)
-    step__communicationservice_get_get_resource(test, rg_2, rg)
-    step__communicationservice_get(test, rg_2, rg)
-    step__communicationservice_get2(test, rg_2, rg)
-    step__communicationservice_patch_update_resource(test, rg_2, rg)
-    step__communicationservice_post(test, rg_2, rg)
-    step__communicationservice_post_list_keys(test, rg_2, rg)
-    step__communicationservice_post_regenerate_key(test, rg_2, rg)
-    step__communicationservice_delete_delete_resource(test, rg_2, rg)
-    step__operationstatuses_get_get_operationstatus(test, rg_2, rg)
-    cleanup(test, rg_2, rg)
+# # Testcase
+# @try_manual
+# def call_scenario(test, rg_2, rg):
+#     setup(test, rg_2, rg)
+#     step__communicationservice_put(test, rg_2, rg)
+#     step__communicationservice_get_get_resource(test, rg_2, rg)
+#     step__communicationservice_get(test, rg_2, rg)
+#     step__communicationservice_get2(test, rg_2, rg)
+#     step__communicationservice_patch_update_resource(test, rg_2, rg)
+#     step__communicationservice_post(test, rg_2, rg)
+#     step__communicationservice_post_list_keys(test, rg_2, rg)
+#     step__communicationservice_post_regenerate_key(test, rg_2, rg)
+#     step__communicationservice_delete_delete_resource(test, rg_2, rg)
+#     step__operationstatuses_get_get_operationstatus(test, rg_2, rg)
+#     cleanup(test, rg_2, rg)
 
 
 # @try_manual
@@ -212,8 +212,8 @@ class CommunicationServiceScenarioTest(ScenarioTest):
         # list current all communication services by resource group
         step__communicationservice_get(self, rg_2=None, rg=resource_group)
 
-    @ResourceGroupPreparer(name_prefix="test_service_link_keys_")
-    def test_service_link_key(self, resource_group):
+    @ResourceGroupPreparer(name_prefix="test_service_generate_and_link_key_")
+    def test_service_regenerate_and_link_key(self, resource_group):
 
         self.kwargs.update({
             "myCommunicationService": "comm-100002",
@@ -224,9 +224,16 @@ class CommunicationServiceScenarioTest(ScenarioTest):
 
         step__communicationservice_post_list_keys(self, rg_2=None, rg=resource_group)
 
+        # regenerate a new one
+        step__communicationservice_post_regenerate_key(self, rg_2=None, rg=resource_group)
+
+        # the listed keys would be different with the previous one
+        step__communicationservice_post_list_keys(self, rg_2=None, rg=resource_group)
+
         # delete that service
         step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
 
+    @record_only()  # notification hub is an extension
     @ResourceGroupPreparer(name_prefix="test_service_link_to_notification_hub_")
     def test_service_link_to_notification_hub(self, resource_group):
 
