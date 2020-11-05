@@ -226,3 +226,26 @@ class CommunicationServiceScenarioTest(ScenarioTest):
 
         # delete that service
         step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
+
+    @ResourceGroupPreparer(name_prefix="test_service_link_to_notification_hub_")
+    def test_service_link_to_notification_hub(self, resource_group):
+
+        # notification-hub is an extension
+        self.kwargs.update({
+            "myCommunicationService": "comm-100003",
+            "notificationHubID": "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/harold/providers/Microsoft.NotificationHubs/namespaces/testcommunication1/notificationHubs/puhs-hub-1"
+        })
+
+        # create a communication service
+        step__communicationservice_put(self, rg_2=None, rg=resource_group)
+
+        # link a notification hub
+        self.cmd('az communication service link-notification-hub '
+                 '--name "{myCommunicationService}" '
+                 '--connection-string "Endpoint=sb://testcommunication1.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=4szS1x2H6uI/smTk3C8nEaGrCLLZr1g/kY1fGJgPE7I=" '
+                 '--resource-id "{notificationHubID}" '
+                 '--resource-group "{rg}"',
+                 checks=[])
+
+        # delete that service
+        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
