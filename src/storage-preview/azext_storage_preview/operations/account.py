@@ -175,8 +175,8 @@ def add_network_rule(cmd, client, resource_group_name, account_name, action='All
         ResourceAccessRule = cmd.get_models('ResourceAccessRule')
         if not rules.resource_access_rules:
             rules.resource_access_rules = []
-        rules.resource_access_rules = [r for r in rules.resource_access_rules if r.resource_id.lower() !=
-                                       resource_id.lower() or r.tenant_id.lower() != tenant_id.lower()]
+        rules.resource_access_rules = [r for r in rules.resource_access_rules if r.resource_id !=
+                                       resource_id or r.tenant_id != tenant_id]
         rules.resource_access_rules.append(ResourceAccessRule(tenant_id=tenant_id, resource_id=resource_id))
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
