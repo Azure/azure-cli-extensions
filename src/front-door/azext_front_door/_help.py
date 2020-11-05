@@ -158,6 +158,11 @@ helps['network front-door load-balancing delete'] = """
     short-summary: Delete Front Door load-balancing settings.
 """
 
+helps['network front-door load-balancing update'] = """
+    type: command
+    short-summary: Update Front Door load-balancing settings.
+"""
+
 # endregion
 
 # region FrontDoor HealthProbeSettings
