@@ -9,10 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._operations import Operations
-from ._clusters_operations import ClustersOperations
+VERSION = "1.0.0rc1"
 
-__all__ = [
-    'Operations',
-    'ClustersOperations',
-]
