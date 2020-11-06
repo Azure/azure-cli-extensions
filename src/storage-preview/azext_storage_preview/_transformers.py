@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+from dateutil import parser
 from knack.log import get_logger
-from knack.util import to_camel_case
+from knack.util import to_camel_case, todict
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
@@ -166,3 +167,19 @@ def transform_message_output(result):
     for key in sorted(result.keys()):
         new_result[to_camel_case(key)] = result[key]
     return new_result
+
+
+def transform_queue_policy_json_output(result):
+    new_result = {}
+    for policy in sorted(result.keys()):
+        new_result[policy] = transform_queue_policy_output(result[policy])
+    return new_result
+
+
+def transform_queue_policy_output(result):
+    result = todict(result)
+    if result['start']:
+        result['start'] = parser.parse(result['start'])
+    if result['expiry']:
+        result['expiry'] = parser.parse(result['expiry'])
+    return result

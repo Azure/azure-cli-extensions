@@ -8,7 +8,7 @@ from azure.cli.core.profiles import get_sdk, ResourceType
 from knack.util import CLIError
 from knack.log import get_logger
 
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_QUEUE
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -145,7 +145,7 @@ def get_account_url(cli_ctx, account_name, service):
 
 def cf_queue_service(cli_ctx, kwargs):
     from knack.util import CLIError
-    t_queue_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_QUEUE, '_queue_service_client#QueueServiceClient')
+    t_queue_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_QUEUE, '_queue_service_client#QueueServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
     account_key = kwargs.pop('account_key', None)

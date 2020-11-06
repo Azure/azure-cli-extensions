@@ -262,9 +262,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         ' be uploaded.')
         c.ignore('destination')
 
-    with self.argument_context('storage queue') as c:
-        c.argument('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
-
     for item in ['stats', 'exists', 'metadata show', 'metadata update']:
         with self.argument_context('storage queue {}'.format(item)) as c:
             c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
@@ -303,6 +300,26 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help=sas_help.format(get_permission_help_string(t_queue_permissions)),
                    validator=get_permission_validator(t_queue_permissions))
         c.ignore('sas_token')
+
+    for item in ['create', 'delete', 'show', 'list', 'update']:
+        with self.argument_context('storage queue policy {}'.format(item)) as c:
+            c.extra('queue_name', queue_name_type, required=True)
+
+    with self.argument_context('storage queue policy') as c:
+        from .completers import get_storage_acl_name_completion_list
+        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+
+        c.argument('policy_name', options_list=('--name', '-n'), help='The stored access policy name.',
+                   completer=get_storage_acl_name_completion_list(t_queue_service, 'get_queue_access_policy'))
+
+        help_str = 'Allowed values: {}. Can be combined'.format(get_permission_help_string(t_queue_permissions))
+        c.argument('permission', options_list='--permissions', help=help_str,
+                   validator=get_permission_validator(t_queue_permissions))
+
+        c.argument('start', type=get_datetime_type(True),
+                   help='start UTC datetime (Y-m-d\'T\'H:M:S\'Z\'). Defaults to time of request.')
+        c.argument('expiry', type=get_datetime_type(True), help='expiration UTC datetime in (Y-m-d\'T\'H:M:S\'Z\')')
+        c.ignore('auth_mode')
 
     from six import u as unicode_string
     for item in ['get', 'peek', 'put', 'update', 'delete', 'clear']:

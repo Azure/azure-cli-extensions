@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer)
-from azure.cli.testsdk.checkers import (JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
+from azure.cli.testsdk.checkers import (JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists, NoneCheck)
 from .storage_test_util import StorageScenarioMixin
 
 
@@ -81,7 +81,7 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('created', True))
         # metadata show using account name
         self.storage_cmd('storage queue metadata show -n {}', account_info, queue)\
-            .assert_with_checks(JMESPathCheck('length(@)', 0))
+            .assert_with_checks(NoneCheck())
         # metadata update using account name
         self.storage_cmd('storage queue metadata update -n {} --metadata key1=value1', account_info, queue)
         # metadata show using connection string
@@ -100,6 +100,47 @@ class StorageQueueScenarioTests(StorageScenarioMixin, ScenarioTest):
                        .format(queue, storage_account))
         self.storage_cmd('storage queue metadata show -n {}', account_info, queue) \
             .assert_with_checks([JMESPathCheck('a', 'b'), JMESPathCheck('c', 'd'), JMESPathCheckNotExists('newkey')])
+
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(name_prefix='queue', kind='StorageV2', location='eastus2', sku='Standard_RAGRS')
+    def test_storage_queue_policy_scenario(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+        connection_string = self.get_connection_string(resource_group, storage_account)
+
+        queue = self.create_random_name('queue', 24)
+        # prepare queue
+        self.storage_cmd('storage queue create -n {}', account_info, queue) \
+            .assert_with_checks(JMESPathCheck('created', True))
+        # policy list
+        self.storage_cmd('storage queue policy list -q {}', account_info, queue).assert_with_checks(NoneCheck())
+        # policy create with --permission
+        self.storage_cmd('storage queue policy create -n test1 -q {} --permissions apru', account_info, queue)
+        # policy create with --start
+        self.cmd('storage queue policy create -n test2 -q {} --start 2020-01-01T00:00Z --connection-string {}'
+                 .format(queue, connection_string))
+        # policy create with --expiry
+        self.storage_cmd('storage queue policy create -n test3 -q {} --expiry 2021-01-01T00:00Z', account_info, queue)
+        acl = self.cmd('storage queue policy list -q {} --connection-string {}'.format(queue, connection_string))\
+            .get_output_in_json().keys()
+        self.assertSetEqual(set(acl), {'test1', 'test2', 'test3'})
+        # policy show
+        self.storage_cmd('storage queue policy show -n test1 -q {}', account_info, queue)\
+            .assert_with_checks(JMESPathCheck('permission', 'raup'))
+        self.cmd('storage queue policy show -n test2 -q {} --connection-string {}'.format(queue, connection_string))\
+            .assert_with_checks(JMESPathCheck('start', '2020-01-01T00:00:00+00:00'))
+        self.storage_cmd('storage queue policy show -n test3 -q {}', account_info, queue)\
+            .assert_with_checks(JMESPathCheck('expiry', '2021-01-01T00:00:00+00:00'))
+        # policy update
+        self.storage_cmd('storage queue policy update -n test2 -q {} --permission r --expiry 2020-12-31T23:59Z',
+                         account_info, queue)
+        self.storage_cmd('storage queue policy show -n test2 -q {}', account_info, queue)\
+            .assert_with_checks([JMESPathCheck('permission', 'r'),
+                                 JMESPathCheck('expiry', '2020-12-31T23:59:00+00:00')])
+        # policy delete
+        self.storage_cmd('storage queue policy delete -n test3 -q {}', account_info, queue)
+        acl = self.cmd('storage queue policy list -q {} --connection-string {}'.format(queue, connection_string)) \
+            .get_output_in_json().keys()
+        self.assertSetEqual(set(acl), {'test1', 'test2'})
 
     @ResourceGroupPreparer(name_prefix='clitest')
     @StorageAccountPreparer(name_prefix='message', kind='StorageV2', location='eastus2', sku='Standard_RAGRS')

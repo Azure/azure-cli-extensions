@@ -167,6 +167,22 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('metadata update', 'set_queue_metadata',
                                 transform=create_boolean_result_output_transformer('updated'))
 
+    with self.command_group('storage queue policy', command_type=queue_client_sdk, is_preview=True,
+                            custom_command_type=get_custom_sdk('access_policy', cf_queue_client,
+                                                               CUSTOM_DATA_STORAGE_QUEUE),
+                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+        from ._transformers import (transform_acl_list_output, transform_queue_policy_output,
+                                    transform_queue_policy_json_output)
+        g.storage_custom_command_oauth('create', 'create_acl_policy')
+        g.storage_custom_command_oauth('delete', 'delete_acl_policy')
+        g.storage_custom_command_oauth('show', 'get_acl_policy',
+                                       transform=transform_queue_policy_output,
+                                       exception_handler=show_exception_handler)
+        g.storage_custom_command_oauth('list', 'list_acl_policies',
+                                       transform=transform_queue_policy_json_output,
+                                       table_transformer=transform_acl_list_output)
+        g.storage_custom_command_oauth('update', 'set_acl_policy')
+
     with self.command_group('storage message', command_type=queue_client_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('queue', cf_queue_client,
                                                                CUSTOM_DATA_STORAGE_QUEUE),
