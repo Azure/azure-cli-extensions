@@ -114,19 +114,6 @@ You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 * az storage blob access update
 * az storage blob access show
 
-##### New commands for existing queue command group
-* az storage queue create
-* az storage queue delete
-* az storage queue exists
-* az storage queue stats
-* az storage queue generate-sas
-* az storage message put
-* az storage message peek
-* az storage message get
-* az storage message update
-* az storage message delete
-* az storage message clear
-
 *Examples:*
 ###### Create a storage account with kind StorageV2 and enable hierarchical namespace
 ```

@@ -3,10 +3,10 @@
 Release History
 ===============
 
-0.5.0 (2020-10-21)
+0.5.0 (2020-11-06)
 ++++++++++++++++++
-* Add `az storage queue create/delete/exists/stats/generate-sas` commands
-* Add `az storage message put/peek/get/update/delete/clear` commands
+* Add `az storage queue` command group and its sub command groups
+* Add `az storage message` command group
 
 0.4.0 (2020-10-15)
 ++++++++++++++++++
