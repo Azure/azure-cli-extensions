@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --service-principal --client-secret
+        --generate-ssh-keys -a -o
+      User-Agent:
+      - python/3.8.3 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-resource/10.0.0
+        Azure-SDK-For-Python AZURECLI/2.8.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-06T01:44:07Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '313'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2020 01:44:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestcpx7bk2f6-c1f9ff", "agentPoolProfiles": [{"count": 3, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDsRtp7zV92PG8MSGxJUhs7o9kWgvbHanksO+dhOP28w8cwqh9pPmcTQFftVbUrBTQnoLIz/Co8+vWIFVkYlW8LnjX8fDIcOcYVxw1Iwy+PQ4C9krrk/OL8sH205woQ6jxJCr9g90PHK2QYzFOzbXNv0u3E1RiG08a7D4wcjeDDe0cJpGiMgk7JgQSNKQVWdBRzJafUg/adAYCc0YQeBDfVZ3kQluEelPc5hvUBSWuFyGxaeTvPVnCx++uqPcTa32gKjf3NujO5G1LDWPkfxx4mWn6XEB+/8AKQVnjSz0rlIkbTkvQozqE14amSNTb1+FdWYQ30BpoTq6Hvbpvr+vCGWgONsxmYFWsjBHM+AHjB5YvhC4epO76F2vdXJ5KCWeSm2xtD9Vhq9fbO0NI+8wAE9OkRIY5cUZonsyfgsIb71l70lX6DRFkOQnQOAmhwmlBW0o6XKQ8MTUQid+bJdMhahwzsfGL6w5JxGagq+x3Vet8QkxlaRoK8fixMGivPmU0=
+      carloc@carloc1\n"}]}}, "servicePrincipalProfile": {"clientId": "xxxx", "secret":
+      "yyyy"}, "addonProfiles": {"gitops": {"enabled": true}}, "enableRBAC": true,
+      "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
+      "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
+      "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer", "loadBalancerSku":
+      "standard"}}, "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1473'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --service-principal --client-secret
+        --generate-ssh-keys -a -o
+      User-Agent:
+      - python/3.8.3 (Windows-10-10.0.19041-SP0) msrest/0.6.9 msrest_azure/0.6.3 azure-mgmt-containerservice/4.4.5
+        Azure-SDK-For-Python AZURECLI/2.8.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-09-01
+  response:
+    body:
+      string: "{\n  \"code\": \"GitOpsRegionNotAvailable\",\n  \"message\": \"GitOps
+        is not available in westus2. It is available in eastus2euap,eastus,westeurope.\",\n
+        \ \"target\": \"AddonProfiles.GitOps\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '179'
+      content-type:
+      - application/json
+      date:
+      - Fri, 06 Nov 2020 01:44:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
