@@ -106,7 +106,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door load-balancing') as c:
         c.argument('additional_latency', type=int, help='The additional latency in milliseconds for probes to fall in the lowest latency bucket.')
         c.argument('sample_size', type=int, help='The number of samples to consider for load balancing decisions.')
-        c.argument('successful_samples_required', type=int, help='The number of samples within the sample period that must succeed.')
+        c.argument('successful_samples_required', options_list=['--successful-samples-required', '-s'], type=int, help='The number of samples within the sample period that must succeed.')
 
     with self.argument_context('network front-door probe') as c:
         c.argument('path', help='Path to probe.')

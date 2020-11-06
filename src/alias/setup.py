@@ -41,7 +41,7 @@ setup(
     license='MIT',
     author='Ernest Wong',
     author_email='t-chwong@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/alias',
     classifiers=CLASSIFIERS,
     package_data={'azext_alias': ['azext_metadata.json']},
     packages=find_packages(exclude=["azext_alias.tests"]),
