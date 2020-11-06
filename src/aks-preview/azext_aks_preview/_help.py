@@ -272,6 +272,9 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -415,6 +418,9 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
