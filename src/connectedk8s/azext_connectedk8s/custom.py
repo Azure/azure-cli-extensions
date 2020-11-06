@@ -419,6 +419,8 @@ def get_kubernetes_distro(configuration):  # Heuristic
                     return "AKS"
             if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
                 return "GKE"
+            if labels.get("eks.amazonaws.com/nodegroup"):
+                return "EKS"
             if provider_id.startswith("kind://"):
                 return "kind"
         return "generic"
@@ -440,6 +442,8 @@ def get_kubernetes_infra(configuration):  # Heuristic
                 return "generic"
             if infra == "gce":
                 return "GCP"
+            if infra == "aws":
+                return "AWS"
             return utils.validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
