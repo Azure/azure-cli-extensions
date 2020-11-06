@@ -18,7 +18,7 @@ class HackExtCommandLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('hack') as g:
             g.custom_command('create', 'create_hack')
-            g.custom_command('show', 'show_hack')
+            g.custom_show_command('show', 'show_hack')
         return self.command_table
 
     def load_arguments(self, _):

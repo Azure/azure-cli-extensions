@@ -14,7 +14,7 @@ from ._client_factory import cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
-    frontdoor_custom = CliCommandType(operations_tmpl='azext_front_door.custom#{}')
+    # frontdoor_custom = CliCommandType(operations_tmpl='azext_front_door.custom#{}')
 
     frontdoor_sdk = CliCommandType(
         operations_tmpl='azext_front_door.vendored_sdks.operations._front_doors_operations#FrontDoorsOperations.{}',
@@ -81,21 +81,19 @@ def load_command_table(self, _):
         'routing_rules': 'routing-rule'
     }
     for subresource, alias in property_map.items():
-        with self.command_group('network front-door {}'.format(alias), frontdoor_custom) as g:
-            g.command('create', 'create_fd_{}'.format(subresource))
-            g.command('list', list_frontdoor_resource_property('front_doors', subresource))
-            g.show_command('show', get_frontdoor_resource_property_entry('front_doors', subresource))
-            g.command('delete', delete_frontdoor_resource_property_entry('front_doors', subresource))
-
-    # with self.command_group('network front-door backend-pool', fd_backend_pool_sdk) as g:
-    #     g.custom_command('create', 'create_fd_backend_pool')
-    #     g.command('delete', 'delete')
-    #     g.command('list', 'list_by_front_door')
-    #     g.show_command('show', 'get')
-    #     g.generic_update_command('update', custom_func_name='update_fd_backend_pool')
+        with self.command_group('network front-door {}'.format(alias), frontdoor_sdk) as g:
+            g.custom_command('create', 'create_fd_{}'.format(subresource))
+            g.custom_command('list', list_frontdoor_resource_property('front_doors', subresource))
+            g.custom_show_command('show', get_frontdoor_resource_property_entry('front_doors', subresource))
+            g.custom_command('delete', delete_frontdoor_resource_property_entry('front_doors', subresource))
 
     with self.command_group('network front-door probe', frontdoor_sdk) as g:
         g.custom_command('update', 'update_fd_health_probe_settings')
+
+    with self.command_group('network front-door load-balancing', frontdoor_sdk) as g:
+        g.generic_update_command('update', custom_func_name='update_fd_load_balancing_settings',
+                                 setter_arg_name='front_door_parameters',
+                                 child_collection_prop_name='load_balancing_settings')
 
     with self.command_group('network front-door backend-pool backend', frontdoor_sdk) as g:
         g.custom_command('add', 'add_fd_backend')

@@ -42,7 +42,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/mesh',
     classifiers=CLASSIFIERS,
     package_data={'azext_mesh': ['azext_metadata.json']},
     packages=find_packages(),
