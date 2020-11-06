@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.4.66
++++++
+* Add --no-uptime-sla
 0.4.65
 +++++
 * Honor addon names defined in Azure CLI
