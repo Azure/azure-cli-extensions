@@ -10,8 +10,9 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 
-from azure.cli.core.commands import CliCommandType
 from collections import OrderedDict
+from azure.cli.core.commands import CliCommandType
+
 
 def transform_machine(result):
     return OrderedDict([('Name', result['name']),
@@ -23,6 +24,7 @@ def transform_machine(result):
 def transform_machine_list(result):
     return [transform_machine(machine) for machine in result]
 
+
 def load_command_table(self, _):
 
     from azext_connectedmachine.generated._client_factory import cf_machine
@@ -31,4 +33,4 @@ def load_command_table(self, _):
         'erations.{}',
         client_factory=cf_machine)
     with self.command_group('connectedmachine', connectedmachine_machine, client_factory=cf_machine) as g:
-        g.custom_command('list', 'connectedmachine_list',table_transformer=transform_machine_list)
+        g.custom_command('list', 'connectedmachine_list', table_transformer=transform_machine_list)
