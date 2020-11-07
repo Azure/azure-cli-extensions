@@ -395,6 +395,8 @@ def _create_role_assignment(cli_ctx, role, assignee,
 
     scope = _build_role_scope(resource_group_name, scope, assignments_client.config.subscription_id)
 
+    # XXX: if role is uuid, this function's output cannot be used as role assignment defintion id
+    # ref: https://github.com/Azure/azure-cli/issues/2458
     role_id = _resolve_role_id(role, scope, definitions_client)
 
     # If the cluster has service principal resolve the service principal client id to get the object id,
@@ -575,14 +577,18 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
-def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+_re_user_assigned_identity_resource_id = re.compile(
+    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
+    flags=re.IGNORECASE)
+
+
+def _get_user_assigned_identity(cli_ctx, resource_id):
     msi_client = get_msi_client(cli_ctx)
-    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)'
     resource_id = resource_id.lower()
-    match = re.search(pattern, resource_id)
+    match = _re_user_assigned_identity_resource_id.search(resource_id)
     if match:
-        resource_group_name = match.group(1)
-        identity_name = match.group(2)
+        resource_group_name = match.group(2)
+        identity_name = match.group(3)
         try:
             identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
                                                                resource_name=identity_name)
@@ -590,8 +596,12 @@ def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
             if 'was not found' in ex.message:
                 raise CLIError("Identity {} not found.".format(resource_id))
             raise CLIError(ex.message)
-        return identity.client_id
+        return identity
     raise CLIError("Cannot parse identity name from provided resource id {}.".format(resource_id))
+
+
+def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+    return _get_user_assigned_identity(cli_ctx, resource_id).client_id
 
 
 def _update_dict(dict1, dict2):
@@ -2980,24 +2990,51 @@ def get_aks_custom_headers(aks_custom_headers=None):
     return headers
 
 
+def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
+    managed_identity_operator_role = 'Managed Identity Operator'
+    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
+
+    # TODO: handle user assigned
+    cluster_identity_object_id = instance.identity.principal_id
+
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+
+    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
+        if i.scope != scope:
+            continue
+        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+            continue
+        if i.principal_id.lower() != cluster_identity_object_id.lower():
+            continue
+        # already assigned
+        return
+
+    if not _add_role_assignment(
+        cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+        is_service_principal=False, scope=scope):
+        raise CLIError('Could not grant Managed Identity Operator permission for cluster')
+
+
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
-                         identity_name, identity_namespace,
-                         identity_resource_id, identity_client_id, identity_object_id,
+                         identity_name, identity_namespace, identity_resource_id,
                          no_wait=False):
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
+    user_assigned_identity = _get_user_assigned_identity(cmd.cli_ctx, identity_resource_id)
+    _ensure_managed_identity_operator_permission(cmd.cli_ctx, instance, user_assigned_identity.id)
+
     pod_identities = []
     if instance.pod_identity_profile.user_assigned_identities:
         pod_identities = instance.pod_identity_profile.user_assigned_identities
-    # TODO: check permission
     pod_identity = ManagedClusterPodIdentity(
         name=identity_name,
         namespace=identity_namespace,
         identity=UserAssignedIdentity(
-            resource_id=identity_resource_id,
-            client_id=identity_client_id,
-            object_id=identity_object_id,
+            resource_id=user_assigned_identity.id,
+            client_id=user_assigned_identity.client_id,
+            object_id=user_assigned_identity.principal_id,
         )
     )
     pod_identities.append(pod_identity)
