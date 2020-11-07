@@ -40,6 +40,8 @@ class QuantumWorkspace(Model):
     :type storage_account: str
     :param tags: Gets or sets the tags.
     :type tags: object
+    :param identity: Managed Identity information
+    :type identity: ~quantum.models.QuantumWorkspaceIdentity
     """
 
     _validation = {
@@ -58,6 +60,7 @@ class QuantumWorkspace(Model):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'storage_account': {'key': 'properties.storageAccount', 'type': 'str'},
         'tags': {'key': 'tags', 'type': 'object'},
+        'identity': {'key': 'identity', 'type': 'QuantumWorkspaceIdentity'},
     }
 
     def __init__(self, **kwargs):
@@ -71,3 +74,4 @@ class QuantumWorkspace(Model):
         self.provisioning_state = kwargs.get('provisioning_state', None)
         self.storage_account = kwargs.get('storage_account', None)
         self.tags = kwargs.get('tags', None)
+        self.identity = kwargs.get('identity', None)

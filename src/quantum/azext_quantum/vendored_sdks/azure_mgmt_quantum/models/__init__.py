@@ -12,6 +12,7 @@
 try:
     from .error_definition_py3 import ErrorDefinition
     from .error_response_py3 import ErrorResponse, ErrorResponseException
+    from .quantum_workspace_identity_py3 import QuantumWorkspaceIdentity
     from .quantum_workspace_py3 import QuantumWorkspace
     from .provider_description_properties_py3 import ProviderDescriptionProperties
     from .provider_description_py3 import ProviderDescription
@@ -25,6 +26,7 @@ try:
 except (SyntaxError, ImportError):
     from .error_definition import ErrorDefinition
     from .error_response import ErrorResponse, ErrorResponseException
+    from .quantum_workspace_identity import QuantumWorkspaceIdentity
     from .quantum_workspace import QuantumWorkspace
     from .provider_description_properties import ProviderDescriptionProperties
     from .provider_description import ProviderDescription
@@ -46,6 +48,7 @@ from .quantum_management_client_enums import (
 __all__ = [
     'ErrorDefinition',
     'ErrorResponse', 'ErrorResponseException',
+    'QuantumWorkspaceIdentity',
     'QuantumWorkspace',
     'ProviderDescriptionProperties',
     'ProviderDescription',
