@@ -3001,7 +3001,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     assignments_client = factory.role_assignments
 
     for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
-        if i.scope != scope:
+        if i.scope.lower() != scope.lower():
             continue
         if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
             continue
