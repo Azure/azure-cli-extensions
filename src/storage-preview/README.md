@@ -241,7 +241,7 @@ az storage blob access update --group [entityId/UPN] -b my-directory/upload.txt 
 ```
 az storage account network-rule add \
     --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
-    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
     -g myResourceGroup \
     --account-name mystorageaccount
 ```
@@ -257,7 +257,7 @@ az storage account network-rule list \
 ```
 az storage account network-rule remove \
     --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
-    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
     -g myResourceGroup \
     --account-name mystorageaccount
 ```
