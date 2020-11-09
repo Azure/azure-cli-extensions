@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "eastus2", "properties": {"threatIntelWhitelist": {"ipAddresses":
-      ["101.0.0.0", "101.0.0.1"], "fqdns": ["*.microsoft.com"]}}}'
+      ["101.0.0.0", "101.0.0.1"], "fqdns": ["*.microsoft.com"]}, "sku": {"tier": "Premium"}}}'
     headers:
       Accept:
       - application/json
@@ -12,13 +12,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '138'
+      - '166'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns
+      - -g -n -l --ip-addresses --fqdns --sku
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -26,7 +26,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
@@ -34,19 +34,19 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"7d489432-8b87-4b2a-913d-4fb3211538e6\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c76f7205-8100-4240-a7f6-0f7b51981a5f?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/02e6156e-5e3c-4272-86b6-0622033abdb6?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '761'
+      - '760'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:09 GMT
+      - Mon, 09 Nov 2020 09:23:27 GMT
       expires:
       - '-1'
       pragma:
@@ -58,7 +58,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -74,12 +74,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns
+      - -g -n -l --ip-addresses --fqdns --sku
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c76f7205-8100-4240-a7f6-0f7b51981a5f?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/02e6156e-5e3c-4272-86b6-0622033abdb6?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -91,7 +91,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:20 GMT
+      - Mon, 09 Nov 2020 09:23:39 GMT
       expires:
       - '-1'
       pragma:
@@ -121,15 +121,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns
+      - -g -n -l --ip-addresses --fqdns --sku
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
@@ -137,17 +137,17 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"7d489432-8b87-4b2a-913d-4fb3211538e6\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '762'
+      - '761'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:20 GMT
+      - Mon, 09 Nov 2020 09:23:39 GMT
       expires:
       - '-1'
       pragma:
@@ -179,7 +179,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -187,7 +187,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
@@ -195,17 +195,17 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"7d489432-8b87-4b2a-913d-4fb3211538e6\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '762'
+      - '761'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:22 GMT
+      - Mon, 09 Nov 2020 09:23:41 GMT
       expires:
       - '-1'
       pragma:
@@ -237,7 +237,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -246,26 +246,26 @@ interactions:
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n       \
-        \ \"sku\": {\r\n          \"tier\": \"Standard\"\r\n        },\r\n       \
-        \ \"threatIntelMode\": \"Alert\",\r\n        \"threatIntelWhitelist\": {\r\
-        \n          \"fqdns\": [\r\n            \"*.microsoft.com\"\r\n          ],\r\
+        \ \"sku\": {\r\n          \"tier\": \"Premium\"\r\n        },\r\n        \"\
+        threatIntelMode\": \"Alert\",\r\n        \"threatIntelWhitelist\": {\r\n \
+        \         \"fqdns\": [\r\n            \"*.microsoft.com\"\r\n          ],\r\
         \n          \"ipAddresses\": [\r\n            \"101.0.0.0\",\r\n         \
         \   \"101.0.0.1\"\r\n          ]\r\n        },\r\n        \"childPolicies\"\
         : [],\r\n        \"ruleCollectionGroups\": [],\r\n        \"firewalls\": [],\r\
         \n        \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\"\
         : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n      \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n      \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n      \"\
+        ,\r\n      \"etag\": \"7d489432-8b87-4b2a-913d-4fb3211538e6\",\r\n      \"\
         location\": \"eastus2\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '891'
+      - '890'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:23 GMT
+      - Mon, 09 Nov 2020 09:23:41 GMT
       expires:
       - '-1'
       pragma:
@@ -295,7 +295,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -303,41 +303,29 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/firewallPolicies?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n       \
-        \ \"sku\": {\r\n          \"tier\": \"Standard\"\r\n        },\r\n       \
-        \ \"threatIntelMode\": \"Alert\",\r\n        \"threatIntelWhitelist\": {\r\
-        \n          \"fqdns\": [\r\n            \"*.microsoft.com\"\r\n          ],\r\
-        \n          \"ipAddresses\": [\r\n            \"101.0.0.0\",\r\n         \
-        \   \"101.0.0.1\"\r\n          ]\r\n        },\r\n        \"childPolicies\"\
-        : [],\r\n        \"ruleCollectionGroups\": [],\r\n        \"firewalls\": [],\r\
-        \n        \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\"\
-        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
-        ,\r\n      \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n      \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n      \"\
-        location\": \"eastus2\"\r\n    }\r\n  ]\r\n}"
+      string: '{"value":[{"properties":{"sku":{"tier":"Premium"},"threatIntelMode":"Alert","threatIntelWhitelist":{"fqdns":["*.microsoft.com"],"ipAddresses":["101.0.0.0","101.0.0.1"]},"childPolicies":[],"ruleCollectionGroups":[],"firewalls":[],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy","name":"myclipolicy","type":"Microsoft.Network/FirewallPolicies","etag":"7d489432-8b87-4b2a-913d-4fb3211538e6","location":"eastus2"},{"properties":{"sku":{"tier":"Standard"},"threatIntelMode":"Alert","dnsSettings":{"servers":[],"enableProxy":true},"childPolicies":[],"ruleCollectionGroups":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/collectiongroup"}],"firewalls":[],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu/providers/Microsoft.Network/firewallPolicies/myclipolicy","name":"myclipolicy","type":"Microsoft.Network/FirewallPolicies","etag":"6acfdb69-9c3b-4a2b-9c56-1e1c9d5fabc6","location":"westus2"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '891'
+      - '1256'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:23 GMT
+      - Mon, 09 Nov 2020 09:23:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
     status:
       code: 200
       message: OK
@@ -355,7 +343,7 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -363,7 +351,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
@@ -371,17 +359,17 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"9683ac71-39e8-418f-a1cd-0ff67e3ada3d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"7d489432-8b87-4b2a-913d-4fb3211538e6\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '762'
+      - '761'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:26 GMT
+      - Mon, 09 Nov 2020 09:23:45 GMT
       expires:
       - '-1'
       pragma:
@@ -403,7 +391,7 @@ interactions:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
       "location": "eastus2", "properties": {"threatIntelMode": "Deny", "threatIntelWhitelist":
       {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}, "sku":
-      {"tier": "Standard"}}}'
+      {"tier": "Premium"}}}'
     headers:
       Accept:
       - application/json
@@ -414,13 +402,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '400'
+      - '399'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -428,7 +416,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Deny\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
         \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
@@ -436,19 +424,19 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"0378c315-4503-41e5-b6de-6dd793e67610\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"958b0510-d3db-492f-9976-c4a390951e61\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d5c7fc4d-fd59-4d6f-8a07-6649c4171052?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d618f891-c665-44a8-af33-ae2351de1ec6?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '757'
+      - '756'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:27 GMT
+      - Mon, 09 Nov 2020 09:23:46 GMT
       expires:
       - '-1'
       pragma:
@@ -464,7 +452,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -482,10 +470,10 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d5c7fc4d-fd59-4d6f-8a07-6649c4171052?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d618f891-c665-44a8-af33-ae2351de1ec6?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -497,7 +485,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:37 GMT
+      - Mon, 09 Nov 2020 09:23:57 GMT
       expires:
       - '-1'
       pragma:
@@ -529,13 +517,13 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
         \r\n    },\r\n    \"threatIntelMode\": \"Deny\",\r\n    \"threatIntelWhitelist\"\
         : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
         \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
@@ -543,17 +531,17 @@ interactions:
         : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
         \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"0378c315-4503-41e5-b6de-6dd793e67610\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"958b0510-d3db-492f-9976-c4a390951e61\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '758'
+      - '757'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:38 GMT
+      - Mon, 09 Nov 2020 09:23:58 GMT
       expires:
       - '-1'
       pragma:
@@ -589,7 +577,7 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -600,11 +588,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
         : [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"895ed508-8c8b-4318-8edc-0e00d1186f8d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"037ca5c9-90b0-40d8-83a2-a51615a53308\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/85498b97-0a87-4279-84c6-2d1b0dc49946?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/2e354235-6871-40fb-ac4d-3bad7dbecda8?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -612,7 +600,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:40 GMT
+      - Mon, 09 Nov 2020 09:23:59 GMT
       expires:
       - '-1'
       pragma:
@@ -642,10 +630,10 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/85498b97-0a87-4279-84c6-2d1b0dc49946?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/2e354235-6871-40fb-ac4d-3bad7dbecda8?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -657,7 +645,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:51 GMT
+      - Mon, 09 Nov 2020 09:24:09 GMT
       expires:
       - '-1'
       pragma:
@@ -689,7 +677,7 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -699,7 +687,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"895ed508-8c8b-4318-8edc-0e00d1186f8d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"037ca5c9-90b0-40d8-83a2-a51615a53308\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -709,7 +697,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:51 GMT
+      - Mon, 09 Nov 2020 09:24:10 GMT
       expires:
       - '-1'
       pragma:
@@ -741,7 +729,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -753,7 +741,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"895ed508-8c8b-4318-8edc-0e00d1186f8d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"037ca5c9-90b0-40d8-83a2-a51615a53308\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -763,7 +751,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:52 GMT
+      - Mon, 09 Nov 2020 09:24:10 GMT
       expires:
       - '-1'
       pragma:
@@ -795,7 +783,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -807,7 +795,7 @@ interactions:
         \ \"priority\": 10000,\r\n        \"ruleCollections\": [],\r\n        \"provisioningState\"\
         : \"Succeeded\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n      \"name\": \"myclirulecollectiongroup\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n      \"etag\": \"895ed508-8c8b-4318-8edc-0e00d1186f8d\",\r\n      \"\
+        ,\r\n      \"etag\": \"037ca5c9-90b0-40d8-83a2-a51615a53308\",\r\n      \"\
         location\": \"eastus2\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
@@ -817,7 +805,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:54 GMT
+      - Mon, 09 Nov 2020 09:24:11 GMT
       expires:
       - '-1'
       pragma:
@@ -849,7 +837,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -861,7 +849,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"895ed508-8c8b-4318-8edc-0e00d1186f8d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"037ca5c9-90b0-40d8-83a2-a51615a53308\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -871,7 +859,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:55 GMT
+      - Mon, 09 Nov 2020 09:24:12 GMT
       expires:
       - '-1'
       pragma:
@@ -908,7 +896,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -919,11 +907,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\"\
         : [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"dbaf2531-8c38-4aa7-8919-15a7135f9094\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"f0cb4169-5c31-465f-a421-4b39dc0189b2\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/717edd5a-5178-4c83-a034-75e493969344?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/9088a401-ec2f-466f-a722-a4133e515a2a?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -931,7 +919,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:45:58 GMT
+      - Mon, 09 Nov 2020 09:24:14 GMT
       expires:
       - '-1'
       pragma:
@@ -965,10 +953,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/717edd5a-5178-4c83-a034-75e493969344?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/9088a401-ec2f-466f-a722-a4133e515a2a?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -980,7 +968,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:09 GMT
+      - Mon, 09 Nov 2020 09:24:25 GMT
       expires:
       - '-1'
       pragma:
@@ -1012,7 +1000,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1022,7 +1010,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"dbaf2531-8c38-4aa7-8919-15a7135f9094\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"f0cb4169-5c31-465f-a421-4b39dc0189b2\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1032,7 +1020,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:10 GMT
+      - Mon, 09 Nov 2020 09:24:26 GMT
       expires:
       - '-1'
       pragma:
@@ -1066,7 +1054,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1078,7 +1066,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"dbaf2531-8c38-4aa7-8919-15a7135f9094\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"f0cb4169-5c31-465f-a421-4b39dc0189b2\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1088,7 +1076,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:11 GMT
+      - Mon, 09 Nov 2020 09:24:27 GMT
       expires:
       - '-1'
       pragma:
@@ -1133,7 +1121,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1157,11 +1145,11 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"762f7c9a-a5a6-471b-bfb1-adcd4e12c141\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"78a43ddf-76d9-4337-ae71-a68c3b5623bb\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/77a5446a-8f00-40b9-862b-aeb6ec3cda75?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/be647040-7844-41bd-8902-33138c7f4065?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1169,7 +1157,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:12 GMT
+      - Mon, 09 Nov 2020 09:24:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1205,10 +1193,10 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/77a5446a-8f00-40b9-862b-aeb6ec3cda75?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/be647040-7844-41bd-8902-33138c7f4065?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1220,7 +1208,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:23 GMT
+      - Mon, 09 Nov 2020 09:24:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1254,7 +1242,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1276,7 +1264,7 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"762f7c9a-a5a6-471b-bfb1-adcd4e12c141\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"78a43ddf-76d9-4337-ae71-a68c3b5623bb\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1286,7 +1274,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:23 GMT
+      - Mon, 09 Nov 2020 09:24:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1320,7 +1308,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1344,7 +1332,7 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"762f7c9a-a5a6-471b-bfb1-adcd4e12c141\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"78a43ddf-76d9-4337-ae71-a68c3b5623bb\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1354,7 +1342,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:26 GMT
+      - Mon, 09 Nov 2020 09:24:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1404,7 +1392,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1441,11 +1429,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f232bf4d-6ade-4dc6-920a-19a2ca6467c3\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e2d2251b-cca0-462d-ac22-c83ed1b93dc1\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/493bc0bf-b1f2-4643-ae49-4788bf530079?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a69b7a22-1c9f-477c-aa80-757964562516?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1453,7 +1441,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:27 GMT
+      - Mon, 09 Nov 2020 09:24:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1469,7 +1457,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -1489,10 +1477,10 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/493bc0bf-b1f2-4643-ae49-4788bf530079?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a69b7a22-1c9f-477c-aa80-757964562516?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1504,7 +1492,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:38 GMT
+      - Mon, 09 Nov 2020 09:24:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1538,7 +1526,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1573,7 +1561,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f232bf4d-6ade-4dc6-920a-19a2ca6467c3\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e2d2251b-cca0-462d-ac22-c83ed1b93dc1\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1583,7 +1571,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:39 GMT
+      - Mon, 09 Nov 2020 09:24:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1617,7 +1605,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --protocols --fqdn-tags
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1654,7 +1642,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f232bf4d-6ade-4dc6-920a-19a2ca6467c3\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e2d2251b-cca0-462d-ac22-c83ed1b93dc1\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1664,7 +1652,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:39 GMT
+      - Mon, 09 Nov 2020 09:24:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1720,7 +1708,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --protocols --fqdn-tags
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -1773,11 +1761,11 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n\
         \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"34516ef0-38f8-42fa-8580-becfa712ed14\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"050761a8-1cea-4550-885c-0d60563d2822\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/78d74cad-9366-4f1f-9cde-6bf907ae27c6?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a3c6f43b-4660-4bdb-b96b-c0bb40dbc313?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1785,7 +1773,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:41 GMT
+      - Mon, 09 Nov 2020 09:24:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1801,7 +1789,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -1821,10 +1809,10 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --protocols --fqdn-tags
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/78d74cad-9366-4f1f-9cde-6bf907ae27c6?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a3c6f43b-4660-4bdb-b96b-c0bb40dbc313?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1836,7 +1824,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:53 GMT
+      - Mon, 09 Nov 2020 09:25:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1870,7 +1858,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --protocols --fqdn-tags
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1921,7 +1909,7 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\
         \n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"34516ef0-38f8-42fa-8580-becfa712ed14\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"050761a8-1cea-4550-885c-0d60563d2822\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -1931,7 +1919,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:53 GMT
+      - Mon, 09 Nov 2020 09:25:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1963,7 +1951,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2016,7 +2004,7 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\
         \n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"34516ef0-38f8-42fa-8580-becfa712ed14\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"050761a8-1cea-4550-885c-0d60563d2822\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2026,7 +2014,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:55 GMT
+      - Mon, 09 Nov 2020 09:25:10 GMT
       expires:
       - '-1'
       pragma:
@@ -2059,7 +2047,7 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2112,7 +2100,7 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\
         \n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"34516ef0-38f8-42fa-8580-becfa712ed14\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"050761a8-1cea-4550-885c-0d60563d2822\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2122,7 +2110,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:57 GMT
+      - Mon, 09 Nov 2020 09:25:12 GMT
       expires:
       - '-1'
       pragma:
@@ -2182,7 +2170,7 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2248,11 +2236,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"4a149103-2c32-43cf-8c9b-b72450e846f0\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"d761b8d0-f2bf-4a62-b2d9-5f94a33a7819\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/16a98f02-592f-4334-b1e7-7530e18c1d4f?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/45bf3e78-bb1f-4f64-be84-60c00acbcc0e?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -2260,7 +2248,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:46:58 GMT
+      - Mon, 09 Nov 2020 09:25:13 GMT
       expires:
       - '-1'
       pragma:
@@ -2276,7 +2264,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -2295,10 +2283,10 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/16a98f02-592f-4334-b1e7-7530e18c1d4f?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/45bf3e78-bb1f-4f64-be84-60c00acbcc0e?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2310,7 +2298,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:09 GMT
+      - Mon, 09 Nov 2020 09:25:24 GMT
       expires:
       - '-1'
       pragma:
@@ -2343,7 +2331,7 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -2407,7 +2395,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"4a149103-2c32-43cf-8c9b-b72450e846f0\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"d761b8d0-f2bf-4a62-b2d9-5f94a33a7819\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2417,7 +2405,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:09 GMT
+      - Mon, 09 Nov 2020 09:25:25 GMT
       expires:
       - '-1'
       pragma:
@@ -2451,7 +2439,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2517,7 +2505,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"4a149103-2c32-43cf-8c9b-b72450e846f0\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"d761b8d0-f2bf-4a62-b2d9-5f94a33a7819\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2527,7 +2515,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:10 GMT
+      - Mon, 09 Nov 2020 09:25:26 GMT
       expires:
       - '-1'
       pragma:
@@ -2592,7 +2580,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2667,11 +2655,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f1a20a87-cdb0-4d85-b630-1044f5af66de\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ed8cf036-58c4-4bfd-a47b-46ecb8092100\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/2e0f85f9-4a05-436f-b852-7e49a1d32b1b?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a79a1b5e-0d8a-4143-b0f3-9cfc7fb08c39?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -2679,7 +2667,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:12 GMT
+      - Mon, 09 Nov 2020 09:25:27 GMT
       expires:
       - '-1'
       pragma:
@@ -2695,7 +2683,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -2715,10 +2703,10 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/2e0f85f9-4a05-436f-b852-7e49a1d32b1b?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/a79a1b5e-0d8a-4143-b0f3-9cfc7fb08c39?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2730,7 +2718,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:23 GMT
+      - Mon, 09 Nov 2020 09:25:39 GMT
       expires:
       - '-1'
       pragma:
@@ -2764,7 +2752,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -2837,7 +2825,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f1a20a87-cdb0-4d85-b630-1044f5af66de\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ed8cf036-58c4-4bfd-a47b-46ecb8092100\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2847,7 +2835,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:23 GMT
+      - Mon, 09 Nov 2020 09:25:39 GMT
       expires:
       - '-1'
       pragma:
@@ -2879,7 +2867,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -2954,7 +2942,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f1a20a87-cdb0-4d85-b630-1044f5af66de\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ed8cf036-58c4-4bfd-a47b-46ecb8092100\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -2964,7 +2952,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:26 GMT
+      - Mon, 09 Nov 2020 09:25:40 GMT
       expires:
       - '-1'
       pragma:
@@ -3024,7 +3012,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3090,11 +3078,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"85deb25e-f18b-42af-9602-be7e6f1976f1\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ef47f90a-6e66-420a-9a02-5607307e984d\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/83b6e2f1-6dc0-4ee7-8650-9dec3d58676c?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d900815b-6d0c-4771-826e-4d180ad56220?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -3102,7 +3090,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:27 GMT
+      - Mon, 09 Nov 2020 09:25:41 GMT
       expires:
       - '-1'
       pragma:
@@ -3118,7 +3106,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -3136,10 +3124,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/83b6e2f1-6dc0-4ee7-8650-9dec3d58676c?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/d900815b-6d0c-4771-826e-4d180ad56220?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3151,7 +3139,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:38 GMT
+      - Mon, 09 Nov 2020 09:25:51 GMT
       expires:
       - '-1'
       pragma:
@@ -3183,7 +3171,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -3247,7 +3235,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"85deb25e-f18b-42af-9602-be7e6f1976f1\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ef47f90a-6e66-420a-9a02-5607307e984d\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -3257,7 +3245,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:38 GMT
+      - Mon, 09 Nov 2020 09:25:52 GMT
       expires:
       - '-1'
       pragma:
@@ -3289,7 +3277,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3355,7 +3343,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"85deb25e-f18b-42af-9602-be7e6f1976f1\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"ef47f90a-6e66-420a-9a02-5607307e984d\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -3365,7 +3353,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:41 GMT
+      - Mon, 09 Nov 2020 09:25:54 GMT
       expires:
       - '-1'
       pragma:
@@ -3420,7 +3408,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3474,11 +3462,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"6cf8059c-dc6a-426b-974a-f380a227414f\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"5199cf97-1c1e-4cae-9f4a-6a2ebf98a236\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/19257069-e1ec-430c-9fc4-ae16605f83da?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/7206fed7-93d9-4aca-a98f-f1bf8686477b?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -3486,7 +3474,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:42 GMT
+      - Mon, 09 Nov 2020 09:25:56 GMT
       expires:
       - '-1'
       pragma:
@@ -3502,7 +3490,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1195'
     status:
       code: 200
       message: OK
@@ -3520,10 +3508,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/19257069-e1ec-430c-9fc4-ae16605f83da?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/7206fed7-93d9-4aca-a98f-f1bf8686477b?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3535,7 +3523,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:54 GMT
+      - Mon, 09 Nov 2020 09:26:06 GMT
       expires:
       - '-1'
       pragma:
@@ -3567,7 +3555,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -3619,7 +3607,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"6cf8059c-dc6a-426b-974a-f380a227414f\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"5199cf97-1c1e-4cae-9f4a-6a2ebf98a236\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       cache-control:
@@ -3629,7 +3617,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:54 GMT
+      - Mon, 09 Nov 2020 09:26:07 GMT
       expires:
       - '-1'
       pragma:
@@ -3663,7 +3651,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3717,11 +3705,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Deleting\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"6cf8059c-dc6a-426b-974a-f380a227414f\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"5199cf97-1c1e-4cae-9f4a-6a2ebf98a236\",\r\n  \"location\"\
         : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/8024ee87-11f7-4b15-8bd7-f434c5616bf5?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/9344f8ce-cad1-4980-a80f-3e0b4b8fd17b?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -3729,11 +3717,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:47:56 GMT
+      - Mon, 09 Nov 2020 09:26:10 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperationResults/8024ee87-11f7-4b15-8bd7-f434c5616bf5?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperationResults/9344f8ce-cad1-4980-a80f-3e0b4b8fd17b?api-version=2020-07-01
       pragma:
       - no-cache
       server:
@@ -3743,7 +3731,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14997'
     status:
       code: 202
       message: Accepted
@@ -3761,10 +3749,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/8024ee87-11f7-4b15-8bd7-f434c5616bf5?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/9344f8ce-cad1-4980-a80f-3e0b4b8fd17b?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3776,7 +3764,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:48:09 GMT
+      - Mon, 09 Nov 2020 09:26:21 GMT
       expires:
       - '-1'
       pragma:
@@ -3808,7 +3796,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3825,7 +3813,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Nov 2020 09:48:11 GMT
+      - Mon, 09 Nov 2020 09:26:23 GMT
       expires:
       - '-1'
       pragma:
@@ -3859,7 +3847,7 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.7.4 (Linux-4.15.0-122-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
@@ -3874,7 +3862,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Nov 2020 09:48:15 GMT
+      - Mon, 09 Nov 2020 09:26:28 GMT
       expires:
       - '-1'
       pragma:
@@ -3886,7 +3874,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14996'
+      - '14999'
     status:
       code: 200
       message: OK
