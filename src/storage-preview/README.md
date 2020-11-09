@@ -236,4 +236,30 @@ az storage blob directory access update --group [entityId/UPN] -d my-directory -
 az storage blob access update --group [entityId/UPN] -b my-directory/upload.txt -c my-file-system --account-name mystorageaccount
 ```
 
+#### Storage account network rules
+##### Add resource access rule to storage account
+```
+az storage account network-rule add \
+    --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
+##### List all network rules for storage account
+```
+az storage account network-rule list \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
+##### Remove resource access rule in storage account
+```
+az storage account network-rule remove \
+    --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

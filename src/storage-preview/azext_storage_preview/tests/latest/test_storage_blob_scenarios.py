@@ -8,10 +8,10 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
-@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_blob_update_service_properties(self, resource_group):
