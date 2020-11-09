@@ -27,8 +27,8 @@ def load_arguments(self, _):
 
     AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, \
         AzureFirewallNatRCActionType, FirewallPolicySkuTier = \
-            self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
-                            'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
+        self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
+                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
