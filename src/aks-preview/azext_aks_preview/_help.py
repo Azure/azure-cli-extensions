@@ -773,3 +773,36 @@ helps['aks pod-identity'] = """
     type: group
     short-summary: Commands to manage pod identities in managed Kubernetes cluster.
 """
+
+helps['aks pod-identity add'] = """
+    type: command
+    short-summary: Add a pod identity to a managed Kubernetes cluster
+    examples:
+    - name: Add pod identity
+      text: az aks pod-identity add --name MyManagedCluster --resource-group MyResourceGroup --namespace my-namespace --name my-identity --identity-resource-id <my-identity-resource-id>
+"""
+
+helps['aks pod-identity delete'] = """
+    type: command
+    short-summary: Remove a pod identity from a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity list'] = """
+    type: command
+    short-summary: List pod identities in a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity add-exception'] = """
+    type: command
+    short-summary: Add a pod identity exception to a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity delete-exception'] = """
+    type: command
+    short-summary: Remove a pod identity exception from a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity list-exceptions'] = """
+    type: command
+    short-summary: List pod identity exceptions in a managed Kubernetes cluster
+"""
