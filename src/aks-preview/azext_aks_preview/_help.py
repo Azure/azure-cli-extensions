@@ -802,6 +802,12 @@ helps['aks pod-identity delete-exception'] = """
     short-summary: Remove a pod identity exception from a managed Kubernetes cluster
 """
 
+helps['aks pod-identity update-exception'] = """
+    type: command
+    short-summary: Update a pod identity exception in a managed Kubernetes cluster
+"""
+
+
 helps['aks pod-identity list-exceptions'] = """
     type: command
     short-summary: List pod identity exceptions in a managed Kubernetes cluster
