@@ -209,4 +209,3 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
 
         self.cmd('storage account blob-inventory-policy delete --account-name {sa} -g {rg} -y')
         self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}', expect_failure=True)
-
