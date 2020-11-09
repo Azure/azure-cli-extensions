@@ -5,9 +5,9 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_blob_data_gen_update,
+from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -21,6 +21,25 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             client_factory=client_factory,
             resource_type=resource_type
         )
+
+    storage_account_sdk = CliCommandType(
+        operations_tmpl='vendored_sdk.azure_mgmt_preview_storage.operations#StorageAccountsOperations.{}',
+        client_factory=cf_sa,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    storage_account_custom_type = CliCommandType(
+        operations_tmpl='azext_storage_preview.operations.account#{}',
+        client_factory=cf_sa,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    with self.command_group('storage account network-rule', storage_account_sdk,
+                            custom_command_type=storage_account_custom_type,
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2017-06-01') as g:
+        g.custom_command('add', 'add_network_rule')
+        g.custom_command('list', 'list_network_rules')
+        g.custom_command('remove', 'remove_network_rule')
 
     base_blob_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.baseblobservice#BaseBlobService.{}',
