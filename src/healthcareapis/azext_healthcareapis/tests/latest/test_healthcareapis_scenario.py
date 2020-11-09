@@ -9,107 +9,119 @@
 # --------------------------------------------------------------------------
 
 import os
-import unittest
-
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual
+from .. import try_manual, raise_if, calc_coverage
+from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import StorageAccountPreparer
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+# Env setup
 @try_manual
-def setup(test):
+def setup(test, rg, rg_2):
     pass
 
 
 # EXAMPLE: ServicePut
 @try_manual
-def step_serviceput(test):
+def step_serviceput(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: OperationResultsGet
 @try_manual
-def step_operationresultsget(test):
+def step_operationresultsget(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: ServiceGet
 @try_manual
-def step_serviceget(test):
+def step_serviceget(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: ServiceListByResourceGroup
 @try_manual
-def step_servicelistbyresourcegroup(test):
+def step_servicelistbyresourcegroup(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: ServiceList
 @try_manual
-def step_servicelist(test):
+def step_servicelist(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: OperationsList
 @try_manual
-def step_operationslist(test):
+def step_operationslist(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: ServicePatch
 @try_manual
-def step_servicepatch(test):
+def step_servicepatch(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: CheckNameAvailabilityPost
 @try_manual
-def step_checknameavailabilitypost(test):
+def step_checknameavailabilitypost(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
 # EXAMPLE: ServiceDelete
 @try_manual
-def step_servicedelete(test):
+def step_servicedelete(test, rg, rg_2):
     # EXAMPLE NOT FOUND!
     pass
 
 
+# Env cleanup
 @try_manual
-def cleanup(test):
+def cleanup(test, rg, rg_2):
     pass
 
 
+# Testcase
 @try_manual
-def call_scenario(test):
-    setup(test)
-    step_serviceput(test)
-    step_operationresultsget(test)
-    step_serviceget(test)
-    step_servicelistbyresourcegroup(test)
-    step_servicelist(test)
-    step_operationslist(test)
-    step_servicepatch(test)
-    step_checknameavailabilitypost(test)
-    step_servicedelete(test)
-    cleanup(test)
+def call_scenario(test, rg, rg_2):
+    setup(test, rg, rg_2)
+    step_serviceput(test, rg, rg_2)
+    step_operationresultsget(test, rg, rg_2)
+    step_serviceget(test, rg, rg_2)
+    step_servicelistbyresourcegroup(test, rg, rg_2)
+    step_servicelist(test, rg, rg_2)
+    step_operationslist(test, rg, rg_2)
+    step_servicepatch(test, rg, rg_2)
+    step_checknameavailabilitypost(test, rg, rg_2)
+    step_servicedelete(test, rg, rg_2)
+    cleanup(test, rg, rg_2)
 
 
 @try_manual
 class HealthcareApisManagementClientScenarioTest(ScenarioTest):
 
-    def test_healthcareapis(self):
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rg1'[:7], key='rg_2', parameter_name='rg_2')
+    @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sa',
+                            resource_group_parameter_name='rg')
+    def test_healthcareapis(self, rg, rg_2):
 
-        call_scenario(self)
+        self.kwargs.update({
+            'myPrivateEndpointConnection': 'myConnection',
+        })
+
+        call_scenario(self, rg, rg_2)
+        calc_coverage(__file__)
+        raise_if()
