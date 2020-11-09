@@ -530,7 +530,6 @@ def update_azure_firewall_policies(cmd,
                                    dns_servers=None, enable_dns_proxy=None):
 
     (FirewallPolicyThreatIntelWhitelist) = cmd.get_models('FirewallPolicyThreatIntelWhitelist')
-
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
@@ -552,7 +551,6 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_whitelist.ip_addresses = ip_addresses
     if fqdns is not None:
         instance.threat_intel_whitelist.fqdns = fqdns
-
     return instance
 
 
