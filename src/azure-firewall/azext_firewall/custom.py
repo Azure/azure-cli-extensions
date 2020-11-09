@@ -529,9 +529,7 @@ def update_azure_firewall_policies(cmd,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None):
 
-    (FirewallPolicyThreatIntelWhitelist,
-     FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist',
-                                         'FirewallPolicySku')
+    (FirewallPolicyThreatIntelWhitelist) = cmd.get_models('FirewallPolicyThreatIntelWhitelist')
 
     if tags is not None:
         instance.tags = tags
