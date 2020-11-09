@@ -64,7 +64,7 @@ helps['connectedmachine extension show'] = """
     examples:
       - name: Get Machine Extension
         text: |-
-               az connectedmachine extension show --machine-name "myMachine" --n "CustomScriptExtension" \
+               az connectedmachine extension show --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup"
 """
 
@@ -74,7 +74,7 @@ helps['connectedmachine extension create'] = """
     examples:
       - name: Create or Update a Machine Extension (PUT)
         text: |-
-               az connectedmachine extension create --machine-name "myMachine" --n "CustomScriptExtension" --location \
+               az connectedmachine extension create --machine-name "myMachine" --name "CustomScriptExtension" --location \
 "eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"pow\
 ershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" \
 --resource-group "myResourceGroup"
@@ -86,7 +86,7 @@ helps['connectedmachine extension update'] = """
     examples:
       - name: Create or Update a Machine Extension (PATCH)
         text: |-
-               az connectedmachine extension update --machine-name "myMachine" --n "CustomScriptExtension" --type \
+               az connectedmachine extension update --machine-name "myMachine" --name "CustomScriptExtension" --type \
 "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
 \\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --resource-group \
 "myResourceGroup"
@@ -98,7 +98,7 @@ helps['connectedmachine extension delete'] = """
     examples:
       - name: Delete a Machine Extension
         text: |-
-               az connectedmachine extension delete --machine-name "myMachine" --n "MMA" --resource-group \
+               az connectedmachine extension delete --machine-name "myMachine" --name "MMA" --resource-group \
 "myResourceGroup"
 """
 
@@ -108,14 +108,14 @@ helps['connectedmachine extension wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the connectedmachine extension is successfully created.
         text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --created
       - name: Pause executing next line of CLI script until the connectedmachine extension is successfully updated.
         text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --updated
       - name: Pause executing next line of CLI script until the connectedmachine extension is successfully deleted.
         text: |-
-               az connectedmachine extension wait --machine-name "myMachine" --n "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --deleted
 """
