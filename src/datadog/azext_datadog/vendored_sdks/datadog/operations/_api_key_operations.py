@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
@@ -67,14 +67,17 @@ class ApiKeyOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogApiKeyListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -143,9 +146,12 @@ class ApiKeyOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogApiKey"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self.get_default_key.metadata['url']  # type: ignore
@@ -162,7 +168,7 @@ class ApiKeyOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -185,9 +191,9 @@ class ApiKeyOperations(object):
         self,
         resource_group_name,  # type: str
         monitor_name,  # type: str
-        key,  # type: str
         created_by=None,  # type: Optional[str]
         name=None,  # type: Optional[str]
+        key=None,  # type: Optional[str]
         created=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
@@ -201,12 +207,12 @@ class ApiKeyOperations(object):
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
-        :param key: The value of the API key.
-        :type key: str
         :param created_by: The user that created the API key.
         :type created_by: str
         :param name: The name of the API key.
         :type name: str
+        :param key: The value of the API key.
+        :type key: str
         :param created: The time of creation of the API key.
         :type created: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -215,12 +221,15 @@ class ApiKeyOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _body = models.DatadogApiKey(created_by=created_by, name=name, key=key, created=created)
+        body = models.DatadogApiKey(created_by=created_by, name=name, key=key, created=created)
         api_version = "2020-02-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.set_default_key.metadata['url']  # type: ignore
@@ -238,15 +247,15 @@ class ApiKeyOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _body is not None:
-            body_content = self._serialize.body(_body, 'DatadogApiKey')
+        if body is not None:
+            body_content = self._serialize.body(body, 'DatadogApiKey')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 

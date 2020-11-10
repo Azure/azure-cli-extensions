@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._marketplace_agreement_operations import MarketplaceAgreementOperations
 from ._api_key_operations import ApiKeyOperations
 from ._host_operations import HostOperations
 from ._linked_resource_operations import LinkedResourceOperations
@@ -17,6 +18,7 @@ from ._tag_rule_operations import TagRuleOperations
 from ._single_sign_on_configuration_operations import SingleSignOnConfigurationOperations
 
 __all__ = [
+    'MarketplaceAgreementOperations',
     'ApiKeyOperations',
     'HostOperations',
     'LinkedResourceOperations',

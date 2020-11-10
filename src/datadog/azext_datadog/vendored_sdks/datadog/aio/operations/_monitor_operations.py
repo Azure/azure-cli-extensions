@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
@@ -57,14 +57,17 @@ class MonitorOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogMonitorResourceListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -127,14 +130,17 @@ class MonitorOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogMonitorResourceListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -201,9 +207,12 @@ class MonitorOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogMonitorResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -220,7 +229,7 @@ class MonitorOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -243,8 +252,8 @@ class MonitorOperations:
         self,
         resource_group_name: str,
         monitor_name: str,
-        location: str,
         tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
         type: Optional[Union[str, "models.ManagedIdentityTypes"]] = None,
         provisioning_state: Optional[Union[str, "models.ProvisioningState"]] = None,
         monitoring_status: Optional[Union[str, "models.MonitoringStatus"]] = None,
@@ -255,12 +264,15 @@ class MonitorOperations:
         **kwargs
     ) -> "models.DatadogMonitorResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogMonitorResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _body = models.DatadogMonitorResource(tags=tags, location=location, type_identity_type=type, provisioning_state=provisioning_state, monitoring_status=monitoring_status, marketplace_subscription_status=marketplace_subscription_status, datadog_organization_properties=datadog_organization_properties, user_info=user_info, name_sku_name=name)
+        body = models.DatadogMonitorResource(tags=tags, location=location, type_identity_type=type, provisioning_state=provisioning_state, monitoring_status=monitoring_status, marketplace_subscription_status=marketplace_subscription_status, datadog_organization_properties=datadog_organization_properties, user_info=user_info, name_sku_name=name)
         api_version = "2020-02-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_initial.metadata['url']  # type: ignore
@@ -278,16 +290,15 @@ class MonitorOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _body is not None:
-            body_content = self._serialize.body(_body, 'DatadogMonitorResource')
+        if body is not None:
+            body_content = self._serialize.body(body, 'DatadogMonitorResource')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -312,8 +323,8 @@ class MonitorOperations:
         self,
         resource_group_name: str,
         monitor_name: str,
-        location: str,
         tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
         type: Optional[Union[str, "models.ManagedIdentityTypes"]] = None,
         provisioning_state: Optional[Union[str, "models.ProvisioningState"]] = None,
         monitoring_status: Optional[Union[str, "models.MonitoringStatus"]] = None,
@@ -332,11 +343,11 @@ class MonitorOperations:
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
-        :param location:
-        :type location: str
         :param tags: Dictionary of :code:`<string>`.
         :type tags: dict[str, str]
-        :param type:
+        :param location:
+        :type location: str
+        :param type: Identity type.
         :type type: str or ~microsoft_datadog_client.models.ManagedIdentityTypes
         :param provisioning_state:
         :type provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
@@ -345,9 +356,9 @@ class MonitorOperations:
         :param marketplace_subscription_status: Flag specifying the Marketplace Subscription Status of
          the resource. If payment is not made in time, the resource will go in Suspended state.
         :type marketplace_subscription_status: str or ~microsoft_datadog_client.models.MarketplaceSubscriptionStatus
-        :param datadog_organization_properties:
+        :param datadog_organization_properties: Datadog organization properties.
         :type datadog_organization_properties: ~microsoft_datadog_client.models.DatadogOrganizationProperties
-        :param user_info:
+        :param user_info: User info.
         :type user_info: ~microsoft_datadog_client.models.UserInfo
         :param name: Name of the SKU.
         :type name: str
@@ -372,8 +383,8 @@ class MonitorOperations:
             raw_result = await self._create_initial(
                 resource_group_name=resource_group_name,
                 monitor_name=monitor_name,
-                location=location,
                 tags=tags,
+                location=location,
                 type=type,
                 provisioning_state=provisioning_state,
                 monitoring_status=monitoring_status,
@@ -395,7 +406,13 @@ class MonitorOperations:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'},  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -436,12 +453,15 @@ class MonitorOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogMonitorResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _body = models.DatadogMonitorResourceUpdateParameters(tags=tags, monitoring_status=monitoring_status)
+        body = models.DatadogMonitorResourceUpdateParameters(tags=tags, monitoring_status=monitoring_status)
         api_version = "2020-02-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.update.metadata['url']  # type: ignore
@@ -459,16 +479,15 @@ class MonitorOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _body is not None:
-            body_content = self._serialize.body(_body, 'DatadogMonitorResourceUpdateParameters')
+        if body is not None:
+            body_content = self._serialize.body(body, 'DatadogMonitorResourceUpdateParameters')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -492,9 +511,12 @@ class MonitorOperations:
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -511,6 +533,7 @@ class MonitorOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -573,7 +596,13 @@ class MonitorOperations:
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:

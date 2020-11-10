@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class HostOperations:
-    """HostOperations async operations.
+class OperationOperations:
+    """OperationOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -43,48 +43,38 @@ class HostOperations:
 
     def list(
         self,
-        resource_group_name: str,
-        monitor_name: str,
         **kwargs
-    ) -> AsyncIterable["models.DatadogHostListResponse"]:
-        """List the hosts for a given monitor resource.
+    ) -> AsyncIterable["models.OperationListResult"]:
+        """List all operations provided by Microsoft.Datadog for the 2020-02-01-preview api version.
 
-        List the hosts for a given monitor resource.
+        List all operations provided by Microsoft.Datadog for the 2020-02-01-preview api version.
 
-        :param resource_group_name: The name of the resource group to which the Datadog resource
-         belongs.
-        :type resource_group_name: str
-        :param monitor_name: Monitor resource name.
-        :type monitor_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either DatadogHostListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.DatadogHostListResponse]
+        :return: An iterator like instance of either OperationListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogHostListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
@@ -92,7 +82,7 @@ class HostOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatadogHostListResponse', pipeline_response)
+            deserialized = self._deserialize('OperationListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -114,4 +104,4 @@ class HostOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/listHosts'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.Datadog/operations'}  # type: ignore

@@ -17,36 +17,10 @@ from azure.cli.testsdk import ResourceGroupPreparer
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+# Env setup
 @try_manual
 def setup(test, rg):
     pass
-
-
-# EXAMPLE: /Monitors/put/Monitors_Create
-@try_manual
-def step__monitors_put_monitors_create(test, rg):
-    test.cmd('az datadog monitor create '
-             '--name "{myMonitor}" '
-             '--sku-name "drawdown_testing_20200904_Monthly" '
-             '--location "East US 2 EUAP" '
-             '--identity-type "SystemAssigned" '
-             '--monitoring-status "Enabled" '
-             '--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" '
-             '--tags Environment="Dev" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myMonitor}", case_sensitive=False),
-                 test.check("nameSkuName", "drawdown_testing_20200904_Monthly", case_sensitive=False),
-                 test.check("location", "eastus2euap", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("monitoringStatus", "Enabled", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("tags.Environment", "Dev", case_sensitive=False),
-             ])
-    test.cmd('az datadog monitor wait --created '
-             '--name "{myMonitor}" '
-             '--resource-group "{rg}"',
-             checks=[])
 
 
 # EXAMPLE: /Monitors/get/Monitors_Get
@@ -55,25 +29,7 @@ def step__monitors_get_monitors_get(test, rg):
     test.cmd('az datadog monitor show '
              '--name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myMonitor}", case_sensitive=False),
-                 test.check("nameSkuName", "drawdown_testing_20200904_Monthly", case_sensitive=False),
-                 test.check("location", "eastus2euap", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("monitoringStatus", "Enabled", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("tags.Environment", "Dev", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /Monitors/get/Monitors_List
-@try_manual
-def step__monitors_get_monitors_list(test, rg):
-    test.cmd('az datadog monitor list '
-             '-g ""',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /Monitors/get/Monitors_ListByResourceGroup
@@ -81,9 +37,7 @@ def step__monitors_get_monitors_list(test, rg):
 def step__monitors_get_monitors_listbyresourcegroup(test, rg):
     test.cmd('az datadog monitor list '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /Monitors/patch/Monitors_Update
@@ -91,28 +45,11 @@ def step__monitors_get_monitors_listbyresourcegroup(test, rg):
 def step__monitors_patch_monitors_update(test, rg):
     test.cmd('az datadog monitor update '
              '--name "{myMonitor}" '
-             '--monitoring-status "Enabled" '
-             '--tags Environment="Dev2" '
+             '--tags Environment="Dev" '
              '--resource-group "{rg}"',
              checks=[
                  test.check("name", "{myMonitor}", case_sensitive=False),
-                 test.check("nameSkuName", "drawdown_testing_20200904_Monthly", case_sensitive=False),
-                 test.check("location", "eastus2euap", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("monitoringStatus", "Enabled", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("tags.Environment", "Dev2", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /ApiKeys/post/ApiKeys_GetDefaultKey
-@try_manual
-def step__apikeys_post_apikeys_getdefaultkey(test, rg):
-    test.cmd('az datadog api-key get-default-key '
-             '--monitor-name "{myMonitor}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("key", "1111111111111111aaaaaaaaaaaaaaaa", case_sensitive=False),
+                 test.check("tags.Environment", "Dev", case_sensitive=False),
              ])
 
 
@@ -122,9 +59,7 @@ def step__apikeys_post_apikeys_list(test, rg):
     test.cmd('az datadog api-key list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /ApiKeys/post/ApiKeys_SetDefaultKey
@@ -152,9 +87,67 @@ def step__linkedresources_post_linkedresources_list(test, rg):
     test.cmd('az datadog linked-resource list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /MarketplaceAgreements/put/MarketplaceAgreements_Create
+@try_manual
+def step__marketplaceagreements_put(test, rg):
+    test.cmd('az datadog marketplace-agreement create '
+             '--properties accepted=true',
+             checks=[])
+
+
+# EXAMPLE: /Monitors/put/Monitors_Create
+@try_manual
+def step__monitors_put_monitors_create(test, rg):
+    test.cmd('az datadog monitor create '
+             '--name "{myMonitor}" '
+             '--sku-name "{myMonitor}" '
+             '--location "West US" '
+             '--datadog-organization-properties name="myOrg" enterprise-app-id="00000000-0000-0000-0000-000000000000" '
+             'linking-auth-code="someAuthCode" linking-client-id="00000000-0000-0000-0000-000000000000" '
+             'subscription="pro" '
+             '--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" '
+             '--sku-name "free_Monthly" '
+             '--tags Environment="Dev" '
+             '--resource-group "{rg}"',
+             checks=[
+                 test.check("name", "{myMonitor}", case_sensitive=False),
+                 test.check("tags.Environment", "Dev", case_sensitive=False),
+                 test.check("sku.name", "free_Monthly", case_sensitive=False),
+                 test.check("location", "West US", case_sensitive=False),
+             ])
+    test.cmd('az datadog monitor wait --created '
+             '--name "{myMonitor}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /Monitors/get/Monitors_List
+@try_manual
+def step__monitors_get_monitors_list(test, rg):
+    test.cmd('az datadog monitor list '
+             '-g ""',
              checks=[
                  test.check('length(@)', 1),
              ])
+
+
+# EXAMPLE: /ApiKeys/post/ApiKeys_GetDefaultKey
+@try_manual
+def step__apikeys_post_apikeys_getdefaultkey(test, rg):
+    test.cmd('az datadog api-key get-default-key '
+             '--monitor-name "{myMonitor}" '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
+@try_manual
+def step__marketplaceagreements_get(test, rg):
+    test.cmd('az datadog marketplace-agreement list',
+             checks=[])
 
 
 # EXAMPLE: /MonitoredResources/post/MonitoredResources_List
@@ -172,9 +165,7 @@ def step__refreshsetpassword_post(test, rg):
     test.cmd('az datadog set-password-link get '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check("setPasswordLink", None),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /SingleSignOnConfigurations/put/SingleSignOnConfigurations_CreateOrUpdate
@@ -183,7 +174,7 @@ def step__singlesignonconfigurations_put(test, rg):
     test.cmd('az datadog sso-config create '
              '--configuration-name "default" '
              '--monitor-name "{myMonitor}" '
-             '--properties enterprise-app-id="ac754169-3489-42ae-bd06-8be89db12e58" single-sign-on-state="Enable" '
+             '--properties enterprise-app-id="00000000-0000-0000-0000-000000000000" single-sign-on-state="Enable" '
              '--resource-group "{rg}"',
              checks=[])
 
@@ -195,10 +186,7 @@ def step__singlesignonconfigurations_get(test, rg):
              '--configuration-name "default" '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "default", case_sensitive=False),
-                 test.check("type", "Microsoft.Datadog/monitors/singleSignOnConfigurations", case_sensitive=False),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /SingleSignOnConfigurations/get/SingleSignOnConfigurations_List
@@ -207,9 +195,7 @@ def step__singlesignonconfigurations_get2(test, rg):
     test.cmd('az datadog sso-config list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /TagRules/put/TagRules_CreateOrUpdate
@@ -217,17 +203,12 @@ def step__singlesignonconfigurations_get2(test, rg):
 def step__tagrules_put_tagrules_createorupdate(test, rg):
     test.cmd('az datadog tag-rule create '
              '--monitor-name "{myMonitor}" '
-             '--log-rules-filtering-tags name="Environment" action="Include" value="Prod" '
-             '--log-rules-filtering-tags name="Environment" action="Exclude" value="Dev" '
              '--log-rules-send-aad-logs false '
              '--log-rules-send-resource-logs true '
              '--log-rules-send-subscription-logs true '
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
-             checks=[
-                 test.check("name", "default", case_sensitive=False),
-                 test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /TagRules/get/TagRules_Get
@@ -237,10 +218,7 @@ def step__tagrules_get_tagrules_get(test, rg):
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
-             checks=[
-                 test.check("name", "default", case_sensitive=False),
-                 test.check("type", "Microsoft.Datadog/monitors/tagRules", case_sensitive=False),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /TagRules/get/TagRules_List
@@ -249,9 +227,7 @@ def step__tagrules_get_tagrules_list(test, rg):
     test.cmd('az datadog tag-rule list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
+             checks=[])
 
 
 # EXAMPLE: /Monitors/delete/Monitors_Delete
@@ -263,21 +239,28 @@ def step__monitors_delete_monitors_delete(test, rg):
              checks=[])
 
 
+# Env cleanup
 @try_manual
 def cleanup(test, rg):
     pass
 
 
+# Testcase
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
-    step__monitors_put_monitors_create(test, rg)
     step__monitors_get_monitors_get(test, rg)
-    step__monitors_get_monitors_list(test, rg)
     step__monitors_get_monitors_listbyresourcegroup(test, rg)
     step__monitors_patch_monitors_update(test, rg)
+    step__apikeys_post_apikeys_list(test, rg)
+    step__apikeys_post_apikeys_setdefaultkey(test, rg)
     step__hosts_post_hosts_list(test, rg)
     step__linkedresources_post_linkedresources_list(test, rg)
+    step__marketplaceagreements_put(test, rg)
+    step__monitors_put_monitors_create(test, rg)
+    step__monitors_get_monitors_list(test, rg)
+    step__apikeys_post_apikeys_getdefaultkey(test, rg)
+    step__marketplaceagreements_get(test, rg)
     step__monitoredresources_post(test, rg)
     step__refreshsetpassword_post(test, rg)
     step__singlesignonconfigurations_put(test, rg)
@@ -286,9 +269,6 @@ def call_scenario(test, rg):
     step__tagrules_put_tagrules_createorupdate(test, rg)
     step__tagrules_get_tagrules_get(test, rg)
     step__tagrules_get_tagrules_list(test, rg)
-    step__apikeys_post_apikeys_list(test, rg)
-    step__apikeys_post_apikeys_setdefaultkey(test, rg)
-    step__apikeys_post_apikeys_getdefaultkey(test, rg)
     step__monitors_delete_monitors_delete(test, rg)
     cleanup(test, rg)
 

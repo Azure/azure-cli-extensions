@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class MonitoredResourceOperations:
-    """MonitoredResourceOperations async operations.
+class HostOperations:
+    """HostOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -46,10 +46,10 @@ class MonitoredResourceOperations:
         resource_group_name: str,
         monitor_name: str,
         **kwargs
-    ) -> AsyncIterable["models.MonitoredResourceListResponse"]:
-        """List the resources currently being monitored by the Datadog monitor resource.
+    ) -> AsyncIterable["models.DatadogHostListResponse"]:
+        """List the hosts for a given monitor resource.
 
-        List the resources currently being monitored by the Datadog monitor resource.
+        List the hosts for a given monitor resource.
 
         :param resource_group_name: The name of the resource group to which the Datadog resource
          belongs.
@@ -57,19 +57,22 @@ class MonitoredResourceOperations:
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either MonitoredResourceListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.MonitoredResourceListResponse]
+        :return: An iterator like instance of either DatadogHostListResponse or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.DatadogHostListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoredResourceListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogHostListResponse"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -92,7 +95,7 @@ class MonitoredResourceOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('MonitoredResourceListResponse', pipeline_response)
+            deserialized = self._deserialize('DatadogHostListResponse', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -114,4 +117,4 @@ class MonitoredResourceOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/listMonitoredResources'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/listHosts'}  # type: ignore
