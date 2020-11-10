@@ -877,6 +877,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
                assign_identity=None,
+               enable_pod_identity=False,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -1108,6 +1109,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             user_assigned_identities=user_assigned_identity
         )
 
+    pod_identity_profile = None
+    if enable_pod_identity:
+        if not enable_managed_identity:
+            raise CLIError('--enable-pod-identity can only be specified when --enable-managed-identity is specified')
+        pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=True)
+
     enable_rbac = True
     if disable_rbac:
         enable_rbac = False
@@ -1128,7 +1135,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_pod_security_policy=bool(enable_pod_security_policy),
         identity=identity,
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
-        api_server_access_profile=api_server_access_profile)
+        api_server_access_profile=api_server_access_profile,
+        pod_identity_profile=pod_identity_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
