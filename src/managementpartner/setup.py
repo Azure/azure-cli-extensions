@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Jeffrey Li',
     author_email='jefl@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/managementpartner',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,

@@ -179,7 +179,7 @@ blockchain member update:
       - option_length_too_long
 blueprint assignment create:
   parameters:
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:
@@ -187,10 +187,7 @@ blueprint assignment create:
       - option_length_too_long
 blueprint assignment update:
   parameters:
-    identity_type:
-      rule_exclusions:
-      - no_parameter_defaults_for_update_commands
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:

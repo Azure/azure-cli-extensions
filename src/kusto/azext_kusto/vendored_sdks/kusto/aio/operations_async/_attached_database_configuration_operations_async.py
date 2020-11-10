@@ -12,7 +12,7 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -63,9 +63,13 @@ class AttachedDatabaseConfigurationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AttachedDatabaseConfigurationListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_cluster.metadata['url']  # type: ignore
@@ -79,15 +83,11 @@ class AttachedDatabaseConfigurationOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -137,7 +137,7 @@ class AttachedDatabaseConfigurationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AttachedDatabaseConfiguration"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -157,7 +157,6 @@ class AttachedDatabaseConfigurationOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -189,8 +188,8 @@ class AttachedDatabaseConfigurationOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.AttachedDatabaseConfiguration(location=location, database_name=database_name, cluster_resource_id=cluster_resource_id, default_principals_modification_kind=default_principals_modification_kind)
-        api_version = "2020-06-14"
+        parameters = models.AttachedDatabaseConfiguration(location=location, database_name=database_name, cluster_resource_id=cluster_resource_id, default_principals_modification_kind=default_principals_modification_kind)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -212,9 +211,8 @@ class AttachedDatabaseConfigurationOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'AttachedDatabaseConfiguration')
+        body_content = self._serialize.body(parameters, 'AttachedDatabaseConfiguration')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -225,7 +223,6 @@ class AttachedDatabaseConfigurationOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('AttachedDatabaseConfiguration', pipeline_response)
 
@@ -241,7 +238,7 @@ class AttachedDatabaseConfigurationOperations:
         return deserialized
     _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore
 
-    async def create_or_update(
+    async def begin_create_or_update(
         self,
         resource_group_name: str,
         cluster_name: str,
@@ -251,7 +248,7 @@ class AttachedDatabaseConfigurationOperations:
         cluster_resource_id: Optional[str] = None,
         default_principals_modification_kind: Optional[Union[str, "models.DefaultPrincipalsModificationKind"]] = None,
         **kwargs
-    ) -> "models.AttachedDatabaseConfiguration":
+    ) -> AsyncLROPoller["models.AttachedDatabaseConfiguration"]:
         """Creates or updates an attached database configuration.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -263,20 +260,21 @@ class AttachedDatabaseConfigurationOperations:
         :param location: Resource location.
         :type location: str
         :param database_name: The name of the database which you would like to attach, use * if you
-     want to follow all current and future databases.
+         want to follow all current and future databases.
         :type database_name: str
         :param cluster_resource_id: The resource id of the cluster where the databases you would like
-     to attach reside.
+         to attach reside.
         :type cluster_resource_id: str
         :param default_principals_modification_kind: The default principals modification kind.
         :type default_principals_modification_kind: str or ~kusto_management_client.models.DefaultPrincipalsModificationKind
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: AttachedDatabaseConfiguration, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.AttachedDatabaseConfiguration
+        :return: An instance of AsyncLROPoller that returns either AttachedDatabaseConfiguration or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.AttachedDatabaseConfiguration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -285,17 +283,19 @@ class AttachedDatabaseConfigurationOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._create_or_update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            attached_database_configuration_name=attached_database_configuration_name,
-            location=location,
-            database_name=database_name,
-            cluster_resource_id=cluster_resource_id,
-            default_principals_modification_kind=default_principals_modification_kind,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                attached_database_configuration_name=attached_database_configuration_name,
+                location=location,
+                database_name=database_name,
+                cluster_resource_id=cluster_resource_id,
+                default_principals_modification_kind=default_principals_modification_kind,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -310,8 +310,16 @@ class AttachedDatabaseConfigurationOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore
 
     async def _delete_initial(
         self,
@@ -323,7 +331,7 @@ class AttachedDatabaseConfigurationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -342,7 +350,6 @@ class AttachedDatabaseConfigurationOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -356,13 +363,13 @@ class AttachedDatabaseConfigurationOperations:
 
     _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore
 
-    async def delete(
+    async def begin_delete(
         self,
         resource_group_name: str,
         cluster_name: str,
         attached_database_configuration_name: str,
         **kwargs
-    ) -> None:
+    ) -> AsyncLROPoller[None]:
         """Deletes the attached database configuration with the given name.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -372,12 +379,13 @@ class AttachedDatabaseConfigurationOperations:
         :param attached_database_configuration_name: The name of the attached database configuration.
         :type attached_database_configuration_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -386,13 +394,15 @@ class AttachedDatabaseConfigurationOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._delete_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            attached_database_configuration_name=attached_database_configuration_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                attached_database_configuration_name=attached_database_configuration_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -404,5 +414,13 @@ class AttachedDatabaseConfigurationOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/attachedDatabaseConfigurations/{attachedDatabaseConfigurationName}'}  # type: ignore

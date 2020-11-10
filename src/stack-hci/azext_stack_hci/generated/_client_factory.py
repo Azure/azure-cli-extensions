@@ -16,4 +16,4 @@ def cf_stack_hci(cli_ctx, *_):
 
 
 def cf_cluster(cli_ctx, *_):
-    return cf_stack_hci(cli_ctx).cluster
+    return cf_stack_hci(cli_ctx).clusters
