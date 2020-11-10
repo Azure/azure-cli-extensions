@@ -9,8 +9,8 @@ import datetime
 import isodate
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from msrestazure.azure_exceptions import CloudError
+from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
@@ -139,6 +139,22 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
 
 def update_component_tags(client, application, resource_group_name, tags):
     return client.update_tags(resource_group_name, application, tags)
+
+
+def connect_webapp(cmd, resource_group_name, webapp_name, enable_profiler=None, enable_snapshot_debugger=None):
+    from azure.cli.command_modules.appservice.custom import update_app_settings
+
+    settings = []
+    if enable_profiler is True:
+        settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
+    elif enable_profiler is False:
+        settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=disabled")
+
+    if enable_snapshot_debugger is True:
+        settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=1.0.0")
+    elif enable_snapshot_debugger is False:
+        settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=disabled")
+    return update_app_settings(cmd, resource_group_name, webapp_name, settings)
 
 
 def get_component(client, application, resource_group_name):

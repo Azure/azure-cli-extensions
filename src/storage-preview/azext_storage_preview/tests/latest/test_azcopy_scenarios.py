@@ -7,7 +7,7 @@ import shutil
 from azure.cli.testsdk import (StorageAccountPreparer, LiveScenarioTest, JMESPathCheck, ResourceGroupPreparer,
                                api_version_constraint)
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
