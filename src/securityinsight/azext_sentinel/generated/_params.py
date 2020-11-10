@@ -108,7 +108,6 @@ def load_arguments(self, _):
         c.argument('bookmark_id', type=str, help='Bookmark ID', id_part='child_name_1')
 
     with self.argument_context('sentinel bookmark create') as c:
-        c.ignore('_query')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of the workspace.')
         c.argument('bookmark_id', type=str, help='Bookmark ID')
@@ -117,7 +116,7 @@ def load_arguments(self, _):
         c.argument('display_name', type=str, help='The display name of the bookmark')
         c.argument('labels', nargs='*', help='List of labels relevant to this bookmark')
         c.argument('notes', type=str, help='The notes of the bookmark')
-        c.argument('query', type=str, help='The query of the bookmark.')
+        c.argument('query_content', options_list=['-q'], type=str, help='The query of the bookmark.')
         c.argument('query_result', type=str, help='The query result of the bookmark.')
         c.argument('updated', help='The last time the bookmark was updated')
         c.argument('incident_info', action=AddIncidentInfo, nargs='*', help='Describes an incident that relates to '
@@ -133,7 +132,7 @@ def load_arguments(self, _):
         c.argument('display_name', type=str, help='The display name of the bookmark')
         c.argument('labels', nargs='*', help='List of labels relevant to this bookmark')
         c.argument('notes', type=str, help='The notes of the bookmark')
-        c.argument('query', type=str, help='The query of the bookmark.')
+        c.argument('query_content', options_list=['-q'], type=str, help='The query of the bookmark.')
         c.argument('query_result', type=str, help='The query result of the bookmark.')
         c.argument('updated', help='The last time the bookmark was updated')
         c.argument('incident_info', action=AddIncidentInfo, nargs='*', help='Describes an incident that relates to '

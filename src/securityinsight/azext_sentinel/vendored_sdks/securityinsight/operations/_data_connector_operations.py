@@ -228,6 +228,7 @@ class DataConnectorOperations(object):
             'dataConnectorId': self._serialize.url("data_connector_id", data_connector_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        print(url)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]

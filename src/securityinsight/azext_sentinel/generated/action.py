@@ -334,19 +334,25 @@ class AddOfficeDataConnector(argparse.Action):
             properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
+        d = {
+            'dataTypes': {
+                'sharePoint': {'state': 'Disabled'},
+                'exchange': {'state': 'Disabled'}
+            }
+        }
         for k in properties:
             kl = k.lower()
             v = properties[k]
             if kl == 'tenant-id':
-                d['tenant_id'] = v[0]
-            elif kl == 'state-data-types-share-point-state':
-                d['state_data_types_share_point_state'] = v[0]
-            elif kl == 'state-data-types-exchange-state':
-                d['state_data_types_exchange_state'] = v[0]
+                d['tenantId'] = v[0]
+            elif kl == 'sharepoint-enabled':
+                d['dataTypes']['sharePoint']['state'] = 'Enabled'
+            elif kl == 'exchange-enabled':
+                d['dataTypes']['exchange']['state'] = 'Enabled'
             elif kl == 'etag':
                 d['etag'] = v[0]
         d['kind'] = 'Office365'
+        print(d)
         return d
 
 

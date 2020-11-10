@@ -12,6 +12,7 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -190,12 +191,7 @@ def step__alertrules_delete_delete_a_fusion_alert_rule_(test, rg):
     test.cmd('az sentinel alert-rule delete -y '
              '--resource-group "{rg}" '
              '--rule-id "myFirstFusionRule" '
-             '--workspace-name {workspace}',
-             checks=[
-                 test.check('enabled', True),
-                 test.check('kind', 'Fusion'),
-                 test.check('name', 'myFirstFusionRule')
-             ])
+             '--workspace-name {workspace}')
 
 
 # EXAMPLE: /AlertRuleTemplates/get/Get alert rule template by Id.
@@ -229,13 +225,16 @@ def step__bookmarks_put_creates_or_updates_a_bookmark_(test, rg):
              '--labels "Tag1" '
              '--labels "Tag2" '
              '--notes "Found a suspicious activity" '
-             '--query "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" '
+             '-q "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" '
              '--query-result "Security Event query result" '
              '--updated "2019-01-01T13:15:30Z" '
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('name', '73e01a99-5cd7-4139-a149-9f2736ff2ab5'),
+                 test.check('query', 'SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)')
+             ])
 
 
 # EXAMPLE: /Bookmarks/get/Get a bookmark.
@@ -245,7 +244,10 @@ def step__bookmarks_get_get_a_bookmark_(test, rg):
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('name', '73e01a99-5cd7-4139-a149-9f2736ff2ab5'),
+                 test.check('query', 'SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)')
+             ])
 
 
 # EXAMPLE: /Bookmarks/get/Get all bookmarks.
@@ -254,7 +256,11 @@ def step__bookmarks_get_get_all_bookmarks_(test, rg):
     test.cmd('az sentinel bookmark list '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1),
+                 test.check('[0].name', '73e01a99-5cd7-4139-a149-9f2736ff2ab5'),
+                 test.check('[0].query', 'SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)')
+             ])
 
 
 # EXAMPLE: /Bookmarks/delete/Delete a bookmark.
@@ -263,16 +269,14 @@ def step__bookmarks_delete_delete_a_bookmark_(test, rg):
     test.cmd('az sentinel bookmark delete -y '
              '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name {workspace}',
-             checks=[])
+             '--workspace-name {workspace}')
 
 
 # EXAMPLE: /DataConnectors/put/Creates or updates an Office365 data connector.
 @try_manual
 def step__dataconnectors_put(test, rg):
     test.cmd('az sentinel data-connector create '
-             '--office-data-connector etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" tenant-id="2070ecc9-b4d5-4ae4-a'
-             'daa-936fa1954fa8" '
+             '--office-data-connector etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" tenant-id="2070ecc9-b4d5-4ae4-adaa-936fa1954fa8" '
              '--data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
@@ -387,7 +391,10 @@ def step__incidentcomments_put(test, rg):
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('message', 'Some message'),
+                 test.check('name', '4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014')
+             ])
 
 
 # EXAMPLE: /IncidentComments/get/Get all incident comments.
@@ -397,7 +404,11 @@ def step__incidentcomments_get(test, rg):
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1),
+                 test.check('[0].message', 'Some message'),
+                 test.check('[0].name', '4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014')
+             ])
 
 
 # EXAMPLE: /IncidentComments/get/Get an incident comment.
@@ -408,7 +419,10 @@ def step__incidentcomments_get2(test, rg):
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('message', 'Some message'),
+                 test.check('name', '4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014')
+             ])
 
 
 # EXAMPLE: /Incidents/put/Creates or updates an incident.
@@ -425,11 +439,18 @@ def step__incidents_put(test, rg):
              '--owner object-id="2046feea-040d-4a46-9e2b-91c2941bfa70" '
              '--severity "High" '
              '--status "Closed" '
-             '--title "My incident" '
+             '--title "title" '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('classification', 'FalsePositive'),
+                 test.check('classificationReason', 'IncorrectAlertLogic'),
+                 test.check('classificationComment', 'Not a malicious activity'),
+                 test.check('severity', 'High'),
+                 test.check('title', 'title'),
+                 test.check('status', 'Closed')
+             ])
 
 
 # EXAMPLE: /Incidents/get/Get all incidents.
@@ -440,7 +461,10 @@ def step__incidents_get_get_all_incidents_(test, rg):
              '--top 1 '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('length(@)', 1),
+                 test.check('[0].name', '73e01a99-5cd7-4139-a149-9f2736ff2ab5')
+             ])
 
 
 # EXAMPLE: /Incidents/get/Get an incident.
@@ -450,7 +474,14 @@ def step__incidents_get_get_an_incident_(test, rg):
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
              '--workspace-name {workspace}',
-             checks=[])
+             checks=[
+                 test.check('classification', 'FalsePositive'),
+                 test.check('classificationReason', 'IncorrectAlertLogic'),
+                 test.check('classificationComment', 'Not a malicious activity'),
+                 test.check('severity', 'High'),
+                 test.check('title', 'title'),
+                 test.check('status', 'Closed')
+             ])
 
 
 # EXAMPLE: /Incidents/delete/Delete an incident.
@@ -459,8 +490,7 @@ def step__incidents_delete_delete_an_incident_(test, rg):
     test.cmd('az sentinel incident delete -y '
              '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
              '--resource-group "{rg}" '
-             '--workspace-name {workspace}',
-             checks=[])
+             '--workspace-name {workspace}')
 
 
 # Env cleanup
@@ -488,30 +518,30 @@ def call_scenario(test, rg):
     step__alertruletemplates_get(test, rg)
     step__alertruletemplates_list(test, rg)
     # step__actions_get_get_all_actions_of_alert_rule_(test, rg)
-    """
     step__bookmarks_put_creates_or_updates_a_bookmark_(test, rg)
     step__bookmarks_get_get_a_bookmark_(test, rg)
     step__bookmarks_get_get_all_bookmarks_(test, rg)
     step__bookmarks_delete_delete_a_bookmark_(test, rg)
-    step__dataconnectors_put(test, rg)
-    step__dataconnectors_get_get_a_asc_data_connector_(test, rg)
-    step__dataconnectors_get(test, rg)
-    step__dataconnectors_get2(test, rg)
-    step__dataconnectors_get_get_a_ti_data_connector_(test, rg)
-    step__dataconnectors_get_get_all_data_connectors_(test, rg)
-    step__dataconnectors_get3(test, rg)
-    step__dataconnectors_get4(test, rg)
-    step__dataconnectors_get5(test, rg)
-    step__dataconnectors_get6(test, rg)
-    step__dataconnectors_delete(test, rg)
+
+    # step__dataconnectors_put(test, rg)
+    # step__dataconnectors_get_get_a_asc_data_connector_(test, rg)
+    # step__dataconnectors_get(test, rg)
+    # step__dataconnectors_get2(test, rg)
+    # step__dataconnectors_get_get_a_ti_data_connector_(test, rg)
+    # step__dataconnectors_get_get_all_data_connectors_(test, rg)
+    # step__dataconnectors_get3(test, rg)
+    # step__dataconnectors_get4(test, rg)
+    # step__dataconnectors_get5(test, rg)
+    # step__dataconnectors_get6(test, rg)
+    # step__dataconnectors_delete(test, rg)
+
+    step__incidents_put(test, rg)
+    # step__incidents_get_get_all_incidents_(test, rg)
+    step__incidents_get_get_an_incident_(test, rg)
     step__incidentcomments_put(test, rg)
     step__incidentcomments_get(test, rg)
     step__incidentcomments_get2(test, rg)
-    step__incidents_put(test, rg)
-    step__incidents_get_get_all_incidents_(test, rg)
-    step__incidents_get_get_an_incident_(test, rg)
     step__incidents_delete_delete_an_incident_(test, rg)
-    """
     cleanup(test, rg)
 
 
@@ -519,6 +549,7 @@ def call_scenario(test, rg):
 class SecurityInsightsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg')
+    @AllowLargeResponse()
     def test_sentinel(self, rg):
 
         self.kwargs.update({

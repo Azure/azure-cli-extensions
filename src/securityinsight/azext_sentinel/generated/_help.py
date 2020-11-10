@@ -287,7 +287,7 @@ helps['sentinel bookmark create'] = """
         text: |-
                az sentinel bookmark create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --created \
 "2019-01-01T13:15:30Z" --display-name "My bookmark" --labels "Tag1" --labels "Tag2" --notes "Found a suspicious \
-activity" --query "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" --query-result "Security \
+activity" -q "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" --query-result "Security \
 Event query result" --updated "2019-01-01T13:15:30Z" --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
 --resource-group "myRg" --workspace-name "myWorkspace"
 """
