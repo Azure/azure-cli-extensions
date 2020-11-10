@@ -1223,7 +1223,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_ahub=False,
                aks_custom_headers=None,
                enable_managed_identity=False,
-               assign_identity=None):
+               assign_identity=None,
+               yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1427,7 +1428,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         else:
             msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
                    'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
-        if not prompt_y_n(msg, default="n"):
+        if not yes and not prompt_y_n(msg, default="n"):
             return None
         if goal_identity_type == "systemassigned":
             instance.identity = ManagedClusterIdentity(

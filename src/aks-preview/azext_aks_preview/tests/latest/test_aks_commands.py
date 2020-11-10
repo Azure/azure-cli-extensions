@@ -711,9 +711,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update to MSI cluster
-        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-managed-identity', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-managed-identity --yes', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('idenitty.type', 'systemassigned')
+            self.check('identity.type', 'SystemAssigned')
         ])
 
         # delete
