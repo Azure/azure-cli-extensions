@@ -21,7 +21,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-04T01:33:31Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:36 GMT
+      - Wed, 11 Nov 2020 12:57:46 GMT
       expires:
       - '-1'
       pragma:
@@ -73,15 +73,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
-        ,\r\n  \"etag\": \"W/\\\"c8bb3b0e-dce8-49b4-911a-f352f1829059\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"d691f6d2-108f-4ca8-b6aa-3865d17bb58f\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Updating\",\r\n    \"resourceGuid\": \"9e7b9ea0-5cee-456c-a8b5-c0d74ed27864\"\
+        \ \"Updating\",\r\n    \"resourceGuid\": \"3b54b580-80e4-4899-851d-c39dafb76977\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"c8bb3b0e-dce8-49b4-911a-f352f1829059\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"d691f6d2-108f-4ca8-b6aa-3865d17bb58f\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
         ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -93,7 +93,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/7db20072-6c9e-4ad8-9331-f623bfcf65af?api-version=2020-06-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/aedfae1a-9402-45de-af88-c45980f54d7d?api-version=2020-06-01
       cache-control:
       - no-cache
       content-length:
@@ -101,7 +101,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:42 GMT
+      - Wed, 11 Nov 2020 12:57:52 GMT
       expires:
       - '-1'
       pragma:
@@ -114,9 +114,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9e7805fb-49d8-4cd5-9ccd-6f3938664816
+      - 5799b106-d3a9-4b4d-8e0d-20f6bb38440c
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1193'
     status:
       code: 201
       message: Created
@@ -137,7 +137,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/7db20072-6c9e-4ad8-9331-f623bfcf65af?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/aedfae1a-9402-45de-af88-c45980f54d7d?api-version=2020-06-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -149,7 +149,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:46 GMT
+      - Wed, 11 Nov 2020 12:57:56 GMT
       expires:
       - '-1'
       pragma:
@@ -166,7 +166,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3b1efa0d-5ae7-4829-942d-2d4b1ea65d98
+      - ee6ee597-f9a5-4766-a51c-47cbf1d52a2b
     status:
       code: 200
       message: OK
@@ -191,15 +191,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
-        ,\r\n  \"etag\": \"W/\\\"89a1f76a-0f4f-42bd-8bf8-497d062e321e\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"1afe0b9b-ed90-42af-b38c-25cbd47bfeed\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Succeeded\",\r\n    \"resourceGuid\": \"9e7b9ea0-5cee-456c-a8b5-c0d74ed27864\"\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"3b54b580-80e4-4899-851d-c39dafb76977\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"89a1f76a-0f4f-42bd-8bf8-497d062e321e\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"1afe0b9b-ed90-42af-b38c-25cbd47bfeed\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -215,9 +215,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:46 GMT
+      - Wed, 11 Nov 2020 12:57:56 GMT
       etag:
-      - W/"89a1f76a-0f4f-42bd-8bf8-497d062e321e"
+      - W/"1afe0b9b-ed90-42af-b38c-25cbd47bfeed"
       expires:
       - '-1'
       pragma:
@@ -234,7 +234,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2749f381-4087-46c7-beb5-96d50458b4e8
+      - 490a1cb3-45b4-4329-b0bd-0bae6b13f472
     status:
       code: 200
       message: OK
@@ -261,15 +261,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
-        ,\r\n  \"etag\": \"W/\\\"89a1f76a-0f4f-42bd-8bf8-497d062e321e\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"1afe0b9b-ed90-42af-b38c-25cbd47bfeed\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Succeeded\",\r\n    \"resourceGuid\": \"9e7b9ea0-5cee-456c-a8b5-c0d74ed27864\"\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"3b54b580-80e4-4899-851d-c39dafb76977\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"89a1f76a-0f4f-42bd-8bf8-497d062e321e\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"1afe0b9b-ed90-42af-b38c-25cbd47bfeed\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -285,9 +285,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:47 GMT
+      - Wed, 11 Nov 2020 12:57:57 GMT
       etag:
-      - W/"89a1f76a-0f4f-42bd-8bf8-497d062e321e"
+      - W/"1afe0b9b-ed90-42af-b38c-25cbd47bfeed"
       expires:
       - '-1'
       pragma:
@@ -304,7 +304,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f6559319-4d87-4f1a-8dd1-277fae91b810
+      - 37f48d5f-c06d-42dd-b557-23f4c082f5ec
     status:
       code: 200
       message: OK
@@ -341,15 +341,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
-        ,\r\n  \"etag\": \"W/\\\"bd9039f3-cb42-4abc-bd6f-42cb624d268f\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"67b541a0-a5a1-4556-8362-00707be3811f\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Updating\",\r\n    \"resourceGuid\": \"9e7b9ea0-5cee-456c-a8b5-c0d74ed27864\"\
+        \ \"Updating\",\r\n    \"resourceGuid\": \"3b54b580-80e4-4899-851d-c39dafb76977\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"bd9039f3-cb42-4abc-bd6f-42cb624d268f\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"67b541a0-a5a1-4556-8362-00707be3811f\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
         ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -357,7 +357,7 @@ interactions:
         \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
         \  },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\"\
         : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"bd9039f3-cb42-4abc-bd6f-42cb624d268f\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"67b541a0-a5a1-4556-8362-00707be3811f\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
         ,\r\n          \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -367,7 +367,7 @@ interactions:
         : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/46a9af0c-284b-4cc8-8af2-bfbb169fcc04?api-version=2020-06-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/7cce3d74-dbad-4956-bd1e-45177c9de961?api-version=2020-06-01
       cache-control:
       - no-cache
       content-length:
@@ -375,7 +375,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:47 GMT
+      - Wed, 11 Nov 2020 12:57:58 GMT
       expires:
       - '-1'
       pragma:
@@ -392,9 +392,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a2c3efe8-3c12-4bfd-8cb7-803a4eb48d98
+      - 088d7eeb-1953-41ec-9691-489db1d05b80
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1193'
     status:
       code: 200
       message: OK
@@ -415,7 +415,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/46a9af0c-284b-4cc8-8af2-bfbb169fcc04?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/7cce3d74-dbad-4956-bd1e-45177c9de961?api-version=2020-06-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -427,7 +427,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:52 GMT
+      - Wed, 11 Nov 2020 12:58:01 GMT
       expires:
       - '-1'
       pragma:
@@ -444,7 +444,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3446ce6b-b6f6-441f-8d9c-70f611ed6d88
+      - 30f8195e-eed4-4b87-a241-baa58c375c71
     status:
       code: 200
       message: OK
@@ -469,15 +469,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
-        ,\r\n  \"etag\": \"W/\\\"7e859e34-3f8f-4896-ba69-e05fc6516f53\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"4d918628-9338-45c1-848e-a22f7188c18d\\\"\",\r\n \
         \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
         ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
-        \ \"Succeeded\",\r\n    \"resourceGuid\": \"9e7b9ea0-5cee-456c-a8b5-c0d74ed27864\"\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"3b54b580-80e4-4899-851d-c39dafb76977\"\
         ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
         11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
         : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
         ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"7e859e34-3f8f-4896-ba69-e05fc6516f53\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"4d918628-9338-45c1-848e-a22f7188c18d\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -485,7 +485,7 @@ interactions:
         \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
         \  },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\"\
         : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\
-        ,\r\n        \"etag\": \"W/\\\"7e859e34-3f8f-4896-ba69-e05fc6516f53\\\"\"\
+        ,\r\n        \"etag\": \"W/\\\"4d918628-9338-45c1-848e-a22f7188c18d\\\"\"\
         ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
         ,\r\n          \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\"\
         : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
@@ -501,9 +501,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:52 GMT
+      - Wed, 11 Nov 2020 12:58:01 GMT
       etag:
-      - W/"7e859e34-3f8f-4896-ba69-e05fc6516f53"
+      - W/"4d918628-9338-45c1-848e-a22f7188c18d"
       expires:
       - '-1'
       pragma:
@@ -520,7 +520,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fa0a9015-1e23-4e53-a9aa-eec87cd8f578
+      - 68415b2e-5466-4e22-8dc2-8c3087e32c24
     status:
       code: 200
       message: OK
@@ -546,7 +546,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-04T01:33:31Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -555,7 +555,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:33:53 GMT
+      - Wed, 11 Nov 2020 12:58:02 GMT
       expires:
       - '-1'
       pragma:
@@ -597,9 +597,9 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"appgw-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip\"\
-        ,\r\n  \"etag\": \"W/\\\"1865b084-9ad5-427f-9ef1-18c4f9da050e\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"d6d9b53d-cbd7-4f65-94ac-f72d34a9c476\\\"\",\r\n \
         \ \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\"\
-        : \"Updating\",\r\n    \"resourceGuid\": \"2f8ab49f-456e-47c2-ba87-013566e93143\"\
+        : \"Updating\",\r\n    \"resourceGuid\": \"71caf4cc-615b-486e-8b94-ce173f524ae7\"\
         ,\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"publicIPAllocationMethod\"\
         : \"Static\",\r\n    \"idleTimeoutInMinutes\": 4,\r\n    \"ipTags\": []\r\n\
         \  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n  \"sku\"\
@@ -608,7 +608,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/c70b1ea0-ca17-4a4d-a5ad-5cec9d43cfe7?api-version=2020-06-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/c535fc25-acfb-4c04-b071-207bf61cfef5?api-version=2020-06-01
       cache-control:
       - no-cache
       content-length:
@@ -616,7 +616,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:02 GMT
+      - Wed, 11 Nov 2020 12:58:07 GMT
       expires:
       - '-1'
       pragma:
@@ -629,9 +629,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c03a991c-465f-41eb-9a89-b2fb9b5a14b0
+      - 96c32e51-7e91-4a6c-8f06-c14a23f4a5d0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1192'
     status:
       code: 201
       message: Created
@@ -652,7 +652,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/c70b1ea0-ca17-4a4d-a5ad-5cec9d43cfe7?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/c535fc25-acfb-4c04-b071-207bf61cfef5?api-version=2020-06-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -664,7 +664,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:03 GMT
+      - Wed, 11 Nov 2020 12:58:09 GMT
       expires:
       - '-1'
       pragma:
@@ -681,7 +681,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 279e981b-4d3b-4e17-8ec4-a322e0e11832
+      - e163dd3f-dcad-49a0-ae14-cfe1b4fe755b
     status:
       code: 200
       message: OK
@@ -706,10 +706,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"appgw-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip\"\
-        ,\r\n  \"etag\": \"W/\\\"1f7111ee-e848-4d54-a46d-f09b43c69ae4\\\"\",\r\n \
+        ,\r\n  \"etag\": \"W/\\\"e5b67a2d-b40e-4c26-bd62-da5942e0fe42\\\"\",\r\n \
         \ \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\"\
-        : \"Succeeded\",\r\n    \"resourceGuid\": \"2f8ab49f-456e-47c2-ba87-013566e93143\"\
-        ,\r\n    \"ipAddress\": \"20.69.128.71\",\r\n    \"publicIPAddressVersion\"\
+        : \"Succeeded\",\r\n    \"resourceGuid\": \"71caf4cc-615b-486e-8b94-ce173f524ae7\"\
+        ,\r\n    \"ipAddress\": \"20.64.136.11\",\r\n    \"publicIPAddressVersion\"\
         : \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\"\
         : 4,\r\n    \"ipTags\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\"\
         ,\r\n  \"sku\": {\r\n    \"name\": \"Standard\"\r\n  }\r\n}"
@@ -721,9 +721,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:03 GMT
+      - Wed, 11 Nov 2020 12:58:10 GMT
       etag:
-      - W/"1f7111ee-e848-4d54-a46d-f09b43c69ae4"
+      - W/"e5b67a2d-b40e-4c26-bd62-da5942e0fe42"
       expires:
       - '-1'
       pragma:
@@ -740,7 +740,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2521abe7-3e42-47ab-ba83-0bb2f3839511
+      - fbd8054e-9c63-4af6-9977-4ea02322f4e1
     status:
       code: 200
       message: OK
@@ -766,7 +766,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-04T01:33:31Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -775,7 +775,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:04 GMT
+      - Wed, 11 Nov 2020 12:58:10 GMT
       expires:
       - '-1'
       pragma:
@@ -811,7 +811,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceGroup%20eq%20%27clitest000001%27%20and%20name%20eq%20%27cliakstest000003%27%20and%20resourceType%20eq%20%27Microsoft.Network%2FvirtualNetworks%27&api-version=2020-06-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003","name":"cliakstest000003","type":"Microsoft.Network/virtualNetworks","location":"westus2","tags":{}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2fvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV6UkVJMlFqUkZOalZHT0RFME9EWkdPVFl6T1VSRE9EUXhOREl4TURNMUxWZEZVMVJWVXpJLSJ9"}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003","name":"cliakstest000003","type":"Microsoft.Network/virtualNetworks","location":"westus2","tags":{}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2fvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV3TWpkQ01VTkJOekk1T0RrME9EVTRRa05HT1VVNFFUYzVSREJFUVVFd0xWZEZVMVJWVXpJLSJ9"}'
     headers:
       cache-control:
       - no-cache
@@ -820,7 +820,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:04 GMT
+      - Wed, 11 Nov 2020 12:58:11 GMT
       expires:
       - '-1'
       pragma:
@@ -853,19 +853,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2FvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV6UkVJMlFqUkZOalZHT0RFME9EWkdPVFl6T1VSRE9EUXhOREl4TURNMUxWZEZVMVJWVXpJLSJ9
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2FvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV3TWpkQ01VTkJOekk1T0RrME9EVTRRa05HT1VVNFFUYzVSREJFUVVFd0xWZEZVMVJWVXpJLSJ9
   response:
     body:
-      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2fvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMzAwIU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pPUlZSWFQxSkxTVTVVUlZKR1FVTkZVem95UmxCRk9qSkVRamREUkVWRFJUWTZNa1JDUWtJME9qSkVORVU1UkRveVJFSTFRVE02TWtRNU9UVkROelZETkVSRk1VSTZNa1ZPU1VNNk1rVkRSak16TTBFMU5Eb3lSRE5DTlRZNk1rUTBNekE1T2pKRU9EaEdORG95UkVFek1UUkRPRUl4UVVFelFpMVhSVk5VVlZNeSJ9"}'
+      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2fvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjI4IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pRVWtsV1FWUkZSVTVFVUU5SlRsUlRPakpHVUVVNk1rUTJOa1kyUlRoRlFUb3lSRVpHT1VRNk1rUTBNREkwT2pKRU9VWkZNam95UkVFMlJUZ3pORVZCUWpsQk1pMVhSVk5VVlZNeSJ9"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '776'
+      - '680'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:05 GMT
+      - Wed, 11 Nov 2020 12:58:11 GMT
       expires:
       - '-1'
       pragma:
@@ -898,7 +898,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2FvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMzAwIU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pPUlZSWFQxSkxTVTVVUlZKR1FVTkZVem95UmxCRk9qSkVRamREUkVWRFJUWTZNa1JDUWtJME9qSkVORVU1UkRveVJFSTFRVE02TWtRNU9UVkROelZETkVSRk1VSTZNa1ZPU1VNNk1rVkRSak16TTBFMU5Eb3lSRE5DTlRZNk1rUTBNekE1T2pKRU9EaEdORG95UkVFek1UUkRPRUl4UVVFelFpMVhSVk5VVlZNeSJ9
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2FvirtualNetworks%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjI4IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pRVWtsV1FWUkZSVTVFVUU5SlRsUlRPakpHVUVVNk1rUTJOa1kyUlRoRlFUb3lSRVpHT1VRNk1rUTBNREkwT2pKRU9VWkZNam95UkVFMlJUZ3pORVZCUWpsQk1pMVhSVk5VVlZNeSJ9
   response:
     body:
       string: '{"value":[]}'
@@ -910,7 +910,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:05 GMT
+      - Wed, 11 Nov 2020 12:58:11 GMT
       expires:
       - '-1'
       pragma:
@@ -946,7 +946,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceGroup%20eq%20%27clitest000001%27%20and%20name%20eq%20%27appgw-ip%27%20and%20resourceType%20eq%20%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2020-06-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip","name":"appgw-ip","type":"Microsoft.Network/publicIPAddresses","sku":{"name":"Standard"},"location":"westus2"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2fpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV6UkVJMlFqUkZOalZHT0RFME9EWkdPVFl6T1VSRE9EUXhOREl4TURNMUxWZEZVMVJWVXpJLSJ9"}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip","name":"appgw-ip","type":"Microsoft.Network/publicIPAddresses","sku":{"name":"Standard"},"location":"westus2"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2fpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV3TWpkQ01VTkJOekk1T0RrME9EVTRRa05HT1VVNFFUYzVSREJFUVVFd0xWZEZVMVJWVXpJLSJ9"}'
     headers:
       cache-control:
       - no-cache
@@ -955,7 +955,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:05 GMT
+      - Wed, 11 Nov 2020 12:58:12 GMT
       expires:
       - '-1'
       pragma:
@@ -988,19 +988,19 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV6UkVJMlFqUkZOalZHT0RFME9EWkdPVFl6T1VSRE9EUXhOREl4TURNMUxWZEZVMVJWVXpJLSJ9
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjY0IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVMURPalZHUlRKRk9qSkVTemhUT2pKRVEweFZVMVJGVWpveVJGSkZSMVZNUVZJNk1rUXpNem95UkVOWU9qVkdmRGczTXpnd1JqVkJNak5DTWpKQ1JqZ3RUVWxEVWs5VFQwWlVPakpGVGtWVVYwOVNTem95UmxCVlFreEpRMGxRUVVSRVVrVlRVMFZUT2pKR1MxVkNSVkpPUlZSRlV6b3lSRUV3TWpkQ01VTkJOekk1T0RrME9EVTRRa05HT1VVNFFUYzVSREJFUVVFd0xWZEZVMVJWVXpJLSJ9
   response:
     body:
-      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2fpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMzAwIU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pPUlZSWFQxSkxTVTVVUlZKR1FVTkZVem95UmxCRk9qSkVRamREUkVWRFJUWTZNa1JDUWtJME9qSkVORVU1UkRveVJFSTFRVE02TWtRNU9UVkROelZETkVSRk1VSTZNa1ZPU1VNNk1rVkRSak16TTBFMU5Eb3lSRE5DTlRZNk1rUTBNekE1T2pKRU9EaEdORG95UkVFek1UUkRPRUl4UVVFelFpMVhSVk5VVlZNeSJ9"}'
+      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2fpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjI4IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pRVWtsV1FWUkZSVTVFVUU5SlRsUlRPakpHVUVVNk1rUTJOa1kyUlRoRlFUb3lSRVpHT1VRNk1rUTBNREkwT2pKRU9VWkZNam95UkVFMlJUZ3pORVZCUWpsQk1pMVhSVk5VVlZNeSJ9"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '770'
+      - '674'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:06 GMT
+      - Wed, 11 Nov 2020 12:58:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1033,7 +1033,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMzAwIU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pPUlZSWFQxSkxTVTVVUlZKR1FVTkZVem95UmxCRk9qSkVRamREUkVWRFJUWTZNa1JDUWtJME9qSkVORVU1UkRveVJFSTFRVE02TWtRNU9UVkROelZETkVSRk1VSTZNa1ZPU1VNNk1rVkRSak16TTBFMU5Eb3lSRE5DTlRZNk1rUTBNekE1T2pKRU9EaEdORG95UkVFek1UUkRPRUl4UVVFelFpMVhSVk5VVlZNeSJ9
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2020-06-01&%24skiptoken=eyJuZXh0UGFydGl0aW9uS2V5IjoiMSE4IU9UVXlSVGstIiwibmV4dFJvd0tleSI6IjEhMjI4IU5FSkZPRGt5TUVJeU9UYzRORE5FTjBGQ01UUXdORVE0TlRRNVF6RkVNRFZmUjFKTUxVOVRRVG95UkVVeVJUb3lSRXM0VXpveVJFTk1WVk5VUlZJNk1rUXhPakpFVTFaRExVMUpRMUpQVTA5R1ZEb3lSVTVGVkZkUFVrczZNa1pRVWtsV1FWUkZSVTVFVUU5SlRsUlRPakpHVUVVNk1rUTJOa1kyUlRoRlFUb3lSRVpHT1VRNk1rUTBNREkwT2pKRU9VWkZNam95UkVFMlJUZ3pORVZCUWpsQk1pMVhSVk5VVlZNeSJ9
   response:
     body:
       string: '{"value":[]}'
@@ -1045,7 +1045,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:06 GMT
+      - Wed, 11 Nov 2020 12:58:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1110,18 +1110,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_IRbFSVPFTIDgtflTer6QfyiNahhZllFW","name":"ag_deploy_IRbFSVPFTIDgtflTer6QfyiNahhZllFW","type":"Microsoft.Resources/deployments","properties":{"templateHash":"379629907647330230","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-11-04T01:34:10.8523878Z","duration":"PT2.4304021S","correlationId":"a8776541-f9b0-4cb8-a81b-8b5ffb700c67","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"applicationGateways","locations":["westus2"]}]}],"dependencies":[]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_BmHJd461tv3Noepmb4gINHeAXFWA6I54","name":"ag_deploy_BmHJd461tv3Noepmb4gINHeAXFWA6I54","type":"Microsoft.Resources/deployments","properties":{"templateHash":"2393857025428259502","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-11-11T12:58:17.8828705Z","duration":"PT2.7569262S","correlationId":"8ef53a50-01f6-44a8-a3ba-7eb4d34fc6ee","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"applicationGateways","locations":["westus2"]}]}],"dependencies":[]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_IRbFSVPFTIDgtflTer6QfyiNahhZllFW/operationStatuses/08585971532370556317?api-version=2020-06-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_BmHJd461tv3Noepmb4gINHeAXFWA6I54/operationStatuses/08585965073903516734?api-version=2020-06-01
       cache-control:
       - no-cache
       content-length:
-      - '661'
+      - '662'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:11 GMT
+      - Wed, 11 Nov 2020 12:58:18 GMT
       expires:
       - '-1'
       pragma:
@@ -1131,7 +1131,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1193'
     status:
       code: 201
       message: Created
@@ -1152,7 +1152,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.13.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585971532370556317?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585965073903516734?api-version=2020-06-01
   response:
     body:
       string: '{"status":"Failed","error":{"code":"DeploymentFailed","message":"At
@@ -1170,7 +1170,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 04 Nov 2020 01:34:42 GMT
+      - Wed, 11 Nov 2020 12:58:49 GMT
       expires:
       - '-1'
       pragma:
