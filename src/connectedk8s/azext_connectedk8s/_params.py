@@ -9,8 +9,8 @@ from azure.cli.core.commands.parameters import get_location_type, get_enum_type
 from azure.cli.core.commands.parameters import (file_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
-distribution_types = ["auto", "generic", "openshift", "rancher_RKE", "kind", "GKE", "EKS", "AKS", "AKS-HCI", "CAPZ", "AKS-engine", "TKG"]
-infrastructure_types = ["auto", "generic", "azure", "AWS", "GCP", "Azure_Stack_HC", "Azure_Stack_Hub", "Azure_Stack_Edge", "vSphere"]
+distribution_types = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
+infrastructure_types = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
 
 
 def load_arguments(self, _):

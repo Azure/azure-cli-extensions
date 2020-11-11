@@ -6,7 +6,7 @@
 
 # pylint: disable=line-too-long
 
-infrastructure_types = ["generic", "azure", "AWS", "GCP", "Azure_Stack_HC", "Azure_Stack_Hub", "Azure_Stack_Edge", "vSphere"]
+infrastructure_types = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
 
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
