@@ -119,7 +119,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
             is_ci_extension_type = True
         else:
             name = extension_type_lower
-            release_namespace = "microsoft-azuredefender-kubernetes"
+            release_namespace = "azuredefender"
             is_ci_extension_type = False
 
         _get_container_insights_settings(cmd, resource_group_name, cluster_name, config_settings,
