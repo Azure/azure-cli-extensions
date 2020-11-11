@@ -97,14 +97,15 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
                 config_protected_settings[key] = value
 
     # ExtensionType specific conditions
-    if extension_type.lower() == 'azuremonitor-containers':
+    extension_type_lower = extension_type.lower()
+
+    if extension_type_lower in 'azuremonitor-containers' 'microsoft.azuredefender.kubernetes':
         create_identity = True
         # hardcoding  name, release_namespace and scope since ci only supports one instance and cluster scope
         # and platform doesnt have support yet extension specific constraints like this
-        logger.warning('Ignoring name, release_namespace and scope parameters since azuremonitor-containers '
-                       'only supports cluster scope and single instance of this extension')
-        name = 'azuremonitor-containers'
-        release_namespace = 'azuremonitor-containers'
+        logger.warning('Ignoring name, release_namespace and scope parameters since {0} '
+                       'only supports cluster scope and single instance of this extension'.format(extension_type_lower))
+
         scope = 'cluster'
         if not config_settings:
             config_settings = {}
@@ -112,8 +113,17 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
         if not config_protected_settings:
             config_protected_settings = {}
 
-        _get_container_insights_settings(cmd, resource_group_name,
-                                         cluster_name, config_settings, config_protected_settings)
+        if extension_type.lower() == "azuremonitor-containers":
+            name = 'azuremonitor-containers'
+            release_namespace = 'azuremonitor-containers'
+            is_ci_extension_type = True
+        else:
+            name = extension_type_lower
+            release_namespace = "microsoft-azuredefender-kubernetes"
+            is_ci_extension_type = False
+
+        _get_container_insights_settings(cmd, resource_group_name, cluster_name, config_settings,
+                                         config_protected_settings, is_ci_extension_type)
 
     # Determine namespace name
     if scope == 'cluster':
