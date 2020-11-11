@@ -13,36 +13,361 @@ interactions:
       ParameterSetName:
       - -g --cluster-name --cluster-type
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2020-10-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505e","name":"config0505e","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505e-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505e-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505d","name":"config0505d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505d-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505c","name":"config0505c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505c-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-branch=master''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0406a","name":"config0406a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0406a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0406a/flux-get-started","operatorInstanceName":"config0406a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403d","name":"config0403d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403d/flux-get-started","operatorInstanceName":"config0403d-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403c","name":"config0403c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403c/flux-get-started","operatorInstanceName":"config0403c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403b","name":"config0403b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403b/flux-get-started","operatorInstanceName":"config0403b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403a","name":"config0403a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/config0403a/flux-get-started","operatorInstanceName":"config0403a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config323a","name":"config323a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config323-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/testurl","operatorInstanceName":"config323-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config226a","name":"config226a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config226a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"''--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system''"},"repositoryUrl":"git://github.com/config226a/flux-get-started","operatorInstanceName":"config226a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0220a","name":"cfg0220a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":""},"repositoryUrl":"git://github.com/slack/cluster-config.git","operatorInstanceName":"cfg0220a","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0219a","name":"cfg0219a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0219a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest6","name":"angoetest6","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens6","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance6","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:36:34.3483433+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:36:34.3483434+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest5","name":"angoetest5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:21:34.5195851+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:21:34.5195852+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/httpsnoauth","name":"httpsnoauth","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"httpsno","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com","operatorInstanceName":"httpsnoauth","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-27T09:55:23.0192813+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-27T09:55:23.0192815+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave5","name":"abhave5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"abhave5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-22T20:37:16.862","message":"{\"OperatorMessage\":\"ts=2020-10-22T20:37:16.633820891Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-22T20:37:16.633873995Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-22T20:37:16.633924799Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-22T20:37:16.633975903Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-22T20:37:16.852907963Z caller=main.go:492 component=cluster
+        identity=/var/fluxd/keygen/identity\\nts=2020-10-22T20:37:16.85298777Z caller=main.go:493
+        component=cluster identity.pub=\\\"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk\\\"\\nts=2020-10-22T20:37:16.853032673Z caller=main.go:498
+        host=https://10.0.0.1:443 version=kubernetes-v1.15.11\\nts=2020-10-22T20:37:16.853103379Z
+        caller=main.go:510 kubectl=/usr/local/bin/kubectl\\nts=2020-10-22T20:37:16.854420583Z
+        caller=main.go:527 ping=true\\nts=2020-10-22T20:37:16.856878076Z caller=main.go:666
+        url=ssh://git@github.com/abhave/test.git user=Flux email=support@weave.works
+        signing-key= verify-signatures-mode=none sync-tag=flux state=secret readonly=true
+        registry-disable-scanning=false notes-ref=flux set-author=false git-secret=false
+        sops=false\\nts=2020-10-22T20:37:16.858137876Z caller=main.go:751 component=upstream
+        URL=ws://flux-logs-agent.azure-arc/abhave5/abhave5\\nts=2020-10-22T20:37:16.858406297Z
+        caller=main.go:803 metrics-addr=:3031\\nts=2020-10-22T20:37:16.871805053Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-22T20:37:16.873429681Z caller=main.go:795
+        addr=:3030\\nts=2020-10-22T20:37:16.936767575Z caller=upstream.go:133 component=upstream
+        connecting=true\\nts=2020-10-22T20:37:16.960868375Z caller=upstream.go:147
+        component=upstream connected=true\\nts=2020-10-22T20:37:16.9637288Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git repo has not been cloned
+        yet\\\"\\nts=2020-10-22T20:37:17.656511317Z caller=checkpoint.go:21 component=checkpoint
+        msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-22T20:42:16.9720034Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone931233241''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:47:16.979245822Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone848841838''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T20:52:16.985357337Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone893499962''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:57:16.992760764Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone460872518''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:02:16.99950127Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone473996607''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:07:17.006279719Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone504654331''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:12:17.013793071Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone761138621''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:17:17.020589638Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone660768548''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:22:17.029119174Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone846006160''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:27:17.03696857Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone223653180''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:32:17.044872854Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone685199400''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:37:17.055676803Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone204378531''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:42:17.063794432Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone934614441''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:47:17.070482647Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone652118981''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"abhave5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-22T21:48:55.9789932+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave-config","name":"abhave-config","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cluster-config","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-21T21:19:44.371","message":"{\"OperatorMessage\":\"ts=2020-10-21T20:55:46.341193251Z
+        caller=warming.go:162 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        auth={map[]} err=\\\"fetching previous result from cache: memcache: connect
+        timeout to 10.0.175.168:11211\\\"\\nts=2020-10-21T20:55:46.550889518Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/memcached/memcached
+        tag_count=2 to_update=2 of_which_refresh=0 of_which_missing=2\\nts=2020-10-21T20:55:46.975731581Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/memcached/memcached
+        successful=2 attempted=2\\nts=2020-10-21T20:55:47.109967323Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:55:49.028892017Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        successful=12 attempted=12\\nts=2020-10-21T20:55:49.147058197Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:49.493691118Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        successful=9 attempted=9\\nts=2020-10-21T20:55:49.690506374Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:50.094601708Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:55:50.236903783Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        tag_count=15 to_update=15 of_which_refresh=0 of_which_missing=15\\nts=2020-10-21T20:55:51.258140482Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        successful=15 attempted=15\\nts=2020-10-21T20:55:51.374048184Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        tag_count=50 to_update=50 of_which_refresh=0 of_which_missing=50\\nts=2020-10-21T20:55:54.680803666Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        successful=50 attempted=50\\nts=2020-10-21T20:55:54.830193198Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/metrics-server
+        tag_count=26 to_update=26 of_which_refresh=0 of_which_missing=26\\nts=2020-10-21T20:55:56.560190156Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/metrics-server
+        successful=26 attempted=26\\nts=2020-10-21T20:55:56.868738086Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        tag_count=334 to_update=334 of_which_refresh=0 of_which_missing=334\\nts=2020-10-21T20:56:16.940698958Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        successful=334 attempted=334\\nts=2020-10-21T20:56:17.062524825Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:56:17.411948365Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:56:17.762202371Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:18.686396449Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        successful=12 attempted=12\\nts=2020-10-21T20:56:18.792333469Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/fluxcd/flux
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:19.158182999Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/fluxcd/flux
+        successful=8 attempted=8\\nts=2020-10-21T20:56:19.285479096Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.095502908Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        successful=12 attempted=12\\nts=2020-10-21T20:56:20.197462415Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.923133103Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.031377304Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:21.670083462Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.782604398Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        tag_count=40 to_update=40 of_which_refresh=0 of_which_missing=40\\nts=2020-10-21T20:56:24.417487619Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        successful=40 attempted=40\\nts=2020-10-21T20:56:24.561991267Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        tag_count=16 to_update=16 of_which_refresh=0 of_which_missing=16\\nts=2020-10-21T20:56:25.682760683Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        successful=16 attempted=16\\nts=2020-10-21T20:56:25.793595687Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:26.312583944Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        successful=8 attempted=8\\nts=2020-10-21T20:56:26.430678718Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/coredns
+        tag_count=36 to_update=36 of_which_refresh=0 of_which_missing=36\\nts=2020-10-21T20:56:28.757337833Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/coredns
+        successful=36 attempted=36\\nts=2020-10-21T20:56:29.133456171Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        tag_count=5 to_update=5 of_which_refresh=0 of_which_missing=5\\nts=2020-10-21T20:56:29.476422504Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        successful=5 attempted=5\\nts=2020-10-21T20:56:29.693960488Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/hyperkube
+        tag_count=992 to_update=992 of_which_refresh=0 of_which_missing=992\\nts=2020-10-21T20:57:38.822437986Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/hyperkube
+        successful=992 attempted=992\\nts=2020-10-21T20:57:38.954775779Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/containernetworking/networkmonitor
+        tag_count=11 to_update=11 of_which_refresh=0 of_which_missing=11\\nts=2020-10-21T20:57:39.7699898Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/containernetworking/networkmonitor
+        successful=11 attempted=11\\nts=2020-10-21T20:57:41.176274539Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:57:41.876793553Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        successful=12 attempted=12\\nts=2020-10-21T21:00:45.10521886Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone963893524''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:05:45.110124615Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone310190047''...\\\\nload pubkey
+        \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\": invalid format\\\\r\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-21T21:10:45.118937271Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone034259099''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:11:16.294874195Z
+        caller=warming.go:154 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        auth={map[]} err=\\\"Get \\\\\\\"https://mcr.microsoft.com/v2/\\\\\\\": context
+        deadline exceeded\\\"\\nts=2020-10-21T21:15:45.124878198Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone665815832''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"cluster-config","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQCVSgqwn3NnvIXAhxYNDCEerXaXMecrH8WPTSY1h4vc4/hi8gxwd1MDciIQLKQwPJgTomqvUjFl78o+p/5LNVoBO3flh+kkDoMz6+QMg7mnEJUyTen7LaKZiWVdlr9ZLKZ1ZRqCHK4s7cDX9/W1CUoTQ1BpO14gU3AgmjePRXc9+ClsjSx7A84iJuaA1JMMpvNm0jOsdg7Vep7HQ5VWG5AdlhDfRwLZrolxfepDVXGFJnnQPhwg0RlMdfJ2Iikf0Ja0Zy6iN39p7B1ECuuKiJb1AH+lVVKksirDvsqknQ5DNYnJAsIydWNl3Q2BDN7BGfdMiDsEp/8jNfChG0spoXEP"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-21T21:20:44.1711601+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest4","name":"angoetest4","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens4","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:50:12.267","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:49:15.088216717Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:49:15.088275621Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:49:15.088326224Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:49:15.088374726Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:49:15.128443946Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:49:15.128546251Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:49:15.129910327Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:49:15.132517671Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:49:15.135734249Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens4/angoetest4\\nts=2020-10-16T17:49:15.144205419Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:49:15.156946924Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:49:15.158471209Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:49:15.159074242Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:49:15.169193203Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:49:15.192060069Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:49:15.868769151Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance4","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:50:20.5763578+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest3","name":"angoetest3","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens3","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:42:11.561","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:41:13.942341713Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:41:13.942397316Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:41:13.942478221Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:41:13.942535124Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:41:13.977053137Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:41:13.977223846Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:41:13.978668926Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:41:13.982280326Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:41:13.985110883Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens3/angoetest3\\nts=2020-10-16T17:41:13.985930728Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:41:13.986798177Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:41:13.987864736Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:41:13.991218221Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:41:14.012743014Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:41:14.017764092Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:41:14.963469096Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance3","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:42:20.5434983+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest2","name":"angoetest2","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens2","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:39:52.262","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:39:11.323325511Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:39:11.323367514Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:39:11.323403917Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:39:11.32344232Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:39:11.365286537Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:39:11.36546045Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:39:11.366748049Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:39:11.369529463Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:39:11.372627501Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens2/angoetest2\\nts=2020-10-07T06:39:11.380856834Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:39:11.381561888Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:39:11.389143471Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:39:11.389222077Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:39:11.401463318Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:39:11.408992397Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:39:12.373741668Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:39:12.401319788Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.433759882Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.502249848Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoeinstance2","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:40:16.0230592+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest","name":"angoetest","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:37:50.84","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:37:12.099594381Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:37:12.099650784Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:37:12.099825693Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:37:12.099933499Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:37:12.130304279Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:37:12.130425186Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:37:12.13158905Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:37:12.134892833Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:37:12.139219872Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens/angoetest\\nts=2020-10-07T06:37:12.15582549Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:37:12.156315617Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:37:12.159576298Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:37:12.159684204Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:37:12.171624664Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:37:12.184101954Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:37:12.577849228Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:37:13.210943337Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.247096836Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.319104918Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoetestinstance","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:38:15.7881764+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '14012'
+      - '41361'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:58:56 GMT
+      - Thu, 29 Oct 2020 01:05:21 GMT
       expires:
       - '-1'
       pragma:
@@ -62,10 +387,12 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"repositoryUrl": "git://github.com/anubhav929/flux-get-started",
-      "operatorNamespace": "cliTestConfig0505A-opns", "operatorInstanceName": "cliTestconfig0505A-opin",
-      "operatorType": "flux", "operatorParams": "--git-readonly ", "operatorScope":
-      "namespace", "enableHelmOperator": "True", "helmOperatorProperties": {"chartVersion":
-      "0.6.0", "chartValues": "--set git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"}}}'
+      "operatorNamespace": "cli-test-config1028a-opns", "operatorInstanceName": "cli-test-config1028a-opin",
+      "operatorType": "flux", "operatorParams": "--git-readonly ", "configurationProtectedSettings":
+      {"sshPrivateKey": "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUFxZlBtNlc3YkVLTmVvN3VCQzhTMXYydUpPS1NZWGNmanlpVEk2djNkZUhRSjJtMGFRajB0CmtwM05qMUZkRUsrMkVXTy9xNGFkWUpaS0ZZSjluWTZyREZOSXBZdmVWaVNUQjhITzI5VVdySTRLVGZMRGhiVmVCV0pjQVcKMkFpZ0ZnTU5qdTZXa0JVL1NWK1FCVHJiRVl6RFhpOTVNR1ZveTVKV3drdkdtakRaOHFSaEFxbU0rdUF4S1I4Z1lyRllPZgpRbC9zM2I5ajJKQ1VtVFlwYkxqMkJPd0JNQ1J3NlFQY0lVcVlaaUl3MUNNaXZKZ2tVQTdwUlRCZHVsYXlXNWQ2MTl4RFNsCmZ6N1JuU0tKM3RwanEwZThBTmtkU1h4SjQrMXhpNm5IM0lVY1ZBM1NzcVhWam80ak5sNU5EWkJlTDNpQ0xXSVZYUkpDemsKNGg3a2pXVkQ3UnNDNGJDOTF6MzlZMDlnK3ZIdjErZFplUmNYZWIvNkFzbTBEeHVhRGo2cVVCVm9JOWkwbzFKbndiMnA0MQpGV2prazljc054a2dnajMzU3ozTWJRTVN0bTFLaWU2bHNRamlMUXdGT3Qwd3lFTnova2RUR25idkVMUTN3aWdUdVFrelFOCnlMR2dmK3FXZnhqL1l1MWt5b0xrQVpqT3JxdEttalVILzk3Y3lncWhBQUFGa08zNi9uWHQrdjUxQUFBQUIzTnphQzF5YzIKRUFBQUdCQUtuejV1bHUyeENqWHFPN2dRdkV0YjlyaVRpa21GM0g0OG9reU9yOTNYaDBDZHB0R2tJOUxaS2R6WTlSWFJDdgp0aEZqdjZ1R25XQ1dTaFdDZloyT3F3eFRTS1dMM2xZa2t3ZkJ6dHZWRnF5T0NrM3l3NFcxWGdWaVhBRnRnSW9CWUREWTd1CmxwQVZQMGxma0FVNjJ4R013MTR2ZVRCbGFNdVNWc0pMeHBvdzJmS2tZUUtwalByZ01Ta2ZJR0t4V0RuMEpmN04yL1k5aVEKbEprMktXeTQ5Z1RzQVRBa2NPa0QzQ0ZLbUdZaU1OUWpJcnlZSkZBTzZVVXdYYnBXc2x1WGV0ZmNRMHBYOCswWjBpaWQ3YQpZNnRIdkFEWkhVbDhTZVB0Y1l1cHg5eUZIRlFOMHJLbDFZNk9JelplVFEyUVhpOTRnaTFpRlYwU1FzNU9JZTVJMWxRKzBiCkF1R3d2ZGM5L1dOUFlQcng3OWZuV1hrWEYzbS8rZ0xKdEE4Ym1nNCtxbEFWYUNQWXRLTlNaOEc5cWVOUlZvNUpQWExEY1oKSUlJOTkwczl6RzBERXJadFNvbnVwYkVJNGkwTUJUcmRNTWhEYy81SFV4cDI3eEMwTjhJb0U3a0pNMERjaXhvSC9xbG44WQovMkx0Wk1xQzVBR1l6cTZyU3BvMUIvL2UzTW9Lb1FBQUFBTUJBQUVBQUFHQkFKSnJUVTlqY0Z4ZlE1UHdZUGRRbS95MG10CjR3QUEwYnY0WlNOcjh0dy9hWWtqeWFybnJPMWtwd3BiNkpySkpKcjZRL3Vjdi9CK3RFejhMRVQ1REViMTBKQzVlRWJ5THMKRTdnbEl5Q0Y3eWp1bnJZVkpwbzFiVEZhVWtYd24wTkdlQ2JkWHNlODdhWDFISmdQemdmZ2dhcTk2aks5ZWtKcXJzQXM4VwpGWjZWNDgrR0N3WU9LU1dpclBmdWx5b3YvQURCOVZJVzdTQ3lWek9uTGRGTWRVZXJBMjI3Y3NUaEtTZnI0MzFDQjU2SE43CmFkdnRmNnR4alV0TXBoTjV5ZVBiRmxVZS9Wb2VQY1hNdXA4OXN3V2gvd3ZScklCbytUYXo2SzQxcGFzOEVObjFyemFxL3kKRHlWelJuSGtlMGhKR2ZZelJhbzlZQm5jeHFMOCtXdDQxZFFzQUdhdlIwd3ZNSit5TFpuR0x5amVXaVZkcExjT0FWSGpIOQpITGMrTDdnaGpIZ1VidDNDWG9Wd0gyWktnelI5cmk3bU93YnorejZsN1pwWjlQalJxeU1HcTloYU5vNHVEdjJqbWhGNlZVClBMU2Q3WTczWCtWTFAvWUZqbTBlUzJUbGFRQ3E2Vms0dzJqSHVWcXorcng4SllYb2tidFZXYnFYcmg3VzF5VGk4MXVRQUEKQU1Ba0JaQzF0SThvd29SNDYvL1h1SWQxQjBGRUhGUXBvSHFuVGNSVlVKS2RXb2xJRU5tYVVtdG1UZFVicVYyNGJMa1RtZQpiWHZQdlF3LzJoVk5VVmhWbDNjays1SUZBS0hYVWJ3ZklSWE8vUVlUbFM0ZVdabkFsN0JQSzJQa080SXkvOG1zQVZKRGl4CmkvVm1oaTBYb05lSmxERU9sdzNaY084aTlRZjVSbTNEWmRHUDRha0JsYmk5ekdBWUpqRGFjM0dWdTMxK2pJVG9hUHplbysKeUFDL2svM0J5Slg4enQ1cDRHVXpsNVFKcEVHMnBpQXdJeElKZS8yK3pBMXU5dmhma0FBQURCQU5NZHdhemx5MXNpd0dXbQpJWSs4VFZMN1EwQ1pFTWxTL0VraE1YM2FNQnZYaURXd2cwVk8zKytXUDhlMWhDSUxvNmdqL0N2dFdLdGEzVlozUWFScHZ5CkhCVEp4Q205NHZQOXFPelhTRGZ0WVRrSHh1SFdQaklhb010N0YyL0srejJiZTdESmhvL0ZwMVY0U2x2R1ljWHdqaWhEaDAKbHF1bUltOEJJei9taHpjZTFKR0VMUUdJeXk4RDI0dTNtY2NhSFoxYWY1V3A5Y1VCZ09POXEwa3B1WVhEdHpPSk9UTVozUQpNUm5xdXVVM1ppRHdmRGltZzdsZktwWGkxZzFxeWZUd0FBQU1FQXpoWEdhTVdBM1pUT1hqWWhPTUhkdTk0R2RNcHNXYWo0CjBsMmZ6YzdFWTlzWEdLZ01XMllvRXk5UVNSTDRPUmNMaUFKTDRLZGdZeGZzeVdma1U1d21TbGZXNjlrb0R2WTE0LzNWbWYKZ0NTUkxvL0RnTUZtOGFNK3pUVzhWYTVpclJXWFpEeHNXb0RiNzdIZ2JZaE90M29iOEFWWUh4akk3N1k3MXlBUzhXS2xRSQpYQi9qZ01vN1BCL3BTMVVYSEhCcndxQkdwM3M5aThab0E0L2hLY0pvaEtWSDZGL0Z2Rk1jWHZTNjZOcGNUWHNWQzBVUzNkCkJVY0taNTVvUUhVcnNQQUFBQUdIQnlZWFJvYVd0eVFFeEJVRlJQVUMxU00wZFVUa2xDVXdFQwotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K"},
+      "operatorScope": "namespace", "enableHelmOperator": true, "helmOperatorProperties":
+      {"chartVersion": "1.2.0", "chartValues": "--set git.ssh.secretName=gitops-privatekey-cli-test-config1028a-opin
+      --set tillerNamespace=kube-system"}}}'
     headers:
       Accept:
       - application/json
@@ -76,40 +403,39 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '447'
+      - '4014'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n -c -u --cluster-type --scope --operator-instance-name --operator-namespace
-        --operator-params --git-readonly  --enable-helm-operator --helm-operator-version
-        --helm-operator-params --set git.ssh.secretName
+        --operator-params --git-readonly  --ssh-private-key --enable-helm-operator
+        --helm-operator-version --helm-operator-params --set git.ssh.secretName
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a?api-version=2020-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A","name":"cliTestConfig0505A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0505A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0505A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a","name":"cli-test-config1028a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config1028a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
+        git.ssh.secretName=gitops-privatekey-cli-test-config1028a-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config1028a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-29T01:05:22.830957+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-29T01:05:22.8309571+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '1101'
+      - '1261'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:58:58 GMT
+      - Thu, 29 Oct 2020 01:05:22 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A
+      - file:///subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a
       pragma:
       - no-cache
       server:
@@ -137,38 +463,362 @@ interactions:
       ParameterSetName:
       - -g --cluster-name --cluster-type
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2020-10-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/clitestconfig0505a","name":"clitestconfig0505a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0505A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0505A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505e","name":"config0505e","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505e-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505e-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505d","name":"config0505d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505d-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505c","name":"config0505c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505c-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-branch=master''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0406a","name":"config0406a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0406a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0406a/flux-get-started","operatorInstanceName":"config0406a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403d","name":"config0403d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403d/flux-get-started","operatorInstanceName":"config0403d-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403c","name":"config0403c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403c/flux-get-started","operatorInstanceName":"config0403c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403b","name":"config0403b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403b/flux-get-started","operatorInstanceName":"config0403b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403a","name":"config0403a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/config0403a/flux-get-started","operatorInstanceName":"config0403a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config323a","name":"config323a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config323-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/testurl","operatorInstanceName":"config323-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config226a","name":"config226a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config226a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"''--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system''"},"repositoryUrl":"git://github.com/config226a/flux-get-started","operatorInstanceName":"config226a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0220a","name":"cfg0220a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":""},"repositoryUrl":"git://github.com/slack/cluster-config.git","operatorInstanceName":"cfg0220a","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0219a","name":"cfg0219a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0219a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a","name":"cli-test-config1028a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config1028a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
+        git.ssh.secretName=gitops-privatekey-cli-test-config1028a-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config1028a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-29T01:05:22.830957+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-29T01:05:22.8309571+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest6","name":"angoetest6","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens6","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance6","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:36:34.3483433+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:36:34.3483434+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest5","name":"angoetest5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:21:34.5195851+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:21:34.5195852+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/httpsnoauth","name":"httpsnoauth","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"httpsno","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com","operatorInstanceName":"httpsnoauth","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-27T09:55:23.0192813+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-27T09:55:23.0192815+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave5","name":"abhave5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"abhave5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-22T20:37:16.862","message":"{\"OperatorMessage\":\"ts=2020-10-22T20:37:16.633820891Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-22T20:37:16.633873995Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-22T20:37:16.633924799Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-22T20:37:16.633975903Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-22T20:37:16.852907963Z caller=main.go:492 component=cluster
+        identity=/var/fluxd/keygen/identity\\nts=2020-10-22T20:37:16.85298777Z caller=main.go:493
+        component=cluster identity.pub=\\\"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk\\\"\\nts=2020-10-22T20:37:16.853032673Z caller=main.go:498
+        host=https://10.0.0.1:443 version=kubernetes-v1.15.11\\nts=2020-10-22T20:37:16.853103379Z
+        caller=main.go:510 kubectl=/usr/local/bin/kubectl\\nts=2020-10-22T20:37:16.854420583Z
+        caller=main.go:527 ping=true\\nts=2020-10-22T20:37:16.856878076Z caller=main.go:666
+        url=ssh://git@github.com/abhave/test.git user=Flux email=support@weave.works
+        signing-key= verify-signatures-mode=none sync-tag=flux state=secret readonly=true
+        registry-disable-scanning=false notes-ref=flux set-author=false git-secret=false
+        sops=false\\nts=2020-10-22T20:37:16.858137876Z caller=main.go:751 component=upstream
+        URL=ws://flux-logs-agent.azure-arc/abhave5/abhave5\\nts=2020-10-22T20:37:16.858406297Z
+        caller=main.go:803 metrics-addr=:3031\\nts=2020-10-22T20:37:16.871805053Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-22T20:37:16.873429681Z caller=main.go:795
+        addr=:3030\\nts=2020-10-22T20:37:16.936767575Z caller=upstream.go:133 component=upstream
+        connecting=true\\nts=2020-10-22T20:37:16.960868375Z caller=upstream.go:147
+        component=upstream connected=true\\nts=2020-10-22T20:37:16.9637288Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git repo has not been cloned
+        yet\\\"\\nts=2020-10-22T20:37:17.656511317Z caller=checkpoint.go:21 component=checkpoint
+        msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-22T20:42:16.9720034Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone931233241''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:47:16.979245822Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone848841838''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T20:52:16.985357337Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone893499962''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:57:16.992760764Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone460872518''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:02:16.99950127Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone473996607''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:07:17.006279719Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone504654331''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:12:17.013793071Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone761138621''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:17:17.020589638Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone660768548''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:22:17.029119174Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone846006160''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:27:17.03696857Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone223653180''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:32:17.044872854Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone685199400''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:37:17.055676803Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone204378531''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:42:17.063794432Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone934614441''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:47:17.070482647Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone652118981''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"abhave5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-22T21:48:55.9789932+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave-config","name":"abhave-config","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cluster-config","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-21T21:19:44.371","message":"{\"OperatorMessage\":\"ts=2020-10-21T20:55:46.341193251Z
+        caller=warming.go:162 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        auth={map[]} err=\\\"fetching previous result from cache: memcache: connect
+        timeout to 10.0.175.168:11211\\\"\\nts=2020-10-21T20:55:46.550889518Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/memcached/memcached
+        tag_count=2 to_update=2 of_which_refresh=0 of_which_missing=2\\nts=2020-10-21T20:55:46.975731581Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/memcached/memcached
+        successful=2 attempted=2\\nts=2020-10-21T20:55:47.109967323Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:55:49.028892017Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        successful=12 attempted=12\\nts=2020-10-21T20:55:49.147058197Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:49.493691118Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        successful=9 attempted=9\\nts=2020-10-21T20:55:49.690506374Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:50.094601708Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:55:50.236903783Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        tag_count=15 to_update=15 of_which_refresh=0 of_which_missing=15\\nts=2020-10-21T20:55:51.258140482Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        successful=15 attempted=15\\nts=2020-10-21T20:55:51.374048184Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        tag_count=50 to_update=50 of_which_refresh=0 of_which_missing=50\\nts=2020-10-21T20:55:54.680803666Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        successful=50 attempted=50\\nts=2020-10-21T20:55:54.830193198Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/metrics-server
+        tag_count=26 to_update=26 of_which_refresh=0 of_which_missing=26\\nts=2020-10-21T20:55:56.560190156Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/metrics-server
+        successful=26 attempted=26\\nts=2020-10-21T20:55:56.868738086Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        tag_count=334 to_update=334 of_which_refresh=0 of_which_missing=334\\nts=2020-10-21T20:56:16.940698958Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        successful=334 attempted=334\\nts=2020-10-21T20:56:17.062524825Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:56:17.411948365Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:56:17.762202371Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:18.686396449Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        successful=12 attempted=12\\nts=2020-10-21T20:56:18.792333469Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/fluxcd/flux
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:19.158182999Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/fluxcd/flux
+        successful=8 attempted=8\\nts=2020-10-21T20:56:19.285479096Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.095502908Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        successful=12 attempted=12\\nts=2020-10-21T20:56:20.197462415Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.923133103Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.031377304Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:21.670083462Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.782604398Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        tag_count=40 to_update=40 of_which_refresh=0 of_which_missing=40\\nts=2020-10-21T20:56:24.417487619Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        successful=40 attempted=40\\nts=2020-10-21T20:56:24.561991267Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        tag_count=16 to_update=16 of_which_refresh=0 of_which_missing=16\\nts=2020-10-21T20:56:25.682760683Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        successful=16 attempted=16\\nts=2020-10-21T20:56:25.793595687Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:26.312583944Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        successful=8 attempted=8\\nts=2020-10-21T20:56:26.430678718Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/coredns
+        tag_count=36 to_update=36 of_which_refresh=0 of_which_missing=36\\nts=2020-10-21T20:56:28.757337833Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/coredns
+        successful=36 attempted=36\\nts=2020-10-21T20:56:29.133456171Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        tag_count=5 to_update=5 of_which_refresh=0 of_which_missing=5\\nts=2020-10-21T20:56:29.476422504Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        successful=5 attempted=5\\nts=2020-10-21T20:56:29.693960488Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/hyperkube
+        tag_count=992 to_update=992 of_which_refresh=0 of_which_missing=992\\nts=2020-10-21T20:57:38.822437986Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/hyperkube
+        successful=992 attempted=992\\nts=2020-10-21T20:57:38.954775779Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/containernetworking/networkmonitor
+        tag_count=11 to_update=11 of_which_refresh=0 of_which_missing=11\\nts=2020-10-21T20:57:39.7699898Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/containernetworking/networkmonitor
+        successful=11 attempted=11\\nts=2020-10-21T20:57:41.176274539Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:57:41.876793553Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        successful=12 attempted=12\\nts=2020-10-21T21:00:45.10521886Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone963893524''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:05:45.110124615Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone310190047''...\\\\nload pubkey
+        \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\": invalid format\\\\r\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-21T21:10:45.118937271Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone034259099''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:11:16.294874195Z
+        caller=warming.go:154 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        auth={map[]} err=\\\"Get \\\\\\\"https://mcr.microsoft.com/v2/\\\\\\\": context
+        deadline exceeded\\\"\\nts=2020-10-21T21:15:45.124878198Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone665815832''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"cluster-config","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQCVSgqwn3NnvIXAhxYNDCEerXaXMecrH8WPTSY1h4vc4/hi8gxwd1MDciIQLKQwPJgTomqvUjFl78o+p/5LNVoBO3flh+kkDoMz6+QMg7mnEJUyTen7LaKZiWVdlr9ZLKZ1ZRqCHK4s7cDX9/W1CUoTQ1BpO14gU3AgmjePRXc9+ClsjSx7A84iJuaA1JMMpvNm0jOsdg7Vep7HQ5VWG5AdlhDfRwLZrolxfepDVXGFJnnQPhwg0RlMdfJ2Iikf0Ja0Zy6iN39p7B1ECuuKiJb1AH+lVVKksirDvsqknQ5DNYnJAsIydWNl3Q2BDN7BGfdMiDsEp/8jNfChG0spoXEP"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-21T21:20:44.1711601+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest4","name":"angoetest4","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens4","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:50:12.267","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:49:15.088216717Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:49:15.088275621Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:49:15.088326224Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:49:15.088374726Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:49:15.128443946Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:49:15.128546251Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:49:15.129910327Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:49:15.132517671Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:49:15.135734249Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens4/angoetest4\\nts=2020-10-16T17:49:15.144205419Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:49:15.156946924Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:49:15.158471209Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:49:15.159074242Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:49:15.169193203Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:49:15.192060069Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:49:15.868769151Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance4","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:50:20.5763578+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest3","name":"angoetest3","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens3","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:42:11.561","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:41:13.942341713Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:41:13.942397316Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:41:13.942478221Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:41:13.942535124Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:41:13.977053137Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:41:13.977223846Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:41:13.978668926Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:41:13.982280326Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:41:13.985110883Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens3/angoetest3\\nts=2020-10-16T17:41:13.985930728Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:41:13.986798177Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:41:13.987864736Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:41:13.991218221Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:41:14.012743014Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:41:14.017764092Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:41:14.963469096Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance3","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:42:20.5434983+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest2","name":"angoetest2","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens2","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:39:52.262","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:39:11.323325511Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:39:11.323367514Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:39:11.323403917Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:39:11.32344232Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:39:11.365286537Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:39:11.36546045Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:39:11.366748049Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:39:11.369529463Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:39:11.372627501Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens2/angoetest2\\nts=2020-10-07T06:39:11.380856834Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:39:11.381561888Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:39:11.389143471Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:39:11.389222077Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:39:11.401463318Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:39:11.408992397Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:39:12.373741668Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:39:12.401319788Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.433759882Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.502249848Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoeinstance2","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:40:16.0230592+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest","name":"angoetest","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:37:50.84","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:37:12.099594381Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:37:12.099650784Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:37:12.099825693Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:37:12.099933499Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:37:12.130304279Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:37:12.130425186Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:37:12.13158905Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:37:12.134892833Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:37:12.139219872Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens/angoetest\\nts=2020-10-07T06:37:12.15582549Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:37:12.156315617Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:37:12.159576298Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:37:12.159684204Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:37:12.171624664Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:37:12.184101954Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:37:12.577849228Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:37:13.210943337Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.247096836Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.319104918Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoetestinstance","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:38:15.7881764+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '15114'
+      - '42623'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:58:59 GMT
+      - Thu, 29 Oct 2020 01:05:23 GMT
       expires:
       - '-1'
       pragma:
@@ -200,28 +850,27 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a?api-version=2020-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A","name":"cliTestConfig0505A","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cliTestConfig0505A-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cliTestconfig0505A-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a","name":"cli-test-config1028a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config1028a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
+        git.ssh.secretName=gitops-privatekey-cli-test-config1028a-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config1028a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-29T01:05:22.830957+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-29T01:05:22.8309571+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '1101'
+      - '1261'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:59:00 GMT
+      - Thu, 29 Oct 2020 01:05:24 GMT
       expires:
       - '-1'
       pragma:
@@ -255,18 +904,18 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type -y
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cliTestConfig0505A?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config1028a?api-version=2020-10-01-preview
   response:
     body:
       string: '{"version":"1.1","content":null,"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
@@ -274,7 +923,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:59:02 GMT
+      - Thu, 29 Oct 2020 01:05:24 GMT
       expires:
       - '-1'
       pragma:
@@ -308,36 +957,361 @@ interactions:
       ParameterSetName:
       - -g --cluster-name --cluster-type
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.13 msrest_azure/0.6.3
-        azure-mgmt-kubernetesconfiguration/0.1.0 Azure-SDK-For-Python AZURECLI/2.3.1
+      - python/3.8.0 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.11.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2019-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations?api-version=2020-10-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505e","name":"config0505e","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505e-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505e-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505d","name":"config0505d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505d-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0505c","name":"config0505c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0505c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/anagg929/ContosoSecurityPolicies","operatorInstanceName":"config0505c-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-branch=master''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0406a","name":"config0406a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0406a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0406a/flux-get-started","operatorInstanceName":"config0406a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403d","name":"config0403d","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403d-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403d/flux-get-started","operatorInstanceName":"config0403d-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403c","name":"config0403c","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403c-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403c/flux-get-started","operatorInstanceName":"config0403c-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403b","name":"config0403b","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403b-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.6.0","chartValues":"--set
-        helm.versions=v3"},"repositoryUrl":"git://github.com/config0403b/flux-get-started","operatorInstanceName":"config0403b-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config0403a","name":"config0403a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config0403a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/config0403a/flux-get-started","operatorInstanceName":"config0403a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config323a","name":"config323a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config323-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/testurl","operatorInstanceName":"config323-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/config226a","name":"config226a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"config226a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"''--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system''"},"repositoryUrl":"git://github.com/config226a/flux-get-started","operatorInstanceName":"config226a-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0220a","name":"cfg0220a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":""},"repositoryUrl":"git://github.com/slack/cluster-config.git","operatorInstanceName":"cfg0220a","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0219a","name":"cfg0219a","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0219a-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207i","name":"cfg0207i","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"default","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cfg0219a-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly
-        ","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/haikudevtesting/providers/Microsoft.Kubernetes/connectedClusters/matrived-tpcomi/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cfg0207g","name":"cfg0207g","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cfg0207g-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"0.2.0","chartValues":"--set
-        git.ssh.secretName=flux-git-deploy --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/cfg0207g/flux-get-started","operatorInstanceName":"cfg0207g-opin","operatorType":"Flux","operatorScope":"cluster","operatorParams":"''--git-readonly''","repositoryPublicKey":"","configKind":0,"createdDate":"0001-01-01T00:00:00+00:00","lastModifiedDate":"0001-01-01T00:00:00+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest6","name":"angoetest6","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens6","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance6","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:36:34.3483433+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:36:34.3483434+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest5","name":"angoetest5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/test","operatorInstanceName":"angoeinstance5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-28T18:21:34.5195851+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-28T18:21:34.5195852+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/httpsnoauth","name":"httpsnoauth","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"httpsno","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com","operatorInstanceName":"httpsnoauth","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2020-10-27T09:55:23.0192813+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-27T09:55:23.0192815+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave5","name":"abhave5","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"abhave5","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-22T20:37:16.862","message":"{\"OperatorMessage\":\"ts=2020-10-22T20:37:16.633820891Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-22T20:37:16.633873995Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-22T20:37:16.633924799Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-22T20:37:16.633975903Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-22T20:37:16.852907963Z caller=main.go:492 component=cluster
+        identity=/var/fluxd/keygen/identity\\nts=2020-10-22T20:37:16.85298777Z caller=main.go:493
+        component=cluster identity.pub=\\\"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk\\\"\\nts=2020-10-22T20:37:16.853032673Z caller=main.go:498
+        host=https://10.0.0.1:443 version=kubernetes-v1.15.11\\nts=2020-10-22T20:37:16.853103379Z
+        caller=main.go:510 kubectl=/usr/local/bin/kubectl\\nts=2020-10-22T20:37:16.854420583Z
+        caller=main.go:527 ping=true\\nts=2020-10-22T20:37:16.856878076Z caller=main.go:666
+        url=ssh://git@github.com/abhave/test.git user=Flux email=support@weave.works
+        signing-key= verify-signatures-mode=none sync-tag=flux state=secret readonly=true
+        registry-disable-scanning=false notes-ref=flux set-author=false git-secret=false
+        sops=false\\nts=2020-10-22T20:37:16.858137876Z caller=main.go:751 component=upstream
+        URL=ws://flux-logs-agent.azure-arc/abhave5/abhave5\\nts=2020-10-22T20:37:16.858406297Z
+        caller=main.go:803 metrics-addr=:3031\\nts=2020-10-22T20:37:16.871805053Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-22T20:37:16.873429681Z caller=main.go:795
+        addr=:3030\\nts=2020-10-22T20:37:16.936767575Z caller=upstream.go:133 component=upstream
+        connecting=true\\nts=2020-10-22T20:37:16.960868375Z caller=upstream.go:147
+        component=upstream connected=true\\nts=2020-10-22T20:37:16.9637288Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git repo has not been cloned
+        yet\\\"\\nts=2020-10-22T20:37:17.656511317Z caller=checkpoint.go:21 component=checkpoint
+        msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-22T20:42:16.9720034Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone931233241''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:47:16.979245822Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone848841838''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T20:52:16.985357337Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone893499962''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T20:57:16.992760764Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone460872518''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:02:16.99950127Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone473996607''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:07:17.006279719Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone504654331''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:12:17.013793071Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone761138621''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:17:17.020589638Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone660768548''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:22:17.029119174Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone846006160''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:27:17.03696857Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone223653180''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:32:17.044872854Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone685199400''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:37:17.055676803Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone204378531''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-22T21:42:17.063794432Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone934614441''...\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-22T21:47:17.070482647Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone652118981''...\\\\ngit@github.com: Permission
+        denied (publickey).\\\\r\\\\nfatal: Could not read from remote repository.\\\\n\\\\nPlease
+        make sure you have the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"abhave5","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":null,"repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQC0DY/qH4A0enxNsiBXpkMxZpSpGIJ9AcQHdI7ac14em4NSWn+E43NT2Tbn1uuZV/vBDC+7RVbJvTBrlIc7JJQsvISFiFRdZ0NbjWYTOnq9OJ2SieVI+/q3G1yyh77fKyirBNZEYdbQaYi8t+LGxAsfRY7m60bCoz/J5esn0UVyFtRg1huy4vNEXyjqu0t4qZLXHmIAfDHCj5WkhhUlLfAyKf5VWY6t9pvcwTFZZUWLrcbsTrzzjkolOiHRMHqQq7m/2ITx4GFsMqHSOhtI0fgcLKR7j8Qcwtytr/CvC47ErZVfSSANh8US7JqncfdGRZH7TTG2CtUsZ/egHKv9RVTqARr9UMdHPBP7SxXb6/cmwSfcpOXP0bufdoF4vZkQFjlIx6PYcBAmr3Uqm/q8nRo543UfxeQgit6I6k/veHAUV3TMQfFsZsIdITaropRjJEJIzkhdNm7okWMhZB1orVoo/Dwak9JmXEwAR2NuJDJLyAODPUHkLJ8u6g2xdut2Eyk=
+        root@abhave5-74964fc55f-j2gbk"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-22T21:48:55.9789932+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/abhave-config","name":"abhave-config","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cluster-config","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-21T21:19:44.371","message":"{\"OperatorMessage\":\"ts=2020-10-21T20:55:46.341193251Z
+        caller=warming.go:162 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        auth={map[]} err=\\\"fetching previous result from cache: memcache: connect
+        timeout to 10.0.175.168:11211\\\"\\nts=2020-10-21T20:55:46.550889518Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/memcached/memcached
+        tag_count=2 to_update=2 of_which_refresh=0 of_which_missing=2\\nts=2020-10-21T20:55:46.975731581Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/memcached/memcached
+        successful=2 attempted=2\\nts=2020-10-21T20:55:47.109967323Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:55:49.028892017Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/fluent-bit
+        successful=12 attempted=12\\nts=2020-10-21T20:55:49.147058197Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:49.493691118Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/configoperator
+        successful=9 attempted=9\\nts=2020-10-21T20:55:49.690506374Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:55:50.094601708Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/metrics-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:55:50.236903783Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        tag_count=15 to_update=15 of_which_refresh=0 of_which_missing=15\\nts=2020-10-21T20:55:51.258140482Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/blobfuse-flexvolume
+        successful=15 attempted=15\\nts=2020-10-21T20:55:51.374048184Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        tag_count=50 to_update=50 of_which_refresh=0 of_which_missing=50\\nts=2020-10-21T20:55:54.680803666Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/autoscaler/cluster-proportional-autoscaler
+        successful=50 attempted=50\\nts=2020-10-21T20:55:54.830193198Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/metrics-server
+        tag_count=26 to_update=26 of_which_refresh=0 of_which_missing=26\\nts=2020-10-21T20:55:56.560190156Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/metrics-server
+        successful=26 attempted=26\\nts=2020-10-21T20:55:56.868738086Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        tag_count=334 to_update=334 of_which_refresh=0 of_which_missing=334\\nts=2020-10-21T20:56:16.940698958Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azuremonitor/containerinsights/cidev
+        successful=334 attempted=334\\nts=2020-10-21T20:56:17.062524825Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        tag_count=9 to_update=9 of_which_refresh=0 of_which_missing=9\\nts=2020-10-21T20:56:17.411948365Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/flux-logs-agent
+        successful=9 attempted=9\\nts=2020-10-21T20:56:17.762202371Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:18.686396449Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/resource-sync
+        successful=12 attempted=12\\nts=2020-10-21T20:56:18.792333469Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/fluxcd/flux
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:19.158182999Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/fluxcd/flux
+        successful=8 attempted=8\\nts=2020-10-21T20:56:19.285479096Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.095502908Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/config-agent
+        successful=12 attempted=12\\nts=2020-10-21T20:56:20.197462415Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:20.923133103Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-metadata-operator
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.031377304Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:56:21.670083462Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/cluster-identity
+        successful=12 attempted=12\\nts=2020-10-21T20:56:21.782604398Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        tag_count=40 to_update=40 of_which_refresh=0 of_which_missing=40\\nts=2020-10-21T20:56:24.417487619Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/ip-masq-agent
+        successful=40 attempted=40\\nts=2020-10-21T20:56:24.561991267Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        tag_count=16 to_update=16 of_which_refresh=0 of_which_missing=16\\nts=2020-10-21T20:56:25.682760683Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/k8s/flexvolume/keyvault-flexvolume
+        successful=16 attempted=16\\nts=2020-10-21T20:56:25.793595687Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        tag_count=8 to_update=8 of_which_refresh=0 of_which_missing=8\\nts=2020-10-21T20:56:26.312583944Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/kube-rbac-proxy
+        successful=8 attempted=8\\nts=2020-10-21T20:56:26.430678718Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/coredns
+        tag_count=36 to_update=36 of_which_refresh=0 of_which_missing=36\\nts=2020-10-21T20:56:28.757337833Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/coredns
+        successful=36 attempted=36\\nts=2020-10-21T20:56:29.133456171Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        tag_count=5 to_update=5 of_which_refresh=0 of_which_missing=5\\nts=2020-10-21T20:56:29.476422504Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        successful=5 attempted=5\\nts=2020-10-21T20:56:29.693960488Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/oss/kubernetes/hyperkube
+        tag_count=992 to_update=992 of_which_refresh=0 of_which_missing=992\\nts=2020-10-21T20:57:38.822437986Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/oss/kubernetes/hyperkube
+        successful=992 attempted=992\\nts=2020-10-21T20:57:38.954775779Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/containernetworking/networkmonitor
+        tag_count=11 to_update=11 of_which_refresh=0 of_which_missing=11\\nts=2020-10-21T20:57:39.7699898Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/containernetworking/networkmonitor
+        successful=11 attempted=11\\nts=2020-10-21T20:57:41.176274539Z caller=warming.go:198
+        component=warmer info=\\\"refreshing image\\\" image=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        tag_count=12 to_update=12 of_which_refresh=0 of_which_missing=12\\nts=2020-10-21T20:57:41.876793553Z
+        caller=warming.go:206 component=warmer updated=mcr.microsoft.com/azurearck8s/canary/stable/extensionoperator
+        successful=12 attempted=12\\nts=2020-10-21T21:00:45.10521886Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone963893524''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:05:45.110124615Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git clone
+        --mirror: fatal: Could not read from remote repository., full output:\\\\n
+        Cloning into bare repository ''/tmp/flux-gitclone310190047''...\\\\nload pubkey
+        \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\": invalid format\\\\r\\\\ngit@github.com:
+        Permission denied (publickey).\\\\r\\\\nfatal: Could not read from remote
+        repository.\\\\n\\\\nPlease make sure you have the correct access rights\\\\nand
+        the repository exists.\\\\n\\\"\\nts=2020-10-21T21:10:45.118937271Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone034259099''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\nts=2020-10-21T21:11:16.294874195Z
+        caller=warming.go:154 component=warmer canonical_name=mcr.microsoft.com/azurearck8s/canary/stable/clusterconnect-agent
+        auth={map[]} err=\\\"Get \\\\\\\"https://mcr.microsoft.com/v2/\\\\\\\": context
+        deadline exceeded\\\"\\nts=2020-10-21T21:15:45.124878198Z caller=loop.go:108
+        component=sync-loop err=\\\"git repo not ready: git clone --mirror: fatal:
+        Could not read from remote repository., full output:\\\\n Cloning into bare
+        repository ''/tmp/flux-gitclone665815832''...\\\\nload pubkey \\\\\\\"/etc/fluxd/ssh/identity\\\\\\\":
+        invalid format\\\\r\\\\ngit@github.com: Permission denied (publickey).\\\\r\\\\nfatal:
+        Could not read from remote repository.\\\\n\\\\nPlease make sure you have
+        the correct access rights\\\\nand the repository exists.\\\\n\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"git@github.com:abhave/test.git","operatorInstanceName":"cluster-config","operatorType":"Flux","operatorScope":"cluster","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQCVSgqwn3NnvIXAhxYNDCEerXaXMecrH8WPTSY1h4vc4/hi8gxwd1MDciIQLKQwPJgTomqvUjFl78o+p/5LNVoBO3flh+kkDoMz6+QMg7mnEJUyTen7LaKZiWVdlr9ZLKZ1ZRqCHK4s7cDX9/W1CUoTQ1BpO14gU3AgmjePRXc9+ClsjSx7A84iJuaA1JMMpvNm0jOsdg7Vep7HQ5VWG5AdlhDfRwLZrolxfepDVXGFJnnQPhwg0RlMdfJ2Iikf0Ja0Zy6iN39p7B1ECuuKiJb1AH+lVVKksirDvsqknQ5DNYnJAsIydWNl3Q2BDN7BGfdMiDsEp/8jNfChG0spoXEP"},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-21T21:20:44.1711601+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest4","name":"angoetest4","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens4","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:50:12.267","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:49:15.088216717Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:49:15.088275621Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:49:15.088326224Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:49:15.088374726Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:49:15.128443946Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:49:15.128546251Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:49:15.129910327Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:49:15.132517671Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:49:15.135734249Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens4/angoetest4\\nts=2020-10-16T17:49:15.144205419Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:49:15.156946924Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:49:15.158471209Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:49:15.159074242Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:49:15.169193203Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:49:15.192060069Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:49:15.868769151Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance4","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:50:20.5763578+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest3","name":"angoetest3","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens3","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-16T17:42:11.561","message":"{\"OperatorMessage\":\"ts=2020-10-16T17:41:13.942341713Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-16T17:41:13.942397316Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-16T17:41:13.942478221Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-16T17:41:13.942535124Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-16T17:41:13.977053137Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-16T17:41:13.977223846Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-16T17:41:13.978668926Z caller=main.go:527
+        ping=true\\nts=2020-10-16T17:41:13.982280326Z caller=main.go:666 url=https://@github.com/goelankit/learn
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-16T17:41:13.985110883Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens3/angoetest3\\nts=2020-10-16T17:41:13.985930728Z
+        caller=upstream.go:133 component=upstream connecting=true\\nts=2020-10-16T17:41:13.986798177Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-16T17:41:13.987864736Z caller=main.go:795
+        addr=:3030\\nts=2020-10-16T17:41:13.991218221Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-16T17:41:14.012743014Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-16T17:41:14.017764092Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-16T17:41:14.963469096Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/goelankit/learn","operatorInstanceName":"angoeinstance3","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-16T17:42:20.5434983+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest2","name":"angoetest2","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens2","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:39:52.262","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:39:11.323325511Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:39:11.323367514Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:39:11.323403917Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:39:11.32344232Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:39:11.365286537Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:39:11.36546045Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:39:11.366748049Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:39:11.369529463Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:39:11.372627501Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens2/angoetest2\\nts=2020-10-07T06:39:11.380856834Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:39:11.381561888Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:39:11.389143471Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:39:11.389222077Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:39:11.401463318Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:39:11.408992397Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:39:12.373741668Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:39:12.401319788Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.433759882Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:39:12.502249848Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoeinstance2","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:40:16.0230592+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/angoetest","name":"angoetest","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"angoens","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Installed","lastConfigApplied":"2020-10-07T06:37:50.84","message":"{\"OperatorMessage\":\"ts=2020-10-07T06:37:12.099594381Z
+        caller=main.go:259 version=1.20.0\\nts=2020-10-07T06:37:12.099650784Z caller=main.go:284
+        warning=\\\"--git-readonly prevents use of --sync-state=git. Forcing to --sync-state=secret\\\"\\nts=2020-10-07T06:37:12.099825693Z
+        caller=main.go:303 warning=\\\"configuring any of {git-user} has no effect
+        when --git-readonly is set\\\"\\nts=2020-10-07T06:37:12.099933499Z caller=main.go:412
+        msg=\\\"using kube config: \\\\\\\"/root/.kube/config\\\\\\\" to connect to
+        the cluster\\\"\\nts=2020-10-07T06:37:12.130304279Z caller=main.go:498 host=https://10.0.0.1:443
+        version=kubernetes-v1.15.11\\nts=2020-10-07T06:37:12.130425186Z caller=main.go:510
+        kubectl=/usr/local/bin/kubectl\\nts=2020-10-07T06:37:12.13158905Z caller=main.go:527
+        ping=true\\nts=2020-10-07T06:37:12.134892833Z caller=main.go:666 url=https://@github.com/openconfig/public.git
+        user=Flux email=support@weave.works signing-key= verify-signatures-mode=none
+        sync-tag=flux state=secret readonly=true registry-disable-scanning=false notes-ref=flux
+        set-author=false git-secret=false sops=false\\nts=2020-10-07T06:37:12.139219872Z
+        caller=main.go:751 component=upstream URL=ws://flux-logs-agent.azure-arc/angoens/angoetest\\nts=2020-10-07T06:37:12.15582549Z
+        caller=loop.go:62 component=sync-loop info=\\\"Repo is read-only; no image
+        updates will be attempted\\\"\\nts=2020-10-07T06:37:12.156315617Z caller=upstream.go:133
+        component=upstream connecting=true\\nts=2020-10-07T06:37:12.159576298Z caller=main.go:795
+        addr=:3030\\nts=2020-10-07T06:37:12.159684204Z caller=main.go:803 metrics-addr=:3031\\nts=2020-10-07T06:37:12.171624664Z
+        caller=upstream.go:147 component=upstream connected=true\\nts=2020-10-07T06:37:12.184101954Z
+        caller=loop.go:108 component=sync-loop err=\\\"git repo not ready: git repo
+        has not been cloned yet\\\"\\nts=2020-10-07T06:37:12.577849228Z caller=checkpoint.go:21
+        component=checkpoint msg=\\\"update available\\\" latest=1.20.1 URL=https://github.com/fluxcd/flux/releases/tag/1.20.1\\nts=2020-10-07T06:37:13.210943337Z
+        caller=loop.go:134 component=sync-loop event=refreshed url=https://@github.com/openconfig/public.git
+        branch=master HEAD=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.247096836Z
+        caller=sync.go:60 component=daemon info=\\\"trying to sync git changes to
+        the cluster\\\" old= new=c8ea7bbd5e89d14808a8b072d0eb567836d708e1\\nts=2020-10-07T06:37:13.319104918Z
+        caller=loop.go:108 component=sync-loop err=\\\"loading resources from repo:
+        parsing YAML doc from \\\\\\\"release/models/acl/.spec.yml\\\\\\\": yaml:
+        unmarshal errors:\\\\n  line 1: cannot unmarshal !!seq into resource.baseObject\\\"\\n\",\"ClusterState\":\"{\\\"flux-operator\\\":\\\"Successfully
+        installed the operator\\\",\\\"helm-operator\\\":\\\"Downloading client succeeded
+        \\\"}\",\"LastGitCommitInformation\":\"\",\"MostRecentEventsFromFlux\":[],\"ErrorsInTheLastSynced\":\"\"}","messageLevel":3},"enableHelmOperator":false,"repositoryUrl":"https://github.com/openconfig/public.git","operatorInstanceName":"angoetestinstance","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"0001-01-01T00:00:00+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2020-10-07T06:38:15.7881764+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
       cache-control:
       - no-cache
       content-length:
-      - '14012'
+      - '41361'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 May 2020 03:59:02 GMT
+      - Thu, 29 Oct 2020 01:05:25 GMT
       expires:
       - '-1'
       pragma:

@@ -15,7 +15,7 @@ from azure.cli.core.profiles import get_sdk, supported_api_version, register_res
 from azure.cli.testsdk import api_version_constraint
 from ..._validators import (get_datetime_type, ipv4_range_type, validate_encryption_source,
                             validate_encryption_services)
-from ...profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 class MockCLI(CLI):
@@ -94,11 +94,10 @@ class TestStorageValidators(unittest.TestCase):
             actual = ipv4_range_type(input)
 
 
-@api_version_constraint(resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
 class TestEncryptionValidators(unittest.TestCase):
     def setUp(self):
         self.cli = MockCLI()
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-07-01')
 
     def test_validate_encryption_services(self):
         ns = Namespace(encryption_services=['blob'], _cmd=MockCmd(self.cli))

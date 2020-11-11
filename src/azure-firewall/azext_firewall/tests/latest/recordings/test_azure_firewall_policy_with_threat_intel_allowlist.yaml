@@ -17,30 +17,32 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"18a6c89a-592e-45b5-99a5-0513621b9a11\",\r\n  \"location\"\
+        : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/6e7586f4-9083-449c-877b-b9dff183e208?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/0d18952d-e9bd-490c-934b-fb47f1cbed4c?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '543'
+      - '591'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:22 GMT
+      - Fri, 06 Nov 2020 09:53:33 GMT
       expires:
       - '-1'
       pragma:
@@ -52,7 +54,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1185'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -70,10 +72,10 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/6e7586f4-9083-449c-877b-b9dff183e208?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/0d18952d-e9bd-490c-934b-fb47f1cbed4c?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -85,7 +87,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:33 GMT
+      - Fri, 06 Nov 2020 09:53:44 GMT
       expires:
       - '-1'
       pragma:
@@ -117,26 +119,28 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"18a6c89a-592e-45b5-99a5-0513621b9a11\",\r\n  \"location\"\
+        : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '544'
+      - '592'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:34 GMT
+      - Fri, 06 Nov 2020 09:53:45 GMT
       expires:
       - '-1'
       pragma:
@@ -168,28 +172,30 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Alert\",\r\n
-        \   \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e18c18bb-b9fa-4735-9089-babc8f030d0b\",\r\n  \"location\": \"eastus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
+        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
+        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"18a6c89a-592e-45b5-99a5-0513621b9a11\",\r\n  \"location\"\
+        : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '544'
+      - '592'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:35 GMT
+      - Fri, 06 Nov 2020 09:53:47 GMT
       expires:
       - '-1'
       pragma:
@@ -210,7 +216,8 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
       "location": "eastus2", "properties": {"threatIntelMode": "Deny", "threatIntelWhitelist":
-      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}}}'
+      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}, "sku":
+      {"tier": "Standard"}}}'
     headers:
       Accept:
       - application/json
@@ -221,39 +228,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '371'
+      - '400'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
-        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
-        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"00bc69c8-2456-4b8c-9cb0-50473ce0a545\",\r\n  \"location\": \"eastus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Deny\",\r\n    \"threatIntelWhitelist\"\
+        : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
+        \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
+        \n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"1254236a-74a5-4d4d-990f-d7632a659fa3\",\r\n  \"location\"\
+        : \"eastus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/402a6702-0c43-4b07-ab26-f06c28316cf9?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c8cd1b43-3caf-4aba-87e6-e74399602982?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '709'
+      - '757'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:37 GMT
+      - Fri, 06 Nov 2020 09:53:47 GMT
       expires:
       - '-1'
       pragma:
@@ -287,10 +296,10 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/402a6702-0c43-4b07-ab26-f06c28316cf9?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c8cd1b43-3caf-4aba-87e6-e74399602982?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -302,7 +311,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:49 GMT
+      - Fri, 06 Nov 2020 09:53:59 GMT
       expires:
       - '-1'
       pragma:
@@ -334,29 +343,31 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --ip-addresses --fqdns
       User-Agent:
-      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.11.0
+      - python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.14.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"threatIntelMode\": \"Deny\",\r\n
-        \   \"threatIntelWhitelist\": {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n
-        \     ],\r\n      \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\n
-        \     ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"00bc69c8-2456-4b8c-9cb0-50473ce0a545\",\r\n  \"location\": \"eastus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"threatIntelMode\": \"Deny\",\r\n    \"threatIntelWhitelist\"\
+        : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
+        \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
+        \n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
+        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_threat_intel_allowlist000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"1254236a-74a5-4d4d-990f-d7632a659fa3\",\r\n  \"location\"\
+        : \"eastus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '710'
+      - '758'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 27 Aug 2020 08:50:49 GMT
+      - Fri, 06 Nov 2020 09:54:00 GMT
       expires:
       - '-1'
       pragma:
