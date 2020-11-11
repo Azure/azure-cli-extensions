@@ -22,7 +22,7 @@ from ._validators import (
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
-    validate_nodepool_labels, validate_vnet_subnet_id, validate_max_surge, validate_assign_identity, validate_addons)
+    validate_nodepool_labels, validate_subnet_id, validate_max_surge, validate_assign_identity, validate_addons)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -84,7 +84,8 @@ def load_arguments(self, _):
         c.argument('no_ssh_key', options_list=['--no-ssh-key', '-x'])
         c.argument('pod_cidr')
         c.argument('service_cidr')
-        c.argument('vnet_subnet_id', type=str, validator=validate_vnet_subnet_id)
+        c.argument('vnet_subnet_id', type=str, validator=validate_subnet_id)
+        c.argument('pod_subnet_id', type=str, validator=validate_subnet_id)
         c.argument('ppg')
         c.argument('workspace_resource_id')
         c.argument('skip_subnet_role_assignment', action='store_true')
@@ -163,6 +164,8 @@ def load_arguments(self, _):
             c.argument('ppg')
             c.argument('max_surge', type=str, validator=validate_max_surge)
             c.argument('node_os_disk_type', arg_type=get_enum_type([CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]))
+            c.argument('vnet_subnet_id', type=str, validator=validate_subnet_id)
+            c.argument('pod_subnet_id', type=str, validator=validate_subnet_id)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

@@ -847,6 +847,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                min_count=None,
                max_count=None,
                vnet_subnet_id=None,
+               pod_subnet_id=None,
                ppg=None,
                max_pods=0,
                aad_client_app_id=None,
@@ -915,6 +916,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         os_type="Linux",
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
+        pod_subnet_id=pod_subnet_id,
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
@@ -974,6 +976,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                             acr_name_or_id=attach_acr,
                             subscription_id=subscription_id)
 
+    #do we need to do the same for pod subnet?
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
@@ -2317,6 +2320,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
+                      pod_subnet_id=None,
                       ppg=None,
                       max_pods=0,
                       os_type="Linux",
@@ -2367,6 +2371,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         os_type=os_type,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
+        pod_subnet_id=pod_subnet_id,
         proximity_placement_group_id=ppg,
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,

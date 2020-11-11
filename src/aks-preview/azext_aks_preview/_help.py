@@ -205,6 +205,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -562,6 +565,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to deploy assign pods in the cluster
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
