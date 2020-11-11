@@ -1,0 +1,2502 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --address-prefix --subnet-name --subnet-prefix -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '313'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
+      ["11.0.0.0/16"]}, "dhcpOptions": {}, "subnets": [{"properties": {"addressPrefix":
+      "11.0.0.0/24"}, "name": "aks-subnet"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '209'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --address-prefix --subnet-name --subnet-prefix -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
+        ,\r\n  \"etag\": \"W/\\\"85ce72c8-d068-4c07-80af-59bf5ec4a94e\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
+        ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
+        \ \"Updating\",\r\n    \"resourceGuid\": \"15bea72f-1014-446d-ae32-5682bd913d70\"\
+        ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
+        11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
+        : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"85ce72c8-d068-4c07-80af-59bf5ec4a94e\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
+        : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/555c2c14-73f1-414a-b426-13365f78b258?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1361'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 50fc9d2c-5f3d-4887-b971-6f99541c11bd
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --address-prefix --subnet-name --subnet-prefix -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/555c2c14-73f1-414a-b426-13365f78b258?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - ae5be1be-cefc-45f6-bca0-37f774b9db6d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --address-prefix --subnet-name --subnet-prefix -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
+        ,\r\n  \"etag\": \"W/\\\"d421a6d6-539b-40ea-8e08-a129657a6d70\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
+        ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"15bea72f-1014-446d-ae32-5682bd913d70\"\
+        ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
+        11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
+        : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d421a6d6-539b-40ea-8e08-a129657a6d70\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
+        : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1363'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:54 GMT
+      etag:
+      - W/"d421a6d6-539b-40ea-8e08-a129657a6d70"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - c9d2db71-54aa-4128-84df-a7fb22e82d9b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --resource-group --vnet-name --address-prefixes -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
+        ,\r\n  \"etag\": \"W/\\\"d421a6d6-539b-40ea-8e08-a129657a6d70\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
+        ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"15bea72f-1014-446d-ae32-5682bd913d70\"\
+        ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
+        11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
+        : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d421a6d6-539b-40ea-8e08-a129657a6d70\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
+        : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1363'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:55 GMT
+      etag:
+      - W/"d421a6d6-539b-40ea-8e08-a129657a6d70"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - aa4cba58-4b2b-42c2-bdc5-7b25179f6af3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003",
+      "location": "westus2", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
+      ["11.0.0.0/16"]}, "dhcpOptions": {"dnsServers": []}, "subnets": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet",
+      "properties": {"addressPrefix": "11.0.0.0/24", "delegations": [], "privateEndpointNetworkPolicies":
+      "Enabled", "privateLinkServiceNetworkPolicies": "Enabled"}, "name": "aks-subnet"},
+      {"properties": {"addressPrefix": "11.0.1.0/24"}, "name": "appgw-subnet"}], "virtualNetworkPeerings":
+      [], "enableDdosProtection": false, "enableVmProtection": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '830'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n --resource-group --vnet-name --address-prefixes -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
+        ,\r\n  \"etag\": \"W/\\\"d5436f29-fc07-40a6-80b8-6af90836a16e\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
+        ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
+        \ \"Updating\",\r\n    \"resourceGuid\": \"15bea72f-1014-446d-ae32-5682bd913d70\"\
+        ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
+        11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
+        : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d5436f29-fc07-40a6-80b8-6af90836a16e\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d5436f29-fc07-40a6-80b8-6af90836a16e\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
+        ,\r\n          \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
+        : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/09cb41f1-d888-424a-9526-558ae41e866a?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1990'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 2885e98b-eea9-40f4-9827-4bae7d202288
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --resource-group --vnet-name --address-prefixes -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/09cb41f1-d888-424a-9526-558ae41e866a?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0db94eda-83fa-454d-bb17-8a408c686573
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --resource-group --vnet-name --address-prefixes -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.13.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\"\
+        ,\r\n  \"etag\": \"W/\\\"d2a1c30f-b817-4c64-b1d7-d1e51c696e43\\\"\",\r\n \
+        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\"\
+        ,\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":\
+        \ \"Succeeded\",\r\n    \"resourceGuid\": \"15bea72f-1014-446d-ae32-5682bd913d70\"\
+        ,\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"\
+        11.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\"\
+        : []\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\"\
+        ,\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d2a1c30f-b817-4c64-b1d7-d1e51c696e43\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\
+        ,\r\n        \"etag\": \"W/\\\"d2a1c30f-b817-4c64-b1d7-d1e51c696e43\\\"\"\
+        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
+        ,\r\n          \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\"\
+        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n  \
+        \        \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
+        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
+        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
+        : false,\r\n    \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1993'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:00 GMT
+      etag:
+      - W/"d2a1c30f-b817-4c64-b1d7-d1e51c696e43"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 106e834c-bb8c-409e-b66e-5548c64a4976
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '313'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments?$filter=atScope%28%29&api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/1288ccda-b92e-465b-a243-29a381dba9d9","principalId":"e1e4df1e-ea1e-42ab-ab0e-2d89cc4303ba","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-03-23T11:09:45.4191678Z","updatedOn":"2020-03-23T11:09:45.4191678Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/1d634110-57bf-48d8-8289-5841dcca6161","type":"Microsoft.Authorization/roleAssignments","name":"1d634110-57bf-48d8-8289-5841dcca6161"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab","principalId":"547f6960-a967-417a-a9a4-0f35fbdca11c","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-09-09T07:18:08.8214135Z","updatedOn":"2019-09-09T07:18:08.8214135Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/c96b48c1-00cb-4e29-8fb2-296380a2c762","type":"Microsoft.Authorization/roleAssignments","name":"c96b48c1-00cb-4e29-8fb2-296380a2c762"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/534af0a4-1306-4b75-97d4-6ecd88578f22","principalId":"e1e4df1e-ea1e-42ab-ab0e-2d89cc4303ba","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-03-23T12:40:42.6841835Z","updatedOn":"2020-03-23T12:40:42.6841835Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/4af8da0d-14c1-4632-afc3-759050a77c78","type":"Microsoft.Authorization/roleAssignments","name":"4af8da0d-14c1-4632-afc3-759050a77c78"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"01e2b341-56ec-43fb-9f53-f6332d30df93","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-09-29T06:52:09.7503770Z","updatedOn":"2020-09-29T06:52:09.7503770Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/e1213cb4-0bb7-49c5-bb9e-fbe4e504bc37","type":"Microsoft.Authorization/roleAssignments","name":"e1213cb4-0bb7-49c5-bb9e-fbe4e504bc37"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"135a9bbc-ad60-452c-8ffe-519aa862e879","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-09-29T06:52:10.9627108Z","updatedOn":"2020-09-29T06:52:10.9627108Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/84e52265-2155-485e-8cac-121c7a535b26","type":"Microsoft.Authorization/roleAssignments","name":"84e52265-2155-485e-8cac-121c7a535b26"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"19263705-0667-497e-85e7-a930fa3441ec","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-11-11T00:33:36.6288346Z","updatedOn":"2020-11-11T00:33:36.6288346Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/d4633209-b564-432b-99f2-910af8aaab07","type":"Microsoft.Authorization/roleAssignments","name":"d4633209-b564-432b-99f2-910af8aaab07"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-04-23T01:32:04.6649886Z","updatedOn":"2020-04-23T01:32:04.6649886Z","createdBy":"37eb6d11-d570-4544-9531-6453cb8623cf","updatedBy":"37eb6d11-d570-4544-9531-6453cb8623cf","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/70e6dc91-39f8-42cb-98d5-dbfab582fa0d","type":"Microsoft.Authorization/roleAssignments","name":"70e6dc91-39f8-42cb-98d5-dbfab582fa0d"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"241cd743-2c33-4860-bd3a-1df659c06eef","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-11-11T00:33:38.8957908Z","updatedOn":"2020-11-11T00:33:38.8957908Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/3dc92b2c-508d-4382-877a-8fd4be6de81c","type":"Microsoft.Authorization/roleAssignments","name":"3dc92b2c-508d-4382-877a-8fd4be6de81c"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"2fda9054-fc12-457c-bb93-614f1f13426b","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-04-25T08:24:05.5492478Z","updatedOn":"2019-04-25T08:24:05.5492478Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/83f49349-c47a-47dc-b5f6-fda684f9e860","type":"Microsoft.Authorization/roleAssignments","name":"83f49349-c47a-47dc-b5f6-fda684f9e860"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"33d87b59-68e3-40cb-a9e7-99fbf8d86408","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-09-29T06:52:11.1599933Z","updatedOn":"2020-09-29T06:52:11.1599933Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/600cdb46-aa17-4fd4-b430-bb688f4ef05e","type":"Microsoft.Authorization/roleAssignments","name":"600cdb46-aa17-4fd4-b430-bb688f4ef05e"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"37eb6d11-d570-4544-9531-6453cb8623cf","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-03-28T09:09:23.0388376Z","updatedOn":"2019-03-28T09:09:23.0388376Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/7bd47f3b-c9da-4134-9cc2-e2f32586984d","type":"Microsoft.Authorization/roleAssignments","name":"7bd47f3b-c9da-4134-9cc2-e2f32586984d"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2018-01-31T07:48:39.4053506Z","updatedOn":"2018-01-31T07:48:39.4053506Z","createdBy":"a5cae52f-366a-417b-b718-e73d17746c35","updatedBy":"a5cae52f-366a-417b-b718-e73d17746c35","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/6bc0d5f4-214b-45df-90b3-2920226dab74","type":"Microsoft.Authorization/roleAssignments","name":"6bc0d5f4-214b-45df-90b3-2920226dab74"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"80a6e936-2bdc-4927-b49e-2a7a19943b90","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-09-29T06:52:12.4539960Z","updatedOn":"2020-09-29T06:52:12.4539960Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/3a29ea06-3e79-4615-963a-db98e21e342c","type":"Microsoft.Authorization/roleAssignments","name":"3a29ea06-3e79-4615-963a-db98e21e342c"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"97c2e3e1-0d86-4ef6-918d-b4a3668eb893","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-11-11T00:33:39.0705025Z","updatedOn":"2020-11-11T00:33:39.0705025Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/74e42f31-b815-4b35-80fd-e75a1ff4aae3","type":"Microsoft.Authorization/roleAssignments","name":"74e42f31-b815-4b35-80fd-e75a1ff4aae3"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"a5cae52f-366a-417b-b718-e73d17746c35","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-07-23T15:58:33.8289685Z","updatedOn":"2020-07-23T15:58:33.8289685Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/f2240337-02ab-487c-82f8-67baff57b130","type":"Microsoft.Authorization/roleAssignments","name":"f2240337-02ab-487c-82f8-67baff57b130"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"aedb4132-9499-4449-90b4-3f7cc9885668","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-03-15T10:24:59.5360924Z","updatedOn":"2019-03-15T10:24:59.5360924Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/b7cebd19-0186-41c1-9f78-8d663880a0b1","type":"Microsoft.Authorization/roleAssignments","name":"b7cebd19-0186-41c1-9f78-8d663880a0b1"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c","principalId":"7d24045a-3445-4bda-abe5-232e2bccd01a","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-11-06T10:35:09.3456417Z","updatedOn":"2019-11-06T10:35:09.3456417Z","createdBy":"37eb6d11-d570-4544-9531-6453cb8623cf","updatedBy":"37eb6d11-d570-4544-9531-6453cb8623cf","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/878db91b-b4f2-47ed-8e5a-8aa98370748a","type":"Microsoft.Authorization/roleAssignments","name":"878db91b-b4f2-47ed-8e5a-8aa98370748a"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/9f15f5f5-77bd-413a-aa88-4b9c68b1e7bc","principalId":"3c2f3efc-0197-4fd5-b566-0e3f07a17f0c","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-05-23T08:49:40.7158857Z","updatedOn":"2019-05-23T08:49:40.7158857Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/39c6fc7a-f53a-495b-9dc3-d36f3b702a88","type":"Microsoft.Authorization/roleAssignments","name":"39c6fc7a-f53a-495b-9dc3-d36f3b702a88"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"09914860-7ec9-4151-8431-31797899a359","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-02-22T01:44:10.1009297Z","updatedOn":"2019-02-22T01:44:10.1009297Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/497f6b97-728c-48de-9378-b4a17f2e6445","type":"Microsoft.Authorization/roleAssignments","name":"497f6b97-728c-48de-9378-b4a17f2e6445"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"471feb6d-5a83-439e-af7b-311f4eee2d0c","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-01-15T01:23:25.4768034Z","updatedOn":"2019-01-15T01:23:25.4768034Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/5bcceeff-c211-45c4-90de-830ed1512e7a","type":"Microsoft.Authorization/roleAssignments","name":"5bcceeff-c211-45c4-90de-830ed1512e7a"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"579a5a8e-a3ce-45fc-97d6-4356669fe2db","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-08-30T15:55:03.8285828Z","updatedOn":"2019-08-30T15:55:03.8285828Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/cdcafd1f-4832-46cd-b988-c0fa143de607","type":"Microsoft.Authorization/roleAssignments","name":"cdcafd1f-4832-46cd-b988-c0fa143de607"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"82e11ed5-c720-4c8d-b396-a2fcd9e4291f","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-06-19T03:10:12.7394318Z","updatedOn":"2020-06-19T03:10:12.7394318Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/7b736cad-a01b-44d9-bd02-6029f46f368f","type":"Microsoft.Authorization/roleAssignments","name":"7b736cad-a01b-44d9-bd02-6029f46f368f"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"87ccb404-2e62-44d1-97c0-a842c400b985","principalType":"Group","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-02-18T05:34:07.4594265Z","updatedOn":"2019-02-18T05:34:07.4594265Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/b9e47b4d-69f3-4ed2-a6ba-7553017a0dac","type":"Microsoft.Authorization/roleAssignments","name":"b9e47b4d-69f3-4ed2-a6ba-7553017a0dac"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"a5cae52f-366a-417b-b718-e73d17746c35","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-02-22T01:44:10.2072166Z","updatedOn":"2019-02-22T01:44:10.2072166Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/9e8dd9a9-e6dc-4728-bd8a-929e2c678aa1","type":"Microsoft.Authorization/roleAssignments","name":"9e8dd9a9-e6dc-4728-bd8a-929e2c678aa1"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"a75ea823-3748-4855-a4df-f4ba5383d006","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-01-15T01:24:49.6848173Z","updatedOn":"2019-01-15T01:24:49.6848173Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/60ec2713-a49d-47d4-8b86-4d149616a104","type":"Microsoft.Authorization/roleAssignments","name":"60ec2713-a49d-47d4-8b86-4d149616a104"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"ad2c417a-3692-4d21-9c7d-c01762edad64","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-04-26T02:15:27.1919172Z","updatedOn":"2019-04-26T02:15:27.1919172Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/f2fdb167-9be1-4ba4-907d-5590b259218c","type":"Microsoft.Authorization/roleAssignments","name":"f2fdb167-9be1-4ba4-907d-5590b259218c"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"c6979a71-063b-4a70-9fe0-5f85efe26f75","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-10-31T09:29:46.5967967Z","updatedOn":"2019-10-31T09:29:46.5967967Z","createdBy":"37eb6d11-d570-4544-9531-6453cb8623cf","updatedBy":"37eb6d11-d570-4544-9531-6453cb8623cf","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/1f993631-6cf6-485a-9acd-b8d2a1cc8e40","type":"Microsoft.Authorization/roleAssignments","name":"1f993631-6cf6-485a-9acd-b8d2a1cc8e40"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"e1e4df1e-ea1e-42ab-ab0e-2d89cc4303ba","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-03-23T15:13:08.4258194Z","updatedOn":"2020-03-23T15:13:08.4258194Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/a5797974-8e49-4a79-a3a7-7864f205b0f5","type":"Microsoft.Authorization/roleAssignments","name":"a5797974-8e49-4a79-a3a7-7864f205b0f5"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"063a47e1-d402-4cc8-80c2-7bbbc7e26ee9","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-05-26T11:43:28.3532317Z","updatedOn":"2020-05-26T11:43:28.3532317Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/212a24dd-9d14-454c-a734-abbbe1f6a904","type":"Microsoft.Authorization/roleAssignments","name":"212a24dd-9d14-454c-a734-abbbe1f6a904"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"241cd743-2c33-4860-bd3a-1df659c06eef","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-10-19T01:49:05.7034792Z","updatedOn":"2020-10-19T01:49:05.7034792Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/ee333f1d-e645-45de-9be8-a9cf6466527a","type":"Microsoft.Authorization/roleAssignments","name":"ee333f1d-e645-45de-9be8-a9cf6466527a"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"5caed073-2b85-4f0b-8792-afde9e986a5e","principalType":"Group","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-03-15T14:17:35.4954053Z","updatedOn":"2019-03-15T14:17:35.4954053Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/ab07d826-f352-4b37-a186-da65a28275d9","type":"Microsoft.Authorization/roleAssignments","name":"ab07d826-f352-4b37-a186-da65a28275d9"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"7d24045a-3445-4bda-abe5-232e2bccd01a","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-12-04T06:48:25.4522612Z","updatedOn":"2019-12-04T06:48:25.4522612Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/89116550-8b7c-4514-9a60-77e6975d8cbf","type":"Microsoft.Authorization/roleAssignments","name":"89116550-8b7c-4514-9a60-77e6975d8cbf"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"82e11ed5-c720-4c8d-b396-a2fcd9e4291f","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-09-24T07:32:13.2377034Z","updatedOn":"2020-09-24T07:32:13.2377034Z","createdBy":"37eb6d11-d570-4544-9531-6453cb8623cf","updatedBy":"37eb6d11-d570-4544-9531-6453cb8623cf","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/9960bc75-c192-49a3-8279-16835be9d776","type":"Microsoft.Authorization/roleAssignments","name":"9960bc75-c192-49a3-8279-16835be9d776"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"849285e2-0f5d-4fb8-907d-a2a394d55e4e","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-03-19T12:19:13.3495487Z","updatedOn":"2020-03-19T12:19:13.3495487Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/a7dbb250-0ae4-43d5-a0eb-3e120a0948fd","type":"Microsoft.Authorization/roleAssignments","name":"a7dbb250-0ae4-43d5-a0eb-3e120a0948fd"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"8b9d74f7-8956-4418-a1ab-e36db0833e37","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-09-18T08:35:10.6757960Z","updatedOn":"2019-09-18T08:35:10.6757960Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/38c32b7b-affd-4d1e-ade4-7cc8a5d81f86","type":"Microsoft.Authorization/roleAssignments","name":"38c32b7b-affd-4d1e-ade4-7cc8a5d81f86"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"8ff738a5-abcd-4864-a162-6c18f7c9cbd9","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-02-19T01:23:37.3896366Z","updatedOn":"2019-02-19T01:23:37.3896366Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/05342b83-a8be-44c6-af96-eee55d31b46b","type":"Microsoft.Authorization/roleAssignments","name":"05342b83-a8be-44c6-af96-eee55d31b46b"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"97c2e3e1-0d86-4ef6-918d-b4a3668eb893","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-06-24T04:10:19.8938330Z","updatedOn":"2020-06-24T04:10:19.8938330Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/2c7daa44-fb40-46b9-a9b1-875205ce11d4","type":"Microsoft.Authorization/roleAssignments","name":"2c7daa44-fb40-46b9-a9b1-875205ce11d4"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"a5cae52f-366a-417b-b718-e73d17746c35","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-07-23T15:54:41.2876250Z","updatedOn":"2020-07-23T15:54:41.2876250Z","createdBy":"aedb4132-9499-4449-90b4-3f7cc9885668","updatedBy":"aedb4132-9499-4449-90b4-3f7cc9885668","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/4d15001d-3b46-449b-8f7d-8b85edb38981","type":"Microsoft.Authorization/roleAssignments","name":"4d15001d-3b46-449b-8f7d-8b85edb38981"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"cc7c93d2-2ee3-410d-8831-05947bca8a7f","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-05-08T10:11:22.9030041Z","updatedOn":"2020-05-08T10:11:22.9030041Z","createdBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","updatedBy":"1950a39c-ef6a-4e9d-b00e-9a99d027ddb2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/692cd354-f2ea-4cb4-8c3c-a3448d2ca229","type":"Microsoft.Authorization/roleAssignments","name":"692cd354-f2ea-4cb4-8c3c-a3448d2ca229"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"f058371f-0c0e-46bb-a5d4-f8aec637a467","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2020-04-07T06:38:12.1211214Z","updatedOn":"2020-04-07T06:38:12.1211214Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/1527c91b-22cc-4cfc-bf68-0181180134be","type":"Microsoft.Authorization/roleAssignments","name":"1527c91b-22cc-4cfc-bf68-0181180134be"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"f99a583f-bef2-4b65-841c-e31164a88fcd","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2019-01-09T02:43:33.9526051Z","updatedOn":"2019-01-09T02:43:33.9526051Z","createdBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","updatedBy":"7e9cc714-bfe4-4eea-acb2-d53ced88ab8b","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/de554ff3-9227-45f4-9368-74fabd86fb39","type":"Microsoft.Authorization/roleAssignments","name":"de554ff3-9227-45f4-9368-74fabd86fb39"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"5c617d2b-99f8-4c90-98fe-dfe040fa33c1","principalType":"ServicePrincipal","scope":"/","condition":null,"conditionVersion":null,"createdOn":"2018-02-27T19:19:50.2663941Z","updatedOn":"2018-02-27T19:19:50.2663941Z","createdBy":null,"updatedBy":null,"delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Authorization/roleAssignments/3e883d24-b106-42ff-ad13-d7bf271b964d","type":"Microsoft.Authorization/roleAssignments","name":"3e883d24-b106-42ff-ad13-d7bf271b964d"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9","principalId":"1c8b3602-77a2-4e8a-8c1e-f127f2af5ca2","principalType":"ServicePrincipal","scope":"/providers/Microsoft.Management/managementGroups/c92f8fe1-e3cb-47e8-a01d-0771814c0dad","condition":null,"conditionVersion":null,"createdOn":"2019-03-26T22:01:02.8423155Z","updatedOn":"2019-03-26T22:01:02.8423155Z","createdBy":"8701e34d-d7c2-459c-b2d7-f3a9c5204818","updatedBy":"8701e34d-d7c2-459c-b2d7-f3a9c5204818","delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Management/managementGroups/c92f8fe1-e3cb-47e8-a01d-0771814c0dad/providers/Microsoft.Authorization/roleAssignments/3d069c98-e792-47bd-b58a-399e2d42dbab","type":"Microsoft.Authorization/roleAssignments","name":"3d069c98-e792-47bd-b58a-399e2d42dbab"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9","principalId":"1c8b3602-77a2-4e8a-8c1e-f127f2af5ca2","principalType":"ServicePrincipal","scope":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod","condition":null,"conditionVersion":null,"createdOn":"2019-03-26T22:01:02.9176787Z","updatedOn":"2019-03-26T22:01:02.9176787Z","createdBy":"8701e34d-d7c2-459c-b2d7-f3a9c5204818","updatedBy":"8701e34d-d7c2-459c-b2d7-f3a9c5204818","delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod/providers/Microsoft.Authorization/roleAssignments/4b771ea9-81de-4fc4-aa28-a3a0b9b4a320","type":"Microsoft.Authorization/roleAssignments","name":"4b771ea9-81de-4fc4-aa28-a3a0b9b4a320"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608","principalId":"1f75b9dd-4f1d-4e80-9521-321a8b1f5764","principalType":"ServicePrincipal","scope":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod","condition":null,"conditionVersion":null,"createdOn":"2019-03-27T00:49:37.3000523Z","updatedOn":"2019-03-27T00:49:37.3000523Z","createdBy":"820ba717-9ea7-4147-bc13-1e35af4cc27c","updatedBy":"820ba717-9ea7-4147-bc13-1e35af4cc27c","delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod/providers/Microsoft.Authorization/roleAssignments/e6e1fffd-83f7-40c7-9f33-e56e2cf75b29","type":"Microsoft.Authorization/roleAssignments","name":"e6e1fffd-83f7-40c7-9f33-e56e2cf75b29"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/5d58bcaf-24a5-4b20-bdb6-eed9f69fbe4c","principalId":"1f75b9dd-4f1d-4e80-9521-321a8b1f5764","principalType":"ServicePrincipal","scope":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod","condition":null,"conditionVersion":null,"createdOn":"2019-03-27T00:50:08.3039053Z","updatedOn":"2019-03-27T00:50:08.3039053Z","createdBy":"820ba717-9ea7-4147-bc13-1e35af4cc27c","updatedBy":"820ba717-9ea7-4147-bc13-1e35af4cc27c","delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Management/managementGroups/CnAIOrchestrationServicePublicCorpprod/providers/Microsoft.Authorization/roleAssignments/3d01f56e-ee3a-41ed-a775-0e067546cb12","type":"Microsoft.Authorization/roleAssignments","name":"3d01f56e-ee3a-41ed-a775-0e067546cb12"},{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7","principalId":"ce2366a6-64d7-441b-939c-c9d23f91cccd","principalType":"ServicePrincipal","scope":"/providers/Microsoft.Management/managementGroups/72f988bf-86f1-41af-91ab-2d7cd011db47","condition":null,"conditionVersion":null,"createdOn":"2020-03-12T20:43:06.5941189Z","updatedOn":"2020-03-12T20:43:06.5941189Z","createdBy":"606f48c8-d219-4875-991d-ae6befaf0756","updatedBy":"606f48c8-d219-4875-991d-ae6befaf0756","delegatedManagedIdentityResourceId":null,"description":null},"id":"/providers/Microsoft.Management/managementGroups/72f988bf-86f1-41af-91ab-2d7cd011db47/providers/Microsoft.Authorization/roleAssignments/ad9e2cd7-0ff7-4931-9b17-656c8f17934b","type":"Microsoft.Authorization/roleAssignments","name":"ad9e2cd7-0ff7-4931-9b17-656c8f17934b"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '40198'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:04 GMT
+      duration:
+      - '714324'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - yMHKsBjPxlijt6JO8vPPRDBG6XlrHGM+QW83/u8BDhE=
+      ocp-aad-session-key:
+      - 206YAN8F8TlwAJr4Doi9Qr_R-H2OKQGoPKNDkyw4gIIGVKQrbJWFOF7-__YOV8jh2hcL8ebJfRCKM4nC1P4CCDXW9HOsnbE-C9Wtls5CBizJJgoD2dvk-KnAEhBqQZb2xgs_8r258iuimmo8KQXkakqRw1qs1dQ6HWhyiF7a7_0.pIQIOC965rht5YXkbcu_d-rkzz-iphU6BFgK7gnia2g
+      pragma:
+      - no-cache
+      request-id:
+      - dc67dc19-5df0-4f20-93a2-4fa94382bce3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"9b5134c5-cf8c-42de-9d6e-c38d65975b76","date":"2020-11-11T12:58:04"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:04 GMT
+      duration:
+      - '271690'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - WU4zNfCElf2a2+trgnCp2ZEn/nLF6TpbwpsrBz5dnFs=
+      ocp-aad-session-key:
+      - I70Zl1YtsmwFWaGpPt7xXz5YOpM36XXIb_hI44Q6OfnYzOvi_KMZc5C_hgasWlrh2qBssJjINaS0G4BxIeA2Clnnd4wlkkDF00cQ9YLeqk9wgk0eiAFmttoDphMrIiuXovrVHOEztGweCRKTTMznbmbHzPmzcDQtgzoQgc2AROI.5CxjXKsJc_UmT1berWp8brC70HGg_VxoMkTOgf-VAN4
+      pragma:
+      - no-cache
+      request-id:
+      - 9b5134c5-cf8c-42de-9d6e-c38d65975b76
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:06 GMT
+      duration:
+      - '271254'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - nMffr2YZiZcyktT1ZEYf03Et2kYmqJTDPV2EF3HeLV4=
+      ocp-aad-session-key:
+      - eHkgc_rbFpwp-rc8GfHgn6FJKd_1gMqhXsU3a4ViYoRYc9315HTu-DwIibcDOuTjbZ_v1HtKbwuslf4knotvAaR4BWrWnAYGxNjl1IgQr5lAJPiGH8UggL8i6muys3H_4Mi4EV9WZ5MVY_cmP90DuE8Z2qdgTbpiizO6GyzRgio.XaozzhoK76JvgYtrKPLT-Hs4g0L9JOJ2uOzPf7HzqsY
+      pragma:
+      - no-cache
+      request-id:
+      - 150e8c20-a136-433e-bdcf-d81d16aece25
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"1fb7b522-3032-401c-85a1-65e26b6aed14","date":"2020-11-11T12:58:07"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:07 GMT
+      duration:
+      - '285559'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - T8z32jqK4QUxIPomJRMSc+GWEF4mTHeru1V4XlZ6Y8w=
+      ocp-aad-session-key:
+      - TZ0B7eUfBabp1FsIxrNxFiXR1yJb9Q6LJlhVY-SyeJnF7GfGmTh0_M3AiNXR_4BoFTQlWIMR8Y8PkPDvdqnl5bqakJq_qQp_wWIltWO5m4zPIesAehj_yvP_DS5TRa-W4IqqOyEtfDAW1OP6AURtBNX-gZCaaKat1F_9ONWyOyY.M990UOtdyFEfbvluVE27rY0YcZtT7--E1Kd7b7c6FkQ
+      pragma:
+      - no-cache
+      request-id:
+      - 1fb7b522-3032-401c-85a1-65e26b6aed14
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:11 GMT
+      duration:
+      - '263381'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - z2ObnTOpTE+BRbb8sVpz56a6jCuT+H7qLvz7dMeOFXA=
+      ocp-aad-session-key:
+      - pLr9QNmPKMcgNvGySRMGF_PO7po8kDdQ-ZTq0dtaffqX2fZIIbj_PPHtjpYi6dyB7_6lWZZisatsI6q_z0RnU21SUA_4cnZbBi-pvowT7Drks3afHP_E6C9yo_UxxjvkBpIKN42JJzAAZ-DV5sfeqdDs3ALoozI51kCv5JJl9Fc.i8xvQiZx1YK6JRzNb1KS9JjqATSNKuf2fegszWdTzvE
+      pragma:
+      - no-cache
+      request-id:
+      - 4c73dfad-302c-4a20-9cd1-2386da249ae5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"be7d7e6d-4fcc-4289-977d-0c3690bef213","date":"2020-11-11T12:58:13"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:12 GMT
+      duration:
+      - '254181'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - ocGMAMe802iEJEPTJ7CUKoV7ix9s3ZRyR03jGLnjXtk=
+      ocp-aad-session-key:
+      - jCmxrtEA6WTaur09LIeObSozlUysOBVXCAZnRWMHbn9J1veFwxwNgw6DCThe84uV7VR5fBgl32cSmUQWVCIHccgDLyLHLLmO7yFTQMqacHGv602p8LVC6bgKApnnEG5TrKCBLdwaQIuUs-Dp_XqjrAUQN2tIWGy2F1TejqYoiZ4.TC-6XhDaEI-KfyxIU0VabXb65uvbqAmjfdRxrbHRV78
+      pragma:
+      - no-cache
+      request-id:
+      - be7d7e6d-4fcc-4289-977d-0c3690bef213
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:19 GMT
+      duration:
+      - '286311'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - gb5hbx6QP+ukQJMbbtowGroeTOota1b38Lm+CBU8Ya4=
+      ocp-aad-session-key:
+      - DrKDgVRhe47k4nRy8_dWQzWNd0Ohk01dIUn3RblZv2J-QwzKoLzuIPptrMC7NUY4yvKQ5t-ruMITC_O4hR4Kxh6j1vOnWum178djOsgbrzUAzFZVm28qxW1L-bzaLEX384_NHuac0p60JcLOmESm6a6LyHyuA9pWoCK_CVVjIe4.22Iypoo7FZSVd_16V4X9GH_7t_JG0R8l8jBPxD5wzP0
+      pragma:
+      - no-cache
+      request-id:
+      - db3c5f6e-d7ee-4a2c-b70b-7ab18ef7f556
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"b44f007a-b53d-436d-a089-e817c18e93b6","date":"2020-11-11T12:58:20"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:20 GMT
+      duration:
+      - '270481'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 0/R+bosQIhyervvAJa/GUJG6YQsk2yzEcAx1auEEPU0=
+      ocp-aad-session-key:
+      - rqseZyCYzBl8JaxAU_ytPKRN5oj11Ce6SRirSTlMAaetvdgaOT6bYvUwUjUaAzbsGSyNSc9KZzSqaquOIXTgpxtDCRAosqQxs2MLL3LQjZUeRo84gnPiUnk2kQSF4OZ9uNHbKBZrfzIkjBkyJEUYwWFsotqLqGlQistpZ1s_Hew.PyviHQxqRmUMEx8Pv4YAWrcuy2g6gshrREpcFztq4oM
+      pragma:
+      - no-cache
+      request-id:
+      - b44f007a-b53d-436d-a089-e817c18e93b6
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:29 GMT
+      duration:
+      - '1189148'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 68eQHsiOr4pGxsHrsZBY8wN+eY4PygUSTpr3LWIB9gI=
+      ocp-aad-session-key:
+      - we9SIy34Zx16wCjIBxopAnslte5MzpX0i8WzPxYwUlrX-RkILZhyiVp-NBe3UZ4PFRFcziotzDQxOoUBVn73r6JeF5kx1QlNpoo8iJioDbmE_52GdxnWVR6SSs0NayJDGKNsEk8CfpFnUl-wNTMRllabzVg04bXgGrX9i8snz3k.iyeids24YWIuBo4bcCtwf9a7cQ6KfUgiMHNCkngd4qo
+      pragma:
+      - no-cache
+      request-id:
+      - 978ad723-7305-4589-9fd4-4e71d557267c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"d71c92b9-e268-44c4-ade8-df5efa783112","date":"2020-11-11T12:58:29"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:29 GMT
+      duration:
+      - '300132'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - G96eOF9rn5NfGWA7uT08td8ZvZafIK3a/6uUFVEXN/4=
+      ocp-aad-session-key:
+      - de7iYVr3W2DdTOExbd2YlEVkSVmJWwsFC0xBfCFnHBKYaQjRaG7wLkiwAX-a7h5SrbVdUf9dKB16XvvAVkqxaFvr8EegTPLref9wgOHKa7uyUgoXaHR_Gsm0wKUCnAAl_R3yOi3Xecwe3TRyseQ9kdkw4MfffpgFem7cMJ2WV4g.Yg9HllbCXLd5wCyvTyc1KdC9WrbLQkrbflJAa9rhoog
+      pragma:
+      - no-cache
+      request-id:
+      - d71c92b9-e268-44c4-ade8-df5efa783112
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:39 GMT
+      duration:
+      - '330034'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - IWMSDwhWYTJ+TKd7t1YtqqqMKGIOe0be88QLMaUR4hc=
+      ocp-aad-session-key:
+      - eO3am538-Ep230vw-JiGeNonEML3G1Lq2v9KlcML3NOTdsnEBB88-FIfTnytC3QbV8zDr2RU7R8_VwzzjThP3-KHSgAzDGNsnAewuDfOe9Qfh9vs0X5AvmZCF_KqHYASJbbmK-ZzZGuXvIsTtbAOfi0QfascRXkH3VDK03hqiME.As75hKnAyykF6SPN-cE8PzF_lb26loQFnoA04Hl9zCo
+      pragma:
+      - no-cache
+      request-id:
+      - 78d9fd50-79cb-4f58-a7d5-8145756ce684
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"616291ca-8e90-4387-9cf4-53f1fa22e9fe","date":"2020-11-11T12:58:40"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:40 GMT
+      duration:
+      - '276637'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - QjTEQmdZ9iJAuW6XSiA1Jw8O5gdiczHXvpH6pVAGNx8=
+      ocp-aad-session-key:
+      - WiPFLIuvkN_SDxCv0bRzTvGL5mOcPnRFbLk4J-ntNwpIzPuZ9NhIhppw_CK9RV6shfCF4qUtNDfW1mEUJrJ6Scm9BqFyr5yf14NvNOsiWWe263H_JdgHS_gToUAQxM6gjSSNlJRmqRzp-F02Nn9mmmiew3o9yipiHEwIPZlWlyY.kXhggZOQEBcxgw5ZxMdm8QZW6IivOnfVrTl9yNOlRmg
+      pragma:
+      - no-cache
+      request-id:
+      - 616291ca-8e90-4387-9cf4-53f1fa22e9fe
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:58:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:53 GMT
+      duration:
+      - '285208'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - fAxmmGhui7CowPTRJ48zc5/daTLwF5M/2eC0XcYqC/Q=
+      ocp-aad-session-key:
+      - hNVXUbiNPPmqgX9Ruv_9ZbE23T8pthJoOeP_aJ2nJjqIrugqBpvai1uG2y1sSwuvm2vbhVepr0ToNZ3wK6zVm7P_oplgS0PLJXSwVSAVo-RgnJOsyQjvdhw5bM2wNyziWvgcHsobEHGpvzNvUPpf0ce2hCIBaJfeoFXOia4xKdE.KntpMw2cJ2atiTpDcAZLUZBGtT4KFD7VsmNYfJf2F98
+      pragma:
+      - no-cache
+      request-id:
+      - 29a779e2-06af-442d-9782-b0dd0610e932
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"675cca9c-b6e5-4cf9-ba61-e8e53a6542cc","date":"2020-11-11T12:58:53"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:58:53 GMT
+      duration:
+      - '254714'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - BOVyeUlqeQ3Xjl7IRfL9fReFOku6W52Pdd0SZVpFdJQ=
+      ocp-aad-session-key:
+      - DSPk6r5B_bbW-08hp45trdmNjSPEjl7Gx886-_M8dYn9Nz1GXHvTUO28wzgz7sIsrKY35eydCU1qexYCKofWCo0B46_RO5X5Hon0iUzZNr02T78uNu6mVl5u29MeR3kVH6evw1B8XcgzCO1ov3qVG5Ssu_uifQQhR3316pVmmJ8.cdLQbJMBBheXUGgXyPagLDs13qWM26fAfPO-CZOGjTk
+      pragma:
+      - no-cache
+      request-id:
+      - 675cca9c-b6e5-4cf9-ba61-e8e53a6542cc
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:59:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:08 GMT
+      duration:
+      - '265367'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - V4LyF+fW7dVDnbQSD93Eu2zUVker34FTdLJ2R4KDzBM=
+      ocp-aad-session-key:
+      - kcMfqIU6o2XAjXbDJvX3IT1zr0iWzQF-2w_lD3fGsEfP8r6BKdT1IEUZXfSfLFO-JgxtwKgapZOZ4hzUd8sY_KwMhnAC86-5MnskL4BHWoNbtfZkDT2nIhMG41ldhARiDt1fFWQqBgkSe54ZmV-bhXOdTwIOkPKw87L94psqqFs.NJTWO98LolfrgsKckS3IuFzukbyKe5-JUBE9LrbhJd4
+      pragma:
+      - no-cache
+      request-id:
+      - 016cdd2e-3c17-4f30-96b4-2eefe322b2d7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"1ef03266-fae2-4d5b-ae83-e2e9d275c53b","date":"2020-11-11T12:59:08"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:08 GMT
+      duration:
+      - '271079'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - DbczgWCcaouxmOiqiYMt6xHhsqI89/IRtEf9b6IVXEQ=
+      ocp-aad-session-key:
+      - gTMJ9s-MZPqkZCLnAt9O-mo5MxScxM8hWsD6dcGcWV1hhnkMjcc4ypirq7uqHWYrTrbdkutegnROu1o5a0ud_VygPZns2vxmOAXaMBtkrfcEHBYvVprvf8gxXgE1Xv5OemQXgOw53GnmqQyo_5b1sEs-Z7tbrEAQLE8MBqa11kk.soU18Z9JwEbi_YtbO-Bdw-0PRERH22Wf0JdH3hL3K5k
+      pragma:
+      - no-cache
+      request-id:
+      - 1ef03266-fae2-4d5b-ae83-e2e9d275c53b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:59:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:25 GMT
+      duration:
+      - '390939'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - eUNXT03b6OI1DI2AA15cdRgIJkHnHUU/WZxJ97xcFO0=
+      ocp-aad-session-key:
+      - ReVMWqf7xES4Zq_7JZqifrWXCXewjLHJcgWYL-ze8fdVRdcObjOUvF-CkqWMCIc-Ba1sOqIjmETSC-XN76Po4d6X_AcMSDzH58ZeMuOX1zQlve4j-FN5SIFAoz6BVoPIYBC1pX7g6xwv7WEyc-PAp_CBWj9lf-Zk8HHOlwMZ2ic.j1-6e817-DslIQvtnyx-7uH518C3CwunjSEC1nx4rOo
+      pragma:
+      - no-cache
+      request-id:
+      - 464c5998-3ffc-4e0a-85ab-00059bbc41f5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"f51b33b3-f53a-4e07-843e-a8eb95c6f5f6","date":"2020-11-11T12:59:26"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:26 GMT
+      duration:
+      - '271375'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - GMGvodqTEkM1WP8uJoCTsbvirzQMR6AZTNivkrok/mU=
+      ocp-aad-session-key:
+      - u7Lkv5HSpPmL1j5i9iBio9HigGwK1TvTLcuRXWC0iwCbN-fBfx2fTy0JFO-9XeZ4RwrYYkN32BzGbygU6rcIQy-dMrejusJoKmP5rX-lrTwBmTYGEmvdd25TTmMxyqRgScAUUhyEtMZbaMk0Hlf2UtVmRsZAElja5UAEZDM8syw.1J00bDO_O_0JwkkUNRDttAmWuMPElZIYV9dvwHFsWKY
+      pragma:
+      - no-cache
+      request-id:
+      - f51b33b3-f53a-4e07-843e-a8eb95c6f5f6
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:59:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27clitest5ohqh7nfv2vcudluq%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:43 GMT
+      duration:
+      - '287992'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - +D4mzhCD4BWReKHkNB70H2OqbfHesNVnaFzaeqSTzjY=
+      ocp-aad-session-key:
+      - wHZ7dCCNpgUm1RJn7UcoGkAsTwt2V0tAR8peHjGtSHS-59FWRKJ53inY9qDYpeMx61ntrLL2JU8HZZsANUvV6QtSREiIFHTPvmjHEB5LrovKZJW9l1bvCc8eSd0tmSPtFxKUI_Rg_irAJbwRTToxsXuqPt1S1CEngPsAHCWBXDk.sp0xEgM9unySyQw3jPw-Jnv304a2HZ22eSnR9511dtI
+      pragma:
+      - no-cache
+      request-id:
+      - cc5789b0-c91d-41d3-b6ca-16c89aaef98a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["clitest5ohqh7nfv2vcudluq"], "includeDirectoryObjectReferences":
+      true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '85'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.error":{"code":"Request_BadRequest","message":{"lang":"en","value":"Invalid
+        GUID specified."},"requestId":"b6d790b0-b261-493a-8135-243d11e0dcba","date":"2020-11-11T12:59:45"}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Wed, 11 Nov 2020 12:59:44 GMT
+      duration:
+      - '312294'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - nB1qBlZBnyHudtl24PB9ix2P4pUQdqK/bPeHV31K+eo=
+      ocp-aad-session-key:
+      - ncOp6Z7FWjE1qmGOivQdKjFBYUgl34vZiLsJMlzhyfX6nkmjdtXNuUtlZTXshYOSFFvew8YQvS73BXZJMP51792CDcmv_2LLzC-vHQFPgi76Et-aGRELK6VJur6Y5HMYJy0WtJojjXw0ClJOUucGQTP3nnOHMvkz1XO2USpRu8Q.P8QrleNhNr0iA0lxjgtANTMTz3zsJeBrrRyDR10O070
+      pragma:
+      - no-cache
+      request-id:
+      - b6d790b0-b261-493a-8135-243d11e0dcba
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "westus2", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitesthv6wo3a33-4be892", "agentPoolProfiles": [{"count": 3, "vmSize":
+      "Standard_DS2_v2", "vnetSubnetID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet",
+      "osType": "Linux", "type": "VirtualMachineScaleSets", "mode": "System", "enableNodePublicIP":
+      false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy": "Delete", "name":
+      "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys":
+      [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {"IngressApplicationGateway":
+      {"enabled": true, "config": {"applicationGatewayName": "gateway", "subnetId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet"}}},
+      "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}}, "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1781'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys --vnet-subnet-id
+        -a --appgw-name --appgw-subnet-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"IngressAppGwAddonFeatureFlagNotEnabled\",\n  \"message\"\
+        : \"IngressApplicationGateway addon is not allowed since feature 'Microsoft.ContainerService/AKS-IngressApplicationGatewayAddon'\
+        \ is not enabled. Please see https://aka.ms/aks/previews for how to enable\
+        \ features.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '279'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:00:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
