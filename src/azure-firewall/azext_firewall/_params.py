@@ -25,8 +25,10 @@ from ._validators import (
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
 
-    AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, AzureFirewallNatRCActionType = self.get_models(
-        'AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType', 'AzureFirewallNatRCActionType')
+    AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, \
+        AzureFirewallNatRCActionType, FirewallPolicySkuTier = \
+        self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
+                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
@@ -73,7 +75,6 @@ def load_arguments(self, _):
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
-        c.argument('require_dns_proxy_for_network_rules', arg_type=get_three_state_flag(), help='Requires DNS Proxy functionality for FQDNs within Network Rules')
 
     with self.argument_context('network firewall threat-intel-allowlist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
@@ -106,7 +107,7 @@ def load_arguments(self, _):
 
         with self.argument_context('network firewall {} create'.format(item['name']), arg_group='Collection') as c:
             c.argument('collection_name', collection_name_type, help='Name of the collection to create the rule in. Will create the collection if it does not exist.')
-            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low).', type=int)
+            c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low). Supply only if you want to create the collection.', type=int)
 
         with self.argument_context('network firewall {} collection'.format(item['name'])) as c:
             c.argument('item_name', collection_name_type)
@@ -118,10 +119,10 @@ def load_arguments(self, _):
 
     for scope in ['network-rule', 'application-rule']:
         with self.argument_context('network firewall {}'.format(scope), arg_group='Collection') as c:
-            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection.')
+            c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall nat-rule', arg_group='Collection') as c:
-        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection.')
+        c.argument('action', arg_type=get_enum_type(AzureFirewallNatRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall ip-config') as c:
         c.argument('item_name', options_list=['--name', '-n'], help='Name of the IP configuration.', id_part='child_name_2')
@@ -158,6 +159,7 @@ def load_arguments(self, _):
         c.argument('firewall_policy_name', options_list=['--name', '-n'], help='The name of the Firewall Policy.')
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+        c.argument('sku', arg_type=get_enum_type(FirewallPolicySkuTier), help='SKU of Firewall policy', is_preview=True)
 
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')

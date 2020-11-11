@@ -390,7 +390,8 @@ helps['blueprint assignment create'] = """
         text: |-
                az blueprint assignment create --subscription MySubscription --name \\
                MyBlueprintAssignment --location eastus --identity-type UserAssigned \\
-               --user-assigned-identities identity-id \\
+               --user-assigned-identity "/subscriptions/00000000-0000-0000-0000-000000000000 \\
+               /resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"\\
                --description "Enforce pre-defined MyBlueprint to this subscription." \\
                --blueprint-version "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
                /providers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\

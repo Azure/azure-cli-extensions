@@ -18,12 +18,12 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
         from azext_scheduled_query.grammar.scheduled_query import (
             ScheduleQueryConditionLexer, ScheduleQueryConditionParser, ScheduleQueryConditionValidator)
 
-        usage = 'usage error: --condition {avg,min,max,total,count} ["METRIC COLUMN" from] ' \
+        usage = 'usage error: --condition {avg,min,max,total,count} ["METRIC COLUMN" from]\n' \
                 '                         "QUERY" {=,!=,>,>=,<,<=} THRESHOLD\n' \
                 '                         [resource id RESOURCEID]\n' \
                 '                         [where DIMENSION {includes,excludes} VALUE [or VALUE ...]\n' \
-                '                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]' \
-                '                         [at least MinTimeToFail out of EvaluationPeriod]'
+                '                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]\n' \
+                '                         [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
         string_val = ' '.join(values)
 
         lexer = ScheduleQueryConditionLexer(antlr4.InputStream(string_val))

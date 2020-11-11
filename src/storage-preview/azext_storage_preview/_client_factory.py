@@ -8,7 +8,7 @@ from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
 from knack.log import get_logger
 
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -77,10 +77,6 @@ def generic_data_service_factory(cli_ctx, service, name=None, key=None, connecti
 
 
 def storage_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
-
-
-def storage_preview_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE)
 
 
@@ -121,10 +117,6 @@ def cloud_storage_account_service_factory(cli_ctx, kwargs):
 
 def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
-
-
-def cf_sa_preview(cli_ctx, _):
-    return storage_preview_client_factory(cli_ctx).storage_accounts
 
 
 def cf_blob_container_mgmt(cli_ctx, _):

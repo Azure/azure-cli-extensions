@@ -179,7 +179,7 @@ blockchain member update:
       - option_length_too_long
 blueprint assignment create:
   parameters:
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:
@@ -187,10 +187,7 @@ blueprint assignment create:
       - option_length_too_long
 blueprint assignment update:
   parameters:
-    identity_type:
-      rule_exclusions:
-      - no_parameter_defaults_for_update_commands
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:
@@ -260,6 +257,48 @@ databricks workspace vnet-peering update:
       rule_exclusions:
       - option_length_too_long
     allow_virtual_network_access:
+      rule_exclusions:
+      - option_length_too_long
+datadog monitor create:
+  parameters:
+    datadog_organization_properties:
+      rule_exclusions:
+      - option_length_too_long
+    marketplace_subscription_status:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule create:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule update:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
 datafactory factory configure-factory-repo:

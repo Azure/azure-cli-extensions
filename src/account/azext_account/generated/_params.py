@@ -49,6 +49,7 @@ def load_arguments(self, _):
                    'LegacyEA')
         c.argument('subscription_id', type=str, help='This parameter can be used to create alias for existing '
                    'subscription ID')
+        c.argument('reseller_id', type=str, help='Reseller ID, basically MPN Id')
 
     with self.argument_context('account alias delete') as c:
         c.argument('alias_name', options_list=['--name', '-n'], help='Alias Name')
