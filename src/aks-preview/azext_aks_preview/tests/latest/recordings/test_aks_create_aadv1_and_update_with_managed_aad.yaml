@@ -1,0 +1,2088 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","tags":{"product":"azurecli","cause":"automation","date":"2020-11-11T12:57:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '319'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2020 12:57:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:57:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1193'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:58:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:58:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:58:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1187'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:59:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:59:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:59:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:59:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1193'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 12:59:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:00:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1192'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:00:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1192'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:00:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1183'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:00:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1192'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:01:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1191'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:01:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1191'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:01:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1190'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:01:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1190'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:02:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1182'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:02:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:02:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:02:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1187'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:02:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1190'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:03:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:03:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1193'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:03:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1192'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:03:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:03:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:04:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1191'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:04:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1184'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "canadacentral", "properties": {"kubernetesVersion": "", "dnsPrefix":
+      "cliakstest-clitestemg3aiyzj-4be892", "agentPoolProfiles": [{"count": 1, "vmSize":
+      "Standard_DS2_v2", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
+      "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
+      "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "clitest5ohqh7nfv2vcudluq",
+      "secret": "qN-Le~ozIfs_Bk4ZUi7Us.dR0n~ggbKil2"}, "addonProfiles": {}, "enableRBAC":
+      true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
+      "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
+      "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
+      "loadBalancerSku": "standard"}, "aadProfile": {"clientAppID": "00000000-0000-0000-0000-000000000002",
+      "serverAppID": "00000000-0000-0000-0000-000000000001", "serverAppSecret": "fake-secret",
+      "tenantID": "d5b55040-0c14-48cc-a028-91457fc190d9"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1498'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --vm-set-type -c --aad-server-app-id --aad-server-app-secret
+        --aad-client-app-id --aad-tenant-id -o
+      User-Agent:
+      - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+  response:
+    body:
+      string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
+        \ principal clientID: clitest5ohqh7nfv2vcudluq not found in Active Directory\
+        \ tenant 72f988bf-86f1-41af-91ab-2d7cd011db47, Please see https://aka.ms/aks-sp-help\
+        \ for more details.\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Nov 2020 13:04:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
