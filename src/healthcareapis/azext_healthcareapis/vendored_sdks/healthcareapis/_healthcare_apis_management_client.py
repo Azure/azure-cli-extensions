@@ -61,10 +61,6 @@ class HealthcareApisManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.operation_result = OperationResultOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.private_endpoint_connection = PrivateEndpointConnectionOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.private_link_resource = PrivateLinkResourceOperations(
-            self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
         # type: () -> None
