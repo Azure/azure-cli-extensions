@@ -5,7 +5,7 @@
 
 # pylint: disable=len-as-condition
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 
 
 def validate_dest_account(namespace):

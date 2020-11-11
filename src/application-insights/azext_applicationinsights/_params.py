@@ -106,14 +106,7 @@ def load_arguments(self, _):
         c.argument('is_enabled', arg_type=get_three_state_flag(return_label=True),
                    help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
 
-    with self.argument_context('monitor app-insights component continues-export update') as c:
-        c.argument('export_id', options_list=['--id'],
-                   help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
-
-    with self.argument_context('monitor app-insights component continues-export show') as c:
-        c.argument('export_id', options_list=['--id'],
-                   help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
-
-    with self.argument_context('monitor app-insights component continues-export delete') as c:
-        c.argument('export_id', options_list=['--id'],
-                   help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
+    for scope in ['update', 'show', 'delete']:
+        with self.argument_context('monitor app-insights component continues-export {}'.format(scope)) as c:
+            c.argument('export_id', options_list=['--id'],
+                       help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
