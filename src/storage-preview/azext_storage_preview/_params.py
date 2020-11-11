@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag)
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
@@ -14,6 +15,7 @@ from ._validators import (get_datetime_type, validate_metadata,
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     from knack.arguments import CLIArgumentType
+    from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
@@ -22,6 +24,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
 
+    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
+                                     id_part='name',
+                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
+                                     local_context_attribute=LocalContextAttribute(
+                                         name='storage_account_name', actions=[LocalContextAction.GET]))
     blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
                                      completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
                                                                                 parent='container_name'))
@@ -61,6 +68,16 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    type=get_datetime_type(False))
         c.argument('if_match')
         c.argument('if_none_match')
+
+    with self.argument_context('storage account network-rule') as c:
+        from ._validators import validate_subnet
+        c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('ip_address', help='IPv4 address or CIDR range.')
+        c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
+        c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
+        c.argument('action', help='The action of virtual network rule.')
+        c.argument('resource_id', help='The resource id to add in network rule.')
+        c.argument('tenant_id', help='The tenant id to add in network rule.')
 
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',

@@ -35,3 +35,13 @@ class RouteRuleScenarioTests(ScenarioTest):
                      self.check('patternsToMatch[0]', '/forward3'),
                      self.check('routeConfiguration.customQueryString', 'querystring2')
                  ])
+        self.cmd('network front-door routing-rule list -f {front_door} -g {rg} ',
+                 checks=[
+                     self.check('length(@)', 3),
+                 ])
+        self.cmd('network front-door routing-rule delete -f {front_door} -g {rg} -n {rule2} ')
+        self.cmd('network front-door routing-rule list -f {front_door} -g {rg} ',
+                 checks=[
+                     self.check('length(@)', 2),
+                 ])
+        self.cmd('network front-door routing-rule show -f {front_door} -g {rg} -n {rule1} ')
