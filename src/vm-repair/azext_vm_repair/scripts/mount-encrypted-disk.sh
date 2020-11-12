@@ -90,11 +90,11 @@ fi
 data_os_lvm_check () {
 	trapper
 	echo "`date` Looking for LVM on the data disk" >> ${logpath}/${logfile}
-	export lvm_part=`fdisk -l ${data_disk}| grep -i lvm | awk '{print $1}'` >> ${logpath}/${logfile}
+	export lvm_part=`fdisk -l ${data_disk} 2>&1 | grep -i lvm | awk '{print $1}'` >> ${logpath}/${logfile}
 	echo ${lvm_part} >> ${logpath}/${logfile}
 	if [ -z ${lvm_part} ]
 	then
-		export root_part=`fdisk -l ${data_disk} | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
+		export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
 		echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
 		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
 	else
@@ -107,7 +107,7 @@ data_os_lvm_check () {
 locate_mount_data_boot () {
 	trapper
 	echo "`date` Locating the partitions on the data drive" >> ${logpath}/${logfile}
-	export data_parts=`fdisk -l ${data_disk} | grep ^/  | awk '{print $1}'` >> ${logpath}/${logfile}
+	export data_parts=`fdisk -l ${data_disk} 2>&1 | grep ^/  | awk '{print $1}'` >> ${logpath}/${logfile}
 	echo "`date` Your data partitions are: ${data_parts}" >> ${logpath}/${logfile}
 
 	#create mountpoints for all the data parts
