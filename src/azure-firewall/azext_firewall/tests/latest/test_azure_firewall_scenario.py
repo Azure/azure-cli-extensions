@@ -356,7 +356,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
                  ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='centralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -454,9 +454,20 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('ruleCollections[2].name', "filter-collection-2")
         ])
 
+        self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection-2 \
+                                 --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 1000 \
+                                 --action DNAT --rule-name network-rule --description "test" \
+                                 --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
+                                 --translated-fqdn www.google.com --translated-port 1234 \
+                                 --destination-ports 12000 12001 --ip-protocols TCP UDP', checks=[
+            self.check('length(ruleCollections)', 4),
+            self.check('ruleCollections[3].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+            self.check('ruleCollections[3].name', "nat-collection-2")
+        ])
+
         self.cmd('network firewall policy rule-collection-group collection list -g {rg} --policy-name {policy} \
                  --rule-collection-group-name {collectiongroup}', checks=[
-            self.check('length(@)', 3)
+            self.check('length(@)', 4)
         ])
 
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} \
@@ -482,7 +493,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy} \
                  --rule-collection-group-name {collectiongroup} --name filter-collection-1', checks=[
-            self.check('length(ruleCollections)', 2)
+            self.check('length(ruleCollections)', 3)
         ])
 
         self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')

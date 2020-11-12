@@ -190,6 +190,7 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Nat Rule') as c:
         c.argument('translated_address', help='Translated address for this NAT rule collection.')
         c.argument('translated_port', help='Translated port for this NAT rule collection.')
+        c.argument('translated_fqdn', help='Translated FQDN for this NAT rule collection.')
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
