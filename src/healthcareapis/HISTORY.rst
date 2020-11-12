@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.2.1
+0.3.0
 ++++++
 
 * Add support for private link
