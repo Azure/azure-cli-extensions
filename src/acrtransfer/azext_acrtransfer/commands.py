@@ -9,33 +9,45 @@ from azext_acrtransfer._client_factory import cf_acrtransfer
 
 
 def load_command_table(self, _):
+    importpipeline_sdk = CliCommandType(
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ImportPipelinesOperations.{}',
+        client_factory=cf_acrtransfer,
+        min_api='2019-12-01-preview'
+    )
 
-    acrtransfer_sdk = CliCommandType(
-        operations_tmpl='azext_acrtransfer.vendored_sdks.operations#ImportPipelinesOperations.{}',
-        client_factory=cf_acrtransfer)
+    exportpipeline_sdk = CliCommandType(
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ExportPipelinesOperations.{}',
+        client_factory=cf_acrtransfer,
+        min_api='2019-12-01-preview'
+    )
 
+    pipelinerun_sdk = CliCommandType(
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#PipelineRunsOperations.{}',
+        client_factory=cf_acrtransfer,
+        min_api='2019-12-01-preview'
+    )
 
-    with self.command_group('acrtransfer', acrtransfer_sdk, client_factory=cf_acrtransfer) as g:
-        g.custom_command('importpipeline create', 'create_importpipeline')
-        g.custom_command('importpipeline delete', 'delete_importpipeline')
-        g.custom_command('importpipeline list', 'list_importpipeline')
-        g.custom_command('importpipeline show', 'get_importpipeline')
-        g.custom_command('importpipeline update', 'update_importpipeline')
+    with self.command_group('acrtransfer importpipeline', importpipeline_sdk) as g:
+        g.custom_command('create', 'create_importpipeline')
+        g.custom_command('delete', 'delete_importpipeline')
+        g.custom_command('list', 'list_importpipeline')
+        g.custom_command('show', 'get_importpipeline')
+        g.custom_command('update', 'update_importpipeline')
 
-        g.custom_command('exportpipeline create', 'create_exportpipeline')
-        g.custom_command('exportpipeline delete', 'delete_exportpipeline')
-        g.custom_command('exportpipeline list', 'list_exportpipeline')
-        g.custom_command('exportpipeline show', 'get_exportpipeline')
-        g.custom_command('exportpipeline update', 'update_exportpipeline')
-
-        g.custom_command('pipelinerun create', 'create_pipelinerun')
-        g.custom_command('pipelinerun delete', 'delete_pipelinerun')
-        g.custom_command('pipelinerun list', 'list_pipelinerun')
-        g.custom_command('pipelinerun show', 'get_pipelinerun')
-   
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_acrtransfer')
 
+    with self.command_group('acrtransfer exportpipeline', exportpipeline_sdk, client_factory=cf_acrtransfer) as g:
+        g.custom_command('create', 'create_exportpipeline')
+        g.custom_command('delete', 'delete_exportpipeline')
+        g.custom_command('list', 'list_exportpipeline')
+        g.custom_command('show', 'get_exportpipeline')
+        g.custom_command('update', 'update_exportpipeline')
+
+    with self.command_group('acrtransfer pipelinerun', pipelinerun_sdk, client_factory=cf_acrtransfer) as g:
+        g.custom_command('create', 'create_pipelinerun')
+        g.custom_command('delete', 'delete_pipelinerun')
+        g.custom_command('list', 'list_pipelinerun')
+        g.custom_command('show', 'get_pipelinerun')
 
     with self.command_group('acrtransfer', is_preview=True):
         pass
-

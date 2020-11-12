@@ -10,9 +10,12 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, locat
     
     raise CLIError('TODO: Implement `importpipeline create`')
 
-def list_importpipeline(cmd, client, resource_group_name=None):
+def list_importpipeline(cmd, client, resource_group_name, registry_name):
     print("doggo")
-    raise CLIError('TODO: Implement `importpipeline list`')
+
+    
+
+    print("done")
 
 def delete_importpipeline(cmd, client, resource_group_name=None):
     raise CLIError('TODO: Implement `importpipeline list`')
