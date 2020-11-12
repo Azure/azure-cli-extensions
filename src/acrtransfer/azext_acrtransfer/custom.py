@@ -13,7 +13,16 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, locat
 def list_importpipeline(cmd, client, resource_group_name, registry_name):
     print("doggo")
 
-    
+    raw_response = client.import_pipelines.list(resource_group_name, registry_name)
+
+    for pipeline in raw_response:
+        print(pipeline)
+
+        print()
+
+        for i in pipeline.identity:
+            print(i)
+
 
     print("done")
 

@@ -46,7 +46,7 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
-    DEFAULT_API_VERSION = '2019-05-01'
+    DEFAULT_API_VERSION = '2019-12-01-preview'
     _PROFILE_TAG = "azure.mgmt.containerregistry.ContainerRegistryManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -62,7 +62,7 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
         self,
         credential,  # type: "TokenCredential"
         subscription_id,  # type: str
-        api_version=None,
+        api_version='2019-12-01-preview',
         base_url=None,
         profile=KnownProfiles.default,
         **kwargs  # type: Any
