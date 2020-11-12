@@ -9,6 +9,7 @@ from knack.arguments import CLIArgumentType
 
 def load_arguments(self, _):
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', id_part=None, required=False)
+    storage_account_name_type = CLIArgumentType(options_list=['--storage_account', '-sa'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Target id.')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
@@ -19,6 +20,7 @@ def load_arguments(self, _):
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
+        c.argument('storage_account', storage_account_name_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)

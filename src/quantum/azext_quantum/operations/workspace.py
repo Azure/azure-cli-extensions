@@ -8,6 +8,9 @@
 from knack.util import CLIError
 
 from .._client_factory import cf_workspaces
+from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
+from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider
 
 
 class WorkspaceInfo(object):
@@ -42,6 +45,39 @@ class WorkspaceInfo(object):
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
             cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
+
+def get_basic_quantum_workspace(location, info, storage_account):
+    qw = QuantumWorkspace()
+    # Use a default provider 
+    # Replace this with user specified providers as part of task:
+    # https://ms-quantum.visualstudio.com/Quantum%20Program/_workitems/edit/16184
+    prov = Provider()
+    prov.provider_id = "Microsoft"
+    prov.provider_sku = "Basic"
+    qw.providers = [prov]
+    # Allow the system to assign the workspace identity
+    qw.identity = QuantumWorkspaceIdentity()
+    qw.identity.type = "SystemAssigned"
+    qw.location = location
+    qw.storage_account = f"/subscriptions/{info.subscription}/resourceGroups/{info.resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account}"
+    return qw
+
+
+def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None):
+    """
+    Creates a new Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    if (not workspace_name):
+        raise CLIError("An explicit workspace name is required for this command.")
+    if (not storage_account):
+        raise CLIError("A quantum workspace requires a valid storage account.")
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    if (not info.resource_group):
+        raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+    quantum_workspace = get_basic_quantum_workspace(location, info, storage_account)
+    return client.create_and_update(info.resource_group, info.name, quantum_workspace, polling=False)
+
 
 def delete(cmd, resource_group_name=None, workspace_name=None):
     """
