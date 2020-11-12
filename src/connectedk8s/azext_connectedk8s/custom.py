@@ -476,8 +476,8 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
         tags=tags,
-        kubernetes_distro=kubernetes_distro,
-        kubernetes_infra=kubernetes_infra
+        distribution=kubernetes_distro,
+        infrastructure=kubernetes_infra
     )
     return cc
 

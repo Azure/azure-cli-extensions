@@ -21,7 +21,8 @@ class Operation(Model):
     :ivar name: Operation name: {Microsoft.Kubernetes}/{resource}/{operation}
     :vartype name: str
     :ivar display: The object that represents the operation.
-    :vartype display: ~azure.mgmt.hybridkubernetes.models.OperationDisplay
+    :vartype display:
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.OperationDisplay
     """
 
     _validation = {

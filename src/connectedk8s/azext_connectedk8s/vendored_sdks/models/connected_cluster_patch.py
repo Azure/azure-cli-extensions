@@ -21,14 +21,19 @@ class ConnectedClusterPatch(Model):
      used by the agent to do the initial handshake to the backend services in
      Azure.
     :type agent_public_key_certificate: str
+    :param api_server_certificate: Base64 encoded Kubernetes API server
+     certificate authority data
+    :type api_server_certificate: str
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
+        'api_server_certificate': {'key': 'properties.apiServerCertificate', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(ConnectedClusterPatch, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
         self.agent_public_key_certificate = kwargs.get('agent_public_key_certificate', None)
+        self.api_server_certificate = kwargs.get('api_server_certificate', None)

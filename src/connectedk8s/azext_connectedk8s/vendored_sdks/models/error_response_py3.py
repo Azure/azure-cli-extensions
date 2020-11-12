@@ -17,7 +17,8 @@ class ErrorResponse(Model):
     """The error response that indicates why an operation has failed.
 
     :param error:
-    :type error: ~azure.mgmt.hybridkubernetes.models.ErrorDetails
+    :type error:
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorDetails
     """
 
     _attribute_map = {
