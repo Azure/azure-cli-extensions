@@ -1234,7 +1234,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                aad_admin_group_object_ids=None,
                enable_ahub=False,
                disable_ahub=False,
-               aks_custom_headers=None):
+               aks_custom_headers=None,
+               enable_managed_identity=False,
+               assign_identity=None,
+               yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1256,7 +1259,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
-       not disable_ahub:
+       not disable_ahub and \
+       not enable_managed_identity and \
+       not assign_identity:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1274,7 +1279,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
-                       '"--disable-ahub"')
+                       '"--disable-ahub" or'
+                       '"--enable-managed-identity"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1409,6 +1415,46 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'Windows_Server'
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
+
+    if not enable_managed_identity and assign_identity:
+        raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
+
+    current_identity_type = "spn"
+    if instance.identity is not None:
+        current_identity_type = instance.identity.type.casefold()
+
+    goal_identity_type = current_identity_type
+    if enable_managed_identity:
+        if not assign_identity:
+            goal_identity_type = "systemassigned"
+        else:
+            goal_identity_type = "userassigned"
+
+    if current_identity_type != goal_identity_type:
+        from knack.prompting import prompt_y_n
+        msg = ""
+        if current_identity_type == "spn":
+            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
+                   'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
+                   'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
+                   'Are you sure you want to perform this operation?').format(goal_identity_type)
+        else:
+            msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
+                   'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
+        if not yes and not prompt_y_n(msg, default="n"):
+            return None
+        if goal_identity_type == "systemassigned":
+            instance.identity = ManagedClusterIdentity(
+                type="SystemAssigned"
+            )
+        elif goal_identity_type == "userassigned":
+            user_assigned_identity = {
+                assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+            }
+            instance.identity = ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities=user_assigned_identity
+            )
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)

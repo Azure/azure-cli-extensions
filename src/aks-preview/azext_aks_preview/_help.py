@@ -8,8 +8,10 @@ import os.path
 
 from knack.help_files import helps
 
-ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
-AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
+ACS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'acsServicePrincipal.json')
+AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
 helps['aks create'] = """
@@ -415,6 +417,12 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -448,6 +456,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
       - name: Disable Azure Hybrid User Benefits featture for a kubernetes cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-ahub
+      - name: Update the cluster to use system assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
+      - name: Update the cluster to use user assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
 """
 
 helps['aks kollect'] = """
