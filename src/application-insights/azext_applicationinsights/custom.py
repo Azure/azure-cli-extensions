@@ -12,6 +12,8 @@ from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.core.profiles import ResourceType
 
 logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
@@ -244,3 +246,95 @@ def update_component_linked_storage_account(client, resource_group_name, applica
 
 def delete_component_linked_storage_account(client, resource_group_name, application):
     return client.delete(resource_group_name=resource_group_name, resource_name=application)
+
+
+def list_export_configurations(client, application, resource_group_name):
+    return client.list(resource_group_name, application)
+
+
+def create_export_configuration(cmd, client, application, resource_group_name, record_types, dest_account,
+                                dest_container, dest_sas, dest_sub_id, dest_type='Blob', is_enabled='true'):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+    sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+                                    subscription_id=dest_sub_id).storage_accounts
+    storage_accounts = list(sc_op.list())
+    storage_account = None
+    for x in storage_accounts:
+        if x.name.lower() == dest_account.lower():
+            storage_account = x
+            break
+
+    if not storage_account:
+        raise CLIError("Destination storage account {} does not exist, "
+                       "use 'az storage account list' to get storage account list".format(dest_account))
+
+    dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
+    dest_address += dest_container + '?' + dest_sas
+
+    export_config_request = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        destination_type=dest_type,
+        destination_address=dest_address,
+        destination_storage_subscription_id=dest_sub_id,
+        destination_storage_location_id=storage_account.primary_location,
+        destination_account_id=storage_account.id,
+        is_enabled=is_enabled,
+    )
+    return client.create(resource_group_name, application, export_config_request)
+
+
+def update_export_configuration(cmd, client, application, resource_group_name, export_id, record_types=None,
+                                dest_account=None, dest_container=None, dest_sas=None, dest_sub_id=None, dest_type=None,
+                                is_enabled=None):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+
+    export_config_request = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        is_enabled=is_enabled,
+    )
+
+    if dest_sub_id is not None or dest_account is not None or dest_container is not None:
+        if not dest_sas:
+            raise CLIError("The SAS token for the destination storage container required.")
+        pre_config = get_export_configuration(client, application, resource_group_name, export_id)
+        if dest_sub_id is None:
+            dest_sub_id = pre_config.destination_storage_subscription_id
+        if dest_account is None:
+            if dest_sub_id != pre_config.destination_storage_subscription_id:
+                raise CLIError("The destination storage account name required.")
+            dest_account = pre_config.storage_name
+        if dest_container is None:
+            dest_container = pre_config.container_name
+        if dest_type is None:
+            dest_type = 'Blob'
+
+        sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+                                        subscription_id=dest_sub_id).storage_accounts
+        storage_accounts = list(sc_op.list())
+        storage_account = None
+        for x in storage_accounts:
+            if x.name.lower() == dest_account.lower():
+                storage_account = x
+                break
+
+        if not storage_account:
+            raise CLIError("Destination storage account {} does not exist, "
+                           "use 'az storage account list' to get storage account list".format(dest_account))
+
+        dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
+        dest_address += dest_container + '?' + dest_sas
+        export_config_request.destination_type = dest_type
+        export_config_request.destination_address = dest_address
+        export_config_request.destination_storage_subscription_id = dest_sub_id
+        export_config_request.destination_storage_location_id = storage_account.primary_location
+        export_config_request.destination_account_id = storage_account.id
+
+    return client.update(resource_group_name, application, export_id, export_config_request)
+
+
+def get_export_configuration(client, application, resource_group_name, export_id):
+    return client.get(resource_group_name, application, export_id)
+
+
+def delete_export_configuration(client, application, resource_group_name, export_id):
+    return client.delete(resource_group_name, application, export_id)

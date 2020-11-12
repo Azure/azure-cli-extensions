@@ -24,6 +24,7 @@ import time
 import uuid
 import base64
 import webbrowser
+from distutils.version import StrictVersion
 from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
@@ -595,16 +596,13 @@ def _update_dict(dict1, dict2):
     return cp
 
 
-def aks_browse(cmd,     # pylint: disable=too-many-statements
+def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
                resource_group_name,
                name,
                disable_browser=False,
                listen_address='127.0.0.1',
                listen_port='8001'):
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
@@ -612,13 +610,28 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     addon_profile = next((addon_profiles[k] for k in addon_profiles
                           if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
                          ManagedClusterAddonProfile(enabled=False))
-    if not addon_profile.enabled:
-        raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
-                       'To use "az aks browse" first enable the add-on '
-                       'by running "az aks enable-addons --addons kube-dashboard".\n'
-                       'Starting with Kubernetes 1.19, AKS no longer support installation of '
-                       'the managed kube-dashboard addon.\n'
-                       'Please use the Kubernetes resources view in the Azure portal (preview) instead.')
+
+    # open portal view if addon is not enabled or k8s version >= 1.19.0
+    if StrictVersion(instance.kubernetes_version) >= StrictVersion('1.19.0') or (not addon_profile.enabled):
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        dashboardURL = (
+            cmd.cli_ctx.cloud.endpoints.portal +  # Azure Portal URL (https://portal.azure.com for public cloud)
+            ('/#resource/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService'
+             '/managedClusters/{2}/workloads').format(subscription_id, resource_group_name, name)
+        )
+
+        if in_cloud_console():
+            logger.warning('To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
+        else:
+            logger.warning('Kubernetes resources view on %s', dashboardURL)
+
+        if not disable_browser:
+            webbrowser.open_new_tab(dashboardURL)
+        return
+
+    # otherwise open the kube-dashboard addon
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
 
     _, browse_path = tempfile.mkstemp()
 
@@ -1221,7 +1234,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                aad_admin_group_object_ids=None,
                enable_ahub=False,
                disable_ahub=False,
-               aks_custom_headers=None):
+               aks_custom_headers=None,
+               enable_managed_identity=False,
+               assign_identity=None,
+               yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1243,7 +1259,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
-       not disable_ahub:
+       not disable_ahub and \
+       not enable_managed_identity and \
+       not assign_identity:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1261,7 +1279,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
-                       '"--disable-ahub"')
+                       '"--disable-ahub" or'
+                       '"--enable-managed-identity"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1396,6 +1415,46 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'Windows_Server'
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
+
+    if not enable_managed_identity and assign_identity:
+        raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
+
+    current_identity_type = "spn"
+    if instance.identity is not None:
+        current_identity_type = instance.identity.type.casefold()
+
+    goal_identity_type = current_identity_type
+    if enable_managed_identity:
+        if not assign_identity:
+            goal_identity_type = "systemassigned"
+        else:
+            goal_identity_type = "userassigned"
+
+    if current_identity_type != goal_identity_type:
+        from knack.prompting import prompt_y_n
+        msg = ""
+        if current_identity_type == "spn":
+            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
+                   'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
+                   'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
+                   'Are you sure you want to perform this operation?').format(goal_identity_type)
+        else:
+            msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
+                   'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
+        if not yes and not prompt_y_n(msg, default="n"):
+            return None
+        if goal_identity_type == "systemassigned":
+            instance.identity = ManagedClusterIdentity(
+                type="SystemAssigned"
+            )
+        elif goal_identity_type == "userassigned":
+            user_assigned_identity = {
+                assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+            }
+            instance.identity = ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities=user_assigned_identity
+            )
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)

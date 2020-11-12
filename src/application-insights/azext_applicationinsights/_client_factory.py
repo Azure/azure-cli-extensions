@@ -49,3 +49,7 @@ def cf_api_key(cli_ctx, _):
 
 def cf_component_linked_storage_accounts(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).component_linked_storage_accounts
+
+
+def cf_export_configuration(cli_ctx, _):
+    return applicationinsights_mgmt_plane_client(cli_ctx).export_configurations

@@ -16,11 +16,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
         self.cmd(versions_cmd, checks=[
-            self.check('type', 'Microsoft.ContainerService/locations/orchestrators'),
+            self.check(
+                'type', 'Microsoft.ContainerService/locations/orchestrators'),
             self.check('orchestrators[0].orchestratorType', 'Kubernetes')
         ])
 
-    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -36,7 +38,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
-            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+            self.check(
+                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
@@ -45,11 +48,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
-            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000002'),
-            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000003')
+            self.check(
+                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000002'),
+            self.check('aadProfile.tenantId',
+                       '00000000-0000-0000-0000-000000000003')
         ])
 
-    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_aadv1_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -69,9 +75,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', None),
-            self.check('aadProfile.serverAppId', '00000000-0000-0000-0000-000000000001'),
-            self.check('aadProfile.clientAppId', '00000000-0000-0000-0000-000000000002'),
-            self.check('aadProfile.tenantId', 'd5b55040-0c14-48cc-a028-91457fc190d9')
+            self.check('aadProfile.serverAppId',
+                       '00000000-0000-0000-0000-000000000001'),
+            self.check('aadProfile.clientAppId',
+                       '00000000-0000-0000-0000-000000000002'),
+            self.check('aadProfile.tenantId',
+                       'd5b55040-0c14-48cc-a028-91457fc190d9')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
@@ -81,11 +90,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
-            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000003'),
-            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000004')
+            self.check(
+                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000003'),
+            self.check('aadProfile.tenantId',
+                       '00000000-0000-0000-0000-000000000004')
         ])
 
-    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_nonaad_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -110,11 +122,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
-            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001'),
-            self.check('aadProfile.tenantId', '00000000-0000-0000-0000-000000000002')
+            self.check(
+                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001'),
+            self.check('aadProfile.tenantId',
+                       '00000000-0000-0000-0000-000000000002')
         ])
 
-    @live_only()  # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad_enable_azure_rbac(self, resource_group, resource_group_location):
@@ -131,7 +146,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check('aadProfile.enableAzureRBAC', True),
-            self.check('aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+            self.check(
+                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
         ])
 
     @AllowLargeResponse()
@@ -148,7 +164,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressapplicationgateway.enabled', True),
-            self.check('addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
+            self.check(
+                'addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -190,8 +207,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressapplicationgateway.enabled', True),
-            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
-            self.check('addonProfiles.ingressapplicationgateway.config.subnetid', vnet_id + '/subnets/appgw-subnet')
+            self.check(
+                'addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
+            self.check('addonProfiles.ingressapplicationgateway.config.subnetid',
+                       vnet_id + '/subnets/appgw-subnet')
         ]).get_output_in_json()
 
         addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
@@ -261,7 +280,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressapplicationgateway.enabled', True),
-            self.check('addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
+            self.check(
+                'addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
         ]).get_output_in_json()
 
         addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
@@ -344,7 +364,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
         ])
 
     @AllowLargeResponse()
@@ -361,7 +382,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
         ])
 
     @live_only()  # without live only fails with need az login
@@ -385,7 +407,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.accsgxdeviceplugin.enabled', True),
-            self.check('addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
+            self.check(
+                'addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
         ])
 
     @live_only()  # without live only fails with need az login
@@ -403,7 +426,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
-            self.check('addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
         ])
 
         disable_cmd = 'aks disable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
@@ -494,12 +518,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--nodepool-name={node_pool_name}',
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
-                     self.check('latestNodeImageVersion', 'AKSUbuntu-1604-2020.09.03'),
-                     self.check('type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
+                     self.check('latestNodeImageVersion',
+                                'AKSUbuntu-1604-2020.09.03'),
+                     self.check(
+                         'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
 
         # delete
-        self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -528,7 +555,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                                               '--node-image-only ' \
                                               '--yes'
         self.cmd(upgrade_node_image_only_cluster_cmd, checks=[
-            self.check('agentPoolProfiles[0].provisioningState', 'UpgradingNodeImageVersion')
+            self.check(
+                'agentPoolProfiles[0].provisioningState', 'UpgradingNodeImageVersion')
         ])
 
     @AllowLargeResponse()
@@ -614,7 +642,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # #nodepool delete
-        self.cmd('aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait', checks=[self.is_empty()])
+        self.cmd(
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait', checks=[self.is_empty()])
 
         # delete
         self.cmd(
@@ -667,7 +696,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # #nodepool delete
-        self.cmd('aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait', checks=[self.is_empty()])
+        self.cmd(
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait', checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
+    def test_aks_update_to_msi_cluster(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys '
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # update to MSI cluster
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-managed-identity --yes', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('identity.type', 'SystemAssigned')
+        ])
 
         # delete
         self.cmd(
