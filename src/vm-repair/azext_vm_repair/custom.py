@@ -30,7 +30,6 @@ from .repair_utils import (
     _check_script_succeeded,
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
-    _unlock_singlepass_encrypted_disk_fallback,
     _invoke_run_command
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
@@ -51,7 +50,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
-        
+
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
             os_image_urn = "UbuntuLTS"
@@ -113,8 +112,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
                 logger.debug('Unlock script STDOUT:\n%s', stdout)
                 if stderr:
-                    logger.warning('Encryption unlock script error was generated:\n%s', STDERR)
-                
+                    logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+
         # UNMANAGED DISK
         else:
             logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')

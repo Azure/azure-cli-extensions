@@ -275,8 +275,7 @@ def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linu
     logger.info('Unlocking attached copied disk...')
     if is_linux:
         return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
-    else:
-        return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
 
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
