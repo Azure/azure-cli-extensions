@@ -5,9 +5,17 @@
 
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
+from .recording_processors import StorageAccountSASReplacer
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
+
+    def __init__(self, method_name):
+        self.sas_replacer = StorageAccountSASReplacer()
+        super(ApplicationInsightsManagementClientTests, self).__init__(method_name, recording_processors=[
+            self.sas_replacer
+        ])
+
     """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component(self, resource_group, location):
@@ -185,6 +193,56 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
+    @StorageAccountPreparer(name_prefix='component', kind='StorageV2', location='westus2', parameter_name='storage_account_2')
+    def test_component_continues_export(self, resource_group, location, storage_account, storage_account_2):
+        from datetime import datetime, timedelta
+        expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%MZ')
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'name_a': 'demoApp',
+            'kind': 'web',
+            'record_types_a': 'Requests Event Exceptions Metrics PageViews',
+            'record_types_b': 'Requests Event PageViews',
+            'account_name_a': storage_account,
+            'account_name_b': storage_account_2,
+            'container_name_a': 'ctna',
+            'container_name_b': 'ctnb',
+            'application_type': 'web',
+            'expiry': expiry,
+            'retention_time': 120
+        })
+        self.kwargs['dest_sub_id'] = self.cmd('account show').get_output_in_json()['id']
+        self.cmd('storage container create -n {container_name_a} --account-name {account_name_a}')
+        self.cmd('storage container create -n {container_name_b} --account-name {account_name_b}')
+        self.kwargs['dest_sas_a'] = self.cmd('storage container generate-sas --account-name {account_name_a} --name {container_name_a} --permissions w --expiry {expiry}').output.replace('"', '').strip()
+        self.kwargs['dest_sas_b'] = self.cmd('storage container generate-sas --account-name {account_name_b} --name {container_name_b} --permissions w --expiry {expiry}').output.replace('"', '').strip()
+        self.sas_replacer.add_sas_token(self.kwargs['dest_sas_a'])
+        self.sas_replacer.add_sas_token(self.kwargs['dest_sas_b'])
+        self.cmd('monitor app-insights component create --app {name_a} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type} --retention-time {retention_time}').get_output_in_json()
+        self.kwargs['export_id'] = self.cmd('monitor app-insights component continues-export create -g {resource_group} --app {name_a} --record-types {record_types_a} --dest-account {account_name_a} --dest-container {container_name_a} --dest-sub-id {dest_sub_id} --dest-sas {dest_sas_a}',
+                                            checks=[
+                                                self.check('@[0].storageName', self.kwargs['account_name_a']),
+                                                self.check('@[0].containerName', self.kwargs['container_name_a'])
+                                            ]).get_output_in_json()[0]['exportId']
+        self.cmd('monitor app-insights component continues-export show -g {resource_group} --app {name_a} --id {export_id}',
+                 checks=[
+                     self.check('storageName', self.kwargs['account_name_a']),
+                     self.check('containerName', self.kwargs['container_name_a'])
+                 ])
+        self.cmd('monitor app-insights component continues-export update -g {resource_group} --app {name_a} --id {export_id} --record-types {record_types_b} --dest-account {account_name_b} --dest-container {container_name_b} --dest-sub-id {dest_sub_id} --dest-sas {dest_sas_b}',
+                 checks=[
+                     self.check('storageName', self.kwargs['account_name_b']),
+                     self.check('containerName', self.kwargs['container_name_b'])
+                 ])
+        self.cmd('monitor app-insights component continues-export list -g {resource_group} --app {name_a}',
+                 checks=[
+                     self.check('length(@)', 1)
+                 ])
+        self.cmd('monitor app-insights component continues-export delete -y -g {resource_group} --app {name_a} --id {export_id}')
 
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component_with_linked_workspace(self, resource_group, location):

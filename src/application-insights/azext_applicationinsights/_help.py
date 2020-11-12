@@ -282,3 +282,72 @@ helps['monitor app-insights component linked-storage unlink'] = """
     type: command
     short-summary: Unlink a storage account with an Application Insights component.
 """
+
+helps['monitor app-insights component continues-export'] = """
+    type: group
+    short-summary: Manage Continuous Export configurations for an Application Insights component.
+"""
+
+helps['monitor app-insights component continues-export list'] = """
+    type: command
+    short-summary: List Continuous Export configurations for an Application Insights component.
+    examples:
+      - name: ExportConfigurationsList
+        text: |
+            az monitor app-insights component continues-export list -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633
+"""
+
+helps['monitor app-insights component continues-export create'] = """
+    type: command
+    short-summary: Create a Continuous Export configuration for an Application Insights component.
+    examples:
+      - name: Create a Continuous Export configuration.
+        text: |
+            az monitor app-insights component continues-export create -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --record-types Requests Event Exceptions Metrics PageViews \\
+            --dest-account account --dest-container container --dest-sub-id sub-id \\
+            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
+"""
+
+helps['monitor app-insights component continues-export update'] = """
+    type: command
+    short-summary: Update a Continuous Export configuration for an Application Insights component.
+    examples:
+      - name: Update a Continuous Export configuration record-types.
+        text: |
+            az monitor app-insights component continues-export update -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --id exportid \\
+            --record-types Requests Event Exceptions Metrics PageViews
+      - name: Update a Continuous Export configuration storage destination.
+        text: |
+            az monitor app-insights component continues-export update -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --id exportid \\
+            --dest-account account --dest-container container --dest-sub-id sub-id \\
+            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
+"""
+
+helps['monitor app-insights component continues-export show'] = """
+    type: command
+    short-summary: Get a specific Continuous Export configuration of an Application Insights component.
+    examples:
+      - name: Get a Continuous Export configuration by ID.
+        text: |
+            az monitor app-insights component continues-export show -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --id exportid
+"""
+
+helps['monitor app-insights component continues-export delete'] = """
+    type: command
+    short-summary: Delete a specific Continuous Export configuration of an Application Insights component.
+    examples:
+      - name: Delete a Continuous Export configuration by ID.
+        text: |
+            az monitor app-insights component continues-export delete -g rg \\
+            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
+            --id exportid
+"""
