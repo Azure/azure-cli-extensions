@@ -72,7 +72,7 @@ helps['connectedmachine extension create'] = """
     type: command
     short-summary: "The operation to create or update the extension."
     examples:
-      - name: Create or Update a Machine Extension (PUT)
+      - name: Create a Machine Extension (PUT)
         text: |-
                az connectedmachine extension create --machine-name "myMachine" --name "CustomScriptExtension" --location \
 "eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"pow\
@@ -84,7 +84,7 @@ helps['connectedmachine extension update'] = """
     type: command
     short-summary: "The operation to update the extension."
     examples:
-      - name: Create or Update a Machine Extension (PATCH)
+      - name: Update a Machine Extension (PATCH)
         text: |-
                az connectedmachine extension update --machine-name "myMachine" --name "CustomScriptExtension" --type \
 "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
