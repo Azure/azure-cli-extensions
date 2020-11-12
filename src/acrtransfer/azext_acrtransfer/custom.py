@@ -7,9 +7,11 @@ from knack.util import CLIError
 
 
 def create_importpipeline(cmd, client, resource_group_name, registry_name, location=None, tags=None):
+    
     raise CLIError('TODO: Implement `importpipeline create`')
 
 def list_importpipeline(cmd, client, resource_group_name=None):
+    print("doggo")
     raise CLIError('TODO: Implement `importpipeline list`')
 
 def delete_importpipeline(cmd, client, resource_group_name=None):
@@ -51,8 +53,3 @@ def delete_pipelinerun(cmd, client, resource_group_name=None):
 
 def get_pipelinerun(cmd, client, resource_group_name=None):
     raise CLIError('TODO: Implement `pipelinerun list`')
-
-def update_pipelinerun(cmd, instance, tags=None):
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-    return instance

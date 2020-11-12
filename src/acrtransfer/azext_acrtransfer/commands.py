@@ -32,7 +32,7 @@ def load_command_table(self, _):
         g.custom_command('pipelinerun delete', 'delete_pipelinerun')
         g.custom_command('pipelinerun list', 'list_pipelinerun')
         g.custom_command('pipelinerun show', 'get_pipelinerun')
-        g.custom_command('pipelinerun update', 'update_pipelinerun')
+   
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_acrtransfer')
 
 
