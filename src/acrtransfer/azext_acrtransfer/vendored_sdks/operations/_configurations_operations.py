@@ -35,7 +35,7 @@ class ConfigurationsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-01-01"
+        self.api_version = "2019-12-01-preview"
         self.configuration_name = "default"
 
         self.config = config
