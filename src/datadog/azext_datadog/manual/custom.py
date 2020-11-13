@@ -21,4 +21,4 @@ def datadog_link_create():
           "    az datadog monitor create --name \"myMonitor\" --location \"West US 2\" --identity-type"
           " \"SystemAssigned\" --sku-name \"Linked\" --datadog-organization-properties"
           " linking-auth-code=\"copyFromCode\" linking-client-id=\"00000000-0000-0000-0000-000000000000\""
-          " --user-info name\"Alice\" email-address=\"alice@microsoft.com\" phone-number=\"123-456-789\"")
+          " --user-info name=\"Alice\" email-address=\"alice@microsoft.com\" phone-number=\"123-456-789\"")
