@@ -12,5 +12,5 @@ helps['datadog link'] = """
 
 helps['datadog link create'] = """
     type: command
-    short-summary: The operation to link Datadog existing orgnization.
+    short-summary: The operation to link Datadog existing organization.
 """
