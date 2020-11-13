@@ -12,115 +12,110 @@
 from knack.help_files import helps
 
 
-helps['connectedmachine machine'] = """
+helps['connectedmachine'] = """
     type: group
-    short-summary: connectedmachine machine
+    short-summary: connectedmachine
 """
 
-helps['connectedmachine machine list'] = """
+helps['connectedmachine list'] = """
     type: command
     short-summary: "Lists all the hybrid machines in the specified subscription."
     examples:
       - name: List Machines by resource group
         text: |-
-               az connectedmachine machine list --resource-group "myResourceGroup"
+               az connectedmachine list --resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine show'] = """
+helps['connectedmachine show'] = """
     type: command
     short-summary: "Retrieves information about the model view or the instance view of a hybrid machine."
     examples:
       - name: Get Machine
         text: |-
-               az connectedmachine machine show --name "myMachine" --resource-group "myResourceGroup"
+               az connectedmachine show --name "myMachine" --resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine delete'] = """
+helps['connectedmachine delete'] = """
     type: command
     short-summary: "The operation to remove a hybrid machine identity in Azure."
     examples:
       - name: Delete a Machine
         text: |-
-               az connectedmachine machine delete --name "myMachine" --resource-group "myResourceGroup"
+               az connectedmachine delete --name "myMachine" --resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension'] = """
+helps['connectedmachine extension'] = """
     type: group
-    short-summary: connectedmachine machine-extension
+    short-summary: connectedmachine extension
 """
 
-helps['connectedmachine machine-extension list'] = """
+helps['connectedmachine extension list'] = """
     type: command
     short-summary: "The operation to get all extensions of a non-Azure machine"
     examples:
       - name: Get all Machine Extensions
         text: |-
-               az connectedmachine machine-extension list --machine-name "myMachine" --resource-group \
-"myResourceGroup"
+               az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension show'] = """
+helps['connectedmachine extension show'] = """
     type: command
     short-summary: "The operation to get the extension."
     examples:
       - name: Get Machine Extension
         text: |-
-               az connectedmachine machine-extension show --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine extension show --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension create'] = """
+helps['connectedmachine extension create'] = """
     type: command
     short-summary: "The operation to create or update the extension."
     examples:
-      - name: Create or Update a Machine Extension
+      - name: Create a Machine Extension (PUT)
         text: |-
-               az connectedmachine machine-extension create --machine-name "myMachine" --name "CustomScriptExtension" \
---location "eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings \
-"{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" \
---type-handler-version "1.10" --resource-group "myResourceGroup"
+               az connectedmachine extension create --machine-name "myMachine" --name "CustomScriptExtension" --location \
+"eastus2euap" --type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"pow\
+ershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" \
+--resource-group "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension update'] = """
+helps['connectedmachine extension update'] = """
     type: command
     short-summary: "The operation to update the extension."
     examples:
-      - name: Update a Machine Extension
+      - name: Update a Machine Extension (PATCH)
         text: |-
-               az connectedmachine machine-extension update --machine-name "myMachine" --name "CustomScriptExtension" \
---type "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe \
--c \\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --resource-group \
+               az connectedmachine extension update --machine-name "myMachine" --name "CustomScriptExtension" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --resource-group \
 "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension delete'] = """
+helps['connectedmachine extension delete'] = """
     type: command
     short-summary: "The operation to delete the extension."
     examples:
       - name: Delete a Machine Extension
         text: |-
-               az connectedmachine machine-extension delete --machine-name "myMachine" --name "MMA" --resource-group \
+               az connectedmachine extension delete --machine-name "myMachine" --name "MMA" --resource-group \
 "myResourceGroup"
 """
 
-helps['connectedmachine machine-extension wait'] = """
+helps['connectedmachine extension wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine machine-extension is \
-met.
+    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine extension is met.
     examples:
-      - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
-created.
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully created.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --created
-      - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
-updated.
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully updated.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --updated
-      - name: Pause executing next line of CLI script until the connectedmachine machine-extension is successfully \
-deleted.
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully deleted.
         text: |-
-               az connectedmachine machine-extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
+               az connectedmachine extension wait --machine-name "myMachine" --name "CustomScriptExtension" \
 --resource-group "myResourceGroup" --deleted
 """

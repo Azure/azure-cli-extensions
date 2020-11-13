@@ -20,19 +20,19 @@ DEPENDENCY_AGENT_EXTENSION_NAME = 'dependencyAgent'
 
 # Constants for Machine tests
 MACHINES_RESOURCE_GROUP_NAME = 'AzcmagentTest'
-MACHINES_MACHINE_NAME = '0.10.20225.002'
+MACHINES_MACHINE_NAME = 'dorothy-Virtual-Machine'
 MACHINES_LOCATION = 'eastus2euap'
 
 # Constants for Machine Extension tests
-EXTENSIONS_RESOURCE_GROUP_NAME = 'csharp-sdk-test'
-EXTENSIONS_MACHINE_NAME = 'thinkpad'
-EXTENSIONS_LOCATION = 'eastus'
+EXTENSIONS_RESOURCE_GROUP_NAME = 'AzcmagentTest'
+EXTENSIONS_MACHINE_NAME = 'dorothy-Virtual-Machine'
+EXTENSIONS_LOCATION = 'eastus2euap'
 
 
 @try_manual
 def setup(test):
     # This machine needs to already exist
-    test.cmd('az connectedmachine machine show '
+    test.cmd('az connectedmachine show '
              f'--name "{EXTENSIONS_MACHINE_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[
@@ -52,7 +52,7 @@ def cleanup(test):
 # EXAMPLE: /Machines/get/Get Machine
 @try_manual
 def step__machines_get_get_machine(test):
-    test.cmd('az connectedmachine machine show '
+    test.cmd('az connectedmachine show '
              f'--name "{MACHINES_MACHINE_NAME}" '
              f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
              checks=[
@@ -64,7 +64,7 @@ def step__machines_get_get_machine(test):
 # EXAMPLE: /Machines/get/List Machines by resource group
 @try_manual
 def step__machines_get_list_machines_by_resource_group(test):
-    test.cmd('az connectedmachine machine list '
+    test.cmd('az connectedmachine list '
              f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
              checks=[
                  test.greater_than('length(@)', 400)
@@ -74,14 +74,14 @@ def step__machines_get_list_machines_by_resource_group(test):
 # EXAMPLE: /Machines/delete/Delete a Machine
 @try_manual
 def step__machines_delete_delete_a_machine(test):
-    list = test.cmd('az connectedmachine machine list '
+    list = test.cmd('az connectedmachine list '
                     f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
                     checks=[
                         test.greater_than('length(@)', 400)
                     ]).get_output_in_json()
 
     nameToDelete = next(machine['name'] for machine in list if machine['name'] != MACHINES_MACHINE_NAME)
-    test.cmd('az connectedmachine machine delete -y '
+    test.cmd('az connectedmachine delete -y '
              f'--name "{nameToDelete}" '
              f'--resource-group "{MACHINES_RESOURCE_GROUP_NAME}"',
              checks=[])
@@ -93,7 +93,7 @@ def step__machines_delete_delete_a_machine(test):
 # EXAMPLE: /MachineExtensions/put/Create or Update a Machine Extension
 @try_manual
 def step__machineextensions_put(test):
-    test.cmd('az connectedmachine machine-extension create '
+    test.cmd('az connectedmachine extension create '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--name "{DEPENDENCY_AGENT_EXTENSION_NAME}" '
              f'--location "{EXTENSIONS_LOCATION}" '
@@ -109,23 +109,23 @@ def step__machineextensions_put(test):
 @try_manual
 def step__machineextensions_patch(test):
     # Create an extension to update
-    test.cmd('az connectedmachine machine-extension create '
-             f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
-             f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
-             f'--location "{EXTENSIONS_LOCATION}" '
-             '--type "CustomScript" '
-             '--publisher "Microsoft.Azure.Extensions" '
-             r"""--settings '{{"commandToExecute":"ls"}}' """
-             '--type-handler-version "2.1" '
-             f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
-             checks=[
-                 test.check('name', CUSTOM_SCRIPT_EXTENSION_NAME),
-                 test.check('provisioningState', 'Succeeded'),
-                 test.check('settings.commandToExecute', 'ls')
-             ])
+    # test.cmd('az connectedmachine extension create '
+    #          f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
+    #          f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
+    #          f'--location "{EXTENSIONS_LOCATION}" '
+    #          '--type "CustomScript" '
+    #          '--publisher "Microsoft.Azure.Extensions" '
+    #          r"""--settings '{{"commandToExecute":"ls"}}' """
+    #          '--type-handler-version "2.1" '
+    #          f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
+    #          checks=[
+    #              test.check('name', CUSTOM_SCRIPT_EXTENSION_NAME),
+    #              test.check('provisioningState', 'Succeeded'),
+    #              test.check('settings.commandToExecute', 'ls')
+    #          ])
 
     # update the extension
-    test.cmd('az connectedmachine machine-extension update '
+    test.cmd('az connectedmachine extension update '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
              r"""--settings '{{"commandToExecute":"ls -a"}}' """
@@ -141,7 +141,7 @@ def step__machineextensions_patch(test):
 @try_manual
 def step__machineextensions_get_get_machine_extension(test):
     print('this happened')
-    test.cmd('az connectedmachine machine-extension show '
+    test.cmd('az connectedmachine extension show '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
@@ -154,7 +154,7 @@ def step__machineextensions_get_get_machine_extension(test):
 # EXAMPLE: /MachineExtensions/get/GET all Machine Extensions
 @try_manual
 def step__machineextensions_get(test):
-    test.cmd('az connectedmachine machine-extension list '
+    test.cmd('az connectedmachine extension list '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[
@@ -165,26 +165,26 @@ def step__machineextensions_get(test):
 # EXAMPLE: /MachineExtensions/delete/Delete a Machine Extension
 @try_manual
 def step__machineextensions_delete(test):
-    test.cmd('az connectedmachine machine-extension delete -y '
+    test.cmd('az connectedmachine extension delete -y '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--name "{DEPENDENCY_AGENT_EXTENSION_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[])
 
-    test.cmd('az connectedmachine machine-extension list '
+    test.cmd('az connectedmachine extension list '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[
                  test.check('length(@)', 1)
              ])
 
-    test.cmd('az connectedmachine machine-extension delete -y '
+    test.cmd('az connectedmachine extension delete -y '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--name "{CUSTOM_SCRIPT_EXTENSION_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[])
 
-    test.cmd('az connectedmachine machine-extension list '
+    test.cmd('az connectedmachine extension list '
              f'--machine-name "{EXTENSIONS_MACHINE_NAME}" '
              f'--resource-group "{EXTENSIONS_RESOURCE_GROUP_NAME}"',
              checks=[

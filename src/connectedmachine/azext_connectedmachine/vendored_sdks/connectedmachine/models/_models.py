@@ -408,14 +408,14 @@ class MachineExtension(TrackedResource):
     :type protected_settings: object
     :ivar provisioning_state: The provisioning state, which only appears in the response.
     :vartype provisioning_state: str
-    :ivar name_properties_instance_view_name: The machine extension name.
-    :vartype name_properties_instance_view_name: str
-    :ivar type_properties_instance_view_type: Specifies the type of the extension; an example is
+    :ivar name_instance_view_name: The machine extension name.
+    :vartype name_instance_view_name: str
+    :ivar type_instance_view_type: Specifies the type of the extension; an example is
      "CustomScriptExtension".
-    :vartype type_properties_instance_view_type: str
-    :ivar type_handler_version_properties_instance_view_type_handler_version: Specifies the version
-     of the script handler.
-    :vartype type_handler_version_properties_instance_view_type_handler_version: str
+    :vartype type_instance_view_type: str
+    :ivar type_handler_version_instance_view_type_handler_version: Specifies the version of the
+     script handler.
+    :vartype type_handler_version_instance_view_type_handler_version: str
     :param status: Instance view status.
     :type status: ~connected_machine.models.MachineExtensionInstanceViewStatus
     """
@@ -426,9 +426,9 @@ class MachineExtension(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
-        'name_properties_instance_view_name': {'readonly': True},
-        'type_properties_instance_view_type': {'readonly': True},
-        'type_handler_version_properties_instance_view_type_handler_version': {'readonly': True},
+        'name_instance_view_name': {'readonly': True},
+        'type_instance_view_type': {'readonly': True},
+        'type_handler_version_instance_view_type_handler_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -445,10 +445,10 @@ class MachineExtension(TrackedResource):
         'settings': {'key': 'properties.settings', 'type': 'object'},
         'protected_settings': {'key': 'properties.protectedSettings', 'type': 'object'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'name_properties_instance_view_name': {'key': 'properties.instanceView.name', 'type': 'str'},
-        'type_properties_instance_view_type': {'key': 'properties.instanceView.type', 'type': 'str'},
-        'type_handler_version_properties_instance_view_type_handler_version': {'key': 'properties.instanceView.typeHandlerVersion', 'type': 'str'},
-        'status': {'key': 'properties.instanceView.status', 'type': 'MachineExtensionInstanceViewStatus'},
+        'name_instance_view_name': {'key': 'instanceView.name', 'type': 'str'},
+        'type_instance_view_type': {'key': 'instanceView.type', 'type': 'str'},
+        'type_handler_version_instance_view_type_handler_version': {'key': 'instanceView.typeHandlerVersion', 'type': 'str'},
+        'status': {'key': 'instanceView.status', 'type': 'MachineExtensionInstanceViewStatus'},
     }
 
     def __init__(
@@ -464,9 +464,9 @@ class MachineExtension(TrackedResource):
         self.settings = kwargs.get('settings', None)
         self.protected_settings = kwargs.get('protected_settings', None)
         self.provisioning_state = None
-        self.name_properties_instance_view_name = None
-        self.type_properties_instance_view_type = None
-        self.type_handler_version_properties_instance_view_type_handler_version = None
+        self.name_instance_view_name = None
+        self.type_instance_view_type = None
+        self.type_handler_version_instance_view_type_handler_version = None
         self.status = kwargs.get('status', None)
 
 
@@ -579,23 +579,12 @@ class MachineExtensionProperties(msrest.serialization.Model):
     :type protected_settings: object
     :ivar provisioning_state: The provisioning state, which only appears in the response.
     :vartype provisioning_state: str
-    :ivar name: The machine extension name.
-    :vartype name: str
-    :ivar type_instance_view_type: Specifies the type of the extension; an example is
-     "CustomScriptExtension".
-    :vartype type_instance_view_type: str
-    :ivar type_handler_version_instance_view_type_handler_version: Specifies the version of the
-     script handler.
-    :vartype type_handler_version_instance_view_type_handler_version: str
-    :param status: Instance view status.
-    :type status: ~connected_machine.models.MachineExtensionInstanceViewStatus
+    :param instance_view: The machine extension instance view.
+    :type instance_view: ~connected_machine.models.MachineExtensionInstanceView
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
-        'name': {'readonly': True},
-        'type_instance_view_type': {'readonly': True},
-        'type_handler_version_instance_view_type_handler_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -607,10 +596,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'name': {'key': 'instanceView.name', 'type': 'str'},
-        'type_instance_view_type': {'key': 'instanceView.type', 'type': 'str'},
-        'type_handler_version_instance_view_type_handler_version': {'key': 'instanceView.typeHandlerVersion', 'type': 'str'},
-        'status': {'key': 'instanceView.status', 'type': 'MachineExtensionInstanceViewStatus'},
+        'instance_view': {'key': 'instanceView', 'type': 'MachineExtensionInstanceView'},
     }
 
     def __init__(
@@ -626,10 +612,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         self.settings = kwargs.get('settings', None)
         self.protected_settings = kwargs.get('protected_settings', None)
         self.provisioning_state = None
-        self.name = None
-        self.type_instance_view_type = None
-        self.type_handler_version_instance_view_type_handler_version = None
-        self.status = kwargs.get('status', None)
+        self.instance_view = kwargs.get('instance_view', None)
 
 
 class MachineExtensionPropertiesautogenerated(MachineExtensionProperties):
@@ -657,23 +640,12 @@ class MachineExtensionPropertiesautogenerated(MachineExtensionProperties):
     :type protected_settings: object
     :ivar provisioning_state: The provisioning state, which only appears in the response.
     :vartype provisioning_state: str
-    :ivar name: The machine extension name.
-    :vartype name: str
-    :ivar type_instance_view_type: Specifies the type of the extension; an example is
-     "CustomScriptExtension".
-    :vartype type_instance_view_type: str
-    :ivar type_handler_version_instance_view_type_handler_version: Specifies the version of the
-     script handler.
-    :vartype type_handler_version_instance_view_type_handler_version: str
-    :param status: Instance view status.
-    :type status: ~connected_machine.models.MachineExtensionInstanceViewStatus
+    :param instance_view: The machine extension instance view.
+    :type instance_view: ~connected_machine.models.MachineExtensionInstanceView
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
-        'name': {'readonly': True},
-        'type_instance_view_type': {'readonly': True},
-        'type_handler_version_instance_view_type_handler_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -685,10 +657,7 @@ class MachineExtensionPropertiesautogenerated(MachineExtensionProperties):
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'name': {'key': 'instanceView.name', 'type': 'str'},
-        'type_instance_view_type': {'key': 'instanceView.type', 'type': 'str'},
-        'type_handler_version_instance_view_type_handler_version': {'key': 'instanceView.typeHandlerVersion', 'type': 'str'},
-        'status': {'key': 'instanceView.status', 'type': 'MachineExtensionInstanceViewStatus'},
+        'instance_view': {'key': 'instanceView', 'type': 'MachineExtensionInstanceView'},
     }
 
     def __init__(
