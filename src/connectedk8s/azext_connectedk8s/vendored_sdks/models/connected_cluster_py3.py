@@ -39,9 +39,6 @@ class ConnectedCluster(TrackedResource):
      certificate used by the agent to do the initial handshake to the backend
      services in Azure.
     :type agent_public_key_certificate: str
-    :param api_server_certificate: Base64 encoded Kubernetes API server
-     certificate authority data
-    :type api_server_certificate: str
     :param aad_profile: Required.
     :type aad_profile:
      ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterAADProfile
@@ -58,23 +55,15 @@ class ConnectedCluster(TrackedResource):
      'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
      ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ProvisioningState
-    :param distribution: The Kuberenetes distribution on which the agents are
-     running
-    :type distribution: str
-    :param infrastructure: The Kubernetes infrastructure on which the agents
+    :param kubernetes_distro: The Kuberenetes distribution on which the agents
      are running
-    :type infrastructure: str
+    :type kubernetes_distro: str
+    :param kubernetes_infra: The Kubernetes infrastructure on which the agents
+     are running
+    :type kubernetes_infra: str
     :ivar offering: The 1P service name through which Arc onboarding has
      happened in case of integrated onboarding
     :vartype offering: str
-    :ivar msi_certificate_expiry_time: Expiry time of the MSI certificate
-    :vartype msi_certificate_expiry_time: datetime
-    :ivar last_connectivity_time:
-    :vartype last_connectivity_time: str
-    :param connectivity_status: Possible values include: 'Connecting',
-     'Connected', 'Offline', 'Expired'
-    :type connectivity_status: str or
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectivityStatus
     """
 
     _validation = {
@@ -89,8 +78,6 @@ class ConnectedCluster(TrackedResource):
         'total_node_count': {'readonly': True},
         'agent_version': {'readonly': True},
         'offering': {'readonly': True},
-        'msi_certificate_expiry_time': {'readonly': True},
-        'last_connectivity_time': {'readonly': True},
     }
 
     _attribute_map = {
@@ -101,33 +88,25 @@ class ConnectedCluster(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ConnectedClusterIdentity'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
-        'api_server_certificate': {'key': 'properties.apiServerCertificate', 'type': 'str'},
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ConnectedClusterAADProfile'},
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'distribution': {'key': 'properties.distribution', 'type': 'str'},
-        'infrastructure': {'key': 'properties.infrastructure', 'type': 'str'},
+        'kubernetes_distro': {'key': 'properties.kubernetesDistro', 'type': 'str'},
+        'kubernetes_infra': {'key': 'properties.kubernetesInfra', 'type': 'str'},
         'offering': {'key': 'properties.offering', 'type': 'str'},
-        'msi_certificate_expiry_time': {'key': 'properties.msiCertificateExpiryTime', 'type': 'iso-8601'},
-        'last_connectivity_time': {'key': 'properties.lastConnectivityTime', 'type': 'str'},
-        'connectivity_status': {'key': 'properties.connectivityStatus', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, api_server_certificate: str=None, provisioning_state=None, distribution: str=None, infrastructure: str=None, connectivity_status=None, **kwargs) -> None:
+    def __init__(self, *, location: str, identity, agent_public_key_certificate: str, aad_profile, tags=None, provisioning_state=None, kubernetes_distro: str=None, kubernetes_infra: str=None, **kwargs) -> None:
         super(ConnectedCluster, self).__init__(tags=tags, location=location, **kwargs)
         self.identity = identity
         self.agent_public_key_certificate = agent_public_key_certificate
-        self.api_server_certificate = api_server_certificate
         self.aad_profile = aad_profile
         self.kubernetes_version = None
         self.total_node_count = None
         self.agent_version = None
         self.provisioning_state = provisioning_state
-        self.distribution = distribution
-        self.infrastructure = infrastructure
+        self.kubernetes_distro = kubernetes_distro
+        self.kubernetes_infra = kubernetes_infra
         self.offering = None
-        self.msi_certificate_expiry_time = None
-        self.last_connectivity_time = None
-        self.connectivity_status = connectivity_status

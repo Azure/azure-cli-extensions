@@ -20,7 +20,7 @@ class CredentialResults(Model):
 
     :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
     :vartype kubeconfigs:
-     list[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.CredentialResult]
+     list[~azure.mgmt.hybridkubernetes.models.CredentialResult]
     """
 
     _validation = {

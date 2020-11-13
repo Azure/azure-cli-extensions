@@ -22,24 +22,19 @@ class CredentialResult(Model):
     :vartype name: str
     :ivar value: Base64-encoded Kubernetes configuration file.
     :vartype value: bytearray
-    :ivar expiry_time: Expiry time of the credentials.
-    :vartype expiry_time: datetime
     """
 
     _validation = {
         'name': {'readonly': True},
         'value': {'readonly': True},
-        'expiry_time': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'value': {'key': 'value', 'type': 'bytearray'},
-        'expiry_time': {'key': 'expiryTime', 'type': 'iso-8601'},
     }
 
     def __init__(self, **kwargs) -> None:
         super(CredentialResult, self).__init__(**kwargs)
         self.name = None
         self.value = None
-        self.expiry_time = None
