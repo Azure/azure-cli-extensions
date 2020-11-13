@@ -201,6 +201,14 @@ class AgentPool(SubResource):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     """
 
     _validation = {
@@ -243,9 +251,11 @@ class AgentPool(SubResource):
         'node_labels': {'key': 'properties.nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'properties.nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'properties.proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'properties.kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'properties.linuxOSConfig', 'type': 'LinuxOSConfig'},
     }
 
-    def __init__(self, *, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, agent_pool_type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, **kwargs) -> None:
+    def __init__(self, *, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, agent_pool_type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, kubelet_config=None, linux_os_config=None, **kwargs) -> None:
         super(AgentPool, self).__init__(**kwargs)
         self.count = count
         self.vm_size = vm_size
@@ -274,6 +284,8 @@ class AgentPool(SubResource):
         self.node_labels = node_labels
         self.node_taints = node_taints
         self.proximity_placement_group_id = proximity_placement_group_id
+        self.kubelet_config = kubelet_config
+        self.linux_os_config = linux_os_config
 
 
 class AgentPoolAvailableVersions(Model):
@@ -877,6 +889,87 @@ class CredentialResults(Model):
         self.kubeconfigs = None
 
 
+class KubeletConfig(Model):
+    """Kubelet configurations of agent nodes.
+
+    :param cpu_manager_policy: CPU Manager policy to use.
+    :type cpu_manager_policy: str
+    :param cpu_cfs_quota: Enable CPU CFS quota enforcement for containers that
+     specify CPU limits.
+    :type cpu_cfs_quota: bool
+    :param cpu_cfs_quota_period: Sets CPU CFS quota period value.
+    :type cpu_cfs_quota_period: str
+    :param image_gc_high_threshold: The percent of disk usage after which
+     image garbage collection is always run.
+    :type image_gc_high_threshold: int
+    :param image_gc_low_threshold: The percent of disk usage before which
+     image garbage collection is never run.
+    :type image_gc_low_threshold: int
+    :param topology_manager_policy: Topology Manager policy to use.
+    :type topology_manager_policy: str
+    :param allowed_unsafe_sysctls: Allowlist of unsafe sysctls or unsafe
+     sysctl patterns (ending in `*`).
+    :type allowed_unsafe_sysctls: list[str]
+    :param fail_swap_on: If set to true it will make the Kubelet fail to start
+     if swap is enabled on the node.
+    :type fail_swap_on: bool
+    """
+
+    _attribute_map = {
+        'cpu_manager_policy': {'key': 'cpuManagerPolicy', 'type': 'str'},
+        'cpu_cfs_quota': {'key': 'cpuCfsQuota', 'type': 'bool'},
+        'cpu_cfs_quota_period': {'key': 'cpuCfsQuotaPeriod', 'type': 'str'},
+        'image_gc_high_threshold': {'key': 'imageGcHighThreshold', 'type': 'int'},
+        'image_gc_low_threshold': {'key': 'imageGcLowThreshold', 'type': 'int'},
+        'topology_manager_policy': {'key': 'topologyManagerPolicy', 'type': 'str'},
+        'allowed_unsafe_sysctls': {'key': 'allowedUnsafeSysctls', 'type': '[str]'},
+        'fail_swap_on': {'key': 'failSwapOn', 'type': 'bool'},
+    }
+
+    def __init__(self, *, cpu_manager_policy: str=None, cpu_cfs_quota: bool=None, cpu_cfs_quota_period: str=None, image_gc_high_threshold: int=None, image_gc_low_threshold: int=None, topology_manager_policy: str=None, allowed_unsafe_sysctls=None, fail_swap_on: bool=None, **kwargs) -> None:
+        super(KubeletConfig, self).__init__(**kwargs)
+        self.cpu_manager_policy = cpu_manager_policy
+        self.cpu_cfs_quota = cpu_cfs_quota
+        self.cpu_cfs_quota_period = cpu_cfs_quota_period
+        self.image_gc_high_threshold = image_gc_high_threshold
+        self.image_gc_low_threshold = image_gc_low_threshold
+        self.topology_manager_policy = topology_manager_policy
+        self.allowed_unsafe_sysctls = allowed_unsafe_sysctls
+        self.fail_swap_on = fail_swap_on
+
+
+class LinuxOSConfig(Model):
+    """OS configurations of Linux agent nodes.
+
+    :param sysctls: Sysctl settings for Linux agent nodes.
+    :type sysctls:
+     ~azure.mgmt.containerservice.v2020_11_01.models.SysctlConfig
+    :param transparent_huge_page_enabled: Transparent Huge Page enabled
+     configuration.
+    :type transparent_huge_page_enabled: str
+    :param transparent_huge_page_defrag: Transparent Huge Page defrag
+     configuration.
+    :type transparent_huge_page_defrag: str
+    :param swap_file_size_mb: SwapFileSizeMB specifies size in MB of a swap
+     file will be created on each node.
+    :type swap_file_size_mb: int
+    """
+
+    _attribute_map = {
+        'sysctls': {'key': 'sysctls', 'type': 'SysctlConfig'},
+        'transparent_huge_page_enabled': {'key': 'transparentHugePageEnabled', 'type': 'str'},
+        'transparent_huge_page_defrag': {'key': 'transparentHugePageDefrag', 'type': 'str'},
+        'swap_file_size_mb': {'key': 'swapFileSizeMB', 'type': 'int'},
+    }
+
+    def __init__(self, *, sysctls=None, transparent_huge_page_enabled: str=None, transparent_huge_page_defrag: str=None, swap_file_size_mb: int=None, **kwargs) -> None:
+        super(LinuxOSConfig, self).__init__(**kwargs)
+        self.sysctls = sysctls
+        self.transparent_huge_page_enabled = transparent_huge_page_enabled
+        self.transparent_huge_page_defrag = transparent_huge_page_defrag
+        self.swap_file_size_mb = swap_file_size_mb
+
+
 class Resource(Model):
     """The Resource model definition.
 
@@ -1406,6 +1499,14 @@ class ManagedClusterAgentPoolProfileProperties(Model):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     """
 
     _validation = {
@@ -1442,9 +1543,11 @@ class ManagedClusterAgentPoolProfileProperties(Model):
         'node_labels': {'key': 'nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'linuxOSConfig', 'type': 'LinuxOSConfig'},
     }
 
-    def __init__(self, *, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, **kwargs) -> None:
+    def __init__(self, *, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, kubelet_config=None, linux_os_config=None, **kwargs) -> None:
         super(ManagedClusterAgentPoolProfileProperties, self).__init__(**kwargs)
         self.count = count
         self.vm_size = vm_size
@@ -1473,6 +1576,8 @@ class ManagedClusterAgentPoolProfileProperties(Model):
         self.node_labels = node_labels
         self.node_taints = node_taints
         self.proximity_placement_group_id = proximity_placement_group_id
+        self.kubelet_config = kubelet_config
+        self.linux_os_config = linux_os_config
 
 
 class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
@@ -1624,6 +1729,14 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     :param name: Required. Unique name of the agent pool profile in the
      context of the subscription and resource group.
     :type name: str
@@ -1664,11 +1777,13 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         'node_labels': {'key': 'nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'linuxOSConfig', 'type': 'LinuxOSConfig'},
         'name': {'key': 'name', 'type': 'str'},
     }
 
-    def __init__(self, *, name: str, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, **kwargs) -> None:
-        super(ManagedClusterAgentPoolProfile, self).__init__(count=count, vm_size=vm_size, os_disk_size_gb=os_disk_size_gb, os_disk_type=os_disk_type, vnet_subnet_id=vnet_subnet_id, pod_subnet_id=pod_subnet_id, max_pods=max_pods, os_type=os_type, max_count=max_count, min_count=min_count, enable_auto_scaling=enable_auto_scaling, type=type, mode=mode, orchestrator_version=orchestrator_version, upgrade_settings=upgrade_settings, availability_zones=availability_zones, enable_node_public_ip=enable_node_public_ip, scale_set_priority=scale_set_priority, scale_set_eviction_policy=scale_set_eviction_policy, spot_max_price=spot_max_price, tags=tags, node_labels=node_labels, node_taints=node_taints, proximity_placement_group_id=proximity_placement_group_id, **kwargs)
+    def __init__(self, *, name: str, count: int=None, vm_size=None, os_disk_size_gb: int=None, os_disk_type=None, vnet_subnet_id: str=None, pod_subnet_id: str=None, max_pods: int=None, os_type="Linux", max_count: int=None, min_count: int=None, enable_auto_scaling: bool=None, type=None, mode=None, orchestrator_version: str=None, upgrade_settings=None, availability_zones=None, enable_node_public_ip: bool=None, scale_set_priority="Regular", scale_set_eviction_policy="Delete", spot_max_price: float=None, tags=None, node_labels=None, node_taints=None, proximity_placement_group_id: str=None, kubelet_config=None, linux_os_config=None, **kwargs) -> None:
+        super(ManagedClusterAgentPoolProfile, self).__init__(count=count, vm_size=vm_size, os_disk_size_gb=os_disk_size_gb, os_disk_type=os_disk_type, vnet_subnet_id=vnet_subnet_id, pod_subnet_id=pod_subnet_id, max_pods=max_pods, os_type=os_type, max_count=max_count, min_count=min_count, enable_auto_scaling=enable_auto_scaling, type=type, mode=mode, orchestrator_version=orchestrator_version, upgrade_settings=upgrade_settings, availability_zones=availability_zones, enable_node_public_ip=enable_node_public_ip, scale_set_priority=scale_set_priority, scale_set_eviction_policy=scale_set_eviction_policy, spot_max_price=spot_max_price, tags=tags, node_labels=node_labels, node_taints=node_taints, proximity_placement_group_id=proximity_placement_group_id, kubelet_config=kubelet_config, linux_os_config=linux_os_config, **kwargs)
         self.name = name
 
 
@@ -2586,6 +2701,143 @@ class ResourceReference(Model):
     def __init__(self, *, id: str=None, **kwargs) -> None:
         super(ResourceReference, self).__init__(**kwargs)
         self.id = id
+
+
+class SysctlConfig(Model):
+    """Sysctl settings for Linux agent nodes.
+
+    :param net_core_somaxconn: Sysctl setting net.core.somaxconn.
+    :type net_core_somaxconn: int
+    :param net_core_netdev_max_backlog: Sysctl setting
+     net.core.netdev_max_backlog.
+    :type net_core_netdev_max_backlog: int
+    :param net_core_rmem_max: Sysctl setting net.core.rmem_max.
+    :type net_core_rmem_max: int
+    :param net_core_wmem_max: Sysctl setting net.core.wmem_max.
+    :type net_core_wmem_max: int
+    :param net_core_optmem_max: Sysctl setting net.core.optmem_max.
+    :type net_core_optmem_max: int
+    :param net_ipv4_tcp_max_syn_backlog: Sysctl setting
+     net.ipv4.tcp_max_syn_backlog.
+    :type net_ipv4_tcp_max_syn_backlog: int
+    :param net_ipv4_tcp_max_tw_buckets: Sysctl setting
+     net.ipv4.tcp_max_tw_buckets.
+    :type net_ipv4_tcp_max_tw_buckets: int
+    :param net_ipv4_tcp_fin_timeout: Sysctl setting net.ipv4.tcp_fin_timeout.
+    :type net_ipv4_tcp_fin_timeout: int
+    :param net_ipv4_tcp_keepalive_time: Sysctl setting
+     net.ipv4.tcp_keepalive_time.
+    :type net_ipv4_tcp_keepalive_time: int
+    :param net_ipv4_tcp_keepalive_probes: Sysctl setting
+     net.ipv4.tcp_keepalive_probes.
+    :type net_ipv4_tcp_keepalive_probes: int
+    :param net_ipv4_tcpkeepalive_intvl: Sysctl setting
+     net.ipv4.tcp_keepalive_intvl.
+    :type net_ipv4_tcpkeepalive_intvl: int
+    :param net_ipv4_tcp_rmem: Sysctl setting net.ipv4.tcp_rmem.
+    :type net_ipv4_tcp_rmem: int
+    :param net_ipv4_tcp_wmem: Sysctl setting net.ipv4.tcp_wmem.
+    :type net_ipv4_tcp_wmem: int
+    :param net_ipv4_tcp_tw_reuse: Sysctl setting net.ipv4.tcp_tw_reuse.
+    :type net_ipv4_tcp_tw_reuse: bool
+    :param net_ipv4_ip_local_port_range: Sysctl setting
+     net.ipv4.ip_local_port_range.
+    :type net_ipv4_ip_local_port_range: str
+    :param net_ipv4_neigh_default_gc_thresh1: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh1.
+    :type net_ipv4_neigh_default_gc_thresh1: int
+    :param net_ipv4_neigh_default_gc_thresh2: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh2.
+    :type net_ipv4_neigh_default_gc_thresh2: int
+    :param net_ipv4_neigh_default_gc_thresh3: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh3.
+    :type net_ipv4_neigh_default_gc_thresh3: int
+    :param net_netfilter_nf_conntrack_max: Sysctl setting
+     net.netfilter.nf_conntrack_max.
+    :type net_netfilter_nf_conntrack_max: int
+    :param net_netfilter_nf_conntrack_buckets: Sysctl setting
+     net.netfilter.nf_conntrack_buckets.
+    :type net_netfilter_nf_conntrack_buckets: int
+    :param fs_inotify_max_user_watches: Sysctl setting
+     fs.inotify.max_user_watches.
+    :type fs_inotify_max_user_watches: int
+    :param fs_file_max: Sysctl setting fs.file-max.
+    :type fs_file_max: int
+    :param fs_aio_max_nr: Sysctl setting fs.aio-max-nr.
+    :type fs_aio_max_nr: int
+    :param fs_nr_open: Sysctl setting fs.nr_open.
+    :type fs_nr_open: int
+    :param kernel_threads_max: Sysctl setting kernel.threads-max.
+    :type kernel_threads_max: int
+    :param vm_max_map_count: Sysctl setting vm.max_map_count.
+    :type vm_max_map_count: int
+    :param vm_swappiness: Sysctl setting vm.swappiness.
+    :type vm_swappiness: int
+    :param vm_vfs_cache_pressure: Sysctl setting vm.vfs_cache_pressure.
+    :type vm_vfs_cache_pressure: int
+    """
+
+    _attribute_map = {
+        'net_core_somaxconn': {'key': 'netCoreSomaxconn', 'type': 'int'},
+        'net_core_netdev_max_backlog': {'key': 'netCoreNetdevMaxBacklog', 'type': 'int'},
+        'net_core_rmem_max': {'key': 'netCoreRmemMax', 'type': 'int'},
+        'net_core_wmem_max': {'key': 'netCoreWmemMax', 'type': 'int'},
+        'net_core_optmem_max': {'key': 'netCoreOptmemMax', 'type': 'int'},
+        'net_ipv4_tcp_max_syn_backlog': {'key': 'netIpv4TcpMaxSynBacklog', 'type': 'int'},
+        'net_ipv4_tcp_max_tw_buckets': {'key': 'netIpv4TcpMaxTwBuckets', 'type': 'int'},
+        'net_ipv4_tcp_fin_timeout': {'key': 'netIpv4TcpFinTimeout', 'type': 'int'},
+        'net_ipv4_tcp_keepalive_time': {'key': 'netIpv4TcpKeepaliveTime', 'type': 'int'},
+        'net_ipv4_tcp_keepalive_probes': {'key': 'netIpv4TcpKeepaliveProbes', 'type': 'int'},
+        'net_ipv4_tcpkeepalive_intvl': {'key': 'netIpv4TcpkeepaliveIntvl', 'type': 'int'},
+        'net_ipv4_tcp_rmem': {'key': 'netIpv4TcpRmem', 'type': 'int'},
+        'net_ipv4_tcp_wmem': {'key': 'netIpv4TcpWmem', 'type': 'int'},
+        'net_ipv4_tcp_tw_reuse': {'key': 'netIpv4TcpTwReuse', 'type': 'bool'},
+        'net_ipv4_ip_local_port_range': {'key': 'netIpv4IpLocalPortRange', 'type': 'str'},
+        'net_ipv4_neigh_default_gc_thresh1': {'key': 'netIpv4NeighDefaultGcThresh1', 'type': 'int'},
+        'net_ipv4_neigh_default_gc_thresh2': {'key': 'netIpv4NeighDefaultGcThresh2', 'type': 'int'},
+        'net_ipv4_neigh_default_gc_thresh3': {'key': 'netIpv4NeighDefaultGcThresh3', 'type': 'int'},
+        'net_netfilter_nf_conntrack_max': {'key': 'netNetfilterNfConntrackMax', 'type': 'int'},
+        'net_netfilter_nf_conntrack_buckets': {'key': 'netNetfilterNfConntrackBuckets', 'type': 'int'},
+        'fs_inotify_max_user_watches': {'key': 'fsInotifyMaxUserWatches', 'type': 'int'},
+        'fs_file_max': {'key': 'fsFileMax', 'type': 'int'},
+        'fs_aio_max_nr': {'key': 'fsAioMaxNr', 'type': 'int'},
+        'fs_nr_open': {'key': 'fsNrOpen', 'type': 'int'},
+        'kernel_threads_max': {'key': 'kernelThreadsMax', 'type': 'int'},
+        'vm_max_map_count': {'key': 'vmMaxMapCount', 'type': 'int'},
+        'vm_swappiness': {'key': 'vmSwappiness', 'type': 'int'},
+        'vm_vfs_cache_pressure': {'key': 'vmVfsCachePressure', 'type': 'int'},
+    }
+
+    def __init__(self, *, net_core_somaxconn: int=None, net_core_netdev_max_backlog: int=None, net_core_rmem_max: int=None, net_core_wmem_max: int=None, net_core_optmem_max: int=None, net_ipv4_tcp_max_syn_backlog: int=None, net_ipv4_tcp_max_tw_buckets: int=None, net_ipv4_tcp_fin_timeout: int=None, net_ipv4_tcp_keepalive_time: int=None, net_ipv4_tcp_keepalive_probes: int=None, net_ipv4_tcpkeepalive_intvl: int=None, net_ipv4_tcp_rmem: int=None, net_ipv4_tcp_wmem: int=None, net_ipv4_tcp_tw_reuse: bool=None, net_ipv4_ip_local_port_range: str=None, net_ipv4_neigh_default_gc_thresh1: int=None, net_ipv4_neigh_default_gc_thresh2: int=None, net_ipv4_neigh_default_gc_thresh3: int=None, net_netfilter_nf_conntrack_max: int=None, net_netfilter_nf_conntrack_buckets: int=None, fs_inotify_max_user_watches: int=None, fs_file_max: int=None, fs_aio_max_nr: int=None, fs_nr_open: int=None, kernel_threads_max: int=None, vm_max_map_count: int=None, vm_swappiness: int=None, vm_vfs_cache_pressure: int=None, **kwargs) -> None:
+        super(SysctlConfig, self).__init__(**kwargs)
+        self.net_core_somaxconn = net_core_somaxconn
+        self.net_core_netdev_max_backlog = net_core_netdev_max_backlog
+        self.net_core_rmem_max = net_core_rmem_max
+        self.net_core_wmem_max = net_core_wmem_max
+        self.net_core_optmem_max = net_core_optmem_max
+        self.net_ipv4_tcp_max_syn_backlog = net_ipv4_tcp_max_syn_backlog
+        self.net_ipv4_tcp_max_tw_buckets = net_ipv4_tcp_max_tw_buckets
+        self.net_ipv4_tcp_fin_timeout = net_ipv4_tcp_fin_timeout
+        self.net_ipv4_tcp_keepalive_time = net_ipv4_tcp_keepalive_time
+        self.net_ipv4_tcp_keepalive_probes = net_ipv4_tcp_keepalive_probes
+        self.net_ipv4_tcpkeepalive_intvl = net_ipv4_tcpkeepalive_intvl
+        self.net_ipv4_tcp_rmem = net_ipv4_tcp_rmem
+        self.net_ipv4_tcp_wmem = net_ipv4_tcp_wmem
+        self.net_ipv4_tcp_tw_reuse = net_ipv4_tcp_tw_reuse
+        self.net_ipv4_ip_local_port_range = net_ipv4_ip_local_port_range
+        self.net_ipv4_neigh_default_gc_thresh1 = net_ipv4_neigh_default_gc_thresh1
+        self.net_ipv4_neigh_default_gc_thresh2 = net_ipv4_neigh_default_gc_thresh2
+        self.net_ipv4_neigh_default_gc_thresh3 = net_ipv4_neigh_default_gc_thresh3
+        self.net_netfilter_nf_conntrack_max = net_netfilter_nf_conntrack_max
+        self.net_netfilter_nf_conntrack_buckets = net_netfilter_nf_conntrack_buckets
+        self.fs_inotify_max_user_watches = fs_inotify_max_user_watches
+        self.fs_file_max = fs_file_max
+        self.fs_aio_max_nr = fs_aio_max_nr
+        self.fs_nr_open = fs_nr_open
+        self.kernel_threads_max = kernel_threads_max
+        self.vm_max_map_count = vm_max_map_count
+        self.vm_swappiness = vm_swappiness
+        self.vm_vfs_cache_pressure = vm_vfs_cache_pressure
 
 
 class TagsObject(Model):
