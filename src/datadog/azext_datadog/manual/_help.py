@@ -7,7 +7,7 @@ from knack.help_files import helps
 
 helps['datadog link'] = """
     type: group
-    short-summary: Link Datadog existing orgnization.
+    short-summary: Link Datadog existing organization.
 """
 
 helps['datadog link create'] = """
