@@ -43,7 +43,7 @@ from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.cli.core.commands import LongRunningOperation
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
@@ -874,6 +874,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
+               kubelet_config=None,
+               linux_os_config=None,
                assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
@@ -929,6 +931,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         agent_pool_profile.os_disk_type = node_osdisk_type
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool_profile)
+
+    if kubelet_config:
+        agent_pool_profile.kubelet_config = _get_kubelet_config(kubelet_config)
+    
+    if linux_os_config:
+        agent_pool_profile.linux_os_config = _get_linux_os_config(linux_os_config)
 
     linux_profile = None
     # LinuxProfile is just used for SSH access to VMs, so omit it if --no-ssh-key was specified.
@@ -3002,3 +3010,26 @@ def get_aks_custom_headers(aks_custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
+
+def _get_kubelet_config(file_path):
+    kubelet_config = get_file_json(file_path)
+    config_object = {}
+    config_object["cpuManagerPolicy"] = getattr(kubelet_config, "cpuManagerPolicy", "")
+    config_object["cpuCfsQuota"] = getattr(kubelet_config, "cpuCfsQuota", None)
+    config_object["cpuCfsQuotaPeriod"] = getattr(kubelet_config, "cpuCfsQuotaPeriod", "")
+    config_object["imageGcHighThreshold"] = getattr(kubelet_config, "imageGcHighThreshold", None)
+    config_object["imageGcLowThreshold"] = getattr(kubelet_config, "imageGcLowThreshold", None)
+    config_object["topologyManagerPolicy"] = getattr(kubelet_config, "topologyManagerPolicy", "")
+    config_object["allowedUnsafeSysctls"] = getattr(kubelet_config, "allowedUnsafeSysctls", None)
+    config_object["failSwapOn"] = getattr(kubelet_config, "failSwapOn", None)
+
+    return config_object
+
+def _get_linux_os_config(file_path):
+    os_config = get_file_json(file_path)
+    config_object = {}
+    config_object["transparentHugePageEnabled"] = getattr(os_config, "transparentHugePageEnabled", "")
+    config_object["transparentHugePageDefrag"] = getattr(os_config, "transparentHugePageDefrag", "")
+    config_object["swapFileSizeMB"] = getattr(os_config, "swapFileSizeMB", None)
+    config_object["sysctls"] = getattr(os_config, "sysctls", None)
+    return config_object
