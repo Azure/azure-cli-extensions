@@ -766,7 +766,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.gitops.enabled', True),
         ])
 
-
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
