@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.1 (2020-12-15)
+++++++++++++++++
+* `az storage account file-service-properties`: Support SMB multichannel in file service properties
+
 0.6.0 (2020-11-04)
 ++++++++++++++++++
 * Support Blob Inventory Policy in storage account

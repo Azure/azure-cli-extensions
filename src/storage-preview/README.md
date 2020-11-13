@@ -262,4 +262,38 @@ az storage account network-rule remove \
     --account-name mystorageaccount
 ```
 
+#### Storage account file service properties
+##### Enable soft delete policy and set delete retention days to 100 for file service
+```
+az storage account file-service-properties update \
+    --enable-delete-retention true \
+    --delete-retention-days 100 \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Disable soft delete policy for file service
+```
+az storage account file-service-properties update \
+    --enable-delete-retention false \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Enable SMB Multichannel for file service
+```
+az storage account file-service-properties update \
+    --enable-smb-multichannel \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Disable SMB Multichannel for file service
+```
+az storage account file-service-properties update \
+    --enable-smb-multichannel false \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
