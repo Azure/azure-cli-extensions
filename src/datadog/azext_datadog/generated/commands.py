@@ -15,6 +15,16 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
+    from azext_datadog.generated._client_factory import cf_marketplace_agreement
+    datadog_marketplace_agreement = CliCommandType(
+        operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._marketplace_agreement_operations#MarketplaceAg'
+        'reementOperations.{}',
+        client_factory=cf_marketplace_agreement)
+    with self.command_group('datadog marketplace-agreement', datadog_marketplace_agreement,
+                            client_factory=cf_marketplace_agreement, is_experimental=True) as g:
+        g.custom_command('list', 'datadog_marketplace_agreement_list')
+        g.custom_command('create', 'datadog_marketplace_agreement_create')
+
     from azext_datadog.generated._client_factory import cf_api_key
     datadog_api_key = CliCommandType(
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._api_key_operations#ApiKeyOperations.{}',
@@ -61,14 +71,14 @@ def load_command_table(self, _):
         g.custom_command('delete', 'datadog_monitor_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'datadog_monitor_show')
 
-    from azext_datadog.generated._client_factory import cf_refresh_set_password
-    datadog_refresh_set_password = CliCommandType(
+    from azext_datadog.generated._client_factory import cf_set_password_link
+    datadog_set_password_link = CliCommandType(
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._refresh_set_password_operations#RefreshSetPass'
         'wordOperations.{}',
-        client_factory=cf_refresh_set_password)
-    with self.command_group('datadog set-password-link', datadog_refresh_set_password,
-                            client_factory=cf_refresh_set_password, is_experimental=True) as g:
-        g.custom_command('get', 'datadog_refresh_set_password_get')
+        client_factory=cf_set_password_link)
+    with self.command_group('datadog set-password-link', datadog_set_password_link,
+                            client_factory=cf_set_password_link, is_experimental=True) as g:
+        g.custom_command('get', 'datadog_set_password_link_get')
 
     from azext_datadog.generated._client_factory import cf_tag_rule
     datadog_tag_rule = CliCommandType(
@@ -81,17 +91,15 @@ def load_command_table(self, _):
         g.custom_command('create', 'datadog_tag_rule_create')
         g.custom_command('update', 'datadog_tag_rule_update')
 
-    from azext_datadog.generated._client_factory import cf_single_sign_on_configuration
-    datadog_single_sign_on_configuration = CliCommandType(
+    from azext_datadog.generated._client_factory import cf_sso_config
+    datadog_sso_config = CliCommandType(
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._single_sign_on_configuration_operations#Single'
         'SignOnConfigurationOperations.{}',
-        client_factory=cf_single_sign_on_configuration)
-    with self.command_group('datadog sso-config', datadog_single_sign_on_configuration,
-                            client_factory=cf_single_sign_on_configuration, is_experimental=True) as g:
-        g.custom_command('list', 'datadog_single_sign_on_configuration_list')
-        g.custom_show_command('show', 'datadog_single_sign_on_configuration_show')
-        g.custom_command('create', 'datadog_single_sign_on_configuration_create', supports_no_wait=True)
-        g.generic_update_command('update', setter_arg_name='properties', setter_name='begin_create_or_update',
-                                 custom_func_name='datadog_single_sign_on_configuration_update',
-                                 supports_no_wait=True)
-        g.custom_wait_command('wait', 'datadog_single_sign_on_configuration_show')
+        client_factory=cf_sso_config)
+    with self.command_group('datadog sso-config', datadog_sso_config, client_factory=cf_sso_config,
+                            is_experimental=True) as g:
+        g.custom_command('list', 'datadog_sso_config_list')
+        g.custom_show_command('show', 'datadog_sso_config_show')
+        g.custom_command('create', 'datadog_sso_config_create', supports_no_wait=True)
+        g.custom_command('update', 'datadog_sso_config_update', supports_no_wait=True)
+        g.custom_wait_command('wait', 'datadog_sso_config_show')

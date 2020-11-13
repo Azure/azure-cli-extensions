@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
@@ -67,14 +67,17 @@ class TagRuleOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRulesListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -130,7 +133,6 @@ class TagRuleOperations(object):
         send_aad_logs=None,  # type: Optional[bool]
         send_subscription_logs=None,  # type: Optional[bool]
         send_resource_logs=None,  # type: Optional[bool]
-        log_rules_filtering_tags=None,  # type: Optional[List["models.FilteringTag"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.MonitoringTagRules"
@@ -143,7 +145,7 @@ class TagRuleOperations(object):
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
-        :param rule_set_name:
+        :param rule_set_name: Rule set name.
         :type rule_set_name: str
         :param filtering_tags: List of filtering tags to be used for capturing metrics. If empty, all
          resources will be captured. If only Exclude action is specified, the rules will apply to the
@@ -158,24 +160,21 @@ class TagRuleOperations(object):
         :param send_resource_logs: Flag specifying if Azure resource logs should be sent for the
          Monitor resource.
         :type send_resource_logs: bool
-        :param log_rules_filtering_tags: List of filtering tags to be used for capturing logs. This
-         only takes effect if SendResourceLogs flag is enabled. If empty, all resources will be
-         captured. If only Exclude action is specified, the rules will apply to the list of all
-         available resources. If Include actions are specified, the rules will only include resources
-         with the associated tags.
-        :type log_rules_filtering_tags: list[~microsoft_datadog_client.models.FilteringTag]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MonitoringTagRules, or the result of cls(response)
         :rtype: ~microsoft_datadog_client.models.MonitoringTagRules
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRules"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _body = models.MonitoringTagRules(filtering_tags_properties_metric_rules_filtering_tags=filtering_tags, send_aad_logs=send_aad_logs, send_subscription_logs=send_subscription_logs, send_resource_logs=send_resource_logs, filtering_tags_properties_log_rules_filtering_tags=log_rules_filtering_tags)
+        body = models.MonitoringTagRules(filtering_tags_properties_metric_rules_filtering_tags=filtering_tags, send_aad_logs=send_aad_logs, send_subscription_logs=send_subscription_logs, send_resource_logs=send_resource_logs)
         api_version = "2020-02-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.create_or_update.metadata['url']  # type: ignore
@@ -194,16 +193,15 @@ class TagRuleOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _body is not None:
-            body_content = self._serialize.body(_body, 'MonitoringTagRules')
+        if body is not None:
+            body_content = self._serialize.body(body, 'MonitoringTagRules')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -237,7 +235,7 @@ class TagRuleOperations(object):
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
-        :param rule_set_name:
+        :param rule_set_name: Rule set name.
         :type rule_set_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MonitoringTagRules, or the result of cls(response)
@@ -245,9 +243,12 @@ class TagRuleOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRules"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-02-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -265,7 +266,7 @@ class TagRuleOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)

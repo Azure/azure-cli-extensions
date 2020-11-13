@@ -16,6 +16,10 @@ def cf_datadog_cl(cli_ctx, *_):
                                    MicrosoftDatadogClient)
 
 
+def cf_marketplace_agreement(cli_ctx, *_):
+    return cf_datadog_cl(cli_ctx).marketplace_agreement
+
+
 def cf_api_key(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).api_key
 
@@ -36,7 +40,7 @@ def cf_monitor(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).monitor
 
 
-def cf_refresh_set_password(cli_ctx, *_):
+def cf_set_password_link(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).refresh_set_password
 
 
@@ -44,5 +48,5 @@ def cf_tag_rule(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).tag_rule
 
 
-def cf_single_sign_on_configuration(cli_ctx, *_):
+def cf_sso_config(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).single_sign_on_configuration

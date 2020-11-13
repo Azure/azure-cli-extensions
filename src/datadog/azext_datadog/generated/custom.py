@@ -8,9 +8,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
+
+
+def datadog_marketplace_agreement_list(client):
+    return client.list()
+
+
+def datadog_marketplace_agreement_create(client,
+                                         properties=None):
+    return client.create(properties=properties)
 
 
 def datadog_api_key_list(client,
@@ -30,9 +38,9 @@ def datadog_api_key_get_default_key(client,
 def datadog_api_key_set_default_key(client,
                                     resource_group_name,
                                     monitor_name,
-                                    key,
                                     created_by=None,
                                     name=None,
+                                    key=None,
                                     created=None):
     return client.set_default_key(resource_group_name=resource_group_name,
                                   monitor_name=monitor_name,
@@ -80,12 +88,9 @@ def datadog_monitor_show(client,
 def datadog_monitor_create(client,
                            resource_group_name,
                            monitor_name,
-                           location,
                            tags=None,
+                           location=None,
                            identity_type=None,
-                           provisioning_state=None,
-                           monitoring_status=None,
-                           marketplace_subscription_status=None,
                            datadog_organization_properties=None,
                            user_info=None,
                            sku_name=None,
@@ -97,9 +102,9 @@ def datadog_monitor_create(client,
                        tags=tags,
                        location=location,
                        type=identity_type,
-                       provisioning_state=provisioning_state,
-                       monitoring_status=monitoring_status,
-                       marketplace_subscription_status=marketplace_subscription_status,
+                       provisioning_state=None,
+                       monitoring_status=None,
+                       marketplace_subscription_status=None,
                        datadog_organization_properties=datadog_organization_properties,
                        user_info=user_info,
                        name=sku_name)
@@ -108,12 +113,11 @@ def datadog_monitor_create(client,
 def datadog_monitor_update(client,
                            resource_group_name,
                            monitor_name,
-                           tags=None,
-                           monitoring_status=None):
+                           tags=None):
     return client.update(resource_group_name=resource_group_name,
                          monitor_name=monitor_name,
                          tags=tags,
-                         monitoring_status=monitoring_status)
+                         monitoring_status=None)
 
 
 def datadog_monitor_delete(client,
@@ -126,9 +130,9 @@ def datadog_monitor_delete(client,
                        monitor_name=monitor_name)
 
 
-def datadog_refresh_set_password_get(client,
-                                     resource_group_name,
-                                     monitor_name):
+def datadog_set_password_link_get(client,
+                                  resource_group_name,
+                                  monitor_name):
     return client.get(resource_group_name=resource_group_name,
                       monitor_name=monitor_name)
 
@@ -156,16 +160,14 @@ def datadog_tag_rule_create(client,
                             metric_rules_filtering_tags=None,
                             log_rules_send_aad_logs=None,
                             log_rules_send_subscription_logs=None,
-                            log_rules_send_resource_logs=None,
-                            log_rules_filtering_tags=None):
+                            log_rules_send_resource_logs=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    monitor_name=monitor_name,
                                    rule_set_name=rule_set_name,
                                    filtering_tags=metric_rules_filtering_tags,
                                    send_aad_logs=log_rules_send_aad_logs,
                                    send_subscription_logs=log_rules_send_subscription_logs,
-                                   send_resource_logs=log_rules_send_resource_logs,
-                                   log_rules_filtering_tags=log_rules_filtering_tags)
+                                   send_resource_logs=log_rules_send_resource_logs)
 
 
 def datadog_tag_rule_update(client,
@@ -175,40 +177,38 @@ def datadog_tag_rule_update(client,
                             metric_rules_filtering_tags=None,
                             log_rules_send_aad_logs=None,
                             log_rules_send_subscription_logs=None,
-                            log_rules_send_resource_logs=None,
-                            log_rules_filtering_tags=None):
+                            log_rules_send_resource_logs=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    monitor_name=monitor_name,
                                    rule_set_name=rule_set_name,
                                    filtering_tags=metric_rules_filtering_tags,
                                    send_aad_logs=log_rules_send_aad_logs,
                                    send_subscription_logs=log_rules_send_subscription_logs,
-                                   send_resource_logs=log_rules_send_resource_logs,
-                                   log_rules_filtering_tags=log_rules_filtering_tags)
+                                   send_resource_logs=log_rules_send_resource_logs)
 
 
-def datadog_single_sign_on_configuration_list(client,
-                                              resource_group_name,
-                                              monitor_name):
+def datadog_sso_config_list(client,
+                            resource_group_name,
+                            monitor_name):
     return client.list(resource_group_name=resource_group_name,
                        monitor_name=monitor_name)
 
 
-def datadog_single_sign_on_configuration_show(client,
-                                              resource_group_name,
-                                              monitor_name,
-                                              configuration_name):
+def datadog_sso_config_show(client,
+                            resource_group_name,
+                            monitor_name,
+                            configuration_name):
     return client.get(resource_group_name=resource_group_name,
                       monitor_name=monitor_name,
                       configuration_name=configuration_name)
 
 
-def datadog_single_sign_on_configuration_create(client,
-                                                resource_group_name,
-                                                monitor_name,
-                                                configuration_name,
-                                                properties=None,
-                                                no_wait=False):
+def datadog_sso_config_create(client,
+                              resource_group_name,
+                              monitor_name,
+                              configuration_name,
+                              properties=None,
+                              no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -217,9 +217,15 @@ def datadog_single_sign_on_configuration_create(client,
                        properties=properties)
 
 
-def datadog_single_sign_on_configuration_update(instance,
-                                                resource_group_name,
-                                                monitor_name,
-                                                configuration_name,
-                                                no_wait=False):
-    return instance
+def datadog_sso_config_update(client,
+                              resource_group_name,
+                              monitor_name,
+                              configuration_name,
+                              properties=None,
+                              no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       monitor_name=monitor_name,
+                       configuration_name=configuration_name,
+                       properties=properties)
