@@ -10,8 +10,8 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
 class AddSku(argparse.Action):
@@ -139,6 +139,8 @@ class AddKeyVaultProperties(argparse.Action):
                 d['key_version'] = v[0]
             elif kl == 'key-vault-uri':
                 d['key_vault_uri'] = v[0]
+            elif kl == 'user-identity':
+                d['user_identity'] = v[0]
         return d
 
 

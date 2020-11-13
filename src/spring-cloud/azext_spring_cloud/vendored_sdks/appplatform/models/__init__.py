@@ -39,6 +39,7 @@ try:
     from ._models_py3 import NameAvailability
     from ._models_py3 import NameAvailabilityParameters
     from ._models_py3 import NetworkProfile
+    from ._models_py3 import NetworkProfileOutboundIPs
     from ._models_py3 import OperationDetail
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationProperties
@@ -57,7 +58,7 @@ try:
     from ._models_py3 import ServiceSpecification
     from ._models_py3 import Sku
     from ._models_py3 import SkuCapacity
-    from ._models_py3 import SupportedRuntimeVersion1
+    from ._models_py3 import SupportedRuntimeVersion
     from ._models_py3 import TemporaryDisk
     from ._models_py3 import TestKeys
     from ._models_py3 import TraceProperties
@@ -93,6 +94,7 @@ except (SyntaxError, ImportError):
     from ._models import NameAvailability
     from ._models import NameAvailabilityParameters
     from ._models import NetworkProfile
+    from ._models import NetworkProfileOutboundIPs
     from ._models import OperationDetail
     from ._models import OperationDisplay
     from ._models import OperationProperties
@@ -111,7 +113,7 @@ except (SyntaxError, ImportError):
     from ._models import ServiceSpecification
     from ._models import Sku
     from ._models import SkuCapacity
-    from ._models import SupportedRuntimeVersion1
+    from ._models import SupportedRuntimeVersion
     from ._models import TemporaryDisk
     from ._models import TestKeys
     from ._models import TraceProperties
@@ -139,7 +141,7 @@ from ._app_platform_management_client_enums import (
     SkuScaleType,
     ResourceSkuRestrictionsType,
     ResourceSkuRestrictionsReasonCode,
-    SupportedRuntimeVersion,
+    SupportedRuntimeValue,
     SupportedRuntimePlatform,
 )
 
@@ -173,6 +175,7 @@ __all__ = [
     'NameAvailability',
     'NameAvailabilityParameters',
     'NetworkProfile',
+    'NetworkProfileOutboundIPs',
     'OperationDetail',
     'OperationDisplay',
     'OperationProperties',
@@ -191,7 +194,7 @@ __all__ = [
     'ServiceSpecification',
     'Sku',
     'SkuCapacity',
-    'SupportedRuntimeVersion1',
+    'SupportedRuntimeVersion',
     'TemporaryDisk',
     'TestKeys',
     'TraceProperties',
@@ -218,6 +221,6 @@ __all__ = [
     'SkuScaleType',
     'ResourceSkuRestrictionsType',
     'ResourceSkuRestrictionsReasonCode',
-    'SupportedRuntimeVersion',
+    'SupportedRuntimeValue',
     'SupportedRuntimePlatform',
 ]

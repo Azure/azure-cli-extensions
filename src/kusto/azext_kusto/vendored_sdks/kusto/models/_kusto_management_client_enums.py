@@ -6,239 +6,269 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class AzureScaleType(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class AzureScaleType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Scale type.
     """
 
-    automatic = "automatic"
-    manual = "manual"
-    none = "none"
+    AUTOMATIC = "automatic"
+    MANUAL = "manual"
+    NONE = "none"
 
-class AzureSkuName(str, Enum):
+class AzureSkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU name.
     """
 
-    standard_ds13_v2_1_tb_ps = "Standard_DS13_v2+1TB_PS"
-    standard_ds13_v2_2_tb_ps = "Standard_DS13_v2+2TB_PS"
-    standard_ds14_v2_3_tb_ps = "Standard_DS14_v2+3TB_PS"
-    standard_ds14_v2_4_tb_ps = "Standard_DS14_v2+4TB_PS"
-    standard_d13_v2 = "Standard_D13_v2"
-    standard_d14_v2 = "Standard_D14_v2"
-    standard_l8_s = "Standard_L8s"
-    standard_l16_s = "Standard_L16s"
-    standard_d11_v2 = "Standard_D11_v2"
-    standard_d12_v2 = "Standard_D12_v2"
-    standard_l4_s = "Standard_L4s"
-    dev_no_sla_standard_d11_v2 = "Dev(No SLA)_Standard_D11_v2"
-    standard_e2_a_v4 = "Standard_E2a_v4"
-    standard_e4_a_v4 = "Standard_E4a_v4"
-    standard_e8_a_v4 = "Standard_E8a_v4"
-    standard_e16_a_v4 = "Standard_E16a_v4"
-    standard_e8_as_v4_1_tb_ps = "Standard_E8as_v4+1TB_PS"
-    standard_e8_as_v4_2_tb_ps = "Standard_E8as_v4+2TB_PS"
-    standard_e16_as_v4_3_tb_ps = "Standard_E16as_v4+3TB_PS"
-    standard_e16_as_v4_4_tb_ps = "Standard_E16as_v4+4TB_PS"
-    dev_no_sla_standard_e2_a_v4 = "Dev(No SLA)_Standard_E2a_v4"
+    STANDARD_DS13_V2_1_TB_PS = "Standard_DS13_v2+1TB_PS"
+    STANDARD_DS13_V2_2_TB_PS = "Standard_DS13_v2+2TB_PS"
+    STANDARD_DS14_V2_3_TB_PS = "Standard_DS14_v2+3TB_PS"
+    STANDARD_DS14_V2_4_TB_PS = "Standard_DS14_v2+4TB_PS"
+    STANDARD_D13_V2 = "Standard_D13_v2"
+    STANDARD_D14_V2 = "Standard_D14_v2"
+    STANDARD_L8_S = "Standard_L8s"
+    STANDARD_L16_S = "Standard_L16s"
+    STANDARD_D11_V2 = "Standard_D11_v2"
+    STANDARD_D12_V2 = "Standard_D12_v2"
+    STANDARD_L4_S = "Standard_L4s"
+    DEV_NO_SLA_STANDARD_D11_V2 = "Dev(No SLA)_Standard_D11_v2"
+    STANDARD_E64_I_V3 = "Standard_E64i_v3"
+    STANDARD_E2_A_V4 = "Standard_E2a_v4"
+    STANDARD_E4_A_V4 = "Standard_E4a_v4"
+    STANDARD_E8_A_V4 = "Standard_E8a_v4"
+    STANDARD_E16_A_V4 = "Standard_E16a_v4"
+    STANDARD_E8_AS_V4_1_TB_PS = "Standard_E8as_v4+1TB_PS"
+    STANDARD_E8_AS_V4_2_TB_PS = "Standard_E8as_v4+2TB_PS"
+    STANDARD_E16_AS_V4_3_TB_PS = "Standard_E16as_v4+3TB_PS"
+    STANDARD_E16_AS_V4_4_TB_PS = "Standard_E16as_v4+4TB_PS"
+    DEV_NO_SLA_STANDARD_E2_A_V4 = "Dev(No SLA)_Standard_E2a_v4"
 
-class AzureSkuTier(str, Enum):
+class AzureSkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU tier.
     """
 
-    basic = "Basic"
-    standard = "Standard"
+    BASIC = "Basic"
+    STANDARD = "Standard"
 
-class BlobStorageEventType(str, Enum):
+class BlobStorageEventType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The name of blob storage event type to process.
     """
 
-    microsoft_storage_blob_created = "Microsoft.Storage.BlobCreated"
-    microsoft_storage_blob_renamed = "Microsoft.Storage.BlobRenamed"
+    MICROSOFT_STORAGE_BLOB_CREATED = "Microsoft.Storage.BlobCreated"
+    MICROSOFT_STORAGE_BLOB_RENAMED = "Microsoft.Storage.BlobRenamed"
 
-class ClusterPrincipalRole(str, Enum):
+class ClusterPrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Cluster principal role.
     """
 
-    all_databases_admin = "AllDatabasesAdmin"
-    all_databases_viewer = "AllDatabasesViewer"
+    ALL_DATABASES_ADMIN = "AllDatabasesAdmin"
+    ALL_DATABASES_VIEWER = "AllDatabasesViewer"
 
-class Compression(str, Enum):
+class Compression(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The compression type
     """
 
-    none = "None"
-    g_zip = "GZip"
+    NONE = "None"
+    G_ZIP = "GZip"
 
-class DatabasePrincipalRole(str, Enum):
+class DatabasePrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Database principal role.
     """
 
-    admin = "Admin"
-    ingestor = "Ingestor"
-    monitor = "Monitor"
-    user = "User"
-    unrestricted_viewers = "UnrestrictedViewers"
-    viewer = "Viewer"
+    ADMIN = "Admin"
+    INGESTOR = "Ingestor"
+    MONITOR = "Monitor"
+    USER = "User"
+    UNRESTRICTED_VIEWERS = "UnrestrictedViewers"
+    VIEWER = "Viewer"
 
-class DatabasePrincipalType(str, Enum):
+class DatabasePrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Database principal type.
     """
 
-    app = "App"
-    group = "Group"
-    user = "User"
+    APP = "App"
+    GROUP = "Group"
+    USER = "User"
 
-class DefaultPrincipalsModificationKind(str, Enum):
+class DefaultPrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The default principals modification kind
     """
 
-    union = "Union"
-    replace = "Replace"
-    none = "None"
+    UNION = "Union"
+    REPLACE = "Replace"
+    NONE = "None"
 
-class EventGridDataFormat(str, Enum):
+class EngineType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The engine type
+    """
+
+    V2 = "V2"
+    V3 = "V3"
+
+class EventGridDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
     """
 
-    multijson = "MULTIJSON"
-    json = "JSON"
-    csv = "CSV"
-    tsv = "TSV"
-    scsv = "SCSV"
-    sohsv = "SOHSV"
-    psv = "PSV"
-    txt = "TXT"
-    raw = "RAW"
-    singlejson = "SINGLEJSON"
-    avro = "AVRO"
-    tsve = "TSVE"
-    parquet = "PARQUET"
-    orc = "ORC"
-    apacheavro = "APACHEAVRO"
-    w3_clogfile = "W3CLOGFILE"
+    MULTIJSON = "MULTIJSON"
+    JSON = "JSON"
+    CSV = "CSV"
+    TSV = "TSV"
+    SCSV = "SCSV"
+    SOHSV = "SOHSV"
+    PSV = "PSV"
+    TXT = "TXT"
+    RAW = "RAW"
+    SINGLEJSON = "SINGLEJSON"
+    AVRO = "AVRO"
+    TSVE = "TSVE"
+    PARQUET = "PARQUET"
+    ORC = "ORC"
+    APACHEAVRO = "APACHEAVRO"
+    W3_CLOGFILE = "W3CLOGFILE"
 
-class EventHubDataFormat(str, Enum):
+class EventHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
     """
 
-    multijson = "MULTIJSON"
-    json = "JSON"
-    csv = "CSV"
-    tsv = "TSV"
-    scsv = "SCSV"
-    sohsv = "SOHSV"
-    psv = "PSV"
-    txt = "TXT"
-    raw = "RAW"
-    singlejson = "SINGLEJSON"
-    avro = "AVRO"
-    tsve = "TSVE"
-    parquet = "PARQUET"
-    orc = "ORC"
-    apacheavro = "APACHEAVRO"
-    w3_clogfile = "W3CLOGFILE"
+    MULTIJSON = "MULTIJSON"
+    JSON = "JSON"
+    CSV = "CSV"
+    TSV = "TSV"
+    SCSV = "SCSV"
+    SOHSV = "SOHSV"
+    PSV = "PSV"
+    TXT = "TXT"
+    RAW = "RAW"
+    SINGLEJSON = "SINGLEJSON"
+    AVRO = "AVRO"
+    TSVE = "TSVE"
+    PARQUET = "PARQUET"
+    ORC = "ORC"
+    APACHEAVRO = "APACHEAVRO"
+    W3_CLOGFILE = "W3CLOGFILE"
 
-class IdentityType(str, Enum):
-    """The identity type.
+class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an
+    implicitly created identity and a set of user-assigned identities. The type 'None' will remove
+    all identities.
     """
 
-    none = "None"
-    system_assigned = "SystemAssigned"
+    NONE = "None"
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    USER_ASSIGNED = "UserAssigned"
+    SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
 
-class IotHubDataFormat(str, Enum):
+class IotHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
     """
 
-    multijson = "MULTIJSON"
-    json = "JSON"
-    csv = "CSV"
-    tsv = "TSV"
-    scsv = "SCSV"
-    sohsv = "SOHSV"
-    psv = "PSV"
-    txt = "TXT"
-    raw = "RAW"
-    singlejson = "SINGLEJSON"
-    avro = "AVRO"
-    tsve = "TSVE"
-    parquet = "PARQUET"
-    orc = "ORC"
-    apacheavro = "APACHEAVRO"
-    w3_clogfile = "W3CLOGFILE"
+    MULTIJSON = "MULTIJSON"
+    JSON = "JSON"
+    CSV = "CSV"
+    TSV = "TSV"
+    SCSV = "SCSV"
+    SOHSV = "SOHSV"
+    PSV = "PSV"
+    TXT = "TXT"
+    RAW = "RAW"
+    SINGLEJSON = "SINGLEJSON"
+    AVRO = "AVRO"
+    TSVE = "TSVE"
+    PARQUET = "PARQUET"
+    ORC = "ORC"
+    APACHEAVRO = "APACHEAVRO"
+    W3_CLOGFILE = "W3CLOGFILE"
 
-class Kind(str, Enum):
+class Kind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Kind of the database
     """
 
-    read_write = "ReadWrite"
-    read_only_following = "ReadOnlyFollowing"
-    event_hub = "EventHub"
-    event_grid = "EventGrid"
-    iot_hub = "IotHub"
+    READ_WRITE = "ReadWrite"
+    READ_ONLY_FOLLOWING = "ReadOnlyFollowing"
+    EVENT_HUB = "EventHub"
+    EVENT_GRID = "EventGrid"
+    IOT_HUB = "IotHub"
 
-class LanguageExtensionName(str, Enum):
+class LanguageExtensionName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Language extension that can run within KQL query.
     """
 
-    python = "PYTHON"
-    r = "R"
+    PYTHON = "PYTHON"
+    R = "R"
 
-class PrincipalsModificationKind(str, Enum):
+class PrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The principals modification kind of the database
     """
 
-    union = "Union"
-    replace = "Replace"
-    none = "None"
+    UNION = "Union"
+    REPLACE = "Replace"
+    NONE = "None"
 
-class PrincipalType(str, Enum):
+class PrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Principal type.
     """
 
-    app = "App"
-    group = "Group"
-    user = "User"
+    APP = "App"
+    GROUP = "Group"
+    USER = "User"
 
-class ProvisioningState(str, Enum):
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioned state of the resource.
     """
 
-    running = "Running"
-    creating = "Creating"
-    deleting = "Deleting"
-    succeeded = "Succeeded"
-    failed = "Failed"
-    moving = "Moving"
+    RUNNING = "Running"
+    CREATING = "Creating"
+    DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    MOVING = "Moving"
 
-class Reason(str, Enum):
+class Reason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Message providing the reason why the given name is invalid.
     """
 
-    invalid = "Invalid"
-    already_exists = "AlreadyExists"
+    INVALID = "Invalid"
+    ALREADY_EXISTS = "AlreadyExists"
 
-class State(str, Enum):
+class State(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the resource.
     """
 
-    creating = "Creating"
-    unavailable = "Unavailable"
-    running = "Running"
-    deleting = "Deleting"
-    deleted = "Deleted"
-    stopping = "Stopping"
-    stopped = "Stopped"
-    starting = "Starting"
-    updating = "Updating"
+    CREATING = "Creating"
+    UNAVAILABLE = "Unavailable"
+    RUNNING = "Running"
+    DELETING = "Deleting"
+    DELETED = "Deleted"
+    STOPPING = "Stopping"
+    STOPPED = "Stopped"
+    STARTING = "Starting"
+    UPDATING = "Updating"
 
-class Type(str, Enum):
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of resource, Microsoft.Kusto/clusters.
     """
 
-    microsoft_kusto_clusters = "Microsoft.Kusto/clusters"
-    microsoft_kusto_clusters_databases = "Microsoft.Kusto/clusters/databases"
-    microsoft_kusto_clusters_attached_database_configurations = "Microsoft.Kusto/clusters/attachedDatabaseConfigurations"
-    microsoft_kusto_clusters_principal_assignments = "Microsoft.Kusto/clusters/principalAssignments"
-    microsoft_kusto_clusters_databases_data_connections = "Microsoft.Kusto/clusters/databases/dataConnections"
-    microsoft_kusto_clusters_databases_principal_assignments = "Microsoft.Kusto/clusters/databases/principalAssignments"
+    MICROSOFT_KUSTO_CLUSTERS = "Microsoft.Kusto/clusters"
+    MICROSOFT_KUSTO_CLUSTERS_DATABASES = "Microsoft.Kusto/clusters/databases"
+    MICROSOFT_KUSTO_CLUSTERS_ATTACHED_DATABASE_CONFIGURATIONS = "Microsoft.Kusto/clusters/attachedDatabaseConfigurations"
+    MICROSOFT_KUSTO_CLUSTERS_PRINCIPAL_ASSIGNMENTS = "Microsoft.Kusto/clusters/principalAssignments"
+    MICROSOFT_KUSTO_CLUSTERS_DATABASES_DATA_CONNECTIONS = "Microsoft.Kusto/clusters/databases/dataConnections"
+    MICROSOFT_KUSTO_CLUSTERS_DATABASES_PRINCIPAL_ASSIGNMENTS = "Microsoft.Kusto/clusters/databases/principalAssignments"

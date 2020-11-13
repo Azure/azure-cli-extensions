@@ -71,6 +71,10 @@ class IntegrationRuntimeOperations(object):
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_factory.metadata['url']  # type: ignore
@@ -84,15 +88,11 @@ class IntegrationRuntimeOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -151,7 +151,7 @@ class IntegrationRuntimeOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _integration_runtime = models.IntegrationRuntimeResource(properties=properties)
+        integration_runtime = models.IntegrationRuntimeResource(properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -176,9 +176,8 @@ class IntegrationRuntimeOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_integration_runtime, 'IntegrationRuntimeResource')
+        body_content = self._serialize.body(integration_runtime, 'IntegrationRuntimeResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -205,7 +204,7 @@ class IntegrationRuntimeOperations(object):
         if_none_match=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.IntegrationRuntimeResource"
+        # type: (...) -> Optional["models.IntegrationRuntimeResource"]
         """Gets an integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -223,7 +222,7 @@ class IntegrationRuntimeOperations(object):
         :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.IntegrationRuntimeResource"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -248,7 +247,6 @@ class IntegrationRuntimeOperations(object):
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -300,7 +298,7 @@ class IntegrationRuntimeOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
+        update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -323,9 +321,8 @@ class IntegrationRuntimeOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
+        body_content = self._serialize.body(update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -387,7 +384,6 @@ class IntegrationRuntimeOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -445,7 +441,6 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -470,7 +465,8 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationRuntimeConnectionInfo"
-        """Gets the on-premises integration runtime connection information for encrypting the on-premises data source credentials.
+        """Gets the on-premises integration runtime connection information for encrypting the on-premises
+        data source credentials.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -506,7 +502,6 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -551,7 +546,7 @@ class IntegrationRuntimeOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
+        regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -574,9 +569,8 @@ class IntegrationRuntimeOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
+        body_content = self._serialize.body(regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -639,7 +633,6 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -663,8 +656,8 @@ class IntegrationRuntimeOperations(object):
         integration_runtime_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.IntegrationRuntimeStatusResponse"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
+        # type: (...) -> Optional["models.IntegrationRuntimeStatusResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.IntegrationRuntimeStatusResponse"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -687,7 +680,6 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -713,7 +705,7 @@ class IntegrationRuntimeOperations(object):
         integration_runtime_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.IntegrationRuntimeStatusResponse"]
         """Starts a ManagedReserved type integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -723,6 +715,7 @@ class IntegrationRuntimeOperations(object):
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -737,13 +730,15 @@ class IntegrationRuntimeOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._start_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            integration_runtime_name=integration_runtime_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._start_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                integration_runtime_name=integration_runtime_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -758,7 +753,15 @@ class IntegrationRuntimeOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/start'}  # type: ignore
 
     def _stop_initial(
@@ -791,7 +794,6 @@ class IntegrationRuntimeOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -812,7 +814,7 @@ class IntegrationRuntimeOperations(object):
         integration_runtime_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Stops a ManagedReserved type integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -822,6 +824,7 @@ class IntegrationRuntimeOperations(object):
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -836,13 +839,15 @@ class IntegrationRuntimeOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._stop_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            integration_runtime_name=integration_runtime_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._stop_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                integration_runtime_name=integration_runtime_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -854,7 +859,15 @@ class IntegrationRuntimeOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/stop'}  # type: ignore
 
     def sync_credentials(
@@ -865,7 +878,10 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Force the integration runtime to synchronize credentials across integration runtime nodes, and this will override the credentials across all worker nodes with those available on the dispatcher node. If you already have the latest credential backup file, you should manually import it (preferred) on any self-hosted integration runtime node than using this API directly.
+        """Force the integration runtime to synchronize credentials across integration runtime nodes, and
+        this will override the credentials across all worker nodes with those available on the
+        dispatcher node. If you already have the latest credential backup file, you should manually
+        import it (preferred) on any self-hosted integration runtime node than using this API directly.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -900,7 +916,6 @@ class IntegrationRuntimeOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -922,7 +937,8 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IntegrationRuntimeMonitoringData"
-        """Get the integration runtime monitoring data, which includes the monitor data for all the nodes under this integration runtime.
+        """Get the integration runtime monitoring data, which includes the monitor data for all the nodes
+        under this integration runtime.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -958,7 +974,6 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -1018,7 +1033,6 @@ class IntegrationRuntimeOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -1041,7 +1055,8 @@ class IntegrationRuntimeOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Remove all linked integration runtimes under specific data factory in a self-hosted integration runtime.
+        """Remove all linked integration runtimes under specific data factory in a self-hosted integration
+        runtime.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -1060,7 +1075,7 @@ class IntegrationRuntimeOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
+        linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -1082,9 +1097,8 @@ class IntegrationRuntimeOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
+        body_content = self._serialize.body(linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -1140,7 +1154,7 @@ class IntegrationRuntimeOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
+        create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -1163,9 +1177,8 @@ class IntegrationRuntimeOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
+        body_content = self._serialize.body(create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 

@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.2.7
+++++++
+* Fixed dependency version in setup file
+
+0.2.6
+++++++
+* `az connectedk8s connect`: Added support for proxy cert
+* `az connectedk8s update`: Added support for proxy cert
+
 0.2.5
 ++++++
 * `az connectedk8s connect`: Added support for Dogfood cloud

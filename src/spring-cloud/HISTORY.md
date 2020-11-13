@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.1
+-----
+* Reimport the updated version of Python SDK.
+
 1.1.0
 -----
 * Support Steeltoe feature.

@@ -52,7 +52,7 @@ class ActivityRunOperations(object):
         run_id,  # type: str
         last_updated_after,  # type: datetime.datetime
         last_updated_before,  # type: datetime.datetime
-        continuation_token=None,  # type: Optional[str]
+        continuation_token_parameter=None,  # type: Optional[str]
         filters=None,  # type: Optional[List["models.RunQueryFilter"]]
         order_by=None,  # type: Optional[List["models.RunQueryOrderBy"]]
         **kwargs  # type: Any
@@ -72,9 +72,9 @@ class ActivityRunOperations(object):
         :param last_updated_before: The time at or before which the run event was updated in 'ISO 8601'
          format.
         :type last_updated_before: ~datetime.datetime
-        :param continuation_token: The continuation token for getting the next page of results. Null
-         for first page.
-        :type continuation_token: str
+        :param continuation_token_parameter: The continuation token for getting the next page of
+         results. Null for first page.
+        :type continuation_token_parameter: str
         :param filters: List of filters.
         :type filters: list[~data_factory_management_client.models.RunQueryFilter]
         :param order_by: List of OrderBy option.
@@ -88,7 +88,7 @@ class ActivityRunOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _filter_parameters = models.RunFilterParameters(continuation_token=continuation_token, last_updated_after=last_updated_after, last_updated_before=last_updated_before, filters=filters, order_by=order_by)
+        filter_parameters = models.RunFilterParameters(continuation_token=continuation_token_parameter, last_updated_after=last_updated_after, last_updated_before=last_updated_before, filters=filters, order_by=order_by)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -111,9 +111,8 @@ class ActivityRunOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_filter_parameters, 'RunFilterParameters')
+        body_content = self._serialize.body(filter_parameters, 'RunFilterParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 

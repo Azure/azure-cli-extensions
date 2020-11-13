@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.8'
+VERSION = '0.2.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = ["pycryptodome~=3.9.8", "paramiko~=2.6.0"]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -47,8 +47,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/k8sconfiguration',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

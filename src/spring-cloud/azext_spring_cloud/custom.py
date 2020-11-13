@@ -5,13 +5,14 @@
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import requests
+import re
 from requests.auth import HTTPBasicAuth
 import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from ._utils import _get_upload_local_file, _get_persistent_disk_size
+from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
@@ -495,21 +496,18 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
             return None
         instance = instances[0].name
 
-    spring_cloud_service = client.services.get(resource_group, service)
-    host_name = service
-    if spring_cloud_service.properties and \
-       spring_cloud_service.properties.network_profile and \
-       spring_cloud_service.properties.network_profile.service_runtime_subnet_id:
-        host_name = '{0}.private'.format(service)
-
-    primary_key = client.services.list_test_keys(
-        resource_group, service).primary_key
+    test_keys = client.services.list_test_keys(resource_group, service)
+    primary_key = test_keys.primary_key
     if not primary_key:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint")
+        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
 
-    base_url = 'azuremicroservices.io' if cmd.cli_ctx.cloud.name == 'AzureCloud' else 'asc-test.net'
-    streaming_url = "https://{0}.{1}/api/logstream/apps/{2}/instances/{3}".format(
-        host_name, base_url, name, instance)
+    # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
+    test_url = test_keys.primary_test_endpoint
+    base_url = test_url.replace('.test.', '.')
+    base_url = re.sub('https://.+?\@', '', base_url)
+
+    streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
+        base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
@@ -1154,14 +1152,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         raise CLIError(
             "Failed to get a SAS URL to upload context. Error: {}".format(e.message))
 
-    if not upload_url:
-        raise CLIError("Failed to get a SAS URL to upload context.")
-
-    prase_result = parse.urlparse(upload_url)
-    storage_name = prase_result.netloc.split('.')[0]
-    split_path = prase_result.path.split('/')[1:3]
-    share_name = split_path[0]
-    sas_token = "?" + prase_result.query
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
@@ -1180,9 +1170,12 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         source=user_source_info)
 
     # upload file
+    if not upload_url:
+        raise CLIError("Failed to get a SAS URL to upload context.")
+    account_name, endpoint_suffix, share_name, relative_name, sas_token = get_azure_files_info(upload_url)
     logger.warning("[2/3] Uploading package to blob")
-    file_service = FileService(storage_name, sas_token=sas_token)
-    file_service.create_file_from_path(share_name, None, relative_path, path)
+    file_service = FileService(account_name, sas_token=sas_token, endpoint_suffix=endpoint_suffix)
+    file_service.create_file_from_path(share_name, None, relative_name, path)
 
     if file_type == "Source" and not no_wait:
         def get_log_url():
@@ -1372,9 +1365,10 @@ def try_create_application_insights(cmd, resource_group, name, location):
         logger.warning(creation_failed_warn)
         return None
 
+    portal_url = get_portal_uri(cmd.cli_ctx)
     # We make this success message as a warning to no interfere with regular JSON output in stdout
     logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
-                   'You can visit https://portal.azure.com/#resource%s/overview to view your '
-                   'Application Insights component', appinsights.name, appinsights.id)
+                   'You can visit %s/#resource%s/overview to view your '
+                   'Application Insights component', appinsights.name, portal_url, appinsights.id)
 
     return appinsights.instrumentation_key

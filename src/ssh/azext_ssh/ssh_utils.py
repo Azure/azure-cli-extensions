@@ -21,6 +21,12 @@ def start_ssh_connection(ip, username, cert_file, private_key_file):
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
+def create_ssh_keyfile(private_key_file):
+    command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
+    logger.debug("Running ssh-keygen command %s", ' '.join(command))
+    subprocess.call(command, shell=platform.system() == 'Windows')
+
+
 def write_ssh_config(config_path, resource_group, vm_name,
                      ip, username, cert_file, private_key_file):
     file_utils.make_dirs_for_file(config_path)
@@ -30,20 +36,25 @@ def write_ssh_config(config_path, resource_group, vm_name,
         lines.append("\tUser " + username)
         lines.append("\tHostName " + ip)
         lines.append("\tCertificateFile " + cert_file)
-        lines.append("\tIdentityFile " + private_key_file)
+        if private_key_file:
+            lines.append("\tIdentityFile " + private_key_file)
+
+    # default to all hosts for config
+    if not ip:
+        ip = "*"
 
     lines.append("Host " + ip)
     lines.append("\tUser " + username)
-    lines.append("\tHostName " + ip)
     lines.append("\tCertificateFile " + cert_file)
-    lines.append("\tIdentityFile " + private_key_file)
+    if private_key_file:
+        lines.append("\tIdentityFile " + private_key_file)
 
     with open(config_path, 'w') as f:
         f.write('\n'.join(lines))
 
 
-def _get_ssh_path():
-    ssh_path = "ssh"
+def _get_ssh_path(ssh_command="ssh"):
+    ssh_path = ssh_command
 
     if platform.system() == 'Windows':
         arch_data = platform.architecture()
@@ -51,13 +62,13 @@ def _get_ssh_path():
         sys_path = 'SysNative' if is_32bit else 'System32'
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
-        ssh_path = os.path.join(system32_path, "openSSH", "ssh.exe")
+        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
         logger.debug("Platform architecture: %s", str(arch_data))
         logger.debug("System Root: %s", system_root)
         logger.debug("Attempting to run ssh from path %s", ssh_path)
 
         if not os.path.isfile(ssh_path):
-            raise util.CLIError("Could not find ssh.exe. Is the OpenSSH client installed?")
+            raise util.CLIError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
 
     return ssh_path
 
@@ -67,6 +78,8 @@ def _get_host(username, ip):
 
 
 def _build_args(cert_file, private_key_file):
-    private_key = ["-i", private_key_file]
+    private_key = []
+    if private_key_file:
+        private_key = ["-i", private_key_file]
     certificate = ["-o", "CertificateFile=" + cert_file]
     return private_key + certificate

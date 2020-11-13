@@ -56,7 +56,7 @@ def validate_encryption_values(namespace):
     if namespace.encryption_key_source:
         if namespace.encryption_key_source == 'Default' and any(v is not None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
             raise CLIError('--key-name, --key-version, --key-vault should not be provided when --key-source is Default')
-        if namespace.encryption_key_source == 'Microsoft.Keyvault' and any(v is None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
-            raise CLIError('--key-name, --key-version, --key-vault are required when --key-source is Microsoft.Keyvault')
+        if namespace.encryption_key_source == 'Microsoft.Keyvault' and any(v is None for v in [namespace.encryption_key_name, namespace.encryption_key_vault]):
+            raise CLIError('--key-name, --key-vault are required when --key-source is Microsoft.Keyvault')
     elif any(v is not None for v in [namespace.encryption_key_name, namespace.encryption_key_version, namespace.encryption_key_vault]):
         raise CLIError('please specify --key-source for encryption')

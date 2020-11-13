@@ -116,7 +116,7 @@ class ResourceSkuRestrictionsReasonCode(str, Enum):
     not_available_for_subscription = "NotAvailableForSubscription"
 
 
-class SupportedRuntimeVersion(str, Enum):
+class SupportedRuntimeValue(str, Enum):
 
     java_8 = "Java_8"
     java_11 = "Java_11"

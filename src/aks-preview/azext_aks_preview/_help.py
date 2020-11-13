@@ -8,8 +8,10 @@ import os.path
 
 from knack.help_files import helps
 
-ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
-AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
+ACS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'acsServicePrincipal.json')
+AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
 helps['aks create'] = """
@@ -67,9 +69,30 @@ helps['aks create'] = """
         - name: --windows-admin-username
           type: string
           short-summary: User account to create on windows node VMs.
+          long-summary: |-
+            Rules for windows-admin-username:
+                - restriction: Cannot end in "."
+                - Disallowed values: "administrator", "admin", "user", "user1", "test", "user2", "test1", "user3", "admin1", "1", "123", "a", "actuser", "adm", "admin2", "aspnet", "backup", "console", "david", "guest", "john", "owner", "root", "server", "sql", "support", "support_388945a0", "sys", "test2", "test3", "user4", "user5".
+                - Minimum-length: 1 character
+                - Max-length: 20 characters
+            Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminusername?view=azure-dotnet
         - name: --windows-admin-password
           type: string
           short-summary: User account password to use on windows node VMs.
+          long-summary: |-
+            Rules for windows-admin-password:
+                - Minimum-length: 8 characters
+                - Max-length: 123 characters
+                - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
+                  * Has lower characters
+                  * Has upper characters
+                  * Has a digit
+                  * Has a special character (Regex match [\\W_])
+                - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
+            Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
+        - name: --enable-ahub
+          type: bool
+          short-summary: Enable Azure Hybrid User Benefits (AHUB) for Windows VMs.
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
@@ -126,7 +149,7 @@ helps['aks create'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -144,6 +167,8 @@ helps['aks create'] = """
                                             Learn more at aka.ms/aks/policy.
                 ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
+                open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+                gitops                    - enable GitOps (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -279,6 +304,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
         - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and a custom subnet preconfigured with a route table
           text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --load-balancer-sku standard --vnet-subnet-id customUserSubnetVnetID
+        - name: Create a kubernetes cluster with supporting Windows agent pools with AHUB enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-ahub
         - name: Create a kubernetes cluster with managed AAD enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
         - name: Create a kubernetes cluster with ephemeral os enabled.
@@ -357,7 +384,7 @@ helps['aks update'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -382,9 +409,21 @@ helps['aks update'] = """
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
+        - name: --enable-ahub
+          type: bool
+          short-summary: Enable Azure Hybrid User Benefits (AHUB) feature for cluster.
+        - name: --disable-ahub
+          type: bool
+          short-summary: Disable Azure Hybrid User Benefits (AHUB) feature for cluster.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -414,6 +453,14 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
       - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
+      - name: Enable Azure Hybrid User Benefits featture for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
+      - name: Disable Azure Hybrid User Benefits featture for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-ahub
+      - name: Update the cluster to use system assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
+      - name: Update the cluster to use user assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
 """
 
 helps['aks kollect'] = """
@@ -623,6 +670,19 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
+helps['aks nodepool get-upgrades'] = """
+type: command
+short-summary: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+examples:
+  - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
+    text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+parameters:
+  - name: --nodepool-name
+    type: string
+    short-summary: name of the node pool.
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
@@ -640,6 +700,8 @@ long-summary: |-
         azure-policy              - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
+        open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+        gitops                    - Enable GitOps (PREVIEW).
 parameters:
   - name: --addons -a
     type: string
@@ -674,6 +736,9 @@ examples:
     crafted: true
   - name: Enable ingress-appgw addon with subnet prefix.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
+    crafted: true
+  - name: Enable open-service-mesh addon.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
     crafted: true
 """
 

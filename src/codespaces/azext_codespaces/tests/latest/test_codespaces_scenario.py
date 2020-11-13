@@ -21,6 +21,7 @@ class CodespacesScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix=rg_name_prefix, location=default_location)
     def test_codespaces_plan(self, resource_group):
         self.kwargs.update({
+            'resource_group': resource_group,
             'name': 'azclitest-codespace-plan'
         })
         self.cmd('codespace plan create -g {rg} -n {name}')
@@ -43,6 +44,7 @@ class CodespacesScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix=rg_name_prefix, location=default_location)
     def test_codespaces_codespace(self, resource_group):
         self.kwargs.update({
+            'resource_group': resource_group,
             'name': 'azclitest-codespace-plan',
             'codespace_name': 'codespace1',
             'instance_type': 'standardLinux',

@@ -58,12 +58,12 @@ class DataFlowDebugSessionOperations(object):
         properties=None,  # type: Optional["models.IntegrationRuntime"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CreateDataFlowDebugSessionResponse"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateDataFlowDebugSessionResponse"]
+        # type: (...) -> Optional["models.CreateDataFlowDebugSessionResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.CreateDataFlowDebugSessionResponse"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, name=name, properties=properties)
+        request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -85,9 +85,8 @@ class DataFlowDebugSessionOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_request, 'CreateDataFlowDebugSessionRequest')
+        body_content = self._serialize.body(request, 'CreateDataFlowDebugSessionRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -123,7 +122,7 @@ class DataFlowDebugSessionOperations(object):
         properties=None,  # type: Optional["models.IntegrationRuntime"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.CreateDataFlowDebugSessionResponse"]
         """Creates a data flow debug session.
 
         :param resource_group_name: The resource group name.
@@ -131,10 +130,10 @@ class DataFlowDebugSessionOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param compute_type: Compute type of the cluster. The value will be overwritten by the same
-     setting in integration runtime if provided.
+         setting in integration runtime if provided.
         :type compute_type: str
         :param core_count: Core count of the cluster. The value will be overwritten by the same setting
-     in integration runtime if provided.
+         in integration runtime if provided.
         :type core_count: int
         :param time_to_live: Time to live setting of the cluster in minutes.
         :type time_to_live: int
@@ -143,6 +142,7 @@ class DataFlowDebugSessionOperations(object):
         :param properties: Integration runtime properties.
         :type properties: ~data_factory_management_client.models.IntegrationRuntime
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -157,17 +157,19 @@ class DataFlowDebugSessionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._create_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            compute_type=compute_type,
-            core_count=core_count,
-            time_to_live=time_to_live,
-            name=name,
-            properties=properties,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                compute_type=compute_type,
+                core_count=core_count,
+                time_to_live=time_to_live,
+                name=name,
+                properties=properties,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -182,7 +184,15 @@ class DataFlowDebugSessionOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/createDataFlowDebugSession'}  # type: ignore
 
     def query_by_factory(
@@ -209,6 +219,10 @@ class DataFlowDebugSessionOperations(object):
         api_version = "2018-06-01"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.query_by_factory.metadata['url']  # type: ignore
@@ -222,15 +236,11 @@ class DataFlowDebugSessionOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.post(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -267,9 +277,8 @@ class DataFlowDebugSessionOperations(object):
         source_settings=None,  # type: Optional[List["models.DataFlowSourceSetting"]]
         parameters=None,  # type: Optional[Dict[str, object]]
         dataset_parameters=None,  # type: Optional[object]
-        folder_path=None,  # type: Optional[str]
+        folder_path=None,  # type: Optional[object]
         reference_name=None,  # type: Optional[str]
-        parameter_value_specification_parameters=None,  # type: Optional[Dict[str, object]]
         name=None,  # type: Optional[str]
         properties=None,  # type: Optional["models.DataFlow"]
         **kwargs  # type: Any
@@ -293,12 +302,11 @@ class DataFlowDebugSessionOperations(object):
         :type parameters: dict[str, object]
         :param dataset_parameters: Parameters for dataset.
         :type dataset_parameters: object
-        :param folder_path: Folder path for staging blob.
-        :type folder_path: str
+        :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
+         string).
+        :type folder_path: object
         :param reference_name: Reference LinkedService name.
         :type reference_name: str
-        :param parameter_value_specification_parameters: Arguments for LinkedService.
-        :type parameter_value_specification_parameters: dict[str, object]
         :param name: The resource name.
         :type name: str
         :param properties: Data flow properties.
@@ -312,7 +320,7 @@ class DataFlowDebugSessionOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _request = models.DataFlowDebugPackage(session_id=session_id, datasets=datasets, linked_services=linked_services, source_settings=source_settings, parameters_debug_settings_parameters=parameters, dataset_parameters=dataset_parameters, folder_path=folder_path, reference_name=reference_name, parameters_staging_linked_service_parameters=parameter_value_specification_parameters, name=name, properties=properties)
+        request = models.DataFlowDebugPackage(session_id=session_id, datasets=datasets, linked_services=linked_services, source_settings=source_settings, parameters_debug_settings_parameters=parameters, dataset_parameters=dataset_parameters, folder_path=folder_path, reference_name=reference_name, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -334,9 +342,8 @@ class DataFlowDebugSessionOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_request, 'DataFlowDebugPackage')
+        body_content = self._serialize.body(request, 'DataFlowDebugPackage')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -380,7 +387,7 @@ class DataFlowDebugSessionOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
+        request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -401,9 +408,8 @@ class DataFlowDebugSessionOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_request, 'DeleteDataFlowDebugSessionRequest')
+        body_content = self._serialize.body(request, 'DeleteDataFlowDebugSessionRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -428,12 +434,12 @@ class DataFlowDebugSessionOperations(object):
         command_payload=None,  # type: Optional["models.DataFlowDebugCommandPayload"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DataFlowDebugCommandResponse"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowDebugCommandResponse"]
+        # type: (...) -> Optional["models.DataFlowDebugCommandResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.DataFlowDebugCommandResponse"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
+        request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -455,9 +461,8 @@ class DataFlowDebugSessionOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_request, 'DataFlowDebugCommandRequest')
+        body_content = self._serialize.body(request, 'DataFlowDebugCommandRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -491,7 +496,7 @@ class DataFlowDebugSessionOperations(object):
         command_payload=None,  # type: Optional["models.DataFlowDebugCommandPayload"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.DataFlowDebugCommandResponse"]
         """Execute a data flow debug command.
 
         :param resource_group_name: The resource group name.
@@ -505,6 +510,7 @@ class DataFlowDebugSessionOperations(object):
         :param command_payload: The command payload object.
         :type command_payload: ~data_factory_management_client.models.DataFlowDebugCommandPayload
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -519,15 +525,17 @@ class DataFlowDebugSessionOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._execute_command_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            session_id=session_id,
-            command=command,
-            command_payload=command_payload,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._execute_command_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                session_id=session_id,
+                command=command,
+                command_payload=command_payload,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -542,5 +550,13 @@ class DataFlowDebugSessionOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_execute_command.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/executeDataFlowDebugCommand'}  # type: ignore

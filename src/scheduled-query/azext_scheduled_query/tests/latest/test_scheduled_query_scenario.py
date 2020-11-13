@@ -37,7 +37,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                                   resource_group=resource_group),
         })
         time.sleep(180)
-        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule"',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
@@ -49,13 +49,13 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
                  ])
-        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule" --target-resource-type Microsoft.Compute/virtualMachines',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule"',
                  checks=[
                      self.check('name', '{name2}'),
                      self.check('scopes[0]', '{rg_id}'),
                      self.check('severity', 2)
                  ])
-        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 at least 2 out of 3" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 resource id _ResourceId at least 2 violations out of 3 aggregated points" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
@@ -131,15 +131,15 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
         self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
 
         ns = self._build_namespace()
-        self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 out of 10.1')
+        self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
         self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
-        self.check_falling_period(ns, 1.1, 10.1)
+        self.check_falling_period(ns, 1, 10)
 
         ns = self._build_namespace()
-        self.call_condition(ns, 'avg "% Processor Time" from "Perf and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 out of 10.1')
+        self.call_condition(ns, 'avg "% Processor Time" from "Perf and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
         self.check_condition(ns, 'Average', 'Perf and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
-        self.check_falling_period(ns, 1.1, 10.1)
+        self.check_falling_period(ns, 1, 10)
