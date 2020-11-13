@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -41,7 +41,8 @@ setup(
         'azext_vm_repair': [
             'scripts/linux-run-driver.sh',
             'scripts/win-run-driver.ps1',
-            'scripts/mount-encrypted-disk.sh',
+            'scripts/linux-mount-encrypted-disk.sh',
+            'scripts/win-mount-encrypted-disk.ps1',
             'azext_metadata.json'
         ]
     },

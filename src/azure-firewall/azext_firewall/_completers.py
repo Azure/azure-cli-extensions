@@ -17,7 +17,7 @@ def get_af_subresource_completion_list(prop):
         try:
             firewall_name = namespace.firewall_name
         except AttributeError:
-            firewall_name = namespace.resource_name
+            firewall_name = namespace.azure_firewall_name
         if namespace.resource_group_name and firewall_name:
             af = client.azure_firewalls.get(namespace.resource_group_name, firewall_name)
             return [r.name for r in getattr(af, prop)]
