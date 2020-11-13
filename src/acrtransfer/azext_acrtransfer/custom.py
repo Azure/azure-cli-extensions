@@ -18,10 +18,9 @@ def list_importpipeline(cmd, client, resource_group_name, registry_name):
     for pipeline in raw_response:
         print(pipeline)
 
-        print()
+        print(pipeline.identity.type)
 
-        for i in pipeline.identity:
-            print(i)
+       
 
 
     print("done")
