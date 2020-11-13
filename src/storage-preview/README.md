@@ -280,6 +280,19 @@ az storage account file-service-properties update \
     -g MyResourceGroup
 ```
 
+##### Prepare for SMB multichannel
+###### Install private package
+
+`az extension add -s https://zuhdefault.blob.core.windows.net/cliext/storage_preview-0.6.1-py2.py3-none-any.whl`
+
+###### Prepare FileStorage storage account
+```
+az storage account create \
+    --kind FileStorage \
+    --sku Premium_LRS \
+    -g MyResourceGroup
+```
+
 ##### Enable SMB Multichannel for file service
 ```
 az storage account file-service-properties update \
