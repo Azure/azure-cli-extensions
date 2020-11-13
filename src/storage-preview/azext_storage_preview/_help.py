@@ -80,6 +80,10 @@ examples:
     text: az storage account file-service-properties update --enable-delete-retention true --delete-retention-days 100 -n mystorageaccount -g MyResourceGroup
   - name: Disable soft delete policy for file service.
     text: az storage account file-service-properties update --enable-delete-retention false -n mystorageaccount -g MyResourceGroup
+  - name: Enable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel -n mystorageaccount -g MyResourceGroup
+  - name: Disable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel false -n mystorageaccount -g MyResourceGroup
 """
 
 helps['storage account keys list'] = """
