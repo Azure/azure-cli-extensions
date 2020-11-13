@@ -539,3 +539,14 @@ def validate_directory_name(cmd, namespace):
         raise ValueError('usage error: The specified --directory-path already exists in current container. '
                          'Please change to a valid blob directory name. If you want to rename a directory, '
                          'please use `az storage blob directory move` command.')
+
+
+def validate_delete_retention_days(namespace):
+    if namespace.enable_delete_retention is True and namespace.delete_retention_days is None:
+        raise ValueError(
+            "incorrect usage: you have to provide value for '--delete-retention-days' when '--enable-delete-retention' "
+            "is set to true")
+
+    if namespace.enable_delete_retention is False and namespace.delete_retention_days is not None:
+        raise ValueError(
+            "incorrect usage: '--delete-retention-days' is invalid when '--enable-delete-retention' is set to false")

@@ -4,9 +4,10 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer, StorageAccountPreparer,
                                api_version_constraint)
+from azure_devtools.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
 from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
-from azure_devtools.scenario_tests import AllowLargeResponse
+from knack.util import CLIError
 
 
 @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
@@ -209,3 +210,71 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
 
         self.cmd('storage account blob-inventory-policy delete --account-name {sa} -g {rg} -y')
         self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}', expect_failure=True)
+
+
+class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_file_soft_delete')
+    @StorageAccountPreparer(name_prefix='filesoftdelete', kind='FileStorage', sku='Premium_LRS', location='eastus')
+    def test_storage_account_file_delete_retention_policy(self, resource_group, storage_account):
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'cmd': 'storage account file-service-properties'
+        })
+        self.cmd('{cmd} show --account-name {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy', None))
+
+        with self.assertRaises(SystemExit):
+            self.cmd('{cmd} update --enable-delete-retention true -n {sa} -g {rg}')
+
+        with self.assertRaisesRegexp(CLIError, "Delete Retention Policy hasn't been enabled,"):
+            self.cmd('{cmd} update --delete-retention-days 1 -n {sa} -g {rg}')
+
+        with self.assertRaises(SystemExit):
+            self.cmd('{cmd} update --enable-delete-retention false --delete-retention-days 1')
+
+        self.cmd(
+            '{cmd} update --enable-delete-retention true --delete-retention-days 10 -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy.enabled', True),
+            JMESPathCheck('shareDeleteRetentionPolicy.days', 10))
+
+        self.cmd('{cmd} update --delete-retention-days 1 -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy.enabled', True),
+            JMESPathCheck('shareDeleteRetentionPolicy.days', 1))
+
+        self.cmd('{cmd} update --enable-delete-retention false -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
+            JMESPathCheck('shareDeleteRetentionPolicy.days', None))
+
+        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
+            JMESPathCheck('shareDeleteRetentionPolicy.days', 0))
+
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @ResourceGroupPreparer(name_prefix='cli_file_smb')
+    @StorageAccountPreparer(name_prefix='filesmb', kind='FileStorage', sku='Premium_LRS', location='centraluseuap')
+    def test_storage_account_file_smb_multichannel(self, resource_group, storage_account):
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'cmd': 'storage account file-service-properties'
+        })
+
+        self.cmd(
+            '{cmd} update --enable-smb-multichannel -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
+
+        self.cmd(
+            '{cmd} update --enable-smb-multichannel false -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
+
+        self.cmd(
+            '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
+
+        self.cmd(
+            '{cmd} update --set protocolSettings.smb.multichannel.enabled=false -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
+
+        self.cmd('{cmd} show --account-name {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))

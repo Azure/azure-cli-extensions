@@ -7,7 +7,7 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory)
+                              cf_sa_blob_inventory, cf_mgmt_file_services)
 from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
@@ -35,6 +35,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         client_factory=cf_sa,
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
+
 
     blob_inventory_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
@@ -68,6 +69,23 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     #     g.custom_command('remove', 'remove_blob_inventory_policy_rule')
     #     g.custom_command('show', 'get_blob_inventory_policy_rule')
     #     g.custom_command('update', 'update_blob_inventory_policy_rule')
+
+    file_service_mgmt_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations'
+                        '#FileServicesOperations.{}',
+        client_factory=cf_mgmt_file_services,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    with self.command_group('storage account file-service-properties', file_service_mgmt_sdk,
+                            custom_command_type=get_custom_sdk('account', client_factory=cf_mgmt_file_services,
+                                                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE),
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2019-06-01', is_preview=True) as g:
+        g.show_command('show', 'get_service_properties')
+        g.generic_update_command('update',
+                                 getter_name='get_service_properties',
+                                 setter_name='set_service_properties',
+                                 custom_func_name='update_file_service_properties')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
