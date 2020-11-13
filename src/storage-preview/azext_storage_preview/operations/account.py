@@ -274,7 +274,8 @@ def update_management_policies(client, resource_group_name, account_name, parame
 
 def update_file_service_properties(cmd, instance, enable_delete_retention=None,
                                    delete_retention_days=None, enable_smb_multichannel=None):
-
+    from azure.cli.core.azclierror import ValidationError
+    from azure.core.exceptions import ResourceExistsError
     if enable_delete_retention is not None:
         if enable_delete_retention is False:
             delete_retention_days = None
@@ -286,13 +287,12 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
         if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled:
             instance.share_delete_retention_policy.days = delete_retention_days
         else:
-            raise CLIError("Delete Retention Policy hasn't been enabled, and you cannot set delete retention days. "
-                           "Please set --enable-delete-retention as true to enable Delete Retention Policy.")
+            raise ValidationError(
+                "Delete Retention Policy hasn't been enabled, and you cannot set delete retention days. "
+                "Please set --enable-delete-retention as true to enable Delete Retention Policy.")
 
     if enable_smb_multichannel is not None:
-        instance.protocol_settings.smb.multichannel.enabled = enable_smb_multichannel
-    # TODO: Remove this part when server is ready
-    elif instance.protocol_settings.smb.multichannel.enabled is False:
-        instance.protocol_settings = None
+            instance.protocol_settings.smb.multichannel = cmd.get_models('Multichannel')(
+                enabled=enable_smb_multichannel)
 
     return instance

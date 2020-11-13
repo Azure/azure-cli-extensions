@@ -11,23 +11,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --enable-smb-multichannel -n -g
+      - --mc -n -g
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb2000003/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb2000003/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '461'
+      - '431'
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:40 GMT
+      - Fri, 13 Nov 2020 08:51:53 GMT
       expires:
       - '-1'
       pragma:
@@ -62,23 +62,24 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --enable-smb-multichannel -n -g
+      - --mc -n -g
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb2000003/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
+      string: '{"error":{"code":"FeatureNotSupportedForAccount","message":"SMB Multichannel
+        is not supported for the account."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '414'
+      - '113'
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:42 GMT
+      - Fri, 13 Nov 2020 08:51:54 GMT
       expires:
       - '-1'
       pragma:
@@ -87,116 +88,13 @@ interactions:
       - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account file-service-properties update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --enable-smb-multichannel -n -g
-      User-Agent:
-      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
-  response:
-    body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '460'
-      content-type:
-      - application/json
-      date:
-      - Fri, 13 Nov 2020 04:43:43 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"cors": {"corsRules": []}, "protocolSettings": {"smb":
-      {"multichannel": {"enabled": false}}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage account file-service-properties update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '110'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --enable-smb-multichannel -n -g
-      User-Agent:
-      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '415'
-      content-type:
-      - application/json
-      date:
-      - Fri, 13 Nov 2020 04:43:45 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 200
-      message: OK
+      code: 409
+      message: Conflict
 - request:
     body: null
     headers:
@@ -213,10 +111,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
@@ -225,7 +123,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:45 GMT
+      - Fri, 13 Nov 2020 08:51:55 GMT
       expires:
       - '-1'
       pragma:
@@ -264,10 +162,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
@@ -276,7 +174,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:46 GMT
+      - Fri, 13 Nov 2020 08:51:57 GMT
       expires:
       - '-1'
       pragma:
@@ -292,7 +190,205 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account file-service-properties update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --enable-smb-multichannel -n -g
+      User-Agent:
+      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '460'
+      content-type:
+      - application/json
+      date:
+      - Fri, 13 Nov 2020 08:51:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"cors": {"corsRules": []}, "protocolSettings": {"smb":
+      {"multichannel": {"enabled": false}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account file-service-properties update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --enable-smb-multichannel -n -g
+      User-Agent:
+      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-type:
+      - application/json
+      date:
+      - Fri, 13 Nov 2020 08:51:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account file-service-properties update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --enable-smb-multichannel -n -g
+      User-Agent:
+      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '461'
+      content-type:
+      - application/json
+      date:
+      - Fri, 13 Nov 2020 08:52:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"cors": {"corsRules": []}, "protocolSettings": {"smb":
+      {"multichannel": {"enabled": true}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account file-service-properties update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '109'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --enable-smb-multichannel -n -g
+      User-Agent:
+      - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json
+      date:
+      - Fri, 13 Nov 2020 08:52:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
     status:
       code: 200
       message: OK
@@ -312,10 +408,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":true}}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
@@ -324,7 +420,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:47 GMT
+      - Fri, 13 Nov 2020 08:52:02 GMT
       expires:
       - '-1'
       pragma:
@@ -363,10 +459,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
@@ -375,7 +471,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:48 GMT
+      - Fri, 13 Nov 2020 08:52:03 GMT
       expires:
       - '-1'
       pragma:
@@ -391,7 +487,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
     status:
       code: 200
       message: OK
@@ -411,10 +507,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.14.1 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default?api-version=2020-08-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default?api-version=2020-08-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_file_smb000001/providers/Microsoft.Storage/storageAccounts/filesmb1000002/fileServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/fileServices","properties":{"protocolSettings":{"smb":{"multichannel":{"enabled":false}}},"cors":{"corsRules":[]}}}'
     headers:
       cache-control:
       - no-cache
@@ -423,7 +519,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 13 Nov 2020 04:43:50 GMT
+      - Fri, 13 Nov 2020 08:52:05 GMT
       expires:
       - '-1'
       pragma:

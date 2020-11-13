@@ -216,6 +216,7 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_file_soft_delete')
     @StorageAccountPreparer(name_prefix='filesoftdelete', kind='FileStorage', sku='Premium_LRS', location='eastus')
     def test_storage_account_file_delete_retention_policy(self, resource_group, storage_account):
+        from azure.cli.core.azclierror import ValidationError
         self.kwargs.update({
             'sa': storage_account,
             'rg': resource_group,
@@ -227,7 +228,7 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         with self.assertRaises(SystemExit):
             self.cmd('{cmd} update --enable-delete-retention true -n {sa} -g {rg}')
 
-        with self.assertRaisesRegexp(CLIError, "Delete Retention Policy hasn't been enabled,"):
+        with self.assertRaisesRegexp(ValidationError, "Delete Retention Policy hasn't been enabled,"):
             self.cmd('{cmd} update --delete-retention-days 1 -n {sa} -g {rg}')
 
         with self.assertRaises(SystemExit):
@@ -252,13 +253,21 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
 
     @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
     @ResourceGroupPreparer(name_prefix='cli_file_smb')
-    @StorageAccountPreparer(name_prefix='filesmb', kind='FileStorage', sku='Premium_LRS', location='centraluseuap')
-    def test_storage_account_file_smb_multichannel(self, resource_group, storage_account):
+    @StorageAccountPreparer(parameter_name='storage_account1', name_prefix='filesmb1', kind='FileStorage',
+                            sku='Premium_LRS', location='centraluseuap')
+    @StorageAccountPreparer(parameter_name='storage_account2', name_prefix='filesmb2', kind='StorageV2')
+    def test_storage_account_file_smb_multichannel(self, resource_group, storage_account1, storage_account2):
+        from azure.cli.core.azclierror import UnknownError
+        from azure.core.exceptions import ResourceExistsError
         self.kwargs.update({
-            'sa': storage_account,
+            'sa': storage_account1,
+            'sa2': storage_account2,
             'rg': resource_group,
             'cmd': 'storage account file-service-properties'
         })
+
+        with self.assertRaisesRegexp(ResourceExistsError, "SMB Multichannel is not supported for the account."):
+            self.cmd('{cmd} update --mc -n {sa2} -g {rg}')
 
         self.cmd(
             '{cmd} update --enable-smb-multichannel -n {sa} -g {rg}').assert_with_checks(
