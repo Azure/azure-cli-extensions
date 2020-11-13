@@ -727,3 +727,64 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_create_with_gitops_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.gitops.enabled', True),
+        ])
+
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_enable_addon_with_gitops(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.gitops', None),
+        ])
+
+        enable_cmd = 'aks enable-addons --addons gitops --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.gitops.enabled', True),
+        ])
+
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_disable_addon_gitops(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.gitops.enabled', True),
+        ])
+
+        disable_cmd = 'aks disable-addons --addons gitops --resource-group={resource_group} --name={name} -o json'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.gitops.enabled', False),
+            self.check('addonProfiles.gitops.config', None)
+        ])

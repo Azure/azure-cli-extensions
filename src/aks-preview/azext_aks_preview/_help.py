@@ -168,6 +168,7 @@ helps['aks create'] = """
                 ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
                 open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+                gitops                    - enable GitOps (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -700,6 +701,7 @@ long-summary: |-
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+        gitops                    - Enable GitOps (PREVIEW).
 parameters:
   - name: --addons -a
     type: string

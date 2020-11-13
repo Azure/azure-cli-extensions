@@ -1872,6 +1872,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
     if 'azure-policy' in addons:
         addon_profiles[CONST_AZURE_POLICY_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('azure-policy')
+    if 'gitops' in addons:
+        addon_profiles['gitops'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('gitops')
     if 'ingress-appgw' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         if appgw_name is not None:
