@@ -3024,7 +3024,9 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
         raise CLIError('Could not grant Managed Identity Operator permission for cluster')
 
     # need more time to propogate this assignment...
-    time.sleep(5)
+    print()
+    print('Wait 30 seconds for identity role assignment propogation.')
+    time.sleep(30)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
