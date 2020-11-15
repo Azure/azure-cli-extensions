@@ -135,7 +135,7 @@ class PipelineRunsOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
             'registryName': self._serialize.url("registry_name", registry_name, 'str', max_length=50, min_length=5, pattern=r'^[a-zA-Z0-9]*$'),
-            'pipelineRunName': self._serialize.url("pipeline_run_name", pipeline_run_name, 'str', max_length=50, min_length=5, pattern=r'^[a-zA-Z0-9_]*$'),
+            'pipelineRunName': self._serialize.url("pipeline_run_name", pipeline_run_name, 'str', max_length=50, min_length=5, pattern=r'^[a-zA-Z0-9]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
