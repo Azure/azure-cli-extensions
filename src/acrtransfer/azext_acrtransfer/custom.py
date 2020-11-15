@@ -5,15 +5,106 @@
 
 from knack.util import CLIError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
+from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, IdentityProperties, ImportPipelineSourceProperties, PipelineTriggerProperties, UserIdentityProperties, PipelineSourceTriggerProperties
+
 import json
 
-def create_importpipeline(cmd, client, resource_group_name, registry_name, location=None, tags=None):
+def poll_output(poller, poll_interval=10):
+    print("Operation Status: " + poller.status())
+    while(not poller.done()):
+        print("Please wait " + str(poll_interval) + " seconds for the next update.")
+        poller.wait(timeout=poll_interval)
+        print("Operation Status: " + poller.status())
+    return
+
+def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options, user_assigned_identity=None):
+    '''  
+        BEGIN_CREATE
+        resource_group_name,  # type: str
+        registry_name,  # type: str
+        import_pipeline_name,  # type: str
+        import_pipeline_create_parameters #type ImportPipeline,  
+        
+        ImportPipeline
+        location: Optional[str] = None,
+        identity: Optional["IdentityProperties"] = None,
+        source: Optional["ImportPipelineSourceProperties"] = None,
+        trigger: Optional["PipelineTriggerProperties"] = None,
+        options: Optional[List[Union[str, "PipelineOptions"]]] = None,
+
+        IdentityProperties
+        principal_id: Optional[str] = None,
+        tenant_id: Optional[str] = None,
+        type: Optional[Union[str, "ResourceIdentityType"]] = None, ### UserAssigned or SystemAssigned
+        user_assigned_identities: Optional[Dict[str, "UserIdentityProperties"]] = None, ### MSI resource ID as key
+
+        UserIdentityProperties
+        principal_id: Optional[str] = None,
+        client_id: Optional[str] = None,
+        
+        ImportPipelineSourceProperties
+        key_vault_uri: str, https://mabenedikv.vault.azure.net/secrets/transfer/
+        type: Optional[Union[str, "PipelineSourceType"]] = "AzureStorageBlobContainer", 
+        uri: Optional[str] = None, https://accountName.blob.core.windows.net/containerName
+
+        PipelineTriggerProperties 
+        source_trigger: Optional["PipelineSourceTriggerProperties"] = None,
+
+        PipelineSourceTriggerProperties
+        status: Union[str, "TriggerStatus"]
+        "Enabled" or "Disabled" 
+
+        PipelineOptions
+        list of strings
+        OverwriteTags - Overwrite existing target tags
+        DeleteSourceBlobOnSuccess - Delete the source storage blob after successful import to the target registry
+        ContinueOnErrors - Continue import of remaining artifacts in the target registry if one artifact import fails.
+        DisableSourceTrigger
+        '''
+
+    keyvault_secret_uri = keyvault_secret_uri.lower()
+    storage_account_container_uri = storage_account_container_uri.lower()
+
+    if user_assigned_identity == None:
+        resource_identity_type = "SystemAssigned"
+        user_assigned_identities = None
+    else:
+        resource_identity_type = "UserAssigned"
+        user_identity_properties = UserIdentityProperties()
+        user_assigned_identities = {user_assigned_identity: user_identity_properties}
+
+    identity_properties = IdentityProperties(type=resource_identity_type, user_assigned_identities=user_assigned_identities)
+
+    import_pipeline_source_properties = ImportPipelineSourceProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri)
+
+    allowed_options_list = ["DisableSourceTrigger", "OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
+    options_list = options.split(",")
+
+    if not set(options_list).issubset(set(allowed_options_list)):
+        print("Allowed options are: ", end='')
+        print(allowed_options_list)
+        raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
+
+    source_trigger_status = "Disabled" if "DisableSourceTrigger" in options_list else "Enabled"
+
+    pipeline_source_trigger_properties = PipelineSourceTriggerProperties(status=source_trigger_status)
+    pipeline_trigger_properties = PipelineTriggerProperties(source_trigger=pipeline_source_trigger_properties)
+    import_pipeline = ImportPipeline(identity=identity_properties, source=import_pipeline_source_properties, trigger=pipeline_trigger_properties, options=options_list)
+
+    poller = client.import_pipelines.begin_create(resource_group_name=resource_group_name, registry_name=registry_name, import_pipeline_name=import_pipeline_name, import_pipeline_create_parameters=import_pipeline)
     
-    raise CLIError('TODO: Implement `importpipeline create`')
+    poll_output(poller)
+
+    keyvault_name = keyvault_secret_uri.split('https://')[1].split('.')[0]
+    raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
+    identity_object_id = raw_result.identity.principal_id
+
+    ### different for managed identity -> raw_result.identity.user_assigned_identities['/subscriptions/84c559c6-30a0-417c-ba06-8a2253b388c3/resourcegroups/mabenedi/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mabenedimsi'].principal_id
+    print("***YOU MUST RUN THE FOLLOWING COMMAND PRIOR TO ATTEMPTING A PIPELINERUN OR EXPECTING SOURCETRIGGER TO WORK")
+    print(f'az keyvault set-policy --name {keyvault_name} --secret-permissions get --object-id {identity_object_id}')
+
 
 def list_importpipeline(cmd, client, resource_group_name, registry_name):
-    print("doggo")
-
     raw_result = client.import_pipelines.list(resource_group_name, registry_name)
 
     for pipeline in raw_result:
@@ -21,7 +112,7 @@ def list_importpipeline(cmd, client, resource_group_name, registry_name):
 
         print(pipeline.identity.type)
 
-    print("done")
+    
 
 def delete_importpipeline(cmd, client, resource_group_name=None):
     raise CLIError('TODO: Implement `importpipeline list`')
@@ -30,6 +121,7 @@ def get_importpipeline(cmd, client, resource_group_name, registry_name, import_p
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
     print(raw_result)
+    print(raw_result.identity.user_assigned_identities['/subscriptions/84c559c6-30a0-417c-ba06-8a2253b388c3/resourcegroups/mabenedi/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mabenedimsi'].principal_id)
 
 
 def update_importpipeline(cmd, instance, tags=None):
@@ -93,11 +185,7 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
 
     poller = client.pipeline_runs.begin_create(resource_group_name, registry_name, pipeline_run_name, pipeline_run)
 
-    #TODO refactor into a polling output function 
-    print(poller.status())
-    while(not poller.done()):
-        poller.wait(timeout=10)
-        print(poller.status())
+    poll_output(poller=poller)
 
     get_pipelinerun(cmd=cmd, client=client, resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
     
@@ -116,11 +204,7 @@ def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_ru
 def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     poller = client.pipeline_runs.begin_delete(resource_group_name, registry_name, pipeline_run_name)
     
-    print(poller.status())
-    while(not poller.done()):
-        poller.wait(timeout=5)
-        print(poller.status())
-
+    poll_output(poller=poller)
         
 
     
