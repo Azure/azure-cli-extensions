@@ -63,15 +63,13 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
     subscription_id = client._config.subscription_id
     
     if pipeline_type == "import":
-        full_pipeline_type = "importPipelines"
-        pipeline_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerRegistry/registries/{registry_name}/{full_pipeline_type}/{pipeline_name}'
+        pipeline_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerRegistry/registries/{registry_name}/importPipelines/{pipeline_name}'
 
         pipeline_run_source = PipelineRunSourceProperties(name=storage_blob_name)
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, source=pipeline_run_source) 
 
     elif pipeline_type == "export":
-        full_pipeline_type = "exportPipelines"
-        pipeline_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerRegistry/registries/{registry_name}/{full_pipeline_type}/{pipeline_name}'
+        pipeline_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerRegistry/registries/{registry_name}/exportPipelines/{pipeline_name}'
         
         if artifacts == None:
              raise CLIError("artifacts cannot be null for Export PipelineRuns. Please provide a comma separated list of container images to be exported in the form REPOSITORY:TAG")
@@ -88,15 +86,21 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
         raise CLIError("Incorrect pipeline-type parameter. Accepted values are 'import' or 'export'")
     
     #TODO force update tag doesn't work
-    #pipeline run object expects a string for force_update_tag
+    #PipelineRun object expects a string for force_update_tag
     force_update_tag_str = "true" if force_update_tag else "false"
 
     pipeline_run = PipelineRun(request=pipeline_run_request, force_update_tag=force_update_tag_str)
 
-    raw_result = client.pipeline_runs.begin_create(resource_group_name, registry_name, pipeline_run_name, pipeline_run)
+    poller = client.pipeline_runs.begin_create(resource_group_name, registry_name, pipeline_run_name, pipeline_run)
 
-    print(raw_result)
+    #TODO refactor into a polling output function 
+    print(poller.status())
+    while(not poller.done()):
+        poller.wait(timeout=10)
+        print(poller.status())
 
+    get_pipelinerun(cmd=cmd, client=client, resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
+    
 def list_pipelinerun(cmd, client, resource_group_name, registry_name):
     raw_result = client.pipeline_runs.list(resource_group_name, registry_name)
 
@@ -111,5 +115,12 @@ def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_ru
 
 def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     poller = client.pipeline_runs.begin_delete(resource_group_name, registry_name, pipeline_run_name)
+    
+    print(poller.status())
+    while(not poller.done()):
+        poller.wait(timeout=5)
+        print(poller.status())
 
-    print(poller)
+        
+
+    
