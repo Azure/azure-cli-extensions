@@ -15,7 +15,7 @@ def poll_output(poller, poll_interval=10):
         print("Please wait " + str(poll_interval) + " seconds for the next update.")
         poller.wait(timeout=poll_interval)
         print("Operation Status: " + poller.status())
-    return
+    return poller.status()
 
 def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options, user_assigned_identity_resource_id=None):
     '''  
@@ -97,10 +97,11 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
 
     keyvault_name = keyvault_secret_uri.split("https://")[1].split('.')[0]
     
-    #account for ARM bug where the identity user assigned identities dict key resource id has lowercase resourcegroup rather than resourceGroup 
-    user_assigned_identity_resource_id_list = user_assigned_identity_resource_id.split("/")
-    user_assigned_identity_resource_id_list[3] = "resourcegroups"
-    user_assigned_identity_resource_id = '/'.join(user_assigned_identity_resource_id_list)
+    #account for ARM bug where the identity user assigned identities dict key resource id has lowercase resourcegroup rather than resourceGroup
+    if user_assigned_identity_resource_id is not None: 
+        user_assigned_identity_resource_id_list = user_assigned_identity_resource_id.split("/")
+        user_assigned_identity_resource_id_list[3] = "resourcegroups"
+        user_assigned_identity_resource_id = '/'.join(user_assigned_identity_resource_id_list)
 
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
     identity_object_id = raw_result.identity.principal_id if user_assigned_identity_resource_id is None else raw_result.identity.user_assigned_identities[user_assigned_identity_resource_id].principal_id
@@ -119,20 +120,16 @@ def list_importpipeline(cmd, client, resource_group_name, registry_name):
 
     
 
-def delete_importpipeline(cmd, client, resource_group_name=None):
-    raise CLIError('TODO: Implement `importpipeline list`')
+def delete_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
+    poller = client.import_pipelines.begin_delete(resource_group_name, registry_name, import_pipeline_name)
+    
+    poll_output(poller=poller)
 
 def get_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
     print(raw_result)
     print(raw_result.identity.user_assigned_identities)
-
-
-def update_importpipeline(cmd, instance, tags=None):
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-    return instance
 
 def create_exportpipeline(cmd, client, resource_group_name, registry_name, location=None, tags=None):
     raise CLIError('TODO: Implement `exportpipeline create`')
