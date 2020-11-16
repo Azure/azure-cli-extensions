@@ -214,7 +214,7 @@ def _validate_subnet(namespace, subnet):
     limit = 32
     if subnet.id.lower() == namespace.app_subnet.lower():
         name = 'app-subnet'
-        limit = 24
+        limit = 28
     elif subnet.id.lower() == namespace.service_runtime_subnet.lower():
         name = 'service-runtime-subnet'
         limit = 28
