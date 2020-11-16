@@ -25,7 +25,7 @@ class PolicyCertificatesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client API version. Constant value: "2018-09-01-preview".
+    :ivar api_version: Client API version. Constant value: "2018-09-01".
     """
 
     models = models
@@ -35,7 +35,7 @@ class PolicyCertificatesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2018-09-01"
 
         self.config = config
 
@@ -110,7 +110,7 @@ class PolicyCertificatesOperations(object):
          https://mytenant.attest.azure.net.
         :type tenant_base_url: str
         :param policy_certificate_to_add: An RFC7519 JSON Web Token containing
-         a claim named "aas-policyCertificate" whose value is an RFC7517 JSON
+         a claim named "maa-policyCertificate" whose value is an RFC7517 JSON
          Web Key which specifies a new key to add. The RFC7519 JWT must be
          signed with one of the existing signing certificates
         :type policy_certificate_to_add: str
@@ -181,7 +181,7 @@ class PolicyCertificatesOperations(object):
          https://mytenant.attest.azure.net.
         :type tenant_base_url: str
         :param policy_certificate_to_remove: An RFC7519 JSON Web Token
-         containing a claim named "aas-policyCertificate" whose value is an
+         containing a claim named "maa-policyCertificate" whose value is an
          RFC7517 JSON Web Key which specifies a new key to update. The RFC7519
          JWT must be signed with one of the existing signing certificates
         :type policy_certificate_to_remove: str

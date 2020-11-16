@@ -9,114 +9,109 @@
 # --------------------------------------------------------------------------
 
 import os
-import unittest
-
-from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import ScenarioTest
+from .. import try_manual, raise_if, calc_coverage
+from azure.cli.testsdk import ResourceGroupPreparer
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class AttestationMgmtScenarioTest(ScenarioTest):
-    def _create(self, rg):
-        self.kwargs['cert_path'] = os.path.join(TEST_DIR, 'policySigningCerts.pem')
-        self.cmd('az attestation create '
-                 '--name "{myattestation}" '
-                 '--resource-group "{rg}" '
-                 '--location "eastus2" '
-                 '--tags aKey=aValue anotherKey=anotherValue '
-                 '--certs-input-path "{cert_path}"',
-                 checks=[
-                     self.check('name', '{myattestation}'),
-                     self.check('resourceGroup', rg),
-                     self.check('location', 'eastus2'),
-                     self.check('tags', '{{\'aKey\': \'aValue\', \'anotherKey\': \'anotherValue\'}}')
-                 ])
-
-    def _get(self, rg):
-        self.cmd('az attestation show '
-                 '--name "{myattestation}" '
-                 '--resource-group "{rg}"',
-                 checks=[
-                     self.check('name', '{myattestation}'),
-                     self.check('resourceGroup', rg),
-                     self.check('location', 'eastus2')
-                 ])
-
-    def _list_by_resource_group(self, rg):
-        self.cmd('az attestation list '
-                 '--resource-group "{rg}"',
-                 checks=self.check('[0].name', '{myattestation}'))
-
-    def _list_by_subscription(self):
-        self.cmd('az attestation list', checks=self.check('length(@)', 6))
-
-    def _delete(self, rg):
-        self.cmd('az attestation delete '
-                 '--name "{myattestation}" '
-                 '--resource-group "{rg}" '
-                 '--yes')
-        self.cmd('az attestation list '
-                 '--resource-group "{rg}"',
-                 checks=self.check('length(@)', 0))
-
-    @ResourceGroupPreparer(name_prefix='cli_test_att')
-    def test_attestation_mgmt(self, resource_group):
-        self.kwargs.update({
-            'myattestation': self.create_random_name(prefix='clitestatt', length=24)
-        })
-
-        self._create(resource_group)
-        self._get(resource_group)
-        self._list_by_resource_group(resource_group)
-        self._list_by_subscription()
-        self._delete(resource_group)
+# Env setup
+@try_manual
+def setup(test, rg, rg_2, rg_3):
+    pass
 
 
-class AttestationSignerScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_att_signer')
-    def test_attestation_signer(self, resource_group):
-        self.kwargs.update({
-            'att_name': self.create_random_name(prefix='clitestattsigner', length=24),
-            'loc': 'eastus2',
-        })
-
-        att_json = self.cmd('az attestation create -n {att_name} -g {rg} -l {loc}').get_output_in_json()
-        self.kwargs['att_url'] = att_json['attestUri']
-
-        self.cmd('az attestation signer list -n {att_name} -g {rg}', checks=[
-            self.exists('jwt'),
-            self.exists('iss')
-        ])
-        self.cmd('az attestation signer list --attestation-base-url {att_url} -g {rg}', checks=[
-            self.exists('jwt'),
-            self.exists('iss')
-        ])
+# EXAMPLE: /AttestationProviders/put/AttestationProviders_Create
+@try_manual
+def step__attestationproviders_put(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider create '
+             '--provider-name "myattestationprovider" '
+             '--resource-group "{rg_2}"',
+             checks=[])
 
 
-class AttestationPolicyScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_att_policy')
-    def test_attestation_policy(self, resource_group):
-        self.kwargs.update({
-            'att_name': self.create_random_name(prefix='clitestattpolicy', length=24),
-            'loc': 'eastus2',
-        })
-
-        att_json = self.cmd('az attestation create -n {att_name} -g {rg} -l {loc}').get_output_in_json()
-        self.kwargs['att_url'] = att_json['attestUri']
-
-        self.cmd('az attestation policy show -n {att_name} -g {rg} --tee CyResComponent', checks=[
-            self.exists('jwt'),
-            self.exists('AttestationPolicy')
-        ])
-        self.cmd('az attestation policy show --attestation-base-url {att_url} -g {rg} --tee CyResComponent', checks=[
-            self.exists('jwt'),
-            self.exists('AttestationPolicy')
-        ])
-        self.cmd('az attestation policy reset -n {att_name} -g {rg} --tee SgxEnclave '
-                 '--policy-jws "eyJhbGciOiJub25lIn0.."')
+# EXAMPLE: /AttestationProviders/get/AttestationProviders_Get
+@try_manual
+def step__attestationproviders_get(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider show '
+             '--provider-name "myattestationprovider" '
+             '--resource-group "{rg_2}"',
+             checks=[])
 
 
-if __name__ == '__main__':
-    unittest.main()
+# EXAMPLE: /AttestationProviders/get/AttestationProviders_ListByResourceGroup
+@try_manual
+def step__attestationproviders_get2(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider list '
+             '--resource-group "{rg}"',
+             checks=[])
+
+
+# EXAMPLE: /AttestationProviders/get/AttestationProviders_List
+@try_manual
+def step__attestationproviders_get3(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider list '
+             '-g ""',
+             checks=[])
+
+
+# EXAMPLE: /Operations/get/Operations_List
+@try_manual
+def step__operations_get_operations_list(test, rg, rg_2, rg_3):
+    # EXAMPLE NOT FOUND!
+    pass
+
+
+# EXAMPLE: /AttestationProviders/patch/AttestationProviders_Update
+@try_manual
+def step__attestationproviders_patch(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider update '
+             '--provider-name "myattestationprovider" '
+             '--resource-group "{rg_2}" '
+             '--tags Property1="Value1" Property2="Value2" Property3="Value3"',
+             checks=[])
+
+
+# EXAMPLE: /AttestationProviders/delete/AttestationProviders_Delete
+@try_manual
+def step__attestationproviders_delete(test, rg, rg_2, rg_3):
+    test.cmd('az attestation attestation-provider delete -y '
+             '--provider-name "myattestationprovider" '
+             '--resource-group "{rg_3}"',
+             checks=[])
+
+
+# Env cleanup
+@try_manual
+def cleanup(test, rg, rg_2, rg_3):
+    pass
+
+
+# Testcase
+@try_manual
+def call_scenario(test, rg, rg_2, rg_3):
+    setup(test, rg, rg_2, rg_3)
+    step__attestationproviders_put(test, rg, rg_2, rg_3)
+    step__attestationproviders_get(test, rg, rg_2, rg_3)
+    step__attestationproviders_get2(test, rg, rg_2, rg_3)
+    step__attestationproviders_get3(test, rg, rg_2, rg_3)
+    step__operations_get_operations_list(test, rg, rg_2, rg_3)
+    step__attestationproviders_patch(test, rg, rg_2, rg_3)
+    step__attestationproviders_delete(test, rg, rg_2, rg_3)
+    cleanup(test, rg, rg_2, rg_3)
+
+
+@try_manual
+class AttestationManagementClientScenarioTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix='clitestattestation_testrg1'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitestattestation_MyResourceGroup'[:7], key='rg_2', parameter_name='rg_2')
+    @ResourceGroupPreparer(name_prefix='clitestattestation_sample-resource-group'[:7], key='rg_3', parameter_name=''
+                           'rg_3')
+    def test_attestation(self, rg, rg_2, rg_3):
+
+        call_scenario(self, rg, rg_2, rg_3)
+        calc_coverage(__file__)
+        raise_if()

@@ -12,118 +12,121 @@
 from knack.help_files import helps
 
 
-helps['attestation'] = """
+helps['attestation attestation-provider'] = """
     type: group
-    short-summary: attestation
+    short-summary: attestation attestation-provider
 """
 
-helps['attestation list'] = """
+helps['attestation attestation-provider list'] = """
     type: command
-    short-summary: Returns a list of attestation in a subscription or resource group.
+    short-summary: "Returns attestation providers list in a resource group. And Returns a list of attestation \
+providers in a subscription."
     examples:
-      - name: List all attestations in a subscription
+      - name: AttestationProviders_ListByResourceGroup
         text: |-
-               az attestation list
-      - name: List all attestations in a resource group
+               az attestation attestation-provider list --resource-group "testrg1"
+      - name: AttestationProviders_List
         text: |-
-               az attestation list --resource-group "MyResourceGroup"
+               az attestation attestation-provider list
 """
 
-helps['attestation show'] = """
+helps['attestation attestation-provider show'] = """
     type: command
-    short-summary: Gets the status of an attestation.
+    short-summary: "Get the status of Attestation Provider."
     examples:
-      - name: Get details for an attestation in a subscription
+      - name: AttestationProviders_Get
         text: |-
-               az attestation show --name "myattestationprovider" --resource-group "MyResourceGroup"
+               az attestation attestation-provider show --provider-name "myattestationprovider" --resource-group \
+"MyResourceGroup"
 """
 
-helps['attestation create'] = """
+helps['attestation attestation-provider create'] = """
     type: command
-    short-summary: Creates or updates an attestation.
-    examples:
-      - name: Create or update an attestation
-        text: |-
-               az attestation create --name "myattestationprovider" --resource-group "MyResourceGroup" \\
-                 --location "eastus2" --tags aKey=aValue anotherKey=anotherValue \\
-                 --attestation-policy "SgxDisableDebugMode" --certs-input-path "./policySigningCerts.pem"
+    short-summary: "Creates a new Attestation Provider instance."
+    parameters:
+      - name: --policy-signing-certificates-keys
+        short-summary: "The value of the \\"keys\\" parameter is an array of JWK values.  By default, the order of the \
+JWK values within the array does not imply an order of preference among them, although applications of JWK Sets can \
+choose to assign a meaning to the order for their purposes, if desired."
+        long-summary: |
+            Usage: --policy-signing-certificates-keys alg=XX crv=XX d=XX dp=XX dq=XX e=XX k=XX kid=XX kty=XX n=XX p=XX \
+q=XX qi=XX use=XX x=XX x5-c=XX y=XX
 
+            alg: Required. The "alg" (algorithm) parameter identifies the algorithm intended for use with the key.  \
+The values used should either be registered in the IANA "JSON Web Signature and Encryption Algorithms" registry \
+established by [JWA] or be a value that contains a Collision- Resistant Name.
+            crv: The "crv" (curve) parameter identifies the curve type
+            d: RSA private exponent or ECC private key
+            dp: RSA Private Key Parameter
+            dq: RSA Private Key Parameter
+            e: RSA public exponent, in Base64
+            k: Symmetric key
+            kid: Required. The "kid" (key ID) parameter is used to match a specific key.  This is used, for instance, \
+to choose among a set of keys within a JWK Set during key rollover.  The structure of the "kid" value is unspecified.  \
+When "kid" values are used within a JWK Set, different keys within the JWK Set SHOULD use distinct "kid" values.  (One \
+example in which different keys might use the same "kid" value is if they have different "kty" (key type) values but \
+are considered to be equivalent alternatives by the application using them.)  The "kid" value is a case-sensitive \
+string.
+            kty: Required. The "kty" (key type) parameter identifies the cryptographic algorithm family used with the \
+key, such as "RSA" or "EC". "kty" values should either be registered in the IANA "JSON Web Key Types" registry \
+established by [JWA] or be a value that contains a Collision- Resistant Name.  The "kty" value is a case-sensitive \
+string.
+            n: RSA modulus, in Base64
+            p: RSA secret prime
+            q: RSA secret prime, with p < q
+            qi: RSA Private Key Parameter
+            use: Required. Use ("public key use") identifies the intended use of the public key. The "use" parameter \
+is employed to indicate whether a public key is used for encrypting data or verifying the signature on data. Values \
+are commonly "sig" (signature) or "enc" (encryption).
+            x: X coordinate for the Elliptic Curve point
+            x5-c: The "x5c" (X.509 certificate chain) parameter contains a chain of one or more PKIX certificates \
+[RFC5280].  The certificate chain is represented as a JSON array of certificate value strings.  Each string in the \
+array is a base64-encoded (Section 4 of [RFC4648] -- not base64url-encoded) DER [ITU.X690.1994] PKIX certificate \
+value. The PKIX certificate containing the key value MUST be the first certificate.
+            y: Y coordinate for the Elliptic Curve point
+
+            Multiple actions can be specified by using more than one --policy-signing-certificates-keys argument.
+    examples:
+      - name: AttestationProviders_Create
+        text: |-
+               az attestation attestation-provider create --provider-name "myattestationprovider" --resource-group \
+"MyResourceGroup"
 """
 
-helps['attestation delete'] = """
+helps['attestation attestation-provider update'] = """
     type: command
-    short-summary: Deletes an attestation.
+    short-summary: "Updates the Attestation Provider."
     examples:
-      - name: Delete an attestation
+      - name: AttestationProviders_Update
         text: |-
-               az attestation delete --name "myattestationprovider" --resource-group "MyResourceGroup"
+               az attestation attestation-provider update --provider-name "myattestationprovider" --resource-group \
+"MyResourceGroup" --tags Property1="Value1" Property2="Value2" Property3="Value3"
 """
 
-helps['attestation policy'] = """
-    type: group
-    short-summary: Manage the policies
-"""
-
-helps['attestation policy set'] = """
+helps['attestation attestation-provider delete'] = """
     type: command
-    short-summary: Sets the policy for a given kind of TEE.
+    short-summary: "Delete Attestation Service."
     examples:
-      - name: Sets the policy for a given kind of TEE (SgxEnclave).
+      - name: AttestationProviders_Delete
         text: |-
-               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave \\
-               --new-attestation-policy "newAttestationPolicyname"
+               az attestation attestation-provider delete --provider-name "myattestationprovider" --resource-group \
+"sample-resource-group"
 """
 
-helps['attestation policy reset'] = """
+helps['attestation attestation-provider get-default-by-location'] = """
     type: command
-    short-summary: Resets the attestation policy for the specified tenant and reverts to the default policy.
+    short-summary: "Get the default provider by location."
     examples:
-      - name: Resets the attestation policy for the specified tenant and reverts to the default policy.
+      - name: AttestationProviders_GetDefaultWithLocation
         text: |-
-               az attestation policy reset -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave \\
-               --policy-jws "eyJhbGciOiJub25lIn0.."
+               az attestation attestation-provider get-default-by-location --location "Central US"
 """
 
-helps['attestation policy show'] = """
+helps['attestation attestation-provider list-default'] = """
     type: command
-    short-summary: Retrieves the current policy for a given kind of TEE.
+    short-summary: "Get the default provider."
     examples:
-      - name: Retrieves the current policy for a given kind of TEE (SgxEnclave).
+      - name: AttestationProviders_GetDefault
         text: |-
-               az attestation policy show -n "myattestationprovider" -g "MyResourceGroup" --tee SgxEnclave
-"""
-
-helps['attestation signer'] = """
-    type: group
-    short-summary: Manage the trusted policy signers
-"""
-
-helps['attestation signer add'] = """
-    type: command
-    short-summary: Adds a new attestation policy certificate to the set of policy management certificates.
-    examples:
-      - name: Adds a new attestation policy certificate to the set of policy management certificates.
-        text: |-
-               az attestation signer add -n "myattestationprovider" -g "MyResourceGroup" \\
-               --signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
-"""
-
-helps['attestation signer remove'] = """
-    type: command
-    short-summary: Removes the specified policy management certificate. Note that the final policy management
-     certificate cannot be removed.
-    examples:
-      - name: Removes the specified policy management certificate.
-        text: |-
-               az attestation signer remove -n "myattestationprovider" -g "MyResourceGroup" \\
-               --signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
-"""
-
-helps['attestation signer list'] = """
-    type: command
-    short-summary: Retrieves the set of certificates used to express policy for the current tenant.
-    examples:
-      - name: Retrieves the set of certificates used to express policy for the current tenant.
-        text: |-
-               az attestation signer list -n "myattestationprovider" -g "MyResourceGroup"
+               az attestation attestation-provider list-default
 """

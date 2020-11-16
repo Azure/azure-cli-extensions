@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._attestation_management_client_async import AttestationManagementClient
+from ._attestation_management_client import AttestationManagementClient
 __all__ = ['AttestationManagementClient']

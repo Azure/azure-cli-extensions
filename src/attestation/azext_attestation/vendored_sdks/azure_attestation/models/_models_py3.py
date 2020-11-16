@@ -16,7 +16,8 @@ from msrest.exceptions import HttpOperationError
 class AttestationPolicy(Model):
     """AttestationPolicy.
 
-    :param policy: String-encoded attestation policy document.
+    :param policy: JSON Web Token whose body is an AttestationPolicyRequest
+     definition.
     :type policy: str
     """
 

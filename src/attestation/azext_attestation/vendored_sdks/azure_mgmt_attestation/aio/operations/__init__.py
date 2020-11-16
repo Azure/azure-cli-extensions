@@ -6,8 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations_async import OperationOperations
-from ._attestation_provider_operations_async import AttestationProviderOperations
+from ._operation_operations import OperationOperations
+from ._attestation_provider_operations import AttestationProviderOperations
 
 __all__ = [
     'OperationOperations',
