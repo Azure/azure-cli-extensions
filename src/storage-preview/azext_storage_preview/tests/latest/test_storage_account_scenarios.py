@@ -257,7 +257,7 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
                             sku='Premium_LRS', location='centraluseuap')
     @StorageAccountPreparer(parameter_name='storage_account2', name_prefix='filesmb2', kind='StorageV2')
     def test_storage_account_file_smb_multichannel(self, resource_group, storage_account1, storage_account2):
-        from azure.cli.core.azclierror import UnknownError
+
         from azure.core.exceptions import ResourceExistsError
         self.kwargs.update({
             'sa': storage_account1,
@@ -268,6 +268,15 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
 
         with self.assertRaisesRegexp(ResourceExistsError, "SMB Multichannel is not supported for the account."):
             self.cmd('{cmd} update --mc -n {sa2} -g {rg}')
+
+        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy', None),
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
+
+        self.cmd('{cmd} show -n {sa2} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
+            JMESPathCheck('shareDeleteRetentionPolicy.days', 0),
+            JMESPathCheck('protocolSettings', None))
 
         self.cmd(
             '{cmd} update --enable-smb-multichannel -n {sa} -g {rg}').assert_with_checks(
