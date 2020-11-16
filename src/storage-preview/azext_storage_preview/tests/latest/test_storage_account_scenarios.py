@@ -214,7 +214,7 @@ class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest
 
 class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_file_soft_delete')
-    @StorageAccountPreparer(name_prefix='filesoftdelete', kind='FileStorage', sku='Premium_LRS', location='eastus')
+    @StorageAccountPreparer(name_prefix='filesoftdelete', kind='StorageV2', location='eastus2euap')
     def test_storage_account_file_delete_retention_policy(self, resource_group, storage_account):
         from azure.cli.core.azclierror import ValidationError
         self.kwargs.update({
