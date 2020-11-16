@@ -6,7 +6,7 @@
 from knack.util import CLIError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, IdentityProperties, ImportPipelineSourceProperties, PipelineTriggerProperties, UserIdentityProperties, PipelineSourceTriggerProperties
-
+import time
 import json
 
 def poll_output(poller, poll_interval=10):
@@ -17,7 +17,7 @@ def poll_output(poller, poll_interval=10):
         print("Operation Status: " + poller.status())
     return
 
-def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options, user_assigned_identity=None):
+def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options, user_assigned_identity_resource_id=None):
     '''  
         BEGIN_CREATE
         resource_group_name,  # type: str
@@ -65,20 +65,20 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
-    if user_assigned_identity == None:
+    if user_assigned_identity_resource_id is None:
         resource_identity_type = "SystemAssigned"
         user_assigned_identities = None
     else:
         resource_identity_type = "UserAssigned"
         user_identity_properties = UserIdentityProperties()
-        user_assigned_identities = {user_assigned_identity: user_identity_properties}
+        user_assigned_identities = {user_assigned_identity_resource_id: user_identity_properties}
 
     identity_properties = IdentityProperties(type=resource_identity_type, user_assigned_identities=user_assigned_identities)
 
     import_pipeline_source_properties = ImportPipelineSourceProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri)
 
     allowed_options_list = ["DisableSourceTrigger", "OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
-    options_list = options.split(",")
+    options_list = options.split(',')
 
     if not set(options_list).issubset(set(allowed_options_list)):
         print("Allowed options are: ", end='')
@@ -95,12 +95,17 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
     
     poll_output(poller)
 
-    keyvault_name = keyvault_secret_uri.split('https://')[1].split('.')[0]
-    raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
-    identity_object_id = raw_result.identity.principal_id
+    keyvault_name = keyvault_secret_uri.split("https://")[1].split('.')[0]
+    
+    #account for ARM bug where the identity user assigned identities dict key resource id has lowercase resourcegroup rather than resourceGroup 
+    user_assigned_identity_resource_id_list = user_assigned_identity_resource_id.split("/")
+    user_assigned_identity_resource_id_list[3] = "resourcegroups"
+    user_assigned_identity_resource_id = '/'.join(user_assigned_identity_resource_id_list)
 
-    ### different for managed identity -> raw_result.identity.user_assigned_identities['/subscriptions/84c559c6-30a0-417c-ba06-8a2253b388c3/resourcegroups/mabenedi/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mabenedimsi'].principal_id
-    print("***YOU MUST RUN THE FOLLOWING COMMAND PRIOR TO ATTEMPTING A PIPELINERUN OR EXPECTING SOURCETRIGGER TO WORK")
+    raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
+    identity_object_id = raw_result.identity.principal_id if user_assigned_identity_resource_id is None else raw_result.identity.user_assigned_identities[user_assigned_identity_resource_id].principal_id
+
+    print("***YOU MUST RUN THE FOLLOWING COMMAND PRIOR TO ATTEMPTING A PIPELINERUN OR EXPECTING SOURCETRIGGER TO SUCCESSFULLY IMPORT IMAGES***")
     print(f'az keyvault set-policy --name {keyvault_name} --secret-permissions get --object-id {identity_object_id}')
 
 
@@ -121,7 +126,7 @@ def get_importpipeline(cmd, client, resource_group_name, registry_name, import_p
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
     print(raw_result)
-    print(raw_result.identity.user_assigned_identities['/subscriptions/84c559c6-30a0-417c-ba06-8a2253b388c3/resourcegroups/mabenedi/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mabenedimsi'].principal_id)
+    print(raw_result.identity.user_assigned_identities)
 
 
 def update_importpipeline(cmd, instance, tags=None):
@@ -163,7 +168,7 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
     elif pipeline_type == "export":
         pipeline_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerRegistry/registries/{registry_name}/exportPipelines/{pipeline_name}'
         
-        if artifacts == None:
+        if artifacts is None:
              raise CLIError("artifacts cannot be null for Export PipelineRuns. Please provide a comma separated list of container images to be exported in the form REPOSITORY:TAG")
         
         artifact_list = artifacts.split(',')
@@ -177,14 +182,11 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
     else:
         raise CLIError("Incorrect pipeline-type parameter. Accepted values are 'import' or 'export'")
     
-    #TODO force update tag doesn't work
-    #PipelineRun object expects a string for force_update_tag
-    force_update_tag_str = "true" if force_update_tag else "false"
-
+    force_update_tag_str = str(time.time()) if force_update_tag else None
+    
     pipeline_run = PipelineRun(request=pipeline_run_request, force_update_tag=force_update_tag_str)
 
     poller = client.pipeline_runs.begin_create(resource_group_name, registry_name, pipeline_run_name, pipeline_run)
-
     poll_output(poller=poller)
 
     get_pipelinerun(cmd=cmd, client=client, resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
@@ -198,7 +200,7 @@ def list_pipelinerun(cmd, client, resource_group_name, registry_name):
 
 def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     raw_result = client.pipeline_runs.get(resource_group_name, registry_name, pipeline_run_name)
-
+    print(raw_result)
     print(raw_result.response)
 
 def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
