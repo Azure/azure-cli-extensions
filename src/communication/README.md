@@ -8,46 +8,46 @@ az extension add --name communication
 ```
 
 ### Included Features ###
-#### communication communication-service ####
+#### communication service ####
 ##### Create #####
 ```
-az communication communication-service create --name "MyCommunicationResource" --location "Global" \
-    --data-location "United States" --resource-group "MyResourceGroup" 
+az communication service create --name "MyCommunicationResource" --location "Global" \
+    --data-location "United States" --resource-group "MyResourceGroup"
 
-az communication communication-service wait --created --name "{myCommunicationService}" --resource-group "{rg}"
+az communication service wait --created --name "{myCommunicationService}" --resource-group "{rg}"
 ```
 ##### Show #####
 ```
-az communication communication-service show --name "MyCommunicationResource" --resource-group "MyResourceGroup"
+az communication service show --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
 ##### List #####
 ```
-az communication communication-service list --resource-group "MyResourceGroup"
+az communication service list --resource-group "MyResourceGroup"
 ```
 ##### Update #####
 ```
-az communication communication-service update --name "MyCommunicationResource" --tags newTag="newVal" \
-    --resource-group "MyResourceGroup" 
+az communication service update --name "MyCommunicationResource" --tags newTag="newVal" \
+    --resource-group "MyResourceGroup"
 ```
 ##### Link-notification-hub #####
 ```
-az communication communication-service link-notification-hub --name "MyCommunicationResource" \
+az communication service link-notification-hub --name "MyCommunicationResource" \
     --connection-string "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" \
     --resource-id "/subscriptions/12345/resourceGroups/MyOtherResourceGroup/providers/Microsoft.NotificationHubs/namespaces/MyNamespace/notificationHubs/MyHub" \
-    --resource-group "MyResourceGroup" 
+    --resource-group "MyResourceGroup"
 ```
 ##### List-key #####
 ```
-az communication communication-service list-key --name "MyCommunicationResource" --resource-group "MyResourceGroup"
+az communication service list-key --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
 ##### Regenerate-key #####
 ```
-az communication communication-service regenerate-key --name "MyCommunicationResource" --key-type "Primary" \
-    --resource-group "MyResourceGroup" 
+az communication service regenerate-key --name "MyCommunicationResource" --key-type "Primary" \
+    --resource-group "MyResourceGroup"
 ```
 ##### Delete #####
 ```
-az communication communication-service delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
+az communication service delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
 #### communication operation-statuses ####
 ##### Show #####
