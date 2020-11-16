@@ -3034,7 +3034,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
 
     # need more time to propogate this assignment...
     print()
-    print('Wait 30 seconds for identity role assignment propogation.')
+    print('Wait 30 seconds for identity role assignment propagation.')
     time.sleep(30)
 
 
