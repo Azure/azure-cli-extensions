@@ -3002,8 +3002,17 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     managed_identity_operator_role = 'Managed Identity Operator'
     managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
 
-    # TODO: handle user assigned
-    cluster_identity_object_id = instance.identity.principal_id
+    cluster_identity_object_id = None
+    if instance.identity.type.lower() == 'userassigned':
+        for identity in instance.identity.user_assigned_identities.values():
+            cluster_identity_object_id = identity.principal_id
+            break
+    elif instance.identity.type.lower() == 'systemassigned':
+        cluster_identity_object_id = instance.identity.principal_id
+    else:
+        raise CLIError('unsupported identity type: {}'.format(instance.identity.type))
+    if cluster_identity_object_id is None:
+        raise CLIError('unable to resolve cluster identity')
 
     factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
