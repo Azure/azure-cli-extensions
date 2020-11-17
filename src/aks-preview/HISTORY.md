@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+
 0.4.65
 +++++
 * Honor addon names defined in Azure CLI
