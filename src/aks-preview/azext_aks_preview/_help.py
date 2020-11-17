@@ -275,6 +275,12 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -604,6 +610,12 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

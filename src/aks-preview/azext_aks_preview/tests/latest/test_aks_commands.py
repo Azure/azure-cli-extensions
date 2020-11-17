@@ -4,11 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+import os
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
 
+def _get_test_data_file(filename):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(curr_dir, 'data', filename)
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()  # without live only fails with need az login
