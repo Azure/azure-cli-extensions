@@ -57,6 +57,8 @@ def load_arguments(self, _):
                    'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
                    'value: json-string/@json-file.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether or not '
+                   'public network access is allowed for the data factory.')
 
     with self.argument_context('datafactory factory update') as c:
         c.argument('resource_group_name', resource_group_name_type)

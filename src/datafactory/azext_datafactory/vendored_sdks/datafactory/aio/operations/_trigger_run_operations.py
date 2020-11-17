@@ -6,25 +6,21 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import datetime
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from .. import models
+from ... import models
 
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
+T = TypeVar('T')
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-    T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
-
-class TriggerRunOperations(object):
-    """TriggerRunOperations operations.
+class TriggerRunOperations:
+    """TriggerRunOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -39,21 +35,20 @@ class TriggerRunOperations(object):
 
     models = models
 
-    def __init__(self, client, config, serializer, deserializer):
+    def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
 
-    def rerun(
+    async def rerun(
         self,
-        resource_group_name,  # type: str
-        factory_name,  # type: str
-        trigger_name,  # type: str
-        run_id,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        resource_group_name: str,
+        factory_name: str,
+        trigger_name: str,
+        run_id: str,
+        **kwargs
+    ) -> None:
         """Rerun single trigger instance by runId.
 
         :param resource_group_name: The resource group name.
@@ -97,7 +92,7 @@ class TriggerRunOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
@@ -109,15 +104,14 @@ class TriggerRunOperations(object):
 
     rerun.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/rerun'}  # type: ignore
 
-    def cancel(
+    async def cancel(
         self,
-        resource_group_name,  # type: str
-        factory_name,  # type: str
-        trigger_name,  # type: str
-        run_id,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        resource_group_name: str,
+        factory_name: str,
+        trigger_name: str,
+        run_id: str,
+        **kwargs
+    ) -> None:
         """Cancel a single trigger instance by runId.
 
         :param resource_group_name: The resource group name.
@@ -161,7 +155,7 @@ class TriggerRunOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
@@ -173,18 +167,17 @@ class TriggerRunOperations(object):
 
     cancel.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/cancel'}  # type: ignore
 
-    def query_by_factory(
+    async def query_by_factory(
         self,
-        resource_group_name,  # type: str
-        factory_name,  # type: str
-        last_updated_after,  # type: datetime.datetime
-        last_updated_before,  # type: datetime.datetime
-        continuation_token_parameter=None,  # type: Optional[str]
-        filters=None,  # type: Optional[List["models.RunQueryFilter"]]
-        order_by=None,  # type: Optional[List["models.RunQueryOrderBy"]]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "models.TriggerRunsQueryResponse"
+        resource_group_name: str,
+        factory_name: str,
+        last_updated_after: datetime.datetime,
+        last_updated_before: datetime.datetime,
+        continuation_token_parameter: Optional[str] = None,
+        filters: Optional[List["models.RunQueryFilter"]] = None,
+        order_by: Optional[List["models.RunQueryOrderBy"]] = None,
+        **kwargs
+    ) -> "models.TriggerRunsQueryResponse":
         """Query trigger runs.
 
         :param resource_group_name: The resource group name.
@@ -242,7 +235,7 @@ class TriggerRunOperations(object):
         body_content = self._serialize.body(filter_parameters, 'RunFilterParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
