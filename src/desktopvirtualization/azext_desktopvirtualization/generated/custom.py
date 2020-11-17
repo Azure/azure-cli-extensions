@@ -8,7 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
 
 
 def desktopvirtualization_workspace_list(client,
@@ -64,13 +63,86 @@ def desktopvirtualization_workspace_delete(client,
                          workspace_name=workspace_name)
 
 
+def desktopvirtualization_scaling_plan_list(client,
+                                            resource_group_name=None,
+                                            host_pool_name=None):
+    if resource_group_name and host_pool_name is not None:
+        return client.list_by_host_pool(resource_group_name=resource_group_name,
+                                        host_pool_name=host_pool_name)
+    elif resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def desktopvirtualization_scaling_plan_show(client,
+                                            resource_group_name,
+                                            scaling_plan_name):
+    return client.get(resource_group_name=resource_group_name,
+                      scaling_plan_name=scaling_plan_name)
+
+
+def desktopvirtualization_scaling_plan_create(client,
+                                              resource_group_name,
+                                              scaling_plan_name,
+                                              location,
+                                              tags=None,
+                                              description=None,
+                                              friendly_name=None,
+                                              time_zone=None,
+                                              host_pool_type=None,
+                                              exclusion_tag=None,
+                                              schedules=None,
+                                              host_pool_references=None):
+    return client.create(resource_group_name=resource_group_name,
+                         scaling_plan_name=scaling_plan_name,
+                         tags=tags,
+                         location=location,
+                         description=description,
+                         friendly_name=friendly_name,
+                         time_zone=time_zone,
+                         host_pool_type=host_pool_type,
+                         exclusion_tag=exclusion_tag,
+                         schedules=schedules,
+                         host_pool_references=host_pool_references)
+
+
+def desktopvirtualization_scaling_plan_update(client,
+                                              resource_group_name,
+                                              scaling_plan_name,
+                                              tags=None,
+                                              description=None,
+                                              friendly_name=None,
+                                              time_zone=None,
+                                              host_pool_type=None,
+                                              exclusion_tag=None,
+                                              schedules=None,
+                                              host_pool_references=None):
+    return client.update(resource_group_name=resource_group_name,
+                         scaling_plan_name=scaling_plan_name,
+                         tags=tags,
+                         description=description,
+                         friendly_name=friendly_name,
+                         time_zone=time_zone,
+                         host_pool_type=host_pool_type,
+                         exclusion_tag=exclusion_tag,
+                         schedules=schedules,
+                         host_pool_references=host_pool_references)
+
+
+def desktopvirtualization_scaling_plan_delete(client,
+                                              resource_group_name,
+                                              scaling_plan_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         scaling_plan_name=scaling_plan_name)
+
+
 def desktopvirtualization_applicationgroup_list(client,
                                                 resource_group_name=None,
-                                                filter=None):
+                                                filter_=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
-                                             filter=filter)
-    return client.list_by_subscription(filter=filter)
+                                             filter=filter_)
+    return client.list_by_subscription(filter=filter_)
 
 
 def desktopvirtualization_applicationgroup_show(client,
@@ -138,18 +210,24 @@ def desktopvirtualization_hostpool_create(client,
                                           host_pool_name,
                                           location,
                                           host_pool_type,
-                                          personal_desktop_assignment_type,
                                           load_balancer_type,
+                                          preferred_app_group_type,
                                           tags=None,
                                           friendly_name=None,
                                           description=None,
+                                          personal_desktop_assignment_type=None,
                                           custom_rdp_property=None,
                                           max_session_limit=None,
                                           ring=None,
                                           validation_environment=None,
                                           registration_info=None,
                                           vm_template=None,
-                                          sso_context=None):
+                                          sso_context=None,
+                                          ssoadfs_authority=None,
+                                          sso_client_id=None,
+                                          sso_client_secret_key_vault_path=None,
+                                          sso_secret_type=None,
+                                          start_vm_on_connect=None):
     return client.create_or_update(resource_group_name=resource_group_name,
                                    host_pool_name=host_pool_name,
                                    tags=tags,
@@ -165,7 +243,13 @@ def desktopvirtualization_hostpool_create(client,
                                    validation_environment=validation_environment,
                                    registration_info=registration_info,
                                    vm_template=vm_template,
-                                   sso_context=sso_context)
+                                   sso_context=sso_context,
+                                   ssoadfs_authority=ssoadfs_authority,
+                                   sso_client_id=sso_client_id,
+                                   sso_client_secret_key_vault_path=sso_client_secret_key_vault_path,
+                                   sso_secret_type=sso_secret_type,
+                                   preferred_app_group_type=preferred_app_group_type,
+                                   start_vm_on_connect=start_vm_on_connect)
 
 
 def desktopvirtualization_hostpool_update(client,
@@ -181,7 +265,14 @@ def desktopvirtualization_hostpool_update(client,
                                           ring=None,
                                           validation_environment=None,
                                           registration_info=None,
-                                          sso_context=None):
+                                          vm_template=None,
+                                          sso_context=None,
+                                          ssoadfs_authority=None,
+                                          sso_client_id=None,
+                                          sso_client_secret_key_vault_path=None,
+                                          sso_secret_type=None,
+                                          preferred_app_group_type=None,
+                                          start_vm_on_connect=None):
     return client.update(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
                          tags=tags,
@@ -194,7 +285,14 @@ def desktopvirtualization_hostpool_update(client,
                          ring=ring,
                          validation_environment=validation_environment,
                          registration_info=registration_info,
-                         sso_context=sso_context)
+                         vm_template=vm_template,
+                         sso_context=sso_context,
+                         ssoadfs_authority=ssoadfs_authority,
+                         sso_client_id=sso_client_id,
+                         sso_client_secret_key_vault_path=sso_client_secret_key_vault_path,
+                         sso_secret_type=sso_secret_type,
+                         preferred_app_group_type=preferred_app_group_type,
+                         start_vm_on_connect=start_vm_on_connect)
 
 
 def desktopvirtualization_hostpool_delete(client,
@@ -204,3 +302,83 @@ def desktopvirtualization_hostpool_delete(client,
     return client.delete(resource_group_name=resource_group_name,
                          host_pool_name=host_pool_name,
                          force=force)
+
+
+def desktopvirtualization_msix_package_list(client,
+                                            resource_group_name,
+                                            host_pool_name):
+    return client.list(resource_group_name=resource_group_name,
+                       host_pool_name=host_pool_name)
+
+
+def desktopvirtualization_msix_package_show(client,
+                                            resource_group_name,
+                                            host_pool_name,
+                                            msix_package_full_name):
+    return client.get(resource_group_name=resource_group_name,
+                      host_pool_name=host_pool_name,
+                      msix_package_full_name=msix_package_full_name)
+
+
+def desktopvirtualization_msix_package_create(client,
+                                              resource_group_name,
+                                              host_pool_name,
+                                              msix_package_full_name,
+                                              image_path=None,
+                                              package_name=None,
+                                              package_family_name=None,
+                                              display_name=None,
+                                              package_relative_path=None,
+                                              is_regular_registration=None,
+                                              is_active=None,
+                                              package_dependencies=None,
+                                              version=None,
+                                              last_updated=None,
+                                              package_applications=None):
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   host_pool_name=host_pool_name,
+                                   msix_package_full_name=msix_package_full_name,
+                                   image_path=image_path,
+                                   package_name=package_name,
+                                   package_family_name=package_family_name,
+                                   display_name=display_name,
+                                   package_relative_path=package_relative_path,
+                                   is_regular_registration=is_regular_registration,
+                                   is_active=is_active,
+                                   package_dependencies=package_dependencies,
+                                   version=version,
+                                   last_updated=last_updated,
+                                   package_applications=package_applications)
+
+
+def desktopvirtualization_msix_package_update(client,
+                                              resource_group_name,
+                                              host_pool_name,
+                                              msix_package_full_name,
+                                              is_active=None,
+                                              is_regular_registration=None,
+                                              display_name=None):
+    return client.update(resource_group_name=resource_group_name,
+                         host_pool_name=host_pool_name,
+                         msix_package_full_name=msix_package_full_name,
+                         is_active=is_active,
+                         is_regular_registration=is_regular_registration,
+                         display_name=display_name)
+
+
+def desktopvirtualization_msix_package_delete(client,
+                                              resource_group_name,
+                                              host_pool_name,
+                                              msix_package_full_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         host_pool_name=host_pool_name,
+                         msix_package_full_name=msix_package_full_name)
+
+
+def desktopvirtualization_msix_image_expand(client,
+                                            resource_group_name,
+                                            host_pool_name,
+                                            uri=None):
+    return client.expand(resource_group_name=resource_group_name,
+                         host_pool_name=host_pool_name,
+                         uri=uri)

@@ -18,13 +18,13 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class HostPoolOperations(object):
-    """HostPoolOperations operations.
+class ScalingPlanOperations(object):
+    """ScalingPlanOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -48,22 +48,22 @@ class HostPoolOperations(object):
     def get(
         self,
         resource_group_name,  # type: str
-        host_pool_name,  # type: str
+        scaling_plan_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.HostPool"
-        """Get a host pool.
+        # type: (...) -> "models.ScalingPlan"
+        """Get a scaling plan.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param host_pool_name: The name of the host pool within the specified resource group.
-        :type host_pool_name: str
+        :param scaling_plan_name: The name of the scaling plan.
+        :type scaling_plan_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool, or the result of cls(response)
-        :rtype: ~desktop_virtualization_api_client.models.HostPool
+        :return: ScalingPlan, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ScalingPlan
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlan"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -76,7 +76,7 @@ class HostPoolOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
+            'scalingPlanName': self._serialize.url("scaling_plan_name", scaling_plan_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -96,112 +96,76 @@ class HostPoolOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('HostPool', pipeline_response)
+        deserialized = self._deserialize('ScalingPlan', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/scalingPlans/{scalingPlanName}'}  # type: ignore
 
-    def create_or_update(
+    def create(
         self,
         resource_group_name,  # type: str
-        host_pool_name,  # type: str
+        scaling_plan_name,  # type: str
         location,  # type: str
-        host_pool_type,  # type: Union[str, "models.HostPoolType"]
-        load_balancer_type,  # type: Union[str, "models.LoadBalancerType"]
-        preferred_app_group_type,  # type: Union[str, "models.PreferredAppGroupType"]
         tags=None,  # type: Optional[Dict[str, str]]
-        friendly_name=None,  # type: Optional[str]
         description=None,  # type: Optional[str]
-        personal_desktop_assignment_type=None,  # type: Optional[Union[str, "models.PersonalDesktopAssignmentType"]]
-        custom_rdp_property=None,  # type: Optional[str]
-        max_session_limit=None,  # type: Optional[int]
-        ring=None,  # type: Optional[int]
-        validation_environment=None,  # type: Optional[bool]
-        registration_info=None,  # type: Optional["models.RegistrationInfo"]
-        vm_template=None,  # type: Optional[str]
-        sso_context=None,  # type: Optional[str]
-        ssoadfs_authority=None,  # type: Optional[str]
-        sso_client_id=None,  # type: Optional[str]
-        sso_client_secret_key_vault_path=None,  # type: Optional[str]
-        sso_secret_type=None,  # type: Optional[Union[str, "models.SsoSecretType"]]
-        start_vm_on_connect=None,  # type: Optional[bool]
+        friendly_name=None,  # type: Optional[str]
+        time_zone=None,  # type: Optional[str]
+        host_pool_type=None,  # type: Optional[Union[str, "models.HostPoolType"]]
+        exclusion_tag=None,  # type: Optional[str]
+        schedules=None,  # type: Optional[List["models.ScalingSchedule"]]
+        host_pool_references=None,  # type: Optional[List["models.ScalingHostPoolReference"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.HostPool"
-        """Create or update a host pool.
+        # type: (...) -> "models.ScalingPlan"
+        """Create or update a scaling plan.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param host_pool_name: The name of the host pool within the specified resource group.
-        :type host_pool_name: str
+        :param scaling_plan_name: The name of the scaling plan.
+        :type scaling_plan_name: str
         :param location: The geo-location where the resource lives.
         :type location: str
-        :param host_pool_type: HostPool type for desktop.
-        :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
-        :param load_balancer_type: The type of the load balancer.
-        :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
-        :param preferred_app_group_type: The type of preferred application group type, default to
-         Desktop Application Group.
-        :type preferred_app_group_type: str or ~desktop_virtualization_api_client.models.PreferredAppGroupType
         :param tags: Resource tags.
         :type tags: dict[str, str]
-        :param friendly_name: Friendly name of HostPool.
-        :type friendly_name: str
-        :param description: Description of HostPool.
+        :param description: Description of scaling plan.
         :type description: str
-        :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
-        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
-        :param custom_rdp_property: Custom rdp property of HostPool.
-        :type custom_rdp_property: str
-        :param max_session_limit: The max session limit of HostPool.
-        :type max_session_limit: int
-        :param ring: The ring number of HostPool.
-        :type ring: int
-        :param validation_environment: Is validation environment.
-        :type validation_environment: bool
-        :param registration_info: The registration info of HostPool.
-        :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfo
-        :param vm_template: VM template for sessionhosts configuration within hostpool.
-        :type vm_template: str
-        :param sso_context: Path to keyvault containing ssoContext secret.
-        :type sso_context: str
-        :param ssoadfs_authority: URL to customer ADFS server for signing WVD SSO certificates.
-        :type ssoadfs_authority: str
-        :param sso_client_id: ClientId for the registered Relying Party used to issue WVD SSO
-         certificates.
-        :type sso_client_id: str
-        :param sso_client_secret_key_vault_path: Path to Azure KeyVault storing the secret used for
-         communication to ADFS.
-        :type sso_client_secret_key_vault_path: str
-        :param sso_secret_type: The type of single sign on Secret Type.
-        :type sso_secret_type: str or ~desktop_virtualization_api_client.models.SsoSecretType
-        :param start_vm_on_connect: The flag to turn on/off StartVMOnConnect feature.
-        :type start_vm_on_connect: bool
+        :param friendly_name: User friendly name of scaling plan.
+        :type friendly_name: str
+        :param time_zone: Timezone of the scaling plan.
+        :type time_zone: str
+        :param host_pool_type: HostPool type for scaling plan.
+        :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
+        :param exclusion_tag: Exclusion tag for scaling plan.
+        :type exclusion_tag: str
+        :param schedules: List of ScalingSchedule definitions.
+        :type schedules: list[~desktop_virtualization_api_client.models.ScalingSchedule]
+        :param host_pool_references: List of ScalingHostPoolReference definitions.
+        :type host_pool_references: list[~desktop_virtualization_api_client.models.ScalingHostPoolReference]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool, or the result of cls(response)
-        :rtype: ~desktop_virtualization_api_client.models.HostPool
+        :return: ScalingPlan, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ScalingPlan
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlan"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        host_pool = models.HostPool(tags=tags, location=location, friendly_name=friendly_name, description=description, host_pool_type=host_pool_type, personal_desktop_assignment_type=personal_desktop_assignment_type, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, vm_template=vm_template, sso_context=sso_context, ssoadfs_authority=ssoadfs_authority, sso_client_id=sso_client_id, sso_client_secret_key_vault_path=sso_client_secret_key_vault_path, sso_secret_type=sso_secret_type, preferred_app_group_type=preferred_app_group_type, start_vm_on_connect=start_vm_on_connect)
+        scaling_plan = models.ScalingPlan(tags=tags, location=location, description=description, friendly_name=friendly_name, time_zone=time_zone, host_pool_type=host_pool_type, exclusion_tag=exclusion_tag, schedules=schedules, host_pool_references=host_pool_references)
         api_version = "2020-11-10-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        url = self.create_or_update.metadata['url']  # type: ignore
+        url = self.create.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
+            'scalingPlanName': self._serialize.url("scaling_plan_name", scaling_plan_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -215,7 +179,7 @@ class HostPoolOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(host_pool, 'HostPool')
+        body_content = self._serialize.body(scaling_plan, 'ScalingPlan')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -226,33 +190,30 @@ class HostPoolOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('HostPool', pipeline_response)
+            deserialized = self._deserialize('ScalingPlan', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('HostPool', pipeline_response)
+            deserialized = self._deserialize('ScalingPlan', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/scalingPlans/{scalingPlanName}'}  # type: ignore
 
     def delete(
         self,
         resource_group_name,  # type: str
-        host_pool_name,  # type: str
-        force=None,  # type: Optional[bool]
+        scaling_plan_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Remove a host pool.
+        """Remove a scaling plan.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param host_pool_name: The name of the host pool within the specified resource group.
-        :type host_pool_name: str
-        :param force: Force flag to delete sessionHost.
-        :type force: bool
+        :param scaling_plan_name: The name of the scaling plan.
+        :type scaling_plan_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -271,15 +232,13 @@ class HostPoolOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
+            'scalingPlanName': self._serialize.url("scaling_plan_name", scaling_plan_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-        if force is not None:
-            query_parameters['force'] = self._serialize.query("force", force, 'bool')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
@@ -296,90 +255,57 @@ class HostPoolOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/scalingPlans/{scalingPlanName}'}  # type: ignore
 
     def update(
         self,
         resource_group_name,  # type: str
-        host_pool_name,  # type: str
+        scaling_plan_name,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
-        friendly_name=None,  # type: Optional[str]
         description=None,  # type: Optional[str]
-        custom_rdp_property=None,  # type: Optional[str]
-        max_session_limit=None,  # type: Optional[int]
-        personal_desktop_assignment_type=None,  # type: Optional[Union[str, "models.PersonalDesktopAssignmentType"]]
-        load_balancer_type=None,  # type: Optional[Union[str, "models.LoadBalancerType"]]
-        ring=None,  # type: Optional[int]
-        validation_environment=None,  # type: Optional[bool]
-        registration_info=None,  # type: Optional["models.RegistrationInfoPatch"]
-        vm_template=None,  # type: Optional[str]
-        sso_context=None,  # type: Optional[str]
-        ssoadfs_authority=None,  # type: Optional[str]
-        sso_client_id=None,  # type: Optional[str]
-        sso_client_secret_key_vault_path=None,  # type: Optional[str]
-        sso_secret_type=None,  # type: Optional[Union[str, "models.SsoSecretType"]]
-        preferred_app_group_type=None,  # type: Optional[Union[str, "models.PreferredAppGroupType"]]
-        start_vm_on_connect=None,  # type: Optional[bool]
+        friendly_name=None,  # type: Optional[str]
+        time_zone=None,  # type: Optional[str]
+        host_pool_type=None,  # type: Optional[Union[str, "models.HostPoolType"]]
+        exclusion_tag=None,  # type: Optional[str]
+        schedules=None,  # type: Optional[List["models.ScalingSchedule"]]
+        host_pool_references=None,  # type: Optional[List["models.ScalingHostPoolReference"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.HostPool"
-        """Update a host pool.
+        # type: (...) -> "models.ScalingPlan"
+        """Update a scaling plan.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param host_pool_name: The name of the host pool within the specified resource group.
-        :type host_pool_name: str
+        :param scaling_plan_name: The name of the scaling plan.
+        :type scaling_plan_name: str
         :param tags: tags to be updated.
         :type tags: dict[str, str]
-        :param friendly_name: Friendly name of HostPool.
-        :type friendly_name: str
-        :param description: Description of HostPool.
+        :param description: Description of scaling plan.
         :type description: str
-        :param custom_rdp_property: Custom rdp property of HostPool.
-        :type custom_rdp_property: str
-        :param max_session_limit: The max session limit of HostPool.
-        :type max_session_limit: int
-        :param personal_desktop_assignment_type: PersonalDesktopAssignment type for HostPool.
-        :type personal_desktop_assignment_type: str or ~desktop_virtualization_api_client.models.PersonalDesktopAssignmentType
-        :param load_balancer_type: The type of the load balancer.
-        :type load_balancer_type: str or ~desktop_virtualization_api_client.models.LoadBalancerType
-        :param ring: The ring number of HostPool.
-        :type ring: int
-        :param validation_environment: Is validation environment.
-        :type validation_environment: bool
-        :param registration_info: The registration info of HostPool.
-        :type registration_info: ~desktop_virtualization_api_client.models.RegistrationInfoPatch
-        :param vm_template: VM template for sessionhosts configuration within hostpool.
-        :type vm_template: str
-        :param sso_context: Path to keyvault containing ssoContext secret.
-        :type sso_context: str
-        :param ssoadfs_authority: URL to customer ADFS server for signing WVD SSO certificates.
-        :type ssoadfs_authority: str
-        :param sso_client_id: ClientId for the registered Relying Party used to issue WVD SSO
-         certificates.
-        :type sso_client_id: str
-        :param sso_client_secret_key_vault_path: Path to Azure KeyVault storing the secret used for
-         communication to ADFS.
-        :type sso_client_secret_key_vault_path: str
-        :param sso_secret_type: The type of single sign on Secret Type.
-        :type sso_secret_type: str or ~desktop_virtualization_api_client.models.SsoSecretType
-        :param preferred_app_group_type: The type of preferred application group type, default to
-         Desktop Application Group.
-        :type preferred_app_group_type: str or ~desktop_virtualization_api_client.models.PreferredAppGroupType
-        :param start_vm_on_connect: The flag to turn on/off StartVMOnConnect feature.
-        :type start_vm_on_connect: bool
+        :param friendly_name: User friendly name of scaling plan.
+        :type friendly_name: str
+        :param time_zone: Timezone of the scaling plan.
+        :type time_zone: str
+        :param host_pool_type: HostPool type for scaling plan.
+        :type host_pool_type: str or ~desktop_virtualization_api_client.models.HostPoolType
+        :param exclusion_tag: Exclusion tag for scaling plan.
+        :type exclusion_tag: str
+        :param schedules: List of ScalingSchedule definitions.
+        :type schedules: list[~desktop_virtualization_api_client.models.ScalingSchedule]
+        :param host_pool_references: List of ScalingHostPoolReference definitions.
+        :type host_pool_references: list[~desktop_virtualization_api_client.models.ScalingHostPoolReference]
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: HostPool, or the result of cls(response)
-        :rtype: ~desktop_virtualization_api_client.models.HostPool
+        :return: ScalingPlan, or the result of cls(response)
+        :rtype: ~desktop_virtualization_api_client.models.ScalingPlan
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlan"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        host_pool = models.HostPoolPatch(tags=tags, friendly_name=friendly_name, description=description, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, personal_desktop_assignment_type=personal_desktop_assignment_type, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, vm_template=vm_template, sso_context=sso_context, ssoadfs_authority=ssoadfs_authority, sso_client_id=sso_client_id, sso_client_secret_key_vault_path=sso_client_secret_key_vault_path, sso_secret_type=sso_secret_type, preferred_app_group_type=preferred_app_group_type, start_vm_on_connect=start_vm_on_connect)
+        scaling_plan = models.ScalingPlanPatch(tags=tags, description=description, friendly_name=friendly_name, time_zone=time_zone, host_pool_type=host_pool_type, exclusion_tag=exclusion_tag, schedules=schedules, host_pool_references=host_pool_references)
         api_version = "2020-11-10-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -389,7 +315,7 @@ class HostPoolOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
+            'scalingPlanName': self._serialize.url("scaling_plan_name", scaling_plan_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -403,8 +329,8 @@ class HostPoolOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if host_pool is not None:
-            body_content = self._serialize.body(host_pool, 'HostPoolPatch')
+        if scaling_plan is not None:
+            body_content = self._serialize.body(scaling_plan, 'ScalingPlanPatch')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
@@ -416,30 +342,30 @@ class HostPoolOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('HostPool', pipeline_response)
+        deserialized = self._deserialize('ScalingPlan', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}'}  # type: ignore
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/scalingPlans/{scalingPlanName}'}  # type: ignore
 
     def list_by_resource_group(
         self,
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.HostPoolList"]
-        """List hostPools.
+        # type: (...) -> Iterable["models.ScalingPlanList"]
+        """List scaling plans.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either HostPoolList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.HostPoolList]
+        :return: An iterator like instance of either ScalingPlanList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ScalingPlanList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlanList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -472,7 +398,7 @@ class HostPoolOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('HostPoolList', pipeline_response)
+            deserialized = self._deserialize('ScalingPlanList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -493,21 +419,21 @@ class HostPoolOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools'}  # type: ignore
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/scalingPlans'}  # type: ignore
 
-    def list(
+    def list_by_subscription(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.HostPoolList"]
-        """List hostPools in subscription.
+        # type: (...) -> Iterable["models.ScalingPlanList"]
+        """List scaling plans in subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either HostPoolList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.HostPoolList]
+        :return: An iterator like instance of either ScalingPlanList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ScalingPlanList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlanList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -522,7 +448,7 @@ class HostPoolOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']  # type: ignore
+                url = self.list_by_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                 }
@@ -539,7 +465,7 @@ class HostPoolOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('HostPoolList', pipeline_response)
+            deserialized = self._deserialize('ScalingPlanList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -560,4 +486,79 @@ class HostPoolOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DesktopVirtualization/hostPools'}  # type: ignore
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DesktopVirtualization/scalingPlans'}  # type: ignore
+
+    def list_by_host_pool(
+        self,
+        resource_group_name,  # type: str
+        host_pool_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.ScalingPlanList"]
+        """List scaling plan associated with hostpool.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param host_pool_name: The name of the host pool within the specified resource group.
+        :type host_pool_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either ScalingPlanList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~desktop_virtualization_api_client.models.ScalingPlanList]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ScalingPlanList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-11-10-preview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_host_pool.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'hostPoolName': self._serialize.url("host_pool_name", host_pool_name, 'str', max_length=24, min_length=3),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('ScalingPlanList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_host_pool.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DesktopVirtualization/hostPools/{hostPoolName}/scalingPlans'}  # type: ignore

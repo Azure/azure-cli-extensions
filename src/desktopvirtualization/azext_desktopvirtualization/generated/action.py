@@ -10,8 +10,168 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
+
+
+class AddDesktopvirtualizationScalingPlanCreateSchedules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanCreateSchedules, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'days-of-week':
+                d['days_of_week'] = v
+            elif kl == 'ramp-up-start-time':
+                d['ramp_up_start_time'] = v[0]
+            elif kl == 'ramp-up-algorithm':
+                d['ramp_up_algorithm'] = v[0]
+            elif kl == 'ramp-up-minimum-host-pct':
+                d['ramp_up_minimum_host_pct'] = v[0]
+            elif kl == 'ramp-up-capacity-threshold-pct':
+                d['ramp_up_capacity_threshold_pct'] = v[0]
+            elif kl == 'peak-start-time':
+                d['peak_start_time'] = v[0]
+            elif kl == 'peak-load-balancing-algorithm':
+                d['peak_load_balancing_algorithm'] = v[0]
+            elif kl == 'ramp-down-start-time':
+                d['ramp_down_start_time'] = v[0]
+            elif kl == 'ramp-down-load-balancing-algorithm':
+                d['ramp_down_load_balancing_algorithm'] = v[0]
+            elif kl == 'ramp-down-minimum-hosts-pct':
+                d['ramp_down_minimum_hosts_pct'] = v[0]
+            elif kl == 'ramp-down-capacity-threshold-pct':
+                d['ramp_down_capacity_threshold_pct'] = v[0]
+            elif kl == 'ramp-down-force-logoff-users':
+                d['ramp_down_force_logoff_users'] = v[0]
+            elif kl == 'ramp-down-stop-hosts-when':
+                d['ramp_down_stop_hosts_when'] = v[0]
+            elif kl == 'ramp-down-notification-minutes':
+                d['ramp_down_notification_minutes'] = v[0]
+            elif kl == 'ramp-down-notification-message':
+                d['ramp_down_notification_message'] = v[0]
+            elif kl == 'off-peak-start-time':
+                d['off_peak_start_time'] = v[0]
+            elif kl == 'off-peak-load-balancing-algorithm':
+                d['off_peak_load_balancing_algorithm'] = v[0]
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanCreateHostPoolReferences(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanCreateHostPoolReferences, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'host-pool-arm-path':
+                d['host_pool_arm_path'] = v[0]
+            elif kl == 'scaling-plan-enabled':
+                d['scaling_plan_enabled'] = v[0]
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanUpdateSchedules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanUpdateSchedules, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'days-of-week':
+                d['days_of_week'] = v
+            elif kl == 'ramp-up-start-time':
+                d['ramp_up_start_time'] = v[0]
+            elif kl == 'ramp-up-algorithm':
+                d['ramp_up_algorithm'] = v[0]
+            elif kl == 'ramp-up-minimum-host-pct':
+                d['ramp_up_minimum_host_pct'] = v[0]
+            elif kl == 'ramp-up-capacity-threshold-pct':
+                d['ramp_up_capacity_threshold_pct'] = v[0]
+            elif kl == 'peak-start-time':
+                d['peak_start_time'] = v[0]
+            elif kl == 'peak-load-balancing-algorithm':
+                d['peak_load_balancing_algorithm'] = v[0]
+            elif kl == 'ramp-down-start-time':
+                d['ramp_down_start_time'] = v[0]
+            elif kl == 'ramp-down-load-balancing-algorithm':
+                d['ramp_down_load_balancing_algorithm'] = v[0]
+            elif kl == 'ramp-down-minimum-hosts-pct':
+                d['ramp_down_minimum_hosts_pct'] = v[0]
+            elif kl == 'ramp-down-capacity-threshold-pct':
+                d['ramp_down_capacity_threshold_pct'] = v[0]
+            elif kl == 'ramp-down-force-logoff-users':
+                d['ramp_down_force_logoff_users'] = v[0]
+            elif kl == 'ramp-down-stop-hosts-when':
+                d['ramp_down_stop_hosts_when'] = v[0]
+            elif kl == 'ramp-down-notification-minutes':
+                d['ramp_down_notification_minutes'] = v[0]
+            elif kl == 'ramp-down-notification-message':
+                d['ramp_down_notification_message'] = v[0]
+            elif kl == 'off-peak-start-time':
+                d['off_peak_start_time'] = v[0]
+            elif kl == 'off-peak-load-balancing-algorithm':
+                d['off_peak_load_balancing_algorithm'] = v[0]
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'host-pool-arm-path':
+                d['host_pool_arm_path'] = v[0]
+            elif kl == 'scaling-plan-enabled':
+                d['scaling_plan_enabled'] = v[0]
+        return d
 
 
 class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
@@ -61,4 +221,64 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
                 d['expiration_time'] = v[0]
             elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
+        return d
+
+
+class AddPackageDependencies(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageDependencies, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'dependency-name':
+                d['dependency_name'] = v[0]
+            elif kl == 'publisher':
+                d['publisher'] = v[0]
+            elif kl == 'min-version':
+                d['min_version'] = v[0]
+        return d
+
+
+class AddPackageApplications(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageApplications, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'app-id':
+                d['app_id'] = v[0]
+            elif kl == 'description':
+                d['description'] = v[0]
+            elif kl == 'app-user-model-id':
+                d['app_user_model_id'] = v[0]
+            elif kl == 'friendly-name':
+                d['friendly_name'] = v[0]
+            elif kl == 'icon-image-name':
+                d['icon_image_name'] = v[0]
+            elif kl == 'raw-icon':
+                d['raw_icon'] = v[0]
+            elif kl == 'raw-png':
+                d['raw_png'] = v[0]
         return d

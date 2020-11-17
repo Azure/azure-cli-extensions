@@ -13,18 +13,32 @@ try:
     from ._models_py3 import ApplicationGroupPatch
     from ._models_py3 import ApplicationList
     from ._models_py3 import ApplicationPatch
+    from ._models_py3 import CloudErrorProperties
     from ._models_py3 import Desktop
     from ._models_py3 import DesktopList
     from ._models_py3 import DesktopPatch
+    from ._models_py3 import ExpandMsixImage
+    from ._models_py3 import ExpandMsixImageList
     from ._models_py3 import HostPool
     from ._models_py3 import HostPoolList
     from ._models_py3 import HostPoolPatch
+    from ._models_py3 import MsixImageUri
+    from ._models_py3 import MsixPackage
+    from ._models_py3 import MsixPackageApplications
+    from ._models_py3 import MsixPackageDependencies
+    from ._models_py3 import MsixPackageList
+    from ._models_py3 import MsixPackagePatch
     from ._models_py3 import RegistrationInfo
     from ._models_py3 import RegistrationInfoPatch
     from ._models_py3 import Resource
     from ._models_py3 import ResourceProviderOperation
     from ._models_py3 import ResourceProviderOperationDisplay
     from ._models_py3 import ResourceProviderOperationList
+    from ._models_py3 import ScalingHostPoolReference
+    from ._models_py3 import ScalingPlan
+    from ._models_py3 import ScalingPlanList
+    from ._models_py3 import ScalingPlanPatch
+    from ._models_py3 import ScalingSchedule
     from ._models_py3 import SendMessage
     from ._models_py3 import SessionHost
     from ._models_py3 import SessionHostList
@@ -44,18 +58,32 @@ except (SyntaxError, ImportError):
     from ._models import ApplicationGroupPatch  # type: ignore
     from ._models import ApplicationList  # type: ignore
     from ._models import ApplicationPatch  # type: ignore
+    from ._models import CloudErrorProperties  # type: ignore
     from ._models import Desktop  # type: ignore
     from ._models import DesktopList  # type: ignore
     from ._models import DesktopPatch  # type: ignore
+    from ._models import ExpandMsixImage  # type: ignore
+    from ._models import ExpandMsixImageList  # type: ignore
     from ._models import HostPool  # type: ignore
     from ._models import HostPoolList  # type: ignore
     from ._models import HostPoolPatch  # type: ignore
+    from ._models import MsixImageUri  # type: ignore
+    from ._models import MsixPackage  # type: ignore
+    from ._models import MsixPackageApplications  # type: ignore
+    from ._models import MsixPackageDependencies  # type: ignore
+    from ._models import MsixPackageList  # type: ignore
+    from ._models import MsixPackagePatch  # type: ignore
     from ._models import RegistrationInfo  # type: ignore
     from ._models import RegistrationInfoPatch  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResourceProviderOperation  # type: ignore
     from ._models import ResourceProviderOperationDisplay  # type: ignore
     from ._models import ResourceProviderOperationList  # type: ignore
+    from ._models import ScalingHostPoolReference  # type: ignore
+    from ._models import ScalingPlan  # type: ignore
+    from ._models import ScalingPlanList  # type: ignore
+    from ._models import ScalingPlanPatch  # type: ignore
+    from ._models import ScalingSchedule  # type: ignore
     from ._models import SendMessage  # type: ignore
     from ._models import SessionHost  # type: ignore
     from ._models import SessionHostList  # type: ignore
@@ -76,9 +104,15 @@ from ._desktop_virtualization_api_client_enums import (
     HostPoolType,
     LoadBalancerType,
     PersonalDesktopAssignmentType,
+    PreferredAppGroupType,
     RegistrationTokenOperation,
+    RemoteApplicationType,
+    ScalingScheduleDaysOfWeekItem,
+    SessionHostLoadBalancingAlgorithm,
     SessionState,
+    SsoSecretType,
     Status,
+    StopHostsWhen,
     UpdateState,
 )
 
@@ -89,18 +123,32 @@ __all__ = [
     'ApplicationGroupPatch',
     'ApplicationList',
     'ApplicationPatch',
+    'CloudErrorProperties',
     'Desktop',
     'DesktopList',
     'DesktopPatch',
+    'ExpandMsixImage',
+    'ExpandMsixImageList',
     'HostPool',
     'HostPoolList',
     'HostPoolPatch',
+    'MsixImageUri',
+    'MsixPackage',
+    'MsixPackageApplications',
+    'MsixPackageDependencies',
+    'MsixPackageList',
+    'MsixPackagePatch',
     'RegistrationInfo',
     'RegistrationInfoPatch',
     'Resource',
     'ResourceProviderOperation',
     'ResourceProviderOperationDisplay',
     'ResourceProviderOperationList',
+    'ScalingHostPoolReference',
+    'ScalingPlan',
+    'ScalingPlanList',
+    'ScalingPlanPatch',
+    'ScalingSchedule',
     'SendMessage',
     'SessionHost',
     'SessionHostList',
@@ -119,8 +167,14 @@ __all__ = [
     'HostPoolType',
     'LoadBalancerType',
     'PersonalDesktopAssignmentType',
+    'PreferredAppGroupType',
     'RegistrationTokenOperation',
+    'RemoteApplicationType',
+    'ScalingScheduleDaysOfWeekItem',
+    'SessionHostLoadBalancingAlgorithm',
     'SessionState',
+    'SsoSecretType',
     'Status',
+    'StopHostsWhen',
     'UpdateState',
 ]
