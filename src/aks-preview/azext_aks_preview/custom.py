@@ -1423,23 +1423,22 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     headers = get_aks_custom_headers(aks_custom_headers)
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
-    instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
-    instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+        instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
-    return _put_managed_cluster_ensuring_permission(
-            cmd,
-            client,
-            subscription_id,
-            resource_group_name,
-            name,
-            instance,
-            monitoring_addon_enabled,
-            ingress_appgw_addon_enabled,
-            _is_msi_cluster(instance),
-            attach_acr,
-            headers,
-            no_wait)
+    return _put_managed_cluster_ensuring_permission(cmd,
+                                                    client,
+                                                    subscription_id,
+                                                    resource_group_name,
+                                                    name,
+                                                    instance,
+                                                    monitoring_addon_enabled,
+                                                    ingress_appgw_addon_enabled,
+                                                    _is_msi_cluster(instance),
+                                                    attach_acr,
+                                                    headers,
+                                                    no_wait)
 
 
 def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
@@ -2985,6 +2984,7 @@ def get_aks_custom_headers(aks_custom_headers=None):
                 headers[parts[0]] = parts[1]
     return headers
 
+
 def _put_managed_cluster_ensuring_permission(
     cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     client,
@@ -3025,11 +3025,11 @@ def _put_managed_cluster_ensuring_permission(
         if enable_managed_identity and attach_acr:
             # Attach ACR to cluster enabled managed identity
             if cluster.identity_profile is None or \
-                cluster.identity_profile["kubeletidentity"] is None:
+               cluster.identity_profile["kubeletidentity"] is None:
                 logger.warning('Your cluster is successfully created, but we failed to attach '
-                                'acr to it, you can manually grant permission to the identity '
-                                'named <ClUSTER_NAME>-agentpool in MC_ resource group to give '
-                                'it permission to pull from ACR.')
+                               'acr to it, you can manually grant permission to the identity '
+                               'named <ClUSTER_NAME>-agentpool in MC_ resource group to give '
+                               'it permission to pull from ACR.')
             else:
                 kubelet_identity_client_id = cluster.identity_profile["kubeletidentity"].client_id
                 _ensure_aks_acr(cmd.cli_ctx,
@@ -3038,12 +3038,13 @@ def _put_managed_cluster_ensuring_permission(
                                 subscription_id=subscription_id)
     else:
         cluster = sdk_no_wait(no_wait, client.create_or_update,
-                                        resource_group_name=resource_group_name,
-                                        resource_name=name,
-                                        parameters=managed_cluster,
-                                        custom_headers=headers)
+                              resource_group_name=resource_group_name,
+                              resource_name=name,
+                              parameters=managed_cluster,
+                              custom_headers=headers)
 
     return cluster
+
 
 def _is_msi_cluster(managed_cluster):
     return (managed_cluster and managed_cluster.identity and
