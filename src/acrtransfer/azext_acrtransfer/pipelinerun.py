@@ -26,7 +26,7 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
         artifact_list = [artifact + ":latest" if ":" not in artifact else artifact for artifact in artifact_list]
 
         pipeline_run_target = PipelineRunTargetProperties(name=storage_blob_name)
-        pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, target=pipeline_run_target, artifacts=artifact_list) 
+        pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, target=pipeline_run_target, artifacts=artifact_list)
     
     else:
         raise CLIError("Incorrect pipeline-type parameter. Accepted values are 'import' or 'export'")
