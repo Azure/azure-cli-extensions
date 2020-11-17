@@ -210,7 +210,7 @@ def update_blueprint_resource_group(cmd,
     if description is not None:
         resource_group['description'] = description  # str
     if depends_on is not None:
-        resource_group['depends_on'] = depends_on
+        resource_group['depends_on'] = _process_depends_on_for_update(depends_on)
     if tags is not None:
         resource_group['tags'] = tags
 
@@ -298,7 +298,7 @@ def update_blueprint_artifact_policy(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -360,7 +360,7 @@ def update_blueprint_artifact_role(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -424,7 +424,7 @@ def update_blueprint_artifact_template(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -627,3 +627,11 @@ def wait_for_blueprint_assignment(cmd, client, assignment_name, management_group
 
 def who_is_blueprint_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
     return client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
+
+
+def _process_depends_on_for_update(depends_on):
+    if not depends_on:  # [] for case: --depends-on
+        return None
+    if not any(depends_on):  # [''] for case: --depends-on= /--depends-on ""
+        return None
+    return depends_on
