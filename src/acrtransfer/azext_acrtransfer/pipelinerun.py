@@ -1,7 +1,7 @@
 from knack.util import CLIError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, IdentityProperties, ImportPipelineSourceProperties, PipelineTriggerProperties, UserIdentityProperties, PipelineSourceTriggerProperties
-from .utility_functions import poll_output
+from .utility_functions import poll_output, print_pipeline_output
 import time
 import json
 
@@ -42,8 +42,13 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
     
 def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     raw_result = client.pipeline_runs.get(resource_group_name, registry_name, pipeline_run_name)
-    print(raw_result)
-    print(raw_result.response)
+
+    print_pipeline_output(raw_result)
+    #del raw_result.response.source 
+    #object_str= json.dumps(raw_result, default=lambda o: getattr(o, '__dict__', str(o)), indent=2)
+    #clean_obj_str = object_str.replace('"additional_properties": {},', '')
+    #clean_obj_str = clean_obj_str.replace('"location": null,', '')
+    #print('\n'.join([line for line in clean_obj_str.split("\n") if line.strip()!='']))
 
 def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     poller = client.pipeline_runs.begin_delete(resource_group_name, registry_name, pipeline_run_name)

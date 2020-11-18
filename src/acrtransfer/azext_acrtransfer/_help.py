@@ -12,9 +12,16 @@ helps['acrtransfer'] = """
     short-summary: Commands to manage Acrtransfers.
 """
 
-helps['acrtransfer create'] = """
+helps['acrtransfer importpipeline create'] = """
     type: command
     short-summary: Create a Acrtransfer.
+    parameters:
+        - name: --storage-account-container-uri
+          type: string
+          short-summary: storage account container uri string
+    examples: 
+        - name: Create an import pipeline
+          text: whatever
 """
 
 helps['acrtransfer list'] = """

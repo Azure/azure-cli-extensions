@@ -6,9 +6,9 @@ from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 imp
 from .utility_functions import poll_output, create_options_list, create_identity_properties, keyvault_policy_output
 import time
 import json
+from pprint import pprint
 
-
-def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options, user_assigned_identity_resource_id=None):
+def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None):
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
@@ -31,7 +31,7 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
 
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
-    keyvault_policy_output(client=client, keyvault_secret_uri=keyvault_secret_uri,user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
+    keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri,user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
 
 def list_importpipeline(cmd, client, resource_group_name, registry_name):
     raw_result = client.import_pipelines.list(resource_group_name, registry_name)
@@ -48,5 +48,10 @@ def delete_importpipeline(cmd, client, resource_group_name, registry_name, impor
 def get_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
-    print(raw_result)
-    print(raw_result.identity.user_assigned_identities)
+    
+    #return object attributes as json string
+    object_str= json.dumps(raw_result, default=lambda o: getattr(o, '__dict__', str(o)), indent=2)
+    clean_obj_str = object_str.replace('"additional_properties": {},', '')
+    clean_obj_str = clean_obj_str.replace('"location": null,', '')
+    print('\n'.join([line for line in clean_obj_str.split("\n") if line.strip()!='']))
+    

@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-
+from ._validators import *
 #TODO fix this stuff up 
 
 def load_arguments(self, _):
@@ -15,10 +15,17 @@ def load_arguments(self, _):
 
     registry_name_type = CLIArgumentType(options_list='--registry-name-name', help='Name of the Acrtransfer.', id_part='name')
 
+    with self.argument_context('acrtransfer') as c:
+        c.argument('tags', tags_type)
+        c.argument('location', validator=get_default_location_from_resource_group)
+        c.argument('pipeline_name', registry_name_type, options_list=['--name', '-n'])
+        c.argument('storage_account_container_uri', validator=validate_storage_account_container_uri)
+
     with self.argument_context('acrtransfer importpipeline') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('pipeline_name', registry_name_type, options_list=['--name', '-n'])
+        c.argument('storage_account_container_uri', validator=validate_storage_account_container_uri)
 
     with self.argument_context('acrtransfer list') as c:
         c.argument('registry_name', registry_name_type, id_part=None)

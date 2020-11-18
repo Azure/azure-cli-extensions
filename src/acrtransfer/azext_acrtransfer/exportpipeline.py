@@ -29,7 +29,7 @@ def create_exportpipeline(cmd, client, resource_group_name, registry_name, expor
     raw_result = client.export_pipelines.get(resource_group_name, registry_name, export_pipeline_name)
     print(raw_result)
 
-    keyvault_policy_output(client=client, keyvault_secret_uri=keyvault_secret_uri, user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
+    keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri, user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
 
 def list_exportpipeline(cmd, client, resource_group_name, registry_name):
     raw_result = client.export_pipelines.list(resource_group_name, registry_name)
@@ -45,4 +45,7 @@ def delete_exportpipeline(cmd, client, resource_group_name, registry_name, expor
 def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
     raw_result = client.export_pipelines.get(resource_group_name, registry_name, export_pipeline_name)
 
-    print(raw_result)
+    object_str= json.dumps(raw_result, default=lambda o: getattr(o, '__dict__', str(o)), indent=2)
+    clean_obj_str = object_str.replace('"additional_properties": {},', '')
+    clean_obj_str = clean_obj_str.replace('"location": null,', '')
+    print('\n'.join([line for line in clean_obj_str.split("\n") if line.strip()!='']))
