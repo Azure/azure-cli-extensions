@@ -10,165 +10,81 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest, record_only
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from .example_steps import step_create
+from .example_steps import step_show
+from .example_steps import step_list
+from .example_steps import step_list
+from .example_steps import step_update
+from .example_steps import step_link_notification_hub
+from .example_steps import step_list_key
+from .example_steps import step_regenerate_key
+from .example_steps import step_delete
+from .example_steps import step_show_status
+from .. import (
+    try_manual,
+    # raise_if,
+    # calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
-# @try_manual
-# def setup(test, rg_2, rg):
-#     pass
-
-
-# EXAMPLE: /CommunicationService/put/Create or update resource
+# Env setup_scenario
 @try_manual
-def step__communicationservice_put(test, rg_2, rg):
-    test.cmd('az communication create '
-             '--name "{myCommunicationService}" '
-             '--location "Global" '
-             '--data-location "United States" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myCommunicationService}", case_sensitive=False),
-                 test.check("location", "Global", case_sensitive=False),
-                 test.check("dataLocation", "United States", case_sensitive=False),
-             ])
-    test.cmd('az communication wait --created '
-             '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=[])
+def setup_scenario(test, rg_2, rg):
+    pass
 
 
-# EXAMPLE: /CommunicationService/get/Get resource
+# Env cleanup_scenario
 @try_manual
-def step__communicationservice_get_get_resource(test, rg_2, rg):
-    test.cmd('az communication show '
-             '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myCommunicationService}", case_sensitive=False),
-                 test.check("location", "Global", case_sensitive=False),
-                 test.check("dataLocation", "United States", case_sensitive=False),
-             ])
+def cleanup_scenario(test, rg_2, rg):
+    pass
 
 
-# EXAMPLE: /CommunicationService/get/List by resource group
-@try_manual
-def step__communicationservice_get(test, rg_2, rg):
-    test.cmd('az communication list '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /CommunicationService/get/List by subscription
-@try_manual
-def step__communicationservice_get2(test, rg_2, rg):
-    test.cmd('az communication list '
-             '-g ""',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /CommunicationService/patch/Update resource
-@try_manual
-def step__communicationservice_patch_update_resource(test, rg_2, rg):
-    test.cmd('az communication update '
-             '--name "{myCommunicationService}" '
-             '--tags newTag="newVal" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myCommunicationService}", case_sensitive=False),
-                 test.check("location", "Global", case_sensitive=False),
-                 test.check("dataLocation", "United States", case_sensitive=False),
-                 test.check("tags.newTag", "newVal", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /CommunicationService/post/Link notification hub
-@try_manual
-def step__communicationservice_post(test, rg_2, rg):
-    test.cmd('az communication link-notification-hub '
-             '--name "{myCommunicationService}" '
-             '--connection-string "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" '
-             '--resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.NotificationHub'
-             's/namespaces/MyNamespace/notificationHubs/MyHub" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /CommunicationService/post/List keys
-@try_manual
-def step__communicationservice_post_list_keys(test, rg_2, rg):
-    test.cmd('az communication list-key '
-             '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /CommunicationService/post/Regenerate key
-@try_manual
-def step__communicationservice_post_regenerate_key(test, rg_2, rg):
-    test.cmd('az communication regenerate-key '
-             '--name "{myCommunicationService}" '
-             '--key-type "Primary" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /CommunicationService/delete/Delete resource
-@try_manual
-def step__communicationservice_delete_delete_resource(test, rg_2, rg):
-    test.cmd('az communication delete -y '
-             '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /OperationStatuses/get/Get OperationStatus
-@try_manual
-def step__operationstatuses_get_get_operationstatus(test, rg_2, rg):
-    test.cmd('az communication show-status '
-             '--operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" '
-             '--location "westus2"',
-             checks=[])
-
-
-# Env cleanup
-# @try_manual
-# def cleanup(test, rg_2, rg):
-#     pass
-
-
-# # Testcase
+# Testcase: Scenario
 # @try_manual
 # def call_scenario(test, rg_2, rg):
-#     setup(test, rg_2, rg)
-#     step__communicationservice_put(test, rg_2, rg)
-#     step__communicationservice_get_get_resource(test, rg_2, rg)
-#     step__communicationservice_get(test, rg_2, rg)
-#     step__communicationservice_get2(test, rg_2, rg)
-#     step__communicationservice_patch_update_resource(test, rg_2, rg)
-#     step__communicationservice_post(test, rg_2, rg)
-#     step__communicationservice_post_list_keys(test, rg_2, rg)
-#     step__communicationservice_post_regenerate_key(test, rg_2, rg)
-#     step__communicationservice_delete_delete_resource(test, rg_2, rg)
-#     step__operationstatuses_get_get_operationstatus(test, rg_2, rg)
-#     cleanup(test, rg_2, rg)
+#     setup_scenario(test, rg_2, rg)
+#     step_create(test, rg_2, rg, checks=[
+#         test.check("name", "{myCommunicationService}", case_sensitive=False),
+#         test.check("location", "Global", case_sensitive=False),
+#         test.check("dataLocation", "United States", case_sensitive=False),
+#     ])
+#     step_show(test, rg_2, rg, checks=[
+#         test.check("name", "{myCommunicationService}", case_sensitive=False),
+#         test.check("location", "Global", case_sensitive=False),
+#         test.check("dataLocation", "United States", case_sensitive=False),
+#     ])
+#     step_list(test, rg_2, rg, checks=[
+#         test.check('length(@)', 1),
+#     ])
+#     step_list(test, rg_2, rg, checks=[
+#         test.check('length(@)', 1),
+#     ])
+#     step_update(test, rg_2, rg, checks=[
+#         test.check("name", "{myCommunicationService}", case_sensitive=False),
+#         test.check("location", "Global", case_sensitive=False),
+#         test.check("dataLocation", "United States", case_sensitive=False),
+#         test.check("tags.newTag", "newVal", case_sensitive=False),
+#     ])
+#     step_link_notification_hub(test, rg_2, rg, checks=[])
+#     step_list_key(test, rg_2, rg, checks=[])
+#     step_regenerate_key(test, rg_2, rg, checks=[])
+#     step_delete(test, rg_2, rg, checks=[])
+#     step_show_status(test, rg_2, rg, checks=[])
+#     cleanup_scenario(test, rg_2, rg)
 
 
+# # Test class for Scenario
 # @try_manual
-# class CommunicationServiceManagementClientScenarioTest(ScenarioTest):
+# class CommunicationScenarioTest(ScenarioTest):
 
-#     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2', parameter_name=''
-#                            'rg_2')
+#     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
+#                            parameter_name='rg_2')
 #     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
-#     def test_communication(self, rg_2, rg):
+#     def test_communication_Scenario(self, rg_2, rg):
 
 #         self.kwargs.update({
 #             'subscription_id': self.get_subscription_id()
@@ -193,24 +109,24 @@ class CommunicationServiceScenarioTest(ScenarioTest):
         })
 
         # create a communication service
-        step__communicationservice_put(self, rg_2=None, rg=resource_group)
+        step_create(self, rg_2=None, rg=resource_group)
 
         # show that communication service
-        step__communicationservice_get_get_resource(self, rg_2=None, rg=resource_group)
+        step_show(self, rg_2=None, rg=resource_group)
 
         # list all communication services by resource group
-        step__communicationservice_get(self, rg_2=None, rg=resource_group)
+        step_list(self, rg_2=None, rg=resource_group)
 
         # update tag of that service
-        step__communicationservice_patch_update_resource(self, rg_2=None, rg=resource_group)
+        step_update(self, rg_2=None, rg=resource_group)
         # show that communication service
-        step__communicationservice_get_get_resource(self, rg_2=None, rg=resource_group)
+        step_show(self, rg_2=None, rg=resource_group)
 
         # delete that service
-        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
+        step_delete(self, rg_2=None, rg=resource_group)
 
         # list current all communication services by resource group
-        step__communicationservice_get(self, rg_2=None, rg=resource_group)
+        step_show(self, rg_2=None, rg=resource_group)
 
     @ResourceGroupPreparer(name_prefix="test_service_generate_and_link_key_")
     def test_service_regenerate_and_link_key(self, resource_group):
@@ -220,18 +136,18 @@ class CommunicationServiceScenarioTest(ScenarioTest):
         })
 
         # create a communication service
-        step__communicationservice_put(self, rg_2=None, rg=resource_group)
+        step_create(self, rg_2=None, rg=resource_group)
 
-        step__communicationservice_post_list_keys(self, rg_2=None, rg=resource_group)
+        step_list_key(self, rg_2=None, rg=resource_group)
 
         # regenerate a new one
-        step__communicationservice_post_regenerate_key(self, rg_2=None, rg=resource_group)
+        step_regenerate_key(self, rg_2=None, rg=resource_group)
 
         # the listed keys would be different with the previous one
-        step__communicationservice_post_list_keys(self, rg_2=None, rg=resource_group)
+        step_list_key(self, rg_2=None, rg=resource_group)
 
         # delete that service
-        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
+        step_delete(self, rg_2=None, rg=resource_group)
 
     @record_only()  # notification hub is an extension
     @ResourceGroupPreparer(name_prefix="test_service_link_to_notification_hub_")
@@ -244,10 +160,10 @@ class CommunicationServiceScenarioTest(ScenarioTest):
         })
 
         # create a communication service
-        step__communicationservice_put(self, rg_2=None, rg=resource_group)
+        step_create(self, rg_2=None, rg=resource_group)
 
         # link a notification hub
-        self.cmd('az communication service link-notification-hub '
+        self.cmd('az communication link-notification-hub '
                  '--name "{myCommunicationService}" '
                  '--connection-string "Endpoint=sb://testcommunication1.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=4szS1x2H6uI/smTk3C8nEaGrCLLZr1g/kY1fGJgPE7I=" '
                  '--resource-id "{notificationHubID}" '
@@ -255,4 +171,4 @@ class CommunicationServiceScenarioTest(ScenarioTest):
                  checks=[])
 
         # delete that service
-        step__communicationservice_delete_delete_resource(self, rg_2=None, rg=resource_group)
+        step_delete(self, rg_2=None, rg=resource_group)

@@ -33,7 +33,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('data_location', type=str, help='The location where the communication service stores its data at '

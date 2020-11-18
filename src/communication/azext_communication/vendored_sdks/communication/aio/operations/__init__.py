@@ -6,5 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._communication_service_management_client import CommunicationServiceManagementClient
-__all__ = ['CommunicationServiceManagementClient']
+from ._operation_operations import OperationOperations
+from ._communication_service_operations import CommunicationServiceOperations
+from ._operation_statuses_operations import OperationStatusesOperations
+
+__all__ = [
+    'OperationOperations',
+    'CommunicationServiceOperations',
+    'OperationStatusesOperations',
+]

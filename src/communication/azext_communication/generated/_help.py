@@ -14,16 +14,20 @@ from knack.help_files import helps
 
 helps['communication'] = """
     type: group
-    short-summary: communication
+    short-summary: Manage service with communication
 """
 
 helps['communication list'] = """
     type: command
-    short-summary: "Handles requests to list all resources in a subscription."
+    short-summary: "Handles requests to list all resources in a resource group. And Handles requests to list all \
+resources in a subscription."
     examples:
       - name: List by resource group
         text: |-
                az communication list --resource-group "MyResourceGroup"
+      - name: List by subscription
+        text: |-
+               az communication list
 """
 
 helps['communication show'] = """
@@ -110,7 +114,7 @@ helps['communication wait'] = """
 
 helps['communication'] = """
     type: group
-    short-summary: communication
+    short-summary: Manage status with communication
 """
 
 helps['communication show-status'] = """
