@@ -131,6 +131,9 @@ def load_arguments(self, _):
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
+        c.argument('enable_managed_identity', action='store_true')
+        c.argument('assign_identity', type=str, validator=validate_assign_identity)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
