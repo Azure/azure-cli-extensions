@@ -65,7 +65,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue)
+                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue,
+                                                                      ManagedClusterAutoUpgradeProfile)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1098,6 +1099,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if disable_rbac:
         enable_rbac = False
 
+    auto_upgrade_profile = None
+    if auto_upgrade_channel is not None:
+        auto_upgrade_profile = ManagedClusterAutoUpgradeProfile(upgrade_channel=auto_upgrade_channel)
+
     mc = ManagedCluster(
         location=location, tags=tags,
         dns_prefix=dns_name_prefix,
@@ -1114,7 +1119,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_pod_security_policy=bool(enable_pod_security_policy),
         identity=identity,
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
-        api_server_access_profile=api_server_access_profile)
+        api_server_access_profile=api_server_access_profile,
+        auto_upgrade_profile=auto_upgrade_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -1131,9 +1137,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             name="Basic",
             tier="Paid"
         )
-
-    if auto_upgrade_channel is not None:
-        mc.auto_scaler_profile.upgrade_channel = auto_upgrade_channel
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
@@ -1248,7 +1251,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
-       not disable_ahub:
+       not disable_ahub and \
+       not auto_upgrade_channel:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1266,7 +1270,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
-                       '"--disable-ahub"')
+                       '"--disable-ahub" or '
+                       '"--auto_upgrade_channel"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1403,7 +1408,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'None'
 
     if auto_upgrade_channel is not None:
-        instance.auto_scaler_profile.upgrade_channel = auto_upgrade_channel
+        if instance.auto_upgrade_profile is None:
+            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
+        instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
