@@ -112,9 +112,9 @@ helps['communication wait'] = """
 
 helps['communication show-status'] = """
     type: command
-    short-summary: "Gets the current status of an async operation."
+    short-summary: "Get the current status of an async operation."
     examples:
-      - name: Get OperationStatus
+      - name: Get the current status of a specific operation
         text: |-
                az communication show-status --operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" --location "westus2"
 """
