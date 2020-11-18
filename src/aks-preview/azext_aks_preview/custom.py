@@ -1289,7 +1289,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
                        '"--disable-ahub" or '
-                       '"--auto-upgrade-channel" or ')
+                       '"--auto-upgrade-channel" or '
                        '"--enable-managed-identity"')
 
     instance = client.get(resource_group_name, name)
