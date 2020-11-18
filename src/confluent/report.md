@@ -9,17 +9,10 @@
 ### <a name="CommandGroups">Command groups in `az confluent` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az confluent marketplace-agreement|MarketplaceAgreements|[commands](#CommandsInMarketplaceAgreements)|
 |az confluent organization-operation|OrganizationOperations|[commands](#CommandsInOrganizationOperations)|
 |az confluent organization|Organization|[commands](#CommandsInOrganization)|
 
 ## COMMANDS
-### <a name="CommandsInMarketplaceAgreements">Commands in `az confluent marketplace-agreement` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az confluent marketplace-agreement list](#MarketplaceAgreementsList)|List|[Parameters](#ParametersMarketplaceAgreementsList)|[Example](#ExamplesMarketplaceAgreementsList)|
-|[az confluent marketplace-agreement create](#MarketplaceAgreementsCreate)|Create|[Parameters](#ParametersMarketplaceAgreementsCreate)|[Example](#ExamplesMarketplaceAgreementsCreate)|
-
 ### <a name="CommandsInOrganization">Commands in `az confluent organization` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -37,27 +30,6 @@
 
 
 ## COMMAND DETAILS
-
-### group `az confluent marketplace-agreement`
-#### <a name="MarketplaceAgreementsList">Command `az confluent marketplace-agreement list`</a>
-
-##### <a name="ExamplesMarketplaceAgreementsList">Example</a>
-```
-az confluent marketplace-agreement list
-```
-##### <a name="ParametersMarketplaceAgreementsList">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-#### <a name="MarketplaceAgreementsCreate">Command `az confluent marketplace-agreement create`</a>
-
-##### <a name="ExamplesMarketplaceAgreementsCreate">Example</a>
-```
-az confluent marketplace-agreement create --properties accepted=true
-```
-##### <a name="ParametersMarketplaceAgreementsCreate">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--properties**|object|Represents the properties of the resource.|properties|properties|
 
 ### group `az confluent organization`
 #### <a name="OrganizationListByResourceGroup">Command `az confluent organization list`</a>

@@ -12,15 +12,6 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def confluent_marketplace_agreement_list(client):
-    return client.list()
-
-
-def confluent_marketplace_agreement_create(client,
-                                           properties=None):
-    return client.create(properties=properties)
-
-
 def confluent_organization_operation_list(client):
     return client.list()
 

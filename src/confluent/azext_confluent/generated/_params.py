@@ -18,16 +18,12 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_confluent.action import (
-    AddProperties,
     AddOfferDetail,
     AddUserDetail
 )
 
 
 def load_arguments(self, _):
-
-    with self.argument_context('confluent marketplace-agreement create') as c:
-        c.argument('properties', action=AddProperties, nargs='*', help='Represents the properties of the resource.')
 
     with self.argument_context('confluent organization list') as c:
         c.argument('resource_group_name', resource_group_name_type)

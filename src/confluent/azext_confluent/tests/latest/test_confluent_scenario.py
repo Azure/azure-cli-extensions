@@ -23,21 +23,6 @@ def setup(test, rg):
     pass
 
 
-# EXAMPLE: /MarketplaceAgreements/put/MarketplaceAgreements_Create
-@try_manual
-def step__marketplaceagreements_put(test, rg):
-    test.cmd('az confluent marketplace-agreement create '
-             '--properties accepted=true',
-             checks=[])
-
-
-# EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
-@try_manual
-def step__marketplaceagreements_get(test, rg):
-    test.cmd('az confluent marketplace-agreement list',
-             checks=[])
-
-
 # EXAMPLE: /Organization/put/Organization_Create
 @try_manual
 def step__organization_put_organization_create(test, rg):
@@ -140,8 +125,6 @@ def cleanup(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
-    step__marketplaceagreements_put(test, rg)
-    step__marketplaceagreements_get(test, rg)
     step__organization_put_organization_create(test, rg)
     step__organization_get_organization_get(test, rg)
     step__organization_get(test, rg)

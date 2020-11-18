@@ -12,45 +12,6 @@
 from knack.help_files import helps
 
 
-helps['confluent marketplace-agreement'] = """
-    type: group
-    short-summary: confluent marketplace-agreement
-"""
-
-helps['confluent marketplace-agreement list'] = """
-    type: command
-    short-summary: "List Confluent marketplace agreements in the subscription."
-    examples:
-      - name: MarketplaceAgreements_List
-        text: |-
-               az confluent marketplace-agreement list
-"""
-
-helps['confluent marketplace-agreement create'] = """
-    type: command
-    short-summary: "Create Confluent Marketplace agreement in the subscription."
-    parameters:
-      - name: --properties
-        short-summary: "Represents the properties of the resource."
-        long-summary: |
-            Usage: --properties publisher=XX product=XX plan=XX license-text-link=XX privacy-policy-link=XX \
-retrieve-datetime=XX signature=XX accepted=XX
-
-            publisher: Publisher identifier string.
-            product: Product identifier string.
-            plan: Plan identifier string.
-            license-text-link: Link to HTML with Microsoft and Publisher terms.
-            privacy-policy-link: Link to the privacy policy of the publisher.
-            retrieve-datetime: Date and time in UTC of when the terms were accepted. This is empty if Accepted is \
-false.
-            signature: Terms signature.
-            accepted: If any version of the terms have been accepted, otherwise false.
-    examples:
-      - name: MarketplaceAgreements_Create
-        text: |-
-               az confluent marketplace-agreement create --properties accepted=true
-"""
-
 helps['confluent organization-operation'] = """
     type: group
     short-summary: confluent organization-operation
