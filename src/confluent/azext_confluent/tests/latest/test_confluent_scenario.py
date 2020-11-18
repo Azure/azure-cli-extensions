@@ -108,13 +108,6 @@ def step__organization_delete_confluent_delete(test, rg):
              checks=[])
 
 
-# EXAMPLE: /OrganizationOperations/get/OrganizationOperations_List
-@try_manual
-def step__organizationoperations_get(test, rg):
-    test.cmd('az confluent organization-operation list',
-             checks=[])
-
-
 # Env cleanup
 @try_manual
 def cleanup(test, rg):
@@ -131,7 +124,6 @@ def call_scenario(test, rg):
     step__organization_get2(test, rg)
     step__organization_patch_confluent_update(test, rg)
     step__organization_delete_confluent_delete(test, rg)
-    step__organizationoperations_get(test, rg)
     cleanup(test, rg)
 
 

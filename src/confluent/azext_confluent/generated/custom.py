@@ -12,10 +12,6 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def confluent_organization_operation_list(client):
-    return client.list()
-
-
 def confluent_organization_list(client,
                                 resource_group_name=None):
     if resource_group_name:

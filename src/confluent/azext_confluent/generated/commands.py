@@ -15,15 +15,6 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_confluent.generated._client_factory import cf_organization_operation
-    confluent_organization_operation = CliCommandType(
-        operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._organization_operation_operations#Organiza'
-        'tionOperationOperations.{}',
-        client_factory=cf_organization_operation)
-    with self.command_group('confluent organization-operation', confluent_organization_operation,
-                            client_factory=cf_organization_operation, is_experimental=True) as g:
-        g.custom_command('list', 'confluent_organization_operation_list')
-
     from azext_confluent.generated._client_factory import cf_organization
     confluent_organization = CliCommandType(
         operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._organization_operations#OrganizationOperat'

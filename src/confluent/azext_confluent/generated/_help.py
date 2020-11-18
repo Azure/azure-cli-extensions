@@ -12,20 +12,6 @@
 from knack.help_files import helps
 
 
-helps['confluent organization-operation'] = """
-    type: group
-    short-summary: confluent organization-operation
-"""
-
-helps['confluent organization-operation list'] = """
-    type: command
-    short-summary: "List all operations provided by Microsoft.Confluent."
-    examples:
-      - name: OrganizationOperations_List
-        text: |-
-               az confluent organization-operation list
-"""
-
 helps['confluent organization'] = """
     type: group
     short-summary: confluent organization

@@ -16,9 +16,5 @@ def cf_confluent_cl(cli_ctx, *_):
                                    ConfluentManagementClient)
 
 
-def cf_organization_operation(cli_ctx, *_):
-    return cf_confluent_cl(cli_ctx).organization_operation
-
-
 def cf_organization(cli_ctx, *_):
     return cf_confluent_cl(cli_ctx).organization

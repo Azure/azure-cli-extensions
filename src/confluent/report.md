@@ -9,7 +9,6 @@
 ### <a name="CommandGroups">Command groups in `az confluent` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az confluent organization-operation|OrganizationOperations|[commands](#CommandsInOrganizationOperations)|
 |az confluent organization|Organization|[commands](#CommandsInOrganization)|
 
 ## COMMANDS
@@ -22,11 +21,6 @@
 |[az confluent organization create](#OrganizationCreate)|Create|[Parameters](#ParametersOrganizationCreate)|[Example](#ExamplesOrganizationCreate)|
 |[az confluent organization update](#OrganizationUpdate)|Update|[Parameters](#ParametersOrganizationUpdate)|[Example](#ExamplesOrganizationUpdate)|
 |[az confluent organization delete](#OrganizationDelete)|Delete|[Parameters](#ParametersOrganizationDelete)|[Example](#ExamplesOrganizationDelete)|
-
-### <a name="CommandsInOrganizationOperations">Commands in `az confluent organization-operation` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az confluent organization-operation list](#OrganizationOperationsList)|List|[Parameters](#ParametersOrganizationOperationsList)|[Example](#ExamplesOrganizationOperationsList)|
 
 
 ## COMMAND DETAILS
@@ -108,14 +102,3 @@ az confluent organization delete --name "myOrganization" --resource-group "myRes
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
 |**--organization-name**|string|Organization resource name|organization_name|organizationName|
-
-### group `az confluent organization-operation`
-#### <a name="OrganizationOperationsList">Command `az confluent organization-operation list`</a>
-
-##### <a name="ExamplesOrganizationOperationsList">Example</a>
-```
-az confluent organization-operation list
-```
-##### <a name="ParametersOrganizationOperationsList">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
