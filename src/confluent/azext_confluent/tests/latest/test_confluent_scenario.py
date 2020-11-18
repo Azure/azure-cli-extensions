@@ -10,128 +10,78 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from .example_steps import step_organization_create
+from .example_steps import step_organization_show
+from .example_steps import step_organization_list
+from .example_steps import step_organization_list
+from .example_steps import step_organization_update
+from .example_steps import step_organization_delete
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
+# Env setup_scenario
 @try_manual
-def setup(test, rg):
+def setup_scenario(test, rg):
     pass
 
 
-# EXAMPLE: /Organization/put/Organization_Create
+# Env cleanup_scenario
 @try_manual
-def step__organization_put_organization_create(test, rg):
-    test.cmd('az confluent organization create '
-             '--location "West US" '
-             '--offer-detail id="string" plan-id="string" plan-name="string" publisher-id="string" term-unit="string" '
-             '--user-detail email-address="contoso@microsoft.com" first-name="string" last-name="string" '
-             '--tags Environment="Dev" '
-             '--name "{myOrganization}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-                 test.check("userDetail.firstName", "string", case_sensitive=False),
-                 test.check("userDetail.lastName", "string", case_sensitive=False),
-                 test.check("tags.Environment", "Dev", case_sensitive=False),
-                 test.check("name", "{myOrganization}", case_sensitive=False),
-             ])
-    test.cmd('az confluent organization wait --created '
-             '--name "{myOrganization}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Organization/get/Organization_Get
-@try_manual
-def step__organization_get_organization_get(test, rg):
-    test.cmd('az confluent organization show '
-             '--name "{myOrganization}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-                 test.check("userDetail.firstName", "string", case_sensitive=False),
-                 test.check("userDetail.lastName", "string", case_sensitive=False),
-                 test.check("tags.Environment", "Dev", case_sensitive=False),
-                 test.check("name", "{myOrganization}", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /Organization/get/Organization_ListByResourceGroup
-@try_manual
-def step__organization_get(test, rg):
-    test.cmd('az confluent organization list '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /Organization/get/Organization_ListBySubscription
-@try_manual
-def step__organization_get2(test, rg):
-    test.cmd('az confluent organization list '
-             '-g ""',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /Organization/patch/Confluent_Update
-@try_manual
-def step__organization_patch_confluent_update(test, rg):
-    test.cmd('az confluent organization update '
-             '--tags client="dev-client" env="dev" '
-             '--name "{myOrganization}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-                 test.check("userDetail.firstName", "string", case_sensitive=False),
-                 test.check("userDetail.lastName", "string", case_sensitive=False),
-                 test.check("name", "{myOrganization}", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /Organization/delete/Confluent_Delete
-@try_manual
-def step__organization_delete_confluent_delete(test, rg):
-    test.cmd('az confluent organization delete -y '
-             '--name "{myOrganization}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# Env cleanup
-@try_manual
-def cleanup(test, rg):
+def cleanup_scenario(test, rg):
     pass
 
 
-# Testcase
+# Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
-    setup(test, rg)
-    step__organization_put_organization_create(test, rg)
-    step__organization_get_organization_get(test, rg)
-    step__organization_get(test, rg)
-    step__organization_get2(test, rg)
-    step__organization_patch_confluent_update(test, rg)
-    step__organization_delete_confluent_delete(test, rg)
-    cleanup(test, rg)
+    setup_scenario(test, rg)
+    step_organization_create(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "string", case_sensitive=False),
+        test.check("userDetail.lastName", "string", case_sensitive=False),
+        test.check("tags.Environment", "Dev", case_sensitive=False),
+        test.check("name", "{myOrganization}", case_sensitive=False),
+    ])
+    step_organization_show(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "string", case_sensitive=False),
+        test.check("userDetail.lastName", "string", case_sensitive=False),
+        test.check("tags.Environment", "Dev", case_sensitive=False),
+        test.check("name", "{myOrganization}", case_sensitive=False),
+    ])
+    step_organization_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_organization_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_organization_update(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "string", case_sensitive=False),
+        test.check("userDetail.lastName", "string", case_sensitive=False),
+        test.check("name", "{myOrganization}", case_sensitive=False),
+    ])
+    step_organization_delete(test, rg, checks=[])
+    cleanup_scenario(test, rg)
 
 
+# Test class for Scenario
 @try_manual
-class ConfluentManagementClientScenarioTest(ScenarioTest):
+class ConfluentScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestconfluent_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_confluent(self, rg):
+    def test_confluent_Scenario(self, rg):
 
         self.kwargs.update({
             'myOrganization': 'myOrganization',
@@ -140,3 +90,4 @@ class ConfluentManagementClientScenarioTest(ScenarioTest):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
+

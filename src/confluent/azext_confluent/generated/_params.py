@@ -30,35 +30,35 @@ def load_arguments(self, _):
 
     with self.argument_context('confluent organization show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str, help=''
-                   'Organization resource name', id_part='name')
+        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str,
+                   help='Organization resource name', id_part='name')
 
     with self.argument_context('confluent organization create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str, help=''
-                   'Organization resource name')
+        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str,
+                   help='Organization resource name')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Updating', 'Deleting', ''
-                                                                 'Succeeded', 'Failed', 'Canceled', 'Deleted', ''
+        c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Updating', 'Deleting',
+                                                                 'Succeeded', 'Failed', 'Canceled', 'Deleted',
                                                                  'NotSpecified']), help='Provision states for '
                    'confluent RP')
-        c.argument('offer_detail', action=AddOfferDetail, nargs='*', help='Confluent offer detail')
-        c.argument('user_detail', action=AddUserDetail, nargs='*', help='Subscriber detail')
+        c.argument('offer_detail', action=AddOfferDetail, nargs='+', help='Confluent offer detail')
+        c.argument('user_detail', action=AddUserDetail, nargs='+', help='Subscriber detail')
 
     with self.argument_context('confluent organization update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str, help=''
-                   'Organization resource name', id_part='name')
+        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str,
+                   help='Organization resource name', id_part='name')
         c.argument('tags', tags_type)
 
     with self.argument_context('confluent organization delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str, help=''
-                   'Organization resource name', id_part='name')
+        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str,
+                   help='Organization resource name', id_part='name')
 
     with self.argument_context('confluent organization wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str, help=''
-                   'Organization resource name', id_part='name')
+        c.argument('organization_name', options_list=['--name', '-n', '--organization-name'], type=str,
+                   help='Organization resource name', id_part='name')

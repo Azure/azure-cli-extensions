@@ -14,7 +14,7 @@ from knack.help_files import helps
 
 helps['confluent organization'] = """
     type: group
-    short-summary: confluent organization
+    short-summary: Manage organization with confluent
 """
 
 helps['confluent organization list'] = """

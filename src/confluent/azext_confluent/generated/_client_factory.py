@@ -11,7 +11,7 @@
 
 def cf_confluent_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.confluent import ConfluentManagementClient
+    from azext_confluent.vendored_sdks.confluent import ConfluentManagementClient
     return get_mgmt_service_client(cli_ctx,
                                    ConfluentManagementClient)
 
