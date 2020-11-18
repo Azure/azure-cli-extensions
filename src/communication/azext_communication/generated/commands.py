@@ -20,23 +20,21 @@ def load_command_table(self, _):
         operations_tmpl='azext_communication.vendored_sdks.communication.operations._communication_service_operations#C'
         'ommunicationServiceOperations.{}',
         client_factory=cf_service)
-    with self.command_group('communication service', communication_service, client_factory=cf_service,
-                            is_preview=True) as g:
-        g.custom_command('list', 'communication_service_list')
-        g.custom_show_command('show', 'communication_service_show')
-        g.custom_command('create', 'communication_service_create', supports_no_wait=True)
-        g.custom_command('update', 'communication_service_update')
-        g.custom_command('delete', 'communication_service_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('link-notification-hub', 'communication_service_link_notification_hub')
-        g.custom_command('list-key', 'communication_service_list_key')
-        g.custom_command('regenerate-key', 'communication_service_regenerate_key')
-        g.custom_wait_command('wait', 'communication_service_show')
+    with self.command_group('communication', communication_service, client_factory=cf_service) as g:
+        g.custom_command('list', 'communication_list')
+        g.custom_show_command('show', 'communication_show')
+        g.custom_command('create', 'communication_create', supports_no_wait=True)
+        g.custom_command('update', 'communication_update')
+        g.custom_command('delete', 'communication_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('link-notification-hub', 'communication_link_notification_hub')
+        g.custom_command('list-key', 'communication_list_key')
+        g.custom_command('regenerate-key', 'communication_regenerate_key')
+        g.custom_wait_command('wait', 'communication_show')
 
     from azext_communication.generated._client_factory import cf_status
     communication_status = CliCommandType(
         operations_tmpl='azext_communication.vendored_sdks.communication.operations._operation_statuses_operations#Oper'
         'ationStatusesOperations.{}',
         client_factory=cf_status)
-    with self.command_group('communication status', communication_status, client_factory=cf_status,
-                            is_preview=True) as g:
-        g.custom_show_command('show', 'communication_status_show')
+    with self.command_group('communication', communication_status, client_factory=cf_status) as g:
+        g.custom_command('show-status', 'communication_show_status')

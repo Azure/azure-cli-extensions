@@ -26,7 +26,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # EXAMPLE: /CommunicationService/put/Create or update resource
 @try_manual
 def step__communicationservice_put(test, rg_2, rg):
-    test.cmd('az communication service create '
+    test.cmd('az communication create '
              '--name "{myCommunicationService}" '
              '--location "Global" '
              '--data-location "United States" '
@@ -36,7 +36,7 @@ def step__communicationservice_put(test, rg_2, rg):
                  test.check("location", "Global", case_sensitive=False),
                  test.check("dataLocation", "United States", case_sensitive=False),
              ])
-    test.cmd('az communication service wait --created '
+    test.cmd('az communication wait --created '
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -45,7 +45,7 @@ def step__communicationservice_put(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/get/Get resource
 @try_manual
 def step__communicationservice_get_get_resource(test, rg_2, rg):
-    test.cmd('az communication service show '
+    test.cmd('az communication show '
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=[
@@ -58,7 +58,7 @@ def step__communicationservice_get_get_resource(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/get/List by resource group
 @try_manual
 def step__communicationservice_get(test, rg_2, rg):
-    test.cmd('az communication service list '
+    test.cmd('az communication list '
              '--resource-group "{rg}"',
              checks=[
                  test.check('length(@)', 1),
@@ -68,7 +68,7 @@ def step__communicationservice_get(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/get/List by subscription
 @try_manual
 def step__communicationservice_get2(test, rg_2, rg):
-    test.cmd('az communication service list '
+    test.cmd('az communication list '
              '-g ""',
              checks=[
                  test.check('length(@)', 1),
@@ -78,7 +78,7 @@ def step__communicationservice_get2(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/patch/Update resource
 @try_manual
 def step__communicationservice_patch_update_resource(test, rg_2, rg):
-    test.cmd('az communication service update '
+    test.cmd('az communication update '
              '--name "{myCommunicationService}" '
              '--tags newTag="newVal" '
              '--resource-group "{rg}"',
@@ -93,7 +93,7 @@ def step__communicationservice_patch_update_resource(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/post/Link notification hub
 @try_manual
 def step__communicationservice_post(test, rg_2, rg):
-    test.cmd('az communication service link-notification-hub '
+    test.cmd('az communication link-notification-hub '
              '--name "{myCommunicationService}" '
              '--connection-string "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" '
              '--resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.NotificationHub'
@@ -105,7 +105,7 @@ def step__communicationservice_post(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/post/List keys
 @try_manual
 def step__communicationservice_post_list_keys(test, rg_2, rg):
-    test.cmd('az communication service list-key '
+    test.cmd('az communication list-key '
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -114,7 +114,7 @@ def step__communicationservice_post_list_keys(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/post/Regenerate key
 @try_manual
 def step__communicationservice_post_regenerate_key(test, rg_2, rg):
-    test.cmd('az communication service regenerate-key '
+    test.cmd('az communication regenerate-key '
              '--name "{myCommunicationService}" '
              '--key-type "Primary" '
              '--resource-group "{rg}"',
@@ -124,7 +124,7 @@ def step__communicationservice_post_regenerate_key(test, rg_2, rg):
 # EXAMPLE: /CommunicationService/delete/Delete resource
 @try_manual
 def step__communicationservice_delete_delete_resource(test, rg_2, rg):
-    test.cmd('az communication service delete -y '
+    test.cmd('az communication delete -y '
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -133,7 +133,7 @@ def step__communicationservice_delete_delete_resource(test, rg_2, rg):
 # EXAMPLE: /OperationStatuses/get/Get OperationStatus
 @try_manual
 def step__operationstatuses_get_get_operationstatus(test, rg_2, rg):
-    test.cmd('az communication status show '
+    test.cmd('az communication show-status '
              '--operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" '
              '--location "westus2"',
              checks=[])

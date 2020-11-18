@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service create
+      - communication create
       Connection:
       - keep-alive
       Content-Length:
@@ -17,17 +17,17 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Accepted","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Accepted","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/7bf80868-554f-4b64-b0a8-d3ee2bf5cd1a?api-version=2020-08-20-preview
+      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/380e5379-4943-4361-a19d-3bb60151c748?api-version=2020-08-20-preview
       cache-control:
       - no-cache
       content-length:
@@ -35,9 +35,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:02:54 GMT
+      - Tue, 17 Nov 2020 07:21:19 GMT
       etag:
-      - '"1c01dcfc-0000-0700-0000-5fa3796d0000"'
+      - '"4103010c-0000-0700-0000-5fb379ee0000"'
       expires:
       - '-1'
       pragma:
@@ -61,30 +61,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service create
+      - communication create
       Connection:
       - keep-alive
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/7bf80868-554f-4b64-b0a8-d3ee2bf5cd1a?api-version=2020-08-20-preview
+    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/380e5379-4943-4361-a19d-3bb60151c748?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/7bf80868-554f-4b64-b0a8-d3ee2bf5cd1a","name":"7bf80868-554f-4b64-b0a8-d3ee2bf5cd1a","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Succeeded","startTime":"2020-11-05T04:02:49.3567757Z","percentComplete":100.0,"properties":null}'
+      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/380e5379-4943-4361-a19d-3bb60151c748","name":"380e5379-4943-4361-a19d-3bb60151c748","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Succeeded","startTime":"2020-11-17T07:21:16.0676947Z","endTime":"2020-11-17T07:21:18.4324316Z","percentComplete":100.0,"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '494'
+      - '535'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:25 GMT
+      - Tue, 17 Nov 2020 07:21:50 GMT
       etag:
-      - '"79007bdb-0000-0800-0000-5fa3796d0000"'
+      - '"0000483f-0000-0800-0000-5fb379ee0000"'
       expires:
       - '-1'
       pragma:
@@ -110,19 +110,19 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service create
+      - communication create
       Connection:
       - keep-alive
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       cache-control:
@@ -132,9 +132,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:25 GMT
+      - Tue, 17 Nov 2020 07:21:51 GMT
       etag:
-      - '"1c01defc-0000-0700-0000-5fa3796d0000"'
+      - '"4103020c-0000-0700-0000-5fb379ee0000"'
       expires:
       - '-1'
       pragma:
@@ -160,19 +160,19 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service wait
+      - communication wait
       Connection:
       - keep-alive
       ParameterSetName:
       - --created --name --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       cache-control:
@@ -182,9 +182,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:26 GMT
+      - Tue, 17 Nov 2020 07:21:53 GMT
       etag:
-      - '"1c01defc-0000-0700-0000-5fa3796d0000"'
+      - '"4103020c-0000-0700-0000-5fb379ee0000"'
       expires:
       - '-1'
       pragma:
@@ -210,19 +210,19 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service show
+      - communication show
       Connection:
       - keep-alive
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       cache-control:
@@ -232,9 +232,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:27 GMT
+      - Tue, 17 Nov 2020 07:21:54 GMT
       etag:
-      - '"1c01defc-0000-0700-0000-5fa3796d0000"'
+      - '"4103020c-0000-0700-0000-5fb379ee0000"'
       expires:
       - '-1'
       pragma:
@@ -260,19 +260,19 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service list
+      - communication list
       Connection:
       - keep-alive
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}]}'
     headers:
       cache-control:
@@ -282,7 +282,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:29 GMT
+      - Tue, 17 Nov 2020 07:21:56 GMT
       expires:
       - '-1'
       pragma:
@@ -308,7 +308,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service update
+      - communication update
       Connection:
       - keep-alive
       Content-Length:
@@ -318,13 +318,13 @@ interactions:
       ParameterSetName:
       - --name --tags --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       cache-control:
@@ -334,9 +334,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:35 GMT
+      - Tue, 17 Nov 2020 07:22:02 GMT
       etag:
-      - '"1d01b504-0000-0700-0000-5fa379940000"'
+      - '"4103160c-0000-0700-0000-5fb37a170000"'
       expires:
       - '-1'
       pragma:
@@ -364,19 +364,19 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service show
+      - communication show
       Connection:
       - keep-alive
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"94554874-d2d5-40af-a2e1-a90d64670d08","dataLocation":"United
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"9a3400e7-6ada-4a33-b324-b54a24546d3a","dataLocation":"United
         States"}}'
     headers:
       cache-control:
@@ -386,9 +386,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:36 GMT
+      - Tue, 17 Nov 2020 07:22:04 GMT
       etag:
-      - '"1d01b504-0000-0700-0000-5fa379940000"'
+      - '"4103160c-0000-0700-0000-5fb37a170000"'
       expires:
       - '-1'
       pragma:
@@ -414,7 +414,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service delete
+      - communication delete
       Connection:
       - keep-alive
       Content-Length:
@@ -422,8 +422,8 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
   response:
@@ -437,13 +437,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:03:39 GMT
+      - Tue, 17 Nov 2020 07:22:08 GMT
       etag:
-      - '"1d01e305-0000-0700-0000-5fa3799b0000"'
+      - '"4103190c-0000-0700-0000-5fb37a200000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/bc7e2ef6-a660-418c-a1d1-ad9f9e0be597?api-version=2020-08-20-preview
+      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/b5d7b079-b191-4e2c-8918-b70bc59f8080?api-version=2020-08-20-preview
       pragma:
       - no-cache
       server:
@@ -453,7 +453,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -465,30 +465,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service delete
+      - communication delete
       Connection:
       - keep-alive
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/bc7e2ef6-a660-418c-a1d1-ad9f9e0be597?api-version=2020-08-20-preview
+    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/b5d7b079-b191-4e2c-8918-b70bc59f8080?api-version=2020-08-20-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/bc7e2ef6-a660-418c-a1d1-ad9f9e0be597","name":"bc7e2ef6-a660-418c-a1d1-ad9f9e0be597","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Deleted","startTime":"2020-11-05T04:03:38.7541792Z","percentComplete":100.0}'
+      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/b5d7b079-b191-4e2c-8918-b70bc59f8080","name":"b5d7b079-b191-4e2c-8918-b70bc59f8080","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Deleted","startTime":"2020-11-17T07:22:06.583822Z","endTime":"2020-11-17T07:22:10.5600128Z","percentComplete":100.0}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '474'
+      - '514'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:04:10 GMT
+      - Tue, 17 Nov 2020 07:22:38 GMT
       etag:
-      - '"79003edd-0000-0800-0000-5fa3799c0000"'
+      - '"0000683f-0000-0800-0000-5fb37a220000"'
       expires:
       - '-1'
       pragma:
@@ -514,14 +514,14 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - communication service list
+      - communication list
       Connection:
       - keep-alive
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.14.0 azsdk-python-communicationservicemanagementclient/unknown
-        Python/3.7.4 (Linux-4.15.0-112-generic-x86_64-with-debian-buster-sid)
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices?api-version=2020-08-20-preview
   response:
@@ -535,7 +535,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Nov 2020 04:04:12 GMT
+      - Tue, 17 Nov 2020 07:22:42 GMT
       expires:
       - '-1'
       pragma:
