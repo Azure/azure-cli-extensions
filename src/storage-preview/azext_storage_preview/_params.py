@@ -177,10 +177,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='The minimum TLS version to be permitted on requests to storage. '
                         'The default interpretation is TLS 1.0 for this property')
         c.argument('extended_location_name', options_list=['--extended-location-name', '--ext-name'],
-                   arg_group='Extended Location', is_preview=True,
+                   arg_group='Extended Location', is_preview=True, min_api='2020-08-01-preview',
                    help='The name of the extended location.')
         c.argument('extended_location_type', options_list=['--extended-location-type', '--ext-type'],
-                   arg_group='Extended Location', is_preview=True,
+                   arg_group='Extended Location', is_preview=True, min_api='2020-08-01-preview',
                    arg_type=get_enum_type(t_extended_location, default=t_extended_location.EDGE_ZONE),
                    help='The type of the extended location.')
 

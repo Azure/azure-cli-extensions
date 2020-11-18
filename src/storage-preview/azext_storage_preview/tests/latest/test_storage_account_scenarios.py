@@ -353,6 +353,19 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('routingPreference.routingChoice', 'MicrosoftRouting'),
         ])
 
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='cliedgezone')
+    def test_storage_account_extended_location(self, resource_group):
+        self.kwargs = {
+            'sa': self.create_random_name(prefix='edge', length=12),
+            'rg': resource_group
+        }
+        self.cmd('storage account create -n {sa} -g {rg} --ext-type EdgeZone --ext-name "microsoftrrdclab1" --sku Premium_LRS',
+                 checks=[
+                     JMESPathCheck('extendedLocation.name', 'microsoftrrdclab1'),
+                     JMESPathCheck('extendedLocation.type', 'EdgeZone')
+                 ])
+
 
 @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
 class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
