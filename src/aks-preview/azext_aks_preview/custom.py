@@ -976,7 +976,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                             acr_name_or_id=attach_acr,
                             subscription_id=subscription_id)
 
-    #do we need to do the same for pod subnet?
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
