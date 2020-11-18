@@ -1426,10 +1426,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
 
+    if instance.auto_upgrade_profile is None:
+        instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
+
     if auto_upgrade_channel is not None:
-        if instance.auto_upgrade_profile is None:
-            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
         instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
+
     if not enable_managed_identity and assign_identity:
         raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
 
