@@ -200,6 +200,8 @@ def app_create(cmd, client, resource_group, service, name,
 
     resource = client.services.get(resource_group, service)
 
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     app_resource = models.AppResource()
     app_resource.properties = properties
     app_resource.location = resource.location
@@ -457,6 +459,10 @@ def app_scale(cmd, client, resource_group, service, name,
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory)
@@ -638,6 +644,9 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     if name in deployments:
         raise CLIError("Deployment " + name + " already exists")
 
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     if not skip_clone_settings:
         active_deployment_name = client.apps.get(
             resource_group, service, app).properties.active_deployment_name
@@ -669,6 +678,19 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        target_module,
                        no_wait,
                        file_type)
+
+
+def _validate_instance_count(sku, instance_count=None):
+    if instance_count is not None:
+        sku = sku.upper()
+        if sku == "STANDARD":
+            if instance_count > 500:
+                raise CLIError(
+                    "Standard SKU can have at most 500 app instances in total, but got '{}'".format(instance_count))
+        if sku == "BASIC":
+            if instance_count > 25:
+                raise CLIError(
+                    "Basic SKU can have at most 25 app instances in total, but got '{}'".format(instance_count))
 
 
 def deployment_list(cmd, client, resource_group, service, app):

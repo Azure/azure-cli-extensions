@@ -43,6 +43,12 @@ def validate_sku(namespace):
             raise CLIError("The pricing tier only accepts value [Basic, Standard]")
 
 
+def validate_instance_count(namespace):
+    if namespace.instance_count is not None:
+        if namespace.instance_count < 1:
+            raise CLIError("--instance-count must be more than 0")
+
+
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)

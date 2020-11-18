@@ -10,7 +10,8 @@ from azure.cli.core.commands.parameters import (name_type, get_location_type, re
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
-                          validate_vnet, validate_vnet_required_parameters, validate_node_resource_group, validate_tracing_parameters)
+                          validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
+                          validate_tracing_parameters, validate_instance_count)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
@@ -76,7 +77,7 @@ def load_arguments(self, _):
         c.argument('memory', type=int, default=1,
                    help='Number of GB of memory per instance.')
         c.argument('instance_count', type=int,
-                   default=1, help='Number of instance.')
+                   default=1, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
@@ -127,7 +128,7 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
         c.argument('memory', type=int, help='Number of GB of memory per instance.')
-        c.argument('instance_count', type=int, help='Number of instance.')
+        c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
@@ -147,7 +148,7 @@ def load_arguments(self, _):
                    action='store_true')
         c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
         c.argument('memory', type=int, help='Number of GB of memory per instance.')
-        c.argument('instance_count', type=int, help='Number of instance.')
+        c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
