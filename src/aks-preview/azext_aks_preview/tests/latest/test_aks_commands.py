@@ -163,9 +163,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressapplicationgateway.config.subnetprefix', "10.2.0.0/16")
+                'addonProfiles.ingressApplicationGateway.config.subnetPrefix', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -206,14 +206,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressapplicationgateway.config.applicationgatewayname', "gateway"),
-            self.check('addonProfiles.ingressapplicationgateway.config.subnetid',
+                'addonProfiles.ingressApplicationGateway.config.applicationGatewayName', "gateway"),
+            self.check('addonProfiles.ingressApplicationGateway.config.subnetId',
                        vnet_id + '/subnets/appgw-subnet')
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressApplicationGateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
@@ -274,17 +274,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create aks cluster
-        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --generate-ssh-keys ' \
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet ' \
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.ingressapplicationgateway.enabled', True),
+            self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressapplicationgateway.config.applicationgatewayid', appgw_id)
+                'addonProfiles.ingressApplicationGateway.config.applicationGatewayId', appgw_id)
         ]).get_output_in_json()
 
-        addon_client_id = aks_cluster["addonProfiles"]["ingressapplicationgateway"]["identity"]["clientId"]
+        addon_client_id = aks_cluster["addonProfiles"]["ingressApplicationGateway"]["identity"]["clientId"]
 
         self.kwargs.update({
             'addon_client_id': addon_client_id,
@@ -299,7 +299,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --generate-ssh-keys ' \
                      '-a open-service-mesh -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -359,7 +359,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --generate-ssh-keys ' \
                      '-a confcom -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -377,7 +377,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --generate-ssh-keys ' \
                      '-a confcom --disable-sgxquotehelper -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -386,7 +386,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_addons_confcom_addon(self, resource_group, resource_group_location):
@@ -396,7 +395,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --generate-ssh-keys ' \
                      '-o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -406,12 +405,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         enable_cmd = 'aks enable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.accsgxdeviceplugin.enabled', True),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
             self.check(
-                'addonProfiles.accsgxdeviceplugin.config.accsgxquotehelperenabled', "true")
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_addons_confcom_addon(self, resource_group, resource_group_location):
@@ -421,7 +419,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --generate-ssh-keys ' \
                      '-a confcom -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -433,8 +431,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         disable_cmd = 'aks disable-addons --addons confcom --resource-group={resource_group} --name={name} -o json'
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.accsgxdeviceplugin.enabled', False),
-            self.check('addonProfiles.accsgxdeviceplugin.config', None)
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', False),
+            self.check('addonProfiles.ACCSGXDevicePlugin.config', None)
         ])
 
     @live_only()
@@ -519,7 +517,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1604-2020.09.03'),
+                                'AKSUbuntu-1604-2020.10.28'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -598,8 +596,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    @RoleBasedServicePrincipalPreparer()
-    def test_aks_create_with_windows(self, resource_group, resource_group_location, sp_name, sp_password):
+    def test_aks_create_with_windows(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -609,8 +606,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'dns_name_prefix': self.create_random_name('cliaksdns', 16),
             'location': resource_group_location,
-            'service_principal': sp_name,
-            'client_secret': sp_password,
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'windows_admin_username': 'azureuser1',
             'windows_admin_password': 'replace-Password1234$',
@@ -621,7 +616,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
-                     '--service-principal={service_principal} --client-secret={client_secret} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
@@ -651,8 +645,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    @RoleBasedServicePrincipalPreparer()
-    def test_aks_create_with_ahub(self, resource_group, resource_group_location, sp_name, sp_password):
+    def test_aks_create_with_ahub(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -662,8 +655,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'dns_name_prefix': self.create_random_name('cliaksdns', 16),
             'location': resource_group_location,
-            'service_principal': sp_name,
-            'client_secret': sp_password,
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'windows_admin_username': 'azureuser1',
             'windows_admin_password': 'replace-Password1234$',
@@ -674,7 +665,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
-                     '--service-principal={service_principal} --client-secret={client_secret} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure --enable-ahub'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),

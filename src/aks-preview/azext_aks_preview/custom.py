@@ -50,7 +50,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -75,7 +75,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._client_factory import cf_managed_clusters
+from ._client_factory import cf_agent_pools
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -1778,7 +1778,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets cluster.')
-            _upgrade_single_nodepool_image_version(True, client, resource_group_name, name, agent_pool_profile.name)
+            agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+            _upgrade_single_nodepool_image_version(True, agent_pool_client, resource_group_name, name, agent_pool_profile.name)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
 
@@ -2428,9 +2429,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        managed_cluster_client = cf_managed_clusters(cmd.cli_ctx)
         return _upgrade_single_nodepool_image_version(no_wait,
-                                                      managed_cluster_client,
+                                                      client,
                                                       resource_group_name,
                                                       cluster_name,
                                                       nodepool_name)
