@@ -3022,6 +3022,7 @@ def get_aks_custom_headers(aks_custom_headers=None):
                 headers[parts[0]] = parts[1]
     return headers
 
+
 def _get_kubelet_config(file_path):
     kubelet_config = get_file_json(file_path)
     if kubelet_config is None:
@@ -3037,6 +3038,7 @@ def _get_kubelet_config(file_path):
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
 
     return config_object
+
 
 def _get_linux_os_config(file_path):
     os_config = get_file_json(file_path)

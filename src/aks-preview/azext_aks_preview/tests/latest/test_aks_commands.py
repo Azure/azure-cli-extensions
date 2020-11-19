@@ -10,9 +10,11 @@ from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
 
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
+
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()  # without live only fails with need az login
@@ -782,7 +784,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.gitops.enabled', False),
             self.check('addonProfiles.gitops.config', None)
         ])
-    
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_node_config(self, resource_group, resource_group_location):
@@ -805,8 +807,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # nodepool add
-        self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name=nodepool2 --node-count=1 ' \
-                '--kubelet-config={kc_path} --linux-os-config={oc_path} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview', checks=[
+        nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={name} --name=nodepool2 --node-count=1 ' \
+                    '--kubelet-config={kc_path} --linux-os-config={oc_path} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview'
+        self.cmd(nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
