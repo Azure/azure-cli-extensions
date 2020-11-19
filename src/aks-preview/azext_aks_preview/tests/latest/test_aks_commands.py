@@ -808,7 +808,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool add
         nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={name} --name=nodepool2 --node-count=1 ' \
-                    '--kubelet-config={kc_path} --linux-os-config={oc_path} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview'
+                       '--kubelet-config={kc_path} --linux-os-config={oc_path} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview'
         self.cmd(nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
