@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+* Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
+
 0.4.65
 +++++
 * Honor addon names defined in Azure CLI
