@@ -14,6 +14,7 @@ from knack.log import get_logger
 
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 import azure.cli.core.keys as keys
 
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import ManagedClusterPropertiesAutoScalerProfile
@@ -238,7 +239,7 @@ def validate_subnet_id(namespace):
         return
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.vnet_subnet_id):
-        raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+        raise InvalidArgumentValueError("--vnet-subnet-id is not a valid Azure resource ID.")
 
 
 def validate_load_balancer_outbound_ports(namespace):
