@@ -233,11 +233,14 @@ def validate_user(namespace):
             namespace.user.lower() != "clustermonitoringuser":
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
 
+
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
 
+
 def validate_pod_subnet_id(namespace):
     _validate_subnet_id(namespace.pod_subnet_id, "--pod-subnet-id")
+
 
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
