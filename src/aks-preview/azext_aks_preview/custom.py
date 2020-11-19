@@ -3024,6 +3024,8 @@ def get_aks_custom_headers(aks_custom_headers=None):
 
 def _get_kubelet_config(file_path):
     kubelet_config = get_file_json(file_path)
+    if kubelet_config is None:
+        raise CLIError("Error reading kubelet configuration at {}".format(file_path))
     config_object = KubeletConfig()
     config_object.cpu_manager_policy = kubelet_config.get("cpuManagerPolicy", None)
     config_object.cpu_cfs_quota = kubelet_config.get("cpuCfsQuota", None)
@@ -3038,6 +3040,8 @@ def _get_kubelet_config(file_path):
 
 def _get_linux_os_config(file_path):
     os_config = get_file_json(file_path)
+    if os_config is None:
+        raise CLIError("Error reading Linux OS configuration at {}".format(file_path))
     config_object = LinuxOSConfig()
     config_object.transparent_huge_page_enabled = os_config.get("transparentHugePageEnabled", None)
     config_object.transparent_huge_page_defrag = os_config.get("transparentHugePageDefrag", None)
@@ -3076,4 +3080,3 @@ def _get_linux_os_config(file_path):
         config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
 
     return config_object
-    
