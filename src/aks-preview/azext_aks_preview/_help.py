@@ -267,9 +267,9 @@ helps['aks create'] = """
         - name: --appgw-name
           type: string
           short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
-        - name: --appgw-subnet-prefix
+        - name: --appgw-subnet-cidr
           type: string
-          short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+          short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-id
           type: string
           short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
@@ -756,9 +756,9 @@ parameters:
   - name: --appgw-name
     type: string
     short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
-  - name: --appgw-subnet-prefix
+  - name: --appgw-subnet-cidr
     type: string
-    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+    short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-id
     type: string
     short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
@@ -776,7 +776,7 @@ examples:
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
     crafted: true
   - name: Enable ingress-appgw addon with subnet prefix.
-    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 --appgw-name gateway
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh

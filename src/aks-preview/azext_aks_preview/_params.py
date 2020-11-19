@@ -117,6 +117,11 @@ def load_arguments(self, _):
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
         c.argument('enable_pod_identity', action='store_true')
+        c.argument('appgw_name', options_list=['--appgw-name'])
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'])
+        c.argument('appgw_id', options_list=['--appgw-id'])
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'])
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'])
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -203,6 +208,11 @@ def load_arguments(self, _):
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
         c.argument('disable_sgxquotehelper', action='store_true')
         c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'])
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'])
+        c.argument('appgw_id', options_list=['--appgw-id'])
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'])
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'])
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)
