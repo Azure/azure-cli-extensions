@@ -104,7 +104,6 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_ADDON_POD_IDENTITY
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -2660,26 +2659,6 @@ def _ensure_pod_identity_addon_is_enabled(instance):
                        'To enable, run "az aks enable-addons -a pod-identity')
 
 
-def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None):
-    if not enable:
-        # when disable, null out the profile
-        instance.pod_identity_profile = None
-        return
-
-    if not instance.pod_identity_profile:
-        # not set before
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=True,
-            user_assigned_identities=pod_identities,
-            user_assigned_identity_exceptions=pod_identity_exceptions,
-        )
-        return
-
-    instance.pod_identity_profile.enabled = True
-    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
-    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
-
-
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    instance,
                    subscription_id,
@@ -2708,10 +2687,6 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     for addon_arg in addon_args:
         if addon_arg not in ADDONS:
             raise CLIError("Invalid addon name: {}.".format(addon_arg))
-        if addon_arg == CONST_ADDON_POD_IDENTITY:
-            # pod identity addon instantinate with dedicated PodIdentityProfile
-            _update_addon_pod_identity(cmd, instance, enable)
-            continue
         addon = ADDONS[addon_arg]
         if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
             # only linux is supported for now, in the future this will be a user flag
@@ -3139,6 +3114,26 @@ def _get_linux_os_config(file_path):
     config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
 
     return config_object
+
+
+def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None):
+    if not enable:
+        # when disable, null out the profile
+        instance.pod_identity_profile = None
+        return
+
+    if not instance.pod_identity_profile:
+        # not set before
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
+            enabled=True,
+            user_assigned_identities=pod_identities,
+            user_assigned_identity_exceptions=pod_identity_exceptions,
+        )
+        return
+
+    instance.pod_identity_profile.enabled = True
+    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
+    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
 
 def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
