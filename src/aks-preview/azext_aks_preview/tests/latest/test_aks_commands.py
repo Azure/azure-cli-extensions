@@ -814,3 +814,74 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_pod_identity_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+        })
+
+        # create
+        cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--generate-ssh-keys --enable-managed-identity ' \
+                     '--enable-pod-identity'
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True)
+        ])
+
+        # update: disable
+        cmd = 'aks update --resource-group={resource_group} --name={name} --disable-pod-identity'
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile', None)
+        ])
+
+        # update: enable
+        cmd = 'aks update --resource-group={resource_group} --name={name} --enable-pod-identity'
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True)
+        ])
+
+        # pod identity exception: add
+        cmd = ('aks pod-identity add-exception --cluster-name={name} --resource-group={resource_group} '
+                '--namespace test-namespace --name test-name --pod-labels foo=bar')
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].name', 'test-name'),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].namespace', 'test-namespace'),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].podLabels.foo', 'bar'),
+        ])
+
+        # pod identity exception: update
+        cmd = ('aks pod-identity update-exception --cluster-name={name} --resource-group={resource_group} '
+                '--namespace test-namespace --name test-name --pod-labels foo=bar a=b')
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].name', 'test-name'),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].namespace', 'test-namespace'),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].podLabels.foo', 'bar'),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions[0].podLabels.a', 'b'),
+        ])
+
+        # pod identity exception: delete
+        cmd = ('aks pod-identity delete-exception --cluster-name={name} --resource-group={resource_group} '
+                '--namespace test-namespace --name test-name')
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True),
+            self.check('podIdentityProfile.userAssignedIdentityExceptions', None),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
