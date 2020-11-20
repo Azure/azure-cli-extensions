@@ -24,6 +24,7 @@ import time
 import uuid
 import base64
 import webbrowser
+from distutils.version import StrictVersion
 from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
@@ -42,7 +43,7 @@ from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.cli.core.commands import LongRunningOperation
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
@@ -66,6 +67,9 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerS
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
                                                                       ManagedClusterIdentityUserAssignedIdentitiesValue,
+                                                                      KubeletConfig,
+                                                                      LinuxOSConfig,
+                                                                      SysctlConfig,
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
@@ -78,7 +82,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._client_factory import cf_managed_clusters
+from ._client_factory import cf_agent_pools
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -610,16 +614,13 @@ def _update_dict(dict1, dict2):
     return cp
 
 
-def aks_browse(cmd,     # pylint: disable=too-many-statements
+def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
                resource_group_name,
                name,
                disable_browser=False,
                listen_address='127.0.0.1',
                listen_port='8001'):
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
     # verify the kube-dashboard addon was not disabled
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles or {}
@@ -627,13 +628,28 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
     addon_profile = next((addon_profiles[k] for k in addon_profiles
                           if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
                          ManagedClusterAddonProfile(enabled=False))
-    if not addon_profile.enabled:
-        raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
-                       'To use "az aks browse" first enable the add-on '
-                       'by running "az aks enable-addons --addons kube-dashboard".\n'
-                       'Starting with Kubernetes 1.19, AKS no longer support installation of '
-                       'the managed kube-dashboard addon.\n'
-                       'Please use the Kubernetes resources view in the Azure portal (preview) instead.')
+
+    # open portal view if addon is not enabled or k8s version >= 1.19.0
+    if StrictVersion(instance.kubernetes_version) >= StrictVersion('1.19.0') or (not addon_profile.enabled):
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        dashboardURL = (
+            cmd.cli_ctx.cloud.endpoints.portal +  # Azure Portal URL (https://portal.azure.com for public cloud)
+            ('/#resource/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService'
+             '/managedClusters/{2}/workloads').format(subscription_id, resource_group_name, name)
+        )
+
+        if in_cloud_console():
+            logger.warning('To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
+        else:
+            logger.warning('Kubernetes resources view on %s', dashboardURL)
+
+        if not disable_browser:
+            webbrowser.open_new_tab(dashboardURL)
+        return
+
+    # otherwise open the kube-dashboard addon
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
 
     _, browse_path = tempfile.mkstemp()
 
@@ -876,6 +892,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
+               kubelet_config=None,
+               linux_os_config=None,
                assign_identity=None,
                enable_pod_identity=False,
                no_wait=False):
@@ -932,6 +950,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         agent_pool_profile.os_disk_type = node_osdisk_type
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool_profile)
+
+    if kubelet_config:
+        agent_pool_profile.kubelet_config = _get_kubelet_config(kubelet_config)
+
+    if linux_os_config:
+        agent_pool_profile.linux_os_config = _get_linux_os_config(linux_os_config)
 
     linux_profile = None
     # LinuxProfile is just used for SSH access to VMs, so omit it if --no-ssh-key was specified.
@@ -1244,7 +1268,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                aad_admin_group_object_ids=None,
                enable_ahub=False,
                disable_ahub=False,
-               aks_custom_headers=None):
+               aks_custom_headers=None,
+               enable_managed_identity=False,
+               assign_identity=None,
+               yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1266,7 +1293,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
-       not disable_ahub:
+       not disable_ahub and \
+       not enable_managed_identity and \
+       not assign_identity:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1284,7 +1313,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
-                       '"--disable-ahub"')
+                       '"--disable-ahub" or'
+                       '"--enable-managed-identity"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1419,6 +1449,46 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'Windows_Server'
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
+
+    if not enable_managed_identity and assign_identity:
+        raise CLIError('--assign-identity can only be specified when --enable-managed-identity is specified')
+
+    current_identity_type = "spn"
+    if instance.identity is not None:
+        current_identity_type = instance.identity.type.casefold()
+
+    goal_identity_type = current_identity_type
+    if enable_managed_identity:
+        if not assign_identity:
+            goal_identity_type = "systemassigned"
+        else:
+            goal_identity_type = "userassigned"
+
+    if current_identity_type != goal_identity_type:
+        from knack.prompting import prompt_y_n
+        msg = ""
+        if current_identity_type == "spn":
+            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
+                   'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
+                   'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
+                   'Are you sure you want to perform this operation?').format(goal_identity_type)
+        else:
+            msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
+                   'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
+        if not yes and not prompt_y_n(msg, default="n"):
+            return None
+        if goal_identity_type == "systemassigned":
+            instance.identity = ManagedClusterIdentity(
+                type="SystemAssigned"
+            )
+        elif goal_identity_type == "userassigned":
+            user_assigned_identity = {
+                assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+            }
+            instance.identity = ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities=user_assigned_identity
+            )
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
@@ -1742,7 +1812,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets cluster.')
-            _upgrade_single_nodepool_image_version(True, client, resource_group_name, name, agent_pool_profile.name)
+            agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+            _upgrade_single_nodepool_image_version(True, agent_pool_client, resource_group_name, name, agent_pool_profile.name)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
 
@@ -1836,6 +1907,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
     if 'azure-policy' in addons:
         addon_profiles[CONST_AZURE_POLICY_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('azure-policy')
+    if 'gitops' in addons:
+        addon_profiles['gitops'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('gitops')
     if 'ingress-appgw' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         if appgw_name is not None:
@@ -2292,6 +2366,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       max_surge=None,
                       mode="User",
                       aks_custom_headers=None,
+                      kubelet_config=None,
+                      linux_os_config=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2354,6 +2430,12 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_osdisk_type:
         agent_pool.os_disk_type = node_osdisk_type
 
+    if kubelet_config:
+        agent_pool.kubelet_config = _get_kubelet_config(kubelet_config)
+
+    if linux_os_config:
+        agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
+
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
@@ -2389,9 +2471,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        managed_cluster_client = cf_managed_clusters(cmd.cli_ctx)
         return _upgrade_single_nodepool_image_version(no_wait,
-                                                      managed_cluster_client,
+                                                      client,
                                                       resource_group_name,
                                                       cluster_name,
                                                       nodepool_name)
@@ -2998,6 +3079,68 @@ def get_aks_custom_headers(aks_custom_headers=None):
     return headers
 
 
+def _get_kubelet_config(file_path):
+    kubelet_config = get_file_json(file_path)
+    if not isinstance(kubelet_config, dict):
+        raise CLIError("Error reading kubelet configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object = KubeletConfig()
+    config_object.cpu_manager_policy = kubelet_config.get("cpuManagerPolicy", None)
+    config_object.cpu_cfs_quota = kubelet_config.get("cpuCfsQuota", None)
+    config_object.cpu_cfs_quota_period = kubelet_config.get("cpuCfsQuotaPeriod", None)
+    config_object.image_gc_high_threshold = kubelet_config.get("imageGcHighThreshold", None)
+    config_object.image_gc_low_threshold = kubelet_config.get("imageGcLowThreshold", None)
+    config_object.topology_manager_policy = kubelet_config.get("topologyManagerPolicy", None)
+    config_object.allowed_unsafe_sysctls = kubelet_config.get("allowedUnsafeSysctls", None)
+    config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
+
+    return config_object
+
+
+def _get_linux_os_config(file_path):
+    os_config = get_file_json(file_path)
+    if not isinstance(os_config, dict):
+        raise CLIError("Error reading Linux OS configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object = LinuxOSConfig()
+    config_object.transparent_huge_page_enabled = os_config.get("transparentHugePageEnabled", None)
+    config_object.transparent_huge_page_defrag = os_config.get("transparentHugePageDefrag", None)
+    config_object.swap_file_size_mb = os_config.get("swapFileSizeMB", None)
+    # sysctl settings
+    sysctls = os_config.get("sysctls", None)
+    if not isinstance(sysctls, dict):
+        raise CLIError("Error reading Sysctl settings at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object.sysctls = SysctlConfig()
+    config_object.sysctls.net_core_somaxconn = sysctls.get("netCoreSomaxconn", None)
+    config_object.sysctls.net_core_netdev_max_backlog = sysctls.get("netCoreNetdevMaxBacklog", None)
+    config_object.sysctls.net_core_rmem_max = sysctls.get("netCoreRmemMax", None)
+    config_object.sysctls.net_core_wmem_max = sysctls.get("netCoreWmemMax", None)
+    config_object.sysctls.net_core_optmem_max = sysctls.get("netCoreOptmemMax", None)
+    config_object.sysctls.net_ipv4_tcp_max_syn_backlog = sysctls.get("netIpv4TcpMaxSynBacklog", None)
+    config_object.sysctls.net_ipv4_tcp_max_tw_buckets = sysctls.get("netIpv4TcpMaxTwBuckets", None)
+    config_object.sysctls.net_ipv4_tcp_fin_timeout = sysctls.get("netIpv4TcpFinTimeout", None)
+    config_object.sysctls.net_ipv4_tcp_keepalive_time = sysctls.get("netIpv4TcpKeepaliveTime", None)
+    config_object.sysctls.net_ipv4_tcp_keepalive_probes = sysctls.get("netIpv4TcpKeepaliveProbes", None)
+    config_object.sysctls.net_ipv4_tcpkeepalive_intvl = sysctls.get("netIpv4TcpkeepaliveIntvl", None)
+    config_object.sysctls.net_ipv4_tcp_rmem = sysctls.get("netIpv4TcpRmem", None)
+    config_object.sysctls.net_ipv4_tcp_wmem = sysctls.get("netIpv4TcpWmem", None)
+    config_object.sysctls.net_ipv4_tcp_tw_reuse = sysctls.get("netIpv4TcpTwReuse", None)
+    config_object.sysctls.net_ipv4_ip_local_port_range = sysctls.get("netIpv4IpLocalPortRange", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh1 = sysctls.get("netIpv4NeighDefaultGcThresh1", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh2 = sysctls.get("netIpv4NeighDefaultGcThresh2", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh3 = sysctls.get("netIpv4NeighDefaultGcThresh3", None)
+    config_object.sysctls.net_netfilter_nf_conntrack_max = sysctls.get("netNetfilterNfConntrackMax", None)
+    config_object.sysctls.net_netfilter_nf_conntrack_buckets = sysctls.get("netNetfilterNfConntrackBuckets", None)
+    config_object.sysctls.fs_inotify_max_user_watches = sysctls.get("fsInotifyMaxUserWatches", None)
+    config_object.sysctls.fs_file_max = sysctls.get("fsFileMax", None)
+    config_object.sysctls.fs_aio_max_nr = sysctls.get("fsAioMaxNr", None)
+    config_object.sysctls.fs_nr_open = sysctls.get("fsNrOpen", None)
+    config_object.sysctls.kernel_threads_max = sysctls.get("kernelThreadsMax", None)
+    config_object.sysctls.vm_max_map_count = sysctls.get("vmMaxMapCount", None)
+    config_object.sysctls.vm_swappiness = sysctls.get("vmSwappiness", None)
+    config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
+
+    return config_object
+
+
 def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     managed_identity_operator_role = 'Managed Identity Operator'
     managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
@@ -3093,6 +3236,7 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
 
     # send the managed cluster represeentation to update the pod identity addon
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
 
 def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):
     instance = client.get(resource_group_name, cluster_name)

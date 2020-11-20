@@ -201,6 +201,14 @@ class AgentPool(SubResource):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     """
 
     _validation = {
@@ -243,6 +251,8 @@ class AgentPool(SubResource):
         'node_labels': {'key': 'properties.nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'properties.nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'properties.proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'properties.kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'properties.linuxOSConfig', 'type': 'LinuxOSConfig'},
     }
 
     def __init__(self, **kwargs):
@@ -274,6 +284,8 @@ class AgentPool(SubResource):
         self.node_labels = kwargs.get('node_labels', None)
         self.node_taints = kwargs.get('node_taints', None)
         self.proximity_placement_group_id = kwargs.get('proximity_placement_group_id', None)
+        self.kubelet_config = kwargs.get('kubelet_config', None)
+        self.linux_os_config = kwargs.get('linux_os_config', None)
 
 
 class AgentPoolAvailableVersions(Model):
@@ -877,6 +889,87 @@ class CredentialResults(Model):
         self.kubeconfigs = None
 
 
+class KubeletConfig(Model):
+    """Kubelet configurations of agent nodes.
+
+    :param cpu_manager_policy: CPU Manager policy to use.
+    :type cpu_manager_policy: str
+    :param cpu_cfs_quota: Enable CPU CFS quota enforcement for containers that
+     specify CPU limits.
+    :type cpu_cfs_quota: bool
+    :param cpu_cfs_quota_period: Sets CPU CFS quota period value.
+    :type cpu_cfs_quota_period: str
+    :param image_gc_high_threshold: The percent of disk usage after which
+     image garbage collection is always run.
+    :type image_gc_high_threshold: int
+    :param image_gc_low_threshold: The percent of disk usage before which
+     image garbage collection is never run.
+    :type image_gc_low_threshold: int
+    :param topology_manager_policy: Topology Manager policy to use.
+    :type topology_manager_policy: str
+    :param allowed_unsafe_sysctls: Allowlist of unsafe sysctls or unsafe
+     sysctl patterns (ending in `*`).
+    :type allowed_unsafe_sysctls: list[str]
+    :param fail_swap_on: If set to true it will make the Kubelet fail to start
+     if swap is enabled on the node.
+    :type fail_swap_on: bool
+    """
+
+    _attribute_map = {
+        'cpu_manager_policy': {'key': 'cpuManagerPolicy', 'type': 'str'},
+        'cpu_cfs_quota': {'key': 'cpuCfsQuota', 'type': 'bool'},
+        'cpu_cfs_quota_period': {'key': 'cpuCfsQuotaPeriod', 'type': 'str'},
+        'image_gc_high_threshold': {'key': 'imageGcHighThreshold', 'type': 'int'},
+        'image_gc_low_threshold': {'key': 'imageGcLowThreshold', 'type': 'int'},
+        'topology_manager_policy': {'key': 'topologyManagerPolicy', 'type': 'str'},
+        'allowed_unsafe_sysctls': {'key': 'allowedUnsafeSysctls', 'type': '[str]'},
+        'fail_swap_on': {'key': 'failSwapOn', 'type': 'bool'},
+    }
+
+    def __init__(self, **kwargs):
+        super(KubeletConfig, self).__init__(**kwargs)
+        self.cpu_manager_policy = kwargs.get('cpu_manager_policy', None)
+        self.cpu_cfs_quota = kwargs.get('cpu_cfs_quota', None)
+        self.cpu_cfs_quota_period = kwargs.get('cpu_cfs_quota_period', None)
+        self.image_gc_high_threshold = kwargs.get('image_gc_high_threshold', None)
+        self.image_gc_low_threshold = kwargs.get('image_gc_low_threshold', None)
+        self.topology_manager_policy = kwargs.get('topology_manager_policy', None)
+        self.allowed_unsafe_sysctls = kwargs.get('allowed_unsafe_sysctls', None)
+        self.fail_swap_on = kwargs.get('fail_swap_on', None)
+
+
+class LinuxOSConfig(Model):
+    """OS configurations of Linux agent nodes.
+
+    :param sysctls: Sysctl settings for Linux agent nodes.
+    :type sysctls:
+     ~azure.mgmt.containerservice.v2020_11_01.models.SysctlConfig
+    :param transparent_huge_page_enabled: Transparent Huge Page enabled
+     configuration.
+    :type transparent_huge_page_enabled: str
+    :param transparent_huge_page_defrag: Transparent Huge Page defrag
+     configuration.
+    :type transparent_huge_page_defrag: str
+    :param swap_file_size_mb: SwapFileSizeMB specifies size in MB of a swap
+     file will be created on each node.
+    :type swap_file_size_mb: int
+    """
+
+    _attribute_map = {
+        'sysctls': {'key': 'sysctls', 'type': 'SysctlConfig'},
+        'transparent_huge_page_enabled': {'key': 'transparentHugePageEnabled', 'type': 'str'},
+        'transparent_huge_page_defrag': {'key': 'transparentHugePageDefrag', 'type': 'str'},
+        'swap_file_size_mb': {'key': 'swapFileSizeMB', 'type': 'int'},
+    }
+
+    def __init__(self, **kwargs):
+        super(LinuxOSConfig, self).__init__(**kwargs)
+        self.sysctls = kwargs.get('sysctls', None)
+        self.transparent_huge_page_enabled = kwargs.get('transparent_huge_page_enabled', None)
+        self.transparent_huge_page_defrag = kwargs.get('transparent_huge_page_defrag', None)
+        self.swap_file_size_mb = kwargs.get('swap_file_size_mb', None)
+
+
 class Resource(Model):
     """The Resource model definition.
 
@@ -1406,6 +1499,14 @@ class ManagedClusterAgentPoolProfileProperties(Model):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     """
 
     _validation = {
@@ -1442,6 +1543,8 @@ class ManagedClusterAgentPoolProfileProperties(Model):
         'node_labels': {'key': 'nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'linuxOSConfig', 'type': 'LinuxOSConfig'},
     }
 
     def __init__(self, **kwargs):
@@ -1473,6 +1576,8 @@ class ManagedClusterAgentPoolProfileProperties(Model):
         self.node_labels = kwargs.get('node_labels', None)
         self.node_taints = kwargs.get('node_taints', None)
         self.proximity_placement_group_id = kwargs.get('proximity_placement_group_id', None)
+        self.kubelet_config = kwargs.get('kubelet_config', None)
+        self.linux_os_config = kwargs.get('linux_os_config', None)
 
 
 class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
@@ -1624,6 +1729,14 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :type node_taints: list[str]
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
+    :param kubelet_config: KubeletConfig specifies the configuration of
+     kubelet on agent nodes.
+    :type kubelet_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.KubeletConfig
+    :param linux_os_config: LinuxOSConfig specifies the OS configuration of
+     linux agent nodes.
+    :type linux_os_config:
+     ~azure.mgmt.containerservice.v2020_11_01.models.LinuxOSConfig
     :param name: Required. Unique name of the agent pool profile in the
      context of the subscription and resource group.
     :type name: str
@@ -1664,6 +1777,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         'node_labels': {'key': 'nodeLabels', 'type': '{str}'},
         'node_taints': {'key': 'nodeTaints', 'type': '[str]'},
         'proximity_placement_group_id': {'key': 'proximityPlacementGroupID', 'type': 'str'},
+        'kubelet_config': {'key': 'kubeletConfig', 'type': 'KubeletConfig'},
+        'linux_os_config': {'key': 'linuxOSConfig', 'type': 'LinuxOSConfig'},
         'name': {'key': 'name', 'type': 'str'},
     }
 
@@ -2586,6 +2701,143 @@ class ResourceReference(Model):
     def __init__(self, **kwargs):
         super(ResourceReference, self).__init__(**kwargs)
         self.id = kwargs.get('id', None)
+
+
+class SysctlConfig(Model):
+    """Sysctl settings for Linux agent nodes.
+
+    :param net_core_somaxconn: Sysctl setting net.core.somaxconn.
+    :type net_core_somaxconn: int
+    :param net_core_netdev_max_backlog: Sysctl setting
+     net.core.netdev_max_backlog.
+    :type net_core_netdev_max_backlog: int
+    :param net_core_rmem_max: Sysctl setting net.core.rmem_max.
+    :type net_core_rmem_max: int
+    :param net_core_wmem_max: Sysctl setting net.core.wmem_max.
+    :type net_core_wmem_max: int
+    :param net_core_optmem_max: Sysctl setting net.core.optmem_max.
+    :type net_core_optmem_max: int
+    :param net_ipv4_tcp_max_syn_backlog: Sysctl setting
+     net.ipv4.tcp_max_syn_backlog.
+    :type net_ipv4_tcp_max_syn_backlog: int
+    :param net_ipv4_tcp_max_tw_buckets: Sysctl setting
+     net.ipv4.tcp_max_tw_buckets.
+    :type net_ipv4_tcp_max_tw_buckets: int
+    :param net_ipv4_tcp_fin_timeout: Sysctl setting net.ipv4.tcp_fin_timeout.
+    :type net_ipv4_tcp_fin_timeout: int
+    :param net_ipv4_tcp_keepalive_time: Sysctl setting
+     net.ipv4.tcp_keepalive_time.
+    :type net_ipv4_tcp_keepalive_time: int
+    :param net_ipv4_tcp_keepalive_probes: Sysctl setting
+     net.ipv4.tcp_keepalive_probes.
+    :type net_ipv4_tcp_keepalive_probes: int
+    :param net_ipv4_tcpkeepalive_intvl: Sysctl setting
+     net.ipv4.tcp_keepalive_intvl.
+    :type net_ipv4_tcpkeepalive_intvl: int
+    :param net_ipv4_tcp_rmem: Sysctl setting net.ipv4.tcp_rmem.
+    :type net_ipv4_tcp_rmem: int
+    :param net_ipv4_tcp_wmem: Sysctl setting net.ipv4.tcp_wmem.
+    :type net_ipv4_tcp_wmem: int
+    :param net_ipv4_tcp_tw_reuse: Sysctl setting net.ipv4.tcp_tw_reuse.
+    :type net_ipv4_tcp_tw_reuse: bool
+    :param net_ipv4_ip_local_port_range: Sysctl setting
+     net.ipv4.ip_local_port_range.
+    :type net_ipv4_ip_local_port_range: str
+    :param net_ipv4_neigh_default_gc_thresh1: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh1.
+    :type net_ipv4_neigh_default_gc_thresh1: int
+    :param net_ipv4_neigh_default_gc_thresh2: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh2.
+    :type net_ipv4_neigh_default_gc_thresh2: int
+    :param net_ipv4_neigh_default_gc_thresh3: Sysctl setting
+     net.ipv4.neigh.default.gc_thresh3.
+    :type net_ipv4_neigh_default_gc_thresh3: int
+    :param net_netfilter_nf_conntrack_max: Sysctl setting
+     net.netfilter.nf_conntrack_max.
+    :type net_netfilter_nf_conntrack_max: int
+    :param net_netfilter_nf_conntrack_buckets: Sysctl setting
+     net.netfilter.nf_conntrack_buckets.
+    :type net_netfilter_nf_conntrack_buckets: int
+    :param fs_inotify_max_user_watches: Sysctl setting
+     fs.inotify.max_user_watches.
+    :type fs_inotify_max_user_watches: int
+    :param fs_file_max: Sysctl setting fs.file-max.
+    :type fs_file_max: int
+    :param fs_aio_max_nr: Sysctl setting fs.aio-max-nr.
+    :type fs_aio_max_nr: int
+    :param fs_nr_open: Sysctl setting fs.nr_open.
+    :type fs_nr_open: int
+    :param kernel_threads_max: Sysctl setting kernel.threads-max.
+    :type kernel_threads_max: int
+    :param vm_max_map_count: Sysctl setting vm.max_map_count.
+    :type vm_max_map_count: int
+    :param vm_swappiness: Sysctl setting vm.swappiness.
+    :type vm_swappiness: int
+    :param vm_vfs_cache_pressure: Sysctl setting vm.vfs_cache_pressure.
+    :type vm_vfs_cache_pressure: int
+    """
+
+    _attribute_map = {
+        'net_core_somaxconn': {'key': 'netCoreSomaxconn', 'type': 'int'},
+        'net_core_netdev_max_backlog': {'key': 'netCoreNetdevMaxBacklog', 'type': 'int'},
+        'net_core_rmem_max': {'key': 'netCoreRmemMax', 'type': 'int'},
+        'net_core_wmem_max': {'key': 'netCoreWmemMax', 'type': 'int'},
+        'net_core_optmem_max': {'key': 'netCoreOptmemMax', 'type': 'int'},
+        'net_ipv4_tcp_max_syn_backlog': {'key': 'netIpv4TcpMaxSynBacklog', 'type': 'int'},
+        'net_ipv4_tcp_max_tw_buckets': {'key': 'netIpv4TcpMaxTwBuckets', 'type': 'int'},
+        'net_ipv4_tcp_fin_timeout': {'key': 'netIpv4TcpFinTimeout', 'type': 'int'},
+        'net_ipv4_tcp_keepalive_time': {'key': 'netIpv4TcpKeepaliveTime', 'type': 'int'},
+        'net_ipv4_tcp_keepalive_probes': {'key': 'netIpv4TcpKeepaliveProbes', 'type': 'int'},
+        'net_ipv4_tcpkeepalive_intvl': {'key': 'netIpv4TcpkeepaliveIntvl', 'type': 'int'},
+        'net_ipv4_tcp_rmem': {'key': 'netIpv4TcpRmem', 'type': 'int'},
+        'net_ipv4_tcp_wmem': {'key': 'netIpv4TcpWmem', 'type': 'int'},
+        'net_ipv4_tcp_tw_reuse': {'key': 'netIpv4TcpTwReuse', 'type': 'bool'},
+        'net_ipv4_ip_local_port_range': {'key': 'netIpv4IpLocalPortRange', 'type': 'str'},
+        'net_ipv4_neigh_default_gc_thresh1': {'key': 'netIpv4NeighDefaultGcThresh1', 'type': 'int'},
+        'net_ipv4_neigh_default_gc_thresh2': {'key': 'netIpv4NeighDefaultGcThresh2', 'type': 'int'},
+        'net_ipv4_neigh_default_gc_thresh3': {'key': 'netIpv4NeighDefaultGcThresh3', 'type': 'int'},
+        'net_netfilter_nf_conntrack_max': {'key': 'netNetfilterNfConntrackMax', 'type': 'int'},
+        'net_netfilter_nf_conntrack_buckets': {'key': 'netNetfilterNfConntrackBuckets', 'type': 'int'},
+        'fs_inotify_max_user_watches': {'key': 'fsInotifyMaxUserWatches', 'type': 'int'},
+        'fs_file_max': {'key': 'fsFileMax', 'type': 'int'},
+        'fs_aio_max_nr': {'key': 'fsAioMaxNr', 'type': 'int'},
+        'fs_nr_open': {'key': 'fsNrOpen', 'type': 'int'},
+        'kernel_threads_max': {'key': 'kernelThreadsMax', 'type': 'int'},
+        'vm_max_map_count': {'key': 'vmMaxMapCount', 'type': 'int'},
+        'vm_swappiness': {'key': 'vmSwappiness', 'type': 'int'},
+        'vm_vfs_cache_pressure': {'key': 'vmVfsCachePressure', 'type': 'int'},
+    }
+
+    def __init__(self, **kwargs):
+        super(SysctlConfig, self).__init__(**kwargs)
+        self.net_core_somaxconn = kwargs.get('net_core_somaxconn', None)
+        self.net_core_netdev_max_backlog = kwargs.get('net_core_netdev_max_backlog', None)
+        self.net_core_rmem_max = kwargs.get('net_core_rmem_max', None)
+        self.net_core_wmem_max = kwargs.get('net_core_wmem_max', None)
+        self.net_core_optmem_max = kwargs.get('net_core_optmem_max', None)
+        self.net_ipv4_tcp_max_syn_backlog = kwargs.get('net_ipv4_tcp_max_syn_backlog', None)
+        self.net_ipv4_tcp_max_tw_buckets = kwargs.get('net_ipv4_tcp_max_tw_buckets', None)
+        self.net_ipv4_tcp_fin_timeout = kwargs.get('net_ipv4_tcp_fin_timeout', None)
+        self.net_ipv4_tcp_keepalive_time = kwargs.get('net_ipv4_tcp_keepalive_time', None)
+        self.net_ipv4_tcp_keepalive_probes = kwargs.get('net_ipv4_tcp_keepalive_probes', None)
+        self.net_ipv4_tcpkeepalive_intvl = kwargs.get('net_ipv4_tcpkeepalive_intvl', None)
+        self.net_ipv4_tcp_rmem = kwargs.get('net_ipv4_tcp_rmem', None)
+        self.net_ipv4_tcp_wmem = kwargs.get('net_ipv4_tcp_wmem', None)
+        self.net_ipv4_tcp_tw_reuse = kwargs.get('net_ipv4_tcp_tw_reuse', None)
+        self.net_ipv4_ip_local_port_range = kwargs.get('net_ipv4_ip_local_port_range', None)
+        self.net_ipv4_neigh_default_gc_thresh1 = kwargs.get('net_ipv4_neigh_default_gc_thresh1', None)
+        self.net_ipv4_neigh_default_gc_thresh2 = kwargs.get('net_ipv4_neigh_default_gc_thresh2', None)
+        self.net_ipv4_neigh_default_gc_thresh3 = kwargs.get('net_ipv4_neigh_default_gc_thresh3', None)
+        self.net_netfilter_nf_conntrack_max = kwargs.get('net_netfilter_nf_conntrack_max', None)
+        self.net_netfilter_nf_conntrack_buckets = kwargs.get('net_netfilter_nf_conntrack_buckets', None)
+        self.fs_inotify_max_user_watches = kwargs.get('fs_inotify_max_user_watches', None)
+        self.fs_file_max = kwargs.get('fs_file_max', None)
+        self.fs_aio_max_nr = kwargs.get('fs_aio_max_nr', None)
+        self.fs_nr_open = kwargs.get('fs_nr_open', None)
+        self.kernel_threads_max = kwargs.get('kernel_threads_max', None)
+        self.vm_max_map_count = kwargs.get('vm_max_map_count', None)
+        self.vm_swappiness = kwargs.get('vm_swappiness', None)
+        self.vm_vfs_cache_pressure = kwargs.get('vm_vfs_cache_pressure', None)
 
 
 class TagsObject(Model):

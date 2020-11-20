@@ -109,6 +109,8 @@ def load_arguments(self, _):
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('disable_sgxquotehelper', action='store_true')
+        c.argument('kubelet_config', type=str)
+        c.argument('linux_os_config', type=str)
         c.argument('enable_pod_identity', action='store_true')
 
     with self.argument_context('aks update') as c:
@@ -130,6 +132,9 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
+        c.argument('enable_managed_identity', action='store_true')
+        c.argument('assign_identity', type=str, validator=validate_assign_identity)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -162,6 +167,8 @@ def load_arguments(self, _):
             c.argument('ppg')
             c.argument('max_surge', type=str, validator=validate_max_surge)
             c.argument('node_os_disk_type', arg_type=get_enum_type([CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]))
+            c.argument('kubelet_config', type=str)
+            c.argument('linux_os_config', type=str)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

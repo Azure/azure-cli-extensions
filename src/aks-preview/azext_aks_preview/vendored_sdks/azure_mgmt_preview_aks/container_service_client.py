@@ -117,6 +117,7 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
            * 2020-03-01: :mod:`v2020_03_01_.models<azure.mgmt.containerservice.v2020_03_01.models>`
            * 2020-04-01: :mod:`v2020_04_01_.models<azure.mgmt.containerservice.v2020_04_01.models>`
            * 2020-06-01: :mod:`v2020_06_01_.models<azure.mgmt.containerservice.v2020_06_01.models>`
+           * 2020-11-01: :mod:`v2020_11_01_.models<azure.mgmt.containerservice.v2020_11_01.models>`
         """
         if api_version == '2017-07-01':
             from .v2017_07_01 import models

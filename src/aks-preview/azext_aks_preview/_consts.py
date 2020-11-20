@@ -61,5 +61,6 @@ ADDONS = {
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     "confcom": CONST_CONFCOM_ADDON_NAME,
+    'gitops': 'gitops',
     CONST_ADDON_POD_IDENTITY: CONST_POD_IDENTITY,
 }

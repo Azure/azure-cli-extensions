@@ -8,8 +8,10 @@ import os.path
 
 from knack.help_files import helps
 
-ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
-AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
+ACS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'acsServicePrincipal.json')
+AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
 helps['aks create'] = """
@@ -147,7 +149,7 @@ helps['aks create'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -167,6 +169,7 @@ helps['aks create'] = """
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
                 open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
                 pod-identity              - enable Azure Pod Identity (PREVIEW).
+                gitops                    - enable GitOps (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -273,6 +276,12 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
         - name: --enable-pod-identity
           type: bool
           short-summary: Enable pod identity addon.
@@ -385,7 +394,7 @@ helps['aks update'] = """
         - name: --load-balancer-idle-timeout
           type: int
           short-summary: Load balancer idle timeout in minutes.
-          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 120].
+          long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -419,6 +428,12 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -452,6 +467,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
       - name: Disable Azure Hybrid User Benefits featture for a kubernetes cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-ahub
+      - name: Update the cluster to use system assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
+      - name: Update the cluster to use user assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
 """
 
 helps['aks kollect'] = """
@@ -595,6 +614,12 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -692,6 +717,7 @@ long-summary: |-
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+        gitops                    - Enable GitOps (PREVIEW).
 parameters:
   - name: --addons -a
     type: string

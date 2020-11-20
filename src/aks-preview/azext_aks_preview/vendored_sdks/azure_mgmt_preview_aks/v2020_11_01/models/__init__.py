@@ -25,6 +25,8 @@ try:
     from ._models_py3 import ContainerServiceVMDiagnostics
     from ._models_py3 import CredentialResult
     from ._models_py3 import CredentialResults
+    from ._models_py3 import KubeletConfig
+    from ._models_py3 import LinuxOSConfig
     from ._models_py3 import ManagedCluster
     from ._models_py3 import ManagedClusterAADProfile
     from ._models_py3 import ManagedClusterAccessProfile
@@ -63,6 +65,7 @@ try:
     from ._models_py3 import Resource
     from ._models_py3 import ResourceReference
     from ._models_py3 import SubResource
+    from ._models_py3 import SysctlConfig
     from ._models_py3 import TagsObject
     from ._models_py3 import UserAssignedIdentity
 except (SyntaxError, ImportError):
@@ -81,6 +84,8 @@ except (SyntaxError, ImportError):
     from ._models import ContainerServiceVMDiagnostics
     from ._models import CredentialResult
     from ._models import CredentialResults
+    from ._models import KubeletConfig
+    from ._models import LinuxOSConfig
     from ._models import ManagedCluster
     from ._models import ManagedClusterAADProfile
     from ._models import ManagedClusterAccessProfile
@@ -119,6 +124,7 @@ except (SyntaxError, ImportError):
     from ._models import Resource
     from ._models import ResourceReference
     from ._models import SubResource
+    from ._models import SysctlConfig
     from ._models import TagsObject
     from ._models import UserAssignedIdentity
 from ._paged_models import AgentPoolPaged
@@ -166,6 +172,8 @@ __all__ = [
     'ContainerServiceVMDiagnostics',
     'CredentialResult',
     'CredentialResults',
+    'KubeletConfig',
+    'LinuxOSConfig',
     'ManagedCluster',
     'ManagedClusterAADProfile',
     'ManagedClusterAccessProfile',
@@ -204,6 +212,7 @@ __all__ = [
     'Resource',
     'ResourceReference',
     'SubResource',
+    'SysctlConfig',
     'TagsObject',
     'UserAssignedIdentity',
     'OperationValuePaged',
