@@ -433,6 +433,12 @@ helps['aks update'] = """
         - name: --assign-identity
           type: string
           short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+        - name: --enable-pod-identity
+          type: bool
+          short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
+        - name: --disable-pod-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -470,6 +476,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
       - name: Update the cluster to use user assigned managed identity in control plane.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
+      - name: Enable pod identity addon.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-pod-identity
+      - name: Disable pod identity addon.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
 """
 
 helps['aks kollect'] = """

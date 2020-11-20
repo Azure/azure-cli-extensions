@@ -1270,6 +1270,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                aks_custom_headers=None,
                enable_managed_identity=False,
                assign_identity=None,
+               enable_pod_identity=False,
+               disable_pod_identity=False,
                yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
@@ -1488,6 +1490,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                 type="UserAssigned",
                 user_assigned_identities=user_assigned_identity
             )
+
+    if enable_pod_identity:
+        _update_addon_pod_identity(instance, enable=True)
+
+    if disable_pod_identity:
+        _update_addon_pod_identity(instance, enable=False)
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
@@ -2650,15 +2658,6 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
-def _ensure_pod_identity_addon_is_enabled(instance):
-    addon_enabled = False
-    if instance and instance.pod_identity_profile:
-        addon_enabled = instance.pod_identity_profile.enabled
-    if not addon_enabled:
-        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
-                       'To enable, run "az aks enable-addons -a pod-identity')
-
-
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    instance,
                    subscription_id,
@@ -3114,6 +3113,15 @@ def _get_linux_os_config(file_path):
     config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
 
     return config_object
+
+
+def _ensure_pod_identity_addon_is_enabled(instance):
+    addon_enabled = False
+    if instance and instance.pod_identity_profile:
+        addon_enabled = instance.pod_identity_profile.enabled
+    if not addon_enabled:
+        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
+                       'To enable, run "az aks enable-addons -a pod-identity')
 
 
 def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None):
