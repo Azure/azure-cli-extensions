@@ -73,11 +73,11 @@ az disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
 ##### <a name="ExamplesDiskPoolsCreateOrUpdate#Create">Example</a>
 ```
 az disk-pool create --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
-id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disk\
-s/vm-name_DataDisk_0" --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/pr\
-oviders/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/re\
-sourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku \
-name="Standard_ABC" --tags key="value" --resource-group "myResourceGroup"
+"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
+m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
+s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
+Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Standard_ABC" \
+--tags key="value" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -96,10 +96,10 @@ name="Standard_ABC" --tags key="value" --resource-group "myResourceGroup"
 ##### <a name="ExamplesDiskPoolsUpdate">Example</a>
 ```
 az disk-pool update --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
-id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disk\
-s/vm-name_DataDisk_0" --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/pr\
-oviders/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/re\
-sourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" \
+"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
+m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
+s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
+Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" \
 --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsUpdate">Parameters</a> 

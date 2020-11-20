@@ -10,197 +10,88 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
+from .example_steps import step_create
+from .example_steps import step_show
+from .example_steps import step_list
+from .example_steps import step_list
+from .example_steps import step_update
+from .example_steps import step_iscsi_target_create
+from .example_steps import step_iscsi_target_show
+from .example_steps import step_iscsi_target_list
+from .example_steps import step_iscsi_target_delete
+from .example_steps import step_delete
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
+# Env setup_scenario
 @try_manual
-def setup(test, rg):
+def setup_scenario(test, rg):
     pass
 
 
-# EXAMPLE: /DiskPools/put/Create or Update a Disk Pool
+# Env cleanup_scenario
 @try_manual
-def step__diskpools_put_create_or_update_a_disk_pool(test, rg):
-    test.cmd('az disk-pool create '
-             '--name "{myDiskPool}" '
-             '--location "westus" '
-             '--availability-zones "1" '
-             '--disks id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-nam'
-             'e_DataDisk_0" '
-             '--disks id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-nam'
-             'e_DataDisk_1" '
-             '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
-             'orks/{vn}/subnets/default" '
-             '--sku name="Standard_ABC" '
-             '--tags key="value" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myDiskPool}", case_sensitive=False),
-                 test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Netwo"
-                            "rk/virtualNetworks/{vn}/subnets/default", case_sensitive=False),
-             ])
-    test.cmd('az disk-pool wait --created '
-             '--name "{myDiskPool}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DiskPools/get/Get a diskPool
-@try_manual
-def step__diskpools_get_get_a_diskpool(test, rg):
-    test.cmd('az disk-pool show '
-             '--name "{myDiskPool}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myDiskPool}", case_sensitive=False),
-                 test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Netwo"
-                            "rk/virtualNetworks/{vn}/subnets/default", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /DiskPools/get/List Disk Pools
-@try_manual
-def step__diskpools_get_list_disk_pools(test, rg):
-    test.cmd('az disk-pool list '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /DiskPools/get/List Disk Pools by subscription
-@try_manual
-def step__diskpools_get(test, rg):
-    test.cmd('az disk-pool list '
-             '-g ""',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /DiskPools/patch/Update Disk Pool
-@try_manual
-def step__diskpools_patch_update_disk_pool(test, rg):
-    test.cmd('az disk-pool update '
-             '--name "{myDiskPool}" '
-             '--location "westus" '
-             '--availability-zones "1" '
-             '--disks id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-nam'
-             'e_DataDisk_0" '
-             '--disks id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-nam'
-             'e_DataDisk_1" '
-             '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
-             'orks/{vn}/subnets/default" '
-             '--tags key="value" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myDiskPool}", case_sensitive=False),
-                 test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Netwo"
-                            "rk/virtualNetworks/{vn}/subnets/default", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /IscsiTargets/put/Create or Update an iSCSI Target
-@try_manual
-def step__iscsitargets_put(test, rg):
-    test.cmd('az disk-pool iscsi-target create '
-             '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
-             '--target-iqn "iqn.2005-03.org.iscsi:server1" '
-             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_pa$$word\\",\\"username\\":\\"some_us'
-             'ername\\"}},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}}],\\"att'
-             'ributes\\":{{\\"authentication\\":true,\\"prodModeWriteProtect\\":false}},\\"luns\\":[{{\\"name\\":\\"lun'
-             '0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/M'
-             'icrosoft.Compute/disks/vm-name_DataDisk_1\\"}}]}}]" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myIscsiTarget}", case_sensitive=False),
-                 test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-             ])
-    test.cmd('az disk-pool iscsi-target wait --created '
-             '--name "{myIscsiTarget}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /IscsiTargets/get/Get an iscsiTarget
-@try_manual
-def step__iscsitargets_get_get_an_iscsitarget(test, rg):
-    test.cmd('az disk-pool iscsi-target show '
-             '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myIscsiTarget}", case_sensitive=False),
-                 test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /IscsiTargets/get/List Disk Pools by Resource Group
-@try_manual
-def step__iscsitargets_get(test, rg):
-    test.cmd('az disk-pool iscsi-target list '
-             '--disk-pool-name "{myDiskPool}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /IscsiTargets/delete/Delete an iscsiTarget
-@try_manual
-def step__iscsitargets_delete_delete_an_iscsitarget(test, rg):
-    test.cmd('az disk-pool iscsi-target delete -y '
-             '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /DiskPools/delete/Update Disk Pool
-@try_manual
-def step__diskpools_delete_update_disk_pool(test, rg):
-    test.cmd('az disk-pool delete -y '
-             '--name "{myDiskPool}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# Env cleanup
-@try_manual
-def cleanup(test, rg):
+def cleanup_scenario(test, rg):
     pass
 
 
-# Testcase
+# Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
-    setup(test, rg)
-    step__diskpools_put_create_or_update_a_disk_pool(test, rg)
-    step__diskpools_get_get_a_diskpool(test, rg)
-    step__diskpools_get_list_disk_pools(test, rg)
-    step__diskpools_get(test, rg)
-    step__diskpools_patch_update_disk_pool(test, rg)
-    step__iscsitargets_put(test, rg)
-    step__iscsitargets_get_get_an_iscsitarget(test, rg)
-    step__iscsitargets_get(test, rg)
-    step__iscsitargets_delete_delete_an_iscsitarget(test, rg)
-    step__diskpools_delete_update_disk_pool(test, rg)
-    cleanup(test, rg)
+    setup_scenario(test, rg)
+    step_create(test, rg, checks=[
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+    ])
+    step_show(test, rg, checks=[
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+    ])
+    step_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_update(test, rg, checks=[
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+    ])
+    step_iscsi_target_create(test, rg, checks=[
+        test.check("name", "{myIscsiTarget}", case_sensitive=False),
+        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
+    ])
+    step_iscsi_target_show(test, rg, checks=[
+        test.check("name", "{myIscsiTarget}", case_sensitive=False),
+        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
+    ])
+    step_iscsi_target_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_iscsi_target_delete(test, rg, checks=[])
+    step_delete(test, rg, checks=[])
+    cleanup_scenario(test, rg)
 
 
+# Test class for Scenario
 @try_manual
-class StoragePoolManagementScenarioTest(ScenarioTest):
+class DiskpoolScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdiskpool_myResourceGroup'[:7], key='rg', parameter_name='rg')
     @VirtualNetworkPreparer(name_prefix='clitestdiskpool_myvnet'[:7], key='vn', resource_group_key='rg')
-    def test_diskpool(self, rg):
+    def test_diskpool_Scenario(self, rg):
 
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
@@ -214,3 +105,4 @@ class StoragePoolManagementScenarioTest(ScenarioTest):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
+
