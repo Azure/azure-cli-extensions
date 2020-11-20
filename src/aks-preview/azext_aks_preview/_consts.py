@@ -34,7 +34,7 @@ CONST_OS_DISK_TYPE_MANAGED = "Managed"
 CONST_OS_DISK_TYPE_EPHEMERAL = "Ephemeral"
 
 # IngressApplicaitonGateway configuration keys
-CONST_INGRESS_APPGW_ADDON_NAME = "IngressApplicationGateway"
+CONST_INGRESS_APPGW_ADDON_NAME = "ingressApplicationGateway"
 CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME = "applicationGatewayName"
 CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID = "applicationGatewayId"
 CONST_INGRESS_APPGW_SUBNET_ID = "subnetId"
