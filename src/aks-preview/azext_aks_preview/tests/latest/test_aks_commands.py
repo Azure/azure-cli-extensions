@@ -815,7 +815,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
 
-    @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_none_private_dns_zone(self, resource_group, resource_group_location):
