@@ -194,7 +194,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
 
-
     @ResourceGroupPreparer(name_prefix='test_p2s_vpn_client_generate')
     def test_p2s_vpn_client_generate(self, resource_group):
         self.kwargs.update({
@@ -221,7 +220,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         out = self.cmd(' network p2s-vpn-gateway vpn-client generate -g {rg} -n {p2s_gateway}').get_output_in_json()
         self.assertIsNotNone(out['profileUrl'])
         self.assertTrue(out['profileUrl'].endswith('.zip'))
-
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway', location='westus')
     def test_azure_vwan_vpn_gateway(self, resource_group):
