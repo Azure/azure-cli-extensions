@@ -3121,7 +3121,7 @@ def _ensure_pod_identity_addon_is_enabled(instance):
         addon_enabled = instance.pod_identity_profile.enabled
     if not addon_enabled:
         raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
-                       'To enable, run "az aks enable-addons -a pod-identity')
+                       'To enable, run "az aks update --enable-pod-identity')
 
 
 def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None):
