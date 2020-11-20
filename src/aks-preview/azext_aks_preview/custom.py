@@ -3172,9 +3172,8 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
         # already assigned
         return
 
-    if not _add_role_assignment(
-        cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
-        is_service_principal=False, scope=scope):
+    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+                                is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission for cluster')
 
     # need more time to propogate this assignment...
