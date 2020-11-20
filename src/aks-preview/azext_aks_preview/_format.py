@@ -102,7 +102,6 @@ def aks_versions_table_format(result):
     return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
 
 
-
 def version_to_tuple(version):
     """Removes preview suffix"""
     if version.endswith('(preview)'):

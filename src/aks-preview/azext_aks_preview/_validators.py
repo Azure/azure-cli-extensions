@@ -435,7 +435,7 @@ def validate_pod_identity_pod_labels(namespace):
 
 def validate_pod_identity_resource_name(attr_name, required):
     "Validate custom resource name for pod identity addon."
-    
+
     def validator(namespace):
         if not hasattr(namespace, attr_name):
             return
