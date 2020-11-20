@@ -1295,7 +1295,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_ahub and  \
        not disable_ahub and \
        not enable_managed_identity and \
-       not assign_identity:
+       not assign_identity and \
+       not enable_pod_identity and \
+       not disable_pod_identity:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1313,8 +1315,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
-                       '"--disable-ahub" or'
-                       '"--enable-managed-identity"')
+                       '"--disable-ahub" or '
+                       '"--enable-managed-identity" or '
+                       '"--enable-pod-identity" or '
+                       '"--disable-pod-identity"')
 
     instance = client.get(resource_group_name, name)
 
