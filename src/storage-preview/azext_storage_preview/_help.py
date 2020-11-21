@@ -31,6 +31,14 @@ examples:
     text: az storage account blob-inventory-policy create -g ResourceGroupName --account-name storageAccountName --policy @policy.json
 """
 
+helps['storage account blob-inventory-policy show'] = """
+type: command
+short-summary: Show Blob Inventory Policy properties associated with the specified storage account.
+examples:
+  - name: Show Blob Inventory Policy properties associated with the specified storage account without prompt.
+    text: az storage account blob-inventory-policy show -g ResourceGroupName --account-name storageAccountName 
+"""
+
 helps['storage account blob-inventory-policy update'] = """
 type: command
 short-summary: Update Blob Inventory Policy associated with the specified storage account.
