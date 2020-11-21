@@ -289,7 +289,7 @@ class TestValidatePodIdentityResourceName(unittest.TestCase):
             validator(namespace)
         self.assertEqual(str(cm.exception), '--name is required')
 
-        
+
 class PodIdentityResourceNamespace:
 
     def __init__(self, namespace):
