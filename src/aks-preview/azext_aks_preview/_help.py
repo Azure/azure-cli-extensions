@@ -817,7 +817,7 @@ helps['aks pod-identity add'] = """
     short-summary: Add a pod identity to a managed Kubernetes cluster
     examples:
     - name: Add pod identity
-      text: az aks pod-identity add --name MyManagedCluster --resource-group MyResourceGroup --namespace my-namespace --name my-identity --identity-resource-id <my-identity-resource-id>
+      text: az aks pod-identity add --cluster-name MyManagedCluster --resource-group MyResourceGroup --namespace my-namespace --name my-identity --identity-resource-id <my-identity-resource-id>
 """
 
 helps['aks pod-identity delete'] = """
