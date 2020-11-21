@@ -281,10 +281,6 @@ class TestValidatePodIdentityResourceName(unittest.TestCase):
         namespace = PodIdentityNamespace('test-name')
         validator(namespace)
 
-    @unittest.skip('TODO')
-    def test_invalid_required_resource_name(self):
-        pass
-
     def test_missing_required_resource_name(self):
         validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
         namespace = PodIdentityNamespace(None)
@@ -305,10 +301,6 @@ class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
     def test_valid_required_resource_name(self):
         namespace = PodIdentityResourceNamespace('test-name')
         validators.validate_pod_identity_resource_namespace(namespace)
-
-    @unittest.skip('TODO')
-    def test_invalid_required_resource_name(self):
-        pass
 
     def test_missing_required_resource_name(self):
         namespace = PodIdentityResourceNamespace(None)

@@ -447,8 +447,6 @@ def validate_pod_identity_resource_name(attr_name, required):
             # set empty string for the resource name
             attr_value = ''
 
-        # TODO(hbc): validate with dns name
-
         setattr(namespace, attr_name, attr_value)
 
     return validator
@@ -463,5 +461,3 @@ def validate_pod_identity_resource_namespace(namespace):
     if not namespace_value:
         # namespace cannot be empty
         raise CLIError('--namespace is required')
-
-    # TODO(hbc): validate with dns name
