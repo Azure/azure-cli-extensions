@@ -143,7 +143,7 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     return params
 
 
-def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy, blob_inventory_policy_name):
+def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy):
     # BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
     # TODO: add again with rule management if bandwidth is allowed
     # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
@@ -168,20 +168,33 @@ def create_blob_inventory_policy(cmd, client, resource_group_name, account_name,
     else:
         policy = shell_safe_json_parse(policy)
 
-    BlobInventoryPolicy, InventoryRuleType = cmd.get_models('BlobInventoryPolicy', 'InventoryRuleType')
+    BlobInventoryPolicy, InventoryRuleType, BlobInventoryPolicyName = \
+        cmd.get_models('BlobInventoryPolicy', 'InventoryRuleType', 'BlobInventoryPolicyName')
     properties = BlobInventoryPolicy()
     if 'type' not in policy:
         policy['type'] = InventoryRuleType.INVENTORY
     properties.policy = policy
 
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   blob_inventory_policy_name=blob_inventory_policy_name, properties=properties)
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=properties)
 
 
-def update_blob_inventory_policy(client, resource_group_name, account_name, blob_inventory_policy_name,
-                                 parameters=None):
+def delete_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.delete(resource_group_name=resource_group_name, account_name=account_name,
+                         blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def get_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.get(resource_group_name=resource_group_name, account_name=account_name,
+                      blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def update_blob_inventory_policy(cmd, client, resource_group_name, account_name, parameters=None):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   blob_inventory_policy_name=blob_inventory_policy_name, properties=parameters)
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=parameters)
 
 
 def list_network_rules(client, resource_group_name, account_name):

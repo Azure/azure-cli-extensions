@@ -72,10 +72,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_none_match')
 
     with self.argument_context('storage account blob-inventory-policy') as c:
-        t_blob_inventory_name = self.get_models('BlobInventoryPolicyName', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
-        c.argument('blob_inventory_policy_name', options_list=['--name', '-n'],
-                   arg_type=get_enum_type(t_blob_inventory_name), default='default', required=False,
-                   help="The name of the storage account blob inventory policy. It should always be 'default'.")
+        c.ignore('blob_inventory_policy_name')
         c.argument('resource_group_name', required=False, validator=process_resource_group)
         c.argument('account_name',
                    help='The name of the storage account within the specified resource group. Storage account names '
