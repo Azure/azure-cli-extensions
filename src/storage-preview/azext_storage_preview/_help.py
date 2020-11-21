@@ -28,7 +28,7 @@ type: command
 short-summary: Create Blob Inventory Policy for storage account.
 examples:
   - name: Create Blob Inventory Policy trough json file for storage account.
-    text: az storage account blob-inventory-policy create -g ResourceGroupName -n storageAccountName --policy @policy.json
+    text: az storage account blob-inventory-policy create -g ResourceGroupName --account-name storageAccountName --policy @policy.json
 """
 
 helps['storage account blob-inventory-policy update'] = """
@@ -36,7 +36,7 @@ type: command
 short-summary: Update Blob Inventory Policy associated with the specified storage account.
 examples:
   - name: Update Blob Inventory Policy associated with the specified storage account.
-    text: az storage account blob-inventory-policy update -g ResourceGroupName -n storageAccountName --set "policy.rules[0].name=newname"
+    text: az storage account blob-inventory-policy update -g ResourceGroupName --account-name storageAccountName --set "policy.rules[0].name=newname"
 """
 
 helps['storage account blob-inventory-policy delete'] = """
@@ -44,7 +44,7 @@ type: command
 short-summary: Delete Blob Inventory Policy associated with the specified storage account.
 examples:
   - name: Delete Blob Inventory Policy associated with the specified storage account without prompt.
-    text: az storage account blob-inventory-policy delete -g ResourceGroupName -n storageAccountName -y
+    text: az storage account blob-inventory-policy delete -g ResourceGroupName --account-name storageAccountName -y
 """
 
 helps['storage account keys list'] = """
