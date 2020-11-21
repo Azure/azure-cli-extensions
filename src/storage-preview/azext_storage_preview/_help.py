@@ -36,7 +36,7 @@ type: command
 short-summary: Show Blob Inventory Policy properties associated with the specified storage account.
 examples:
   - name: Show Blob Inventory Policy properties associated with the specified storage account without prompt.
-    text: az storage account blob-inventory-policy show -g ResourceGroupName --account-name storageAccountName 
+    text: az storage account blob-inventory-policy show -g ResourceGroupName --account-name storageAccountName
 """
 
 helps['storage account blob-inventory-policy update'] = """
