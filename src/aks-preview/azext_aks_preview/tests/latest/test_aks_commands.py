@@ -837,9 +837,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create
-        cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--generate-ssh-keys --enable-managed-identity ' \
-                     '--enable-pod-identity'
+        cmd = ('aks create --resource-group={resource_group} --name={name} --location={location} '
+               '--generate-ssh-keys --enable-managed-identity '
+               '--enable-pod-identity')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True)
@@ -860,8 +860,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity: add
-        cmd = 'aks pod-identity add --cluster-name={name} --resource-group={resource_group} ' \
-                    '--namespace test-namespace --name test-name --identity-resource-id={application_identity_id}'
+        cmd = ('aks pod-identity add --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace --name test-name --identity-resource-id={application_identity_id}')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
@@ -874,8 +874,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity: delete
-        cmd = 'aks pod-identity delete --cluster-name={name} --resource-group={resource_group} ' \
-                    '--namespace test-namespace --name test-name'
+        cmd = ('aks pod-identity delete --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace --name test-name')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
@@ -883,8 +883,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: add
-        cmd = 'aks pod-identity add-exception --cluster-name={name} --resource-group={resource_group} ' \
-                    '--namespace test-namespace --name test-name --pod-labels foo=bar'
+        cmd = ('aks pod-identity add-exception --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace --name test-name --pod-labels foo=bar')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
@@ -894,8 +894,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: update
-        cmd = 'aks pod-identity update-exception --cluster-name={name} --resource-group={resource_group} ' \
-                    '--namespace test-namespace --name test-name --pod-labels foo=bar a=b'
+        cmd = ('aks pod-identity update-exception --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace --name test-name --pod-labels foo=bar a=b')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
@@ -906,8 +906,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: delete
-        cmd = 'aks pod-identity delete-exception --cluster-name={name} --resource-group={resource_group} ' \
-                    '--namespace test-namespace --name test-name'
+        cmd = ('aks pod-identity delete-exception --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace --name test-name')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
