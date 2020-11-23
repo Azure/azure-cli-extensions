@@ -22,7 +22,7 @@ def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, admi
 
 
 def connect_to_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password,
-                                          database_name=None, postgres_query=None):
+                                        database_name=None, postgres_query=None):
     postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return connect_to_server_helper("postgres", postgresql_server_endpoint, DEFAULT_PG_DB_NAME, server_name,
                                     administrator_login, administrator_login_password, database_name, postgres_query)
