@@ -28,7 +28,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -36,11 +36,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 23 Nov 2020 09:13:11 GMT
+      - Mon, 23 Nov 2020 09:36:31 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
       pragma:
       - no-cache
       server:
@@ -51,9 +51,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a41e4457-43b5-412d-9be9-2297aac7844c
+      - 0747b40c-1364-4a02-abed-fca1a168dc7e
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -74,21 +74,19 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\",\r\n  \"properties\": {\r\n    \"output\":
-        {\r\n      \"profileUrl\": \"https://nfvprodsuppbl.blob.core.windows.net/vpnprofileimmutable/00000000-0000-0000-0000-000000000000/vpnprofile/00000000-0000-0000-0000-000000000000/vpnclientconfiguration.zip?sv=2018-03-28&sr=b&sig=nCnkWS3w4Esd6EpLPLnNscGevfhrJL7q7XsreuqbXP4%3D&st=2020-11-23T09%3A08%3A18Z&se=2020-11-23T10%3A08%3A18Z&sp=r&fileExtension=.zip\"\r\n
-        \   }\r\n  }\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '427'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 23 Nov 2020 09:13:22 GMT
+      - Mon, 23 Nov 2020 09:36:42 GMT
       expires:
       - '-1'
       pragma:
@@ -105,7 +103,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 419cb67a-e66e-4a11-9b63-96fe39534a15
+      - d7681011-a3dc-44d8-bced-3fffa0f535a6
     status:
       code: 200
       message: OK
@@ -126,25 +124,23 @@ interactions:
       - python/3.6.8 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"profileUrl\": \"https://nfvprodsuppbl.blob.core.windows.net/vpnprofileimmutable/00000000-0000-0000-0000-000000000000/vpnprofile/00000000-0000-0000-0000-000000000000/vpnclientconfiguration.zip?sv=2018-03-28&sr=b&sig=nCnkWS3w4Esd6EpLPLnNscGevfhrJL7q7XsreuqbXP4%3D&st=2020-11-23T09%3A08%3A18Z&se=2020-11-23T10%3A08%3A18Z&sp=r&fileExtension=.zip\"\r\n}"
+      string: "{\r\n  \"status\": \"Succeeded\",\r\n  \"properties\": {\r\n    \"output\":
+        {\r\n      \"profileUrl\": \"https://nfvprodsuppbl.blob.core.windows.net/vpnprofileimmutable/6df20077-19e5-4f2a-b1e6-86d3128208f9/vpnprofile/81aed996-2daf-4e47-b8fc-be61c15f6463/vpnclientconfiguration.zip?sv=2018-03-28&sr=b&sig=00000000-0000-0000-0000-000000000000&fileExtension=.zip\"\r\n
+        \   }\r\n  }\r\n}"
     headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
-      - '349'
+      - '433'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 23 Nov 2020 09:13:23 GMT
+      - Mon, 23 Nov 2020 09:36:52 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/797a4b79-9474-4cff-b7d0-c799e000b3c9?api-version=2020-05-01
       pragma:
       - no-cache
       server:
@@ -159,7 +155,61 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a41e4457-43b5-412d-9be9-2297aac7844c
+      - 5841dedd-5652-40bd-beb5-8d0fec2b7682
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network p2s-vpn-gateway vpn-client generate
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"profileUrl\": \"https://nfvprodsuppbl.blob.core.windows.net/vpnprofileimmutable/6df20077-19e5-4f2a-b1e6-86d3128208f9/vpnprofile/81aed996-2daf-4e47-b8fc-be61c15f6463/vpnclientconfiguration.zip?sv=2018-03-28&sr=b&sig=00000000-0000-0000-0000-000000000000&fileExtension=.zip\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '355'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 09:36:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/14503cb5-7cfe-485a-b6bd-a992f1f7ee8f?api-version=2020-05-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0747b40c-1364-4a02-abed-fca1a168dc7e
     status:
       code: 200
       message: OK
