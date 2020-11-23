@@ -79,28 +79,28 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'must be between 3 and 24 characters in length and use numbers and lower-case letters only.')
 
     with self.argument_context('storage account blob-inventory-policy create') as c:
-        t_inventory_rule_type = self.get_models('InventoryRuleType', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+        # t_inventory_rule_type = self.get_models('InventoryRuleType', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
         c.argument('policy', type=file_type, completer=FilesCompleter(),
                    help='The Storage Account Blob Inventory Policy, string in JSON format or json file path. '
                         'See more details in: {https://review.docs.microsoft.com/en-us/azure/storage/blobs/'
                         'blob-inventory?branch=pr-en-us-135665}.')
-        c.argument('destination',
-                   help='Container name where blob inventory files are stored. Must be pre-created.')
-        c.argument('enabled', arg_type=get_three_state_flag(), help='Policy is enabled if set to true.')
-        c.argument('type', arg_type=get_enum_type(t_inventory_rule_type), default='Inventory', required=False,
-                   help='The valid value is Inventory. Possible values include: "Inventory".')
-        c.argument('rule_name', arg_group='Blob Inventory Policy Rule',
-                   help='A rule name can contain any combination of alpha numeric characters. Rule name is '
-                   'case-sensitive. It must be unique within a policy.')
-        c.argument('prefix_match', arg_group='Blob Inventory Policy Rule', nargs='+',
-                   help='An array of strings for blob prefixes to be matched.')
-        c.argument('blob_types', arg_group='Blob Inventory Policy Rule', nargs='+',
-                   help='An array of predefined enum values. Valid values include blockBlob, appendBlob, pageBlob. '
-                        'Hns accounts does not support pageBlobs.')
-        c.argument('include_blob_versions', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
-                   help='Include blob versions in blob inventory when value set to true.')
-        c.argument('include_snapshots', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
-                   help='Include blob snapshots in blob inventory when value set to true.')
+        # c.argument('destination',
+        #            help='Container name where blob inventory files are stored. Must be pre-created.')
+        # c.argument('enabled', arg_type=get_three_state_flag(), help='Policy is enabled if set to true.')
+        # c.argument('type', arg_type=get_enum_type(t_inventory_rule_type), default='Inventory', required=False,
+        #            help='The valid value is Inventory. Possible values include: "Inventory".')
+        # c.argument('rule_name', arg_group='Blob Inventory Policy Rule',
+        #            help='A rule name can contain any combination of alpha numeric characters. Rule name is '
+        #            'case-sensitive. It must be unique within a policy.')
+        # c.argument('prefix_match', arg_group='Blob Inventory Policy Rule', nargs='+',
+        #            help='An array of strings for blob prefixes to be matched.')
+        # c.argument('blob_types', arg_group='Blob Inventory Policy Rule', nargs='+',
+        #            help='An array of predefined enum values. Valid values include blockBlob, appendBlob, pageBlob. '
+        #                 'Hns accounts does not support pageBlobs.')
+        # c.argument('include_blob_versions', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
+        #            help='Include blob versions in blob inventory when value set to true.')
+        # c.argument('include_snapshots', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
+        #            help='Include blob snapshots in blob inventory when value set to true.')
 
     # with self.argument_context('storage account blob-inventory-policy rule') as c:
     #     c.argument('destination', help='')
