@@ -227,7 +227,7 @@ def _validate_subnet(namespace, subnet):
     else:
         return
     if subnet.route_table:
-        raise CLIError('--{} should not associate with any route table.'.format(name))
+        raise CLIError('--{} with existing route table is not supported. Please remove route table from the subnet, or select another subnet.'.format(name))
     if subnet.ip_configurations:
         raise CLIError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet.address_prefix, strict=False)
