@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.67
++++++
+* Add support for node configuration when creating cluster or agent pool.
+* Support private DNS zone for AKS private cluster.
+
 0.4.66
 +++++
 * Add support for GitOps as an AKS addon
