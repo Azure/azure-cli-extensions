@@ -287,7 +287,7 @@ helps['aks create'] = """
           short-summary: OS configurations for Linux agent nodes.
         - name: --enable-pod-identity
           type: bool
-          short-summary: Enable pod identity addon.
+          short-summary: (PREVIEW) Enable pod identity addon.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
