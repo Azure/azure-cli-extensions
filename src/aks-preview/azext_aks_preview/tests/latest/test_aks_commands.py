@@ -814,3 +814,30 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_none_private_dns_zone(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--node-count=1 --generate-ssh-keys ' \
+                     '--load-balancer-sku=standard --enable-private-cluster --private-dns-zone none'
+        self.cmd(create_cmd, checks=[
+            self.exists('privateFqdn'),
+            self.exists('nodeResourceGroup'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('apiServerAccessProfile.privateDNSZone', 'None'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])

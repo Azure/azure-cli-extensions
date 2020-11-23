@@ -100,6 +100,7 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
+from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -865,6 +866,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                uptime_sla=False,
                attach_acr=None,
                enable_private_cluster=False,
+               private_dns_zone=None,
                enable_managed_identity=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
@@ -1148,6 +1150,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
+
+    if private_dns_zone:
+        if not enable_private_cluster:
+            raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
+        # remove following check once we support custom private dns zone
+        if private_dns_zone not in (CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE):
+            raise CLIError("Invalid private dns zone for private cluster. Only 'system' or 'none' mode is supported")
+        mc.api_server_access_profile.private_dns_zone = private_dns_zone
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
