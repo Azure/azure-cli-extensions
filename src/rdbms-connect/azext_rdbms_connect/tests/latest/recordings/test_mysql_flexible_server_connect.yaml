@@ -1,0 +1,3185 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/locations/westus2/capabilities?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Default"},{"zone":"1","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"2","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"3","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12864'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:32:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "azuredbclitest-000002", "type": "Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/checkNameAvailability?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"nameAvailable":true,"message":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '35'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:32:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: HEAD
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2020 18:32:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"location": "westus2", "sku": {"name": "Standard_B1ms", "tier": "Burstable"},
+      "properties": {"administratorLogin": "cliuser", "administratorLoginPassword":
+      "NSEH5XQ2uUPpsXmE664uZQ", "version": "5.7", "haEnabled": "Disabled", "storageProfile":
+      {"backupRetentionDays": 7, "storageMB": 32768}, "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '317'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:32:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:33:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:34:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:35:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:36:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:37:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:38:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:39:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:40:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:41:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"InProgress","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:42:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"6eb30fcf-d411-444f-8c4a-c5e8d60a0c5c","status":"Succeeded","startTime":"2020-11-23T18:32:28.903Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000002.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Enabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T18:43:31.4257441+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The requested resource
+        of type ''Microsoft.DBforMySQL/flexibleServers/databases'' with name ''flexibleserverdb''
+        was not found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"charset": "utf8"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerDatabaseManagementOperation","startTime":"2020-11-23T18:43:32.39Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/dc091bce-8c73-4ebb-88ab-6a1a44decd1d?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '93'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:32 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/dc091bce-8c73-4ebb-88ab-6a1a44decd1d?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/dc091bce-8c73-4ebb-88ab-6a1a44decd1d?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"dc091bce-8c73-4ebb-88ab-6a1a44decd1d","status":"Succeeded","startTime":"2020-11-23T18:43:32.39Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version --public-access
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"properties":{"charset":"latin1","collation":"latin1_swedish_ci"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000002/databases/flexibleserverdb","name":"flexibleserverdb","type":"Microsoft.DBforMySQL/flexibleServers/databases"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '394'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000002.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Enabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T18:43:49.2849649+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/locations/westus2/capabilities?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Default"},{"zone":"1","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"2","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"3","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12864'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_B1ms", "tier": "Burstable"}, "properties": {"storageProfile":
+      {"backupRetentionDays": 7, "storageMB": 32768, "storageIops": 0, "storageAutogrow":
+      "Disabled"}, "administratorLoginPassword": "cliPwd000003", "maintenanceWindow":
+      {"customWindow": "Disabled", "startHour": 0, "startMinute": 0, "dayOfWeek":
+      0}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '336'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2020-11-23T18:43:51.657Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/ac09da14-2293-40a0-bde6-98a857fb4735?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:43:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/ac09da14-2293-40a0-bde6-98a857fb4735?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/ac09da14-2293-40a0-bde6-98a857fb4735?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"ac09da14-2293-40a0-bde6-98a857fb4735","status":"Succeeded","startTime":"2020-11-23T18:43:51.657Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:44:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000002.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Enabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T18:44:53.7066124+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000002","name":"azuredbclitest-000002","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:44:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"startIpAddress": "0.0.0.0", "endIpAddress": "255.255.255.255"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002/firewallRules/allIps?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerFirewallRulesManagementOperation","startTime":"2020-11-23T18:45:15.63Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/ed260a32-13b6-462a-ba41-ee2d7474454e?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '98'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:45:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/ed260a32-13b6-462a-ba41-ee2d7474454e?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/ed260a32-13b6-462a-ba41-ee2d7474454e?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"ed260a32-13b6-462a-ba41-ee2d7474454e","status":"Succeeded","startTime":"2020-11-23T18:45:15.63Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000002/firewallRules/allIps?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"properties":{"startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"},"name":"allIps","type":"Microsoft.DBforMySQL/flexibleServers/firewallRules"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '152'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/locations/westus2/capabilities?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Default"},{"zone":"1","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"2","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"3","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12864'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "azuredbclitest-000004", "type": "Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/checkNameAvailability?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"nameAvailable":true,"message":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '35'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: HEAD
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 23 Nov 2020 18:46:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"location": "westus2", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"VNETbclitest-7tklz\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz\",\r\n
+        \ \"etag\": \"W/\\\"f8dfd79d-d89c-4fc6-a4af-9736b2d0bdc6\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"fe4ac864-55d7-4dbf-89cf-a76f604ce492\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
+        \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false,\r\n
+        \   \"enableVmProtection\": false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/1bf8a865-76cf-498d-a90a-ba0fecabab9a?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '724'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - c1bfb82a-e024-4000-bd8b-7eb1e6f8d639
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"properties": {"addressPrefix": "10.0.0.0/24", "delegations": [{"properties":
+      {"serviceName": "Microsoft.DBforMySQL/flexibleServers"}, "name": "Microsoft.DBforMySQL/flexibleServers"}]},
+      "name": "Subnetbclitest-7tklz"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '218'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"Subnetbclitest-7tklz\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz\",\r\n
+        \ \"etag\": \"W/\\\"fc79ab09-4388-42c6-afc2-4c2c647449ad\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
+        \   \"delegations\": [\r\n      {\r\n        \"name\": \"Microsoft.DBforMySQL/flexibleServers\",\r\n
+        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz/delegations/Microsoft.DBforMySQL/flexibleServers\",\r\n
+        \       \"etag\": \"W/\\\"fc79ab09-4388-42c6-afc2-4c2c647449ad\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"serviceName\": \"Microsoft.DBforMySQL/flexibleServers\",\r\n          \"actions\":
+        [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\r\n
+        \         ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \     }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/38e43955-b624-4c75-be1e-b1d68c2ef078?api-version=2020-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1397'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 99e9b33b-885b-4b8e-b9a1-b94895da21f3
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/1bf8a865-76cf-498d-a90a-ba0fecabab9a?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Canceled\",\r\n  \"error\": {\r\n    \"code\":
+        \"Canceled\",\r\n    \"message\": \"Operation was canceled.\",\r\n    \"details\":
+        [\r\n      {\r\n        \"code\": \"CanceledAndSupersededDueToAnotherOperation\",\r\n
+        \       \"message\": \"Operation PutVirtualNetworkOperation (1bf8a865-76cf-498d-a90a-ba0fecabab9a)
+        was canceled and superseded by operation PutSubnetOperation (38e43955-b624-4c75-be1e-b1d68c2ef078).\"\r\n
+        \     }\r\n    ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      canceled-by-azure-asyncoperation:
+      - https://management.azure.com/subscriptions/7fec3109-5b78-4a24-b834-5d47d63e2596/providers/Microsoft.Network/locations/westus2/operations/38e43955-b624-4c75-be1e-b1d68c2ef078?api-version=2020-06-01
+      content-length:
+      - '420'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 38a965c2-5f0e-463a-8d76-b8dcd04c8904
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/38e43955-b624-4c75-be1e-b1d68c2ef078?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f7f26dc1-8c1f-4f30-82bc-457a017ba8df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/12.0.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz?api-version=2020-06-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"Subnetbclitest-7tklz\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz\",\r\n
+        \ \"etag\": \"W/\\\"f9a2b86e-d551-4532-8e76-2da5013243ae\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
+        \   \"delegations\": [\r\n      {\r\n        \"name\": \"Microsoft.DBforMySQL/flexibleServers\",\r\n
+        \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz/delegations/Microsoft.DBforMySQL/flexibleServers\",\r\n
+        \       \"etag\": \"W/\\\"f9a2b86e-d551-4532-8e76-2da5013243ae\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"serviceName\": \"Microsoft.DBforMySQL/flexibleServers\",\r\n          \"actions\":
+        [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\r\n
+        \         ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \     }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1398'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:25 GMT
+      etag:
+      - W/"f9a2b86e-d551-4532-8e76-2da5013243ae"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 87c76aad-3f87-4ea2-93ae-935d2cd5398b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "sku": {"name": "Standard_B1ms", "tier": "Burstable"},
+      "properties": {"administratorLogin": "cliuser", "administratorLoginPassword":
+      "hpOV_UR8dQYfGF0u2btqFA", "version": "5.7", "haEnabled": "Disabled", "storageProfile":
+      {"backupRetentionDays": 7, "storageMB": 32768}, "delegatedSubnetArguments":
+      {"subnetArmResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz"},
+      "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '608'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:46:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:47:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:48:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:49:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:50:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:51:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:52:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:53:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:54:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:55:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:56:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:57:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:58:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"InProgress","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 18:59:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/aaed5995-c3cf-467d-8ed4-fed356a4a68b?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"aaed5995-c3cf-467d-8ed4-fed356a4a68b","status":"Succeeded","startTime":"2020-11-23T18:46:27.767Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000004.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Disabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T19:00:31.0716109+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"delegatedSubnetArguments":{"subnetArmResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz"},"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000004","name":"azuredbclitest-000004","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The requested resource
+        of type ''Microsoft.DBforMySQL/flexibleServers/databases'' with name ''flexibleserverdb''
+        was not found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"charset": "utf8"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerDatabaseManagementOperation","startTime":"2020-11-23T19:00:32.613Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/f8c64426-4789-4a05-a4ac-00e5beb2f07a?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '94'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/f8c64426-4789-4a05-a4ac-00e5beb2f07a?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/f8c64426-4789-4a05-a4ac-00e5beb2f07a?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"f8c64426-4789-4a05-a4ac-00e5beb2f07a","status":"Succeeded","startTime":"2020-11-23T19:00:32.613Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --admin-user --storage-size --version
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004/databases/flexibleserverdb?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"properties":{"charset":"latin1","collation":"latin1_swedish_ci"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000004/databases/flexibleserverdb","name":"flexibleserverdb","type":"Microsoft.DBforMySQL/flexibleServers/databases"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '394'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000004.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Disabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T19:00:49.3526582+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"delegatedSubnetArguments":{"subnetArmResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz"},"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000004","name":"azuredbclitest-000004","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBForMySql/locations/westus2/capabilities?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"value":[{"zone":"none","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Default"},{"zone":"1","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"2","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"},{"zone":"3","supportedFlexibleServerEditions":[{"name":"Burstable","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_B1s","vCores":1,"supportedIOPS":320,"supportedMemoryPerVcoreMB":1024,"status":"Available"},{"name":"Standard_B1ms","vCores":1,"supportedIOPS":640,"supportedMemoryPerVcoreMB":2048,"status":"Available"},{"name":"Standard_B2s","vCores":2,"supportedIOPS":1280,"supportedMemoryPerVcoreMB":2048,"status":"Default"}],"status":"Default"}],"status":"Available"},{"name":"GeneralPurpose","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_D2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"},{"name":"Standard_D64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":4096,"status":"Available"}],"status":"Default"}],"status":"Available"},{"name":"MemoryOptimized","supportedStorageEditions":[{"name":"PremiumFileShare","minStorageSize":{"name":"5120","storageSizeMB":5120},"maxStorageSize":{"name":"16777216","storageSizeMB":16777216},"minBackupRetentionDays":7,"maxBackupRetentionDays":35,"supportedStorageMB":[],"status":"Default"}],"supportedServerVersions":[{"name":"5.7","supportedVcores":[{"name":"Standard_E2ds_v4","vCores":2,"supportedIOPS":3200,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E4ds_v4","vCores":4,"supportedIOPS":6400,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E8ds_v4","vCores":8,"supportedIOPS":12800,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E16ds_v4","vCores":16,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E32ds_v4","vCores":32,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E48ds_v4","vCores":48,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"},{"name":"Standard_E64ds_v4","vCores":64,"supportedIOPS":20000,"supportedMemoryPerVcoreMB":8192,"status":"Available"}],"status":"Default"}],"status":"Default"}],"status":"Available"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12864'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_B1ms", "tier": "Burstable"}, "properties": {"storageProfile":
+      {"backupRetentionDays": 7, "storageMB": 32768, "storageIops": 0, "storageAutogrow":
+      "Disabled"}, "administratorLoginPassword": "cliPwd000005", "delegatedSubnetArguments":
+      {"subnetArmResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz"},
+      "maintenanceWindow": {"customWindow": "Disabled", "startHour": 0, "startMinute":
+      0, "dayOfWeek": 0}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '627'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerManagementOperationV2","startTime":"2020-11-23T19:00:51.26Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/96ead287-70c4-4c1a-a87c-ddc08de5eac1?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '87'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:00:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/96ead287-70c4-4c1a-a87c-ddc08de5eac1?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/96ead287-70c4-4c1a-a87c-ddc08de5eac1?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"96ead287-70c4-4c1a-a87c-ddc08de5eac1","status":"Succeeded","startTime":"2020-11-23T19:00:51.26Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:01:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -p
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ms","tier":"Burstable","capacity":0},"properties":{"administratorLogin":"cliuser","storageProfile":{"storageMB":32768,"storageIops":0,"backupRetentionDays":7,"storageAutogrow":"Disabled","fileStorageSkuName":"Premium_LRS"},"version":"5.7","state":"Ready","haState":"NotEnabled","fullyQualifiedDomainName":"azuredbclitest-000004.mysql.database.azure.com","sourceServerId":"","publicNetworkAccess":"Disabled","sslEnforcement":"Disabled","haEnabled":"Disabled","earliestRestoreDate":"2020-11-23T19:01:29.8446478+00:00","maintenanceWindow":{"customWindow":"Disabled","dayOfWeek":0,"startHour":0,"startMinute":0},"replicationRole":"None","replicaCapacity":10,"delegatedSubnetArguments":{"subnetArmResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/VNETbclitest-7tklz/subnets/Subnetbclitest-7tklz"},"byokEnforcement":"Disabled"},"location":"West
+        US 2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBforMySQL/flexibleServers/azuredbclitest-000004","name":"azuredbclitest-000004","type":"Microsoft.DBforMySQL/flexibleServers"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:01:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"startIpAddress": "0.0.0.0", "endIpAddress": "255.255.255.255"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004/firewallRules/all_ips?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"operation":"UpsertServerFirewallRulesManagementOperation","startTime":"2020-11-23T19:01:52.717Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/dc943976-f54a-4282-b45f-347a613a0d93?api-version=2020-07-01-privatepreview
+      cache-control:
+      - no-cache
+      content-length:
+      - '99'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:01:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/operationResults/dc943976-f54a-4282-b45f-347a613a0d93?api-version=2020-07-01-privatepreview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforMySQL/locations/westus2/azureAsyncOperation/dc943976-f54a-4282-b45f-347a613a0d93?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"name":"dc943976-f54a-4282-b45f-347a613a0d93","status":"Succeeded","startTime":"2020-11-23T19:01:52.717Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:02:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mysql flexible-server firewall-rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-rdbms/2020-07-01-privatepreview Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.DBForMySql/flexibleServers/azuredbclitest-000004/firewallRules/all_ips?api-version=2020-07-01-privatepreview
+  response:
+    body:
+      string: '{"properties":{"startIpAddress":"0.0.0.0","endIpAddress":"255.255.255.255"},"name":"all_ips","type":"Microsoft.DBforMySQL/flexibleServers/firewallRules"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '153'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Nov 2020 19:02:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

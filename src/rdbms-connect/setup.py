@@ -46,7 +46,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='rdbms-connect',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Rdbms-connect Extension',
+    description='Support for testing connection to Azure Database for MySQL & PostgreSQL servers.',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
