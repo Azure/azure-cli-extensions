@@ -43,14 +43,14 @@ from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.cli.core.commands import LongRunningOperation
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -66,7 +66,10 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_09_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue)
+                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue,
+                                                                      KubeletConfig,
+                                                                      LinuxOSConfig,
+                                                                      SysctlConfig)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -75,7 +78,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._client_factory import cf_managed_clusters
+from ._client_factory import cf_agent_pools
 
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
@@ -97,6 +100,7 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
+from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -862,6 +866,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                uptime_sla=False,
                attach_acr=None,
                enable_private_cluster=False,
+               private_dns_zone=None,
                enable_managed_identity=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
@@ -874,6 +879,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                disable_sgxquotehelper=False,
+               kubelet_config=None,
+               linux_os_config=None,
                assign_identity=None,
                no_wait=False):
     if not no_ssh_key:
@@ -929,6 +936,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         agent_pool_profile.os_disk_type = node_osdisk_type
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool_profile)
+
+    if kubelet_config:
+        agent_pool_profile.kubelet_config = _get_kubelet_config(kubelet_config)
+
+    if linux_os_config:
+        agent_pool_profile.linux_os_config = _get_linux_os_config(linux_os_config)
 
     linux_profile = None
     # LinuxProfile is just used for SSH access to VMs, so omit it if --no-ssh-key was specified.
@@ -1137,6 +1150,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
+
+    if private_dns_zone:
+        if not enable_private_cluster:
+            raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
+        # remove following check once we support custom private dns zone
+        if private_dns_zone not in (CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE):
+            raise CLIError("Invalid private dns zone for private cluster. Only 'system' or 'none' mode is supported")
+        mc.api_server_access_profile.private_dns_zone = private_dns_zone
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
@@ -1778,7 +1799,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets cluster.')
-            _upgrade_single_nodepool_image_version(True, client, resource_group_name, name, agent_pool_profile.name)
+            agent_pool_client = cf_agent_pools(cmd.cli_ctx)
+            _upgrade_single_nodepool_image_version(True, agent_pool_client, resource_group_name, name, agent_pool_profile.name)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
 
@@ -2331,6 +2353,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       max_surge=None,
                       mode="User",
                       aks_custom_headers=None,
+                      kubelet_config=None,
+                      linux_os_config=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2393,6 +2417,12 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
     if node_osdisk_type:
         agent_pool.os_disk_type = node_osdisk_type
 
+    if kubelet_config:
+        agent_pool.kubelet_config = _get_kubelet_config(kubelet_config)
+
+    if linux_os_config:
+        agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
+
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
@@ -2428,9 +2458,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        managed_cluster_client = cf_managed_clusters(cmd.cli_ctx)
         return _upgrade_single_nodepool_image_version(no_wait,
-                                                      managed_cluster_client,
+                                                      client,
                                                       resource_group_name,
                                                       cluster_name,
                                                       nodepool_name)
@@ -3002,3 +3031,65 @@ def get_aks_custom_headers(aks_custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
+
+
+def _get_kubelet_config(file_path):
+    kubelet_config = get_file_json(file_path)
+    if not isinstance(kubelet_config, dict):
+        raise CLIError("Error reading kubelet configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object = KubeletConfig()
+    config_object.cpu_manager_policy = kubelet_config.get("cpuManagerPolicy", None)
+    config_object.cpu_cfs_quota = kubelet_config.get("cpuCfsQuota", None)
+    config_object.cpu_cfs_quota_period = kubelet_config.get("cpuCfsQuotaPeriod", None)
+    config_object.image_gc_high_threshold = kubelet_config.get("imageGcHighThreshold", None)
+    config_object.image_gc_low_threshold = kubelet_config.get("imageGcLowThreshold", None)
+    config_object.topology_manager_policy = kubelet_config.get("topologyManagerPolicy", None)
+    config_object.allowed_unsafe_sysctls = kubelet_config.get("allowedUnsafeSysctls", None)
+    config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
+
+    return config_object
+
+
+def _get_linux_os_config(file_path):
+    os_config = get_file_json(file_path)
+    if not isinstance(os_config, dict):
+        raise CLIError("Error reading Linux OS configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object = LinuxOSConfig()
+    config_object.transparent_huge_page_enabled = os_config.get("transparentHugePageEnabled", None)
+    config_object.transparent_huge_page_defrag = os_config.get("transparentHugePageDefrag", None)
+    config_object.swap_file_size_mb = os_config.get("swapFileSizeMB", None)
+    # sysctl settings
+    sysctls = os_config.get("sysctls", None)
+    if not isinstance(sysctls, dict):
+        raise CLIError("Error reading Sysctl settings at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
+    config_object.sysctls = SysctlConfig()
+    config_object.sysctls.net_core_somaxconn = sysctls.get("netCoreSomaxconn", None)
+    config_object.sysctls.net_core_netdev_max_backlog = sysctls.get("netCoreNetdevMaxBacklog", None)
+    config_object.sysctls.net_core_rmem_max = sysctls.get("netCoreRmemMax", None)
+    config_object.sysctls.net_core_wmem_max = sysctls.get("netCoreWmemMax", None)
+    config_object.sysctls.net_core_optmem_max = sysctls.get("netCoreOptmemMax", None)
+    config_object.sysctls.net_ipv4_tcp_max_syn_backlog = sysctls.get("netIpv4TcpMaxSynBacklog", None)
+    config_object.sysctls.net_ipv4_tcp_max_tw_buckets = sysctls.get("netIpv4TcpMaxTwBuckets", None)
+    config_object.sysctls.net_ipv4_tcp_fin_timeout = sysctls.get("netIpv4TcpFinTimeout", None)
+    config_object.sysctls.net_ipv4_tcp_keepalive_time = sysctls.get("netIpv4TcpKeepaliveTime", None)
+    config_object.sysctls.net_ipv4_tcp_keepalive_probes = sysctls.get("netIpv4TcpKeepaliveProbes", None)
+    config_object.sysctls.net_ipv4_tcpkeepalive_intvl = sysctls.get("netIpv4TcpkeepaliveIntvl", None)
+    config_object.sysctls.net_ipv4_tcp_rmem = sysctls.get("netIpv4TcpRmem", None)
+    config_object.sysctls.net_ipv4_tcp_wmem = sysctls.get("netIpv4TcpWmem", None)
+    config_object.sysctls.net_ipv4_tcp_tw_reuse = sysctls.get("netIpv4TcpTwReuse", None)
+    config_object.sysctls.net_ipv4_ip_local_port_range = sysctls.get("netIpv4IpLocalPortRange", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh1 = sysctls.get("netIpv4NeighDefaultGcThresh1", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh2 = sysctls.get("netIpv4NeighDefaultGcThresh2", None)
+    config_object.sysctls.net_ipv4_neigh_default_gc_thresh3 = sysctls.get("netIpv4NeighDefaultGcThresh3", None)
+    config_object.sysctls.net_netfilter_nf_conntrack_max = sysctls.get("netNetfilterNfConntrackMax", None)
+    config_object.sysctls.net_netfilter_nf_conntrack_buckets = sysctls.get("netNetfilterNfConntrackBuckets", None)
+    config_object.sysctls.fs_inotify_max_user_watches = sysctls.get("fsInotifyMaxUserWatches", None)
+    config_object.sysctls.fs_file_max = sysctls.get("fsFileMax", None)
+    config_object.sysctls.fs_aio_max_nr = sysctls.get("fsAioMaxNr", None)
+    config_object.sysctls.fs_nr_open = sysctls.get("fsNrOpen", None)
+    config_object.sysctls.kernel_threads_max = sysctls.get("kernelThreadsMax", None)
+    config_object.sysctls.vm_max_map_count = sysctls.get("vmMaxMapCount", None)
+    config_object.sysctls.vm_swappiness = sysctls.get("vmSwappiness", None)
+    config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
+
+    return config_object
