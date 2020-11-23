@@ -4,11 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+import io
 from urllib.parse import urlparse
 from knack.util import CLIError
 from knack.log import get_logger
+from paramiko.ed25519key import Ed25519Key
 from paramiko.hostkeys import HostKeyEntry
-from Crypto.PublicKey import RSA
+from paramiko.ssh_exception import SSHException
+from Crypto.PublicKey import RSA, ECC, DSA
 
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
@@ -86,7 +89,7 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
                                                               operator_params=operator_params,
                                                               configuration_protected_settings=protected_settings,
                                                               operator_scope=scope,
-                                                              ssh_known_hosts=knownhost_data,
+                                                              ssh_known_hosts_contents=knownhost_data,
                                                               enable_helm_operator=enable_helm_operator,
                                                               helm_operator_properties=helm_operator_properties)
 
@@ -126,7 +129,7 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     knownhost_data = __get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
     if knownhost_data != '':
         __validate_known_hosts(knownhost_data)
-        config['ssh_known_hosts'] = knownhost_data
+        config['ssh_known_hosts_contents'] = knownhost_data
         update_yes = True
 
     if enable_helm_operator is not None:
@@ -145,7 +148,7 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
         raise CLIError('Invalid update.  No values to update!')
 
     # Flag which paramesters have been set and validate these settings against the set repository url
-    ssh_known_hosts_set = 'ssh_known_hosts' in config
+    ssh_known_hosts_set = 'ssh_known_hosts_contents' in config
     __validate_url_with_params(config['repository_url'], False, ssh_known_hosts_set, False)
 
     config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
@@ -176,11 +179,30 @@ def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, 
     ssh_private_key_data = __get_data_from_key_or_file(ssh_private_key, ssh_private_key_file)
 
     # Add gitops private key data to protected settings if exists
+    # Dry-run all key types to determine if the private key is in a valid format
+    invalid_rsa_key, invalid_ecc_key, invalid_dsa_key, invalid_ed25519_key = (False, False, False, False)
     if ssh_private_key_data != '':
         try:
-            RSA.importKey(__from_base64(ssh_private_key_data))
-        except Exception as ex:
-            raise CLIError("Error! ssh private key provided in wrong format, ensure your private key is valid") from ex
+            RSA.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_rsa_key = True
+        try:
+            ECC.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_ecc_key = True
+        try:
+            DSA.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_dsa_key = True
+        try:
+            key_obj = io.StringIO(__from_base64(ssh_private_key_data).decode('utf-8'))
+            Ed25519Key(file_obj=key_obj)
+        except SSHException:
+            invalid_ed25519_key = True
+
+        print(invalid_rsa_key, invalid_ecc_key, invalid_dsa_key, invalid_ed25519_key)
+        if invalid_rsa_key and invalid_ecc_key and invalid_dsa_key and invalid_ed25519_key:
+            raise CLIError("Error! ssh private key provided in wrong format, ensure your private key is valid")
         protected_settings["sshPrivateKey"] = ssh_private_key_data
 
     # Check if both httpsUser and httpsKey exist, then add to protected settings
@@ -188,7 +210,7 @@ def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, 
         protected_settings['httpsUser'] = __to_base64(https_user)
         protected_settings['httpsKey'] = __to_base64(https_key)
     elif https_user != '':
-        raise CLIError('Error! --https-user must be proivded with --https-key')
+        raise CLIError('Error! --https-user must be provided with --https-key')
     elif https_key != '':
         raise CLIError('Error! --http-key must be provided with --http-user')
 
@@ -229,7 +251,10 @@ def __validate_url_with_params(repository_url, ssh_private_key_set, known_hosts_
 
 
 def __validate_known_hosts(knownhost_data):
-    knownhost_str = __from_base64(knownhost_data).decode('utf-8')
+    try:
+        knownhost_str = __from_base64(knownhost_data).decode('utf-8')
+    except Exception as ex:
+        raise CLIError('Error! ssh known_hosts is not a valid utf-8 base64 encoded string') from ex
     lines = knownhost_str.split('\n')
     for line in lines:
         line = line.strip(' ')
