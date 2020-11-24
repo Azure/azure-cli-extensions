@@ -1,0 +1,302 @@
+interactions:
+- request:
+    body: '{"location": "westus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l -n --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Nov 2020 07:55:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://myattestationprovider.wus.attest.azure.net/
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Nov 2020 07:55:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders?api-version=2020-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '469'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Nov 2020 07:55:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Attestation/attestationProviders?api-version=2020-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/testatt","name":"testatt","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":{"k1":"v1","k2":"v2"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://testatt.wus.attest.azure.net"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '833'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Nov 2020 07:55:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"Property1": "Value1", "Property2": "Value2", "Property3": "Value3"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '79'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":{"Property1":"Value1","Property2":"Value2","Property3":"Value3"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '517'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 24 Nov 2020 07:55:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - attestation delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y -n --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-attestationmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider?api-version=2020-10-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 24 Nov 2020 07:56:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-maa-service-version:
+      - 1.10.01419.0005
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 200
+      message: OK
+version: 1

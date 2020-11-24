@@ -238,6 +238,7 @@ class AttestationProviderOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
+        print(update_params)
         body_content = self._serialize.body(update_params, 'AttestationServicePatchParams')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)

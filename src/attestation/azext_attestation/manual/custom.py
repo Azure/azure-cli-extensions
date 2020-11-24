@@ -7,14 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-lines
 
 
-def cf_attestation_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.azure_mgmt_attestation import AttestationManagementClient
-    return get_mgmt_service_client(cli_ctx,
-                                   AttestationManagementClient)
-
-
-def cf_attestation_provider(cli_ctx, *_):
-    return cf_attestation_cl(cli_ctx).attestation_provider
+def attestation_attestation_provider_show(client,
+                                          resource_group_name,
+                                          provider_name):
+    """ Show the status of Attestation Provider. """
+    return client.get(resource_group_name=resource_group_name,
+                      provider_name=provider_name)
