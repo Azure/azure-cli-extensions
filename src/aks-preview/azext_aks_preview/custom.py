@@ -1172,54 +1172,19 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            logger.info('AKS cluster is creating, please wait...')
-
-            # some addons require post cluster creation role assigment
-            need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
-            if need_post_creation_role_assignment:
-                # adding a wait here since we rely on the result for role assignment
-                created_cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
-                    resource_group_name=resource_group_name,
-                    resource_name=name,
-                    parameters=mc,
-                    custom_headers=headers))
-                cloud_name = cmd.cli_ctx.cloud.name
-                # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
-                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
-                if monitoring and cloud_name.lower() == 'azurecloud':
-                    from msrestazure.tools import resource_id
-                    cluster_resource_id = resource_id(
-                        subscription=subscription_id,
-                        resource_group=resource_group_name,
-                        namespace='Microsoft.ContainerService', type='managedClusters',
-                        name=name
-                    )
-                    _add_monitoring_role_assignment(created_cluster, cluster_resource_id, cmd)
-                if ingress_appgw_addon_enabled:
-                    _add_ingress_appgw_addon_role_assignment(created_cluster, cmd)
-
-            else:
-                created_cluster = sdk_no_wait(no_wait, client.create_or_update,
-                                              resource_group_name=resource_group_name,
-                                              resource_name=name,
-                                              parameters=mc,
-                                              custom_headers=headers).result()
-
-            if enable_managed_identity and attach_acr:
-                # Attach ACR to cluster enabled managed identity
-                if created_cluster.identity_profile is None or \
-                   created_cluster.identity_profile["kubeletidentity"] is None:
-                    logger.warning('Your cluster is successfully created, but we failed to attach '
-                                   'acr to it, you can manually grant permission to the identity '
-                                   'named <ClUSTER_NAME>-agentpool in MC_ resource group to give '
-                                   'it permission to pull from ACR.')
-                else:
-                    kubelet_identity_client_id = created_cluster.identity_profile["kubeletidentity"].client_id
-                    _ensure_aks_acr(cmd.cli_ctx,
-                                    client_id=kubelet_identity_client_id,
-                                    acr_name_or_id=attach_acr,
-                                    subscription_id=subscription_id)
-
+            created_cluster = _put_managed_cluster_ensuring_permission(
+                cmd,
+                client,
+                subscription_id,
+                resource_group_name,
+                name,
+                mc,
+                monitoring,
+                ingress_appgw_addon_enabled,
+                enable_managed_identity,
+                attach_acr,
+                headers,
+                no_wait)
             return created_cluster
         except CloudError as ex:
             retry_exception = ex
@@ -1384,7 +1349,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     client_id = ""
-    if instance.identity is not None and instance.identity.type == "SystemAssigned":
+    if _is_msi_cluster(instance):
         if instance.identity_profile is None or instance.identity_profile["kubeletidentity"] is None:
             raise CLIError('Unexpected error getting kubelet\'s identity for the cluster. '
                            'Please do not set --attach-acr or --detach-acr. '
@@ -1478,7 +1443,23 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
+    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
+        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
+        instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+
+    return _put_managed_cluster_ensuring_permission(cmd,
+                                                    client,
+                                                    subscription_id,
+                                                    resource_group_name,
+                                                    name,
+                                                    instance,
+                                                    monitoring_addon_enabled,
+                                                    ingress_appgw_addon_enabled,
+                                                    _is_msi_cluster(instance),
+                                                    attach_acr,
+                                                    headers,
+                                                    no_wait)
 
 
 def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
@@ -3031,6 +3012,72 @@ def get_aks_custom_headers(aks_custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
+
+
+def _put_managed_cluster_ensuring_permission(
+    cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+    client,
+    subscription_id,
+    resource_group_name,
+    name,
+    managed_cluster,
+    monitoring_addon_enabled,
+    ingress_appgw_addon_enabled,
+    enable_managed_identity,
+    attach_acr,
+    headers,
+    no_wait
+):
+    # some addons require post cluster creation role assigment
+    need_post_creation_role_assignment = monitoring_addon_enabled or ingress_appgw_addon_enabled or (enable_managed_identity and attach_acr)
+    if need_post_creation_role_assignment:
+        # adding a wait here since we rely on the result for role assignment
+        cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
+            resource_group_name=resource_group_name,
+            resource_name=name,
+            parameters=managed_cluster,
+            custom_headers=headers))
+        cloud_name = cmd.cli_ctx.cloud.name
+        # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+        # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+        if monitoring_addon_enabled and cloud_name.lower() == 'azurecloud':
+            from msrestazure.tools import resource_id
+            cluster_resource_id = resource_id(
+                subscription=subscription_id,
+                resource_group=resource_group_name,
+                namespace='Microsoft.ContainerService', type='managedClusters',
+                name=name
+            )
+            _add_monitoring_role_assignment(cluster, cluster_resource_id, cmd)
+        if ingress_appgw_addon_enabled:
+            _add_ingress_appgw_addon_role_assignment(cluster, cmd)
+        if enable_managed_identity and attach_acr:
+            # Attach ACR to cluster enabled managed identity
+            if cluster.identity_profile is None or \
+               cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning('Your cluster is successfully created, but we failed to attach '
+                               'acr to it, you can manually grant permission to the identity '
+                               'named <ClUSTER_NAME>-agentpool in MC_ resource group to give '
+                               'it permission to pull from ACR.')
+            else:
+                kubelet_identity_client_id = cluster.identity_profile["kubeletidentity"].client_id
+                _ensure_aks_acr(cmd.cli_ctx,
+                                client_id=kubelet_identity_client_id,
+                                acr_name_or_id=attach_acr,
+                                subscription_id=subscription_id)
+    else:
+        cluster = sdk_no_wait(no_wait, client.create_or_update,
+                              resource_group_name=resource_group_name,
+                              resource_name=name,
+                              parameters=managed_cluster,
+                              custom_headers=headers)
+
+    return cluster
+
+
+def _is_msi_cluster(managed_cluster):
+    return (managed_cluster and managed_cluster.identity and
+            (managed_cluster.identity.type.casefold() == "systemassigned" or managed_cluster.identity.type.casefold() == "userassigned"))
 
 
 def _get_kubelet_config(file_path):
