@@ -9,6 +9,17 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+import codecs
+import os
+
+from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.x509 import load_pem_x509_certificate
+from knack.cli import CLIError
+
 
 def attestation_attestation_provider_show(client,
                                           resource_group_name,
@@ -16,3 +27,83 @@ def attestation_attestation_provider_show(client,
     """ Show the status of Attestation Provider. """
     return client.get(resource_group_name=resource_group_name,
                       provider_name=provider_name)
+
+
+def _int_to_bytes(i):
+    h = hex(i)
+    if len(h) > 1 and h[0:2] == '0x':
+        h = h[2:]
+    # need to strip L in python 2.x
+    h = h.strip('L')
+    if len(h) % 2:
+        h = '0' + h
+    return codecs.decode(h, 'hex')
+
+
+def _public_rsa_key_to_jwk(rsa_key, encoding=None):
+    pubv = rsa_key.public_numbers()
+    jwk.n = _int_to_bytes(pubv.n)
+    if encoding:
+        jwk.n = encoding(jwk.n)
+    jwk.e = _int_to_bytes(pubv.e)
+    if encoding:
+        jwk.e = encoding(jwk.e)
+
+    jwk = JsonWebKey(kty='RSA', alg='', kid='', use='sig')
+    return jwk
+
+
+def attestation_attestation_provider_create(client,
+                                            resource_group_name,
+                                            provider_name,
+                                            location,
+                                            tags=None,
+                                            certs_input_path=None):
+
+    jwks = []
+    for p in certs_input_path:
+        expand_path = os.path.expanduser(p)
+        if not os.path.exists(expand_path):
+            raise CLIError('Path "{}" does not exist.'.format(expand_path))
+        if not os.path.isfile(expand_path):
+            raise CLIError('"{}" is not a valid file path.'.format(expand_path))
+
+        with open(expand_path, 'rb') as f:
+            pem_data = f.read()
+
+        jwk = None
+        try:
+            cert = load_pem_x509_certificate(pem_data, backend=default_backend())
+        except:  # pylint: disable=bare-except
+            pass
+        else:
+            public_key = cert.public_key()
+            if isinstance(public_key, rsa.RSAPublicKey):
+                jwk = _public_rsa_key_to_jwk(public_key)
+            else:
+                raise CLIError('Unsupported key type, {}.'.format(type(public_key)))
+
+        if not jwk:
+            try:
+                public_key = load_pem_public_key(pem_data, backend=default_backend())
+            except:  # pylint: disable=bare-except
+                pass
+            else:
+                jwk = JsonWebKey()
+                if isinstance(public_key, rsa.RSAPublicKey):
+                    jwk.kty = 'RSA'
+                    _public_rsa_key_to_jwk(public_key, jwk)
+                else:
+                    raise CLIError('Unsupported key type, {}.'.format(type(public_key)))
+
+        if not jwk:
+            raise CLIError('Failed to load file: {}'.format(expand_path))
+
+        jwks.append(jwk)
+        print(jwk)
+
+    return client.create(resource_group_name=resource_group_name,
+                         provider_name=provider_name,
+                         location=location,
+                         tags=tags,
+                         keys=jwks)

@@ -22,3 +22,7 @@ def load_arguments(self, _):
     for item in ['create', 'update']:
         with self.argument_context('attestation {}'.format(item)) as c:
             c.argument('tags', tags_type, nargs='+')
+
+    with self.argument_context('attestation create') as c:
+        c.argument('certs_input_path', nargs='+',
+                   help='Space-separated file paths to PEM/DER files containing certificates.')
