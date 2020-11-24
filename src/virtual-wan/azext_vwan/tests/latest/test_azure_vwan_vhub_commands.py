@@ -468,18 +468,18 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
             'p2s_gateway': 'test-p2s-gateway',
         })
 
-        # self.cmd('network vwan create -g {rg} -n {vwan}')
-        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
 
-        # self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
-        #          '--vpn-client-root-certs {vpn_server_cert} '
-        #          '--vpn-client-revoked-certs {vpn_server_pem}')
+        self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
+                 '--vpn-client-root-certs {vpn_server_cert} '
+                 '--vpn-client-revoked-certs {vpn_server_pem}')
 
-        # self.cmd('az network p2s-vpn-gateway create -g {rg} --vhub {vhub} -n {p2s_gateway} '
-        #          '--scale-unit 2 '
-        #          '--address-space 10.0.2.0/24 11.0.1.0/24 '
-        #          '--vpn-server-config {vpn_server_config}')
+        self.cmd('az network p2s-vpn-gateway create -g {rg} --vhub {vhub} -n {p2s_gateway} '
+                 '--scale-unit 2 '
+                 '--address-space 10.0.2.0/24 11.0.1.0/24 '
+                 '--vpn-server-config {vpn_server_config}')
 
-        out = self.cmd('network p2s-vpn-gateway vpn-client generate -g harold -n p2s-gw-1').get_output_in_json()
+        out = self.cmd('network p2s-vpn-gateway vpn-client generate -g {rg} -n {p2s_gateway}').get_output_in_json()
         self.assertIsNotNone(out['profileUrl'])
         self.assertTrue(out['profileUrl'].endswith('.zip'))
