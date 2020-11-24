@@ -242,6 +242,10 @@ helps['aks create'] = """
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: (PREVIEW) private dns zone mode for private cluster.
+          long-summary: Select between system and none. If not set, defaults to type system. Requires --enable-private-cluster to be used.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
