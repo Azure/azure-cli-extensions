@@ -32,10 +32,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'mysql-connector-python==8.0.13',
-    'psycopg2-binary==2.8.5'
+    'mycli==1.22.2',
+    'pgcli==3.0.0'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
