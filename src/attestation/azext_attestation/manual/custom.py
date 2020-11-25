@@ -194,3 +194,15 @@ def set_policy(cmd, client, tee, new_attestation_policy=None, new_attestation_po
     )
     print(raw_result)
     return raw_result
+
+
+def reset_policy(cmd, client, tee, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
+                 provider_name=None):
+
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+    return client.reset(
+        tenant_base_url=provider.attest_uri,
+        tee=tee_mapping[tee],
+        policy_jws=policy_jws
+    )

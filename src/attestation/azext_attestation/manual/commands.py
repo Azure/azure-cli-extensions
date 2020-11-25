@@ -71,7 +71,7 @@ def load_command_table(self, _):
                             is_experimental=True) as g:
         g.custom_command('set', 'set_policy', validator=validate_provider_resource_id,
                          doc_string_source=policy_data_tmpl.format('set'))
-        g.command('reset', 'reset', validator=validate_provider_resource_id,
-                  doc_string_source=policy_data_tmpl.format('reset'))
+        g.custom_command('reset', 'reset_policy', validator=validate_provider_resource_id,
+                         doc_string_source=policy_data_tmpl.format('reset'))
         g.custom_command('show', 'get_policy', validator=validate_provider_resource_id,
                          doc_string_source=policy_data_tmpl.format('get'))

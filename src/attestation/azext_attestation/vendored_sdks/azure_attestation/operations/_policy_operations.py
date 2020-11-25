@@ -272,7 +272,7 @@ class PolicyOperations(object):
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = self.reset.metadata['url']
+        url = '/policies/{}%3areset'.format(tee)
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -310,7 +310,7 @@ class PolicyOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('str', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -319,4 +319,3 @@ class PolicyOperations(object):
             return client_raw_response
 
         return deserialized
-    reset.metadata = {'url': '/operations/policy/current'}

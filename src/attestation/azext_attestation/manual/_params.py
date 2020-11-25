@@ -57,7 +57,7 @@ def load_arguments(self, _):
                                 'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
                                 'certificates'.format(item))
 
-    for item in ['show', 'set']:
+    for item in ['show', 'set', 'reset']:
         with self.argument_context('attestation policy {}'.format(item)) as c:
             c.argument('tee', arg_type=get_enum_type(TeeKind))
             c.argument('provider_name', provider_name_type, required=False)
