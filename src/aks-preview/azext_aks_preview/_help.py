@@ -8,8 +8,10 @@ import os.path
 
 from knack.help_files import helps
 
-ACS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'acsServicePrincipal.json')
-AKS_SERVICE_PRINCIPAL_CACHE = os.path.join('$HOME', '.azure', 'aksServicePrincipal.json')
+ACS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'acsServicePrincipal.json')
+AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
+    '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
 helps['aks create'] = """
@@ -166,6 +168,7 @@ helps['aks create'] = """
                 ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                   - enable confcom addon, this will enable SGX device plugin and quote helper by default(PREVIEW).
                 open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+                gitops                    - enable GitOps (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -202,6 +205,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -239,6 +245,10 @@ helps['aks create'] = """
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: (PREVIEW) private dns zone mode for private cluster.
+          long-summary: Select between system and none. If not set, defaults to type system. Requires --enable-private-cluster to be used.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -272,6 +282,12 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -415,6 +431,12 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+        - name: --assign-identity
+          type: string
+          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -448,6 +470,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
       - name: Disable Azure Hybrid User Benefits featture for a kubernetes cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-ahub
+      - name: Update the cluster to use system assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
+      - name: Update the cluster to use user assigned managed identity in control plane.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
 """
 
 helps['aks kollect'] = """
@@ -549,6 +575,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -591,6 +620,12 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -688,6 +723,7 @@ long-summary: |-
                                     Learn more at aka.ms/aks/policy.
         ingress-appgw             - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh         - enable Open Service Mesh addon (PREVIEW).
+        gitops                    - Enable GitOps (PREVIEW).
 parameters:
   - name: --addons -a
     type: string

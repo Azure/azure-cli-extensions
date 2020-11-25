@@ -49,6 +49,10 @@ CONST_CONTAINER_NAME_MAX_LENGTH = 63
 CONST_CONFCOM_ADDON_NAME = "ACCSGXDevicePlugin"
 CONST_ACC_SGX_QUOTE_HELPER_ENABLED = "ACCSGXQuoteHelperEnabled"
 
+# private dns zone mode
+CONST_PRIVATE_DNS_ZONE_SYSTEM = "system"
+CONST_PRIVATE_DNS_ZONE_NONE = "none"
+
 ADDONS = {
     'http_application_routing': CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     'monitoring': CONST_MONITORING_ADDON_NAME,
@@ -57,5 +61,6 @@ ADDONS = {
     'kube-dashboard': CONST_KUBE_DASHBOARD_ADDON_NAME,
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
-    "confcom": CONST_CONFCOM_ADDON_NAME
+    "confcom": CONST_CONFCOM_ADDON_NAME,
+    'gitops': 'gitops'
 }

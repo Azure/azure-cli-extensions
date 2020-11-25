@@ -6,6 +6,8 @@
 import os
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
+from .credential_replacer import VpnClientGeneratedURLReplacer
+
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
@@ -447,3 +449,37 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[
                      self.check('length(value)', 5)
                  ])
+
+
+class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            VpnClientGeneratedURLReplacer()
+        ])
+
+    @ResourceGroupPreparer(name_prefix='test_p2s_vpn_client_generate')
+    def test_p2s_vpn_client_generate(self, resource_group):
+        self.kwargs.update({
+            'vwan': 'test-p2s-vwan',
+            'vhub': 'test-p2s-vhub',
+            'vpn_server_config': 'test-p2s-vpn-server-config',
+            'vpn_server_cert': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.cer'),
+            'vpn_server_pem': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.pem'),
+            'p2s_gateway': 'test-p2s-gateway',
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+
+        self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
+                 '--vpn-client-root-certs {vpn_server_cert} '
+                 '--vpn-client-revoked-certs {vpn_server_pem}')
+
+        self.cmd('az network p2s-vpn-gateway create -g {rg} --vhub {vhub} -n {p2s_gateway} '
+                 '--scale-unit 2 '
+                 '--address-space 10.0.2.0/24 11.0.1.0/24 '
+                 '--vpn-server-config {vpn_server_config}')
+
+        out = self.cmd('network p2s-vpn-gateway vpn-client generate -g {rg} -n {p2s_gateway}').get_output_in_json()
+        self.assertIsNotNone(out['profileUrl'])
+        self.assertTrue(out['profileUrl'].endswith('.zip'))

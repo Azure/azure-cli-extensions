@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.3.0
+++++++
+
+* Add support for private link
+* Add support for customer managed key
+
 0.2.0
 +++++
 

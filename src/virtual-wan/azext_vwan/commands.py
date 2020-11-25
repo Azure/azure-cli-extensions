@@ -196,4 +196,7 @@ def load_command_table(self, _):
     with self.command_group('network p2s-vpn-gateway connection', network_util, min_api='2020-04-01', is_preview=True) as g:
         g.command('list', list_network_resource_property(resource, prop))
         g.show_command('show', get_network_resource_property_entry(resource, prop))
+
+    with self.command_group('network p2s-vpn-gateway vpn-client', network_p2s_vpn_gateway_sdk, min_api='2020-05-01') as g:
+        g.command('generate', 'generate_vpn_profile')
     # endregion
