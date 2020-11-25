@@ -97,15 +97,15 @@ helps['monitor data-collection rule create'] = """
     type: command
     short-summary: "Creates or updates a data collection rule."
     parameters:
-      - name: --data-flows
+      - name: --data-flow
         short-summary: "The specification of data flows."
         long-summary: |
-            Usage: --data-flows streams=XX destinations=XX
+            Usage: --data-flow streams=XX destinations=XX
 
             streams: Required. List of streams for this data flow.
             destinations: Required. List of destinations for this data flow.
 
-            Multiple actions can be specified by using more than one --data-flows argument.
+            Multiple actions can be specified by using more than one --data-flow argument.
       - name: --destinations-log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
@@ -172,7 +172,7 @@ will be used for this data and usually what table in Log Analytics the data will
     examples:
       - name: Create or update data collection rule
         text: |-
-               az monitor data-collection rule create --location "eastus" --data-flows destinations="centralWorkspace" \
+               az monitor data-collection rule create --location "eastus" --data-flow destinations="centralWorkspace" \
 streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" --data-sources-performance-counter\
 s name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
 counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \

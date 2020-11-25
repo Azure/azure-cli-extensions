@@ -18,8 +18,7 @@ def load_command_table(self, _):
                             data_collection_data_collection_rule_association,
                             client_factory=cf_data_collection_rule_association) as g:
         g.custom_command('create', 'monitor_data_collection_rule_association_create')
-        g.custom_command('update', 'monitor_data_collection_rule_association_update')
-
+        g.generic_update_command('update', custom_func_name='monitor_data_collection_rule_association_update')
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule
     data_collection_data_collection_rule = CliCommandType(
@@ -29,4 +28,4 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_command('create', 'monitor_data_collection_rule_create')
-        g.custom_command('update', 'monitor_data_collection_rule_update')
+        g.generic_update_command('update', setter_name='create', custom_func_name='monitor_data_collection_rule_update')

@@ -19,7 +19,7 @@ def step_data_collection_rule_create(test, rg, checks=None):
         checks = []
     test.cmd('az monitor data-collection rule create '
              '--location "eastus" '
-             '--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
+             '--data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
              'streams="Microsoft-WindowsEvent" '
              '--data-sources-performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
              ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\Logical'

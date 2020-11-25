@@ -22,6 +22,7 @@ from azext_amcs.action import (
     AddDataSourcesSyslog
 )
 
+
 def load_arguments(self, _):
 
     with self.argument_context('monitor data-collection rule association create') as c:
