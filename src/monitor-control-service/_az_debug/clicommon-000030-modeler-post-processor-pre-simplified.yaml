@@ -1,0 +1,927 @@
+operationGroups:
+  all:
+    - operationGroupName: data_collection_rule_associations
+      cli:
+        cliKey: DataCollectionRuleAssociations
+      operations:
+        - operationName: list_by_resource
+          cli:
+            cliKey: ListByResource
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: list_by_rule
+          cli:
+            cliKey: ListByRule
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: get
+          cli:
+            cliKey: Get
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: create
+          cli:
+            cliKey: Create
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+            - parameterName[0]: body(data_collection_rule_association_proxy_only_resource^object)
+              cli:
+                cliKey: body
+              bodySchema: data_collection_rule_association_proxy_only_resource
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: delete
+          cli:
+            cliKey: Delete
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+    - operationGroupName: data_collection_rules
+      cli:
+        cliKey: DataCollectionRules
+      operations:
+        - operationName: list_by_resource_group
+          cli:
+            cliKey: ListByResourceGroup
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: list_by_subscription
+          cli:
+            cliKey: ListBySubscription
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: get
+          cli:
+            cliKey: Get
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: create
+          cli:
+            cliKey: Create
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+            - parameterName[0]: body(data_collection_rule_resource^object)
+              cli:
+                cliKey: body
+              bodySchema: data_collection_rule_resource
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: update
+          cli:
+            cliKey: Update
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+            - parameterName[0]: body(resource_for_update^object)
+              cli:
+                cliKey: body
+              bodySchema: resource_for_update
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+        - operationName: delete
+          cli:
+            cliKey: Delete
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+schemas:
+  objects:
+    all:
+      - schemaName: data_collection_rule_association_proxy_only_resource_list_result
+        cli:
+          cliKey: DataCollectionRuleAssociationProxyOnlyResourceListResult
+        properties:
+          - propertyName: value(data_collection_rule_association_proxy_only_resource_list_result_value^array)
+            cli:
+              cliKey: value
+          - propertyName: next_link(data_collection_rule_association_proxy_only_resource_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+      - schemaName: data_collection_rule_association_proxy_only_resource
+        cli:
+          cliKey: DataCollectionRuleAssociationProxyOnlyResource
+        properties:
+          - propertyName: id(data_collection_rule_association_proxy_only_resource_id^string)
+            cli:
+              cliKey: id
+            readOnly: true
+          - propertyName: name(data_collection_rule_association_proxy_only_resource_name^string)
+            cli:
+              cliKey: name
+            readOnly: true
+          - propertyName: type(data_collection_rule_association_proxy_only_resource_type^string)
+            cli:
+              cliKey: type
+            readOnly: true
+          - propertyName: etag(data_collection_rule_association_proxy_only_resource_etag^string)
+            cli:
+              cliKey: etag
+            readOnly: true
+          - propertyName: description(data_collection_rule_association_description^string)
+            cli:
+              cliKey: description
+          - propertyName: data_collection_rule_id(data_collection_rule_association_data_collection_rule_id^string)
+            cli:
+              cliKey: dataCollectionRuleId
+          - propertyName: provisioning_state(known_data_collection_rule_association_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+            readOnly: true
+      - schemaName: data_collection_rule_association
+        cli:
+          cliKey: DataCollectionRuleAssociation
+        properties:
+          - propertyName: description(data_collection_rule_association_description^string)
+            cli:
+              cliKey: description
+          - propertyName: data_collection_rule_id(data_collection_rule_association_data_collection_rule_id^string)
+            cli:
+              cliKey: dataCollectionRuleId
+          - propertyName: provisioning_state(known_data_collection_rule_association_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+            readOnly: true
+      - schemaName: error_response
+        cli:
+          cliKey: ErrorResponse
+        properties:
+          - propertyName: error(error_details^object)
+            cli:
+              cliKey: error
+            readOnly: true
+      - schemaName: error_details
+        cli:
+          cliKey: ErrorDetails
+        properties:
+          - propertyName: code(error_details_code^string)
+            cli:
+              cliKey: code
+            readOnly: true
+          - propertyName: message(error_details_message^string)
+            cli:
+              cliKey: message
+            readOnly: true
+          - propertyName: target(error_details_target^string)
+            cli:
+              cliKey: target
+            readOnly: true
+          - propertyName: details(error_details^array)
+            cli:
+              cliKey: details
+            readOnly: true
+          - propertyName: additional_info(error_details_additional_info^array)
+            cli:
+              cliKey: additionalInfo
+            readOnly: true
+      - schemaName: error_additional_info
+        cli:
+          cliKey: ErrorAdditionalInfo
+        properties:
+          - propertyName: type(error_additional_info_type^string)
+            cli:
+              cliKey: type
+            readOnly: true
+          - propertyName: info(any^any)
+            cli:
+              cliKey: info
+            readOnly: true
+      - schemaName: data_collection_rule_resource_list_result
+        cli:
+          cliKey: DataCollectionRuleResourceListResult
+        properties:
+          - propertyName: value(data_collection_rule_resource_list_result_value^array)
+            cli:
+              cliKey: value
+          - propertyName: next_link(data_collection_rule_resource_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+      - schemaName: data_collection_rule_resource
+        cli:
+          cliKey: DataCollectionRuleResource
+        properties:
+          - propertyName: location(data_collection_rule_resource_location^string)
+            cli:
+              cliKey: location
+          - propertyName: tags(data_collection_rule_resource_tags^dictionary)
+            cli:
+              cliKey: tags
+          - propertyName: id(data_collection_rule_resource_id^string)
+            cli:
+              cliKey: id
+            readOnly: true
+          - propertyName: name(data_collection_rule_resource_name^string)
+            cli:
+              cliKey: name
+            readOnly: true
+          - propertyName: type(data_collection_rule_resource_type^string)
+            cli:
+              cliKey: type
+            readOnly: true
+          - propertyName: etag(data_collection_rule_resource_etag^string)
+            cli:
+              cliKey: etag
+            readOnly: true
+          - propertyName: description(data_collection_rule_description^string)
+            cli:
+              cliKey: description
+          - propertyName: data_sources(data_sources_spec^object)
+            cli:
+              cliKey: dataSources
+          - propertyName: destinations(destinations_spec^object)
+            cli:
+              cliKey: destinations
+          - propertyName: data_flows(data_collection_rule_data_flows^array)
+            cli:
+              cliKey: dataFlows
+          - propertyName: provisioning_state(known_data_collection_rule_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+            readOnly: true
+      - schemaName: data_collection_rule
+        cli:
+          cliKey: DataCollectionRule
+        properties:
+          - propertyName: description(data_collection_rule_description^string)
+            cli:
+              cliKey: description
+          - propertyName: data_sources(data_sources_spec^object)
+            cli:
+              cliKey: dataSources
+          - propertyName: destinations(destinations_spec^object)
+            cli:
+              cliKey: destinations
+          - propertyName: data_flows(data_collection_rule_data_flows^array)
+            cli:
+              cliKey: dataFlows
+          - propertyName: provisioning_state(known_data_collection_rule_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+            readOnly: true
+      - schemaName: data_sources_spec
+        cli:
+          cliKey: DataSourcesSpec
+        properties:
+          - propertyName: performance_counters(data_sources_spec_performance_counters^array)
+            cli:
+              cliKey: performanceCounters
+          - propertyName: windows_event_logs(data_sources_spec_windows_event_logs^array)
+            cli:
+              cliKey: windowsEventLogs
+          - propertyName: syslog(data_sources_spec_syslog^array)
+            cli:
+              cliKey: syslog
+          - propertyName: extensions(data_sources_spec_extensions^array)
+            cli:
+              cliKey: extensions
+      - schemaName: perf_counter_data_source
+        cli:
+          cliKey: PerfCounterDataSource
+        properties:
+          - propertyName: streams(perf_counter_data_source_streams^array)
+            cli:
+              cliKey: streams
+          - propertyName: scheduled_transfer_period(known_perf_counter_data_source_scheduled_transfer_period^choice)
+            cli:
+              cliKey: scheduledTransferPeriod
+          - propertyName: sampling_frequency_in_seconds(integer^integer)
+            cli:
+              cliKey: samplingFrequencyInSeconds
+          - propertyName: counter_specifiers(perf_counter_data_source_counter_specifiers^array)
+            cli:
+              cliKey: counterSpecifiers
+          - propertyName: name(perf_counter_data_source_name^string)
+            cli:
+              cliKey: name
+      - schemaName: windows_event_log_data_source
+        cli:
+          cliKey: WindowsEventLogDataSource
+        properties:
+          - propertyName: streams(windows_event_log_data_source_streams^array)
+            cli:
+              cliKey: streams
+          - propertyName: scheduled_transfer_period(known_windows_event_log_data_source_scheduled_transfer_period^choice)
+            cli:
+              cliKey: scheduledTransferPeriod
+          - propertyName: x_path_queries(windows_event_log_data_source_x_path_queries^array)
+            cli:
+              cliKey: xPathQueries
+          - propertyName: name(windows_event_log_data_source_name^string)
+            cli:
+              cliKey: name
+      - schemaName: syslog_data_source
+        cli:
+          cliKey: SyslogDataSource
+        properties:
+          - propertyName: streams(syslog_data_source_streams^array)
+            cli:
+              cliKey: streams
+          - propertyName: facility_names(syslog_data_source_facility_names^array)
+            cli:
+              cliKey: facilityNames
+          - propertyName: log_levels(syslog_data_source_log_levels^array)
+            cli:
+              cliKey: logLevels
+          - propertyName: name(syslog_data_source_name^string)
+            cli:
+              cliKey: name
+      - schemaName: extension_data_source
+        cli:
+          cliKey: ExtensionDataSource
+        properties:
+          - propertyName: streams(extension_data_source_streams^array)
+            cli:
+              cliKey: streams
+          - propertyName: extension_name(extension_data_source_extension_name^string)
+            cli:
+              cliKey: extensionName
+          - propertyName: extension_settings(any^any)
+            cli:
+              cliKey: extensionSettings
+          - propertyName: name(extension_data_source_name^string)
+            cli:
+              cliKey: name
+      - schemaName: destinations_spec
+        cli:
+          cliKey: DestinationsSpec
+        properties:
+          - propertyName: log_analytics(destinations_spec_log_analytics^array)
+            cli:
+              cliKey: logAnalytics
+          - propertyName: azure_monitor_metrics(azure_monitor_metrics_destination^object)
+            cli:
+              cliKey: azureMonitorMetrics
+      - schemaName: log_analytics_destination
+        cli:
+          cliKey: LogAnalyticsDestination
+        properties:
+          - propertyName: workspace_resource_id(log_analytics_destination_workspace_resource_id^string)
+            cli:
+              cliKey: workspaceResourceId
+          - propertyName: name(log_analytics_destination_name^string)
+            cli:
+              cliKey: name
+      - schemaName: azure_monitor_metrics_destination
+        cli:
+          cliKey: AzureMonitorMetricsDestination
+        properties:
+          - propertyName: name(azure_monitor_metrics_destination_name^string)
+            cli:
+              cliKey: name
+      - schemaName: data_flow
+        cli:
+          cliKey: DataFlow
+        properties:
+          - propertyName: streams(data_flow_streams^array)
+            cli:
+              cliKey: streams
+          - propertyName: destinations(data_flow_destinations^array)
+            cli:
+              cliKey: destinations
+      - schemaName: error_responseAutoGenerated
+        cli:
+          cliKey: ErrorResponse
+        properties:
+          - propertyName: error(error_detailsAutoGenerated^object)
+            cli:
+              cliKey: error
+            readOnly: true
+      - schemaName: error_detailsAutoGenerated
+        cli:
+          cliKey: ErrorDetails
+        properties:
+          - propertyName: code(error_details_code^string)
+            cli:
+              cliKey: code
+            readOnly: true
+          - propertyName: message(error_details_message^string)
+            cli:
+              cliKey: message
+            readOnly: true
+          - propertyName: target(error_details_target^string)
+            cli:
+              cliKey: target
+            readOnly: true
+          - propertyName: details(error_details^array)
+            cli:
+              cliKey: details
+            readOnly: true
+          - propertyName: additional_info(error_details_additional_info^array)
+            cli:
+              cliKey: additionalInfo
+            readOnly: true
+      - schemaName: resource_for_update
+        cli:
+          cliKey: ResourceForUpdate
+        properties:
+          - propertyName: tags(resource_for_update_tags^dictionary)
+            cli:
+              cliKey: tags
+      - schemaName: data_collection_rule_association_proxy_only_resource_properties
+        cli:
+          cliKey: DataCollectionRuleAssociationProxyOnlyResource-properties
+      - schemaName: error_response_error
+        cli:
+          cliKey: ErrorResponse-error
+      - schemaName: destinations_spec_azure_monitor_metrics
+        cli:
+          cliKey: DestinationsSpec-azureMonitorMetrics
+      - schemaName: data_collection_rule_data_sources
+        cli:
+          cliKey: DataCollectionRule-dataSources
+      - schemaName: data_collection_rule_destinations
+        cli:
+          cliKey: DataCollectionRule-destinations
+      - schemaName: data_collection_rule_resource_properties
+        cli:
+          cliKey: DataCollectionRuleResource-properties
+      - schemaName: error_response_errorAutoGenerated
+        cli:
+          cliKey: ErrorResponse-error
+  choices:
+    all:
+      - choiceName: known_data_collection_rule_association_provisioning_state
+        cli:
+          cliKey: KnownDataCollectionRuleAssociationProvisioningState
+        choiceValues:
+          - choiceValue: creating
+            cli:
+              cliKey: Creating
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+          - choiceValue: deleting
+            cli:
+              cliKey: Deleting
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+          - choiceValue: failed
+            cli:
+              cliKey: Failed
+      - choiceName: known_perf_counter_data_source_streams
+        cli:
+          cliKey: KnownPerfCounterDataSourceStreams
+        choiceValues:
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+      - choiceName: known_perf_counter_data_source_scheduled_transfer_period
+        cli:
+          cliKey: KnownPerfCounterDataSourceScheduledTransferPeriod
+        choiceValues:
+          - choiceValue: PT1_m
+            cli:
+              cliKey: PT1M
+          - choiceValue: PT5_m
+            cli:
+              cliKey: PT5M
+          - choiceValue: PT15_m
+            cli:
+              cliKey: PT15M
+          - choiceValue: PT30_m
+            cli:
+              cliKey: PT30M
+          - choiceValue: PT60_m
+            cli:
+              cliKey: PT60M
+      - choiceName: known_windows_event_log_data_source_streams
+        cli:
+          cliKey: KnownWindowsEventLogDataSourceStreams
+        choiceValues:
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+      - choiceName: known_windows_event_log_data_source_scheduled_transfer_period
+        cli:
+          cliKey: KnownWindowsEventLogDataSourceScheduledTransferPeriod
+        choiceValues:
+          - choiceValue: PT1_m
+            cli:
+              cliKey: PT1M
+          - choiceValue: PT5_m
+            cli:
+              cliKey: PT5M
+          - choiceValue: PT15_m
+            cli:
+              cliKey: PT15M
+          - choiceValue: PT30_m
+            cli:
+              cliKey: PT30M
+          - choiceValue: PT60_m
+            cli:
+              cliKey: PT60M
+      - choiceName: known_syslog_data_source_streams
+        cli:
+          cliKey: KnownSyslogDataSourceStreams
+        choiceValues:
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+      - choiceName: known_syslog_data_source_facility_names
+        cli:
+          cliKey: KnownSyslogDataSourceFacilityNames
+        choiceValues:
+          - choiceValue: auth
+            cli:
+              cliKey: auth
+          - choiceValue: authpriv
+            cli:
+              cliKey: authpriv
+          - choiceValue: cron
+            cli:
+              cliKey: cron
+          - choiceValue: daemon
+            cli:
+              cliKey: daemon
+          - choiceValue: kern
+            cli:
+              cliKey: kern
+          - choiceValue: lpr
+            cli:
+              cliKey: lpr
+          - choiceValue: mail
+            cli:
+              cliKey: mail
+          - choiceValue: mark
+            cli:
+              cliKey: mark
+          - choiceValue: news
+            cli:
+              cliKey: news
+          - choiceValue: syslog
+            cli:
+              cliKey: syslog
+          - choiceValue: user
+            cli:
+              cliKey: user
+          - choiceValue: UUCP
+            cli:
+              cliKey: UUCP
+          - choiceValue: local0
+            cli:
+              cliKey: local0
+          - choiceValue: local1
+            cli:
+              cliKey: local1
+          - choiceValue: local2
+            cli:
+              cliKey: local2
+          - choiceValue: local3
+            cli:
+              cliKey: local3
+          - choiceValue: local4
+            cli:
+              cliKey: local4
+          - choiceValue: local5
+            cli:
+              cliKey: local5
+          - choiceValue: local6
+            cli:
+              cliKey: local6
+          - choiceValue: local7
+            cli:
+              cliKey: local7
+      - choiceName: known_syslog_data_source_log_levels
+        cli:
+          cliKey: KnownSyslogDataSourceLogLevels
+        choiceValues:
+          - choiceValue: debug
+            cli:
+              cliKey: Debug
+          - choiceValue: info
+            cli:
+              cliKey: Info
+          - choiceValue: notice
+            cli:
+              cliKey: Notice
+          - choiceValue: warning
+            cli:
+              cliKey: Warning
+          - choiceValue: error
+            cli:
+              cliKey: Error
+          - choiceValue: critical
+            cli:
+              cliKey: Critical
+          - choiceValue: alert
+            cli:
+              cliKey: Alert
+          - choiceValue: emergency
+            cli:
+              cliKey: Emergency
+      - choiceName: known_extension_data_source_streams
+        cli:
+          cliKey: KnownExtensionDataSourceStreams
+        choiceValues:
+          - choiceValue: microsoft_anti_malware_status
+            cli:
+              cliKey: Microsoft-AntiMalwareStatus
+          - choiceValue: microsoft_auditd
+            cli:
+              cliKey: Microsoft-Auditd
+          - choiceValue: microsoft_ciscoasa
+            cli:
+              cliKey: Microsoft-CISCOASA
+          - choiceValue: microsoft_common_security_log
+            cli:
+              cliKey: Microsoft-CommonSecurityLog
+          - choiceValue: microsoft_computer_group
+            cli:
+              cliKey: Microsoft-ComputerGroup
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+          - choiceValue: microsoft_firewall_log
+            cli:
+              cliKey: Microsoft-FirewallLog
+          - choiceValue: microsoft_health_state_change
+            cli:
+              cliKey: Microsoft-HealthStateChange
+          - choiceValue: microsoft_heartbeat
+            cli:
+              cliKey: Microsoft-Heartbeat
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+          - choiceValue: microsoft_operation_log
+            cli:
+              cliKey: Microsoft-OperationLog
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+          - choiceValue: microsoft_process_investigator
+            cli:
+              cliKey: Microsoft-ProcessInvestigator
+          - choiceValue: microsoft_protection_status
+            cli:
+              cliKey: Microsoft-ProtectionStatus
+          - choiceValue: microsoft_rome_detection_event
+            cli:
+              cliKey: Microsoft-RomeDetectionEvent
+          - choiceValue: microsoft_security_baseline
+            cli:
+              cliKey: Microsoft-SecurityBaseline
+          - choiceValue: microsoft_security_baseline_summary
+            cli:
+              cliKey: Microsoft-SecurityBaselineSummary
+          - choiceValue: microsoft_security_event
+            cli:
+              cliKey: Microsoft-SecurityEvent
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+      - choiceName: known_data_flow_streams
+        cli:
+          cliKey: KnownDataFlowStreams
+        choiceValues:
+          - choiceValue: microsoft_anti_malware_status
+            cli:
+              cliKey: Microsoft-AntiMalwareStatus
+          - choiceValue: microsoft_auditd
+            cli:
+              cliKey: Microsoft-Auditd
+          - choiceValue: microsoft_ciscoasa
+            cli:
+              cliKey: Microsoft-CISCOASA
+          - choiceValue: microsoft_common_security_log
+            cli:
+              cliKey: Microsoft-CommonSecurityLog
+          - choiceValue: microsoft_computer_group
+            cli:
+              cliKey: Microsoft-ComputerGroup
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+          - choiceValue: microsoft_firewall_log
+            cli:
+              cliKey: Microsoft-FirewallLog
+          - choiceValue: microsoft_health_state_change
+            cli:
+              cliKey: Microsoft-HealthStateChange
+          - choiceValue: microsoft_heartbeat
+            cli:
+              cliKey: Microsoft-Heartbeat
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+          - choiceValue: microsoft_operation_log
+            cli:
+              cliKey: Microsoft-OperationLog
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+          - choiceValue: microsoft_process_investigator
+            cli:
+              cliKey: Microsoft-ProcessInvestigator
+          - choiceValue: microsoft_protection_status
+            cli:
+              cliKey: Microsoft-ProtectionStatus
+          - choiceValue: microsoft_rome_detection_event
+            cli:
+              cliKey: Microsoft-RomeDetectionEvent
+          - choiceValue: microsoft_security_baseline
+            cli:
+              cliKey: Microsoft-SecurityBaseline
+          - choiceValue: microsoft_security_baseline_summary
+            cli:
+              cliKey: Microsoft-SecurityBaselineSummary
+          - choiceValue: microsoft_security_event
+            cli:
+              cliKey: Microsoft-SecurityEvent
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+      - choiceName: known_data_collection_rule_provisioning_state
+        cli:
+          cliKey: KnownDataCollectionRuleProvisioningState
+        choiceValues:
+          - choiceValue: creating
+            cli:
+              cliKey: Creating
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+          - choiceValue: deleting
+            cli:
+              cliKey: Deleting
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+          - choiceValue: failed
+            cli:
+              cliKey: Failed

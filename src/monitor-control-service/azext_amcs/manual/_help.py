@@ -1,0 +1,206 @@
+# coding=utf-8
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+from knack.help_files import helps
+
+
+helps['monitor data-collection rule association'] = """
+    type: group
+    short-summary: Manage data collection rule association with data collection
+"""
+
+helps['monitor data-collection rule association list'] = """
+    type: command
+    short-summary: "Lists associations for the specified data collection rule. And Lists associations for the \
+specified resource."
+    examples:
+      - name: List associations for specified data collection rule
+        text: |-
+               az monitor data-collection rule association list --rule-name "myCollectionRule" --resource-group \
+"myResourceGroup"
+      - name: List associations for specified resource
+        text: |-
+               az monitor data-collection rule association list --resource "subscriptions/703362b3-f278-4e4b-9179-c76ea\
+f41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+"""
+
+helps['monitor data-collection rule association show'] = """
+    type: command
+    short-summary: "Returns the specified association."
+    examples:
+      - name: Get association
+        text: |-
+               az monitor data-collection rule association show --name "myAssociation" --resource \
+"subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualM\
+achines/myVm"
+"""
+
+helps['monitor data-collection rule association create'] = """
+    type: command
+    short-summary: "Creates or updates an association."
+    examples:
+      - name: Create or update association
+        text: |-
+               az monitor data-collection rule association create --name "myAssociation" --rule-id \
+"/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Insights/dataCo\
+llectionRules/myCollectionRule" --resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourc\
+eGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+"""
+
+helps['monitor data-collection rule association delete'] = """
+    type: command
+    short-summary: "Deletes an association."
+    examples:
+      - name: Delete association
+        text: |-
+               az monitor data-collection rule association delete --name "myAssociation" --resource \
+"subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualM\
+achines/myVm"
+"""
+
+helps['monitor data-collection rule'] = """
+    type: group
+    short-summary: Manage data collection rule with data collection
+"""
+
+helps['monitor data-collection rule list'] = """
+    type: command
+    short-summary: "Lists all data collection rules in the specified resource group. And Lists all data collection \
+rules in the specified subscription."
+    examples:
+      - name: List data collection rules by resource group
+        text: |-
+               az monitor data-collection rule list --resource-group "myResourceGroup"
+      - name: List data collection rules by subscription
+        text: |-
+               az monitor data-collection rule list
+"""
+
+helps['monitor data-collection rule show'] = """
+    type: command
+    short-summary: "Returns the specified data collection rule."
+    examples:
+      - name: Get data collection rule
+        text: |-
+               az monitor data-collection rule show --name "myCollectionRule" --resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule create'] = """
+    type: command
+    short-summary: "Creates or updates a data collection rule."
+    parameters:
+      - name: --data-flows
+        short-summary: "The specification of data flows."
+        long-summary: |
+            Usage: --data-flows streams=XX destinations=XX
+
+            streams: Required. List of streams for this data flow.
+            destinations: Required. List of destinations for this data flow.
+
+            Multiple actions can be specified by using more than one --data-flows argument.
+      - name: --destinations-log-analytics
+        short-summary: "List of Log Analytics destinations."
+        long-summary: |
+            Usage: --destinations-log-analytics workspace-resource-id=XX name=XX
+
+            workspace-resource-id: Required. The resource ID of the Log Analytics workspace.
+            name: Required. A friendly name for the destination.  This name should be unique across all destinations \
+(regardless of type) within the data collection rule.
+
+            Multiple actions can be specified by using more than one --destinations-log-analytics argument.
+      - name: --destinations-azure-monitor-metrics
+        short-summary: "Azure Monitor Metrics destination."
+        long-summary: |
+            Usage: --destinations-azure-monitor-metrics name=XX
+
+            name: Required. A friendly name for the destination.  This name should be unique across all destinations \
+(regardless of type) within the data collection rule.
+      - name: --performance-counter
+        short-summary: "The list of performance counter data source configurations."
+        long-summary: |
+            Usage: --performance-counter streams=XX scheduled-transfer-period=XX sampling-frequency-in-seconds=XX \
+counter-specifiers=XX name=XX
+
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+will be used for this data and usually what table in Log Analytics the data will be sent to.
+            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+to the nearest minute.
+            sampling-frequency-in-seconds: Required. The number of seconds between consecutive counter measurements \
+(samples).
+            counter-specifiers: Required. A list of specifier names of the performance counters you want to collect. \
+Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
+command 'typeperf'.
+            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
+(regardless of type) within the data collection rule.
+
+            Multiple actions can be specified by using more than one --performance-counter argument.
+      - name: --windows-event-log
+        short-summary: "The list of Windows Event Log data source configurations."
+        long-summary: |
+            Usage: --windows-event-log streams=XX scheduled-transfer-period=XX x-path-queries=XX name=XX
+
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+will be used for this data and usually what table in Log Analytics the data will be sent to.
+            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+to the nearest minute.
+            x-path-queries: Required. A list of Windows Event Log queries in XPATH format.
+            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
+(regardless of type) within the data collection rule.
+
+            Multiple actions can be specified by using more than one --windows-event-log argument.
+      - name: --syslog
+        short-summary: "The list of Syslog data source configurations."
+        long-summary: |
+            Usage: --syslog streams=XX facility-names=XX log-levels=XX name=XX
+
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+will be used for this data and usually what table in Log Analytics the data will be sent to.
+            facility-names: Required. The list of facility names.
+            log-levels: The log levels to collect.
+            name: Required. A friendly name for the data source.  This name should be unique across all data sources \
+(regardless of type) within the data collection rule.
+
+            Multiple actions can be specified by using more than one --syslog argument.
+    examples:
+      - name: Create or update data collection rule
+        text: |-
+               az monitor data-collection rule create --location "eastus" --data-flows destinations="centralWorkspace" \
+streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" --performance-counter \
+name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
+counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
+counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency-in-seconds=15 \
+scheduled-transfer-period="PT1M" streams="Microsoft-Perf" --performance-counter name="appTeamExtraCounters" \
+counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency-in-seconds=30 \
+scheduled-transfer-period="PT5M" streams="Microsoft-Perf" --syslog name="cronSyslog" facility-names="cron" \
+log-levels="Debug" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" --syslog name="syslogBase" \
+facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
+--windows-event-log name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
+x-path-queries="Security!" --windows-event-log name="appTeam1AppEvents" scheduled-transfer-period="PT5M" \
+streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
+x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" --destinations-log-analytics \
+name="centralWorkspace" workspace-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myRes\
+ourceGroup/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" --name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule update'] = """
+    type: command
+    short-summary: "Updates part of a data collection rule."
+    examples:
+      - name: Update data collection rule
+        text: |-
+               az monitor data-collection rule update --tags tag1="A" tag2="B" tag3="C" --name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule delete'] = """
+    type: command
+    short-summary: "Deletes a data collection rule."
+    examples:
+      - name: Delete data collection rule
+        text: |-
+               az monitor data-collection rule delete --name "myCollectionRule" --resource-group "myResourceGroup"
+"""

@@ -1,0 +1,1501 @@
+operationGroups:
+  all:
+    - operationGroupName: data_collection_rule_associations
+      cli:
+        cliKey: DataCollectionRuleAssociations
+        cliM4Path: operationGroups['DataCollectionRuleAssociations']
+      operations:
+        - operationName: list_by_resource
+          cli:
+            cliKey: ListByResource
+            cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByResource']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByResource']$$parameters['resourceUri']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByResource']$$requests[0]$$parameters['accept']
+        - operationName: list_by_rule
+          cli:
+            cliKey: ListByRule
+            cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByRule']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByRule']$$parameters['resourceGroupName']
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByRule']$$parameters['dataCollectionRuleName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['ListByRule']$$requests[0]$$parameters['accept']
+        - operationName: get
+          cli:
+            cliKey: Get
+            cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Get']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Get']$$parameters['resourceUri']
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Get']$$parameters['associationName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Get']$$requests[0]$$parameters['accept']
+        - operationName: create
+          cli:
+            cliKey: Create
+            cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$parameters['resourceUri']
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$parameters['associationName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: body(data_collection_rule_association_proxy_only_resource^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: body
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$requests[0]$$parameters['body']
+              bodySchema: data_collection_rule_association_proxy_only_resource
+            - parameterName[0]: description(data_collection_rule_association_description^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['description']
+                cliKey: description
+            - parameterName[0]: data_collection_rule_id(data_collection_rule_association_data_collection_rule_id^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['dataCollectionRuleId']
+                cliKey: dataCollectionRuleId
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Create']$$requests[0]$$parameters['accept']
+        - operationName: delete
+          cli:
+            cliKey: Delete
+            cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Delete']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: resource_uri(string^string)
+              cli:
+                cliKey: resourceUri
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Delete']$$parameters['resourceUri']
+            - parameterName: association_name(string^string)
+              cli:
+                cliKey: associationName
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Delete']$$parameters['associationName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRuleAssociations']$$operations['Delete']$$requests[0]$$parameters['accept']
+    - operationGroupName: data_collection_rules
+      cli:
+        cliKey: DataCollectionRules
+        cliM4Path: operationGroups['DataCollectionRules']
+      operations:
+        - operationName: list_by_resource_group
+          cli:
+            cliKey: ListByResourceGroup
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['ListByResourceGroup']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['ListByResourceGroup']$$parameters['resourceGroupName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['ListByResourceGroup']$$requests[0]$$parameters['accept']
+        - operationName: list_by_subscription
+          cli:
+            cliKey: ListBySubscription
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['ListBySubscription']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['ListBySubscription']$$requests[0]$$parameters['accept']
+        - operationName: get
+          cli:
+            cliKey: Get
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['Get']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Get']$$parameters['resourceGroupName']
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Get']$$parameters['dataCollectionRuleName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Get']$$requests[0]$$parameters['accept']
+        - operationName: create
+          cli:
+            cliKey: Create
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']$$parameters['resourceGroupName']
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']$$parameters['dataCollectionRuleName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: body(data_collection_rule_resource^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: body
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+              bodySchema: data_collection_rule_resource
+            - parameterName[0]: location(data_collection_rule_resource_location^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['location']
+                cliKey: location
+            - parameterName[0]: tags(data_collection_rule_resource_tags^dictionary)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['tags']
+                cliKey: tags
+            - parameterName[0]: description(data_collection_rule_description^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['description']
+                cliKey: description
+            - parameterName[0]: data_flows(data_collection_rule_data_flows^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['dataFlows']
+                cliKey: dataFlows
+            - parameterName[0]: log_analytics(destinations_spec_log_analytics^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['destinations']
+                  - schemas$$objects['DestinationsSpec']$$properties['logAnalytics']
+                cliKey: logAnalytics
+            - parameterName[0]: azure_monitor_metrics(azure_monitor_metrics_destination^object)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['destinations']
+                  - schemas$$objects['DestinationsSpec']$$properties['azureMonitorMetrics']
+                cliKey: azureMonitorMetrics
+            - parameterName[0]: performance_counters(data_sources_spec_performance_counters^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                  - schemas$$objects['DataSourcesSpec']$$properties['performanceCounters']
+                cliKey: performanceCounters
+            - parameterName[0]: windows_event_logs(data_sources_spec_windows_event_logs^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                  - schemas$$objects['DataSourcesSpec']$$properties['windowsEventLogs']
+                cliKey: windowsEventLogs
+            - parameterName[0]: syslog(data_sources_spec_syslog^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                  - schemas$$objects['DataSourcesSpec']$$properties['syslog']
+                cliKey: syslog
+            - parameterName[0]: extensions(data_sources_spec_extensions^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['body']
+                  - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                  - schemas$$objects['DataSourcesSpec']$$properties['extensions']
+                cliKey: extensions
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Create']$$requests[0]$$parameters['accept']
+        - operationName: update
+          cli:
+            cliKey: Update
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']$$parameters['resourceGroupName']
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']$$parameters['dataCollectionRuleName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: body(resource_for_update^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: body
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']$$requests[0]$$parameters['body']
+              bodySchema: resource_for_update
+            - parameterName[0]: tags(resource_for_update_tags^dictionary)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DataCollectionRules']$$operations['Update']$$requests[0]$$parameters['body']
+                  - schemas$$objects['ResourceForUpdate']$$properties['tags']
+                cliKey: tags
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Update']$$requests[0]$$parameters['accept']
+        - operationName: delete
+          cli:
+            cliKey: Delete
+            cliM4Path: operationGroups['DataCollectionRules']$$operations['Delete']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Delete']$$parameters['resourceGroupName']
+            - parameterName: data_collection_rule_name(string^string)
+              cli:
+                cliKey: dataCollectionRuleName
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Delete']$$parameters['dataCollectionRuleName']
+            - parameterName: api_version(api_version2019_11_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DataCollectionRules']$$operations['Delete']$$requests[0]$$parameters['accept']
+schemas:
+  objects:
+    all:
+      - schemaName: data_collection_rule_association_proxy_only_resource_list_result
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRuleAssociationProxyOnlyResourceListResult
+          cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResourceListResult']
+        properties:
+          - propertyName: value(data_collection_rule_association_proxy_only_resource_list_result_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResourceListResult']$$properties['value']
+          - propertyName: next_link(data_collection_rule_association_proxy_only_resource_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResourceListResult']$$properties['nextLink']
+      - schemaName: data_collection_rule_association_proxy_only_resource
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: DataCollectionRuleAssociationProxyOnlyResource
+          cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']
+        properties:
+          - propertyName: id(data_collection_rule_association_proxy_only_resource_id^string)
+            cli:
+              cliKey: id
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['id']
+            readOnly: true
+          - propertyName: name(data_collection_rule_association_proxy_only_resource_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['name']
+            readOnly: true
+          - propertyName: type(data_collection_rule_association_proxy_only_resource_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['type']
+            readOnly: true
+          - propertyName: etag(data_collection_rule_association_proxy_only_resource_etag^string)
+            cli:
+              cliKey: etag
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['etag']
+            readOnly: true
+          - propertyName: description(data_collection_rule_association_description^string)
+            cli:
+              cliKey: description
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['description']
+          - propertyName: data_collection_rule_id(data_collection_rule_association_data_collection_rule_id^string)
+            cli:
+              cliKey: dataCollectionRuleId
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['dataCollectionRuleId']
+          - propertyName: provisioning_state(known_data_collection_rule_association_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource']$$properties['provisioningState']
+            readOnly: true
+      - schemaName: data_collection_rule_association
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: DataCollectionRuleAssociation
+          cliM4Path: schemas$$objects['DataCollectionRuleAssociation']
+        properties:
+          - propertyName: description(data_collection_rule_association_description^string)
+            cli:
+              cliKey: description
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociation']$$properties['description']
+          - propertyName: data_collection_rule_id(data_collection_rule_association_data_collection_rule_id^string)
+            cli:
+              cliKey: dataCollectionRuleId
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociation']$$properties['dataCollectionRuleId']
+          - propertyName: provisioning_state(known_data_collection_rule_association_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['DataCollectionRuleAssociation']$$properties['provisioningState']
+            readOnly: true
+      - schemaName: error_response
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorResponse
+          cliM4Path: schemas$$objects['ErrorResponse']
+        properties:
+          - propertyName: error(error_details^object)
+            cli:
+              cliKey: error
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['error']
+            readOnly: true
+      - schemaName: error_details
+        cli:
+          cli-complexity: object_complex
+          cli-in-circle: true
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorDetails
+          cliM4Path: schemas$$objects['ErrorDetails']
+        properties:
+          - propertyName: code(error_details_code^string)
+            cli:
+              cliKey: code
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['code']
+            readOnly: true
+          - propertyName: message(error_details_message^string)
+            cli:
+              cliKey: message
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['message']
+            readOnly: true
+          - propertyName: target(error_details_target^string)
+            cli:
+              cliKey: target
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['target']
+            readOnly: true
+          - propertyName: details(error_details^array)
+            cli:
+              cliKey: details
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['details']
+            readOnly: true
+          - propertyName: additional_info(error_details_additional_info^array)
+            cli:
+              cliKey: additionalInfo
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['additionalInfo']
+            readOnly: true
+      - schemaName: error_additional_info
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorAdditionalInfo
+          cliM4Path: schemas$$objects['ErrorAdditionalInfo']
+        properties:
+          - propertyName: type(error_additional_info_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['ErrorAdditionalInfo']$$properties['type']
+            readOnly: true
+          - propertyName: info(any^any)
+            cli:
+              cliKey: info
+              cliM4Path: schemas$$objects['ErrorAdditionalInfo']$$properties['info']
+            readOnly: true
+      - schemaName: data_collection_rule_resource_list_result
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRuleResourceListResult
+          cliM4Path: schemas$$objects['DataCollectionRuleResourceListResult']
+        properties:
+          - propertyName: value(data_collection_rule_resource_list_result_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['DataCollectionRuleResourceListResult']$$properties['value']
+          - propertyName: next_link(data_collection_rule_resource_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['DataCollectionRuleResourceListResult']$$properties['nextLink']
+      - schemaName: data_collection_rule_resource
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRuleResource
+          cliM4Path: schemas$$objects['DataCollectionRuleResource']
+        properties:
+          - propertyName: location(data_collection_rule_resource_location^string)
+            cli:
+              cliKey: location
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['location']
+          - propertyName: tags(data_collection_rule_resource_tags^dictionary)
+            cli:
+              cliKey: tags
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['tags']
+          - propertyName: id(data_collection_rule_resource_id^string)
+            cli:
+              cliKey: id
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['id']
+            readOnly: true
+          - propertyName: name(data_collection_rule_resource_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['name']
+            readOnly: true
+          - propertyName: type(data_collection_rule_resource_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['type']
+            readOnly: true
+          - propertyName: etag(data_collection_rule_resource_etag^string)
+            cli:
+              cliKey: etag
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['etag']
+            readOnly: true
+          - propertyName: description(data_collection_rule_description^string)
+            cli:
+              cliKey: description
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['description']
+          - propertyName: data_flows(data_collection_rule_data_flows^array)
+            cli:
+              cliKey: dataFlows
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['dataFlows']
+          - propertyName: provisioning_state(known_data_collection_rule_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['DataCollectionRuleResource']$$properties['provisioningState']
+            readOnly: true
+          - propertyName: log_analytics(destinations_spec_log_analytics^array)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['destinations']
+                - schemas$$objects['DestinationsSpec']$$properties['logAnalytics']
+              cliKey: logAnalytics
+          - propertyName: azure_monitor_metrics(azure_monitor_metrics_destination^object)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['destinations']
+                - schemas$$objects['DestinationsSpec']$$properties['azureMonitorMetrics']
+              cliKey: azureMonitorMetrics
+          - propertyName: performance_counters(data_sources_spec_performance_counters^array)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                - schemas$$objects['DataSourcesSpec']$$properties['performanceCounters']
+              cliKey: performanceCounters
+          - propertyName: windows_event_logs(data_sources_spec_windows_event_logs^array)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                - schemas$$objects['DataSourcesSpec']$$properties['windowsEventLogs']
+              cliKey: windowsEventLogs
+          - propertyName: syslog(data_sources_spec_syslog^array)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                - schemas$$objects['DataSourcesSpec']$$properties['syslog']
+              cliKey: syslog
+          - propertyName: extensions(data_sources_spec_extensions^array)
+            cli:
+              cliFlattenTrace: 
+                - schemas$$objects['DataCollectionRuleResource']$$properties['dataSources']
+                - schemas$$objects['DataSourcesSpec']$$properties['extensions']
+              cliKey: extensions
+      - schemaName: data_collection_rule
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRule
+          cliM4Path: schemas$$objects['DataCollectionRule']
+        properties:
+          - propertyName: description(data_collection_rule_description^string)
+            cli:
+              cliKey: description
+              cliM4Path: schemas$$objects['DataCollectionRule']$$properties['description']
+          - propertyName: data_sources(data_sources_spec^object)
+            cli:
+              cliKey: dataSources
+              cliM4Path: schemas$$objects['DataCollectionRule']$$properties['dataSources']
+          - propertyName: destinations(destinations_spec^object)
+            cli:
+              cliKey: destinations
+              cliM4Path: schemas$$objects['DataCollectionRule']$$properties['destinations']
+          - propertyName: data_flows(data_collection_rule_data_flows^array)
+            cli:
+              cliKey: dataFlows
+              cliM4Path: schemas$$objects['DataCollectionRule']$$properties['dataFlows']
+          - propertyName: provisioning_state(known_data_collection_rule_provisioning_state^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['DataCollectionRule']$$properties['provisioningState']
+            readOnly: true
+      - schemaName: data_sources_spec
+        cli:
+          cli-complexity: object_complex
+          cli-flattened: true
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataSourcesSpec
+          cliM4Path: schemas$$objects['DataSourcesSpec']
+        properties:
+          - propertyName: performance_counters(data_sources_spec_performance_counters^array)
+            cli:
+              cliKey: performanceCounters
+              cliM4Path: schemas$$objects['DataSourcesSpec']$$properties['performanceCounters']
+          - propertyName: windows_event_logs(data_sources_spec_windows_event_logs^array)
+            cli:
+              cliKey: windowsEventLogs
+              cliM4Path: schemas$$objects['DataSourcesSpec']$$properties['windowsEventLogs']
+          - propertyName: syslog(data_sources_spec_syslog^array)
+            cli:
+              cliKey: syslog
+              cliM4Path: schemas$$objects['DataSourcesSpec']$$properties['syslog']
+          - propertyName: extensions(data_sources_spec_extensions^array)
+            cli:
+              cliKey: extensions
+              cliM4Path: schemas$$objects['DataSourcesSpec']$$properties['extensions']
+      - schemaName: perf_counter_data_source
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: PerfCounterDataSource
+          cliM4Path: schemas$$objects['PerfCounterDataSource']
+        properties:
+          - propertyName: streams(perf_counter_data_source_streams^array)
+            cli:
+              cliKey: streams
+              cliM4Path: schemas$$objects['PerfCounterDataSource']$$properties['streams']
+          - propertyName: scheduled_transfer_period(known_perf_counter_data_source_scheduled_transfer_period^choice)
+            cli:
+              cliKey: scheduledTransferPeriod
+              cliM4Path: schemas$$objects['PerfCounterDataSource']$$properties['scheduledTransferPeriod']
+          - propertyName: sampling_frequency_in_seconds(integer^integer)
+            cli:
+              cliKey: samplingFrequencyInSeconds
+              cliM4Path: schemas$$objects['PerfCounterDataSource']$$properties['samplingFrequencyInSeconds']
+          - propertyName: counter_specifiers(perf_counter_data_source_counter_specifiers^array)
+            cli:
+              cliKey: counterSpecifiers
+              cliM4Path: schemas$$objects['PerfCounterDataSource']$$properties['counterSpecifiers']
+          - propertyName: name(perf_counter_data_source_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['PerfCounterDataSource']$$properties['name']
+      - schemaName: windows_event_log_data_source
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: WindowsEventLogDataSource
+          cliM4Path: schemas$$objects['WindowsEventLogDataSource']
+        properties:
+          - propertyName: streams(windows_event_log_data_source_streams^array)
+            cli:
+              cliKey: streams
+              cliM4Path: schemas$$objects['WindowsEventLogDataSource']$$properties['streams']
+          - propertyName: scheduled_transfer_period(known_windows_event_log_data_source_scheduled_transfer_period^choice)
+            cli:
+              cliKey: scheduledTransferPeriod
+              cliM4Path: schemas$$objects['WindowsEventLogDataSource']$$properties['scheduledTransferPeriod']
+          - propertyName: x_path_queries(windows_event_log_data_source_x_path_queries^array)
+            cli:
+              cliKey: xPathQueries
+              cliM4Path: schemas$$objects['WindowsEventLogDataSource']$$properties['xPathQueries']
+          - propertyName: name(windows_event_log_data_source_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['WindowsEventLogDataSource']$$properties['name']
+      - schemaName: syslog_data_source
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: SyslogDataSource
+          cliM4Path: schemas$$objects['SyslogDataSource']
+        properties:
+          - propertyName: streams(syslog_data_source_streams^array)
+            cli:
+              cliKey: streams
+              cliM4Path: schemas$$objects['SyslogDataSource']$$properties['streams']
+          - propertyName: facility_names(syslog_data_source_facility_names^array)
+            cli:
+              cliKey: facilityNames
+              cliM4Path: schemas$$objects['SyslogDataSource']$$properties['facilityNames']
+          - propertyName: log_levels(syslog_data_source_log_levels^array)
+            cli:
+              cliKey: logLevels
+              cliM4Path: schemas$$objects['SyslogDataSource']$$properties['logLevels']
+          - propertyName: name(syslog_data_source_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['SyslogDataSource']$$properties['name']
+      - schemaName: extension_data_source
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ExtensionDataSource
+          cliM4Path: schemas$$objects['ExtensionDataSource']
+        properties:
+          - propertyName: streams(extension_data_source_streams^array)
+            cli:
+              cliKey: streams
+              cliM4Path: schemas$$objects['ExtensionDataSource']$$properties['streams']
+          - propertyName: extension_name(extension_data_source_extension_name^string)
+            cli:
+              cliKey: extensionName
+              cliM4Path: schemas$$objects['ExtensionDataSource']$$properties['extensionName']
+          - propertyName: extension_settings(any^any)
+            cli:
+              cliKey: extensionSettings
+              cliM4Path: schemas$$objects['ExtensionDataSource']$$properties['extensionSettings']
+          - propertyName: name(extension_data_source_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['ExtensionDataSource']$$properties['name']
+      - schemaName: destinations_spec
+        cli:
+          cli-complexity: object_complex
+          cli-flattened: true
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DestinationsSpec
+          cliM4Path: schemas$$objects['DestinationsSpec']
+        properties:
+          - propertyName: log_analytics(destinations_spec_log_analytics^array)
+            cli:
+              cliKey: logAnalytics
+              cliM4Path: schemas$$objects['DestinationsSpec']$$properties['logAnalytics']
+          - propertyName: azure_monitor_metrics(azure_monitor_metrics_destination^object)
+            cli:
+              cliKey: azureMonitorMetrics
+              cliM4Path: schemas$$objects['DestinationsSpec']$$properties['azureMonitorMetrics']
+      - schemaName: log_analytics_destination
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: LogAnalyticsDestination
+          cliM4Path: schemas$$objects['LogAnalyticsDestination']
+        properties:
+          - propertyName: workspace_resource_id(log_analytics_destination_workspace_resource_id^string)
+            cli:
+              cliKey: workspaceResourceId
+              cliM4Path: schemas$$objects['LogAnalyticsDestination']$$properties['workspaceResourceId']
+          - propertyName: name(log_analytics_destination_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['LogAnalyticsDestination']$$properties['name']
+      - schemaName: azure_monitor_metrics_destination
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 1
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: AzureMonitorMetricsDestination
+          cliM4Path: schemas$$objects['AzureMonitorMetricsDestination']
+        properties:
+          - propertyName: name(azure_monitor_metrics_destination_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['AzureMonitorMetricsDestination']$$properties['name']
+      - schemaName: data_flow
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataFlow
+          cliM4Path: schemas$$objects['DataFlow']
+        properties:
+          - propertyName: streams(data_flow_streams^array)
+            cli:
+              cliKey: streams
+              cliM4Path: schemas$$objects['DataFlow']$$properties['streams']
+          - propertyName: destinations(data_flow_destinations^array)
+            cli:
+              cliKey: destinations
+              cliM4Path: schemas$$objects['DataFlow']$$properties['destinations']
+      - schemaName: error_responseAutoGenerated
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorResponse
+          cliM4Path: schemas$$objects['ErrorResponse']
+        properties:
+          - propertyName: error(error_detailsAutoGenerated^object)
+            cli:
+              cliKey: error
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['error']
+            readOnly: true
+      - schemaName: error_detailsAutoGenerated
+        cli:
+          cli-complexity: object_complex
+          cli-in-circle: true
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorDetails
+          cliM4Path: schemas$$objects['ErrorDetails']
+        properties:
+          - propertyName: code(error_details_code^string)
+            cli:
+              cliKey: code
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['code']
+            readOnly: true
+          - propertyName: message(error_details_message^string)
+            cli:
+              cliKey: message
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['message']
+            readOnly: true
+          - propertyName: target(error_details_target^string)
+            cli:
+              cliKey: target
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['target']
+            readOnly: true
+          - propertyName: details(error_details^array)
+            cli:
+              cliKey: details
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['details']
+            readOnly: true
+          - propertyName: additional_info(error_details_additional_info^array)
+            cli:
+              cliKey: additionalInfo
+              cliM4Path: schemas$$objects['ErrorDetails']$$properties['additionalInfo']
+            readOnly: true
+      - schemaName: resource_for_update
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: ResourceForUpdate
+          cliM4Path: schemas$$objects['ResourceForUpdate']
+        properties:
+          - propertyName: tags(resource_for_update_tags^dictionary)
+            cli:
+              cliKey: tags
+              cliM4Path: schemas$$objects['ResourceForUpdate']$$properties['tags']
+      - schemaName: data_collection_rule_association_proxy_only_resource_properties
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: DataCollectionRuleAssociationProxyOnlyResource-properties
+          cliM4Path: schemas$$objects['DataCollectionRuleAssociationProxyOnlyResource-properties']
+      - schemaName: error_response_error
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorResponse-error
+          cliM4Path: schemas$$objects['ErrorResponse-error']
+      - schemaName: destinations_spec_azure_monitor_metrics
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 1
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: DestinationsSpec-azureMonitorMetrics
+          cliM4Path: schemas$$objects['DestinationsSpec-azureMonitorMetrics']
+      - schemaName: data_collection_rule_data_sources
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRule-dataSources
+          cliM4Path: schemas$$objects['DataCollectionRule-dataSources']
+      - schemaName: data_collection_rule_destinations
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRule-destinations
+          cliM4Path: schemas$$objects['DataCollectionRule-destinations']
+      - schemaName: data_collection_rule_resource_properties
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DataCollectionRuleResource-properties
+          cliM4Path: schemas$$objects['DataCollectionRuleResource-properties']
+      - schemaName: error_response_errorAutoGenerated
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorResponse-error
+          cliM4Path: schemas$$objects['ErrorResponse-error']
+  choices:
+    all:
+      - choiceName: known_data_collection_rule_association_provisioning_state
+        cli:
+          cliKey: KnownDataCollectionRuleAssociationProvisioningState
+          cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']
+        choiceValues:
+          - choiceValue: creating
+            cli:
+              cliKey: Creating
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']$$choices['Creating]'
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']$$choices['Updating]'
+          - choiceValue: deleting
+            cli:
+              cliKey: Deleting
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']$$choices['Deleting]'
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']$$choices['Succeeded]'
+          - choiceValue: failed
+            cli:
+              cliKey: Failed
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleAssociationProvisioningState']$$choices['Failed]'
+      - choiceName: known_perf_counter_data_source_streams
+        cli:
+          cliKey: KnownPerfCounterDataSourceStreams
+          cliM4Path: schemas$$choices['KnownPerfCounterDataSourceStreams']
+        choiceValues:
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceStreams']$$choices['Microsoft-Perf]'
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceStreams']$$choices['Microsoft-InsightsMetrics]'
+      - choiceName: known_perf_counter_data_source_scheduled_transfer_period
+        cli:
+          cliKey: KnownPerfCounterDataSourceScheduledTransferPeriod
+          cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']
+        choiceValues:
+          - choiceValue: PT1_m
+            cli:
+              cliKey: PT1M
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']$$choices['PT1M]'
+          - choiceValue: PT5_m
+            cli:
+              cliKey: PT5M
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']$$choices['PT5M]'
+          - choiceValue: PT15_m
+            cli:
+              cliKey: PT15M
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']$$choices['PT15M]'
+          - choiceValue: PT30_m
+            cli:
+              cliKey: PT30M
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']$$choices['PT30M]'
+          - choiceValue: PT60_m
+            cli:
+              cliKey: PT60M
+              cliM4Path: schemas$$choices['KnownPerfCounterDataSourceScheduledTransferPeriod']$$choices['PT60M]'
+      - choiceName: known_windows_event_log_data_source_streams
+        cli:
+          cliKey: KnownWindowsEventLogDataSourceStreams
+          cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceStreams']
+        choiceValues:
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceStreams']$$choices['Microsoft-WindowsEvent]'
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceStreams']$$choices['Microsoft-Event]'
+      - choiceName: known_windows_event_log_data_source_scheduled_transfer_period
+        cli:
+          cliKey: KnownWindowsEventLogDataSourceScheduledTransferPeriod
+          cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']
+        choiceValues:
+          - choiceValue: PT1_m
+            cli:
+              cliKey: PT1M
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']$$choices['PT1M]'
+          - choiceValue: PT5_m
+            cli:
+              cliKey: PT5M
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']$$choices['PT5M]'
+          - choiceValue: PT15_m
+            cli:
+              cliKey: PT15M
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']$$choices['PT15M]'
+          - choiceValue: PT30_m
+            cli:
+              cliKey: PT30M
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']$$choices['PT30M]'
+          - choiceValue: PT60_m
+            cli:
+              cliKey: PT60M
+              cliM4Path: schemas$$choices['KnownWindowsEventLogDataSourceScheduledTransferPeriod']$$choices['PT60M]'
+      - choiceName: known_syslog_data_source_streams
+        cli:
+          cliKey: KnownSyslogDataSourceStreams
+          cliM4Path: schemas$$choices['KnownSyslogDataSourceStreams']
+          default-value: Microsoft-Syslog
+          hidden: true
+        choiceValues:
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceStreams']$$choices['Microsoft-Syslog]'
+      - choiceName: known_syslog_data_source_facility_names
+        cli:
+          cliKey: KnownSyslogDataSourceFacilityNames
+          cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']
+        choiceValues:
+          - choiceValue: auth
+            cli:
+              cliKey: auth
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['auth]'
+          - choiceValue: authpriv
+            cli:
+              cliKey: authpriv
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['authpriv]'
+          - choiceValue: cron
+            cli:
+              cliKey: cron
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['cron]'
+          - choiceValue: daemon
+            cli:
+              cliKey: daemon
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['daemon]'
+          - choiceValue: kern
+            cli:
+              cliKey: kern
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['kern]'
+          - choiceValue: lpr
+            cli:
+              cliKey: lpr
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['lpr]'
+          - choiceValue: mail
+            cli:
+              cliKey: mail
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['mail]'
+          - choiceValue: mark
+            cli:
+              cliKey: mark
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['mark]'
+          - choiceValue: news
+            cli:
+              cliKey: news
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['news]'
+          - choiceValue: syslog
+            cli:
+              cliKey: syslog
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['syslog]'
+          - choiceValue: user
+            cli:
+              cliKey: user
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['user]'
+          - choiceValue: UUCP
+            cli:
+              cliKey: UUCP
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['UUCP]'
+          - choiceValue: local0
+            cli:
+              cliKey: local0
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local0]'
+          - choiceValue: local1
+            cli:
+              cliKey: local1
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local1]'
+          - choiceValue: local2
+            cli:
+              cliKey: local2
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local2]'
+          - choiceValue: local3
+            cli:
+              cliKey: local3
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local3]'
+          - choiceValue: local4
+            cli:
+              cliKey: local4
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local4]'
+          - choiceValue: local5
+            cli:
+              cliKey: local5
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local5]'
+          - choiceValue: local6
+            cli:
+              cliKey: local6
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local6]'
+          - choiceValue: local7
+            cli:
+              cliKey: local7
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceFacilityNames']$$choices['local7]'
+      - choiceName: known_syslog_data_source_log_levels
+        cli:
+          cliKey: KnownSyslogDataSourceLogLevels
+          cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']
+        choiceValues:
+          - choiceValue: debug
+            cli:
+              cliKey: Debug
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Debug]'
+          - choiceValue: info
+            cli:
+              cliKey: Info
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Info]'
+          - choiceValue: notice
+            cli:
+              cliKey: Notice
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Notice]'
+          - choiceValue: warning
+            cli:
+              cliKey: Warning
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Warning]'
+          - choiceValue: error
+            cli:
+              cliKey: Error
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Error]'
+          - choiceValue: critical
+            cli:
+              cliKey: Critical
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Critical]'
+          - choiceValue: alert
+            cli:
+              cliKey: Alert
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Alert]'
+          - choiceValue: emergency
+            cli:
+              cliKey: Emergency
+              cliM4Path: schemas$$choices['KnownSyslogDataSourceLogLevels']$$choices['Emergency]'
+      - choiceName: known_extension_data_source_streams
+        cli:
+          cliKey: KnownExtensionDataSourceStreams
+          cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']
+        choiceValues:
+          - choiceValue: microsoft_anti_malware_status
+            cli:
+              cliKey: Microsoft-AntiMalwareStatus
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-AntiMalwareStatus]'
+          - choiceValue: microsoft_auditd
+            cli:
+              cliKey: Microsoft-Auditd
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-Auditd]'
+          - choiceValue: microsoft_ciscoasa
+            cli:
+              cliKey: Microsoft-CISCOASA
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-CISCOASA]'
+          - choiceValue: microsoft_common_security_log
+            cli:
+              cliKey: Microsoft-CommonSecurityLog
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-CommonSecurityLog]'
+          - choiceValue: microsoft_computer_group
+            cli:
+              cliKey: Microsoft-ComputerGroup
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-ComputerGroup]'
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-Event]'
+          - choiceValue: microsoft_firewall_log
+            cli:
+              cliKey: Microsoft-FirewallLog
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-FirewallLog]'
+          - choiceValue: microsoft_health_state_change
+            cli:
+              cliKey: Microsoft-HealthStateChange
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-HealthStateChange]'
+          - choiceValue: microsoft_heartbeat
+            cli:
+              cliKey: Microsoft-Heartbeat
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-Heartbeat]'
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-InsightsMetrics]'
+          - choiceValue: microsoft_operation_log
+            cli:
+              cliKey: Microsoft-OperationLog
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-OperationLog]'
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-Perf]'
+          - choiceValue: microsoft_process_investigator
+            cli:
+              cliKey: Microsoft-ProcessInvestigator
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-ProcessInvestigator]'
+          - choiceValue: microsoft_protection_status
+            cli:
+              cliKey: Microsoft-ProtectionStatus
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-ProtectionStatus]'
+          - choiceValue: microsoft_rome_detection_event
+            cli:
+              cliKey: Microsoft-RomeDetectionEvent
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-RomeDetectionEvent]'
+          - choiceValue: microsoft_security_baseline
+            cli:
+              cliKey: Microsoft-SecurityBaseline
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-SecurityBaseline]'
+          - choiceValue: microsoft_security_baseline_summary
+            cli:
+              cliKey: Microsoft-SecurityBaselineSummary
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-SecurityBaselineSummary]'
+          - choiceValue: microsoft_security_event
+            cli:
+              cliKey: Microsoft-SecurityEvent
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-SecurityEvent]'
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-Syslog]'
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+              cliM4Path: schemas$$choices['KnownExtensionDataSourceStreams']$$choices['Microsoft-WindowsEvent]'
+      - choiceName: known_data_flow_streams
+        cli:
+          cliKey: KnownDataFlowStreams
+          cliM4Path: schemas$$choices['KnownDataFlowStreams']
+        choiceValues:
+          - choiceValue: microsoft_anti_malware_status
+            cli:
+              cliKey: Microsoft-AntiMalwareStatus
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-AntiMalwareStatus]'
+          - choiceValue: microsoft_auditd
+            cli:
+              cliKey: Microsoft-Auditd
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-Auditd]'
+          - choiceValue: microsoft_ciscoasa
+            cli:
+              cliKey: Microsoft-CISCOASA
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-CISCOASA]'
+          - choiceValue: microsoft_common_security_log
+            cli:
+              cliKey: Microsoft-CommonSecurityLog
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-CommonSecurityLog]'
+          - choiceValue: microsoft_computer_group
+            cli:
+              cliKey: Microsoft-ComputerGroup
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-ComputerGroup]'
+          - choiceValue: microsoft_event
+            cli:
+              cliKey: Microsoft-Event
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-Event]'
+          - choiceValue: microsoft_firewall_log
+            cli:
+              cliKey: Microsoft-FirewallLog
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-FirewallLog]'
+          - choiceValue: microsoft_health_state_change
+            cli:
+              cliKey: Microsoft-HealthStateChange
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-HealthStateChange]'
+          - choiceValue: microsoft_heartbeat
+            cli:
+              cliKey: Microsoft-Heartbeat
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-Heartbeat]'
+          - choiceValue: microsoft_insights_metrics
+            cli:
+              cliKey: Microsoft-InsightsMetrics
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-InsightsMetrics]'
+          - choiceValue: microsoft_operation_log
+            cli:
+              cliKey: Microsoft-OperationLog
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-OperationLog]'
+          - choiceValue: microsoft_perf
+            cli:
+              cliKey: Microsoft-Perf
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-Perf]'
+          - choiceValue: microsoft_process_investigator
+            cli:
+              cliKey: Microsoft-ProcessInvestigator
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-ProcessInvestigator]'
+          - choiceValue: microsoft_protection_status
+            cli:
+              cliKey: Microsoft-ProtectionStatus
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-ProtectionStatus]'
+          - choiceValue: microsoft_rome_detection_event
+            cli:
+              cliKey: Microsoft-RomeDetectionEvent
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-RomeDetectionEvent]'
+          - choiceValue: microsoft_security_baseline
+            cli:
+              cliKey: Microsoft-SecurityBaseline
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-SecurityBaseline]'
+          - choiceValue: microsoft_security_baseline_summary
+            cli:
+              cliKey: Microsoft-SecurityBaselineSummary
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-SecurityBaselineSummary]'
+          - choiceValue: microsoft_security_event
+            cli:
+              cliKey: Microsoft-SecurityEvent
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-SecurityEvent]'
+          - choiceValue: microsoft_syslog
+            cli:
+              cliKey: Microsoft-Syslog
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-Syslog]'
+          - choiceValue: microsoft_windows_event
+            cli:
+              cliKey: Microsoft-WindowsEvent
+              cliM4Path: schemas$$choices['KnownDataFlowStreams']$$choices['Microsoft-WindowsEvent]'
+      - choiceName: known_data_collection_rule_provisioning_state
+        cli:
+          cliKey: KnownDataCollectionRuleProvisioningState
+          cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']
+        choiceValues:
+          - choiceValue: creating
+            cli:
+              cliKey: Creating
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']$$choices['Creating]'
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']$$choices['Updating]'
+          - choiceValue: deleting
+            cli:
+              cliKey: Deleting
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']$$choices['Deleting]'
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']$$choices['Succeeded]'
+          - choiceValue: failed
+            cli:
+              cliKey: Failed
+              cliM4Path: schemas$$choices['KnownDataCollectionRuleProvisioningState']$$choices['Failed]'
