@@ -14,6 +14,7 @@ import codecs
 import json
 import os
 
+from azext_attestation.generated._client_factory import cf_attestation_provider
 from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
 
 from cryptography.hazmat.backends import default_backend
@@ -21,6 +22,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from jwcrypto.jwk import JWK
+from jwcrypto.jwt import JWT
 from knack.cli import CLIError
 
 
@@ -81,12 +83,13 @@ def attestation_attestation_provider_create(client,
             pem_data = f.read()
 
         raw_jwk = JWK.from_pem(pem_data)
-        jwk = JsonWebKey(kty=raw_jwk.key_type, kid=raw_jwk.key_id, alg='RSA-OAEP-256', use='sig')
+        jwk = JsonWebKey(kty=raw_jwk.key_type, kid=raw_jwk.key_id, alg='RS256', use='sig')
         pub_json = json.loads(raw_jwk.export_public())
         jwk.e = pub_json['e']
         jwk.n = pub_json['n']
         cert = load_pem_x509_certificate(pem_data, backend=default_backend())
-        jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
+        jwk.x5_c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
+        print(jwk)
         jwks.append(jwk)
 
     return client.create(resource_group_name=resource_group_name,
@@ -101,3 +104,27 @@ def attestation_attestation_provider_delete(client,
                                             provider_name=None):
     return client.delete(resource_group_name=resource_group_name,
                          provider_name=provider_name)
+
+
+def add_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+    return client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
+
+
+def remove_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+    return client.remove(tenant_base_url=provider.attest_uri, policy_certificate_to_remove=signer)
+
+
+def list_signers(cmd, client, resource_group_name=None, provider_name=None):
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+    signers = client.get(tenant_base_url=provider.attest_uri)
+    token = json.loads(signers.replace('\'', '"')).get('token')
+
+    import jwt
+    result = jwt.get_unverified_header(token)
+    result['jwt'] = token
+    return result

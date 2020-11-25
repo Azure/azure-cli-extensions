@@ -12,6 +12,7 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
+from knack.cli import CLIError
 
 from .. import models
 
@@ -35,7 +36,7 @@ class PolicyCertificatesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01"
+        self.api_version = "2020-10-01"
 
         self.config = config
 
@@ -99,7 +100,7 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/operations/policy/certificates'}
+    get.metadata = {'url': '/certificates'}
 
     def add(
             self, tenant_base_url, policy_certificate_to_add, custom_headers=None, raw=False, **operation_config):
@@ -149,7 +150,7 @@ class PolicyCertificatesOperations(object):
         body_content = self._serialize.body(policy_certificate_to_add, 'str')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 400, 401]:
@@ -161,7 +162,7 @@ class PolicyCertificatesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('str', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -170,7 +171,7 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    add.metadata = {'url': '/operations/policy/certificates'}
+    add.metadata = {'url': '/certificates%3aadd'}
 
     def remove(
             self, tenant_base_url, policy_certificate_to_remove, custom_headers=None, raw=False, **operation_config):
@@ -232,7 +233,7 @@ class PolicyCertificatesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('str', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -241,4 +242,4 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    remove.metadata = {'url': '/operations/policy/certificates'}
+    remove.metadata = {'url': '/certificates%3aremove'}

@@ -10,13 +10,20 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.parameters import tags_type
+from azure.cli.core.commands.parameters import \
+    tags_type, resource_group_name_type, get_resource_name_completion_list
+
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+    provider_name_type = CLIArgumentType(
+        help='Name of the attestation provider.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
+        completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
+
     for item in ['create', 'show', 'update', 'delete']:
         with self.argument_context('attestation {}'.format(item)) as c:
-            c.argument('provider_name', type=str, options_list=['-n', '--name'],
+            c.argument('provider_name', provider_name_type,
                        help='Name of the attestation service instance.')
 
     for item in ['show', 'delete']:
@@ -32,3 +39,18 @@ def load_arguments(self, _):
     with self.argument_context('attestation create') as c:
         c.argument('certs_input_path', nargs='+',
                    help='Space-separated file paths to PEM/DER files containing certificates.')
+
+    for item in ['list', 'add', 'remove']:
+        with self.argument_context('attestation signer {}'.format(item)) as c:
+            c.extra('resource_group_name', resource_group_name_type, required=False)
+            c.extra('provider_name', provider_name_type, required=False)
+            c.extra('identifier', options_list=['--id'],
+                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+                         'if you have already specified --id.')
+            if item in ['add', 'remove']:
+                c.ignore('tenant_base_url')
+                c.argument('policy_certificate_to_{}'.format(item), options_list=['--signer'],
+                           help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
+                                '"aas-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
+                                'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
+                                'certificates'.format(item))

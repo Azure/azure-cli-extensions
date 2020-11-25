@@ -18,6 +18,8 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
 
     from azext_attestation.generated._client_factory import cf_attestation_provider
+    from azext_attestation.manual._client_factory import cf_policy_certificates
+
     attestation_attestation_provider = CliCommandType(
         operations_tmpl='azext_attestation.vendored_sdks.attestation.operations._attestation_provider_operations#Attest'
         'ationProviderOperations.{}',
@@ -25,6 +27,13 @@ def load_command_table(self, _):
 
     attestation_provider_doc_template = 'azext_attestation.vendored_sdks.azure_mgmt_attestation.operations.' \
                                         '_attestation_provider_operations#AttestationProviderOperations.{}'
+
+    policy_certificates_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
+                                    '_policy_certificates_operations#PolicyCertificatesOperations.{}'
+    policy_certificates_data_sdk = CliCommandType(
+        operations_tmpl=policy_certificates_data_tmpl,
+        client_factory=cf_policy_certificates)
+
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
         g.custom_command('list', 'attestation_attestation_provider_list',
@@ -42,3 +51,12 @@ def load_command_table(self, _):
                          doc_string_source=attestation_provider_doc_template.format('get_default_by_location'))
         g.custom_command('list-default', 'attestation_attestation_provider_list_default',
                          doc_string_source=attestation_provider_doc_template.format('list_default'))
+
+    with self.command_group('attestation signer', policy_certificates_data_sdk, client_factory=cf_policy_certificates,
+                            is_experimental=True) as g:
+        g.custom_command('add', 'add_signer', validator=validate_provider_resource_id,
+                         doc_string_source=policy_certificates_data_tmpl.format('add'))
+        g.custom_command('remove', 'remove_signer', validator=validate_provider_resource_id,
+                         doc_string_source=policy_certificates_data_tmpl.format('remove'))
+        g.custom_command('list', 'list_signers', validator=validate_provider_resource_id,
+                         doc_string_source=policy_certificates_data_tmpl.format('get'))
