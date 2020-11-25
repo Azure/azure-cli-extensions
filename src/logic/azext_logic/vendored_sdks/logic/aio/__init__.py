@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._logic_management_client_async import LogicManagementClient
+from ._logic_management_client import LogicManagementClient
 __all__ = ['LogicManagementClient']
