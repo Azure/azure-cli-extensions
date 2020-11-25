@@ -238,7 +238,7 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         self.kwargs.update({
             'route_table1': rt1['id'],
-            'route_table2': rt1['id'],
+            'route_table2': rt2['id'],
         })
 
         self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
@@ -282,11 +282,9 @@ class AzureVWanVHubScenario(ScenarioTest):
                      self.check('routingConfiguration.propagatedRouteTables.labels[1]', 'label2')
                  ])
 
-        self.cmd('network vpn-gateway connection list '
-                 '-g {rg} '
-                 '--gateway-name {vpngateway}',
+        self.cmd('network vpn-gateway connection list -g {rg} --gateway-name {vpngateway}',
                  checks=[
-                    #  self.check('length(@)', 1)
+                     self.check('length(@)', 1)
                  ])
 
         self.cmd('network vpn-gateway connection delete '
