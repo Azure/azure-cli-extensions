@@ -18,7 +18,7 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
 
     from azext_attestation.generated._client_factory import cf_attestation_provider
-    from azext_attestation.manual._client_factory import cf_policy_certificates
+    from azext_attestation.manual._client_factory import cf_policy_certificates, cf_policy
 
     attestation_attestation_provider = CliCommandType(
         operations_tmpl='azext_attestation.vendored_sdks.attestation.operations._attestation_provider_operations#Attest'
@@ -33,6 +33,12 @@ def load_command_table(self, _):
     policy_certificates_data_sdk = CliCommandType(
         operations_tmpl=policy_certificates_data_tmpl,
         client_factory=cf_policy_certificates)
+
+    policy_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
+                      '_policy_operations#PolicyOperations.{}'
+    policy_data_sdk = CliCommandType(
+        operations_tmpl=policy_data_tmpl,
+        client_factory=cf_policy)
 
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
@@ -60,3 +66,12 @@ def load_command_table(self, _):
                          doc_string_source=policy_certificates_data_tmpl.format('remove'))
         g.custom_command('list', 'list_signers', validator=validate_provider_resource_id,
                          doc_string_source=policy_certificates_data_tmpl.format('get'))
+
+    with self.command_group('attestation policy', policy_data_sdk, client_factory=cf_policy,
+                            is_experimental=True) as g:
+        g.custom_command('set', 'set_policy', validator=validate_provider_resource_id,
+                         doc_string_source=policy_data_tmpl.format('set'))
+        g.command('reset', 'reset', validator=validate_provider_resource_id,
+                  doc_string_source=policy_data_tmpl.format('reset'))
+        g.custom_command('show', 'get_policy', validator=validate_provider_resource_id,
+                         doc_string_source=policy_data_tmpl.format('get'))

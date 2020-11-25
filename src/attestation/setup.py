@@ -30,7 +30,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'jwcrypto==0.8'
+]
 
 try:
     from azext_attestation.manual.dependency import DEPENDENCIES

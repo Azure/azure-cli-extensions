@@ -14,20 +14,14 @@ from msrest.exceptions import HttpOperationError
 
 
 class AttestationPolicy(Model):
-    """AttestationPolicy.
-
-    :param policy: JSON Web Token whose body is an AttestationPolicyRequest
-     definition.
-    :type policy: str
-    """
 
     _attribute_map = {
-        'policy': {'key': 'policy', 'type': 'str'},
+        'token': {'key': 'token', 'type': 'str'},
     }
 
-    def __init__(self, *, policy: str=None, **kwargs) -> None:
+    def __init__(self, *, token: str=None, **kwargs) -> None:
         super(AttestationPolicy, self).__init__(**kwargs)
-        self.policy = policy
+        self.token = token
 
 
 class CloudError(Model):

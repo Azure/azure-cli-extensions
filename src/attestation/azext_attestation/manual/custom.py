@@ -15,15 +15,21 @@ import json
 import os
 
 from azext_attestation.generated._client_factory import cf_attestation_provider
+from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
 from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from jwcrypto.jwk import JWK
-from jwcrypto.jwt import JWT
 from knack.cli import CLIError
+
+
+tee_mapping = {
+    TeeKind.tpm: 'TPM',
+    TeeKind.sgx_intel_sdk: 'SgxEnclave',
+    TeeKind.sgx_open_enclave_sdk: 'OpenEnclave'
+}
 
 
 def attestation_attestation_provider_show(client,
@@ -123,8 +129,68 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     signers = client.get(tenant_base_url=provider.attest_uri)
     token = json.loads(signers.replace('\'', '"')).get('token')
+    result = {'jwt': token}
 
-    import jwt
-    result = jwt.get_unverified_header(token)
-    result['jwt'] = token
+    if token:
+        import jwt
+        result.update(jwt.get_unverified_header(token))
+        result.update(jwt.decode(token, verify=False))
+
     return result
+
+
+def get_policy(cmd, client, tee, resource_group_name=None, provider_name=None):
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+    token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[tee]).token
+    result = {'jwk': token}
+
+    if token:
+        import jwt
+        result.update(jwt.get_unverified_header(token))
+        result.update(jwt.decode(token, verify=False))
+
+    return result
+
+
+def set_policy(cmd, client, tee, new_attestation_policy=None, new_attestation_policy_file=None,
+               policy_format='Text', resource_group_name=None,
+               provider_name=None):
+
+    if new_attestation_policy_file and new_attestation_policy:
+        raise CLIError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
+
+    if not new_attestation_policy_file and not new_attestation_policy:
+        raise CLIError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
+
+    if new_attestation_policy_file:
+        file_path = os.path.expanduser(new_attestation_policy_file)
+        if not os.path.exists(file_path):
+            raise CLIError('Policy file "{}" does not exist.'.format(file_path))
+
+        if not os.path.isfile(file_path):
+            raise CLIError('"{}" is not a valid file name.'.format(file_path))
+
+        with open(file_path) as f:
+            new_attestation_policy = f.read()
+
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+
+    if policy_format == 'Text':
+        import jwt
+        try:
+            new_attestation_policy = {k: str(v) for k, v in json.loads(new_attestation_policy).items()}
+            print(new_attestation_policy)
+            new_attestation_policy = jwt.encode(new_attestation_policy, key='').decode('ascii')
+        except TypeError:
+            raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
+
+    print(new_attestation_policy)
+    raw_result = client.set(
+        tenant_base_url=provider.attest_uri,
+        tee=tee_mapping[tee],
+        new_attestation_policy=new_attestation_policy
+    )
+    print(raw_result)
+    return raw_result

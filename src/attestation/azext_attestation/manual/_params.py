@@ -11,12 +11,14 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import \
-    tags_type, resource_group_name_type, get_resource_name_completion_list
+    tags_type, resource_group_name_type, get_resource_name_completion_list, get_enum_type
 
 from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+    from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
+
     provider_name_type = CLIArgumentType(
         help='Name of the attestation provider.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
         completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
@@ -49,8 +51,23 @@ def load_arguments(self, _):
                          'if you have already specified --id.')
             if item in ['add', 'remove']:
                 c.ignore('tenant_base_url')
-                c.argument('policy_certificate_to_{}'.format(item), options_list=['--signer'],
+                c.argument('signer',
                            help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
-                                '"aas-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
+                                '"maa-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
                                 'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
                                 'certificates'.format(item))
+
+    for item in ['show', 'set']:
+        with self.argument_context('attestation policy {}'.format(item)) as c:
+            c.argument('tee', arg_type=get_enum_type(TeeKind))
+            c.argument('provider_name', provider_name_type, required=False)
+            c.extra('identifier', options_list=['--id'],
+                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+                         'if you have already specified --id.')
+
+            if item in ['set']:
+                c.argument('policy_format', arg_type=get_enum_type(['Text', 'JWT']), default='Text',
+                           help='Specifies the format for the policy, either Text or JWT (JSON Web Token).')
+                c.argument('new_attestation_policy', help='Content of the new attestation policy (Text or JWT).')
+                c.argument('new_attestation_policy_file', options_list=['--new-attestation-policy-file', '-f'],
+                           help='File name of the new attestation policy.')

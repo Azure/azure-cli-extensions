@@ -12,6 +12,7 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
+from knack.cli import CLIError
 
 from .. import models
 
@@ -35,7 +36,7 @@ class PolicyOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01"
+        self.api_version = "2020-10-01"
 
         self.config = config
 
@@ -134,7 +135,7 @@ class PolicyOperations(object):
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = self.get.metadata['url']
+        url = '/policies/{}'.format(tee)
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -168,7 +169,7 @@ class PolicyOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('AttestationPolicy', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -177,7 +178,6 @@ class PolicyOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/operations/policy/current'}
 
     def set(
             self, tenant_base_url, tee, new_attestation_policy, custom_headers=None, raw=False, **operation_config):
@@ -202,7 +202,7 @@ class PolicyOperations(object):
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = self.set.metadata['url']
+        url = '/policies/{}'.format(tee)
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -238,7 +238,7 @@ class PolicyOperations(object):
 
         deserialized = None
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -247,7 +247,6 @@ class PolicyOperations(object):
             return client_raw_response
 
         return deserialized
-    set.metadata = {'url': '/operations/policy/current'}
 
     def reset(
             self, tenant_base_url, tee, policy_jws, custom_headers=None, raw=False, **operation_config):

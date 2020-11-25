@@ -21,3 +21,7 @@ def cf_attestation_data(cli_ctx, *_):
 
 def cf_policy_certificates(cli_ctx, *_):
     return cf_attestation_data(cli_ctx).policy_certificates
+
+
+def cf_policy(cli_ctx, *_):
+    return cf_attestation_data(cli_ctx).policy
