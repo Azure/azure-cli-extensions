@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+import base64
 import codecs
 import os
 
@@ -16,8 +17,9 @@ from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWe
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
+from jwcrypto.jwk import JWK
 from knack.cli import CLIError
 
 
@@ -41,6 +43,7 @@ def _int_to_bytes(i):
 
 
 def _public_rsa_key_to_jwk(rsa_key, encoding=None):
+    jwk = JsonWebKey(kty='RSA', alg='', kid='', use='sig')
     pubv = rsa_key.public_numbers()
     jwk.n = _int_to_bytes(pubv.n)
     if encoding:
@@ -48,9 +51,15 @@ def _public_rsa_key_to_jwk(rsa_key, encoding=None):
     jwk.e = _int_to_bytes(pubv.e)
     if encoding:
         jwk.e = encoding(jwk.e)
-
-    jwk = JsonWebKey(kty='RSA', alg='', kid='', use='sig')
     return jwk
+
+
+def _b64_url_encode(s):
+    return base64.b64encode(s).decode('ascii').strip('=').replace('+', '-').replace('/', '_')
+
+
+def _b64_url_encode_for_x5c(s):
+    return base64.b64encode(s).decode('ascii')
 
 
 def attestation_attestation_provider_create(client,
@@ -71,32 +80,10 @@ def attestation_attestation_provider_create(client,
         with open(expand_path, 'rb') as f:
             pem_data = f.read()
 
-        jwk = None
         try:
-            cert = load_pem_x509_certificate(pem_data, backend=default_backend())
+            jwk = JWK.from_pem(pem_data)
+            jwk.x5c = [_b64_url_encode(jwk.public())]
         except:  # pylint: disable=bare-except
-            pass
-        else:
-            public_key = cert.public_key()
-            if isinstance(public_key, rsa.RSAPublicKey):
-                jwk = _public_rsa_key_to_jwk(public_key)
-            else:
-                raise CLIError('Unsupported key type, {}.'.format(type(public_key)))
-
-        if not jwk:
-            try:
-                public_key = load_pem_public_key(pem_data, backend=default_backend())
-            except:  # pylint: disable=bare-except
-                pass
-            else:
-                jwk = JsonWebKey()
-                if isinstance(public_key, rsa.RSAPublicKey):
-                    jwk.kty = 'RSA'
-                    _public_rsa_key_to_jwk(public_key, jwk)
-                else:
-                    raise CLIError('Unsupported key type, {}.'.format(type(public_key)))
-
-        if not jwk:
             raise CLIError('Failed to load file: {}'.format(expand_path))
 
         jwks.append(jwk)
