@@ -146,7 +146,7 @@ def load_command_table(self, _):
     with self.command_group('network vpn-gateway connection', network_vpn_gateway_connection_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
         g.command('list', 'list_by_vpn_gateway')
-        g.command('show', 'get')
+        g.show_command('show', 'get')
         g.command('delete', 'delete')
         g.wait_command('wait')
 
