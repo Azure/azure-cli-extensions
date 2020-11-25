@@ -235,8 +235,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Generate request payload
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
-    print(cc.kubernetes_distro)
-    print(cc.kubernetes_infra)
+    print(cc.distribution)
+    print(cc.infrastructure)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
@@ -485,8 +485,8 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
         tags=tags,
-        kubernetes_distro=kubernetes_distro,
-        kubernetes_infra=kubernetes_infra
+        distribution=kubernetes_distro,
+        infrastructure=kubernetes_infra
     )
     return cc
 
@@ -805,11 +805,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
 
     kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
