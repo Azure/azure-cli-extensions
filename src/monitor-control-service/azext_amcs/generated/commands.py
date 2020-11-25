@@ -25,7 +25,6 @@ def load_command_table(self, _):
                             client_factory=cf_data_collection_rule_association) as g:
         g.custom_command('list', 'monitor_data_collection_rule_association_list')
         g.custom_show_command('show', 'monitor_data_collection_rule_association_show')
-        g.custom_command('create', 'monitor_data_collection_rule_association_create')
         g.custom_command('delete', 'monitor_data_collection_rule_association_delete', confirmation=True)
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule
@@ -37,8 +36,6 @@ def load_command_table(self, _):
                             client_factory=cf_data_collection_rule) as g:
         g.custom_command('list', 'monitor_data_collection_rule_list')
         g.custom_show_command('show', 'monitor_data_collection_rule_show')
-        g.custom_command('create', 'monitor_data_collection_rule_create')
-        g.custom_command('update', 'monitor_data_collection_rule_update')
         g.custom_command('delete', 'monitor_data_collection_rule_delete', confirmation=True)
 
     with self.command_group('data-collection', is_preview=True):

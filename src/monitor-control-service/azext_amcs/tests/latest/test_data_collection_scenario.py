@@ -11,12 +11,9 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_data_collection_rule_create
 from .example_steps import step_data_collection_rule_show
 from .example_steps import step_data_collection_rule_list
 from .example_steps import step_data_collection_rule_list
-from .example_steps import step_data_collection_rule_update
-from .example_steps import step_data_collection_rule_association_create
 from .example_steps import step_data_collection_rule_association_show
 from .example_steps import step_data_collection_rule_association_list
 from .example_steps import step_data_collection_rule_association_list
@@ -48,28 +45,9 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
-    step_data_collection_rule_create(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
-        test.check("name", "{myDataCollectionRule}", case_sensitive=False),
-    ])
-    step_data_collection_rule_show(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
-        test.check("name", "{myDataCollectionRule}", case_sensitive=False),
-    ])
-    step_data_collection_rule_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_data_collection_rule_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_data_collection_rule_update(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
-        test.check("name", "{myDataCollectionRule}", case_sensitive=False),
-        test.check("tags.tag1", "A", case_sensitive=False),
-        test.check("tags.tag2", "B", case_sensitive=False),
-        test.check("tags.tag3", "C", case_sensitive=False),
-    ])
-    step_data_collection_rule_association_create(test, rg, checks=[])
+    step_data_collection_rule_show(test, rg, checks=[])
+    step_data_collection_rule_list(test, rg, checks=[])
+    step_data_collection_rule_list(test, rg, checks=[])
     step_data_collection_rule_association_show(test, rg, checks=[])
     step_data_collection_rule_association_list(test, rg, checks=[])
     step_data_collection_rule_association_list(test, rg, checks=[])
@@ -84,10 +62,6 @@ class Data_collectionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdata_collection_myResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_data_collection_Scenario(self, rg):
-
-        self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
-        })
 
         self.kwargs.update({
             'myDataCollectionRule': 'myCollectionRule',
