@@ -18,9 +18,9 @@ from .action import RadiusServerAddAction
 def load_arguments(self, _):
 
     (IpsecEncryption, IpsecIntegrity, IkeEncryption, IkeIntegrity, DhGroup, PfsGroup,
-     VirtualNetworkGatewayConnectionProtocol) = self.get_models(
+     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
-         'VirtualNetworkGatewayConnectionProtocol')
+         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod')
 
     (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
@@ -212,6 +212,9 @@ def load_arguments(self, _):
 
     with self.argument_context('network p2s-vpn-gateway connection list') as c:
         c.argument('resource_name', p2s_vpn_gateway_name_type, id_part=None)
+
+    with self.argument_context('network p2s-vpn-gateway vpn-client') as c:
+        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod))
     # endregion
 
     # region Routing Configuration
