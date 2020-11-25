@@ -18,8 +18,8 @@ from .operations.operations import Operations
 from . import models
 
 
-class KubernetesConnectRPClientConfiguration(AzureConfiguration):
-    """Configuration for KubernetesConnectRPClient
+class ConnectedKubernetesClientConfiguration(AzureConfiguration):
+    """Configuration for ConnectedKubernetesClient
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
@@ -41,7 +41,7 @@ class KubernetesConnectRPClientConfiguration(AzureConfiguration):
         if not base_url:
             base_url = 'https://management.azure.com'
 
-        super(KubernetesConnectRPClientConfiguration, self).__init__(base_url)
+        super(ConnectedKubernetesClientConfiguration, self).__init__(base_url)
 
         self.add_user_agent('azure-mgmt-hybridkubernetes/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
@@ -50,16 +50,16 @@ class KubernetesConnectRPClientConfiguration(AzureConfiguration):
         self.subscription_id = subscription_id
 
 
-class KubernetesConnectRPClient(SDKClient):
+class ConnectedKubernetesClient(SDKClient):
     """Azure Connected Cluster Resource Provider API for adopting any Kubernetes Cluster
 
     :ivar config: Configuration for client.
-    :vartype config: KubernetesConnectRPClientConfiguration
+    :vartype config: ConnectedKubernetesClientConfiguration
 
     :ivar connected_cluster: ConnectedCluster operations
-    :vartype connected_cluster: azure.mgmt.hybridkubernetes.operations.ConnectedClusterOperations
+    :vartype connected_cluster: azure.mgmt.hybridkubernetes.v2020_01_01_preview.operations.ConnectedClusterOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.hybridkubernetes.operations.Operations
+    :vartype operations: azure.mgmt.hybridkubernetes.v2020_01_01_preview.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -72,8 +72,8 @@ class KubernetesConnectRPClient(SDKClient):
     def __init__(
             self, credentials, subscription_id, base_url=None):
 
-        self.config = KubernetesConnectRPClientConfiguration(credentials, subscription_id, base_url)
-        super(KubernetesConnectRPClient, self).__init__(self.config.credentials, self.config)
+        self.config = ConnectedKubernetesClientConfiguration(credentials, subscription_id, base_url)
+        super(ConnectedKubernetesClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self.api_version = '2020-01-01-preview'

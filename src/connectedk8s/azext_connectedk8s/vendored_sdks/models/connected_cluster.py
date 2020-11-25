@@ -48,6 +48,9 @@ class ConnectedCluster(TrackedResource):
     :ivar total_node_count: Number of nodes present in the connected cluster
      resource
     :vartype total_node_count: int
+    :ivar total_core_count: Number of CPU cores present in the connected
+     cluster resource
+    :vartype total_core_count: int
     :ivar agent_version: Version of the agent running on the connected cluster
      resource
     :vartype agent_version: str
@@ -55,15 +58,25 @@ class ConnectedCluster(TrackedResource):
      'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
      ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ProvisioningState
-    :param kubernetes_distro: The Kuberenetes distribution on which the agents
-     are running
-    :type kubernetes_distro: str
-    :param kubernetes_infra: The Kubernetes infrastructure on which the agents
-     are running
-    :type kubernetes_infra: str
-    :ivar offering: The 1P service name through which Arc onboarding has
-     happened in case of integrated onboarding
+    :param distribution: The Kubernetes distribution running on this connected
+     cluster.
+    :type distribution: str
+    :param infrastructure: The infrastructure on which the Kubernetes cluster
+     represented by this connected cluster is running on.
+    :type infrastructure: str
+    :ivar offering: Connected cluster offering
     :vartype offering: str
+    :ivar managed_identity_certificate_expiration_time: Expiration time of the
+     managed identity certificate
+    :vartype managed_identity_certificate_expiration_time: datetime
+    :ivar last_connectivity_time: Time representing the last instance when
+     heart beat was received from the cluster
+    :vartype last_connectivity_time: datetime
+    :param connectivity_status: Represents the connectivity status of the
+     connected cluster. Possible values include: 'Connecting', 'Connected',
+     'Offline', 'Expired'
+    :type connectivity_status: str or
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectivityStatus
     """
 
     _validation = {
@@ -76,8 +89,11 @@ class ConnectedCluster(TrackedResource):
         'aad_profile': {'required': True},
         'kubernetes_version': {'readonly': True},
         'total_node_count': {'readonly': True},
+        'total_core_count': {'readonly': True},
         'agent_version': {'readonly': True},
         'offering': {'readonly': True},
+        'managed_identity_certificate_expiration_time': {'readonly': True},
+        'last_connectivity_time': {'readonly': True},
     }
 
     _attribute_map = {
@@ -91,11 +107,15 @@ class ConnectedCluster(TrackedResource):
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ConnectedClusterAADProfile'},
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
+        'total_core_count': {'key': 'properties.totalCoreCount', 'type': 'int'},
         'agent_version': {'key': 'properties.agentVersion', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'kubernetes_distro': {'key': 'properties.kubernetesDistro', 'type': 'str'},
-        'kubernetes_infra': {'key': 'properties.kubernetesInfra', 'type': 'str'},
+        'distribution': {'key': 'properties.distribution', 'type': 'str'},
+        'infrastructure': {'key': 'properties.infrastructure', 'type': 'str'},
         'offering': {'key': 'properties.offering', 'type': 'str'},
+        'managed_identity_certificate_expiration_time': {'key': 'properties.managedIdentityCertificateExpirationTime', 'type': 'iso-8601'},
+        'last_connectivity_time': {'key': 'properties.lastConnectivityTime', 'type': 'iso-8601'},
+        'connectivity_status': {'key': 'properties.connectivityStatus', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -105,8 +125,12 @@ class ConnectedCluster(TrackedResource):
         self.aad_profile = kwargs.get('aad_profile', None)
         self.kubernetes_version = None
         self.total_node_count = None
+        self.total_core_count = None
         self.agent_version = None
         self.provisioning_state = kwargs.get('provisioning_state', None)
-        self.kubernetes_distro = kwargs.get('kubernetes_distro', None)
-        self.kubernetes_infra = kwargs.get('kubernetes_infra', None)
+        self.distribution = kwargs.get('distribution', None)
+        self.infrastructure = kwargs.get('infrastructure', None)
         self.offering = None
+        self.managed_identity_certificate_expiration_time = None
+        self.last_connectivity_time = None
+        self.connectivity_status = kwargs.get('connectivity_status', None)
