@@ -10,6 +10,8 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 
+from azext_attestation.manual._validators import validate_provider_resource_id
+
 from azure.cli.core.commands import CliCommandType
 
 
@@ -27,13 +29,14 @@ def load_command_table(self, _):
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
         g.custom_command('list', 'attestation_attestation_provider_list',
                          doc_string_source=attestation_provider_doc_template.format('list'))
-        g.custom_show_command('show', 'attestation_attestation_provider_show',
+        g.custom_show_command('show', 'attestation_attestation_provider_show', validator=validate_provider_resource_id,
                               doc_string_source=attestation_provider_doc_template.format('get'))
         g.custom_command('create', 'attestation_attestation_provider_create',
                          doc_string_source=attestation_provider_doc_template.format('create'))
         g.custom_command('update', 'attestation_attestation_provider_update',
                          doc_string_source=attestation_provider_doc_template.format('update'))
         g.custom_command('delete', 'attestation_attestation_provider_delete', confirmation=True,
+                         validator=validate_provider_resource_id,
                          doc_string_source=attestation_provider_doc_template.format('delete'))
         g.custom_command('get-default-by-location', 'attestation_attestation_provider_get_default_by_location',
                          doc_string_source=attestation_provider_doc_template.format('get_default_by_location'))

@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "westus"}'
+    body: '{"location": "westus", "properties": {"policySigningCertificates": {"keys":
+      []}}}'
     headers:
       Accept:
       - application/json
@@ -11,7 +12,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '81'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -32,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 24 Nov 2020 07:55:51 GMT
+      - Wed, 25 Nov 2020 08:37:03 GMT
       expires:
       - '-1'
       location:
@@ -48,7 +49,7 @@ interactions:
       x-ms-maa-service-version:
       - 1.10.01419.0005
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1194'
     status:
       code: 201
       message: Created
@@ -81,7 +82,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 24 Nov 2020 07:55:51 GMT
+      - Wed, 25 Nov 2020 08:37:05 GMT
       expires:
       - '-1'
       pragma:
@@ -130,7 +131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 24 Nov 2020 07:55:52 GMT
+      - Wed, 25 Nov 2020 08:37:06 GMT
       expires:
       - '-1'
       pragma:
@@ -168,16 +169,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Attestation/attestationProviders?api-version=2020-10-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/testatt","name":"testatt","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":{"k1":"v1","k2":"v2"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://testatt.wus.attest.azure.net"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/bimatt3","name":"bimatt3","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":{"k1":"v2","k2":"v3"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://bimatt3.wus.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Attestation/attestationProviders/myattestationprovider","name":"myattestationprovider","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":null,"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://myattestationprovider.wus.attest.azure.net"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Attestation/attestationProviders/testatt","name":"testatt","type":"Microsoft.Attestation/attestationProviders","location":"westus","tags":{"k1":"v1","k2":"v2"},"properties":{"trustModel":"AAD","status":"Ready","attestUri":"https://testatt.wus.attest.azure.net"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '833'
+      - '1197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 24 Nov 2020 07:55:53 GMT
+      - Wed, 25 Nov 2020 08:37:08 GMT
       expires:
       - '-1'
       pragma:
@@ -230,7 +231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 24 Nov 2020 07:55:58 GMT
+      - Wed, 25 Nov 2020 08:37:12 GMT
       expires:
       - '-1'
       pragma:
@@ -281,7 +282,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 24 Nov 2020 07:56:07 GMT
+      - Wed, 25 Nov 2020 08:37:21 GMT
       expires:
       - '-1'
       pragma:
@@ -295,7 +296,7 @@ interactions:
       x-ms-maa-service-version:
       - 1.10.01419.0005
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK

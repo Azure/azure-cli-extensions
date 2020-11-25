@@ -19,6 +19,12 @@ def load_arguments(self, _):
             c.argument('provider_name', type=str, options_list=['-n', '--name'],
                        help='Name of the attestation service instance.')
 
+    for item in ['show', 'delete']:
+        with self.argument_context('attestation {}'.format(item)) as c:
+            c.extra('identifier', options_list=['--id'],
+                    help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '
+                         'if you have already specified --id.')
+
     for item in ['create', 'update']:
         with self.argument_context('attestation {}'.format(item)) as c:
             c.argument('tags', tags_type, nargs='+')

@@ -82,7 +82,7 @@ def step__attestationproviders_patch(test, rg):
 # EXAMPLE: /AttestationProviders/delete/AttestationProviders_Delete
 @try_manual
 def step__attestationproviders_delete(test, rg):
-    test.cmd('az attestation  delete -y '
+    test.cmd('az attestation delete -y '
              '-n "myattestationprovider" '
              '--resource-group "{rg}"')
 
