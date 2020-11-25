@@ -12,7 +12,9 @@ from ._client_factory import (
     cf_vpn_gateways, cf_vpn_gateway_connection, cf_virtual_hub_route_table_v2s, cf_vpn_server_config,
     cf_p2s_vpn_gateways, cf_virtual_hub_connection)
 from ._util import (
-    list_network_resource_property, delete_network_resource_property_entry, get_network_resource_property_entry)
+    list_network_resource_property,
+    get_network_resource_property_entry
+)
 
 
 # pylint: disable=too-many-locals, too-many-statements
