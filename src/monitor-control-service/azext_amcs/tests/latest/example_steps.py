@@ -12,6 +12,38 @@
 from .. import try_manual
 
 
+# EXAMPLE: /DataCollectionRules/put/Create or update data collection rule
+@try_manual
+def step_data_collection_rule_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule create '
+             '--location "eastus" '
+             '--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
+             'streams="Microsoft-WindowsEvent" '
+             '--data-sources-performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
+             ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\Logical'
+             'Disk(_Total)\\\\Free Megabytes" counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
+             'sampling-frequency-in-seconds=15 scheduled-transfer-period="PT1M" streams="Microsoft-Perf" '
+             '--data-sources-performance-counters name="appTeamExtraCounters" counter-specifiers="\\\\Process(_Total)\\'
+             '\\Thread Count" sampling-frequency-in-seconds=30 scheduled-transfer-period="PT5M" '
+             'streams="Microsoft-Perf" '
+             '--data-sources-syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" '
+             'log-levels="Emergency" streams="Microsoft-Syslog" '
+             '--data-sources-syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
+             'log-levels="Emergency" streams="Microsoft-Syslog" '
+             '--data-sources-windows-event-logs name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" '
+             'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
+             '--data-sources-windows-event-logs name="appTeam1AppEvents" scheduled-transfer-period="PT5M" '
+             'streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level  x-path-queries="Application!*[Sys'
+             'tem[(Level  '
+             '--destinations-log-analytics name="centralWorkspace" workspace-resource-id="/subscriptions/{subscription_'
+             'id}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /DataCollectionRules/get/Get data collection rule
 @try_manual
 def step_data_collection_rule_show(test, rg, checks=None):
@@ -40,6 +72,32 @@ def step_data_collection_rule_list(test, rg, checks=None):
         checks = []
     test.cmd('az monitor data-collection rule list '
              '-g ""',
+             checks=checks)
+
+
+# EXAMPLE: /DataCollectionRules/patch/Update data collection rule
+@try_manual
+def step_data_collection_rule_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule update '
+             '--tags tag1="A" tag2="B" tag3="C" '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataCollectionRuleAssociations/put/Create or update association
+@try_manual
+def step_data_collection_rule_association_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association create '
+             '--name "myAssociation" '
+             '--rule-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Insights/dataCollecti'
+             'onRules/{myDataCollectionRule}" '
+             '--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/M'
+             'icrosoft.Compute/virtualMachines/myVm"',
              checks=checks)
 
 

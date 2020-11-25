@@ -18,18 +18,18 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import MonitorClientConfiguration
-from .operations import DataCollectionRuleAssociationOperations
-from .operations import DataCollectionRuleOperations
+from .operations import DataCollectionRuleAssociationsOperations
+from .operations import DataCollectionRulesOperations
 from . import models
 
 
 class MonitorClient(object):
     """Monitor Management Client.
 
-    :ivar data_collection_rule_association: DataCollectionRuleAssociationOperations operations
-    :vartype data_collection_rule_association: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRuleAssociationOperations
-    :ivar data_collection_rule: DataCollectionRuleOperations operations
-    :vartype data_collection_rule: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRuleOperations
+    :ivar data_collection_rule_associations: DataCollectionRuleAssociationsOperations operations
+    :vartype data_collection_rule_associations: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRuleAssociationsOperations
+    :ivar data_collection_rules: DataCollectionRulesOperations operations
+    :vartype data_collection_rules: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRulesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -55,9 +55,9 @@ class MonitorClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.data_collection_rule_association = DataCollectionRuleAssociationOperations(
+        self.data_collection_rule_associations = DataCollectionRuleAssociationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_collection_rule = DataCollectionRuleOperations(
+        self.data_collection_rules = DataCollectionRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

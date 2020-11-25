@@ -17,8 +17,8 @@ def cf_data_collection_cl(cli_ctx, *_):
 
 
 def cf_data_collection_rule_association(cli_ctx, *_):
-    return cf_data_collection_cl(cli_ctx).data_collection_rule_association
+    return cf_data_collection_cl(cli_ctx).data_collection_rule_associations
 
 
 def cf_data_collection_rule(cli_ctx, *_):
-    return cf_data_collection_cl(cli_ctx).data_collection_rule
+    return cf_data_collection_cl(cli_ctx).data_collection_rules

@@ -26,9 +26,9 @@ class AddDataFlows(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'streams':
+            if kl == 'stream':
                 d['streams'] = v
-            elif kl == 'destinations':
+            elif kl == 'destination':
                 d['destinations'] = v
         return d
 
@@ -96,13 +96,13 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'streams':
+            if kl == 'stream':
                 d['streams'] = v
             elif kl == 'scheduled-transfer-period':
                 d['scheduled_transfer_period'] = v[0]
             elif kl == 'sampling-frequency-in-seconds':
                 d['sampling_frequency_in_seconds'] = v[0]
-            elif kl == 'counter-specifiers':
+            elif kl == 'counter-specifier':
                 d['counter_specifiers'] = v
             elif kl == 'name':
                 d['name'] = v[0]
@@ -126,11 +126,11 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'streams':
+            if kl == 'stream':
                 d['streams'] = v
             elif kl == 'scheduled-transfer-period':
                 d['scheduled_transfer_period'] = v[0]
-            elif kl == 'x-path-queries':
+            elif kl == 'x-path-query':
                 d['x_path_queries'] = v
             elif kl == 'name':
                 d['name'] = v[0]
@@ -154,11 +154,11 @@ class AddDataSourcesSyslog(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'streams':
+            if kl == 'stream':
                 d['streams'] = v
-            elif kl == 'facility-names':
+            elif kl == 'facility-name':
                 d['facility_names'] = v
-            elif kl == 'log-levels':
+            elif kl == 'log-level':
                 d['log_levels'] = v
             elif kl == 'name':
                 d['name'] = v[0]

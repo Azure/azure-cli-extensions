@@ -6,10 +6,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._data_collection_rule_association_operations import DataCollectionRuleAssociationOperations
-from ._data_collection_rule_operations import DataCollectionRuleOperations
+from ._data_collection_rule_associations_operations import DataCollectionRuleAssociationsOperations
+from ._data_collection_rules_operations import DataCollectionRulesOperations
 
 __all__ = [
-    'DataCollectionRuleAssociationOperations',
-    'DataCollectionRuleOperations',
+    'DataCollectionRuleAssociationsOperations',
+    'DataCollectionRulesOperations',
 ]

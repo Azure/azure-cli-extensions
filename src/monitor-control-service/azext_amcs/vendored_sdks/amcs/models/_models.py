@@ -388,29 +388,18 @@ class DataCollectionRuleResource(msrest.serialization.Model):
     :vartype etag: str
     :param description: Description of the data collection rule.
     :type description: str
+    :param data_sources: The specification of data sources.
+     This property is optional and can be omitted if the rule is meant to be used via direct calls
+     to the provisioned endpoint.
+    :type data_sources: ~$(python-base-namespace).v2019_11_01_preview.models.DataSourcesSpec
+    :param destinations: Required. The specification of destinations.
+    :type destinations: ~$(python-base-namespace).v2019_11_01_preview.models.DestinationsSpec
     :param data_flows: Required. The specification of data flows.
     :type data_flows: list[~$(python-base-namespace).v2019_11_01_preview.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
     :vartype provisioning_state: str or ~$(python-base-
      namespace).v2019_11_01_preview.models.KnownDataCollectionRuleProvisioningState
-    :param log_analytics: List of Log Analytics destinations.
-    :type log_analytics: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.LogAnalyticsDestination]
-    :param azure_monitor_metrics: Azure Monitor Metrics destination.
-    :type azure_monitor_metrics: ~$(python-base-
-     namespace).v2019_11_01_preview.models.AzureMonitorMetricsDestination
-    :param performance_counters: The list of performance counter data source configurations.
-    :type performance_counters: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.PerfCounterDataSource]
-    :param windows_event_logs: The list of Windows Event Log data source configurations.
-    :type windows_event_logs: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.WindowsEventLogDataSource]
-    :param syslog: The list of Syslog data source configurations.
-    :type syslog: list[~$(python-base-namespace).v2019_11_01_preview.models.SyslogDataSource]
-    :param extensions: The list of Azure VM extension data source configurations.
-    :type extensions: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ExtensionDataSource]
     """
 
     _validation = {
@@ -420,6 +409,7 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'type': {'readonly': True},
         'etag': {'readonly': True},
         'description': {'max_length': 256, 'min_length': 0},
+        'destinations': {'required': True},
         'data_flows': {'required': True},
         'provisioning_state': {'readonly': True},
     }
@@ -432,14 +422,10 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
+        'data_sources': {'key': 'properties.dataSources', 'type': 'DataSourcesSpec'},
+        'destinations': {'key': 'properties.destinations', 'type': 'DestinationsSpec'},
         'data_flows': {'key': 'properties.dataFlows', 'type': '[DataFlow]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'log_analytics': {'key': 'properties.destinations.logAnalytics', 'type': '[LogAnalyticsDestination]'},
-        'azure_monitor_metrics': {'key': 'properties.destinations.azureMonitorMetrics', 'type': 'AzureMonitorMetricsDestination'},
-        'performance_counters': {'key': 'properties.dataSources.performanceCounters', 'type': '[PerfCounterDataSource]'},
-        'windows_event_logs': {'key': 'properties.dataSources.windowsEventLogs', 'type': '[WindowsEventLogDataSource]'},
-        'syslog': {'key': 'properties.dataSources.syslog', 'type': '[SyslogDataSource]'},
-        'extensions': {'key': 'properties.dataSources.extensions', 'type': '[ExtensionDataSource]'},
     }
 
     def __init__(
@@ -454,14 +440,10 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         self.type = None
         self.etag = None
         self.description = kwargs.get('description', None)
+        self.data_sources = kwargs.get('data_sources', None)
+        self.destinations = kwargs['destinations']
         self.data_flows = kwargs['data_flows']
         self.provisioning_state = None
-        self.log_analytics = kwargs.get('log_analytics', None)
-        self.azure_monitor_metrics = kwargs.get('azure_monitor_metrics', None)
-        self.performance_counters = kwargs.get('performance_counters', None)
-        self.windows_event_logs = kwargs.get('windows_event_logs', None)
-        self.syslog = kwargs.get('syslog', None)
-        self.extensions = kwargs.get('extensions', None)
 
 
 class DataCollectionRuleResourceListResult(msrest.serialization.Model):
