@@ -88,11 +88,11 @@ def load_arguments(self, _):
     with self.argument_context('network vhub route-table') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
-        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2")
+        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
         c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR', 'ResourceId']), help='The type of destinations')
         c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
         c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress', 'ResourceId']), help='The type of next hop. If --next-hops (v2) is provided, it should be IPAddress; if --next-hop (v3) is provided, it should be ResourceId.')
-        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2")
+        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
         c.argument('index', type=int, help='List index of the item (starting with 1).')
         c.argument('next_hop', help='The resource ID of the next hop.', arg_group="route table v3", min_api='2020-04-01')
         c.argument('route_name', help='The name of the route.', arg_group="route table v3", min_api='2020-04-01')
