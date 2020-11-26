@@ -12,26 +12,26 @@
 
 def monitor_data_collection_rule_association_list(client,
                                                   resource_group_name=None,
-                                                  rule_name=None,
-                                                  resource=None):
-    if resource_group_name and rule_name is not None:
+                                                  data_collection_rule_name=None,
+                                                  resource_uri=None):
+    if resource_group_name and data_collection_rule_name is not None:
         return client.list_by_rule(resource_group_name=resource_group_name,
-                                   data_collection_rule_name=rule_name)
-    return client.list_by_resource(resource_uri=resource)
+                                   data_collection_rule_name=data_collection_rule_name)
+    return client.list_by_resource(resource_uri=resource_uri)
 
 
 def monitor_data_collection_rule_association_show(client,
-                                                  resource,
-                                                  name):
-    return client.get(resource_uri=resource,
-                      association_name=name)
+                                                  resource_uri,
+                                                  association_name):
+    return client.get(resource_uri=resource_uri,
+                      association_name=association_name)
 
 
 def monitor_data_collection_rule_association_delete(client,
-                                                    resource,
-                                                    name):
-    return client.delete(resource_uri=resource,
-                         association_name=name)
+                                                    resource_uri,
+                                                    association_name):
+    return client.delete(resource_uri=resource_uri,
+                         association_name=association_name)
 
 
 def monitor_data_collection_rule_list(client,
@@ -43,13 +43,13 @@ def monitor_data_collection_rule_list(client,
 
 def monitor_data_collection_rule_show(client,
                                       resource_group_name,
-                                      name):
+                                      data_collection_rule_name):
     return client.get(resource_group_name=resource_group_name,
-                      data_collection_rule_name=name)
+                      data_collection_rule_name=data_collection_rule_name)
 
 
 def monitor_data_collection_rule_delete(client,
                                         resource_group_name,
-                                        name):
+                                        data_collection_rule_name):
     return client.delete(resource_group_name=resource_group_name,
-                         data_collection_rule_name=name)
+                         data_collection_rule_name=data_collection_rule_name)

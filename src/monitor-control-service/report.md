@@ -63,7 +63,7 @@ az monitor data-collection rule show --name "myCollectionRule" --resource-group 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--name**|string|The name of the data collection rule. The name is case insensitive.|name|dataCollectionRuleName|
+|**--data-collection-rule-name**|string|The name of the data collection rule. The name is case insensitive.|data_collection_rule_name|dataCollectionRuleName|
 
 #### <a name="DataCollectionRulesDelete">Command `az monitor data-collection rule delete`</a>
 
@@ -75,7 +75,7 @@ az monitor data-collection rule delete --name "myCollectionRule" --resource-grou
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--name**|string|The name of the data collection rule. The name is case insensitive.|name|dataCollectionRuleName|
+|**--data-collection-rule-name**|string|The name of the data collection rule. The name is case insensitive.|data_collection_rule_name|dataCollectionRuleName|
 
 ### group `az monitor data-collection rule association`
 #### <a name="DataCollectionRuleAssociationsListByRule">Command `az monitor data-collection rule association list`</a>
@@ -88,7 +88,7 @@ az monitor data-collection rule association list --rule-name "myCollectionRule" 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--rule-name**|string|The name of the data collection rule. The name is case insensitive.|rule_name|dataCollectionRuleName|
+|**--data-collection-rule-name**|string|The name of the data collection rule. The name is case insensitive.|data_collection_rule_name|dataCollectionRuleName|
 
 #### <a name="DataCollectionRuleAssociationsListByResource">Command `az monitor data-collection rule association list`</a>
 
@@ -100,7 +100,7 @@ eGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
 ##### <a name="ParametersDataCollectionRuleAssociationsListByResource">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource**|string|The identifier of the resource.|resource|resourceUri|
+|**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
 
 #### <a name="DataCollectionRuleAssociationsGet">Command `az monitor data-collection rule association show`</a>
 
@@ -112,8 +112,8 @@ az monitor data-collection rule association show --name "myAssociation" --resour
 ##### <a name="ParametersDataCollectionRuleAssociationsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource**|string|The identifier of the resource.|resource|resourceUri|
-|**--name**|string|The name of the association.|name|associationName|
+|**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
+|**--association-name**|string|The name of the association.|association_name|associationName|
 
 #### <a name="DataCollectionRuleAssociationsDelete">Command `az monitor data-collection rule association delete`</a>
 
@@ -125,5 +125,5 @@ az monitor data-collection rule association delete --name "myAssociation" --reso
 ##### <a name="ParametersDataCollectionRuleAssociationsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource**|string|The identifier of the resource.|resource|resourceUri|
-|**--name**|string|The name of the association.|name|associationName|
+|**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
+|**--association-name**|string|The name of the association.|association_name|associationName|
