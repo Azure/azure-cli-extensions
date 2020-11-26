@@ -24,6 +24,39 @@ class AttestationPolicy(Model):
         self.token = token
 
 
+class AttestSgxEnclaveRequest(Model):
+    """Attestation request for SGX-IntelSDK enclaves.
+    """
+
+    _attribute_map = {
+        'quote': {'key': 'quote', 'type': 'str'},
+        'runtime_data': {'key': 'runtimeData', 'type': 'RuntimeData'},
+        'init_time_data': {'key': 'initTimeData', 'type': 'InitTimeData'},
+        'draft_policy_for_attestation': {'key': 'draftPolicyForAttestation', 'type': 'str'}
+    }
+
+
+class AttestOpenEnclaveRequest(Model):
+    """Attestation request for SGX-OpenEnclaveSDK enclaves.
+    """
+
+    _attribute_map = {
+        'report': {'key': 'report', 'type': 'str'},
+        'runtime_data': {'key': 'runtimeData', 'type': 'RuntimeData'},
+        'init_time_data': {'key': 'initTimeData', 'type': 'InitTimeData'},
+        'draft_policy_for_attestation': {'key': 'draftPolicyForAttestation', 'type': 'str'}
+    }
+
+
+class TPMOpenEnclaveRequest(Model):
+    """Attestation request for Trusted Platform Module (TPM) attestation.
+    """
+
+    _attribute_map = {
+        'data': {'key': 'data', 'type': 'str'}
+    }
+
+
 class CloudError(Model):
     """An error response from Attestation.
 
