@@ -101,7 +101,10 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
             elif kl == 'scheduled-transfer-period':
                 d['scheduled_transfer_period'] = v[0]
             elif kl == 'sampling-frequency-in-seconds':
-                d['sampling_frequency_in_seconds'] = v[0]
+                try:
+                    d['sampling_frequency_in_seconds'] = int(v[0])
+                except ValueError:
+                    raise CLIError('usage error: invalid sampling-frequency-in-seconds={}'.format(v[0]))
             elif kl == 'counter-specifier':
                 d['counter_specifiers'] = v
             elif kl == 'name':

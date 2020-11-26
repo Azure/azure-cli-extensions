@@ -24,7 +24,10 @@ from azext_amcs.action import (
 )
 
 
-from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams
+from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
+    KnownPerfCounterDataSourceScheduledTransferPeriod, KnownWindowsEventLogDataSourceStreams, \
+    KnownWindowsEventLogDataSourceScheduledTransferPeriod, KnownSyslogDataSourceStreams, \
+    KnownSyslogDataSourceFacilityNames, KnownSyslogDataSourceLogLevels
 
 
 def load_arguments(self, _):
@@ -89,11 +92,38 @@ def load_arguments(self, _):
         c.argument('stream', arg_type=get_enum_type(KnownPerfCounterDataSourceStreams), nargs='+',
                    help='List of streams that this data source will be sent to. A stream indicates what schema will be '
                    'used for this data and usually what table in Log Analytics the data will be sent to.')
-        c.argument('scheduled_transfer_period', type=str, options_list=['--transfer-period'],
+        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
+                   arg_type=get_enum_type(KnownPerfCounterDataSourceScheduledTransferPeriod),
                    help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
+        c.argument('sampling_frequency_in_seconds', options_list=['--sampling-frequency'], type=int,
+                   help='The number of seconds between consecutive counter measurements (samples).')
+        c.argument('counter_specifier', options_list=['--counter-specifier'], type=str, nargs='+',
+                   help="A list of specifier names of the performance counters you want to collect."
+                   "Use a wildcard (*) to collect a counter for all instances. "
+                   "To get a list of performance counters on Windows, run the command 'typeperf'.")
 
     with self.argument_context('monitor data-collection rule windows-event-log') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('name', options_list=['--name', '-n'], type=str,
+                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   '(regardless of type) within the data collection rule.')
+        c.argument('stream', arg_type=get_enum_type(KnownWindowsEventLogDataSourceStreams), nargs='+',
+                   help='List of streams that this data source will be sent to. A stream indicates what schema will '
+                   'be used for this data and usually what table in Log Analytics the data will be sent to.')
+        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
+                   arg_type=get_enum_type(KnownWindowsEventLogDataSourceScheduledTransferPeriod),
+                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
+        c.argument('x_path_query', nargs='+', type=str, help='A list of Windows Event Log queries in XPATH format.')
 
     with self.argument_context('monitor data-collection rule syslog') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('name', options_list=['--name', '-n'], type=str,
+                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   '(regardless of type) within the data collection rule.')
+        c.argument('stream', arg_type=get_enum_type(KnownSyslogDataSourceStreams), nargs='+',
+                   help='List of streams that this data source will be sent to. A stream indicates what schema will '
+                   'be used for this data and usually what table in Log Analytics the data will be sent to.')
+        c.argument('facility_name', arg_type=get_enum_type(KnownSyslogDataSourceFacilityNames), nargs='+',
+                   help='The list of facility names.')
+        c.argument('log_level', arg_type=get_enum_type(KnownSyslogDataSourceLogLevels), nargs='+',
+                   help='The log levels to collect.')
