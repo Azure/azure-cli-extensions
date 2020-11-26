@@ -7,7 +7,8 @@
 from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    get_enum_type
 )
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
@@ -21,6 +22,9 @@ from azext_amcs.action import (
     AddDataSourcesWindowsEventLogs,
     AddDataSourcesSyslog
 )
+
+
+from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams
 
 
 def load_arguments(self, _):
@@ -62,3 +66,34 @@ def load_arguments(self, _):
         c.argument('data_collection_rule_name', id_part=None)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
+
+    with self.argument_context('monitor data-collection rule data-flow') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('stream', arg_type=get_enum_type(KnownDataFlowStreams), nargs='+',
+                   help='List of streams for this data flow.')
+        c.argument('destination', type=str, help='List of destinations for this data flow.')
+
+    with self.argument_context('monitor data-collection rule log-analytics') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('name', options_list=['--name', '-n'], type=str,
+                   help='A friendly name for the destination.  This name should be unique across all destinations '
+                   '(regardless of type) within the data collection rule.')
+        c.argument('workspace_resource_id', options_list=['--resource-id'], type=str,
+                   help='The resource ID of the Log Analytics workspace.')
+
+    with self.argument_context('monitor data-collection rule performance-counter') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+        c.argument('name', options_list=['--name', '-n'], type=str,
+                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   '(regardless of type) within the data collection rule.')
+        c.argument('stream', arg_type=get_enum_type(KnownPerfCounterDataSourceStreams), nargs='+',
+                   help='List of streams that this data source will be sent to. A stream indicates what schema will be '
+                   'used for this data and usually what table in Log Analytics the data will be sent to.')
+        c.argument('scheduled_transfer_period', type=str, options_list=['--transfer-period'],
+                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
+
+    with self.argument_context('monitor data-collection rule windows-event-log') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+
+    with self.argument_context('monitor data-collection rule syslog') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
