@@ -930,7 +930,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: add
-        cmd = ('aks pod-identity add-exception --cluster-name={name} --resource-group={resource_group} '
+        cmd = ('aks pod-identity exception add --cluster-name={name} --resource-group={resource_group} '
                '--namespace test-namespace --name test-name --pod-labels foo=bar')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -941,7 +941,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: update
-        cmd = ('aks pod-identity update-exception --cluster-name={name} --resource-group={resource_group} '
+        cmd = ('aks pod-identity exception update --cluster-name={name} --resource-group={resource_group} '
                '--namespace test-namespace --name test-name --pod-labels foo=bar a=b')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -953,7 +953,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # pod identity exception: delete
-        cmd = ('aks pod-identity delete-exception --cluster-name={name} --resource-group={resource_group} '
+        cmd = ('aks pod-identity exception delete --cluster-name={name} --resource-group={resource_group} '
                '--namespace test-namespace --name test-name')
         self.cmd(cmd, checks=[
             self.check('provisioningState', 'Succeeded'),

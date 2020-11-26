@@ -79,8 +79,11 @@ def load_command_table(self, _):
         g.custom_command('delete', 'aks_pod_identity_delete')
         g.custom_command('list', 'aks_pod_identity_list',
                          table_transformer=aks_pod_identities_table_format)
-        g.custom_command('add-exception', 'aks_pod_identity_exception_add')
-        g.custom_command('delete-exception', 'aks_pod_identity_exception_delete')
-        g.custom_command('update-exception', 'aks_pod_identity_exception_update')
-        g.custom_command('list-exceptions', 'aks_pod_identity_exception_list',
+
+    # AKS pod identity exception commands
+    with self.command_group('aks pod-identity exception', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('add', 'aks_pod_identity_exception_add')
+        g.custom_command('delete', 'aks_pod_identity_exception_delete')
+        g.custom_command('update', 'aks_pod_identity_exception_update')
+        g.custom_command('list', 'aks_pod_identity_exception_list',
                          table_transformer=aks_pod_identity_exceptions_table_format)

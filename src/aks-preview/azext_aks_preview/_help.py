@@ -846,22 +846,27 @@ helps['aks pod-identity list'] = """
     short-summary: List pod identities in a managed Kubernetes cluster
 """
 
-helps['aks pod-identity add-exception'] = """
+helps['aks pod-identity exception'] = """
+    type: group
+    short-summary: Commands to manage pod identity exceptions in managed Kubernetes cluster.
+"""
+
+helps['aks pod-identity exception add'] = """
     type: command
     short-summary: Add a pod identity exception to a managed Kubernetes cluster
 """
 
-helps['aks pod-identity delete-exception'] = """
+helps['aks pod-identity exception delete'] = """
     type: command
     short-summary: Remove a pod identity exception from a managed Kubernetes cluster
 """
 
-helps['aks pod-identity update-exception'] = """
+helps['aks pod-identity exception update'] = """
     type: command
     short-summary: Update a pod identity exception in a managed Kubernetes cluster
 """
 
-helps['aks pod-identity list-exceptions'] = """
+helps['aks pod-identity exception list'] = """
     type: command
     short-summary: List pod identity exceptions in a managed Kubernetes cluster
 """

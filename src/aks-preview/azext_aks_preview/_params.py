@@ -228,7 +228,7 @@ def load_arguments(self, _):
                    validator=validate_pod_identity_resource_name('identity_name', required=True))
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
 
-    with self.argument_context('aks pod-identity add-exception') as c:
+    with self.argument_context('aks pod-identity exception add') as c:
         c.argument('exc_name', type=str, options_list=['--name', '-n'], default=None, required=False,
                    help='The pod identity exception name. Generate if not specified.',
                    validator=validate_pod_identity_resource_name('exc_name', required=False))
@@ -239,7 +239,7 @@ def load_arguments(self, _):
                    help='space-separated labels: key=value [key=value ...].',
                    validator=validate_pod_identity_pod_labels)
 
-    with self.argument_context('aks pod-identity delete-exception') as c:
+    with self.argument_context('aks pod-identity exception delete') as c:
         c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
                    help='The pod identity exception name to remove.',
                    validator=validate_pod_identity_resource_name('exc_name', required=True))
@@ -247,7 +247,7 @@ def load_arguments(self, _):
                    help='The pod identity exception namespace to remove.',
                    validator=validate_pod_identity_resource_namespace)
 
-    with self.argument_context('aks pod-identity update-exception') as c:
+    with self.argument_context('aks pod-identity exception update') as c:
         c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
                    help='The pod identity exception name to remove.',
                    validator=validate_pod_identity_resource_name('exc_name', required=True))
