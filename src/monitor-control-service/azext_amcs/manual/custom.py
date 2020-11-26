@@ -87,3 +87,20 @@ def monitor_data_collection_rule_update(instance,
     if data_sources_extensions is not None:
         instance.data_sources.extensions = data_sources_extensions
     return instance
+
+
+def monitor_data_collection_rule_data_flow_list(client,
+                                                resource_group_name,
+                                                data_collection_rule_name):
+    return client.get(resource_group_name=resource_group_name,
+                      data_collection_rule_name=data_collection_rule_name).data_flows
+
+
+def monitor_data_collection_rule_data_flow_add(instance,
+                                               streams,
+                                               destinations):
+    instance.data_flows.append({
+        'steams': streams,
+        'destinations': destinations,
+    })
+    return instance

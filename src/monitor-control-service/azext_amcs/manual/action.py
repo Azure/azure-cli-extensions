@@ -50,7 +50,7 @@ class AddDestinationsLogAnalytics(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'workspace-resource-id':
+            if kl == 'resource-id':
                 d['workspace_resource_id'] = v[0]
             elif kl == 'name':
                 d['name'] = v[0]
@@ -98,9 +98,9 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
             v = properties[k]
             if kl == 'stream':
                 d['streams'] = v
-            elif kl == 'scheduled-transfer-period':
+            elif kl == 'transfer-period':
                 d['scheduled_transfer_period'] = v[0]
-            elif kl == 'sampling-frequency-in-seconds':
+            elif kl == 'sampling-frequency':
                 try:
                     d['sampling_frequency_in_seconds'] = int(v[0])
                 except ValueError:
@@ -131,7 +131,7 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
             v = properties[k]
             if kl == 'stream':
                 d['streams'] = v
-            elif kl == 'scheduled-transfer-period':
+            elif kl == 'transfer-period':
                 d['scheduled_transfer_period'] = v[0]
             elif kl == 'x-path-query':
                 d['x_path_queries'] = v

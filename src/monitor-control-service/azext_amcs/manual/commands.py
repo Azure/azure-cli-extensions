@@ -37,7 +37,7 @@ def load_command_table(self, _):
 
     with self.command_group('monitor data-collection rule data-flow', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_command('list', 'monitor_data_collection_rule_data_flow_list')
+        g.custom_show_command('list', 'monitor_data_collection_rule_data_flow_list')
         g.generic_update_command('add', 'monitor_data_collection_rule_data_flow_add')
 
     with self.command_group('monitor data-collection rule log-analytics', data_collection_data_collection_rule,

@@ -116,9 +116,9 @@ helps['monitor data-collection rule create'] = """
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
-            Usage: --log-analytics workspace-resource-id=XX name=XX
+            Usage: --log-analytics resource-id=XX name=XX
 
-            workspace-resource-id: Required. The resource ID of the Log Analytics workspace.
+            resource-id: Required. The resource ID of the Log Analytics workspace.
             name: Required. A friendly name for the destination.  This name should be unique across all destinations \
 (regardless of type) within the data collection rule.
 
@@ -133,14 +133,14 @@ helps['monitor data-collection rule create'] = """
       - name: --performance-counter
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter stream=XX1 stream=XX2 scheduled-transfer-period=XX \
-sampling-frequency-in-seconds=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
+            Usage: --performance-counter stream=XX1 stream=XX2 transfer-period=XX \
+sampling-frequency=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
 
             stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+            transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
-            sampling-frequency-in-seconds: Required. The number of seconds between consecutive counter measurements \
+            sampling-frequency: Required. The number of seconds between consecutive counter measurements \
 (samples).
             counter-specifier: Required. A list of specifier names of the performance counters you want to collect. \
 Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
@@ -152,12 +152,12 @@ command 'typeperf'.
       - name: --windows-event-log
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log stream=XX1 stream=XX2 scheduled-transfer-period=XX x-path-query=XX1 \
+            Usage: --windows-event-log stream=XX1 stream=XX2 transfer-period=XX x-path-query=XX1 \
 x-path-query=XX2 name=XX
 
             stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+            transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
             x-path-query: Required. A list of Windows Event Log queries in XPATH format.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
@@ -187,22 +187,22 @@ will be used for this data and usually what table in Log Analytics the data will
 stream="Microsoft-WindowsEvent" \
 --performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total)\\\\% Processor Time" \
 counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
-counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency-in-seconds=15 \
-scheduled-transfer-period="PT1M" stream="Microsoft-Perf" \
+counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
+transfer-period="PT1M" stream="Microsoft-Perf" \
 --performance-counter name="appTeamExtraCounters" \
-counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency-in-seconds=30 \
-scheduled-transfer-period="PT5M" stream="Microsoft-Perf" \
+counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
+transfer-period="PT5M" stream="Microsoft-Perf" \
 --syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" log-level="Emergency" \
 stream="Microsoft-Syslog" \
 --syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" log-level="Emergency" \
 stream="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
+--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
 x-path-query="Security!" \
---windows-event-log name="appTeam1AppEvents" scheduled-transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
+--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
 x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
 x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
 --log-analytics name="centralWorkspace" \
-workspace-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
+resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
 rosoft.OperationalInsights/workspaces/centralTeamWorkspace"
 
 """
@@ -223,9 +223,9 @@ helps['monitor data-collection rule update'] = """
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
-            Usage: --log-analytics workspace-resource-id=XX name=XX
+            Usage: --log-analytics resource-id=XX name=XX
 
-            workspace-resource-id: Required. The resource ID of the Log Analytics workspace.
+            resource-id: Required. The resource ID of the Log Analytics workspace.
             name: Required. A friendly name for the destination.  This name should be unique across all destinations \
 (regardless of type) within the data collection rule.
 
@@ -240,14 +240,14 @@ helps['monitor data-collection rule update'] = """
       - name: --performance-counter
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter stream=XX1 stream=XX2 scheduled-transfer-period=XX \
-sampling-frequency-in-seconds=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
+            Usage: --performance-counter stream=XX1 stream=XX2 transfer-period=XX \
+sampling-frequency=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
 
             stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+            transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
-            sampling-frequency-in-seconds: Required. The number of seconds between consecutive counter measurements \
+            sampling-frequency: Required. The number of seconds between consecutive counter measurements \
 (samples).
             counter-specifier: Required. A list of specifier names of the performance counters you want to collect. \
 Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
@@ -259,12 +259,12 @@ command 'typeperf'.
       - name: --windows-event-log
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log stream=XX1 stream=XX2 scheduled-transfer-period=XX x-path-query=XX1 \
+            Usage: --windows-event-log stream=XX1 stream=XX2 transfer-period=XX x-path-query=XX1 \
 x-path-query=XX2 name=XX
 
             stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            scheduled-transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
+            transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
             x-path-query: Required. A list of Windows Event Log queries in XPATH format.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
@@ -288,28 +288,29 @@ will be used for this data and usually what table in Log Analytics the data will
     examples:
       - name: Create data collection rule
         text: |-
-               az monitor data-collection rule update --resource-group "myResourceGroup" --name "myCollectionRule" \
+               az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
+--name "myCollectionRule" \
 --data-flow destination="centralWorkspace" stream="Microsoft-Perf" stream="Microsoft-Syslog" \
 stream="Microsoft-WindowsEvent" \
 --performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total)\\\\% Processor Time" \
 counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
-counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency-in-seconds=15 \
-scheduled-transfer-period="PT1M" stream="Microsoft-Perf" \
+counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
+transfer-period="PT1M" stream="Microsoft-Perf" \
 --performance-counter name="appTeamExtraCounters" \
-counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency-in-seconds=30 \
-scheduled-transfer-period="PT5M" stream="Microsoft-Perf" \
+counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
+transfer-period="PT5M" stream="Microsoft-Perf" \
 --syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" log-level="Emergency" \
 stream="Microsoft-Syslog" \
 --syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" log-level="Emergency" \
 stream="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
+--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
 x-path-query="Security!" \
---windows-event-log name="appTeam1AppEvents" scheduled-transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
+--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
 x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
 x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
 --log-analytics name="centralWorkspace" \
-workspace-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Micr\
-osoft.OperationalInsights/workspaces/centralTeamWorkspace"
+resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
+rosoft.OperationalInsights/workspaces/centralTeamWorkspace"
 
 """
 
