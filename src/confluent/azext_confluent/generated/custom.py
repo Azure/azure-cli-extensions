@@ -31,7 +31,6 @@ def confluent_organization_create(client,
                                   organization_name,
                                   tags=None,
                                   location=None,
-                                  provisioning_state=None,
                                   offer_detail=None,
                                   user_detail=None,
                                   no_wait=False):
@@ -41,7 +40,7 @@ def confluent_organization_create(client,
                        organization_name=organization_name,
                        tags=tags,
                        location=location,
-                       provisioning_state=provisioning_state,
+                       provisioning_state=None,
                        offer_detail=offer_detail,
                        user_detail=user_detail)
 

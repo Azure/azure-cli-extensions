@@ -73,7 +73,6 @@ last-name="string" --tags Environment="Dev" --name "myOrganization" --resource-g
 |**--organization-name**|string|Organization resource name|organization_name|organizationName|
 |**--tags**|dictionary|Organization resource tags|tags|tags|
 |**--location**|string|Location of Organization resource|location|location|
-|**--provisioning-state**|choice|Provision states for confluent RP|provisioning_state|provisioningState|
 |**--offer-detail**|object|Confluent offer detail|offer_detail|offerDetail|
 |**--user-detail**|object|Subscriber detail|user_detail|userDetail|
 
