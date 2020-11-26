@@ -8,95 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-
-# EXAMPLE: Triggers_Create
-def step_triggers_create(test, rg):
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
-             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"{myPipeline}\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"{myEndTime}'
-             '\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"{myStartTime}\\",\\"timeZone\\":'
-             '\\"UTC\\"}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=[])
-
-
-def step_pipelineruns_get(test, rg):
-    test.cmd('az datafactory pipeline-run show '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "{myRunId}"',
-             checks=[
-                 test.check('runId', "{myRunId}")
-             ])
-
-
-def step_factories_getdataplaneaccess(test, rg):
-    test.cmd('az datafactory factory get-data-plane-access '
-             '--name "{myFactory}" '
-             '--access-resource-path "" '
-             '--expire-time "{myEndTime}" '
-             '--permissions "r" '
-             '--profile-name "DefaultProfile" '
-             '--start-time "{myStartTime}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('policy.permissions', 'r')
-             ])
-
-
-def step_activityruns_querybypipelinerun(test, rg):
-    test.cmd('az datafactory activity-run query-by-pipeline-run '
-             '--factory-name "{myFactory}" '
-             '--last-updated-after "{myStartTime}" '
-             '--last-updated-before "{myEndTime}" '
-             '--resource-group "{rg}" '
-             '--run-id "{myRunId}"',
-             checks=[
-                 test.check('value[0].pipelineRunId', "{myRunId}")
-             ])
-
-
-def step_pipelineruns_querybyfactory(test, rg):
-    test.cmd('az datafactory pipeline-run query-by-factory '
-             '--factory-name "{myFactory}" '
-             '--filters operand="PipelineName" operator="Equals" values="{myPipeline}" '
-             '--last-updated-after "{myStartTime}" '
-             '--last-updated-before "{myEndTime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-def step_pipelineruns_cancel(test, rg):
-    test.cmd('az datafactory pipeline-run cancel '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "{myRunId}"',
-             checks=[])
-
-
-def step_triggerruns_querybyfactory(test, rg):
-    test.cmd('az datafactory trigger-run query-by-factory '
-             '--factory-name "{myFactory}" '
-             '--filters operand="TriggerName" operator="Equals" values="{myTrigger}" '
-             '--last-updated-after "{myStartTime}" '
-             '--last-updated-before "{myEndTime}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-def step_pipelines_update(test, rg):
-    test.cmd('az datafactory pipeline update '
-             '--factory-name "{myFactory}" '
-             '--description "Update description" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-def step_triggerruns_rerun(test, rg):
+def step_trigger_run_rerun(test, rg):
     test.cmd('az datafactory trigger-run rerun '
              '--factory-name "{myFactory}" '
              '--resource-group "{rg}" '
@@ -105,7 +17,7 @@ def step_triggerruns_rerun(test, rg):
              checks=[])
 
 
-def step_pipelines_createrun(test, rg):
+def step_pipeline_create_run(test, rg):
     output = test.cmd('az datafactory pipeline create-run '
                       '--factory-name "{myFactory}" '
                       '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
@@ -115,7 +27,7 @@ def step_pipelines_createrun(test, rg):
     return output
 
 
-def step_triggerruns_querybyfactory(test, rg):
+def step_trigger_run_query_by_factory2(test, rg):
     output = test.cmd('az datafactory trigger-run query-by-factory '
                       '--factory-name "{myFactory}" '
                       '--last-updated-after "{myStartTime}" '
@@ -125,7 +37,7 @@ def step_triggerruns_querybyfactory(test, rg):
     return output
 
 
-def step_integrationruntimes_managed_create(test, rg):
+def step_integration_runtime_managed_create(test, rg):
     test.cmd('az datafactory integration-runtime managed create '
              '--factory-name "{myFactory}" '
              '--name "{myIntegrationRuntime}" '
@@ -142,7 +54,7 @@ def step_integrationruntimes_managed_create(test, rg):
              ])
 
 
-def step_pipelines_wait_create(test, rg):
+def step_pipeline_create(test, rg):
     test.cmd('az datafactory pipeline create '
              '--factory-name "{myFactory}" '
              '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"Wait1\\",'
@@ -178,42 +90,57 @@ def step_triggers_tumble_create(test, rg):
                             "{myPipeline}")
              ])
 
+def step_pipeline_run_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory pipeline-run show '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=checks)
+
+def step_pipeline_run_cancel(test, rg, checks=None):
+    test.cmd('az datafactory pipeline-run cancel '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}" '
+             '--run-id "{myRunId}"',
+             checks=checks)
 
 def call_managed_integrationruntime_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
-    g.setup(test, rg)
-    g.step_factories_createorupdate(test, rg)
+    g.setup_scenario(test, rg)
+    g.step_create(test, rg)
     test.kwargs.update({'myIntegrationRuntime': test.kwargs.get('myIntegrationRuntime2')})
-    step_integrationruntimes_managed_create(test, rg)
-    g.step_integrationruntimes_get(test, rg)
-    g.step_integrationruntimes_start(test, rg)
-    g.step_integrationruntimes_stop(test, rg)
-    g.step_integrationruntimes_delete(test, rg)
-    g.step_factories_delete(test, rg)
-    g.cleanup(test, rg)
+    step_integration_runtime_managed_create(test, rg)
+    g.step_integration_runtime_show(test, rg)
+    g.step_integration_runtime_start(test, rg)
+    g.step_integration_runtime_stop(test, rg)
+    # g.step_integration_runtime_delete(test, rg)
+    # g.step_delete(test, rg)
+    g.cleanup_scenario(test, rg)
 
 
 def call_triggerrun_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
     import time
-    g.setup(test, rg)
-    g.step_factories_createorupdate(test, rg)
-    step_pipelines_wait_create(test, rg)
-    createrun_res = g.step_pipelines_createrun(test, rg)
+    g.setup_scenario(test, rg)
+    g.step_create(test, rg)
+    step_pipeline_create(test, rg)
+    createrun_res = step_pipeline_create_run(test, rg)
     time.sleep(5)
     test.kwargs.update({'myRunId': createrun_res.get('runId')})
-    g.step_pipelineruns_get(test, rg)
-    g.step_pipelineruns_querybyfactory(test, rg)
-    g.step_activityruns_querybypipelinerun(test, rg)
-    createrun_res = g.step_pipelines_createrun(test, rg)
+    step_pipeline_run_show(test, rg)
+    g.step_pipeline_run_query_by_factory(test, rg)
+    g.step_activity_run_query_by_pipeline_run(test, rg)
+    createrun_res = step_pipeline_create_run(test, rg)
     test.kwargs.update({'myRunId': createrun_res.get('runId')})
-    g.step_pipelineruns_cancel(test, rg)
+    step_pipeline_run_cancel(test, rg)
     step_triggers_tumble_create(test, rg)
-    g.step_triggers_start(test, rg)
-    g.step_triggers_get(test, rg)
+    g.step_trigger_start(test, rg)
+    g.step_trigger_show(test, rg)
     maxRound = 2
     while True:
-        triggerrun_res = g.step_triggerruns_querybyfactory(test, rg)
+        triggerrun_res = step_trigger_run_query_by_factory2(test, rg)
         if len(triggerrun_res['value']) > 0 and triggerrun_res['value'][0]['status'] == 'Succeeded':
             test.kwargs.update({'myRunId': triggerrun_res['value'][0]['triggerRunId']})
             break
@@ -225,79 +152,86 @@ def call_triggerrun_scenario(test, rg):
             else:
                 break
     if maxRound > 0:
-        g.step_triggerruns_rerun(test, rg)
-    g.step_triggerruns_querybyfactory(test, rg)
-    g.step_triggers_stop(test, rg)
-    g.step_triggers_delete(test, rg)
-    g.step_pipelines_delete(test, rg)
-    g.step_factories_delete(test, rg)
+        step_trigger_run_rerun(test, rg)
+    g.step_trigger_run_query_by_factory(test, rg)
+    g.step_trigger_stop(test, rg)
+    g.step_trigger_delete(test, rg)
+    g.step_pipeline_delete(test, rg)
+    g.step_delete(test, rg)
 
 
 def call_main_scenario(test, rg):
     from ....tests.latest import test_datafactory_scenario as g
-    g.setup(test, rg)
-    g.step_factories_createorupdate(test, rg)
-    g.step_factories_update(test, rg)
-    g.step_linkedservices_create(test, rg)
-    g.step_linkedservices_update(test, rg)
-    g.step_datasets_create(test, rg)
-    g.step_datasets_update(test, rg)
-    g.step_pipelines_create(test, rg)
-    g.step_pipelines_update(test, rg)
-    g.step_triggers_create(test, rg)
-    g.step_triggers_update(test, rg)
-    g.step_integrationruntimes_create(test, rg)
-    g.step_integrationruntimes_update(test, rg)
-    g.step_pipelines_createrun(test, rg)
-    g.step_integrationruntimes_get(test, rg)
-    g.step_reruntriggers_listbytrigger(test, rg)
-    g.step_linkedservices_get(test, rg)
-    # g.step_pipelineruns_get(test, rg)
-    g.step_pipelines_get(test, rg)
-    g.step_datasets_get(test, rg)
-    g.step_triggers_get(test, rg)
-    g.step_integrationruntimes_listbyfactory(test, rg)
-    g.step_linkedservices_listbyfactory(test, rg)
-    g.step_pipelines_listbyfactory(test, rg)
-    g.step_triggers_listbyfactory(test, rg)
-    g.step_datasets_listbyfactory(test, rg)
-    g.step_factories_get(test, rg)
-    g.step_factories_listbyresourcegroup(test, rg)
-    g.step_factories_list(test, rg)
-    g.step_operations_list(test, rg)
+    g.setup_scenario(test, rg)
+    g.step_create(test, rg)
+    g.step_update(test, rg)
+    g.step_linked_service_create(test, rg)
+    g.step_linked_service_update(test, rg)
+    g.step_dataset_create(test, rg)
+    g.step_dataset_update(test, rg)
+    g.step_pipeline_create(test, rg)
+    # g.step_pipeline_update(test, rg)
+    g.step_trigger_create(test, rg)
+    g.step_trigger_update(test, rg)
+    g.step_integration_runtime_self_hosted_create(test, rg)
+    # g.step_integration_runtime_update(test, rg)
+    g.step_pipeline_create_run(test, rg)
+    # g.step_integration_runtime_node_show(test, rg)
+    # g.step_reruntriggers_listbytrigger(test, rg)
+    g.step_linked_service_show(test, rg)
+    # g.step_pipeline_run_show(test, rg)
+    g.step_pipeline_show(test, rg)
+    g.step_dataset_show(test, rg)
+    g.step_trigger_show(test, rg)
+    g.step_integration_runtime_list(test, rg)
+    g.step_linked_service_list(test, rg)
+    g.step_pipeline_list(test, rg)
+    g.step_trigger_list(test, rg)
+    g.step_dataset_list(test, rg)
+    g.step_show(test, rg)
+    g.step_list2(test, rg)
+    for i in range(2):
+        from azure.core.exceptions import HttpResponseError
+        try:
+            g.step_list(test, rg)
+            break
+        except HttpResponseError:
+            import time
+            time.sleep(15)
+    # g.step_operation_list(test, rg)
     # g.step_reruntriggers_cancel(test, rg)
     # g.step_reruntriggers_start(test, rg)
     # g.step_reruntriggers_stop(test, rg)
-    g.step_integrationruntimes_regenerateauthkey(test, rg)
-    # g.step_triggerruns_rerun(test, rg)
+    g.step_integration_runtime_regenerate_auth_key(test, rg)
+    # g.step_trigger_run_rerun(test, rg)
     # g.step_integrationruntimes_getconnectioninfo(test, rg)
-    g.step_integrationruntimes_synccredentials(test, rg)
-    g.step_integrationruntimes_getmonitoringdata(test, rg)
-    g.step_integrationruntimes_listauthkeys(test, rg)
-    g.step_integrationruntimes_upgrade(test, rg)
-    g.step_integrationruntimes_getstatus(test, rg)
+    g.step_integration_runtime_sync_credentials(test, rg)
+    g.step_integration_runtime_get_monitoring_data(test, rg)
+    g.step_integration_runtime_list_auth_key(test, rg)
+    g.step_integration_runtime_update(test, rg)
+    g.step_integration_runtime_get_status(test, rg)
     # g.step_integrationruntimes_start(test, rg)
     # g.step_integrationruntimes_stop(test, rg)
     # g.step_integrationruntimes_createlinkedintegrationruntime(test, rg)
-    g.step_triggers_geteventsubscriptionstatus(test, rg)
-    # g.step_activityruns_querybypipelinerun(test, rg)
-    g.step_triggers_unsubscribefromevents(test, rg)
-    g.step_triggers_subscribetoevents(test, rg)
-    g.step_triggers_start(test, rg)
-    g.step_triggers_stop(test, rg)
+    g.step_trigger_get_event_subscription_status(test, rg)
+    # g.step_activity_run_query_by_pipeline_run(test, rg)
+    g.step_trigger_unsubscribe_from_event(test, rg)
+    g.step_trigger_subscribe_to_event(test, rg)
+    g.step_trigger_start(test, rg)
+    g.step_trigger_stop(test, rg)
     # g.step_factories_getgithubaccesstoken(test, rg)
-    g.step_factories_getdataplaneaccess(test, rg)
-    # g.step_pipelineruns_querybyfactory(test, rg)
-    # g.step_pipelineruns_cancel(test, rg)
-    g.step_triggerruns_querybyfactory(test, rg)
-    g.step_factories_configurefactoryrepo(test, rg)
-    g.step_integrationruntimes_delete(test, rg)
-    g.step_triggers_delete(test, rg)
-    g.step_pipelines_delete(test, rg)
-    g.step_datasets_delete(test, rg)
-    g.step_linkedservices_delete(test, rg)
-    g.step_factories_delete(test, rg)
-    g.cleanup(test, rg)
+    g.step_get_data_plane_access(test, rg)
+    # g.step_pipeline_run_query_by_factory(test, rg)
+    # g.step_pipeline_run_cancel(test, rg)
+    g.step_trigger_run_query_by_factory(test, rg)
+    g.step_configure_factory_repo(test, rg)
+    g.step_integration_runtime_delete(test, rg)
+    g.step_trigger_delete(test, rg)
+    g.step_pipeline_delete(test, rg)
+    g.step_dataset_delete(test, rg)
+    g.step_linked_service_delete(test, rg)
+    g.step_delete(test, rg)
+    g.cleanup_scenario(test, rg)
 
 
 def call_scenario(test, rg):

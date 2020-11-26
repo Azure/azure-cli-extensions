@@ -1,0 +1,320 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-25T05:12:35Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:12:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "Standard", "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Created","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-25T05:12:48.26Z","updatedAt":"2020-11-25T05:12:48.26Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Activating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:12:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '49'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Created","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-25T05:12:48.26Z","updatedAt":"2020-11-25T05:12:48.26Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Activating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:13:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Succeeded","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-25T05:12:48.26Z","updatedAt":"2020-11-25T05:13:35.1Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '758'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:13:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Succeeded","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-25T05:12:48.26Z","updatedAt":"2020-11-25T05:13:35.1Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '758'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:13:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/SN1
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/SN1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs eventhub create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --namespace-name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003?api-version=2017-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003","name":"livetest000003","type":"Microsoft.EventHub/Namespaces/EventHubs","location":"West
+        US","properties":{"messageRetentionInDays":7,"partitionCount":4,"status":"Active","createdAt":"2020-11-25T05:13:53.927Z","updatedAt":"2020-11-25T05:13:54.383Z","partitionIds":["0","1","2","3"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Nov 2020 05:13:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,3506 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-26T03:23:28Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:23:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "Standard", "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Created","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-26T03:23:37.44Z","updatedAt":"2020-11-26T03:23:37.44Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Activating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:23:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '49'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Created","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-26T03:23:37.44Z","updatedAt":"2020-11-26T03:23:37.44Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Activating"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:24:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Succeeded","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-26T03:23:37.44Z","updatedAt":"2020-11-26T03:24:26.9Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '758'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:24:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002","name":"codegenlivetest000002","type":"Microsoft.EventHub/Namespaces","location":"West
+        US","tags":{},"properties":{"zoneRedundant":false,"isAutoInflateEnabled":false,"maximumThroughputUnits":0,"kafkaEnabled":true,"provisioningState":"Succeeded","metricId":"7fd08dcc-a653-4b0f-8f8c-4dac889fdda4:codegenlivetest000002","createdAt":"2020-11-26T03:23:37.44Z","updatedAt":"2020-11-26T03:24:26.9Z","serviceBusEndpoint":"https://codegenlivetest000002.servicebus.windows.net:443/","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '758'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:24:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs eventhub create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --name --namespace-name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003?api-version=2017-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003","name":"livetest000003","type":"Microsoft.EventHub/Namespaces/EventHubs","location":"West
+        US","properties":{"messageRetentionInDays":7,"partitionCount":4,"status":"Active","createdAt":"2020-11-26T03:24:43.803Z","updatedAt":"2020-11-26T03:24:44.07Z","partitionIds":["0","1","2","3"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '522'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:24:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/SN1
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/SN1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "southcentralus", "sku": {"name": "Standard_D11_v2", "capacity":
+      2, "tier": "Standard"}, "properties": {"enableStreamingIngest": true, "keyVaultProperties":
+      {"keyName": "", "keyVersion": "", "keyVaultUri": ""}, "enablePurge": true, "enableDoubleEncryption":
+      false}, "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '318'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --identity-type --location --enable-purge --enable-streaming-ingest
+        --key-vault-properties --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/followercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/followercluster103","name":"followercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"southcentralus","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"properties":{"state":"Creating","enableStreamingIngest":true,"keyVaultProperties":{"keyName":"","keyVersion":"","keyVaultUri":""},"enablePurge":true,"enableDoubleEncryption":false,"provisioningState":"Creating"},"identity":{"type":"SystemAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/southcentralus/operationResults/3b3804ff-ba8d-4bd5-a100-328455c580e4?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '623'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:24:56 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "southcentralus", "sku": {"name": "Standard_D11_v2", "capacity":
+      2, "tier": "Standard"}, "properties": {"enableStreamingIngest": true, "keyVaultProperties":
+      {"keyName": "", "keyVersion": "", "keyVaultUri": ""}, "enablePurge": true, "enableDoubleEncryption":
+      false}, "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '318'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --identity-type --location --enable-purge --enable-streaming-ingest
+        --key-vault-properties --sku --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"southcentralus","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"properties":{"state":"Creating","enableStreamingIngest":true,"keyVaultProperties":{"keyName":"","keyVersion":"","keyVaultUri":""},"enablePurge":true,"enableDoubleEncryption":false,"provisioningState":"Creating"},"identity":{"type":"SystemAssigned"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/southcentralus/operationResults/daa75963-80c6-46a7-94fd-106bb9bd0599?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:25:37 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:26:09 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:26:40 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '298'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:27:10 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '297'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:27:41 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '296'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:28:11 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '295'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:28:41 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '294'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:29:11 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '293'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:29:44 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '292'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:30:14 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '291'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:30:44 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '290'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:31:16 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '289'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:31:46 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '288'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:32:16 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '287'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:32:47 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '286'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:33:18 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '285'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:33:48 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '284'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:34:18 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '283'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:34:49 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '282'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:35:19 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '289'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:35:50 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '288'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:36:22 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '287'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:36:52 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '286'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:37:22 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '285'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:37:52 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '284'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:38:23 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '283'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Creating","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Creating"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:38:53 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '282'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Running","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Succeeded"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:39:24 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '281'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "southcentralus", "kind": "ReadWrite", "properties": {"softDeletePeriod":
+      "P1D"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '94'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --database-name --read-write-database --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8","name":"leadercluster103/KustoDatabase8","type":"Microsoft.Kusto/Clusters/Databases","etag":"\"\"","location":"southcentralus","kind":"ReadWrite","properties":{"softDeletePeriod":"P1D","provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/southcentralus/operationResults/f75ff003-7fdd-4e24-82bd-a8c39316b6a0?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '445'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:39:27 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "southcentralus", "kind": "EventHub", "properties": {"eventHubResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003",
+      "consumerGroup": "$Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto data-connection event-hub create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '350'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --data-connection-name --database-name --location --consumer-group
+        --event-hub-resource-id --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8/dataConnections/DataConnections8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8/DataConnections/DataConnections8","name":"leadercluster103/KustoDatabase8/DataConnections8","type":"Microsoft.Kusto/Clusters/Databases/DataConnections","etag":"\"\"","location":"southcentralus","kind":"EventHub","properties":{"eventHubResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003","consumerGroup":"$Default","provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/southcentralus/operationResults/7cd42659-3252-4c92-a870-fc6f3b4c8267?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:40:01 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "southcentralus", "properties": {"databaseName": "Kustodatabase8",
+      "clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103",
+      "defaultPrincipalsModificationKind": "Union"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto attached-database-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '345'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --attached-database-configuration-name --cluster-name --location --cluster-resource-id
+        --database-name --default-principals-modification-kind --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/followercluster103/attachedDatabaseConfigurations/attachedDatabaseConfigurations2?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/followercluster103/AttachedDatabaseConfigurations/attachedDatabaseConfigurations2","name":"followercluster103/attachedDatabaseConfigurations2","type":"Microsoft.Kusto/Clusters/AttachedDatabaseConfigurations","etag":"\"\"","location":"southcentralus","properties":{"databaseName":"Kustodatabase8","clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","defaultPrincipalsModificationKind":"Union","provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/southcentralus/operationResults/4ddb4bb6-97f4-48ad-876b-92b6ebaa9796?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '774'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:40:34 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto attached-database-configuration wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --cluster-name --attached-database-configuration-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/followercluster103/attachedDatabaseConfigurations/attachedDatabaseConfigurations2?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/followercluster103/AttachedDatabaseConfigurations/attachedDatabaseConfigurations2","name":"followercluster103/attachedDatabaseConfigurations2","type":"Microsoft.Kusto/Clusters/AttachedDatabaseConfigurations","etag":"\"\"","location":"South
+        Central US","tags":{},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","databaseName":"Kustodatabase8","attachedDatabaseNames":["Kustodatabase8"],"defaultPrincipalsModificationKind":"Union","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:06 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto attached-database-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --attached-database-configuration-name --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/followercluster103/attachedDatabaseConfigurations/attachedDatabaseConfigurations2?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/followercluster103/AttachedDatabaseConfigurations/attachedDatabaseConfigurations2","name":"followercluster103/attachedDatabaseConfigurations2","type":"Microsoft.Kusto/Clusters/AttachedDatabaseConfigurations","etag":"\"\"","location":"South
+        Central US","tags":{},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","databaseName":"Kustodatabase8","attachedDatabaseNames":["Kustodatabase8"],"defaultPrincipalsModificationKind":"Union","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:08 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto data-connection show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --data-connection-name --database-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8/dataConnections/DataConnections8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8/DataConnections/DataConnections8","name":"leadercluster103/KustoDatabase8/DataConnections8","type":"Microsoft.Kusto/Clusters/Databases/DataConnections","etag":"\"\"","location":"South
+        Central US","kind":"EventHub","tags":{},"properties":{"eventHubResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003","consumerGroup":"$Default","tableName":"","mappingRuleName":"","dataFormat":"","eventSystemProperties":[],"compression":"None","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '878'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:11 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8","name":"leadercluster103/KustoDatabase8","type":"Microsoft.Kusto/Clusters/Databases","etag":"\"\"","location":"South
+        Central US","kind":"ReadWrite","properties":{"isFollowed":true,"softDeletePeriodInDays":1,"softDeletePeriod":"P1D","hotCachePeriodInDays":0,"statistics":{"size":0.0},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto attached-database-configuration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/attachedDatabaseConfigurations?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --database-name --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8","name":"leadercluster103/KustoDatabase8","type":"Microsoft.Kusto/Clusters/Databases","etag":"\"\"","location":"South
+        Central US","kind":"ReadWrite","tags":{},"properties":{"isFollowed":true,"softDeletePeriodInDays":1,"softDeletePeriod":"P1D","hotCachePeriodInDays":0,"statistics":{"size":0.0},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:16 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8","name":"leadercluster103/KustoDatabase8","type":"Microsoft.Kusto/Clusters/Databases","etag":"\"\"","location":"South
+        Central US","kind":"ReadWrite","properties":{"isFollowed":true,"softDeletePeriodInDays":1,"softDeletePeriod":"P1D","hotCachePeriodInDays":0,"statistics":{"size":0.0},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster list-sku
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/skus?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_D11_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":8,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_D12_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":16,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_D13_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_D14_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_DS13_v2+1TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_DS13_v2+2TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_DS14_v2+3TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_DS14_v2+4TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_L4s","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":16,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_L8s","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_L16s","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_L8s_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_L16s_v2","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E64i_v3","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E80ids_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E2a_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E4a_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E8a_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E16a_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E8as_v4+1TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E8as_v4+2TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E16as_v4+3TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_E16as_v4+4TB_PS","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}},{"resourceType":"Microsoft.Kusto/clusters","sku":{"name":"Standard_D32d_v4","tier":"Standard","locationInfo":[{"location":"South
+        Central US","zones":[]}]},"capacity":{"minimum":2,"maximum":1000,"default":2,"scaleType":"Automatic"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Running","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Succeeded"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:19 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/clusters?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest2b6ojbfozsgdmwyzoo3y7vl6hylxl3p6vbxf6jl3zodehiu5rg5zcutjjnejvakmhxk5/providers/Microsoft.Kusto/Clusters/followercluster100","name":"followercluster100","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Running","stateReason":null,"uri":"https://followercluster100.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-followercluster100.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Succeeded"},"identity":{"principalId":"96125bbe-b311-4589-9d15-6b61b2233cf8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/followercluster103","name":"followercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Running","stateReason":null,"uri":"https://followercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-followercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Succeeded"},"identity":{"principalId":"ab5fdc92-768b-4d1b-9913-5fdd5fddfad3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103","name":"leadercluster103","type":"Microsoft.Kusto/Clusters","etag":"\"\"","location":"South
+        Central US","sku":{"name":"Standard_D11_v2","tier":"Standard","capacity":2},"tags":{},"properties":{"state":"Running","stateReason":null,"uri":"https://leadercluster103.southcentralus.kusto.windows.net","dataIngestionUri":"https://ingest-leadercluster103.southcentralus.kusto.windows.net","trustedExternalTenants":[],"virtualNetworkConfiguration":null,"optimizedAutoscale":null,"enableDiskEncryption":false,"enableStreamingIngest":true,"keyVaultProperties":null,"languageExtensions":{"value":[]},"enablePurge":true,"enableDoubleEncryption":false,"engineType":"V2","provisioningState":"Succeeded"},"identity":{"principalId":"667dcf7d-96d1-47cf-87a9-ed8e77b0fe1f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3126'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "southcentralus", "kind": "EventHub", "properties": {"eventHubResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003",
+      "consumerGroup": "$Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto data-connection event-hub update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '350'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --data-connection-name --database-name --location --consumer-group
+        --event-hub-resource-id --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8/dataConnections/DataConnections8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8/DataConnections/DataConnections8","name":"leadercluster103/KustoDatabase8/DataConnections8","type":"Microsoft.Kusto/Clusters/Databases/DataConnections","etag":"\"\"","location":"South
+        Central US","kind":"EventHub","tags":{},"properties":{"eventHubResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003","consumerGroup":"$Default","provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South
+        Central US/operationResults/6cd8b8ec-cdb6-4f0c-a29d-4674541623e1?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:23 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South%20Central%20US/operationResults/6cd8b8ec-cdb6-4f0c-a29d-4674541623e1?api-version=2020-06-14&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: '{"kind": "ReadWrite", "properties": {"softDeletePeriod": "P1D"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --database-name --read-write-database --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103/Databases/KustoDatabase8","name":"leadercluster103/KustoDatabase8","type":"Microsoft.Kusto/Clusters/Databases","etag":"\"\"","location":"South
+        Central US","kind":"ReadWrite","tags":{},"properties":{"softDeletePeriod":"P1D","provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South
+        Central US/operationResults/83b86b9c-30a9-41b7-8cb8-6360b4a3f452?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:41:54 GMT
+      etag:
+      - '""'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South%20Central%20US/operationResults/83b86b9c-30a9-41b7-8cb8-6360b4a3f452?api-version=2020-06-14&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: '{"clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/followercluster103",
+      "attachedDatabaseConfigurationName": "attachedDatabaseConfigurations2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster detach-follower-database
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '293'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --attached-database-configuration-name --cluster-resource-id
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/detachFollowerDatabases?api-version=2020-06-14
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South
+        Central US/operationResults/072a7097-6365-416f-b4cf-1a937643ede2?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:42:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South%20Central%20US/operationResults/072a7097-6365-416f-b4cf-1a937643ede2?api-version=2020-06-14&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster list-follower-database
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/listFollowerDatabases?api-version=2020-06-14
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:42:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/start?api-version=2020-06-14
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South
+        Central US/operationResults/e8548e26-9e5c-40ac-bd00-af9dca25a2d4?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:43:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South%20Central%20US/operationResults/e8548e26-9e5c-40ac-bd00-af9dca25a2d4?api-version=2020-06-14&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/stop?api-version=2020-06-14
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South
+        Central US/operationResults/193dea45-da08-4525-b38d-8532ce378171?api-version=2020-06-14
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:43:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Kusto/locations/South%20Central%20US/operationResults/193dea45-da08-4525-b38d-8532ce378171?api-version=2020-06-14&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --cluster-name --database-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/KustoDatabase8?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"You are requesting an operation
+        that is not permitted in the cluster''s current state."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"RequestConflict","message":"Cannot modify resource
+        with id ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/Clusters/leadercluster103''
+        because the resource entity provisioning state is not terminal. Please wait
+        for the provisioning state to become terminal and then retry the request."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '426'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 409
+      message: Conflict
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database-principal-assignment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --database-name --principal-assignment-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/Kustodatabase8/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"You are requesting an operation
+        that is not permitted in the cluster''s current state."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"principalId": "d9a1f322-1293-4595-91e3-f54f8bb34725",
+      "role": "Admin", "tenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d", "principalType":
+      "App"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database-principal-assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '164'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --database-name --principal-id --principal-type --role --tenant-id
+        --principal-assignment-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/Kustodatabase8/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"You are requesting an operation
+        that is not permitted in the cluster''s current state."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto database-principal-assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --cluster-name --database-name --principal-assignment-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/databases/Kustodatabase8/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"You are requesting an operation
+        that is not permitted in the cluster''s current state."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=0ae556891a90acc8679c889b07dda3bbe88c7f0787602304c159f63d4e13032a;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster-principal-assignment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --principal-assignment-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"ClusterNotValidForPrincipals","message":"[BadRequest]
+        Cluster is in state ''Stopping'', cannot retrieve list of principals"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '299'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"principalId": "d9a1f322-1293-4595-91e3-f54f8bb34725",
+      "role": "AllDatabasesViewer", "tenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+      "principalType": "App"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster-principal-assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '177'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --principal-id --principal-type --role --tenant-id --principal-assignment-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"ClusterNotValidForPrincipals","message":"[BadRequest]
+        Cluster is in state ''Stopping'', cannot retrieve list of principals"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - kusto cluster-principal-assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --cluster-name --principal-assignment-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-kustomanagementclient/unknown Python/3.8.1 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Kusto/clusters/leadercluster103/principalAssignments/kustoprincipal1?api-version=2020-06-14
+  response:
+    body:
+      string: '{"error":{"code":"ClusterNotValidForPrincipals","message":"[BadRequest]
+        Cluster is in state ''Stopping'', cannot retrieve list of principals"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Nov 2020 03:44:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      - ARRAffinitySameSite=d9eb9d0cfb267db2331cfc50bb3ad86d1f6c9f548fd5246b4374e2a622a744dc;Path=/;HttpOnly;SameSite=None;Secure;Domain=armrp-kustorpscus.kusto.windows.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs eventhub delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --namespace-name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/eventhubs/livetest000003?api-version=2017-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:44:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:44:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/operationresults/codegenlivetest000002?api-version=2018-01-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/SN1
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/SN1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventhubs namespace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - python/3.8.1 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.4
+        azure-mgmt-eventhub/4.1.0 Azure-SDK-For-Python AZURECLI/2.15.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EventHub/namespaces/codegenlivetest000002/operationresults/codegenlivetest000002?api-version=2018-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Nov 2020 03:44:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/SN1
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/SN1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
