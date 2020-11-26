@@ -67,6 +67,10 @@ def _b64_url_encode(s):
     return base64.b64encode(s).decode('ascii').strip('=').replace('+', '-').replace('/', '_')
 
 
+def _b64url_to_b64(s):
+    return s.replace('-', '+').replace('_', '/') + ('=' * (4 - len(s) % 4) if len(s) % 4 else '')
+
+
 def attestation_attestation_provider_create(client,
                                             resource_group_name,
                                             provider_name,
@@ -91,8 +95,8 @@ def attestation_attestation_provider_create(client,
         raw_jwk = JWK.from_pem(pem_data)
         jwk = JsonWebKey(kty=raw_jwk.key_type, kid=raw_jwk.key_id, alg='RS256', use='sig')
         pub_json = json.loads(raw_jwk.export_public())
-        jwk.e = pub_json['e']
-        jwk.n = pub_json['n']
+        jwk.e = _b64url_to_b64(pub_json['e'])
+        jwk.n = _b64url_to_b64(pub_json['n'])
         cert = load_pem_x509_certificate(pem_data, backend=default_backend())
         jwk.x5_c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
         print(jwk)
