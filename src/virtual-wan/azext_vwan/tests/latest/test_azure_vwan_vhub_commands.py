@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
 from .credential_replacer import VpnClientGeneratedURLReplacer
@@ -293,8 +294,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--gateway-name {vpngateway}',
                  checks=[])
 
-        from msrestazure.azure_exceptions import CloudError
-        with self.assertRaisesRegexp(CloudError, 'NotFound'):
+        with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('network vpn-gateway connection show '
                      '-g {rg} '
                      '-n {connection} '
