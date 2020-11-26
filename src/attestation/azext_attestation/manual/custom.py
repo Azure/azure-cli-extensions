@@ -16,6 +16,8 @@ import os
 
 from azext_attestation.generated._client_factory import cf_attestation_provider
 from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
+from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
+    AttestOpenEnclaveRequest, RuntimeData, InitTimeData
 from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
 
 from cryptography.hazmat.backends import default_backend
@@ -209,4 +211,30 @@ def reset_policy(cmd, client, tee, policy_jws='eyJhbGciOiJub25lIn0..', resource_
         tenant_base_url=provider.attest_uri,
         tee=tee_mapping[tee],
         policy_jws=policy_jws
+    )
+
+
+def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_data_type=None, init_time_data=None,
+                        init_time_data_type=None, resource_group_name=None, provider_name=None):
+
+    provider_client = cf_attestation_provider(cmd.cli_ctx)
+    provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
+
+    request = AttestOpenEnclaveRequest(
+        report=report,
+        runtime_data=RuntimeData(
+            data=runtime_data,
+            data_type=runtime_data_type
+        ),
+        init_time_data=InitTimeData(
+            data=init_time_data,
+            data_type=init_time_data_type
+        )
+    )
+
+    print(request)
+
+    return client.attest_open_enclave(
+        tenant_base_url=provider.attest_uri,
+        request=request
     )

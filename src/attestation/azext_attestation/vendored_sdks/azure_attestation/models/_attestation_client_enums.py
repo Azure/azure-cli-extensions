@@ -17,3 +17,9 @@ class TeeKind(str, Enum):
     sgx_intel_sdk = "SGX-IntelSDK"
     sgx_open_enclave_sdk = "SGX-OpenEnclaveSDK"
     tpm = "TPM"
+
+
+class DataType(str, Enum):
+
+    json = 'JSON'
+    binary = 'Binary'

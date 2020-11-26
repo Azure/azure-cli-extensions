@@ -41,29 +41,10 @@ class AttestOperations(object):
         self.config = config
 
     def attest_open_enclave(
-            self, tenant_base_url, tee, new_attestation_policy, custom_headers=None, raw=False, **operation_config):
+            self, tenant_base_url, request, custom_headers=None, raw=False, **operation_config):
         """Attest to an SGX-OpenEnclaveSDK enclave.
-
-        :param tenant_base_url: The tenant name, for example
-         https://mytenant.attest.azure.net.
-        :type tenant_base_url: str
-        :param tee: Specifies the trusted execution environment to be used to
-         validate the evidence. Possible values include: 'SgxEnclave',
-         'OpenEnclave', 'CyResComponent', 'VSMEnclave'
-        :type tee: str or ~azure.attestation.models.TeeKind
-        :param new_attestation_policy: JWT Expressing the new policy
-        :type new_attestation_policy: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: object or ClientRawResponse if raw=true
-        :rtype: object or ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        # Construct URL
-        url = '/policies/{}'.format(tee)
+        url = '/attest/OpenEnclave'
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -72,7 +53,6 @@ class AttestOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-        query_parameters['tee'] = self._serialize.query("tee", tee, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -86,77 +66,7 @@ class AttestOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(new_attestation_policy, 'str')
-
-        # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
-        response = self._client.send(request, stream=False, **operation_config)
-
-        if response.status_code not in [200, 400, 401]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
-
-        deserialized = None
-        if response.status_code == 400:
-            raise CLIError(response.text)
-        if response.status_code == 401:
-            deserialized = self._deserialize('str', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-
-    def reset(
-            self, tenant_base_url, tee, policy_jws, custom_headers=None, raw=False, **operation_config):
-        """Resets the attestation policy for the specified tenant and reverts to
-        the default policy.
-
-        :param tenant_base_url: The tenant name, for example
-         https://mytenant.attest.azure.net.
-        :type tenant_base_url: str
-        :param tee: Specifies the trusted execution environment to be used to
-         validate the evidence. Possible values include: 'SgxEnclave',
-         'OpenEnclave', 'CyResComponent', 'VSMEnclave'
-        :type tee: str or ~azure.attestation.models.TeeKind
-        :param policy_jws: JSON Web Signature with an empty policy document
-        :type policy_jws: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: object or ClientRawResponse if raw=true
-        :rtype: object or ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
-        """
-        # Construct URL
-        url = '/policies/{}%3areset'.format(tee)
-        path_format_arguments = {
-            'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-        query_parameters['tee'] = self._serialize.query("tee", tee, 'str')
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'text/plain'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct body
-        body_content = self._serialize.body(policy_jws, 'str')
+        body_content = self._serialize.body(request, 'AttestOpenEnclaveRequest')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
@@ -168,8 +78,6 @@ class AttestOperations(object):
             raise exp
 
         deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('str', response)
         if response.status_code == 400:
             raise CLIError(response.text)
         if response.status_code == 401:
