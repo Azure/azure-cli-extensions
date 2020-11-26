@@ -6,7 +6,8 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
-                              blob_data_service_factory, adls_blob_data_service_factory)
+                              blob_data_service_factory, adls_blob_data_service_factory,
+                              cf_sa_blob_inventory)
 from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
@@ -23,7 +24,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         )
 
     storage_account_sdk = CliCommandType(
-        operations_tmpl='vendored_sdk.azure_mgmt_preview_storage.operations#StorageAccountsOperations.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
+                        'StorageAccountsOperations.{}',
         client_factory=cf_sa,
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
@@ -33,6 +35,39 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         client_factory=cf_sa,
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
+
+    blob_inventory_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
+                        'BlobInventoryPoliciesOperations.{}',
+        client_factory=cf_sa_blob_inventory,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    blob_inventory_custom_type = CliCommandType(
+        operations_tmpl='azext_storage_preview.operations.account#{}',
+        client_factory=cf_sa_blob_inventory,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    with self.command_group('storage account blob-inventory-policy', blob_inventory_sdk,
+                            custom_command_type=blob_inventory_custom_type, is_preview=True,
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
+        g.custom_command('create', 'create_blob_inventory_policy')
+        g.generic_update_command('update', getter_name='get_blob_inventory_policy',
+                                 getter_type=blob_inventory_custom_type,
+                                 setter_name='update_blob_inventory_policy',
+                                 setter_type=blob_inventory_custom_type)
+        g.custom_command('delete', 'delete_blob_inventory_policy', confirmation=True)
+        g.custom_show_command('show', 'get_blob_inventory_policy')
+
+    # with self.command_group('storage account blob-inventory-policy rule', blob_inventory_sdk,
+    #                         custom_command_type=blob_inventory_custom_type, is_preview=True,
+    #                         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
+    #     g.custom_command('add', 'add_blob_inventory_policy_rule')
+    #     g.custom_command('list', 'list_blob_inventory_policy_rules')
+    #     g.custom_command('remove', 'remove_blob_inventory_policy_rule')
+    #     g.custom_command('show', 'get_blob_inventory_policy_rule')
+    #     g.custom_command('update', 'update_blob_inventory_policy_rule')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
