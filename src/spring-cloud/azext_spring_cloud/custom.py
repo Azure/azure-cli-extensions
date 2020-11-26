@@ -726,7 +726,7 @@ def validate_config_server_settings(client, resource_group, name, git_property):
         raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if not result.is_valid:
-        for item in result.details:
+        for item in result.details or []:
             if not item.name:
                 logger.error("Default repository with URI \"%s\" meets error:", item.uri)
             else:
