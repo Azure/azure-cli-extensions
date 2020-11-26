@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
+++++++
+* `az network p2s-vpn-gateway vpn-client`: Support to generate download URL to get VPN client configuration
+
 0.2.1
 ++++++
 * [BREAKING CHANGE] `az network vwan create/update`: Remove the stale argument `--vnet-to-vnet-traffic`.

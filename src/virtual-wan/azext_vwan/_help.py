@@ -512,4 +512,14 @@ helps['network p2s-vpn-gateway connection show'] = """
         text: |
             az network p2s-vpn-gateway connection show -g MyRG -n connection --gateway-name MyP2SVPNGateway
 """
+
+helps['network p2s-vpn-gateway vpn-client'] = """
+    type: group
+    short-summary: Download a VPN client configuration required to connect to Azure via point-to-site
+"""
+
+helps['network p2s-vpn-gateway vpn-client generate'] = """
+    type: command
+    short-summary: Generate VPN profile for P2S client of the P2SVpnGateway in the specified resource group
+"""
 # endregion

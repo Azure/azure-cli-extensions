@@ -846,6 +846,50 @@ guestconfig guest-configuration-hcrp-assignment-report show:
     guest_configuration_assignment_name:
       rule_exclusions:
       - option_length_too_long
+healthcareapis private-endpoint-connection create:
+  parameters:
+    private_link_service_connection_state_actions_required:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_description:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_status:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis private-endpoint-connection update:
+  parameters:
+    private_link_service_connection_state_actions_required:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_description:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_status:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis service create:
+  parameters:
+    authentication_configuration:
+      rule_exclusions:
+        - option_length_too_long
+    cosmos_db_configuration:
+      rule_exclusions:
+        - option_length_too_long
+    export_configuration_storage_account_name:
+      rule_exclusions:
+        - option_length_too_long
+    private_endpoint_connections:
+      rule_exclusions:
+        - option_length_too_long
+    public_network_access:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis service update:
+  parameters:
+    public_network_access:
+      rule_exclusions:
+        - option_length_too_long
 image copy:
   parameters:
     source_resource_group_name:

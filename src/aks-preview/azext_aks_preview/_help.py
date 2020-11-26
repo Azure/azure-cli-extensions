@@ -205,6 +205,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -242,6 +245,10 @@ helps['aks create'] = """
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
+        - name: --private-dns-zone
+          type: string
+          short-summary: (PREVIEW) private dns zone mode for private cluster.
+          long-summary: Select between system and none. If not set, defaults to type system. Requires --enable-private-cluster to be used.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -275,6 +282,15 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -418,6 +434,9 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
@@ -562,6 +581,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -604,6 +626,12 @@ helps['aks nodepool add'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --kubelet-config
+          type: string
+          short-summary: Kubelet configurations for agent nodes.
+        - name: --linux-os-config
+          type: string
+          short-summary: OS configurations for Linux agent nodes.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
