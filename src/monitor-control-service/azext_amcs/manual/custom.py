@@ -5,15 +5,15 @@
 # --------------------------------------------------------------------------------------------
 
 def monitor_data_collection_rule_association_create(client,
-                                                    resource,
-                                                    name,
+                                                    resource_uri,
+                                                    association_name,
                                                     description=None,
                                                     rule_id=None):
     body = {}
     body['description'] = description
     body['data_collection_rule_id'] = rule_id
-    return client.create(resource_uri=resource,
-                         association_name=name,
+    return client.create(resource_uri=resource_uri,
+                         association_name=association_name,
                          body=body)
 
 
@@ -29,7 +29,7 @@ def monitor_data_collection_rule_association_update(instance,
 
 def monitor_data_collection_rule_create(client,
                                         resource_group_name,
-                                        name,
+                                        data_collection_rule_name,
                                         location=None,
                                         tags=None,
                                         description=None,
@@ -54,7 +54,7 @@ def monitor_data_collection_rule_create(client,
     body['data_sources']['syslog'] = data_sources_syslog
     body['data_sources']['extensions'] = data_sources_extensions
     return client.create(resource_group_name=resource_group_name,
-                         data_collection_rule_name=name,
+                         data_collection_rule_name=data_collection_rule_name,
                          body=body)
 
 
