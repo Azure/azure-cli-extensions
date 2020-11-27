@@ -109,7 +109,7 @@ class AttestationProviderOperations(object):
         provider_name,  # type: str
         location,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
-        keys=None,  # type: Optional[List["models.JsonWebKey"]]
+        certs=None,
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.AttestationProvider"
@@ -124,12 +124,6 @@ class AttestationProviderOperations(object):
         :type location: str
         :param tags: The tags that will be assigned to the attestation service instance.
         :type tags: dict[str, str]
-        :param keys: The value of the "keys" parameter is an array of JWK values.  By
-         default, the order of the JWK values within the array does not imply
-         an order of preference among them, although applications of JWK Sets
-         can choose to assign a meaning to the order for their purposes, if
-         desired.
-        :type keys: list[~attestation_management_client.models.JsonWebKey]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AttestationProvider, or the result of cls(response)
         :rtype: ~attestation_management_client.models.AttestationProvider
@@ -141,7 +135,9 @@ class AttestationProviderOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        creation_params = models.AttestationServiceCreationParams(location=location, tags=tags, keys=keys)
+        creation_params = models.AttestationServiceCreationParams(
+            location=location, tags=tags,
+            keys=certs)
         api_version = "2020-10-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -166,6 +162,7 @@ class AttestationProviderOperations(object):
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(creation_params, 'AttestationServiceCreationParams')
+        print(body_content)
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)

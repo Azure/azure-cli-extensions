@@ -80,7 +80,7 @@ def attestation_attestation_provider_create(client,
                                             tags=None,
                                             certs_input_path=None):
 
-    jwks = []
+    certs = []
     if not certs_input_path:
         certs_input_path = []
 
@@ -95,20 +95,16 @@ def attestation_attestation_provider_create(client,
             pem_data = f.read()
 
         raw_jwk = JWK.from_pem(pem_data)
-        jwk = JsonWebKey(kty=raw_jwk.key_type, kid=raw_jwk.key_id, alg='RS256', use='sig')
-        pub_json = json.loads(raw_jwk.export_public())
-        jwk.e = _b64url_to_b64(pub_json['e'])
-        jwk.n = _b64url_to_b64(pub_json['n'])
+        jwk = JsonWebKey(kty=raw_jwk.key_type, alg='RS256', use='sig')
         cert = load_pem_x509_certificate(pem_data, backend=default_backend())
-        jwk.x5_c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
-        print(jwk)
-        jwks.append(jwk)
+        jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
+        certs.append(jwk)
 
     return client.create(resource_group_name=resource_group_name,
                          provider_name=provider_name,
                          location=location,
                          tags=tags,
-                         keys=jwks)
+                         certs=certs)
 
 
 def attestation_attestation_provider_delete(client,
@@ -135,7 +131,7 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     signers = client.get(tenant_base_url=provider.attest_uri)
     token = json.loads(signers.replace('\'', '"')).get('token')
-    result = {'jwt': token}
+    result = {}
 
     if token:
         import jwt
@@ -149,7 +145,7 @@ def get_policy(cmd, client, tee, resource_group_name=None, provider_name=None):
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[tee]).token
-    result = {'jwk': token}
+    result = {}
 
     if token:
         import jwt
@@ -186,7 +182,7 @@ def set_policy(cmd, client, tee, new_attestation_policy=None, new_attestation_po
     if policy_format == 'Text':
         import jwt
         try:
-            new_attestation_policy = {k: str(v) for k, v in json.loads(new_attestation_policy).items()}
+            #new_attestation_policy = {k: str(v) for k, v in json.loads(new_attestation_policy).items()}
             print(new_attestation_policy)
             new_attestation_policy = jwt.encode(new_attestation_policy, key='').decode('ascii')
         except TypeError:

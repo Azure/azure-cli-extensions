@@ -230,7 +230,7 @@ class AttestationServiceCreationParams(msrest.serialization.Model):
         *,
         location: str,
         tags: Optional[Dict[str, str]] = None,
-        keys: Optional[List["JsonWebKey"]] = None,
+        keys=None,
         **kwargs
     ):
         super(AttestationServiceCreationParams, self).__init__(**kwargs)
@@ -288,139 +288,67 @@ class CloudErrorBody(msrest.serialization.Model):
         self.message = message
 
 
-class JsonWebKey(msrest.serialization.Model):
+class JsonWebKey1(msrest.serialization.Model):
     """JsonWebKey.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param alg: Required. The "alg" (algorithm) parameter identifies the algorithm intended for
-     use with the key.  The values used should either be registered in the
-     IANA "JSON Web Signature and Encryption Algorithms" registry
-     established by [JWA] or be a value that contains a Collision-
-     Resistant Name.
-    :type alg: str
-    :param crv: The "crv" (curve) parameter identifies the curve type.
-    :type crv: str
-    :param d: RSA private exponent or ECC private key.
-    :type d: str
-    :param dp: RSA Private Key Parameter.
-    :type dp: str
-    :param dq: RSA Private Key Parameter.
-    :type dq: str
-    :param e: RSA public exponent, in Base64.
-    :type e: str
-    :param k: Symmetric key.
-    :type k: str
-    :param kid: Required. The "kid" (key ID) parameter is used to match a specific key.  This
-     is used, for instance, to choose among a set of keys within a JWK Set
-     during key rollover.  The structure of the "kid" value is
-     unspecified.  When "kid" values are used within a JWK Set, different
-     keys within the JWK Set SHOULD use distinct "kid" values.  (One
-     example in which different keys might use the same "kid" value is if
-     they have different "kty" (key type) values but are considered to be
-     equivalent alternatives by the application using them.)  The "kid"
-     value is a case-sensitive string.
-    :type kid: str
-    :param kty: Required. The "kty" (key type) parameter identifies the cryptographic algorithm
-     family used with the key, such as "RSA" or "EC". "kty" values should
-     either be registered in the IANA "JSON Web Key Types" registry
-     established by [JWA] or be a value that contains a Collision-
-     Resistant Name.  The "kty" value is a case-sensitive string.
-    :type kty: str
-    :param n: RSA modulus, in Base64.
-    :type n: str
-    :param p: RSA secret prime.
-    :type p: str
-    :param q: RSA secret prime, with p < q.
-    :type q: str
-    :param qi: RSA Private Key Parameter.
-    :type qi: str
-    :param use: Required. Use ("public key use") identifies the intended use of
-     the public key. The "use" parameter is employed to indicate whether
-     a public key is used for encrypting data or verifying the signature
-     on data. Values are commonly "sig" (signature) or "enc" (encryption).
-    :type use: str
-    :param x: X coordinate for the Elliptic Curve point.
-    :type x: str
-    :param x5_c: The "x5c" (X.509 certificate chain) parameter contains a chain of one
-     or more PKIX certificates [RFC5280].  The certificate chain is
-     represented as a JSON array of certificate value strings.  Each
-     string in the array is a base64-encoded (Section 4 of [RFC4648] --
-     not base64url-encoded) DER [ITU.X690.1994] PKIX certificate value.
-     The PKIX certificate containing the key value MUST be the first
-     certificate.
-    :type x5_c: list[str]
-    :param y: Y coordinate for the Elliptic Curve point.
-    :type y: str
     """
-
-    _validation = {
-        'alg': {'required': True},
-        'kid': {'required': True},
-        'kty': {'required': True},
-        'use': {'required': True},
-    }
 
     _attribute_map = {
         'alg': {'key': 'alg', 'type': 'str'},
-        'crv': {'key': 'crv', 'type': 'str'},
-        'd': {'key': 'd', 'type': 'str'},
-        'dp': {'key': 'dp', 'type': 'str'},
-        'dq': {'key': 'dq', 'type': 'str'},
         'e': {'key': 'e', 'type': 'str'},
-        'k': {'key': 'k', 'type': 'str'},
         'kid': {'key': 'kid', 'type': 'str'},
         'kty': {'key': 'kty', 'type': 'str'},
         'n': {'key': 'n', 'type': 'str'},
-        'p': {'key': 'p', 'type': 'str'},
-        'q': {'key': 'q', 'type': 'str'},
-        'qi': {'key': 'qi', 'type': 'str'},
         'use': {'key': 'use', 'type': 'str'},
-        'x': {'key': 'x', 'type': 'str'},
-        'x5_c': {'key': 'x5c', 'type': '[str]'},
-        'y': {'key': 'y', 'type': 'str'},
+        'x5c': {'key': 'x5c', 'type': '[str]'}
     }
 
     def __init__(
         self,
         *,
-        alg: str,
-        kid: str,
-        kty: str,
-        use: str,
-        crv: Optional[str] = None,
-        d: Optional[str] = None,
-        dp: Optional[str] = None,
-        dq: Optional[str] = None,
+        alg: str=None,
+        kid: str=None,
+        kty: str=None,
+        use: str=None,
         e: Optional[str] = None,
-        k: Optional[str] = None,
         n: Optional[str] = None,
-        p: Optional[str] = None,
-        q: Optional[str] = None,
-        qi: Optional[str] = None,
-        x: Optional[str] = None,
-        x5_c: Optional[List[str]] = None,
-        y: Optional[str] = None,
+        x5c: Optional[List[str]] = None,
+        **kwargs
+    ):
+        super(JsonWebKey1, self).__init__(**kwargs)
+        self.alg = alg
+        self.e = e
+        self.kid = kid
+        self.kty = kty
+        self.n = n
+        self.use = use
+        self.x5c = x5c
+
+
+class JsonWebKey(msrest.serialization.Model):
+    """JsonWebKey.
+    """
+
+    _attribute_map = {
+        'alg': {'key': 'alg', 'type': 'str'},
+        'kty': {'key': 'kty', 'type': 'str'},
+        'use': {'key': 'use', 'type': 'str'},
+        'x5c': {'key': 'x5c', 'type': '[str]'}
+    }
+
+    def __init__(
+        self,
+        *,
+        alg: str = None,
+        kty: str = None,
+        use: str = None,
+        x5c: Optional[List[str]] = None,
         **kwargs
     ):
         super(JsonWebKey, self).__init__(**kwargs)
         self.alg = alg
-        self.crv = crv
-        self.d = d
-        self.dp = dp
-        self.dq = dq
-        self.e = e
-        self.k = k
-        self.kid = kid
         self.kty = kty
-        self.n = n
-        self.p = p
-        self.q = q
-        self.qi = qi
         self.use = use
-        self.x = x
-        self.x5_c = x5_c
-        self.y = y
+        self.x5c = x5c
 
 
 class OperationList(msrest.serialization.Model):
