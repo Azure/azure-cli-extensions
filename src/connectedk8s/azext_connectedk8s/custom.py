@@ -598,13 +598,13 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if https_proxy != "":
+    if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
-    if http_proxy != "":
+    if http_proxy:
         cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
-    if no_proxy != "":
+    if no_proxy:
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
-    if proxy_cert != "":
+    if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
@@ -811,13 +811,13 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
                         "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
-    if https_proxy != "":
+    if https_proxy:
         cmd_helm_upgrade.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
-    if http_proxy != "":
+    if http_proxy:
         cmd_helm_upgrade.extend(["--set", "global.httpProxy={}".format(http_proxy)])
-    if no_proxy != "":
+    if no_proxy:
         cmd_helm_upgrade.extend(["--set", "global.noProxy={}".format(no_proxy)])
-    if proxy_cert != "":
+    if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
