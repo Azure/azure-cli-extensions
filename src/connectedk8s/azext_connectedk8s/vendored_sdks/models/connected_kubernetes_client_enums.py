@@ -35,3 +35,8 @@ class ConnectivityStatus(str, Enum):
     connected = "Connected"
     offline = "Offline"
     expired = "Expired"
+
+
+class AuthenticationMethod(str, Enum):
+
+    token = "Token"

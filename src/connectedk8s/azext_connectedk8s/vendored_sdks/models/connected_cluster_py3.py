@@ -39,7 +39,7 @@ class ConnectedCluster(TrackedResource):
      certificate used by the agent to do the initial handshake to the backend
      services in Azure.
     :type agent_public_key_certificate: str
-    :param aad_profile: Required.
+    :param aad_profile: Required. AAD profile of the connected cluster.
     :type aad_profile:
      ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterAADProfile
     :ivar kubernetes_version: The Kubernetes version of the connected cluster
@@ -54,8 +54,9 @@ class ConnectedCluster(TrackedResource):
     :ivar agent_version: Version of the agent running on the connected cluster
      resource
     :vartype agent_version: str
-    :param provisioning_state: Possible values include: 'Succeeded', 'Failed',
-     'Canceled', 'Provisioning', 'Updating', 'Deleting', 'Accepted'
+    :param provisioning_state: Provisioning state of the connected cluster
+     resource. Possible values include: 'Succeeded', 'Failed', 'Canceled',
+     'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
      ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ProvisioningState
     :param distribution: The Kubernetes distribution running on this connected

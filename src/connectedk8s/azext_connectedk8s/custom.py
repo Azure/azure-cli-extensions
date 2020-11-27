@@ -431,7 +431,7 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "kind"
             if provider_id.startswith("k3s://"):
                 return "k3s"
-            if provider_id.startswith("moc://"):
+            if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
                 return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except

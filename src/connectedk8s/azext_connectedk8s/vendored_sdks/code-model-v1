@@ -1,0 +1,5854 @@
+{
+ "$id": "1",
+ "modelTypes": [
+  {
+   "$id": "2",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "3",
+     "isReadOnly": false,
+     "realPath": [
+      "provider"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "4",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "5",
+      "fixed": false,
+      "raw": "Service provider: Microsoft.connectedClusters"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "6",
+      "fixed": false,
+      "raw": "provider"
+     },
+     "serializedName": "provider",
+     "modelType": {
+      "$id": "7",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "8",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "9",
+     "isReadOnly": false,
+     "realPath": [
+      "resource"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "10",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "11",
+      "fixed": false,
+      "raw": "Connected Cluster Resource on which the operation is performed"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "12",
+      "fixed": false,
+      "raw": "resource"
+     },
+     "serializedName": "resource",
+     "modelType": {
+      "$id": "13",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "14",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "15",
+     "isReadOnly": false,
+     "realPath": [
+      "operation"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "16",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "17",
+      "fixed": false,
+      "raw": "Operation type: Read, write, delete, etc."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "18",
+      "fixed": false,
+      "raw": "operation"
+     },
+     "serializedName": "operation",
+     "modelType": {
+      "$id": "19",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "20",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "21",
+     "isReadOnly": false,
+     "realPath": [
+      "description"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "22",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "23",
+      "fixed": false,
+      "raw": "Description of the operation."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "24",
+      "fixed": false,
+      "raw": "description"
+     },
+     "serializedName": "description",
+     "modelType": {
+      "$id": "25",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "26",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "Operation-display",
+   "documentation": "The object that represents the operation.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "27",
+    "fixed": false,
+    "raw": "Operation-display"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "Operation-display",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/Operation-display"
+     ]
+    },
+    "x-internal-autorest-anonymous-schema": {
+     "anonymous": true
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "28",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "29",
+     "isReadOnly": true,
+     "realPath": [
+      "name"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "30",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "31",
+      "fixed": false,
+      "raw": "Operation name: {Microsoft.Kubernetes}/{resource}/{operation}"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "32",
+      "fixed": false,
+      "raw": "name"
+     },
+     "serializedName": "name",
+     "modelType": {
+      "$id": "33",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "34",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "35",
+     "isReadOnly": true,
+     "realPath": [
+      "display"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "36",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "37",
+      "fixed": false,
+      "raw": "The object that represents the operation."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "38",
+      "fixed": false,
+      "raw": "display"
+     },
+     "serializedName": "display",
+     "modelType": {
+      "$ref": "2"
+     }
+    }
+   ],
+   "serializedName": "Operation",
+   "documentation": "The Connected cluster API operation",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "39",
+    "fixed": false,
+    "raw": "Operation"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "Operation",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/Operation"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "40",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "41",
+     "isReadOnly": true,
+     "realPath": [
+      "value"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "42",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "43",
+      "fixed": false,
+      "raw": "The list of connected cluster API operations."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "44",
+      "fixed": false,
+      "raw": "value"
+     },
+     "serializedName": "value",
+     "modelType": {
+      "$id": "45",
+      "$type": "SequenceType",
+      "elementType": {
+       "$ref": "28"
+      },
+      "name": {
+       "$id": "46",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "47",
+     "isReadOnly": false,
+     "realPath": [
+      "nextLink"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "48",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "49",
+      "fixed": false,
+      "raw": "The link to fetch the next page of connected cluster API operations."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "50",
+      "fixed": false,
+      "raw": "nextLink"
+     },
+     "serializedName": "nextLink",
+     "modelType": {
+      "$id": "51",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "52",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "OperationList",
+   "documentation": "The paginated list of connected cluster API operations.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "53",
+    "fixed": false,
+    "raw": "OperationList"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "OperationList",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/OperationList"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "54",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "55",
+     "isReadOnly": true,
+     "realPath": [
+      "principalId"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "56",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "57",
+      "fixed": false,
+      "raw": "The principal id of connected cluster identity. This property will only be provided for a system assigned identity."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "58",
+      "fixed": false,
+      "raw": "principalId"
+     },
+     "serializedName": "principalId",
+     "modelType": {
+      "$id": "59",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "60",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "61",
+     "isReadOnly": true,
+     "realPath": [
+      "tenantId"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "62",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "63",
+      "fixed": false,
+      "raw": "The tenant id associated with the connected cluster. This property will only be provided for a system assigned identity."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "64",
+      "fixed": false,
+      "raw": "tenantId"
+     },
+     "serializedName": "tenantId",
+     "modelType": {
+      "$id": "65",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "66",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "67",
+     "isReadOnly": false,
+     "realPath": [
+      "type"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "68",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "69",
+      "fixed": false,
+      "raw": "The type of identity used for the connected cluster. The type 'SystemAssigned, includes a system created identity. The type 'None' means no identity is assigned to the connected cluster."
+     },
+     "extensions": {
+      "x-ms-metadata": {
+       "apiVersions": [
+        "2020-01-01-preview"
+       ],
+       "filename": [
+        "mem:///149?oai3.shaken.json"
+       ],
+       "name": "ResourceIdentityType",
+       "originalLocations": [
+        "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterIdentity-type"
+       ]
+      },
+      "x-ms-enum": {
+       "name": "ResourceIdentityType",
+       "modelAsString": false
+      }
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "70",
+      "fixed": false,
+      "raw": "type"
+     },
+     "serializedName": "type",
+     "modelType": {
+      "$id": "71",
+      "$type": "EnumType",
+      "modelAsExtensible": false,
+      "values": [
+       {
+        "$id": "72",
+        "name": "None",
+        "serializedName": "None"
+       },
+       {
+        "$id": "73",
+        "name": "SystemAssigned",
+        "serializedName": "SystemAssigned"
+       }
+      ],
+      "modelAsString": false,
+      "underlyingType": {
+       "$id": "74",
+       "$type": "PrimaryType",
+       "knownPrimaryType": "string",
+       "name": {
+        "$id": "75",
+        "fixed": false,
+        "raw": "String"
+       },
+       "deprecated": false
+      },
+      "name": {
+       "$id": "76",
+       "fixed": false,
+       "raw": "ResourceIdentityType"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterIdentity",
+   "documentation": "Identity for the connected cluster.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "77",
+    "fixed": false,
+    "raw": "ConnectedClusterIdentity"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterIdentity",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterIdentity"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "78",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "79",
+     "isReadOnly": false,
+     "realPath": [
+      "tenantId"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "80",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "81",
+      "fixed": false,
+      "raw": "The aad tenant id which is configured on target K8s cluster"
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "82",
+      "fixed": false,
+      "raw": "tenantId"
+     },
+     "serializedName": "tenantId",
+     "modelType": {
+      "$id": "83",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "84",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "85",
+     "isReadOnly": false,
+     "realPath": [
+      "clientAppId"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "86",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "87",
+      "fixed": false,
+      "raw": "The client app id configured on target K8 cluster "
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "88",
+      "fixed": false,
+      "raw": "clientAppId"
+     },
+     "serializedName": "clientAppId",
+     "modelType": {
+      "$id": "89",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "90",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "91",
+     "isReadOnly": false,
+     "realPath": [
+      "serverAppId"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "92",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "93",
+      "fixed": false,
+      "raw": "The server app id to access AD server"
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "94",
+      "fixed": false,
+      "raw": "serverAppId"
+     },
+     "serializedName": "serverAppId",
+     "modelType": {
+      "$id": "95",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "96",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterAADProfile",
+   "documentation": "AAD profile of the connected cluster",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "97",
+    "fixed": false,
+    "raw": "ConnectedClusterAADProfile"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterAADProfile",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterAADProfile"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "98",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "99",
+     "isReadOnly": false,
+     "realPath": [
+      "agentPublicKeyCertificate"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "100",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "101",
+      "fixed": false,
+      "raw": "Base64 encoded public certificate used by the agent to do the initial handshake to the backend services in Azure."
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "102",
+      "fixed": false,
+      "raw": "agentPublicKeyCertificate"
+     },
+     "serializedName": "agentPublicKeyCertificate",
+     "modelType": {
+      "$id": "103",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "104",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "105",
+     "isReadOnly": false,
+     "realPath": [
+      "aadProfile"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "106",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "107",
+      "fixed": false,
+      "raw": "AAD profile of the connected cluster."
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "108",
+      "fixed": false,
+      "raw": "aadProfile"
+     },
+     "serializedName": "aadProfile",
+     "modelType": {
+      "$ref": "78"
+     }
+    },
+    {
+     "$id": "109",
+     "isReadOnly": true,
+     "realPath": [
+      "kubernetesVersion"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "110",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "111",
+      "fixed": false,
+      "raw": "The Kubernetes version of the connected cluster resource"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "112",
+      "fixed": false,
+      "raw": "kubernetesVersion"
+     },
+     "serializedName": "kubernetesVersion",
+     "modelType": {
+      "$id": "113",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "114",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "115",
+     "isReadOnly": true,
+     "realPath": [
+      "totalNodeCount"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "116",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "117",
+      "fixed": false,
+      "raw": "Number of nodes present in the connected cluster resource"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "118",
+      "fixed": false,
+      "raw": "totalNodeCount"
+     },
+     "serializedName": "totalNodeCount",
+     "modelType": {
+      "$id": "119",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "int",
+      "name": {
+       "$id": "120",
+       "fixed": false,
+       "raw": "Int"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "121",
+     "isReadOnly": true,
+     "realPath": [
+      "totalCoreCount"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "122",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "123",
+      "fixed": false,
+      "raw": "Number of CPU cores present in the connected cluster resource"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "124",
+      "fixed": false,
+      "raw": "totalCoreCount"
+     },
+     "serializedName": "totalCoreCount",
+     "modelType": {
+      "$id": "125",
+      "$type": "PrimaryType",
+      "format": "int32",
+      "knownPrimaryType": "int",
+      "name": {
+       "$id": "126",
+       "fixed": false,
+       "raw": "Int"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "127",
+     "isReadOnly": true,
+     "realPath": [
+      "agentVersion"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "128",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "129",
+      "fixed": false,
+      "raw": "Version of the agent running on the connected cluster resource"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "130",
+      "fixed": false,
+      "raw": "agentVersion"
+     },
+     "serializedName": "agentVersion",
+     "modelType": {
+      "$id": "131",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "132",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "133",
+     "isReadOnly": false,
+     "realPath": [
+      "provisioningState"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "134",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "135",
+      "fixed": false,
+      "raw": "Provisioning state of the connected cluster resource."
+     },
+     "extensions": {
+      "x-ms-metadata": {
+       "apiVersions": [
+        "2020-01-01-preview"
+       ],
+       "filename": [
+        "mem:///149?oai3.shaken.json"
+       ],
+       "name": "ProvisioningState",
+       "originalLocations": [
+        "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterProvisioningState"
+       ]
+      },
+      "x-ms-enum": {
+       "name": "ProvisioningState",
+       "modelAsString": true
+      }
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "136",
+      "fixed": false,
+      "raw": "provisioningState"
+     },
+     "serializedName": "provisioningState",
+     "modelType": {
+      "$id": "137",
+      "$type": "EnumType",
+      "modelAsExtensible": false,
+      "values": [
+       {
+        "$id": "138",
+        "name": "Succeeded",
+        "serializedName": "Succeeded"
+       },
+       {
+        "$id": "139",
+        "name": "Failed",
+        "serializedName": "Failed"
+       },
+       {
+        "$id": "140",
+        "name": "Canceled",
+        "serializedName": "Canceled"
+       },
+       {
+        "$id": "141",
+        "name": "Provisioning",
+        "serializedName": "Provisioning"
+       },
+       {
+        "$id": "142",
+        "name": "Updating",
+        "serializedName": "Updating"
+       },
+       {
+        "$id": "143",
+        "name": "Deleting",
+        "serializedName": "Deleting"
+       },
+       {
+        "$id": "144",
+        "name": "Accepted",
+        "serializedName": "Accepted"
+       }
+      ],
+      "modelAsString": true,
+      "underlyingType": {
+       "$id": "145",
+       "$type": "PrimaryType",
+       "knownPrimaryType": "string",
+       "name": {
+        "$id": "146",
+        "fixed": false,
+        "raw": "String"
+       },
+       "deprecated": false
+      },
+      "name": {
+       "$id": "147",
+       "fixed": false,
+       "raw": "ProvisioningState"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "148",
+     "isReadOnly": false,
+     "realPath": [
+      "distribution"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "149",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "150",
+      "fixed": false,
+      "raw": "The Kubernetes distribution running on this connected cluster."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "151",
+      "fixed": false,
+      "raw": "distribution"
+     },
+     "serializedName": "distribution",
+     "modelType": {
+      "$id": "152",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "153",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "154",
+     "isReadOnly": false,
+     "realPath": [
+      "infrastructure"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "155",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "156",
+      "fixed": false,
+      "raw": "The infrastructure on which the Kubernetes cluster represented by this connected cluster is running on."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "157",
+      "fixed": false,
+      "raw": "infrastructure"
+     },
+     "serializedName": "infrastructure",
+     "modelType": {
+      "$id": "158",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "159",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "160",
+     "isReadOnly": true,
+     "realPath": [
+      "offering"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "161",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "162",
+      "fixed": false,
+      "raw": "Connected cluster offering"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "163",
+      "fixed": false,
+      "raw": "offering"
+     },
+     "serializedName": "offering",
+     "modelType": {
+      "$id": "164",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "165",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "166",
+     "isReadOnly": true,
+     "realPath": [
+      "managedIdentityCertificateExpirationTime"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "167",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "168",
+      "fixed": false,
+      "raw": "Expiration time of the managed identity certificate"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "169",
+      "fixed": false,
+      "raw": "managedIdentityCertificateExpirationTime"
+     },
+     "serializedName": "managedIdentityCertificateExpirationTime",
+     "modelType": {
+      "$id": "170",
+      "$type": "PrimaryType",
+      "format": "date-time",
+      "knownPrimaryType": "dateTime",
+      "name": {
+       "$id": "171",
+       "fixed": false,
+       "raw": "DateTime"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "172",
+     "isReadOnly": true,
+     "realPath": [
+      "lastConnectivityTime"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "173",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "174",
+      "fixed": false,
+      "raw": "Time representing the last instance when heart beat was received from the cluster"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "175",
+      "fixed": false,
+      "raw": "lastConnectivityTime"
+     },
+     "serializedName": "lastConnectivityTime",
+     "modelType": {
+      "$id": "176",
+      "$type": "PrimaryType",
+      "format": "date-time",
+      "knownPrimaryType": "dateTime",
+      "name": {
+       "$id": "177",
+       "fixed": false,
+       "raw": "DateTime"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "178",
+     "isReadOnly": false,
+     "realPath": [
+      "connectivityStatus"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "179",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "180",
+      "fixed": false,
+      "raw": "Represents the connectivity status of the connected cluster."
+     },
+     "extensions": {
+      "x-ms-metadata": {
+       "apiVersions": [
+        "2020-01-01-preview"
+       ],
+       "filename": [
+        "mem:///149?oai3.shaken.json"
+       ],
+       "name": "ConnectivityStatus",
+       "originalLocations": [
+        "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterProperties-connectivityStatus"
+       ]
+      },
+      "x-ms-enum": {
+       "name": "ConnectivityStatus",
+       "modelAsString": true
+      }
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "181",
+      "fixed": false,
+      "raw": "connectivityStatus"
+     },
+     "serializedName": "connectivityStatus",
+     "modelType": {
+      "$id": "182",
+      "$type": "EnumType",
+      "modelAsExtensible": false,
+      "values": [
+       {
+        "$id": "183",
+        "name": "Connecting",
+        "serializedName": "Connecting"
+       },
+       {
+        "$id": "184",
+        "name": "Connected",
+        "serializedName": "Connected"
+       },
+       {
+        "$id": "185",
+        "name": "Offline",
+        "serializedName": "Offline"
+       },
+       {
+        "$id": "186",
+        "name": "Expired",
+        "serializedName": "Expired"
+       }
+      ],
+      "modelAsString": true,
+      "underlyingType": {
+       "$id": "187",
+       "$type": "PrimaryType",
+       "knownPrimaryType": "string",
+       "name": {
+        "$id": "188",
+        "fixed": false,
+        "raw": "String"
+       },
+       "deprecated": false
+      },
+      "name": {
+       "$id": "189",
+       "fixed": false,
+       "raw": "ConnectivityStatus"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterProperties",
+   "documentation": "Properties of the connected cluster.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "190",
+    "fixed": false,
+    "raw": "ConnectedClusterProperties"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterProperties",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterProperties"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "191",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "192",
+     "isReadOnly": false,
+     "realPath": [
+      "identity"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "193",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "194",
+      "fixed": false,
+      "raw": "The identity of the connected cluster."
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "195",
+      "fixed": false,
+      "raw": "identity"
+     },
+     "serializedName": "identity",
+     "modelType": {
+      "$ref": "54"
+     }
+    },
+    {
+     "$id": "196",
+     "isReadOnly": false,
+     "realPath": [
+      "properties"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "197",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "198",
+      "fixed": false,
+      "raw": "Describes the connected cluster resource properties."
+     },
+     "extensions": {
+      "x-ms-client-flatten": true
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "199",
+      "fixed": false,
+      "raw": "properties"
+     },
+     "serializedName": "properties",
+     "modelType": {
+      "$ref": "98"
+     }
+    }
+   ],
+   "serializedName": "ConnectedCluster",
+   "baseModelType": {
+    "$id": "200",
+    "$type": "CompositeType",
+    "properties": [
+     {
+      "$id": "201",
+      "isReadOnly": false,
+      "realPath": [
+       "tags"
+      ],
+      "collectionFormat": "none",
+      "defaultValue": {
+       "$id": "202",
+       "fixed": false
+      },
+      "deprecated": false,
+      "documentation": {
+       "$id": "203",
+       "fixed": false,
+       "raw": "Resource tags."
+      },
+      "isRequired": false,
+      "isConstant": false,
+      "name": {
+       "$id": "204",
+       "fixed": false,
+       "raw": "tags"
+      },
+      "serializedName": "tags",
+      "modelType": {
+       "$id": "205",
+       "$type": "DictionaryType",
+       "valueType": {
+        "$id": "206",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "207",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       },
+       "supportsAdditionalProperties": false,
+       "name": {
+        "$id": "208",
+        "fixed": false
+       },
+       "deprecated": false
+      }
+     },
+     {
+      "$id": "209",
+      "isReadOnly": false,
+      "realPath": [
+       "location"
+      ],
+      "collectionFormat": "none",
+      "defaultValue": {
+       "$id": "210",
+       "fixed": false
+      },
+      "deprecated": false,
+      "documentation": {
+       "$id": "211",
+       "fixed": false,
+       "raw": "The geo-location where the resource lives"
+      },
+      "isRequired": true,
+      "isConstant": false,
+      "name": {
+       "$id": "212",
+       "fixed": false,
+       "raw": "location"
+      },
+      "serializedName": "location",
+      "modelType": {
+       "$id": "213",
+       "$type": "PrimaryType",
+       "knownPrimaryType": "string",
+       "name": {
+        "$id": "214",
+        "fixed": false,
+        "raw": "String"
+       },
+       "deprecated": false
+      }
+     }
+    ],
+    "serializedName": "TrackedResource",
+    "baseModelType": {
+     "$id": "215",
+     "$type": "CompositeType",
+     "properties": [
+      {
+       "$id": "216",
+       "isReadOnly": true,
+       "realPath": [
+        "id"
+       ],
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "217",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "218",
+        "fixed": false,
+        "raw": "Fully qualified resource Id for the resource. Ex - /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}"
+       },
+       "isRequired": false,
+       "isConstant": false,
+       "name": {
+        "$id": "219",
+        "fixed": false,
+        "raw": "id"
+       },
+       "serializedName": "id",
+       "modelType": {
+        "$id": "220",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "221",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "222",
+       "isReadOnly": true,
+       "realPath": [
+        "name"
+       ],
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "223",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "224",
+        "fixed": false,
+        "raw": "The name of the resource"
+       },
+       "isRequired": false,
+       "isConstant": false,
+       "name": {
+        "$id": "225",
+        "fixed": false,
+        "raw": "name"
+       },
+       "serializedName": "name",
+       "modelType": {
+        "$id": "226",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "227",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "228",
+       "isReadOnly": true,
+       "realPath": [
+        "type"
+       ],
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "229",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "230",
+        "fixed": false,
+        "raw": "The type of the resource. Ex- Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts."
+       },
+       "isRequired": false,
+       "isConstant": false,
+       "name": {
+        "$id": "231",
+        "fixed": false,
+        "raw": "type"
+       },
+       "serializedName": "type",
+       "modelType": {
+        "$id": "232",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "233",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "serializedName": "Resource",
+     "containsConstantProperties": false,
+     "name": {
+      "$id": "234",
+      "fixed": false,
+      "raw": "Resource"
+     },
+     "extensions": {
+      "x-ms-metadata": {
+       "apiVersions": [
+        "2.0"
+       ],
+       "filename": [
+        "mem:///150?oai3.shaken.json"
+       ],
+       "name": "Resource",
+       "originalLocations": [
+        "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/schemas/Resource"
+       ]
+      },
+      "x-ms-azure-resource": true
+     },
+     "deprecated": false
+    },
+    "documentation": "The resource model definition for a ARM tracked top level resource",
+    "containsConstantProperties": false,
+    "name": {
+     "$id": "235",
+     "fixed": false,
+     "raw": "TrackedResource"
+    },
+    "extensions": {
+     "x-ms-metadata": {
+      "apiVersions": [
+       "2.0"
+      ],
+      "filename": [
+       "mem:///150?oai3.shaken.json"
+      ],
+      "name": "TrackedResource",
+      "originalLocations": [
+       "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/schemas/TrackedResource"
+      ]
+     }
+    },
+    "deprecated": false
+   },
+   "documentation": "Represents a connected cluster.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "236",
+    "fixed": false,
+    "raw": "ConnectedCluster"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedCluster",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedCluster"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "237",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "238",
+     "isReadOnly": false,
+     "realPath": [
+      "value"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "239",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "240",
+      "fixed": false,
+      "raw": "The list of connected clusters"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "241",
+      "fixed": false,
+      "raw": "value"
+     },
+     "serializedName": "value",
+     "modelType": {
+      "$id": "242",
+      "$type": "SequenceType",
+      "elementType": {
+       "$ref": "191"
+      },
+      "name": {
+       "$id": "243",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "244",
+     "isReadOnly": false,
+     "realPath": [
+      "nextLink"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "245",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "246",
+      "fixed": false,
+      "raw": "The link to fetch the next page of connected cluster"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "247",
+      "fixed": false,
+      "raw": "nextLink"
+     },
+     "serializedName": "nextLink",
+     "modelType": {
+      "$id": "248",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "249",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterList",
+   "documentation": "The paginated list of connected Clusters",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "250",
+    "fixed": false,
+    "raw": "ConnectedClusterList"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterList",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterList"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "251",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "252",
+     "isReadOnly": true,
+     "realPath": [
+      "expirationTime"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "253",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "254",
+      "fixed": false,
+      "raw": "Timestamp when this token will be expired."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "255",
+      "fixed": false,
+      "raw": "expirationTime"
+     },
+     "serializedName": "expirationTime",
+     "modelType": {
+      "$id": "256",
+      "$type": "PrimaryType",
+      "format": "int64",
+      "knownPrimaryType": "long",
+      "name": {
+       "$id": "257",
+       "fixed": false,
+       "raw": "Long"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "258",
+     "isReadOnly": true,
+     "realPath": [
+      "hybridConnectionName"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "259",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "260",
+      "fixed": false,
+      "raw": "Name of the connection"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "261",
+      "fixed": false,
+      "raw": "hybridConnectionName"
+     },
+     "serializedName": "hybridConnectionName",
+     "modelType": {
+      "$id": "262",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "263",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "264",
+     "isReadOnly": true,
+     "realPath": [
+      "relay"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "265",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "266",
+      "fixed": false,
+      "raw": "Name of the relay."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "267",
+      "fixed": false,
+      "raw": "relay"
+     },
+     "serializedName": "relay",
+     "modelType": {
+      "$id": "268",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "269",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "270",
+     "isReadOnly": true,
+     "realPath": [
+      "token"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "271",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "272",
+      "fixed": false,
+      "raw": "Sender access token"
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "273",
+      "fixed": false,
+      "raw": "token"
+     },
+     "serializedName": "token",
+     "modelType": {
+      "$id": "274",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "275",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "HybridConnectionConfig",
+   "documentation": "Contains the REP (rendezvous endpoint) and “Sender” access token.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "276",
+    "fixed": false,
+    "raw": "HybridConnectionConfig"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "HybridConnectionConfig",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/HybridConnectionConfig"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "277",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "278",
+     "isReadOnly": true,
+     "realPath": [
+      "name"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "279",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "280",
+      "fixed": false,
+      "raw": "The name of the credential."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "281",
+      "fixed": false,
+      "raw": "name"
+     },
+     "serializedName": "name",
+     "modelType": {
+      "$id": "282",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "283",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "284",
+     "isReadOnly": true,
+     "realPath": [
+      "value"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "285",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "286",
+      "fixed": false,
+      "raw": "Base64-encoded Kubernetes configuration file."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "287",
+      "fixed": false,
+      "raw": "value"
+     },
+     "serializedName": "value",
+     "modelType": {
+      "$id": "288",
+      "$type": "PrimaryType",
+      "format": "byte",
+      "knownPrimaryType": "byteArray",
+      "name": {
+       "$id": "289",
+       "fixed": false,
+       "raw": "ByteArray"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "CredentialResult",
+   "documentation": "The credential result response.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "290",
+    "fixed": false,
+    "raw": "CredentialResult"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "CredentialResult",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/CredentialResult"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "291",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "292",
+     "isReadOnly": true,
+     "realPath": [
+      "hybridConnectionConfig"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "293",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "294",
+      "fixed": false,
+      "raw": "Contains the REP (rendezvous endpoint) and “Sender” access token."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "295",
+      "fixed": false,
+      "raw": "hybridConnectionConfig"
+     },
+     "serializedName": "hybridConnectionConfig",
+     "modelType": {
+      "$ref": "251"
+     }
+    },
+    {
+     "$id": "296",
+     "isReadOnly": true,
+     "realPath": [
+      "kubeconfigs"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "297",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "298",
+      "fixed": false,
+      "raw": "Base64-encoded Kubernetes configuration file."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "299",
+      "fixed": false,
+      "raw": "kubeconfigs"
+     },
+     "serializedName": "kubeconfigs",
+     "modelType": {
+      "$id": "300",
+      "$type": "SequenceType",
+      "elementType": {
+       "$ref": "277"
+      },
+      "name": {
+       "$id": "301",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "CredentialResults",
+   "documentation": "The list of credential result response.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "302",
+    "fixed": false,
+    "raw": "CredentialResults"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "CredentialResults",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/CredentialResults"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "303",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "304",
+     "isReadOnly": false,
+     "realPath": [
+      "token"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "305",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "306",
+      "fixed": false,
+      "raw": "Authentication token."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "307",
+      "fixed": false,
+      "raw": "token"
+     },
+     "serializedName": "token",
+     "modelType": {
+      "$id": "308",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "309",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "AuthenticationDetails-value",
+   "documentation": "Authentication token value.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "310",
+    "fixed": false,
+    "raw": "AuthenticationDetails-value"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "AuthenticationDetails-value",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/AuthenticationDetails-value"
+     ]
+    },
+    "x-internal-autorest-anonymous-schema": {
+     "anonymous": true
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "311",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "312",
+     "isReadOnly": false,
+     "realPath": [
+      "authenticationMethod"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "313",
+      "fixed": false,
+      "raw": "Token"
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "314",
+      "fixed": false,
+      "raw": "The mode of client authentication."
+     },
+     "extensions": {
+      "x-ms-metadata": {
+       "apiVersions": [
+        "2020-01-01-preview"
+       ],
+       "filename": [
+        "mem:///149?oai3.shaken.json"
+       ],
+       "name": "AuthenticationMethod",
+       "originalLocations": [
+        "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/AuthenticationDetails-authenticationMethod"
+       ]
+      },
+      "x-ms-enum": {
+       "name": "AuthenticationMethod",
+       "modelAsString": true
+      }
+     },
+     "isRequired": true,
+     "isConstant": true,
+     "name": {
+      "$id": "315",
+      "fixed": false,
+      "raw": "authenticationMethod"
+     },
+     "serializedName": "authenticationMethod",
+     "modelType": {
+      "$id": "316",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "317",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "318",
+     "isReadOnly": false,
+     "realPath": [
+      "value"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "319",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "320",
+      "fixed": false,
+      "raw": "Authentication token value."
+     },
+     "isRequired": true,
+     "isConstant": false,
+     "name": {
+      "$id": "321",
+      "fixed": false,
+      "raw": "value"
+     },
+     "serializedName": "value",
+     "modelType": {
+      "$ref": "303"
+     }
+    }
+   ],
+   "serializedName": "AuthenticationDetails",
+   "documentation": "Authentication details of the user",
+   "containsConstantProperties": true,
+   "name": {
+    "$id": "322",
+    "fixed": false,
+    "raw": "AuthenticationDetails"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "AuthenticationDetails",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/AuthenticationDetails"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "323",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "324",
+     "isReadOnly": false,
+     "realPath": [
+      "agentPublicKeyCertificate"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "325",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "326",
+      "fixed": false,
+      "raw": "Base64 encoded public certificate used by the agent to do the initial handshake to the backend services in Azure."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "327",
+      "fixed": false,
+      "raw": "agentPublicKeyCertificate"
+     },
+     "serializedName": "agentPublicKeyCertificate",
+     "modelType": {
+      "$id": "328",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "329",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterPatchProperties",
+   "documentation": "Properties which can be patched on the connected cluster resource.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "330",
+    "fixed": false,
+    "raw": "ConnectedClusterPatchProperties"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterPatchProperties",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterPatchProperties"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "331",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "332",
+     "isReadOnly": false,
+     "realPath": [
+      "tags"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "333",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "334",
+      "fixed": false,
+      "raw": "Resource tags."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "335",
+      "fixed": false,
+      "raw": "tags"
+     },
+     "serializedName": "tags",
+     "modelType": {
+      "$id": "336",
+      "$type": "DictionaryType",
+      "valueType": {
+       "$id": "337",
+       "$type": "PrimaryType",
+       "knownPrimaryType": "string",
+       "name": {
+        "$id": "338",
+        "fixed": false,
+        "raw": "String"
+       },
+       "deprecated": false
+      },
+      "supportsAdditionalProperties": false,
+      "name": {
+       "$id": "339",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "340",
+     "isReadOnly": false,
+     "realPath": [
+      "properties"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "341",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "342",
+      "fixed": false,
+      "raw": "Describes the connected cluster resource properties that can be updated during PATCH operation."
+     },
+     "extensions": {
+      "x-ms-client-flatten": true
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "343",
+      "fixed": false,
+      "raw": "properties"
+     },
+     "serializedName": "properties",
+     "modelType": {
+      "$ref": "323"
+     }
+    }
+   ],
+   "serializedName": "ConnectedClusterPatch",
+   "documentation": "Object containing updates for patch operations.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "344",
+    "fixed": false,
+    "raw": "ConnectedClusterPatch"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ConnectedClusterPatch",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/schemas/ConnectedClusterPatch"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$ref": "215"
+  },
+  {
+   "$ref": "200"
+  },
+  {
+   "$id": "345",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "346",
+     "isReadOnly": true,
+     "realPath": [
+      "type"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "347",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "348",
+      "fixed": false,
+      "raw": "The additional info type."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "349",
+      "fixed": false,
+      "raw": "type"
+     },
+     "serializedName": "type",
+     "modelType": {
+      "$id": "350",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "351",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "352",
+     "isReadOnly": true,
+     "realPath": [
+      "info"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "353",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "354",
+      "fixed": false,
+      "raw": "The additional info."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "355",
+      "fixed": false,
+      "raw": "info"
+     },
+     "serializedName": "info",
+     "modelType": {
+      "$id": "356",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "object",
+      "name": {
+       "$id": "357",
+       "fixed": false,
+       "raw": "Object"
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ErrorAdditionalInfo",
+   "documentation": "The resource management error additional info.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "358",
+    "fixed": false,
+    "raw": "ErrorAdditionalInfo"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2.0"
+     ],
+     "filename": [
+      "mem:///150?oai3.shaken.json"
+     ],
+     "name": "ErrorAdditionalInfo",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/schemas/ErrorAdditionalInfo"
+     ]
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$id": "359",
+   "$type": "CompositeType",
+   "properties": [
+    {
+     "$id": "360",
+     "isReadOnly": true,
+     "realPath": [
+      "code"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "361",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "362",
+      "fixed": false,
+      "raw": "The error code."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "363",
+      "fixed": false,
+      "raw": "code"
+     },
+     "serializedName": "code",
+     "modelType": {
+      "$id": "364",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "365",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "366",
+     "isReadOnly": true,
+     "realPath": [
+      "message"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "367",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "368",
+      "fixed": false,
+      "raw": "The error message."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "369",
+      "fixed": false,
+      "raw": "message"
+     },
+     "serializedName": "message",
+     "modelType": {
+      "$id": "370",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "371",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "372",
+     "isReadOnly": true,
+     "realPath": [
+      "target"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "373",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "374",
+      "fixed": false,
+      "raw": "The error target."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "375",
+      "fixed": false,
+      "raw": "target"
+     },
+     "serializedName": "target",
+     "modelType": {
+      "$id": "376",
+      "$type": "PrimaryType",
+      "knownPrimaryType": "string",
+      "name": {
+       "$id": "377",
+       "fixed": false,
+       "raw": "String"
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "378",
+     "isReadOnly": true,
+     "realPath": [
+      "details"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "379",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "380",
+      "fixed": false,
+      "raw": "The error details."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "381",
+      "fixed": false,
+      "raw": "details"
+     },
+     "serializedName": "details",
+     "modelType": {
+      "$id": "382",
+      "$type": "SequenceType",
+      "elementType": {
+       "$id": "383",
+       "$type": "CompositeType",
+       "properties": [
+        {
+         "$id": "384",
+         "isReadOnly": false,
+         "realPath": [
+          "error"
+         ],
+         "collectionFormat": "none",
+         "defaultValue": {
+          "$id": "385",
+          "fixed": false
+         },
+         "deprecated": false,
+         "documentation": {
+          "$id": "386",
+          "fixed": false,
+          "raw": "The error object."
+         },
+         "isRequired": false,
+         "isConstant": false,
+         "name": {
+          "$id": "387",
+          "fixed": false,
+          "raw": "error"
+         },
+         "serializedName": "error",
+         "modelType": {
+          "$ref": "359"
+         }
+        }
+       ],
+       "serializedName": "ErrorResponse",
+       "documentation": "The resource management error response.",
+       "containsConstantProperties": false,
+       "name": {
+        "$id": "388",
+        "fixed": false,
+        "raw": "ErrorResponse"
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ErrorResponse",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/schemas/ErrorResponse"
+         ]
+        }
+       },
+       "deprecated": false
+      },
+      "name": {
+       "$id": "389",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    },
+    {
+     "$id": "390",
+     "isReadOnly": true,
+     "realPath": [
+      "additionalInfo"
+     ],
+     "collectionFormat": "none",
+     "defaultValue": {
+      "$id": "391",
+      "fixed": false
+     },
+     "deprecated": false,
+     "documentation": {
+      "$id": "392",
+      "fixed": false,
+      "raw": "The error additional info."
+     },
+     "isRequired": false,
+     "isConstant": false,
+     "name": {
+      "$id": "393",
+      "fixed": false,
+      "raw": "additionalInfo"
+     },
+     "serializedName": "additionalInfo",
+     "modelType": {
+      "$id": "394",
+      "$type": "SequenceType",
+      "elementType": {
+       "$ref": "345"
+      },
+      "name": {
+       "$id": "395",
+       "fixed": false
+      },
+      "deprecated": false
+     }
+    }
+   ],
+   "serializedName": "ErrorResponse-error",
+   "documentation": "The error object.",
+   "containsConstantProperties": false,
+   "name": {
+    "$id": "396",
+    "fixed": false,
+    "raw": "ErrorResponse-error"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2.0"
+     ],
+     "filename": [
+      "mem:///150?oai3.shaken.json"
+     ],
+     "name": "ErrorResponse-error",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/schemas/ErrorResponse-error"
+     ]
+    },
+    "x-internal-autorest-anonymous-schema": {
+     "anonymous": true
+    }
+   },
+   "deprecated": false
+  },
+  {
+   "$ref": "383"
+  }
+ ],
+ "errorTypes": [
+  {
+   "$ref": "383"
+  }
+ ],
+ "enumTypes": [
+  {
+   "$ref": "71"
+  },
+  {
+   "$ref": "137"
+  },
+  {
+   "$ref": "182"
+  },
+  {
+   "$id": "397",
+   "$type": "EnumType",
+   "modelAsExtensible": false,
+   "values": [
+    {
+     "$id": "398",
+     "name": "Token",
+     "serializedName": "Token"
+    }
+   ],
+   "modelAsString": true,
+   "underlyingType": {
+    "$id": "399",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "string",
+    "name": {
+     "$id": "400",
+     "fixed": false,
+     "raw": "String"
+    },
+    "deprecated": false
+   },
+   "name": {
+    "$id": "401",
+    "fixed": false,
+    "raw": "AuthenticationMethod"
+   },
+   "deprecated": false
+  }
+ ],
+ "name": "ConnectedKubernetesClient",
+ "namespace": "Azure.mgmt.hybridkubernetes.v20200101Preview",
+ "modelsName": "Models",
+ "apiVersion": "2020-01-01-preview",
+ "baseUrl": "https://management.azure.com",
+ "documentation": "Azure Connected Cluster Resource Provider API for adopting any Kubernetes Cluster",
+ "extensions": {
+  "security": [
+   {
+    "azure_auth": [
+     "user_impersonation"
+    ]
+   }
+  ]
+ },
+ "properties": [
+  {
+   "$id": "402",
+   "isReadOnly": false,
+   "realPath": [
+    "clusterName"
+   ],
+   "collectionFormat": "none",
+   "defaultValue": {
+    "$id": "403",
+    "fixed": false
+   },
+   "deprecated": false,
+   "documentation": {
+    "$id": "404",
+    "fixed": false,
+    "raw": "The name of the Kubernetes cluster on which get is called."
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ClusterNamePathParam",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+     ]
+    },
+    "x-ms-parameter-location": "method"
+   },
+   "isRequired": true,
+   "isConstant": false,
+   "name": {
+    "$id": "405",
+    "fixed": false,
+    "raw": "clusterName"
+   },
+   "serializedName": "clusterName",
+   "modelType": {
+    "$id": "406",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "string",
+    "name": {
+     "$id": "407",
+     "fixed": false,
+     "raw": "String"
+    },
+    "deprecated": false
+   }
+  },
+  {
+   "$id": "408",
+   "isReadOnly": false,
+   "realPath": [
+    "ClientProxy"
+   ],
+   "collectionFormat": "none",
+   "defaultValue": {
+    "$id": "409",
+    "fixed": false
+   },
+   "deprecated": false,
+   "documentation": {
+    "$id": "410",
+    "fixed": false,
+    "raw": "Parameter to indicate whether the request is for client side proxy or not"
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2020-01-01-preview"
+     ],
+     "filename": [
+      "mem:///149?oai3.shaken.json"
+     ],
+     "name": "ClientProxy",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClientProxy"
+     ]
+    },
+    "x-ms-parameter-location": "method"
+   },
+   "isRequired": false,
+   "isConstant": false,
+   "name": {
+    "$id": "411",
+    "fixed": false,
+    "raw": "ClientProxy"
+   },
+   "serializedName": "ClientProxy",
+   "modelType": {
+    "$id": "412",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "boolean",
+    "name": {
+     "$id": "413",
+     "fixed": false,
+     "raw": "Boolean"
+    },
+    "deprecated": false
+   }
+  },
+  {
+   "$id": "414",
+   "isReadOnly": false,
+   "realPath": [
+    "subscriptionId"
+   ],
+   "collectionFormat": "none",
+   "constraints": {
+    "MinLength": "1"
+   },
+   "defaultValue": {
+    "$id": "415",
+    "fixed": false
+   },
+   "deprecated": false,
+   "documentation": {
+    "$id": "416",
+    "fixed": false,
+    "raw": "The ID of the target subscription."
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2.0"
+     ],
+     "filename": [
+      "mem:///150?oai3.shaken.json"
+     ],
+     "name": "SubscriptionIdParameter",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+     ]
+    }
+   },
+   "isRequired": true,
+   "isConstant": false,
+   "name": {
+    "$id": "417",
+    "fixed": false,
+    "raw": "subscriptionId"
+   },
+   "serializedName": "subscriptionId",
+   "modelType": {
+    "$id": "418",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "string",
+    "name": {
+     "$id": "419",
+     "fixed": false,
+     "raw": "String"
+    },
+    "deprecated": false
+   }
+  },
+  {
+   "$id": "420",
+   "isReadOnly": false,
+   "realPath": [
+    "api-version"
+   ],
+   "collectionFormat": "none",
+   "constraints": {
+    "MinLength": "1"
+   },
+   "defaultValue": {
+    "$id": "421",
+    "fixed": false
+   },
+   "deprecated": false,
+   "documentation": {
+    "$id": "422",
+    "fixed": false,
+    "raw": "The API version to use for this operation."
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2.0"
+     ],
+     "filename": [
+      "mem:///150?oai3.shaken.json"
+     ],
+     "name": "ApiVersionParameter",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ApiVersionParameter"
+     ]
+    }
+   },
+   "isRequired": true,
+   "isConstant": false,
+   "name": {
+    "$id": "423",
+    "fixed": false,
+    "raw": "api-version"
+   },
+   "serializedName": "api-version",
+   "modelType": {
+    "$id": "424",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "string",
+    "name": {
+     "$id": "425",
+     "fixed": false,
+     "raw": "String"
+    },
+    "deprecated": false
+   }
+  },
+  {
+   "$id": "426",
+   "isReadOnly": false,
+   "realPath": [
+    "resourceGroupName"
+   ],
+   "collectionFormat": "none",
+   "constraints": {
+    "MaxLength": "90",
+    "MinLength": "1",
+    "Pattern": "^[-\\w\\._\\(\\)]+$"
+   },
+   "defaultValue": {
+    "$id": "427",
+    "fixed": false
+   },
+   "deprecated": false,
+   "documentation": {
+    "$id": "428",
+    "fixed": false,
+    "raw": "The name of the resource group. The name is case insensitive."
+   },
+   "extensions": {
+    "x-ms-metadata": {
+     "apiVersions": [
+      "2.0"
+     ],
+     "filename": [
+      "mem:///150?oai3.shaken.json"
+     ],
+     "name": "ResourceGroupNameParameter",
+     "originalLocations": [
+      "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+     ]
+    },
+    "x-ms-parameter-location": "method"
+   },
+   "isRequired": true,
+   "isConstant": false,
+   "name": {
+    "$id": "429",
+    "fixed": false,
+    "raw": "resourceGroupName"
+   },
+   "serializedName": "resourceGroupName",
+   "modelType": {
+    "$id": "430",
+    "$type": "PrimaryType",
+    "knownPrimaryType": "string",
+    "name": {
+     "$id": "431",
+     "fixed": false,
+     "raw": "String"
+    },
+    "deprecated": false
+   }
+  }
+ ],
+ "operations": [
+  {
+   "$id": "432",
+   "methods": [
+    {
+     "$id": "433",
+     "parameters": [
+      {
+       "$id": "434",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "435",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "436",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "437",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "438",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "439",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "440",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "441",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "442",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "443",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "444",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "445",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "446",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "447",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "448",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "449",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "450",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "451",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "452",
+       "clientProperty": {
+        "$ref": "402"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "453",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "454",
+        "fixed": false,
+        "raw": "The name of the Kubernetes cluster on which get is called."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClusterNamePathParam",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "455",
+        "fixed": false,
+        "raw": "clusterName"
+       },
+       "serializedName": "clusterName",
+       "modelType": {
+        "$id": "456",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "457",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "458",
+       "location": "body",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "459",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "460",
+        "fixed": false,
+        "raw": "Parameters supplied to Create a Connected Cluster."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·e04tv4·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·requestbody",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/requestBodies/paths·e04tv4·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·requestbody"
+         ]
+        },
+        "x-ms-requestBody-name": "ConnectedCluster"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "461",
+        "fixed": false,
+        "raw": "ConnectedCluster"
+       },
+       "serializedName": "ConnectedCluster",
+       "modelType": {
+        "$ref": "191"
+       }
+      }
+     ],
+     "name": {
+      "$id": "462",
+      "fixed": false,
+      "raw": "Create"
+     },
+     "group": {
+      "$id": "463",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_Create",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}",
+     "isAbsoluteUrl": false,
+     "httpMethod": "put",
+     "responses": {
+      "OK": {
+       "$id": "464",
+       "body": {
+        "$ref": "191"
+       },
+       "extensions": {
+        "$id": "465",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·1451hhh·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1451hhh·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      },
+      "Created": {
+       "$id": "466",
+       "body": {
+        "$ref": "191"
+       },
+       "extensions": {
+        "$id": "467",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·1dkceek·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·201",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1dkceek·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·201"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "468",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "469",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·1eeaji6·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1eeaji6·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·put·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "470",
+      "body": {
+       "$ref": "191"
+      },
+      "isNullable": true
+     },
+     "description": "API to register a new Kubernetes cluster and create a tracked resource in Azure Resource Manager (ARM).",
+     "summary": "Register a new Kubernetes cluster with Azure Resource Manager.",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-requestBody-index": "4",
+      "x-ms-long-running-operation": true,
+      "x-ms-long-running-operation-options": {
+       "final-state-via": "azure-async-operation"
+      },
+      "x-ms-examples": {
+       "CreateClusterExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "api-version": "2020-01-01-preview",
+         "ConnectedCluster": {
+          "location": "East US",
+          "tags": {},
+          "identity": {
+           "type": "SystemAssigned"
+          },
+          "properties": {
+           "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+           "aadProfile": {
+            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+            "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+            "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+           }
+          }
+         }
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+           "name": "connectedCluster1",
+           "type": "Microsoft.Kubernetes/connectedClusters",
+           "location": "East US",
+           "tags": {},
+           "identity": {
+            "type": "SystemAssigned"
+           },
+           "properties": {
+            "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+            "aadProfile": {
+             "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+             "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+            },
+            "kubernetesVersion": "1.17.0",
+            "totalNodeCount": "2",
+            "agentVersion": "0.1.0"
+           }
+          }
+         },
+         "201": {
+          "body": {
+           "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+           "name": "connectedCluster1",
+           "type": "Microsoft.Kubernetes/connectedClusters",
+           "location": "East US",
+           "tags": {},
+           "identity": {
+            "type": "SystemAssigned"
+           },
+           "properties": {
+            "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+            "aadProfile": {
+             "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+             "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+            },
+            "kubernetesVersion": "1.17.0",
+            "totalNodeCount": "2",
+            "agentVersion": "0.1.0",
+            "provisioningState": "Accepted"
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "471",
+     "parameters": [
+      {
+       "$id": "472",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "473",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "474",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "475",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "476",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "477",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "478",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "479",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "480",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "481",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "482",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "483",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "484",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "485",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "486",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "487",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "488",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "489",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "490",
+       "clientProperty": {
+        "$ref": "402"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "491",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "492",
+        "fixed": false,
+        "raw": "The name of the Kubernetes cluster on which get is called."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClusterNamePathParam",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "493",
+        "fixed": false,
+        "raw": "clusterName"
+       },
+       "serializedName": "clusterName",
+       "modelType": {
+        "$id": "494",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "495",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "496",
+       "location": "body",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "497",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "498",
+        "fixed": false,
+        "raw": "Parameters supplied to update Connected Cluster."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·140jfb0·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·requestbody",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/requestBodies/paths·140jfb0·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·requestbody"
+         ]
+        },
+        "x-ms-requestBody-name": "ConnectedClusterPatch"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "499",
+        "fixed": false,
+        "raw": "ConnectedClusterPatch"
+       },
+       "serializedName": "ConnectedClusterPatch",
+       "modelType": {
+        "$ref": "331"
+       }
+      }
+     ],
+     "name": {
+      "$id": "500",
+      "fixed": false,
+      "raw": "Update"
+     },
+     "group": {
+      "$id": "501",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_Update",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}",
+     "isAbsoluteUrl": false,
+     "httpMethod": "patch",
+     "responses": {
+      "OK": {
+       "$id": "502",
+       "body": {
+        "$ref": "191"
+       },
+       "extensions": {
+        "$id": "503",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·wjt34r·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·wjt34r·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "504",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "505",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·112mjr·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·112mjr·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·patch·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "506",
+      "body": {
+       "$ref": "191"
+      },
+      "isNullable": true
+     },
+     "description": "API to update certain properties of the connected cluster resource",
+     "summary": "Updates a connected cluster.",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-requestBody-index": "4",
+      "x-ms-examples": {
+       "UpdateClusterExample": {
+        "parameters": {
+         "api-version": "2020-01-01-preview",
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "ConnectedClusterPatch": {
+          "tags": {
+           "tag1": "value1",
+           "tag2": "value2"
+          },
+          "properties": {
+           "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO"
+          }
+         }
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+           "name": "connectedCluster1",
+           "type": "Microsoft.Kubernetes/connectedClusters",
+           "location": "East US",
+           "tags": {},
+           "identity": {
+            "type": "SystemAssigned"
+           },
+           "properties": {
+            "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+            "aadProfile": {
+             "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+             "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+            },
+            "kubernetesVersion": "1.17.0",
+            "totalNodeCount": "2",
+            "agentVersion": "0.1.0"
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "507",
+     "parameters": [
+      {
+       "$id": "508",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "509",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "510",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "511",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "512",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "513",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "514",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "515",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "516",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "517",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "518",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "519",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "520",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "521",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "522",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "523",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "524",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "525",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "526",
+       "clientProperty": {
+        "$ref": "402"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "527",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "528",
+        "fixed": false,
+        "raw": "The name of the Kubernetes cluster on which get is called."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClusterNamePathParam",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "529",
+        "fixed": false,
+        "raw": "clusterName"
+       },
+       "serializedName": "clusterName",
+       "modelType": {
+        "$id": "530",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "531",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "name": {
+      "$id": "532",
+      "fixed": false,
+      "raw": "Get"
+     },
+     "group": {
+      "$id": "533",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_Get",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}",
+     "isAbsoluteUrl": false,
+     "httpMethod": "get",
+     "responses": {
+      "OK": {
+       "$id": "534",
+       "body": {
+        "$ref": "191"
+       },
+       "extensions": {
+        "$id": "535",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·1t3vv3m·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·get·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1t3vv3m·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·get·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "536",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "537",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·wl7hvp·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·get·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·wl7hvp·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·get·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "538",
+      "body": {
+       "$ref": "191"
+      },
+      "isNullable": true
+     },
+     "description": "Returns the properties of the specified connected cluster, including name, identity, properties, and additional cluster details.",
+     "summary": "Get the properties of the specified connected cluster.",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-examples": {
+       "GetClusterExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+           "name": "connectedCluster1",
+           "type": "Microsoft.Kubernetes/connectedClusters",
+           "location": "East US",
+           "tags": {},
+           "identity": {
+            "principalId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+            "type": "SystemAssigned"
+           },
+           "properties": {
+            "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+            "aadProfile": {
+             "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+             "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+            },
+            "kubernetesVersion": "1.17.0",
+            "totalNodeCount": "2",
+            "agentVersion": "0.1.0"
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "539",
+     "parameters": [
+      {
+       "$id": "540",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "541",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "542",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "543",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "544",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "545",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "546",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "547",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "548",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "549",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "550",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "551",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "552",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "553",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "554",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "555",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "556",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "557",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "558",
+       "clientProperty": {
+        "$ref": "402"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "559",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "560",
+        "fixed": false,
+        "raw": "The name of the Kubernetes cluster on which get is called."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClusterNamePathParam",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "561",
+        "fixed": false,
+        "raw": "clusterName"
+       },
+       "serializedName": "clusterName",
+       "modelType": {
+        "$id": "562",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "563",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "name": {
+      "$id": "564",
+      "fixed": false,
+      "raw": "Delete"
+     },
+     "group": {
+      "$id": "565",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_Delete",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}",
+     "isAbsoluteUrl": false,
+     "httpMethod": "delete",
+     "responses": {
+      "OK": {
+       "$id": "566",
+       "extensions": {
+        "$id": "567",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·pl20ck·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·pl20ck·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      },
+      "Accepted": {
+       "$id": "568",
+       "extensions": {
+        "$id": "569",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·gs2piz·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·202",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·gs2piz·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·202"
+         ]
+        }
+       },
+       "isNullable": true
+      },
+      "NoContent": {
+       "$id": "570",
+       "extensions": {
+        "$id": "571",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·5v2jya·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·204",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·5v2jya·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·204"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "572",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "573",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·1el4tdc·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1el4tdc·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername·delete·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "574",
+      "isNullable": true
+     },
+     "description": "Delete a connected cluster, removing the tracked resource in Azure Resource Manager (ARM).",
+     "summary": "Delete a connected cluster.",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-long-running-operation": true,
+      "x-ms-long-running-operation-options": {
+       "final-state-via": "location"
+      },
+      "x-ms-examples": {
+       "DeleteClusterExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {},
+         "202": {},
+         "204": {}
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "575",
+     "parameters": [
+      {
+       "$id": "576",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "577",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "578",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "579",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "580",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "581",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "582",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "583",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "584",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "585",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "586",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "587",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "588",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "589",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "590",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "591",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "592",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "593",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "594",
+       "clientProperty": {
+        "$ref": "402"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "595",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "596",
+        "fixed": false,
+        "raw": "The name of the Kubernetes cluster on which get is called."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClusterNamePathParam",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClusterNamePathParam"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "597",
+        "fixed": false,
+        "raw": "clusterName"
+       },
+       "serializedName": "clusterName",
+       "modelType": {
+        "$id": "598",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "599",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "600",
+       "clientProperty": {
+        "$ref": "408"
+       },
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "601",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "602",
+        "fixed": false,
+        "raw": "Parameter to indicate whether the request is for client side proxy or not"
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "ClientProxy",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/parameters/ClientProxy"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": false,
+       "isConstant": false,
+       "name": {
+        "$id": "603",
+        "fixed": false,
+        "raw": "ClientProxy"
+       },
+       "serializedName": "ClientProxy",
+       "modelType": {
+        "$id": "604",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "boolean",
+        "name": {
+         "$id": "605",
+         "fixed": false,
+         "raw": "Boolean"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "606",
+       "location": "body",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "607",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "608",
+        "fixed": false,
+        "raw": "Authentication parameters supplied by the user to fetch credentials for accessing the cluster."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·qwkya7·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·requestbody",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/requestBodies/paths·qwkya7·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·requestbody"
+         ]
+        },
+        "x-ms-requestBody-name": "ClientAuthenticationDetails"
+       },
+       "isRequired": false,
+       "isConstant": false,
+       "name": {
+        "$id": "609",
+        "fixed": false,
+        "raw": "ClientAuthenticationDetails"
+       },
+       "serializedName": "ClientAuthenticationDetails",
+       "modelType": {
+        "$ref": "311"
+       }
+      }
+     ],
+     "name": {
+      "$id": "610",
+      "fixed": false,
+      "raw": "ListClusterUserCredentials"
+     },
+     "group": {
+      "$id": "611",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_ListClusterUserCredentials",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}/listClusterUserCredentials",
+     "isAbsoluteUrl": false,
+     "httpMethod": "post",
+     "responses": {
+      "OK": {
+       "$id": "612",
+       "body": {
+        "$ref": "291"
+       },
+       "extensions": {
+        "$id": "613",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·15osqfl·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·15osqfl·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "614",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "615",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·1j1zlyx·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1j1zlyx·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters-clustername-listclusterusercredentials·post·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "616",
+      "body": {
+       "$ref": "291"
+      },
+      "isNullable": true
+     },
+     "description": "Gets cluster user credentials of the connected cluster with a specified resource group and name.",
+     "summary": "Gets cluster user credentials of a connected cluster",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-requestBody-index": "5",
+      "x-ms-examples": {
+       "ListClusterUserCredentialsExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "kubeconfigs": [
+            {
+             "name": "credentialName1",
+             "value": "YXBpVmVyc2lvbjogdjENCmNsdXN0ZXJzOg0KLSBjbHVzdGVyOg0KICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VWNGVrTkRRWEVyWjBGM1NVSkJaMGxSVTJ0dVdsWnZaekp1VmpKVmNYZEtjblZYTTFCSGVrRk9RbWRyY1docmFVYzVkekJDUVZGelJrRkVRVTRLVFZGemQwTlJXVVJXVVZGRVJYZEthbGVsSlEwbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGbk9FRk5TVWxEUTJkTFEwRm5SVUUwV1hCNUNsUmtUMVJSU1dNdmVsaERlR3hTZWtVMF"
+            }
+           ]
+          }
+         }
+        }
+       },
+       "ListClusterUserCredentialsNonAadExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "clusterName": "testCluster",
+         "api-version": "2020-01-01-preview",
+         "ClientAuthenticationDetails": {
+          "authenticationMethod": "Token",
+          "value": {
+           "token": "2c64fr2d61daffd8684bda773f6a478e1e5879ae15fdd3d54584cd5350c6ae139a0b7998a76f1a97e8b7ca052bb20ef4f9ce037d9a323fc161fb40b895e9b0f3"
+          }
+         }
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "kubeconfigs": [
+            {
+             "name": "credentialName1",
+             "value": "YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6CiAgLSBjbHVzdGVyOgogICAgICBjZXJ0aWZpY2F0ZS1hdXRob3JpdHktZGF0YTogTFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVaDJWRU5EUW1GWFowRjNTVUpCWjBsVVlYZEJRVUV5VkhWQlRYaEJhVWx5UldsQlFVRkJRVUZFV2tSQlRrSm5hM0ZvYTJsSE9YY3dRa0ZSYzBaQlJFSlFUVkZ6ZDBOUldVUldVVkZIUlhkS1ZsVjZSV1ZOUW5kSFFURlZSVU5vVFZaVVYyeHFZMjA1ZW1JeVdqQkpSVTUyWTI1Q2RtTnRSakJoVnpsMVRWTkJkMGhuV1VSV1VWRkVSWGhrVG1GWFRubGlNMDUyV201UloxVnNUa0pKUmxKTlZYbENSRkZUUVhkTlZFRmxSbmN3ZVUxRVFUUk5hbU40VFdwTmVFNVVXbUZHZHpCNVRWUkJORTFxWTNoTmFrMTRUbFJhWVUxRFdYaEtSRUZwUW1kT1ZrSkJUVTFIZVc5MVlYcG9lbGt5T1hWaWJWWnFaRU0xTUZwWVRqQk1iVVkyWkZoS2JFeHRUblppVkVORFFWTkpkMFJSV1VwTGIxcEphSFpqVGtGUlJVSkNVVUZFWjJkRlVFRkVRME5CVVc5RFoyZEZRa0ZOU0VwVU0wZEtXbWhMTm5KaVVHSm9XRWN6V21SU05HVlhNSGhSVmxVclIwTjVXSEFyY0VwRFNtUjBhbGgyTjNwMFEzTnJRV0ZaZDJobmQyMHpOMGhFVkVWamNFVlFjR1p6TDJSSFdsQktiek5vU0ZOemVGaENUMUJXYUVsVVRHZFBSa1E0YW5BMVlWZG1kVXA0WWsxUFNqZ3dObWxST0VkT1NVdEZURGM1ZDFkMVNWcG5MemhCWTBZeVNEWnJTMDlWVVhJdmVFMWFjVWx1WW5sQk1XVmhPVW8xTmpKbVNVODRUbEp2YWxORVRFUlBWRzFyWTFaYVdHcHlTaTlsYW1wclVVMUhiV0YyT1hreE9EQjJUVkZ5TTBjM2FXZ3Jkell2VFZocGVWWkpLMGxhY3pSaGVXVTJhREo0VDA5VlNYQnRWVTQ0UlhVNWIwY3ZTSGRHV2swemJHWnBkR0ZQZUhsblEydHBNV2R0VFRsd09FcHhNMVIyVVRSbU9YSnBRVWRUVFhaWWVsSlpTa2hOU2toVVRtZFZhV1pZVjFWb1VFWTJWMkZGTWxwbFdVWkdOV1ozU0U5MlVYRnFSa2tyUlZWS1JscE1kekJEUVhkRlFVRmhUME5CTjJ0M1oyZFBNVTFKU1VKQmQxbExTM2RaUWtKQlNGZGxVVWxGUVdkVFFqbEJVMEk0VVVSMlFVaFZRVGxzZVZWTU9VWXpUVU5KVlZaQ1owbE5TbEpYYW5WT1RrVjRhM3AyT1RoTlRIbEJUSHBGTjNoYVQwMUJRVUZHTUV3dlFuTjNRVUZCUWtGTlFWSnFRa1ZCYVVJMFpWSlVTMHhZY1hsM09HazFMeTlyVmtaNWNrTlhZMFZtY0VaV2NGUlZSVFIzYlVNME1rZHhSMkpCU1dkTkswVllkRWhtV0Rrd05WVklZall3Y1hKUlEzUTRibkZhTkUxamRVUjNOMlJaZVhwdGJFc3pja05SUVdSblFtTXpSVTlUTDNWaGNsSlZVM2hZY0hKVlZuVlpVVTR2ZGxZcmEyWmpiMWhQVlhOc04yMDVjMk5QZVdkQlFVRllVWFk0UjNwd1FVRkJSVUYzUWtoTlJWVkRTVVZZYTFwcWMyOUNVamhWZEc5blQwbFhWeXQyVTFOQ2NWcEViRGxIVEVRME1uWXdNR0ZXTkRVMVF6RkJhVVZCZDI1aE4zaDVWRUZJUTBJemNqVTBSSG93WnpKMVJHWktNa2ROUVdod2RuRnJiSGN5YXpka1VrMVdZM2RLZDFsS1MzZFpRa0pCUjBOT2VGVkxRa0p2ZDBkRVFVdENaMmR5UW1kRlJrSlJZMFJCVkVGTFFtZG5ja0puUlVaQ1VXTkVRV3BCSzBKbmEzSkNaMFZGUVZsSk0wWlJZMFZOVkVGMlFtbGpja0puUlVWQldVa3pSbEZwU0RKdldqRm5LemRhUVZsTVNtaFNkVUowV2pWb2FHWlVjbGxKUm1Sb1dXRlBVVmxtUTIxR1FVTkJWMUZEUVZOVmQyZFpZMGREUTNOSFFWRlZSa0ozUlVKQ1NITjNaVlJDVkVKblozSkNaMFZHUWxGamQwRnZXa2hoU0ZJd1kwUnZka3d6WkROa2VUVjBZVmRPZVdJelRuWmFibEYxV1RJNWRFd3pRbkpoVXpsMFl6Sk9kbU51UVhaVVYyeHFZMjA1ZW1JeVdqQktWRWwzVld4T1FrcFVTWGRXUlhoVVNsUkpkMUV3Uld4TmFrRjNUVk0xYW1OdVVYZEpaMWxKUzNkWlFrSlJWVWhOUVVkSFJtMW9NR1JJUVRaTWVUbDJXVE5PZDB4dE1YcGlNazU2WTBNMWFtSXlNSGRJVVZsRVZsSXdUMEpDV1VWR1N6ZFZhQ3M1WkdnNUwxRjFZM0ZKTlVFNVJHc3djMlpzTTFsVFRVRnpSMEV4VldSRWQxRkZRWGRKUlhORVFrSkNaMDVXU0ZKRlJVOXFRVFJuYUhOeFRHMXpOR015VG5aaWJUVnNXVE5SZFdSSFZucGtRelZvWlc1V2VWcFROV3BpTWpKRFIxZHpOR015VG5aaWJUVnNXVE5SZFdSSFZucGtRelZvWlc1V2VWcFROV3BpTWpCM1oySkJSMEV4VldSSWQxTkNjVVJEUW5CVVEwSnZjVU5DYmpaRFFtNUpXazVoU0ZJd1kwUnZka3d5TVhwWk0wcHpURzB4Y0ZrelNuWmpNamx0WkVNMWFtSXlNSFpqUjNSd1RESXhlbGt5T1hsalF6bHFZMjEzZGxSWGJHcGpiVGw2WWpKYU1FcFVTWGRWYkU1Q1NsUkpkMVpGZUZSS1ZFbDNVVEJGYkUxcVFYZE5VelZxWTIxNVIxTXlhREJrU0VFMlRIazVhbU50ZDNWaVYyeHFZMjA1ZW1JeVdqQk1iVTUyWWxNNWQyRXlhM1ppV0U1cVlqTktkMHd5VG5saVF6bE9ZVmRPZVdJelRuWmFibEZzVFdwQ1UxVXdSV3hOYWtKVlZFWk5iRTFxUWtSUlUxVjVUVVJCZUV4dFRubGlSRUpZUW1kT1ZraFRRVVZWUkVKUFRVVkpSME5UYzBkQlVWRkNaMnBqY1VGVVFURk5SRTFIUTBOelIwRlJWVVpDZDBsQ1JtbGtiMlJJVW5kUGFUaDJaRE5rTTB4dE1YQlpNMHAyWXpJNWJXUkROV3BpTWpCMlkwZDBjRXd5TVhwWk1qbDVZME01YW1OSVRYZERRVmxIV2pSRlRVRlJTVUpOUWpoSFFURlZaRWwzVVZsTlFtRkJSa3hXTWtSRVFWSjZjMlZUVVdzeFRYZ3hkM041UzJ0Tk5rRjBhMDFDTUVkQk1WVmtTbEZSVjAxQ1VVZERRM05IUVZGVlJrSjNUVUpDWjJkeVFtZEZSa0pSWTBSQmFrRk9RbWRyY1docmFVYzVkekJDUVZGelJrRkJUME5CWjBWQlJWZHRUVmRzWjJ3NGQzSlRUWHBQTW1Ob1pVbHZhbkZRVjBNd2FVVlVkSGRZYVVreWRqVmtWVkV5ZG01eWMydFVZM1ZzV1ZJNFExSllRemxXY0hWTU5YZDJUbEJaWlVzNWFtRjRhRXhGZW14YUt6aENTaTlhSzA5Q1NsRlBiV0k0VDIxRkwzcEVha1o1WVU5WWIzUXZNMEl3ZG5CcE9FWk1NalZNUkhGbGVuZExSeXN5VHpSVVJWQkhha1pGTmxONVRqWmlVR2d5ZG1Vck4wSTJLemQwVWpWeWVEZEtlU3RVY2pGcE9XdDBkV1p6UVhGWk5HSmtaMmd4Y2xWTGFsSkZVemRLVjNWek9HZDNVWG80YmtkSGMzaEhXbVJuU25oYVpISlJjVlZJUzNFMFlWcDJVVEZtWmtrM1RUbHVXWGhOVFM5VFNURkRlbTkxWkd0NmFHVnFSRXgzYW5vdk5UZHRaR04xYVdZck56TkpUbUZDVG5KRFprRXljemM1T1hwV1lVeDNkbXBMTlhRcmEwOVNSelI0TkZoWVpTdFphelZhV2pWQlkyMUZVa05NWnpSTGJHVkpiRFJJY3pSeGRYSkxhbGMxTjI1SFRYTnhLMHBXVGpBd2FFWXhXR1pETkZCVlpYbFJObFJPTUcxNlVGRXhia2RaZENzcmJVSTFWV053TURkWVRuVnpWR1JoTW05SGF6SlNOak5PVWsxWWIzcHRTbkYxVnlzNGRFVlVMMUJLUzNGUGFrVlNRalJXZHpOQ1IwUnZWRTVYVTNwb1dIbDRTVlp0TVhOT1dUSkJUVlpYYUdOYVkzRXpPVWRYVUc5UVp6RXpSbW80VDFsc2NFRm1SR1o2YURGaWRYWkdVbVpwVFZVME1sbHROa3c1YlROVVMwUjRlVXdyTWxKVmVESlNNbUo1VUZWTVQyVXdSMnd4T1hKelUyWlpjeTlvYjNkb1dWSnNXWEp1T0dKYVJFTkhiRFUzTDFGTWVHcEJXWFJVVWtZdlZFaHZLM1JOYTJSVmFTOWhUV2xVU0hoMlltcGtZeTlsYWxocVVISjRTbUp5UzFCVU1tUkVXRVk0ZG5aRGQzZGFRazAwUjFGWlNGaDViRFV6VTB4cU1VdHJRMjlvVlZKTkwzcDBlVEZpVTJOWWRIcE5aMDFJVmpWUFRYVkthVVZYVVhKV1NpOUhWRzlNVGxsUVNHMWxORXROY21jOUNpMHRMUzB0UlU1RUlFTkZVbFJKUmtsRFFWUkZMUzB0TFMwPQogICAgICBzZXJ2ZXI6IGh0dHBzOi8vYTljNDMzYzMtNjhlMS00NTY2LWI2MzMtODM0NzUyOWYzNjIwLms4c2Nvbm5lY3QudGVzdC5henVyZS5jb20KICAgIG5hbWU6IGNsdXN0ZXIKY29udGV4dHM6CiAgLSBjb250ZXh0OgogICAgICBjbHVzdGVyOiBjbHVzdGVyCiAgICAgIHVzZXI6IGNsdXN0ZXJVc2VyX3Rlc3RfY2x1c3RlcgogICAgbmFtZTogY2x1c3RlcgpjdXJyZW50LWNvbnRleHQ6IGNsdXN0ZXIKa2luZDogQ29uZmlnCnByZWZlcmVuY2VzOiBudWxsCnVzZXJzOgogIC0gbmFtZTogY2x1c3RlclVzZXJfdGVzdF9jbHVzdGVyCiAgICB1c2VyOgogICAgICB0b2tlbjogMmM2NGZyMmQ2MWRhZmZkODY4NGJkYTc3M2Y2YTQ3OGUxZTU4NzlhZTE1ZmRkM2Q1NDU4NGNkNTM1MGM2YWUxMzlhMGI3OTk4YTc2ZjFhOTdlOGI3Y2EwNTJiYjIwZWY0ZjljZTAzN2Q5YTMyM2ZjMTYxZmI0MGI4OTVlOWIwZjM="
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "617",
+     "parameters": [
+      {
+       "$id": "618",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "619",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "620",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "621",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "622",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "623",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "624",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "625",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "626",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "627",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "628",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "629",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "630",
+       "clientProperty": {
+        "$ref": "426"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MaxLength": "90",
+        "MinLength": "1",
+        "Pattern": "^[-\\w\\._\\(\\)]+$"
+       },
+       "defaultValue": {
+        "$id": "631",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "632",
+        "fixed": false,
+        "raw": "The name of the resource group. The name is case insensitive."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "ResourceGroupNameParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/ResourceGroupNameParameter"
+         ]
+        },
+        "x-ms-parameter-location": "method"
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "633",
+        "fixed": false,
+        "raw": "resourceGroupName"
+       },
+       "serializedName": "resourceGroupName",
+       "modelType": {
+        "$id": "634",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "635",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "name": {
+      "$id": "636",
+      "fixed": false,
+      "raw": "ListByResourceGroup"
+     },
+     "group": {
+      "$id": "637",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_ListByResourceGroup",
+     "url": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters",
+     "isAbsoluteUrl": false,
+     "httpMethod": "get",
+     "responses": {
+      "OK": {
+       "$id": "638",
+       "body": {
+        "$ref": "237"
+       },
+       "extensions": {
+        "$id": "639",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·1nx63ju·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters·get·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·1nx63ju·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters·get·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "640",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "641",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·19cyjfa·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters·get·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·19cyjfa·subscriptions-subscriptionid-resourcegroups-resourcegroupname-providers-microsoft-kubernetes-connectedclusters·get·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "642",
+      "body": {
+       "$ref": "237"
+      },
+      "isNullable": true
+     },
+     "description": "API to enumerate registered connected K8s clusters under a Resource Group",
+     "summary": "Lists all connected clusters",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-pageable": {
+       "nextLinkName": "nextLink"
+      },
+      "x-ms-examples": {
+       "GetClustersExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "resourceGroupName": "k8sc-rg",
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "value": [
+            {
+             "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "name": "connectedCluster1",
+             "type": "Microsoft.Kubernetes/connectedClusters",
+             "location": "East US",
+             "tags": {},
+             "identity": {
+              "principalId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+             },
+             "properties": {
+              "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+              "aadProfile": {
+               "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+               "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+               "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+              },
+              "kubernetesVersion": "1.17.0",
+              "totalNodeCount": "2",
+              "agentVersion": "0.1.0"
+             }
+            },
+            {
+             "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "name": "connectedCluster1",
+             "type": "Microsoft.Kubernetes/connectedClusters",
+             "location": "East US",
+             "tags": {},
+             "identity": {
+              "principalId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+             },
+             "properties": {
+              "agentPublicKeyCertificate": "XIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+              "aadProfile": {
+               "tenantId": "0ea9fc98-15d7-498e-833c-8f7207740190",
+               "clientAppId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+               "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+              },
+              "kubernetesVersion": "1.1",
+              "totalNodeCount": "2",
+              "agentVersion": "0.1.0"
+             }
+            }
+           ],
+           "nextLink": "https://serviceRoot/subscriptions/subId/resourcegroups/resourceGroupName/providers/Microsoft.Kubernetes/connectedClusters?api-version=2019-11-01-preview&$skiptoken=X'12345'"
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    },
+    {
+     "$id": "643",
+     "parameters": [
+      {
+       "$id": "644",
+       "clientProperty": {
+        "$ref": "414"
+       },
+       "location": "path",
+       "collectionFormat": "none",
+       "constraints": {
+        "MinLength": "1"
+       },
+       "defaultValue": {
+        "$id": "645",
+        "fixed": false
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "646",
+        "fixed": false,
+        "raw": "The ID of the target subscription."
+       },
+       "extensions": {
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2.0"
+         ],
+         "filename": [
+          "mem:///150?oai3.shaken.json"
+         ],
+         "name": "SubscriptionIdParameter",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/common-types/resource-management/v2/types.json#/components/parameters/SubscriptionIdParameter"
+         ]
+        }
+       },
+       "isRequired": true,
+       "isConstant": false,
+       "name": {
+        "$id": "647",
+        "fixed": false,
+        "raw": "subscriptionId"
+       },
+       "serializedName": "subscriptionId",
+       "modelType": {
+        "$id": "648",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "649",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      },
+      {
+       "$id": "650",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "651",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "652",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "653",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "654",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "655",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "name": {
+      "$id": "656",
+      "fixed": false,
+      "raw": "ListBySubscription"
+     },
+     "group": {
+      "$id": "657",
+      "fixed": false,
+      "raw": "ConnectedCluster"
+     },
+     "serializedName": "ConnectedCluster_ListBySubscription",
+     "url": "/subscriptions/{subscriptionId}/providers/Microsoft.Kubernetes/connectedClusters",
+     "isAbsoluteUrl": false,
+     "httpMethod": "get",
+     "responses": {
+      "OK": {
+       "$id": "658",
+       "body": {
+        "$ref": "237"
+       },
+       "extensions": {
+        "$id": "659",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·61smoa·subscriptions-subscriptionid-providers-microsoft-kubernetes-connectedclusters·get·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·61smoa·subscriptions-subscriptionid-providers-microsoft-kubernetes-connectedclusters·get·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "660",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "661",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·14w8aku·subscriptions-subscriptionid-providers-microsoft-kubernetes-connectedclusters·get·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·14w8aku·subscriptions-subscriptionid-providers-microsoft-kubernetes-connectedclusters·get·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "662",
+      "body": {
+       "$ref": "237"
+      },
+      "isNullable": true
+     },
+     "description": "API to enumerate registered connected K8s clusters under a Subscription",
+     "summary": "Lists all connected clusters",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-pageable": {
+       "nextLinkName": "nextLink"
+      },
+      "x-ms-examples": {
+       "GetClustersExample": {
+        "parameters": {
+         "subscriptionId": "1bfbb5d0-917e-4346-9026-1d3b344417f5",
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "value": [
+            {
+             "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "name": "connectedCluster1",
+             "type": "Microsoft.Kubernetes/connectedClusters",
+             "location": "East US",
+             "tags": {},
+             "identity": {
+              "principalId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+             },
+             "properties": {
+              "agentPublicKeyCertificate": "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+              "aadProfile": {
+               "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+               "clientAppId": "f8cd1fd9-154f-4da7-b348-595f283c13a3",
+               "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+              },
+              "kubernetesVersion": "1.17.0",
+              "totalNodeCount": "2",
+              "agentVersion": "0.1.0"
+             }
+            },
+            {
+             "id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+             "name": "connectedCluster2",
+             "type": "Microsoft.Kubernetes/connectedClusters",
+             "location": "East US",
+             "tags": {},
+             "identity": {
+              "principalId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+             },
+             "properties": {
+              "agentPublicKeyCertificate": "XIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiM D6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO",
+              "aadProfile": {
+               "tenantId": "0ea9fc98-15d7-498e-833c-8f7207740190",
+               "clientAppId": "d8cd1fd9-154f-4da7-b348-595f283c13a3",
+               "serverAppId": "45c27b16-e262-4c55-b572-b3b8f7788eb8"
+              },
+              "kubernetesVersion": "1.16.3",
+              "totalNodeCount": "4",
+              "agentVersion": "0.1.0"
+             }
+            }
+           ],
+           "nextLink": "https://serviceRoot/subscriptions/subId/resourcegroups/resourceGroupName/providers/Microsoft.Kubernetes/connectedClusters?api-version=2019-11-01-preview&$skiptoken=X'12345'"
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    }
+   ],
+   "name": {
+    "$id": "663",
+    "fixed": false,
+    "raw": "ConnectedCluster"
+   },
+   "typeName": {
+    "$id": "664",
+    "fixed": false
+   },
+   "nameForProperty": "ConnectedCluster"
+  },
+  {
+   "$id": "665",
+   "methods": [
+    {
+     "$id": "666",
+     "parameters": [
+      {
+       "$id": "667",
+       "location": "query",
+       "collectionFormat": "none",
+       "defaultValue": {
+        "$id": "668",
+        "fixed": false,
+        "raw": "2020-01-01-preview"
+       },
+       "deprecated": false,
+       "documentation": {
+        "$id": "669",
+        "fixed": false,
+        "raw": "The API version to use for the request."
+       },
+       "isRequired": true,
+       "isConstant": true,
+       "name": {
+        "$id": "670",
+        "fixed": false,
+        "raw": "api-version"
+       },
+       "serializedName": "api-version",
+       "modelType": {
+        "$id": "671",
+        "$type": "PrimaryType",
+        "knownPrimaryType": "string",
+        "name": {
+         "$id": "672",
+         "fixed": false,
+         "raw": "String"
+        },
+        "deprecated": false
+       }
+      }
+     ],
+     "name": {
+      "$id": "673",
+      "fixed": false,
+      "raw": "Get"
+     },
+     "group": {
+      "$id": "674",
+      "fixed": false,
+      "raw": "Operations"
+     },
+     "serializedName": "Operations_Get",
+     "url": "/providers/Microsoft.Kubernetes/operations",
+     "isAbsoluteUrl": false,
+     "httpMethod": "get",
+     "responses": {
+      "OK": {
+       "$id": "675",
+       "body": {
+        "$ref": "40"
+       },
+       "extensions": {
+        "$id": "676",
+        "x-ms-metadata": {
+         "apiVersions": [
+          "2020-01-01-preview"
+         ],
+         "filename": [
+          "mem:///149?oai3.shaken.json"
+         ],
+         "name": "paths·19ylvlu·providers-microsoft-kubernetes-operations·get·responses·200",
+         "originalLocations": [
+          "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·19ylvlu·providers-microsoft-kubernetes-operations·get·responses·200"
+         ]
+        }
+       },
+       "isNullable": true
+      }
+     },
+     "defaultResponse": {
+      "$id": "677",
+      "body": {
+       "$ref": "383"
+      },
+      "extensions": {
+       "$id": "678",
+       "x-ms-metadata": {
+        "apiVersions": [
+         "2020-01-01-preview"
+        ],
+        "filename": [
+         "mem:///149?oai3.shaken.json"
+        ],
+        "name": "paths·ng2zun·providers-microsoft-kubernetes-operations·get·responses·default",
+        "originalLocations": [
+         "file:///C:/Users/arpgu/go/src/azure-rest-api-specs-pr/specification/hybridkubernetes/resource-manager/Microsoft.Kubernetes/preview/2020-01-01-preview/connectedClusters.json#/components/responses/paths·ng2zun·providers-microsoft-kubernetes-operations·get·responses·default"
+        ]
+       }
+      },
+      "isNullable": true
+     },
+     "returnType": {
+      "$id": "679",
+      "body": {
+       "$ref": "40"
+      },
+      "isNullable": true
+     },
+     "description": "Lists all of the available API operations for Connected Cluster resource.",
+     "requestContentType": "application/json; charset=utf-8",
+     "responseContentTypes": [
+      "application/json"
+     ],
+     "extensions": {
+      "servers": [
+       {
+        "url": "https://management.azure.com/"
+       }
+      ],
+      "x-ms-pageable": {
+       "nextLinkName": "nextLink"
+      },
+      "x-ms-examples": {
+       "ListConnectedClusterOperationsExample": {
+        "parameters": {
+         "api-version": "2020-01-01-preview"
+        },
+        "responses": {
+         "200": {
+          "body": {
+           "value": [
+            {
+             "name": "Microsoft.Kubernetes/connectedClusters/write",
+             "display": {
+              "provider": "Microsoft.connectedClusters",
+              "resource": "connectedClusters",
+              "operation": "Create ConnectedCluster",
+              "description": "Create any ConnectedCluster"
+             }
+            },
+            {
+             "name": "Microsoft.Kubernetes/connectedClusters/read",
+             "display": {
+              "provider": "Microsoft.Kubernetes",
+              "resource": "connectedClusters",
+              "operation": "Get ConnectedCluster",
+              "description": "Get any ConnectedCluster"
+             }
+            },
+            {
+             "name": "Microsoft.Kubernetes/connectedClusters/delete",
+             "display": {
+              "provider": "Microsoft.Kubernetes",
+              "resource": "connectedClusters",
+              "operation": "Delete ConnectedCluster",
+              "description": "Delete any ConnectedCluster"
+             }
+            }
+           ],
+           "nextLink": "https://serviceRoot/subscriptions/subId/resourcegroups/resourceGroupName/providers/Microsoft.Kubernetes/connectedClusters?api-version=2019-11-01-preview&$skiptoken=X'12345'"
+          }
+         }
+        }
+       }
+      }
+     },
+     "deprecated": false,
+     "hidden": false
+    }
+   ],
+   "name": {
+    "$id": "680",
+    "fixed": false,
+    "raw": "Operations"
+   },
+   "typeName": {
+    "$id": "681",
+    "fixed": false
+   },
+   "nameForProperty": "Operations"
+  }
+ ]
+}

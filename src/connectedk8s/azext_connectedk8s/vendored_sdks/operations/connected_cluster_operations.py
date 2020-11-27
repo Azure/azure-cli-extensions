@@ -24,7 +24,7 @@ class ConnectedClusterOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-01-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2020-01-01-preview".
     """
 
     models = models
@@ -52,7 +52,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -189,7 +189,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -260,7 +260,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -305,7 +305,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -387,7 +387,7 @@ class ConnectedClusterOperations(object):
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
-        :param value:
+        :param value: Authentication token value.
         :type value:
          ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.AuthenticationDetailsValue
         :param client_proxy: Parameter to indicate whether the request is for
@@ -420,7 +420,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
         if client_proxy is not None:
             query_parameters['ClientProxy'] = self._serialize.query("client_proxy", client_proxy, 'bool')
 
@@ -494,7 +494,7 @@ class ConnectedClusterOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -560,7 +560,7 @@ class ConnectedClusterOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
