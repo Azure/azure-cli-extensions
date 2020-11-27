@@ -10,8 +10,8 @@
 
 
 def call_scenario(test, rg):
-    from ....tests.latest import test_desktopvirtualization_scenario as g
-    g.setup_scenario(test, rg)
+    from ....tests.latest import example_steps as g
+    # g.setup_scenario(test, rg)
     # g.step_hostpool_create(test, rg, checks=[])
     # g.step_hostpool_show(test, rg, checks=[])
     g.step_hostpool_list(test, rg, checks=[])
@@ -30,4 +30,4 @@ def call_scenario(test, rg):
     g.step_workspace_list(test, rg, checks=[])
     # g.step_workspace_update(test, rg, checks=[])
     # g.step_workspace_delete(test, rg, checks=[])
-    g.cleanup_scenario(test, rg)
+    # g.cleanup_scenario(test, rg)
