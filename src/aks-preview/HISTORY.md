@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.68
++++++
+* Add support for AAD Pod Identity resources configuration in Azure CLI.
+
 0.4.67
 +++++
 * Add support for node configuration when creating cluster or agent pool.
