@@ -22,7 +22,8 @@ from ._validators import (
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
-    validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons)
+    validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
+    validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -115,6 +116,7 @@ def load_arguments(self, _):
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
+        c.argument('enable_pod_identity', action='store_true')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -138,6 +140,8 @@ def load_arguments(self, _):
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
+        c.argument('enable_pod_identity', action='store_true')
+        c.argument('disable_pod_identity', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -207,6 +211,52 @@ def load_arguments(self, _):
         c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+
+    with self.argument_context('aks pod-identity') as c:
+        c.argument('cluster_name', type=str, help='The cluster name.')
+
+    with self.argument_context('aks pod-identity add') as c:
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=False,
+                   help='The pod identity name. Generate if not specified.',
+                   validator=validate_pod_identity_resource_name('identity_name', required=False))
+        c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
+        c.argument('identity_resource_id', type=str, options_list=['--identity-resource-id'], help='Resource id of the identity to use.')
+
+    with self.argument_context('aks pod-identity delete') as c:
+        c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=True,
+                   help='The pod identity name.',
+                   validator=validate_pod_identity_resource_name('identity_name', required=True))
+        c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
+
+    with self.argument_context('aks pod-identity exception add') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], default=None, required=False,
+                   help='The pod identity exception name. Generate if not specified.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=False))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace.',
+                   validator=validate_pod_identity_resource_namespace)
+        c.argument('pod_labels', nargs='*', required=True,
+                   help='space-separated labels: key=value [key=value ...].',
+                   validator=validate_pod_identity_pod_labels)
+
+    with self.argument_context('aks pod-identity exception delete') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
+                   help='The pod identity exception name to remove.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=True))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace to remove.',
+                   validator=validate_pod_identity_resource_namespace)
+
+    with self.argument_context('aks pod-identity exception update') as c:
+        c.argument('exc_name', type=str, options_list=['--name', '-n'], required=True,
+                   help='The pod identity exception name to remove.',
+                   validator=validate_pod_identity_resource_name('exc_name', required=True))
+        c.argument('exc_namespace', type=str, options_list=['--namespace'], required=True,
+                   help='The pod identity exception namespace to remove.',
+                   validator=validate_pod_identity_resource_namespace)
+        c.argument('pod_labels', nargs='*', required=True,
+                   help='pod labels in key=value [key=value ...].',
+                   validator=validate_pod_identity_pod_labels)
 
 
 def _get_default_install_location(exe_name):

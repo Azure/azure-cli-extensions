@@ -70,7 +70,11 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerS
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
-                                                                      SysctlConfig)
+                                                                      SysctlConfig,
+                                                                      ManagedClusterPodIdentityProfile,
+                                                                      ManagedClusterPodIdentity,
+                                                                      ManagedClusterPodIdentityException,
+                                                                      UserAssignedIdentity)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -80,7 +84,6 @@ from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
 from ._client_factory import cf_agent_pools
-
 
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _set_outbound_type, _parse_comma_separated_list,
@@ -396,6 +399,8 @@ def _create_role_assignment(cli_ctx, role, assignee,
 
     scope = _build_role_scope(resource_group_name, scope, assignments_client.config.subscription_id)
 
+    # XXX: if role is uuid, this function's output cannot be used as role assignment defintion id
+    # ref: https://github.com/Azure/azure-cli/issues/2458
     role_id = _resolve_role_id(role, scope, definitions_client)
 
     # If the cluster has service principal resolve the service principal client id to get the object id,
@@ -576,14 +581,18 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
-def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+_re_user_assigned_identity_resource_id = re.compile(
+    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
+    flags=re.IGNORECASE)
+
+
+def _get_user_assigned_identity(cli_ctx, resource_id):
     msi_client = get_msi_client(cli_ctx)
-    pattern = '/subscriptions/.*?/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)'
     resource_id = resource_id.lower()
-    match = re.search(pattern, resource_id)
+    match = _re_user_assigned_identity_resource_id.search(resource_id)
     if match:
-        resource_group_name = match.group(1)
-        identity_name = match.group(2)
+        resource_group_name = match.group(2)
+        identity_name = match.group(3)
         try:
             identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
                                                                resource_name=identity_name)
@@ -591,8 +600,12 @@ def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
             if 'was not found' in ex.message:
                 raise CLIError("Identity {} not found.".format(resource_id))
             raise CLIError(ex.message)
-        return identity.client_id
+        return identity
     raise CLIError("Cannot parse identity name from provided resource id {}.".format(resource_id))
+
+
+def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
+    return _get_user_assigned_identity(cli_ctx, resource_id).client_id
 
 
 def _update_dict(dict1, dict2):
@@ -885,6 +898,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                linux_os_config=None,
                assign_identity=None,
                auto_upgrade_channel=None,
+               enable_pod_identity=False,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -1123,6 +1137,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             user_assigned_identities=user_assigned_identity
         )
 
+    pod_identity_profile = None
+    if enable_pod_identity:
+        if not enable_managed_identity:
+            raise CLIError('--enable-pod-identity can only be specified when --enable-managed-identity is specified')
+        pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=True)
+
     enable_rbac = True
     if disable_rbac:
         enable_rbac = False
@@ -1148,7 +1168,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         identity=identity,
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
         api_server_access_profile=api_server_access_profile,
-        auto_upgrade_profile=auto_upgrade_profile)
+        auto_upgrade_profile=auto_upgrade_profile,
+        pod_identity_profile=pod_identity_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -1233,6 +1254,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                auto_upgrade_channel=None,
                enable_managed_identity=False,
                assign_identity=None,
+               enable_pod_identity=False,
+               disable_pod_identity=False,
                yes=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
@@ -1258,7 +1281,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_ahub and \
        not auto_upgrade_channel and \
        not enable_managed_identity and \
-       not assign_identity:
+       not assign_identity and \
+       not enable_pod_identity and \
+       not disable_pod_identity:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1277,8 +1302,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--aad-admin-group-object-ids" or '
                        '"--enable-ahub" or '
                        '"--disable-ahub" or '
-                       '"--auto-upgrade-channel" or '
-                       '"--enable-managed-identity"')
+                       '"--enable-managed-identity" or '
+                       '"--enable-pod-identity" or '
+                       '"--disable-pod-identity" or '
+                       '"--auto-upgrade-channel"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1459,6 +1486,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                 type="UserAssigned",
                 user_assigned_identities=user_assigned_identity
             )
+
+    if enable_pod_identity:
+        _update_addon_pod_identity(instance, enable=True)
+
+    if disable_pod_identity:
+        _update_addon_pod_identity(instance, enable=False)
 
     headers = get_aks_custom_headers(aks_custom_headers)
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
@@ -3160,3 +3193,211 @@ def _get_linux_os_config(file_path):
     config_object.sysctls.vm_vfs_cache_pressure = sysctls.get("vmVfsCachePressure", None)
 
     return config_object
+
+
+def _ensure_pod_identity_addon_is_enabled(instance):
+    addon_enabled = False
+    if instance and instance.pod_identity_profile:
+        addon_enabled = instance.pod_identity_profile.enabled
+    if not addon_enabled:
+        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
+                       'To enable, run "az aks update --enable-pod-identity')
+
+
+def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None):
+    if not enable:
+        # when disable, null out the profile
+        instance.pod_identity_profile = None
+        return
+
+    if not instance.pod_identity_profile:
+        # not set before
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
+            enabled=True,
+            user_assigned_identities=pod_identities,
+            user_assigned_identity_exceptions=pod_identity_exceptions,
+        )
+        return
+
+    instance.pod_identity_profile.enabled = True
+    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
+    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
+
+
+def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
+    managed_identity_operator_role = 'Managed Identity Operator'
+    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
+
+    cluster_identity_object_id = None
+    if instance.identity.type.lower() == 'userassigned':
+        for identity in instance.identity.user_assigned_identities.values():
+            cluster_identity_object_id = identity.principal_id
+            break
+    elif instance.identity.type.lower() == 'systemassigned':
+        cluster_identity_object_id = instance.identity.principal_id
+    else:
+        raise CLIError('unsupported identity type: {}'.format(instance.identity.type))
+    if cluster_identity_object_id is None:
+        raise CLIError('unable to resolve cluster identity')
+
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+
+    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
+        if i.scope.lower() != scope.lower():
+            continue
+        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+            continue
+        if i.principal_id.lower() != cluster_identity_object_id.lower():
+            continue
+        # already assigned
+        return
+
+    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+                                is_service_principal=False, scope=scope):
+        raise CLIError('Could not grant Managed Identity Operator permission for cluster')
+
+    # need more time to propogate this assignment...
+    print()
+    print('Wait 30 seconds for identity role assignment propagation.')
+    time.sleep(30)
+
+
+def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
+                         identity_name, identity_namespace, identity_resource_id,
+                         no_wait=False):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    user_assigned_identity = _get_user_assigned_identity(cmd.cli_ctx, identity_resource_id)
+    _ensure_managed_identity_operator_permission(cmd.cli_ctx, instance, user_assigned_identity.id)
+
+    pod_identities = []
+    if instance.pod_identity_profile.user_assigned_identities:
+        pod_identities = instance.pod_identity_profile.user_assigned_identities
+    pod_identity = ManagedClusterPodIdentity(
+        name=identity_name,
+        namespace=identity_namespace,
+        identity=UserAssignedIdentity(
+            resource_id=user_assigned_identity.id,
+            client_id=user_assigned_identity.client_id,
+            object_id=user_assigned_identity.principal_id,
+        )
+    )
+    pod_identities.append(pod_identity)
+
+    _update_addon_pod_identity(
+        instance, enable=True,
+        pod_identities=pod_identities,
+        pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
+def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
+                            identity_name, identity_namespace,
+                            no_wait=False):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    pod_identities = []
+    if instance.pod_identity_profile.user_assigned_identities:
+        for pod_identity in instance.pod_identity_profile.user_assigned_identities:
+            if pod_identity.name == identity_name and pod_identity.namespace == identity_namespace:
+                # to remove
+                continue
+            pod_identities.append(pod_identity)
+
+    _update_addon_pod_identity(
+        instance, enable=True,
+        pod_identities=pod_identities,
+        pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
+def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    return _remove_nulls([instance])[0]
+
+
+def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
+                                   exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    pod_identity_exceptions = []
+    if instance.pod_identity_profile.user_assigned_identity_exceptions:
+        pod_identity_exceptions = instance.pod_identity_profile.user_assigned_identity_exceptions
+    exc = ManagedClusterPodIdentityException(name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
+    pod_identity_exceptions.append(exc)
+
+    _update_addon_pod_identity(
+        instance, enable=True,
+        pod_identities=instance.pod_identity_profile.user_assigned_identities,
+        pod_identity_exceptions=pod_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
+def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_name,
+                                      exc_name, exc_namespace, no_wait=False):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    pod_identity_exceptions = []
+    if instance.pod_identity_profile.user_assigned_identity_exceptions:
+        for exc in instance.pod_identity_profile.user_assigned_identity_exceptions:
+            if exc.name == exc_name and exc.namespace == exc_namespace:
+                # to remove
+                continue
+            pod_identity_exceptions.append(exc)
+
+    _update_addon_pod_identity(
+        instance, enable=True,
+        pod_identities=instance.pod_identity_profile.user_assigned_identities,
+        pod_identity_exceptions=pod_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
+def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_name,
+                                      exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, cluster_name)
+    _ensure_pod_identity_addon_is_enabled(instance)
+
+    found_target = False
+    updated_exc = ManagedClusterPodIdentityException(name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
+    pod_identity_exceptions = []
+    if instance.pod_identity_profile.user_assigned_identity_exceptions:
+        for exc in instance.pod_identity_profile.user_assigned_identity_exceptions:
+            if exc.name == exc_name and exc.namespace == exc_namespace:
+                found_target = True
+                pod_identity_exceptions.append(updated_exc)
+            else:
+                pod_identity_exceptions.append(exc)
+
+    if not found_target:
+        raise CLIError('pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
+
+    _update_addon_pod_identity(
+        instance, enable=True,
+        pod_identities=instance.pod_identity_profile.user_assigned_identities,
+        pod_identity_exceptions=pod_identity_exceptions,
+    )
+
+    # send the managed cluster represeentation to update the pod identity addon
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+
+
+def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
+    instance = client.get(resource_group_name, cluster_name)
+    return _remove_nulls([instance])[0]
