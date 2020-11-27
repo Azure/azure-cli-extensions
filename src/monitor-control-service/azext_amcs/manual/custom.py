@@ -58,16 +58,16 @@ def insights__data_collection_rules__create(client,
                          body=body)
 
 
-def insights__data_collection_rules__update(instance,
-                                            tags=None,
-                                            description=None,
-                                            data_flows=None,
-                                            destinations__log_analytics=None,
-                                            destinations__azure_monitor_metrics=None,
-                                            data_sources__performance_counters=None,
-                                            data_sources__windows_event_logs=None,
-                                            data_sources__syslog=None,
-                                            data_sources__extensions=None):
+def insights__data_collection_rules__create__2__update(instance,
+                                                       tags=None,
+                                                       description=None,
+                                                       data_flows=None,
+                                                       destinations__log_analytics=None,
+                                                       destinations__azure_monitor_metrics=None,
+                                                       data_sources__performance_counters=None,
+                                                       data_sources__windows_event_logs=None,
+                                                       data_sources__syslog=None,
+                                                       data_sources__extensions=None):
     if tags is not None:
         instance.tags = tags
     if description is not None:
@@ -89,9 +89,9 @@ def insights__data_collection_rules__update(instance,
     return instance
 
 
-def insights__data_collection_rules__2__data_flows__list(client,
-                                                         resource_group_name,
-                                                         data_collection_rule_name):
+def insights__data_collection_rules__get__2__data_flows__list(client,
+                                                              resource_group_name,
+                                                              data_collection_rule_name):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
@@ -100,9 +100,9 @@ def insights__data_collection_rules__2__data_flows__list(client,
         return []
 
 
-def insights__data_collection_rules__2__data_flows__add(instance,
-                                                        streams,
-                                                        destinations):
+def insights__data_collection_rules__create__2__data_flows__add(instance,
+                                                                streams,
+                                                                destinations):
     item_list = instance.data_flows
     item = {
         'steams': streams,
@@ -112,9 +112,9 @@ def insights__data_collection_rules__2__data_flows__add(instance,
     return instance
 
 
-def insights__data_collection_rules__2__destinations__log_analytics__list(client,
-                                                                          resource_group_name,
-                                                                          data_collection_rule_name):
+def insights__data_collection_rules__get__2__destinations__log_analytics__list(client,
+                                                                               resource_group_name,
+                                                                               data_collection_rule_name):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
@@ -123,11 +123,11 @@ def insights__data_collection_rules__2__destinations__log_analytics__list(client
         return []
 
 
-def insights__data_collection_rules__2__destinations__log_analytics__show(client,
-                                                                          resource_group_name,
-                                                                          data_collection_rule_name,
-                                                                          name):
-    item_list = insights__data_collection_rules__2__destinations__log_analytics__list(
+def insights__data_collection_rules__get__2__destinations__log_analytics__show(client,
+                                                                               resource_group_name,
+                                                                               data_collection_rule_name,
+                                                                               name):
+    item_list = insights__data_collection_rules__get__2__destinations__log_analytics__list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
         if item['name'] == name:
@@ -135,9 +135,9 @@ def insights__data_collection_rules__2__destinations__log_analytics__show(client
     return {}
 
 
-def insights__data_collection_rules__2__destinations__log_analytics__add(instance,
-                                                                         name,
-                                                                         workspace_resource_id):
+def insights__data_collection_rules__create__2__destinations__log_analytics__add(instance,
+                                                                                 name,
+                                                                                 workspace_resource_id):
     item_list = instance.destinations.log_analytics
     for item in item_list:
         if item['name'] == name:
@@ -153,8 +153,8 @@ def insights__data_collection_rules__2__destinations__log_analytics__add(instanc
     return instance
 
 
-def insights__data_collection_rules__2__destinations__log_analytics__delete(instance,
-                                                                            name):
+def insights__data_collection_rules__create__2__destinations__log_analytics__delete(instance,
+                                                                                    name):
     item_list = instance.destinations.log_analytics
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -163,9 +163,9 @@ def insights__data_collection_rules__2__destinations__log_analytics__delete(inst
     return instance
 
 
-def insights__data_collection_rules__2__destinations__log_analytics__update(instance,
-                                                                            name,
-                                                                            workspace_resource_id=None):
+def insights__data_collection_rules__create__2__destinations__log_analytics__update(instance,
+                                                                                    name,
+                                                                                    workspace_resource_id=None):
     item_list = instance.destinations.log_analytics
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -175,9 +175,27 @@ def insights__data_collection_rules__2__destinations__log_analytics__update(inst
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__performance_counters__list(client,
-                                                                                 resource_group_name,
-                                                                                 data_collection_rule_name):
+def insights__data_collection_rules__list_by_subscription(client):
+    return client.list_by_subscription()
+
+
+def insights__data_collection_rules__list_by_resource_group(client, resource_group_name):
+    return client.list_by_resource_group(resource_group_name=resource_group_name)
+
+
+def insights__data_collection_rules__list(client,
+                                          resource_group_name=None):
+    if resource_group_name:
+        return insights__data_collection_rules__list_by_resource_group(
+            client=client,
+            resource_group_name=resource_group_name
+        )
+    return insights__data_collection_rules__list_by_subscription(client)
+
+
+def insights__data_collection_rules__get__2__data_sources__performance_counters__list(client,
+                                                                                      resource_group_name,
+                                                                                      data_collection_rule_name):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
@@ -186,11 +204,11 @@ def insights__data_collection_rules__2__data_sources__performance_counters__list
         return []
 
 
-def insights__data_collection_rules__2__data_sources__performance_counters__show(client,
-                                                                                 resource_group_name,
-                                                                                 data_collection_rule_name,
-                                                                                 name):
-    item_list = insights__data_collection_rules__2__data_sources__performance_counters__list(
+def insights__data_collection_rules__get__2__data_sources__performance_counters__show(client,
+                                                                                      resource_group_name,
+                                                                                      data_collection_rule_name,
+                                                                                      name):
+    item_list = insights__data_collection_rules__get__2__data_sources__performance_counters__list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
         if item['name'] == name:
@@ -198,12 +216,12 @@ def insights__data_collection_rules__2__data_sources__performance_counters__show
     return {}
 
 
-def insights__data_collection_rules__2__data_sources__performance_counters__add(instance,
-                                                                                name,
-                                                                                streams,
-                                                                                scheduled_transfer_period,
-                                                                                sampling_frequency_in_seconds,
-                                                                                counter_specifiers):
+def insights__data_collection_rules__create__2__data_sources__performance_counters__add(instance,
+                                                                                        name,
+                                                                                        streams,
+                                                                                        scheduled_transfer_period,
+                                                                                        sampling_frequency_in_seconds,
+                                                                                        counter_specifiers):
     item_list = instance.data_sources.performance_counters
     for item in item_list:
         if item['name'] == name:
@@ -222,8 +240,8 @@ def insights__data_collection_rules__2__data_sources__performance_counters__add(
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__performance_counters__delete(instance,
-                                                                                   name):
+def insights__data_collection_rules__create__2__data_sources__performance_counters__delete(instance,
+                                                                                           name):
     item_list = instance.data_sources.performance_counters
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -232,12 +250,12 @@ def insights__data_collection_rules__2__data_sources__performance_counters__dele
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__performance_counters__update(instance,
-                                                                                   name,
-                                                                                   streams=None,
-                                                                                   scheduled_transfer_period=None,
-                                                                                   sampling_frequency_in_seconds=None,
-                                                                                   counter_specifiers=None):
+def insights__data_collection_rules__create__2__data_sources__performance_counters__update(instance,
+                                                                                           name,
+                                                                                           streams=None,
+                                                                                           scheduled_transfer_period=None,
+                                                                                           sampling_frequency_in_seconds=None,
+                                                                                           counter_specifiers=None):
     item_list = instance.data_sources.performance_counters
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -253,9 +271,9 @@ def insights__data_collection_rules__2__data_sources__performance_counters__upda
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__windows_event_logs__list(client,
-                                                                               resource_group_name,
-                                                                               data_collection_rule_name):
+def insights__data_collection_rules__get__2__data_sources__windows_event_logs__list(client,
+                                                                                    resource_group_name,
+                                                                                    data_collection_rule_name):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
@@ -264,11 +282,11 @@ def insights__data_collection_rules__2__data_sources__windows_event_logs__list(c
         return []
 
 
-def insights__data_collection_rules__2__data_sources__windows_event_logs__show(client,
-                                                                               resource_group_name,
-                                                                               data_collection_rule_name,
-                                                                               name):
-    item_list = insights__data_collection_rules__2__data_sources__windows_event_logs__list(
+def insights__data_collection_rules__get__2__data_sources__windows_event_logs__show(client,
+                                                                                    resource_group_name,
+                                                                                    data_collection_rule_name,
+                                                                                    name):
+    item_list = insights__data_collection_rules__get__2__data_sources__windows_event_logs__list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
         if item['name'] == name:
@@ -276,11 +294,11 @@ def insights__data_collection_rules__2__data_sources__windows_event_logs__show(c
     return {}
 
 
-def insights__data_collection_rules__2__data_sources__windows_event_logs__add(instance,
-                                                                              name,
-                                                                              steams,
-                                                                              scheduled_transfer_period,
-                                                                              x_path_queries):
+def insights__data_collection_rules__create__2__data_sources__windows_event_logs__add(instance,
+                                                                                      name,
+                                                                                      steams,
+                                                                                      scheduled_transfer_period,
+                                                                                      x_path_queries):
     item_list = instance.data_sources.windows_event_logs
     for item in item_list:
         if item['name'] == name:
@@ -298,8 +316,8 @@ def insights__data_collection_rules__2__data_sources__windows_event_logs__add(in
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__windows_event_logs__delete(instance,
-                                                                                 name):
+def insights__data_collection_rules__create__2__data_sources__windows_event_logs__delete(instance,
+                                                                                         name):
     item_list = instance.data_sources.windows_event_logs
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -308,11 +326,11 @@ def insights__data_collection_rules__2__data_sources__windows_event_logs__delete
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__windows_event_logs__update(instance,
-                                                                                 name,
-                                                                                 steams=None,
-                                                                                 scheduled_transfer_period=None,
-                                                                                 x_path_queries=None):
+def insights__data_collection_rules__create__2__data_sources__windows_event_logs__update(instance,
+                                                                                         name,
+                                                                                         steams=None,
+                                                                                         scheduled_transfer_period=None,
+                                                                                         x_path_queries=None):
     item_list = instance.data_sources.windows_event_logs
     for item in item_list:
         if item['name'] == name:
@@ -326,9 +344,9 @@ def insights__data_collection_rules__2__data_sources__windows_event_logs__update
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__syslog__list(client,
-                                                                   resource_group_name,
-                                                                   data_collection_rule_name):
+def insights__data_collection_rules__get__2__data_sources__syslog__list(client,
+                                                                        resource_group_name,
+                                                                        data_collection_rule_name):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
@@ -337,23 +355,23 @@ def insights__data_collection_rules__2__data_sources__syslog__list(client,
         return []
 
 
-def insights__data_collection_rules__2__data_sources__syslog__show(client,
-                                                                   resource_group_name,
-                                                                   data_collection_rule_name,
-                                                                   name):
-    item_list = insights__data_collection_rules__2__data_sources__syslog__list(client, resource_group_name,
-                                                                               data_collection_rule_name)
+def insights__data_collection_rules__get__2__data_sources__syslog__show(client,
+                                                                        resource_group_name,
+                                                                        data_collection_rule_name,
+                                                                        name):
+    item_list = insights__data_collection_rules__get__2__data_sources__syslog__list(client, resource_group_name,
+                                                                                    data_collection_rule_name)
     for item in item_list:
         if item['name'] == name:
             return item
     return {}
 
 
-def insights__data_collection_rules__2__data_sources__syslog__add(instance,
-                                                                  name,
-                                                                  streams,
-                                                                  facility_names,
-                                                                  log_levels=None):
+def insights__data_collection_rules__create__2__data_sources__syslog__add(instance,
+                                                                          name,
+                                                                          streams,
+                                                                          facility_names,
+                                                                          log_levels=None):
     item_list = instance.data_sources.syslog
     for item in item_list:
         if item['name'] == name:
@@ -371,8 +389,8 @@ def insights__data_collection_rules__2__data_sources__syslog__add(instance,
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__syslog__delete(instance,
-                                                                     name):
+def insights__data_collection_rules__create__2__data_sources__syslog__delete(instance,
+                                                                             name):
     item_list = instance.data_sources.syslog
     for idx, item in enumerate(item_list):
         if item['name'] == name:
@@ -382,11 +400,11 @@ def insights__data_collection_rules__2__data_sources__syslog__delete(instance,
     return instance
 
 
-def insights__data_collection_rules__2__data_sources__syslog__update(instance,
-                                                                     name,
-                                                                     streams=None,
-                                                                     facility_names=None,
-                                                                     log_levels=None):
+def insights__data_collection_rules__create__2__data_sources__syslog__update(instance,
+                                                                             name,
+                                                                             streams=None,
+                                                                             facility_names=None,
+                                                                             log_levels=None):
     item_list = instance.data_sources.syslog
     for idx, item in enumerate(item_list):
         if item['name'] == name:
