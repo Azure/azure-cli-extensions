@@ -48,20 +48,20 @@ def load_arguments(self, _):
         c.argument('data_flows', action=AddDataFlows, options_list=['--data-flow'], arg_group="Data Flow",
                    nargs='+', help='The specification of data flows.')
 
-        c.argument('destinations_log_analytics', options_list=['--log-analytics'], arg_group="Destinations",
+        c.argument('destinations__log_analytics', options_list=['--log-analytics'], arg_group="Destinations",
                    action=AddDestinationsLogAnalytics, nargs='+', help='List of Log Analytics destinations.')
-        c.argument('destinations_azure_monitor_metrics', options_list=['--monitor-metrics'], arg_group="Destinations",
+        c.argument('destinations__azure_monitor_metrics', options_list=['--monitor-metrics'], arg_group="Destinations",
                    action=AddDestinationsAzureMonitorMetrics, nargs='+', help='Azure Monitor Metrics destination.')
 
-        c.argument('data_sources_performance_counters', options_list=['--performance-counter'],
+        c.argument('data_sources__performance_counters', options_list=['--performance-counter'],
                    arg_group="Data Sources", action=AddDataSourcesPerformanceCounters, nargs='+',
                    help='The list of performance counter data source configurations.')
-        c.argument('data_sources_windows_event_logs', options_list=['--windows-event-log'], arg_group="Data Sources",
+        c.argument('data_sources__windows_event_logs', options_list=['--windows-event-log'], arg_group="Data Sources",
                    action=AddDataSourcesWindowsEventLogs, nargs='+', help='The list of Windows Event Log data source '
                    'configurations.')
-        c.argument('data_sources_syslog', options_list=['--syslog'], arg_group="Data Sources",
+        c.argument('data_sources__syslog', options_list=['--syslog'], arg_group="Data Sources",
                    action=AddDataSourcesSyslog, nargs='+', help='The list of Syslog data source configurations.')
-        c.argument('data_sources_extensions', options_list=['--extensions'], arg_group="Data Sources",
+        c.argument('data_sources__extensions', options_list=['--extensions'], arg_group="Data Sources",
                    type=validate_file_or_dict, help='The list of Azure VM extension data source configurations. '
                    'Expected value: json-string/@json-file.')
 
@@ -80,7 +80,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor data-collection rule log-analytics') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'], type=str,
-                   help='A friendly name for the destination.  This name should be unique across all destinations '
+                   help='A friendly name for the destination. This name should be unique across all destinations '
                    '(regardless of type) within the data collection rule.')
         c.argument('workspace_resource_id', options_list=['--resource-id'], type=str,
                    help='The resource ID of the Log Analytics workspace.')
@@ -88,7 +88,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor data-collection rule performance-counter') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'], type=str,
-                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownPerfCounterDataSourceStreams),
                    nargs='+', help='List of streams that this data source will be sent to. A stream indicates '
@@ -107,7 +107,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor data-collection rule windows-event-log') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'], type=str,
-                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownWindowsEventLogDataSourceStreams),
                    nargs='+', help='List of streams that this data source will be sent to. A stream indicates what '
@@ -121,7 +121,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor data-collection rule syslog') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'], type=str,
-                   help='A friendly name for the data source.  This name should be unique across all data sources '
+                   help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownSyslogDataSourceStreams),
                    nargs='+', help='List of streams that this data source will be sent to. A stream indicates what '

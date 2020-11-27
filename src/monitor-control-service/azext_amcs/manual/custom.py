@@ -4,11 +4,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-def monitor_data_collection_rule_association_create(client,
-                                                    resource_uri,
-                                                    association_name,
-                                                    description=None,
-                                                    rule_id=None):
+def insights__data_collection_rule_associations__delete(client,
+                                                        resource_uri,
+                                                        association_name,
+                                                        description=None,
+                                                        rule_id=None):
     body = {}
     body['description'] = description
     body['data_collection_rule_id'] = rule_id
@@ -17,9 +17,9 @@ def monitor_data_collection_rule_association_create(client,
                          body=body)
 
 
-def monitor_data_collection_rule_association_update(instance,
-                                                    description=None,
-                                                    rule_id=None):
+def insights__data_collection_rule_associations__update(instance,
+                                                        description=None,
+                                                        rule_id=None):
     if description is not None:
         instance.description = description
     if rule_id is not None:
@@ -27,80 +27,373 @@ def monitor_data_collection_rule_association_update(instance,
     return instance
 
 
-def monitor_data_collection_rule_create(client,
-                                        resource_group_name,
-                                        data_collection_rule_name,
-                                        location=None,
-                                        tags=None,
-                                        description=None,
-                                        data_flows=None,
-                                        destinations_log_analytics=None,
-                                        destinations_azure_monitor_metrics=None,
-                                        data_sources_performance_counters=None,
-                                        data_sources_windows_event_logs=None,
-                                        data_sources_syslog=None,
-                                        data_sources_extensions=None):
+def insights__data_collection_rules__create(client,
+                                            resource_group_name,
+                                            data_collection_rule_name,
+                                            location=None,
+                                            tags=None,
+                                            description=None,
+                                            data_flows=None,
+                                            destinations__log_analytics=None,
+                                            destinations__azure_monitor_metrics=None,
+                                            data_sources__performance_counters=None,
+                                            data_sources__windows_event_logs=None,
+                                            data_sources__syslog=None,
+                                            data_sources__extensions=None):
     body = {}
     body['location'] = location
     body['tags'] = tags
     body['description'] = description
     body['data_flows'] = data_flows
     body['destinations'] = {}
-    body['destinations']['log_analytics'] = destinations_log_analytics
-    body['destinations']['azure_monitor_metrics'] = destinations_azure_monitor_metrics
+    body['destinations']['log_analytics'] = destinations__log_analytics
+    body['destinations']['azure_monitor_metrics'] = destinations__azure_monitor_metrics
     body['data_sources'] = {}
-    body['data_sources']['performance_counters'] = data_sources_performance_counters
-    body['data_sources']['windows_event_logs'] = data_sources_windows_event_logs
-    body['data_sources']['syslog'] = data_sources_syslog
-    body['data_sources']['extensions'] = data_sources_extensions
+    body['data_sources']['performance_counters'] = data_sources__performance_counters
+    body['data_sources']['windows_event_logs'] = data_sources__windows_event_logs
+    body['data_sources']['syslog'] = data_sources__syslog
+    body['data_sources']['extensions'] = data_sources__extensions
     return client.create(resource_group_name=resource_group_name,
                          data_collection_rule_name=data_collection_rule_name,
                          body=body)
 
 
-def monitor_data_collection_rule_update(instance,
-                                        tags=None,
-                                        description=None,
-                                        data_flows=None,
-                                        destinations_log_analytics=None,
-                                        destinations_azure_monitor_metrics=None,
-                                        data_sources_performance_counters=None,
-                                        data_sources_windows_event_logs=None,
-                                        data_sources_syslog=None,
-                                        data_sources_extensions=None):
+def insights__data_collection_rules__update(instance,
+                                            tags=None,
+                                            description=None,
+                                            data_flows=None,
+                                            destinations__log_analytics=None,
+                                            destinations__azure_monitor_metrics=None,
+                                            data_sources__performance_counters=None,
+                                            data_sources__windows_event_logs=None,
+                                            data_sources__syslog=None,
+                                            data_sources__extensions=None):
     if tags is not None:
         instance.tags = tags
     if description is not None:
         instance.description = description
     if data_flows is not None:
         instance.data_flows = data_flows
-    if destinations_log_analytics is not None:
-        instance.destinations.log_analytics = destinations_log_analytics
-    if destinations_azure_monitor_metrics is not None:
-        instance.destinations.azure_monitor_metrics = destinations_azure_monitor_metrics
-    if data_sources_performance_counters is not None:
-        instance.data_sources.performance_counters = data_sources_performance_counters
-    if data_sources_windows_event_logs is not None:
-        instance.data_sources.windows_event_logs = data_sources_windows_event_logs
-    if data_sources_windows_event_logs is not None:
-        instance.data_sources.syslog = data_sources_syslog
-    if data_sources_extensions is not None:
-        instance.data_sources.extensions = data_sources_extensions
+    if destinations__log_analytics is not None:
+        instance.destinations.log_analytics = destinations__log_analytics
+    if destinations__azure_monitor_metrics is not None:
+        instance.destinations.azure_monitor_metrics = destinations__azure_monitor_metrics
+    if data_sources__performance_counters is not None:
+        instance.data_sources.performance_counters = data_sources__performance_counters
+    if data_sources__windows_event_logs is not None:
+        instance.data_sources.windows_event_logs = data_sources__windows_event_logs
+    if data_sources__syslog is not None:
+        instance.data_sources.syslog = data_sources__syslog
+    if data_sources__extensions is not None:
+        instance.data_sources.extensions = data_sources__extensions
     return instance
 
 
-def monitor_data_collection_rule_data_flow_list(client,
-                                                resource_group_name,
-                                                data_collection_rule_name):
-    return client.get(resource_group_name=resource_group_name,
-                      data_collection_rule_name=data_collection_rule_name).data_flows
+def insights__data_collection_rules__2__data_flows__list(client,
+                                                         resource_group_name,
+                                                         data_collection_rule_name):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    if instance:
+        return instance.data_flows
+    else:
+        return []
 
 
-def monitor_data_collection_rule_data_flow_add(instance,
-                                               streams,
-                                               destinations):
-    instance.data_flows.append({
+def insights__data_collection_rules__2__data_flows__add(instance,
+                                                        streams,
+                                                        destinations):
+    item_list = instance.data_flows
+    item = {
         'steams': streams,
         'destinations': destinations,
-    })
+    }
+    item_list.append(item)
+    return instance
+
+
+def insights__data_collection_rules__2__destinations__log_analytics__list(client,
+                                                                          resource_group_name,
+                                                                          data_collection_rule_name):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    if instance:
+        return instance.destinations.log_analytics
+    else:
+        return []
+
+
+def insights__data_collection_rules__2__destinations__log_analytics__show(client,
+                                                                          resource_group_name,
+                                                                          data_collection_rule_name,
+                                                                          name):
+    item_list = insights__data_collection_rules__2__destinations__log_analytics__list(
+        client, resource_group_name, data_collection_rule_name)
+    for item in item_list:
+        if item['name'] == name:
+            return item
+    return {}
+
+
+def insights__data_collection_rules__2__destinations__log_analytics__add(instance,
+                                                                         name,
+                                                                         workspace_resource_id):
+    item_list = instance.destinations.log_analytics
+    for item in item_list:
+        if item['name'] == name:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Name {} exists.".format(name))
+
+    item = {
+        'name': name,
+        'workspace_resource_id': workspace_resource_id
+    }
+
+    item_list.append(item)
+    return instance
+
+
+def insights__data_collection_rules__2__destinations__log_analytics__delete(instance,
+                                                                            name):
+    item_list = instance.destinations.log_analytics
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            item_list.pop(idx)
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__destinations__log_analytics__update(instance,
+                                                                            name,
+                                                                            workspace_resource_id=None):
+    item_list = instance.destinations.log_analytics
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            if workspace_resource_id is not None:
+                item['workspace_resource_id'] = workspace_resource_id
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__performance_counters__list(client,
+                                                                                 resource_group_name,
+                                                                                 data_collection_rule_name):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    if instance:
+        return instance.data_sources.performance_counters
+    else:
+        return []
+
+
+def insights__data_collection_rules__2__data_sources__performance_counters__show(client,
+                                                                                 resource_group_name,
+                                                                                 data_collection_rule_name,
+                                                                                 name):
+    item_list = insights__data_collection_rules__2__data_sources__performance_counters__list(
+        client, resource_group_name, data_collection_rule_name)
+    for item in item_list:
+        if item['name'] == name:
+            return item
+    return {}
+
+
+def insights__data_collection_rules__2__data_sources__performance_counters__add(instance,
+                                                                                name,
+                                                                                streams,
+                                                                                scheduled_transfer_period,
+                                                                                sampling_frequency_in_seconds,
+                                                                                counter_specifiers):
+    item_list = instance.data_sources.performance_counters
+    for item in item_list:
+        if item['name'] == name:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Name {} exists.".format(name))
+
+    item = {
+        'name': name,
+        'streams': streams,
+        'scheduled_transfer_period': scheduled_transfer_period,
+        'sampling_frequency_in_seconds': sampling_frequency_in_seconds,
+        'counter_specifiers': counter_specifiers
+    }
+
+    item_list.append(item)
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__performance_counters__delete(instance,
+                                                                                   name):
+    item_list = instance.data_sources.performance_counters
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            item_list.pop(idx)
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__performance_counters__update(instance,
+                                                                                   name,
+                                                                                   streams=None,
+                                                                                   scheduled_transfer_period=None,
+                                                                                   sampling_frequency_in_seconds=None,
+                                                                                   counter_specifiers=None):
+    item_list = instance.data_sources.performance_counters
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            if streams is not None:
+                item['streams'] = streams
+            if scheduled_transfer_period is not None:
+                item['scheduled_transfer_period'] = scheduled_transfer_period
+            if sampling_frequency_in_seconds is not None:
+                item['sampling_frequency_in_seconds'] = sampling_frequency_in_seconds
+            if counter_specifiers is not None:
+                item['counter_specifiers'] = counter_specifiers
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__windows_event_logs__list(client,
+                                                                               resource_group_name,
+                                                                               data_collection_rule_name):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    if instance:
+        return instance.data_sources.windows_event_logs
+    else:
+        return []
+
+
+def insights__data_collection_rules__2__data_sources__windows_event_logs__show(client,
+                                                                               resource_group_name,
+                                                                               data_collection_rule_name,
+                                                                               name):
+    item_list = insights__data_collection_rules__2__data_sources__windows_event_logs__list(
+        client, resource_group_name, data_collection_rule_name)
+    for item in item_list:
+        if item['name'] == name:
+            return item
+    return {}
+
+
+def insights__data_collection_rules__2__data_sources__windows_event_logs__add(instance,
+                                                                              name,
+                                                                              steams,
+                                                                              scheduled_transfer_period,
+                                                                              x_path_queries):
+    item_list = instance.data_sources.windows_event_logs
+    for item in item_list:
+        if item['name'] == name:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Name {} exists.".format(name))
+
+    item = {
+        'name': name,
+        'steams': steams,
+        'scheduled_transfer_period': scheduled_transfer_period,
+        'x_path_queries': x_path_queries
+    }
+
+    item_list.append(item)
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__windows_event_logs__delete(instance,
+                                                                                 name):
+    item_list = instance.data_sources.windows_event_logs
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            item_list.pop(idx)
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__windows_event_logs__update(instance,
+                                                                                 name,
+                                                                                 steams=None,
+                                                                                 scheduled_transfer_period=None,
+                                                                                 x_path_queries=None):
+    item_list = instance.data_sources.windows_event_logs
+    for item in item_list:
+        if item['name'] == name:
+            if steams is not None:
+                item['steams'] = name
+            if scheduled_transfer_period is not None:
+                item['scheduled_transfer_period'] = scheduled_transfer_period
+            if x_path_queries is not None:
+                item['x_path_queries'] = x_path_queries
+            break
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__syslog__list(client,
+                                                                   resource_group_name,
+                                                                   data_collection_rule_name):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    if instance:
+        return instance.data_sources.syslog
+    else:
+        return []
+
+
+def insights__data_collection_rules__2__data_sources__syslog__show(client,
+                                                                   resource_group_name,
+                                                                   data_collection_rule_name,
+                                                                   name):
+    item_list = insights__data_collection_rules__2__data_sources__syslog__list(client, resource_group_name,
+                                                                               data_collection_rule_name)
+    for item in item_list:
+        if item['name'] == name:
+            return item
+    return {}
+
+
+def insights__data_collection_rules__2__data_sources__syslog__add(instance,
+                                                                  name,
+                                                                  streams,
+                                                                  facility_names,
+                                                                  log_levels=None):
+    item_list = instance.data_sources.syslog
+    for item in item_list:
+        if item['name'] == name:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Name {} exists.".format(name))
+
+    item = {
+        'streams': streams,
+        'facility_names': facility_names,
+    }
+    if log_levels is not None:
+        item['log_levels'] = log_levels
+
+    item_list.append(item)
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__syslog__delete(instance,
+                                                                     name):
+    item_list = instance.data_sources.syslog
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            item_list.pop(idx)
+            break
+
+    return instance
+
+
+def insights__data_collection_rules__2__data_sources__syslog__update(instance,
+                                                                     name,
+                                                                     streams=None,
+                                                                     facility_names=None,
+                                                                     log_levels=None):
+    item_list = instance.data_sources.syslog
+    for idx, item in enumerate(item_list):
+        if item['name'] == name:
+            if streams is not None:
+                item['streams'] = streams
+            if facility_names is not None:
+                item['facility_names'] = facility_names
+            if log_levels is not None:
+                item['log_levels'] = log_levels
     return instance
