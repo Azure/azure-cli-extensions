@@ -18,13 +18,13 @@ def load_arguments(self, _):
     with self.argument_context('acrtransfer') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('pipeline_name', registry_name_type, options_list=['--name', '-n'])
+        c.argument('pipeline_name', registry_name_type, options_list=['--pipeline-name, --name', '-n'])
         c.argument('storage_account_container_uri', validator=validate_storage_account_container_uri)
 
     with self.argument_context('acrtransfer importpipeline') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('pipeline_name', registry_name_type, options_list=['--name', '-n'])
+        c.argument('pipeline_name', registry_name_type, options_list=['--pipeline-name, --name', '-n'])
         c.argument('storage_account_container_uri', validator=validate_storage_account_container_uri)
 
     with self.argument_context('acrtransfer list') as c:

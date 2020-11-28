@@ -1,7 +1,7 @@
 from knack.util import CLIError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, IdentityProperties, ImportPipelineSourceProperties, PipelineTriggerProperties, UserIdentityProperties, PipelineSourceTriggerProperties
-from .utility_functions import poll_output, print_pipeline_output
+from .utility_functions import poll_output, print_pipeline_output, print_lite_pipeline_output
 import time
 import json
 
@@ -23,7 +23,7 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
         artifact_list = artifacts.split(',')
 
         #add tag ":latest" if a tag is not present
-        artifact_list = [artifact + ":latest" if ":" not in artifact else artifact for artifact in artifact_list]
+        artifact_list = [artifact + ":latest" if ":" not in artifact and "@" not in artifact else artifact for artifact in artifact_list]
 
         pipeline_run_target = PipelineRunTargetProperties(name=storage_blob_name)
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, target=pipeline_run_target, artifacts=artifact_list)
@@ -59,4 +59,4 @@ def list_pipelinerun(cmd, client, resource_group_name, registry_name):
     raw_result = client.pipeline_runs.list(resource_group_name, registry_name)
 
     for pipelinerun in raw_result:
-        print(pipelinerun)
+        print_lite_pipeline_output(pipelinerun)

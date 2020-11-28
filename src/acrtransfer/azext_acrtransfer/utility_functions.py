@@ -51,7 +51,74 @@ def keyvault_policy_output(keyvault_secret_uri, user_assigned_identity_resource_
 
 def print_pipeline_output(obj):
     
+    is_importpipeline = "importPipelines" in obj.id
+    is_exportpipeline = "exportPipelines" in obj.id
+    is_pipelinerun = "pipelineRuns" in obj.id
 
+    if is_pipelinerun:
+        pipelinerun_type = "import" if "importPipelines" in obj.request.pipeline_resource_id else "export"
+    
+    #unroll the obj
+    obj = json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
+    d = {} 
+
+    if is_pipelinerun and pipelinerun_type == "import":
+        d["name"] = obj["name"]
+        d["status"] = obj["response"]["status"]
+        d["pipeline_resource_id"] = obj["request"]["pipeline_resource_id"]
+        d["source_blob"] = obj["request"]["source"]["name"]
+        d["imported_artifacts"] = obj["response"]["imported_artifacts"]
+        d["progress_percentage"] = obj["response"]["progress"]["percentage"]
+        d["start_time"] = obj["response"]["start_time"]
+        d["finish_time"] = obj["response"]["finish_time"]
+        d["catalog_digest"] = obj["response"]["catalog_digest"]
+        d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
+    elif is_pipelinerun and pipelinerun_type == "export":
+        d["name"] = obj["name"]
+        d["status"] = obj["response"]["status"]
+        d["pipeline_resource_id"] = obj["request"]["pipeline_resource_id"]
+        d["target_blob"] = obj["request"]["target"]["name"]
+        d["exported_artifacts"] = obj["request"]["artifacts"]
+        d["progress_percentage"] = obj["response"]["progress"]["percentage"]
+        d["start_time"] = obj["response"]["start_time"]
+        d["finish_time"] = obj["response"]["finish_time"]
+        d["catalog_digest"] = obj["response"]["catalog_digest"]
+        d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
+    elif is_importpipeline:
+        d["name"] = obj["name"]
+        d["status"] = obj["provisioning_state"]
+        d["id"] = obj["id"]
+        d["storage_account_container_uri"] = obj["source"]["uri"]
+        d["keyvault_secret_uri"] = obj["source"]["key_vault_uri"]
+        d["source_trigger_status"] = obj["trigger"]["source_trigger"]["status"]
+        d["options"] = obj["options"]
+        d["identity_type"] = obj["identity"]["type"]
+
+        if(d["identity_type"] == "userAssigned"):
+            d["user_assigned_identities"] = obj["identity"]["user_assigned_identities"]
+        else:
+            d["principal_id"] = obj["identity"]["principal_id"]
+            d["tenant_id"] = obj["identity"]["tenant_id"]
+        
+    elif is_exportpipeline:
+        d["name"] = obj["name"]
+        d["status"] = obj["provisioning_state"]
+        d["id"] = obj["id"]
+        d["storage_account_container_uri"] = obj["target"]["uri"]
+        d["keyvault_secret_uri"] = obj["target"]["key_vault_uri"]
+        d["options"] = obj["options"]
+        d["identity_type"] = obj["identity"]["type"]
+
+        if(d["identity_type"] == "userAssigned"):
+            d["user_assigned_identities"] = obj["identity"]["user_assigned_identities"]
+        else:
+            d["principal_id"] = obj["identity"]["principal_id"]
+            d["tenant_id"] = obj["identity"]["tenant_id"]
+        
+    print(json.dumps(d, indent=2))
+    
+def print_lite_pipeline_output(obj):
+    
     is_importpipeline = "importPipelines" in obj.id
     is_exportpipeline = "exportPipelines" in obj.id
     is_pipelinerun = "pipelineRuns" in obj.id
@@ -62,26 +129,37 @@ def print_pipeline_output(obj):
     #unroll the obj
     obj= json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
     d = {} 
-    d["name"] = obj["name"]
-    d["status"] = obj["response"]["status"]
-    d["pipeline_resource_id"] = obj["request"]["pipeline_resource_id"]
-    d["imported_artifacts"] = obj["response"]["imported_artifacts"]
-    d["progress_percentage"] = obj["response"]["progress"]["percentage"]
-    d["start_time"] = obj["response"]["start_time"]
-    d["finish_time"] = obj["response"]["finish_time"]
-    d["catalog_digest"] = obj["response"]["catalog_digest"]
-    d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
 
+    if is_pipelinerun and pipelinerun_type == "import":
+        NAME = obj["name"]
+        PIPELINERUN_TYPE = pipelinerun_type
+        STATUS = obj["response"]["status"]
+        START_TIME = obj["response"]["start_time"]
+        ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
 
+        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}') 
+    elif is_pipelinerun and pipelinerun_type == "export":
+        NAME = obj["name"]
+        PIPELINERUN_TYPE = pipelinerun_type
+        STATUS = obj["response"]["status"]
+        START_TIME = obj["response"]["start_time"]
+        ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
 
+        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}') 
+    elif is_importpipeline:
+        NAME = obj["name"]
+        STATUS = obj["provisioning_state"]
+        STORAGE_URI = obj["source"]["uri"]
 
-    print(json.dumps(d, indent=2))
+        print(f'Name: {NAME} | Status: {STATUS} | Storage Uri: {STORAGE_URI}')   
+    elif is_exportpipeline:
+        NAME = obj["name"]
+        STATUS = obj["provisioning_state"]
+        STORAGE_URI = obj["target"]["uri"]
 
-    obj_str = json.dumps(obj, indent=2)
-    obj_str = obj_str.replace('"additional_properties": {},', '')
-    print('\n'.join([line for line in obj_str.split("\n") if line.strip()!='']))
-    
-    
+        print(f'Name: {NAME} | Status: {STATUS} | Storage Uri: {STORAGE_URI}')
+        
+      
     
 
 

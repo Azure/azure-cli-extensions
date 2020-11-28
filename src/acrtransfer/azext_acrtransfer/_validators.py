@@ -20,4 +20,5 @@ def example_name_or_id_validator(cmd, namespace):
             )
 
 def validate_storage_account_container_uri(namespace):
-    raise CLIError(namespace.storage_account_container_uri)
+    #raise CLIError(namespace.storage_account_container_uri)
+    pass

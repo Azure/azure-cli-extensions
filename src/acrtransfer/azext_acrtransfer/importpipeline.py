@@ -3,7 +3,7 @@ from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 imp
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, IdentityProperties, ImportPipelineSourceProperties, PipelineTriggerProperties, UserIdentityProperties, PipelineSourceTriggerProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ExportPipeline, ExportPipelineTargetProperties
 
-from .utility_functions import poll_output, create_options_list, create_identity_properties, keyvault_policy_output
+from .utility_functions import poll_output, create_options_list, create_identity_properties, keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
 import time
 import json
 from pprint import pprint
@@ -20,6 +20,9 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
     options_list = create_options_list(options=options, allowed_options_list=allowed_options_list)
 
     source_trigger_status = "Disabled" if "DisableSourceTrigger" in options_list else "Enabled"
+    if source_trigger_status == "Disabled":
+        options_list.remove("DisableSourceTrigger")
+
     pipeline_source_trigger_properties = PipelineSourceTriggerProperties(status=source_trigger_status)
     pipeline_trigger_properties = PipelineTriggerProperties(source_trigger=pipeline_source_trigger_properties)
 
@@ -37,9 +40,8 @@ def list_importpipeline(cmd, client, resource_group_name, registry_name):
     raw_result = client.import_pipelines.list(resource_group_name, registry_name)
 
     for pipeline in raw_result:
-        print(pipeline)
-
-        print(pipeline.identity.type)
+        print_lite_pipeline_output(pipeline)
+        
 
 def delete_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
     poller = client.import_pipelines.begin_delete(resource_group_name, registry_name, import_pipeline_name)  
@@ -48,10 +50,5 @@ def delete_importpipeline(cmd, client, resource_group_name, registry_name, impor
 def get_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
     raw_result = client.import_pipelines.get(resource_group_name, registry_name, import_pipeline_name)
 
-    
-    #return object attributes as json string
-    object_str= json.dumps(raw_result, default=lambda o: getattr(o, '__dict__', str(o)), indent=2)
-    clean_obj_str = object_str.replace('"additional_properties": {},', '')
-    clean_obj_str = clean_obj_str.replace('"location": null,', '')
-    print('\n'.join([line for line in clean_obj_str.split("\n") if line.strip()!='']))
+    print_pipeline_output(raw_result)
     
