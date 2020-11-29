@@ -5,7 +5,7 @@ Release History
 
 0.2.1
 ++++++++++++++++++
-* Patch bug with known_hosts, add support for DSA, ECC, and ED25519 private keys
+* Patch bug with known_hosts, add support for more private keys
 
 0.2.0
 ++++++++++++++++++
