@@ -2,10 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import os
 import json
-import requests
+from os.path import expanduser
 from urllib.parse import urlparse
+import requests
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
 ARM_TRANSLATOR_URL = 'https://portal2cli.azurewebsites.net/api/v1'
@@ -21,11 +21,11 @@ def _read_json(path):
         if _is_url(path):
             content = requests.get(path).text
         else:
-            with open(path, 'r') as fp:
+            with open(expanduser(path), 'r') as fp:
                 content = fp.read()
         if content:
             content = json.loads(content)
-    except Exception as e:
+    except Exception:  # pylint: disable=broad-except
         pass
     return content
 
@@ -52,11 +52,10 @@ def translate_arm(cmd, template_path, parameters_path, resource_group_name, targ
                 'parameters': parameters_content
             })
         if response.status_code != 200:
-            raise AzureInternalError(
-                'The service fail to translate ARM template to CLI scripts. \n{}'.format(response.text))
+            raise AzureInternalError(response.text)
         scripts = response.json()
         for script in scripts:
-            print('{}\n\n'.format(script))
+            print('{}\n'.format(script))
     except Exception as e:
         raise AzureInternalError(
-            'Meet exception while call translate service, please try a few minutes later.\n' + str(e))
+            'Fail to translate, please try a few minutes later.\n' + str(e))
