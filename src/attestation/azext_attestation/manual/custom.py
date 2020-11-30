@@ -204,16 +204,17 @@ def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_a
     if policy_format == 'Text':
         import jwt
         try:
+            new_attestation_policy = \
+                base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
             new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
             new_attestation_policy = jwt.encode(
-                new_attestation_policy, key=''
+                new_attestation_policy, key='', algorithm='none',
             ).decode('ascii')
 
         except TypeError as e:
             print(e)
             raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
-    print(new_attestation_policy)
     raw_result = client.set(
         tenant_base_url=provider.attest_uri,
         tee=tee_mapping[attestation_type],
