@@ -134,6 +134,7 @@ class PolicyCertificatesOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        # query_parameters['api-version'] = '2018-09-01-preview'
 
         # Construct headers
         header_parameters = {}
@@ -172,6 +173,7 @@ class PolicyCertificatesOperations(object):
 
         return deserialized
     add.metadata = {'url': '/certificates%3aadd'}
+    # add.metadata = {'url': '/operations/policy/certificates'}
 
     def remove(
             self, tenant_base_url, policy_certificate_to_remove, custom_headers=None, raw=False, **operation_config):
@@ -205,6 +207,7 @@ class PolicyCertificatesOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = '2018-09-01-preview'
 
         # Construct headers
         header_parameters = {}
@@ -242,4 +245,5 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    remove.metadata = {'url': '/certificates%3aremove'}
+    # remove.metadata = {'url': '/certificates%3aremove'}
+    remove.metadata = {'url': '/operations/policy/certificates'}

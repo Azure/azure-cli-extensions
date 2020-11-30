@@ -10,11 +10,11 @@
 # pylint: disable=too-many-lines
 
 import base64
-import codecs
 import json
 import os
 
 from azext_attestation.generated._client_factory import cf_attestation_provider
+from azext_attestation.manual._client_factory import cf_policy_certificates
 from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
 from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
     AttestOpenEnclaveRequest, RuntimeData, InitTimeData
@@ -24,6 +24,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from jwcrypto.jwk import JWK
+from jwcrypto.jws import JWS
 from knack.cli import CLIError
 
 
@@ -42,35 +43,16 @@ def attestation_attestation_provider_show(client,
                       provider_name=provider_name)
 
 
-def _int_to_bytes(i):
-    h = hex(i)
-    if len(h) > 1 and h[0:2] == '0x':
-        h = h[2:]
-    # need to strip L in python 2.x
-    h = h.strip('L')
-    if len(h) % 2:
-        h = '0' + h
-    return codecs.decode(h, 'hex')
-
-
-def _public_rsa_key_to_jwk(rsa_key, encoding=None):
-    jwk = JsonWebKey(kty='RSA', alg='', kid='', use='sig')
-    pubv = rsa_key.public_numbers()
-    jwk.n = _int_to_bytes(pubv.n)
-    if encoding:
-        jwk.n = encoding(jwk.n)
-    jwk.e = _int_to_bytes(pubv.e)
-    if encoding:
-        jwk.e = encoding(jwk.e)
-    return jwk
-
-
-def _b64_url_encode(s):
-    return base64.b64encode(s).decode('ascii').strip('=').replace('+', '-').replace('/', '_')
-
-
 def _b64url_to_b64(s):
     return s.replace('-', '+').replace('_', '/') + ('=' * (4 - len(s) % 4) if len(s) % 4 else '')
+
+
+def _b64_to_b64url(s):
+    return s.rstrip('=').replace('+', '-').replace('/', '_')
+
+
+def _b64_padding(s):
+    return s + ('=' * (4 - len(s) % 4) if len(s) % 4 else '')
 
 
 def attestation_attestation_provider_create(client,
@@ -117,13 +99,28 @@ def attestation_attestation_provider_delete(client,
 def add_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    return client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
+    token = client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
+    result = {'Jwt': token}
+
+    if token:
+        import jwt
+        header = jwt.get_unverified_header(token)
+        result.update({
+            'Algorithm': header.get('alg', ''),
+            'JKU': header.get('jku', '')
+        })
+        body = jwt.decode(token, verify=False)
+        result['Certificates'] = body.get('aas-policyCertificates', {}).get('keys', [])
+        result['CertificateCount'] = len(result['Certificates'])
+
+    return result
 
 
 def remove_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    return client.remove(tenant_base_url=provider.attest_uri, policy_certificate_to_remove=signer)
+    client.remove(tenant_base_url=provider.attest_uri, policy_certificate_to_remove=signer)
+    return list_signers(cmd, client, resource_group_name, provider_name)
 
 
 def list_signers(cmd, client, resource_group_name=None, provider_name=None):
@@ -131,31 +128,56 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     signers = client.get(tenant_base_url=provider.attest_uri)
     token = json.loads(signers.replace('\'', '"')).get('token')
-    result = {}
+    result = {'Jwt': token}
 
     if token:
         import jwt
-        result.update(jwt.get_unverified_header(token))
-        result.update(jwt.decode(token, verify=False))
+        header = jwt.get_unverified_header(token)
+        result.update({
+            'Algorithm': header.get('alg', ''),
+            'JKU': header.get('jku', '')
+        })
+        body = jwt.decode(token, verify=False)
+        result['Certificates'] = body.get('x-ms-policy-certificates', {}).get('keys', [])
+        result['CertificateCount'] = len(result['Certificates'])
 
     return result
 
 
-def get_policy(cmd, client, tee, resource_group_name=None, provider_name=None):
+def get_policy(cmd, client, attestation_type, resource_group_name=None, provider_name=None):
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[tee]).token
+    token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[attestation_type]).token
     result = {}
 
     if token:
         import jwt
-        result.update(jwt.get_unverified_header(token))
-        result.update(jwt.decode(token, verify=False))
+        policy = jwt.decode(token, verify=False).get('x-ms-policy', '')
+        result['Jwt'] = policy
+        result['JwtLength'] = len(policy)
+        result['Algorithm'] = None
+
+        if policy:
+            try:
+                decoded_policy = jwt.decode(policy, verify=False)
+                decoded_policy = decoded_policy.get('AttestationPolicy', '')
+                try:
+                    new_decoded_policy = base64.b64decode(_b64url_to_b64(decoded_policy)).decode('ascii')
+                    decoded_policy = new_decoded_policy
+                except:  # pylint: disable=bare-except
+                    pass
+                finally:
+                    result['Text'] = decoded_policy
+                    result['TextLength'] = len(decoded_policy)
+                    result['Algorithm'] = jwt.get_unverified_header(policy).get('alg', None)
+            except:  # pylint: disable=bare-except
+                result['Text'] = ''
+                result['TextLength'] = 0
 
     return result
 
 
-def set_policy(cmd, client, tee, new_attestation_policy=None, new_attestation_policy_file=None,
+def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_attestation_policy_file=None,
                policy_format='Text', resource_group_name=None,
                provider_name=None):
 
@@ -182,30 +204,32 @@ def set_policy(cmd, client, tee, new_attestation_policy=None, new_attestation_po
     if policy_format == 'Text':
         import jwt
         try:
-            #new_attestation_policy = {k: str(v) for k, v in json.loads(new_attestation_policy).items()}
-            print(new_attestation_policy)
-            new_attestation_policy = jwt.encode(new_attestation_policy, key='').decode('ascii')
-        except TypeError:
+            new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
+            new_attestation_policy = jwt.encode(
+                new_attestation_policy, key=''
+            ).decode('ascii')
+
+        except TypeError as e:
+            print(e)
             raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
     print(new_attestation_policy)
     raw_result = client.set(
         tenant_base_url=provider.attest_uri,
-        tee=tee_mapping[tee],
+        tee=tee_mapping[attestation_type],
         new_attestation_policy=new_attestation_policy
     )
-    print(raw_result)
     return raw_result
 
 
-def reset_policy(cmd, client, tee, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
+def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
                  provider_name=None):
 
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     return client.reset(
         tenant_base_url=provider.attest_uri,
-        tee=tee_mapping[tee],
+        tee=tee_mapping[attestation_type],
         policy_jws=policy_jws
     )
 
@@ -227,8 +251,6 @@ def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_dat
             data_type=init_time_data_type
         )
     )
-
-    print(request)
 
     return client.attest_open_enclave(
         tenant_base_url=provider.attest_uri,

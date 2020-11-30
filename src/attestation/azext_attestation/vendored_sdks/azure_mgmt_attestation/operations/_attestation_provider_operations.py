@@ -162,7 +162,6 @@ class AttestationProviderOperations(object):
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(creation_params, 'AttestationServiceCreationParams')
-        print(body_content)
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -235,7 +234,6 @@ class AttestationProviderOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        print(update_params)
         body_content = self._serialize.body(update_params, 'AttestationServicePatchParams')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)

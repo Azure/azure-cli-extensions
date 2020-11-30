@@ -117,26 +117,27 @@ helps['attestation signer list'] = """
 helps['attestation policy show'] = """
     type: command
     examples:
-      - name: Retrieves the current policy for a given kind of TEE (SGX-OpenEnclaveSDK).
+      - name: Retrieves the current policy for a given kind of attestation type.
         text: |-
-               az attestation policy show -n "myattestationprovider" -g "MyResourceGroup" --tee SGX-OpenEnclaveSDK
+               az attestation policy show -n "myattestationprovider" -g "MyResourceGroup" \\
+               --attestation-type SGX-OpenEnclaveSDK
 """
 
 helps['attestation policy set'] = """
     type: command
     examples:
-      - name: Sets the policy for a given kind of TEE (SGX-OpenEnclaveSDK) using JWT content.
+      - name: Sets the policy for a given kind of attestation type using JWT content.
         text: |-
-               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" --tee SGX-OpenEnclaveSDK \\
-               --new-attestation-policy "{JWT}" --policy-format JWT
-      - name: Sets the policy for a given kind of TEE (SGX-OpenEnclaveSDK) using Text content.
+               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" \\
+               --attestation-type SGX-OpenEnclaveSDK --new-attestation-policy "{JWT}" --policy-format JWT
+      - name: Sets the policy for a given kind of attestation type using Text content.
         text: |-
-               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" --tee SGX-OpenEnclaveSDK \\
-               --new-attestation-policy "{json_text}"
-      - name: Sets the policy for a given kind of TEE (SGX-OpenEnclaveSDK) using file name.
+               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" \\
+               --attestation-type SGX-OpenEnclaveSDK --new-attestation-policy "{json_text}"
+      - name: Sets the policy for a given kind of attestation type using file name.
         text: |-
-               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" --tee SGX-OpenEnclaveSDK \\
-               --new-attestation-policy-file "{file_name}" --policy-format JWT
+               az attestation policy set -n "myattestationprovider" -g "MyResourceGroup" \\
+               --attestation-type SGX-OpenEnclaveSDK --new-attestation-policy-file "{file_name}" --policy-format JWT
 """
 
 helps['attestation policy reset'] = """
@@ -144,6 +145,6 @@ helps['attestation policy reset'] = """
     examples:
       - name: Resets the attestation policy for the specified tenant and reverts to the default policy.
         text: |-
-               az attestation policy reset -n "myattestationprovider" -g "MyResourceGroup" --tee SGX-OpenEnclaveSDK \\
-               --policy-jws "eyJhbGciOiJub25lIn0.."
+               az attestation policy reset -n "myattestationprovider" -g "MyResourceGroup" \\
+               --attestation-type SGX-OpenEnclaveSDK --policy-jws "eyJhbGciOiJub25lIn0.."
 """

@@ -20,7 +20,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup
 @try_manual
 def setup(test, rg):
-    pass
+    test.kwargs.update({
+        'signer_cert_file': os.path.join(TEST_DIR, 'CreateProvider_SingleSignerCert.pem'),
+        'new_signer_jwt_file': os.path.join(TEST_DIR, 'AddOrDeleteSignerCert_JWT.txt')
+    })
 
 
 # EXAMPLE: /AttestationProviders/put/AttestationProviders_Create
@@ -31,7 +34,8 @@ def step__attestationproviders_put(test, rg):
              '--resource-group "{rg}"',
              checks=[
                  test.check('name', 'myattestationprovider'),
-                 test.check('status', 'Ready')
+                 test.check('status', 'Ready'),
+                 test.check('trustModel', 'AAD')
              ])
 
 
@@ -85,6 +89,35 @@ def step__attestationproviders_delete(test, rg):
     test.cmd('az attestation delete -y '
              '-n "myattestationprovider" '
              '--resource-group "{rg}"')
+
+
+@try_manual
+def test_provider_with_signer(test, rg):
+    test.cmd('az attestation create -l westus -n myatt -g {rg} --certs-input-path {signer_cert_file}', checks=[
+        test.check('name', 'myatt'),
+        test.check('status', 'Ready'),
+        test.check('trustModel', 'Isolated')
+    ])
+
+    test.cmd('az attestation signer list -n myatt -g {rg}', checks=[
+        test.check('CertificateCount', 1),
+        test.check('Certificates[0].use', 'sig'),
+        test.exists('Certificates[0].alg'),
+        test.exists('Certificates[0].kty'),
+        test.exists('Certificates[0].x5c'),
+        test.exists('JKU'),
+        test.exists('Jwt'),
+        test.exists('Algorithm')
+    ])
+
+    with open(test.kwargs['new_signer_jwt_file']) as f:
+        test.kwargs['new_signer_jwt'] = f.read()
+
+    test.cmd('az attestation signer add -n myatt -g {rg} --signer {new_signer_jwt}',
+             checks=test.check('CertificateCount', 2))
+
+    test.cmd('az attestation signer remove -n myatt -g {rg} --signer {new_signer_jwt}',
+             checks=test.check('CertificateCount', 1))
 
 
 # Env cleanup

@@ -59,7 +59,7 @@ def load_arguments(self, _):
 
     for item in ['show', 'set', 'reset']:
         with self.argument_context('attestation policy {}'.format(item)) as c:
-            c.argument('tee', arg_type=get_enum_type(TeeKind))
+            c.argument('attestation_type', arg_type=get_enum_type(TeeKind))
             c.argument('provider_name', provider_name_type, required=False)
             c.extra('identifier', options_list=['--id'],
                     help='Resource ID of the provider. Please omit --resource-group/-g or --name/-n '

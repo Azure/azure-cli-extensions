@@ -116,7 +116,7 @@ class PolicyOperations(object):
 
     def get(
             self, tenant_base_url, tee, custom_headers=None, raw=False, **operation_config):
-        """Retrieves the current policy for a given kind of TEE.
+        """Retrieves the current policy for a given kind of attestation type.
 
         :param tenant_base_url: The tenant name, for example
          https://mytenant.attest.azure.net.
@@ -181,7 +181,7 @@ class PolicyOperations(object):
 
     def set(
             self, tenant_base_url, tee, new_attestation_policy, custom_headers=None, raw=False, **operation_config):
-        """Sets the policy for a given kind of TEE.
+        """Sets the policy for a given kind of attestation type.
 
         :param tenant_base_url: The tenant name, for example
          https://mytenant.attest.azure.net.
@@ -203,6 +203,7 @@ class PolicyOperations(object):
         """
         # Construct URL
         url = '/policies/{}'.format(tee)
+        # url = '/operations/policy/updatepolicy'
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -211,6 +212,7 @@ class PolicyOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        # query_parameters['api-version'] = '2018-09-01-preview'
         query_parameters['tee'] = self._serialize.query("tee", tee, 'str')
 
         # Construct headers
