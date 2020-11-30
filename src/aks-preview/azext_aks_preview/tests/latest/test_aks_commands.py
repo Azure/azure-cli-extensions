@@ -166,12 +166,30 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
+                     '-a ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ingressApplicationGateway.enabled', True),
+            self.check(
+                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
+        ])
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_ingress_appgw_addon_with_deprecated_subet_prefix(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
                      '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressApplicationGateway.config.subnetPrefix', "10.2.0.0/16")
+                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
         ])
 
     @AllowLargeResponse()
