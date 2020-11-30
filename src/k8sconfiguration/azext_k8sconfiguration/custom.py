@@ -50,7 +50,7 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
             else:
                 message = ex.message
                 recommendation = ''
-            raise ResourceNotFoundError(message, recommendation)
+            raise ResourceNotFoundError(message, recommendation) from ex
 
 
 # pylint: disable=too-many-locals
@@ -153,7 +153,7 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
 
     if update_yes is False:
         raise RequiredArgumentMissingError(
-            'Invalid update.  No values to update!',
+            'Invalid update. No values to update!',
             'Verify that at least one changed parameter is provided in the update command')
 
     # Flag which parameters have been set and validate these settings against the set repository url
