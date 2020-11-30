@@ -30,18 +30,10 @@ helps['sentinel alert-rule show'] = """
     type: command
     short-summary: "Gets the alert rule."
     examples:
-      - name: Get a Fusion alert rule.
+      - name: Get an alert rule.
         text: |-
                az sentinel alert-rule show --resource-group "myRg" --rule-id "myFirstFusionRule" --workspace-name \
 "myWorkspace"
-      - name: Get a MicrosoftSecurityIncidentCreation rule.
-        text: |-
-               az sentinel alert-rule show --resource-group "myRg" --rule-id "microsoftSecurityIncidentCreationRuleExam\
-ple" --workspace-name "myWorkspace"
-      - name: Get a Scheduled alert rule.
-        text: |-
-               az sentinel alert-rule show --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---workspace-name "myWorkspace"
 """
 
 helps['sentinel alert-rule create'] = """
@@ -100,31 +92,30 @@ rule been triggered.
     examples:
       - name: Creates or updates an action of alert rule.
         text: |-
-               az sentinel alert-rule create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" \
---logic-app-resource-id "/subscriptions/d0cfe6b2-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.Lo\
-gic/workflows/MyAlerts" --trigger-uri "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd\
-7681ded1d48d7/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature" \
---action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2\
-ab5" --workspace-name "myWorkspace"
+               az sentinel alert-rule create --etag "{etag}" \
+--logic-app-resource-id "/subscriptions/{subs}/resourceGroups/myRg/providers/Microsoft.Lo\
+gic/workflows/MyAlerts" --trigger-uri "https://xxx.northcentralus.logic.azure.com:443/workflows/xxx/triggers/\
+manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature" \
+--action-id "{action-id}" --resource-group "myRg" --rule-id "{rule-id}" --workspace-name "myWorkspace"
       - name: Creates or updates a Fusion alert rule.
         text: |-
-               az sentinel alert-rule create --fusion-alert-rule etag="3d00c3ca-0000-0100-0000-5d42d5010000" \
-alert-rule-template-name="f71aba3d-28fb-450b-b192-4e76a83015c8" enabled=true --resource-group "myRg" --rule-id \
+               az sentinel alert-rule create --fusion-alert-rule etag="{etag}" \
+alert-rule-template-name="{name}" enabled=true --resource-group "myRg" --rule-id \
 "myFirstFusionRule" --workspace-name "myWorkspace"
       - name: Creates or updates a MicrosoftSecurityIncidentCreation rule.
         text: |-
                az sentinel alert-rule create --microsoft-security-incident-creation-alert-rule \
-etag="\\"260097e0-0000-0d00-0000-5d6fa88f0000\\"" product-filter="Microsoft Cloud App Security" display-name="testing \
+etag="{etag}" product-filter="Microsoft Cloud App Security" display-name="testing \
 displayname" enabled=true --resource-group "myRg" --rule-id "microsoftSecurityIncidentCreationRuleExample" \
 --workspace-name "myWorkspace"
       - name: Creates or updates a Scheduled alert rule.
         text: |-
-               az sentinel alert-rule create --scheduled-alert-rule etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" \
+               az sentinel alert-rule create --scheduled-alert-rule etag="{etag}" \
 query="ProtectionStatus | extend HostCustomEntity = Computer | extend IPCustomEntity = ComputerIP_Hidden" \
 query-frequency="PT1H" query-period="P2DT1H30M" severity="High" trigger-operator="GreaterThan" trigger-threshold=0 \
 description="" display-name="Rule2" enabled=true suppression-duration="PT1H" suppression-enabled=false \
-tactics="Persistence" tactics="LateralMovement" --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5\
-" --workspace-name "myWorkspace"
+tactics="Persistence" tactics="LateralMovement" --resource-group "myRg" --rule-id "{rule-id}" \
+--workspace-name "myWorkspace"
 """
 
 helps['sentinel alert-rule update'] = """
@@ -188,11 +179,11 @@ helps['sentinel alert-rule delete'] = """
     examples:
       - name: Delete an action of alert rule.
         text: |-
-               az sentinel alert-rule delete --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group \
-"myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
+               az sentinel alert-rule delete --action-id "{action-id}" --resource-group \
+"myRg" --rule-id "{rule-id}" --workspace-name "myWorkspace"
       - name: Delete an alert rule.
         text: |-
-               az sentinel alert-rule delete --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
+               az sentinel alert-rule delete --resource-group "myRg" --rule-id "{rule-id}" \
 --workspace-name "myWorkspace"
 """
 
@@ -202,8 +193,8 @@ helps['sentinel alert-rule get-action'] = """
     examples:
       - name: Get an action of alert rule.
         text: |-
-               az sentinel alert-rule get-action --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group \
-"myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
+               az sentinel alert-rule get-action --action-id "{action-id}" --resource-group \
+"myRg" --rule-id "{rule-id}" --workspace-name "myWorkspace"
 """
 
 helps['sentinel action'] = """
@@ -217,7 +208,7 @@ helps['sentinel action list'] = """
     examples:
       - name: Get all actions of alert rule.
         text: |-
-               az sentinel action list --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
+               az sentinel action list --resource-group "myRg" --rule-id "{rule-id}" \
 --workspace-name "myWorkspace"
 """
 
@@ -241,7 +232,7 @@ helps['sentinel alert-rule-template show'] = """
     examples:
       - name: Get alert rule template by Id.
         text: |-
-               az sentinel alert-rule-template show --alert-rule-template-id "65360bb0-8986-4ade-a89d-af3cf44d28aa" \
+               az sentinel alert-rule-template show --alert-rule-template-id "{id}" \
 --resource-group "myRg" --workspace-name "myWorkspace"
 """
 
@@ -265,7 +256,7 @@ helps['sentinel bookmark show'] = """
     examples:
       - name: Get a bookmark.
         text: |-
-               az sentinel bookmark show --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
+               az sentinel bookmark show --bookmark-id "{id}" --resource-group "myRg" \
 --workspace-name "myWorkspace"
 """
 
@@ -285,10 +276,10 @@ helps['sentinel bookmark create'] = """
     examples:
       - name: Creates or updates a bookmark.
         text: |-
-               az sentinel bookmark create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --created \
+               az sentinel bookmark create --etag "{etag}" --created \
 "2019-01-01T13:15:30Z" --display-name "My bookmark" --labels "Tag1" --labels "Tag2" --notes "Found a suspicious \
 activity" -q "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" --query-result "Security \
-Event query result" --updated "2019-01-01T13:15:30Z" --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
+Event query result" --updated "2019-01-01T13:15:30Z" --bookmark-id "{id}" \
 --resource-group "myRg" --workspace-name "myWorkspace"
 """
 
@@ -313,7 +304,7 @@ helps['sentinel bookmark delete'] = """
     examples:
       - name: Delete a bookmark.
         text: |-
-               az sentinel bookmark delete --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group \
+               az sentinel bookmark delete --bookmark-id "{id}" --resource-group \
 "myRg" --workspace-name "myWorkspace"
 """
 
@@ -335,38 +326,10 @@ helps['sentinel data-connector show'] = """
     type: command
     short-summary: "Gets a data connector."
     examples:
-      - name: Get a ASC data connector.
+      - name: Get a data connector.
         text: |-
-               az sentinel data-connector show --data-connector-id "763f9fa1-c2d3-4fa2-93e9-bccd4899aa12" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get a MCAS data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "b96d014d-b5c2-4a01-9aba-a8058f629d42" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get a MDATP data connector
-        text: |-
-               az sentinel data-connector show --data-connector-id "06b3ccb8-1384-4bcc-aec7-852f6d57161b" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get a TI data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get an AAD data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "f0cd27d2-5f03-4c06-ba31-d2dc82dcb51d" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get an AATP data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "07e42cb3-e658-4e90-801c-efa0f29d3d44" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get an AwsCloudTrail data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "c345bf40-8509-4ed2-b947-50cb773aaf04" \
---resource-group "myRg" --workspace-name "myWorkspace"
-      - name: Get an Office365 data connector.
-        text: |-
-               az sentinel data-connector show --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---resource-group "myRg" --workspace-name "myWorkspace"
+               az sentinel data-connector show --data-connector-id "{id}" --resource-group "myRg" \
+               --workspace-name "myWorkspace"
 """
 
 helps['sentinel data-connector create'] = """
@@ -452,9 +415,8 @@ state-data-types-exchange-state=XX kind=XX etag=XX
     examples:
       - name: Creates or updates an Office365 data connector.
         text: |-
-               az sentinel data-connector create --office-data-connector etag="\\"0300bf09-0000-0000-0000-5c37296e0000\
-\\"" tenant-id="2070ecc9-b4d5-4ae4-adaa-936fa1954fa8" --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---resource-group "myRg" --workspace-name "myWorkspace"
+               az sentinel data-connector create --office-data-connector etag="{etag}" \
+               tenant-id="{tenant-id}" --data-connector-id "{id}" --resource-group "myRg" --workspace-name "myWorkspace"
 """
 
 helps['sentinel data-connector update'] = """
@@ -543,10 +505,10 @@ helps['sentinel data-connector delete'] = """
     type: command
     short-summary: "Delete the data connector."
     examples:
-      - name: Delete an Office365 data connector.
+      - name: Delete a data connector.
         text: |-
-               az sentinel data-connector delete --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---resource-group "myRg" --workspace-name "myWorkspace"
+               az sentinel data-connector delete --data-connector-id "{id}" --resource-group "myRg" \
+               --workspace-name "myWorkspace"
 """
 
 helps['sentinel incident'] = """
@@ -570,8 +532,7 @@ helps['sentinel incident show'] = """
     examples:
       - name: Get an incident.
         text: |-
-               az sentinel incident show --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
---workspace-name "myWorkspace"
+               az sentinel incident show --incident-id "{id}" --resource-group "myRg" --workspace-name "myWorkspace"
 """
 
 helps['sentinel incident create'] = """
@@ -598,11 +559,11 @@ helps['sentinel incident create'] = """
     examples:
       - name: Creates or updates an incident.
         text: |-
-               az sentinel incident create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --description "This is \
+               az sentinel incident create --etag "{etag}" --description "This is \
 a demo incident" --classification "FalsePositive" --classification-comment "Not a malicious activity" \
 --classification-reason "IncorrectAlertLogic" --first-activity-time-utc "2019-01-01T13:00:30Z" \
---last-activity-time-utc "2019-01-01T13:05:30Z" --owner object-id="2046feea-040d-4a46-9e2b-91c2941bfa70" --severity \
-"High" --status "Closed" --title "My incident" --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group \
+--last-activity-time-utc "2019-01-01T13:05:30Z" --owner object-id="{oid}" --severity \
+"High" --status "Closed" --title "My incident" --incident-id "{id}" --resource-group \
 "myRg" --workspace-name "myWorkspace"
 """
 
@@ -635,7 +596,7 @@ helps['sentinel incident delete'] = """
     examples:
       - name: Delete an incident.
         text: |-
-               az sentinel incident delete --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group \
+               az sentinel incident delete --incident-id "{id}" --resource-group \
 "myRg" --workspace-name "myWorkspace"
 """
 
@@ -650,7 +611,7 @@ helps['sentinel incident-comment list'] = """
     examples:
       - name: Get all incident comments.
         text: |-
-               az sentinel incident-comment list --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group \
+               az sentinel incident-comment list --incident-id "{id}" --resource-group \
 "myRg" --workspace-name "myWorkspace"
 """
 
@@ -660,8 +621,8 @@ helps['sentinel incident-comment show'] = """
     examples:
       - name: Get an incident comment.
         text: |-
-               az sentinel incident-comment show --incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" \
---incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace"
+               az sentinel incident-comment show --incident-comment-id "{comment-id}" \
+--incident-id "{id}" --resource-group "myRg" --workspace-name "myWorkspace"
 """
 
 helps['sentinel incident-comment create'] = """
@@ -671,6 +632,6 @@ helps['sentinel incident-comment create'] = """
       - name: Creates an incident comment.
         text: |-
                az sentinel incident-comment create --message "Some message" --incident-comment-id \
-"4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" --incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
+"4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" --incident-id "{id}" --resource-group "myRg" \
 --workspace-name "myWorkspace"
 """
