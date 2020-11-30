@@ -256,3 +256,8 @@ def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_dat
         tenant_base_url=provider.attest_uri,
         request=request
     )
+
+
+def attestation_attestation_provider_get_default_by_location(client,
+                                                             loc):
+    return client.get_default_by_location(location=loc)

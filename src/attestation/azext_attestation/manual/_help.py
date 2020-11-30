@@ -67,7 +67,7 @@ helps['attestation get-default-by-location'] = """
     examples:
       - name: AttestationProviders_GetDefaultWithLocation
         text: |-
-               az attestation attestation-provider get-default-by-location --location "Central US"
+               az attestation get-default-by-location --location "Central US"
 """
 
 helps['attestation list-default'] = """
