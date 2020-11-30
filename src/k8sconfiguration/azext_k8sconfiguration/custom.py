@@ -211,7 +211,7 @@ def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, 
 
         if invalid_rsa_key and invalid_ecc_key and invalid_dsa_key and invalid_ed25519_key:
             raise InvalidArgumentValueError(
-                'Error! ssh private key provided in wrong format',
+                'Error! ssh private key provided in invalid format',
                 'Verify the key provided is a valid PEM-formatted key of type RSA, ECC, DSA, or Ed25519')
         protected_settings["sshPrivateKey"] = ssh_private_key_data
 
