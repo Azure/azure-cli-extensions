@@ -9,10 +9,12 @@ from .profiles import CUSTOM_VWAN
 
 from ._client_factory import (
     cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs,
-    cf_vpn_gateways, cf_virtual_hub_route_table_v2s, cf_vpn_server_config,
+    cf_vpn_gateways, cf_vpn_gateway_connection, cf_virtual_hub_route_table_v2s, cf_vpn_server_config,
     cf_p2s_vpn_gateways, cf_virtual_hub_connection)
 from ._util import (
-    list_network_resource_property, delete_network_resource_property_entry, get_network_resource_property_entry)
+    list_network_resource_property,
+    get_network_resource_property_entry
+)
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -50,6 +52,12 @@ def load_command_table(self, _):
         operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnGatewaysOperations.{}',
         client_factory=cf_vpn_gateways,
         min_api='2018-08-01'
+    )
+
+    network_vpn_gateway_connection_sdk = CliCommandType(
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnConnectionsOperations.{}',
+        client_factory=cf_vpn_gateway_connection,
+        min_api='2020-05-01'
     )
 
     network_vpn_site_sdk = CliCommandType(
@@ -137,16 +145,12 @@ def load_command_table(self, _):
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_vpn_gateway', supports_no_wait=True, setter_arg_name='vpn_gateway_parameters')
 
-    with self.command_group('network vpn-gateway connection', network_vpn_gateway_sdk) as g:
+    with self.command_group('network vpn-gateway connection', network_vpn_gateway_connection_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
+        g.command('list', 'list_by_vpn_gateway')
+        g.show_command('show', 'get')
+        g.command('delete', 'delete')
         g.wait_command('wait')
-
-    resource = 'vpn_gateways'
-    prop = 'connections'
-    with self.command_group('network vpn-gateway connection', network_util) as g:
-        g.command('delete', delete_network_resource_property_entry(resource, prop))
-        g.command('list', list_network_resource_property(resource, prop))
-        g.show_command('show', get_network_resource_property_entry(resource, prop))
 
     with self.command_group('network vpn-gateway connection ipsec-policy', network_vpn_gateway_sdk) as g:
         g.custom_command('add', 'add_vpn_gateway_connection_ipsec_policy', supports_no_wait=True)
