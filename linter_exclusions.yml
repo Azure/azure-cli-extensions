@@ -1842,6 +1842,68 @@ sapmonitor provider-instance show:
     provider_instance_name:
       rule_exclusions:
       - option_length_too_long
+sentinel alert-rule create:
+  parameters:
+    logic_app_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    microsoft_security_incident_creation_alert_rule:
+      rule_exclusions:
+      - option_length_too_long
+sentinel alert-rule update:
+  parameters:
+    microsoft_security_incident_creation_alert_rule:
+      rule_exclusions:
+      - option_length_too_long
+sentinel alert-rule-template show:
+  parameters:
+    alert_rule_template_id:
+      rule_exclusions:
+      - option_length_too_long
+sentinel data-connector create:
+  parameters:
+    aws_cloud_trail_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+    office_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+sentinel data-connector update:
+  parameters:
+    aws_cloud_trail_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+    office_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+sentinel incident create:
+  parameters:
+    classification_comment:
+      rule_exclusions:
+      - option_length_too_long
+    classification_reason:
+      rule_exclusions:
+      - option_length_too_long
+    first_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+    last_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+sentinel incident update:
+  parameters:
+    classification_comment:
+      rule_exclusions:
+      - option_length_too_long
+    classification_reason:
+      rule_exclusions:
+      - option_length_too_long
+    first_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+    last_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
 spring-cloud app create:
   parameters:
     enable_persistent_storage:
