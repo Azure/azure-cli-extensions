@@ -412,6 +412,7 @@ def get_kubernetes_distro(configuration):  # Heuristic
         if api_response.items:
             labels = api_response.items[0].metadata.labels
             provider_id = str(api_response.items[0].spec.provider_id)
+            annotations = list(api_response.items)[0].metadata.annotations
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -426,6 +427,8 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "kind"
             if provider_id.startswith("k3s://"):
                 return "k3s"
+            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
+                return "rancher_rke"
             if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
                 return "generic"                   # return "aks_hci"
         return "generic"
