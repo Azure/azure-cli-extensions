@@ -116,7 +116,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     else:
         kubernetes_infra = infrastructure
 
-
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
@@ -428,7 +427,7 @@ def get_kubernetes_distro(configuration):  # Heuristic
             if provider_id.startswith("k3s://"):
                 return "k3s"
             if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                   #return "aks_hci"
+                return "generic"                   # return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
@@ -453,7 +452,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
             if infra == "aws":
                 return "aws"
             if infra == "moc":                  # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                #return "azure_stack_hci"
+                return "generic"                # return "azure_stack_hci"
             return utils.validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
