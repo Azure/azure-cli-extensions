@@ -59,12 +59,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
     custom_tenant_id = os.getenv('CUSTOMTENANTID')
+    onboarding_tenant_id = graph_client.config.tenant_id
+    aad_tenant_id = onboarding_tenant_id
     if custom_tenant_id:
         logger.warning("Custom Tenant Id '{}' is provided. Using that for onboarding purposes.".format(custom_tenant_id))
-        onboarding_tenant_id = custom_tenant_id
         graph_client.config.tenant_id = custom_tenant_id
-    else:
-        onboarding_tenant_id = graph_client.config.tenant_id
+        aad_tenant_id = custom_tenant_id
 
     if ((aad_server_app_id is None) and (aad_client_app_id is not None)) or ((aad_server_app_id is not None) and (aad_client_app_id is None)):
         telemetry.set_user_fault()
@@ -90,8 +90,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             graph_client.service_principals.get(object_id)
         except Exception as e:
             logger.warning("Couldn't validate the AAD client app id. Continuing without validation...")
-
-    aad_tenant_id = onboarding_tenant_id
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
