@@ -1,0 +1,506 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "sku": {"name": "Edge", "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge device create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --sku --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice?api-version=2019-08-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"sku\": {\r\n
+        \   \"name\": \"Edge\",\r\n    \"tier\": \"Standard\"\r\n  },\r\n  \"etag\":
+        \"W/\\\"datetime'2020-12-01T05%3A35%3A08.8268878Z'\\\"_W/\\\"datetime'2020-12-01T05%3A35%3A08.8328916Z'\\\"\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"None\"\r\n  },\r\n  \"properties\": {\r\n
+        \   \"dataBoxEdgeDeviceStatus\": \"ReadyToSetup\",\r\n    \"deviceType\":
+        \"DataBoxEdgeDevice\",\r\n    \"deviceLocalCapacity\": 0,\r\n    \"nodeCount\":
+        0,\r\n    \"resourceMoveDetails\": {\r\n      \"operationInProgress\": \"None\"\r\n
+        \   }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice\",\r\n
+        \ \"name\": \"testedgedevice\",\r\n  \"type\": \"Microsoft.DataBoxEdge/dataBoxEdgeDevices\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '805'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Dec 2020 05:35:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"shippingAddress": {"addressLine1": "Microsoft Corporation",
+      "addressLine2": "One Microsoft Way", "addressLine3": "Redmond", "postalCode":
+      "98052", "city": "WA", "state": "WA", "country": "United States"}, "contactInformation":
+      {"contactPerson": "John Mcclane", "companyName": "Microsoft", "phone": "(800)
+      426-9400", "emailList": ["john@microsoft.com"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '371'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --device-name --company-name --contact-person --email-list --phone --address-line1
+        --address-line2 --address-line3 --city --country --postal-code --state --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default?api-version=2019-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 01 Dec 2020 05:35:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default/operationResults/71b2ee5a-611b-48f6-96a6-62bbb83d9843?api-version=2019-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --device-name --company-name --contact-person --email-list --phone --address-line1
+        --address-line2 --address-line3 --city --country --postal-code --state --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default/operationResults/71b2ee5a-611b-48f6-96a6-62bbb83d9843?api-version=2019-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 01 Dec 2020 05:35:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default?api-version=2019-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --device-name --company-name --contact-person --email-list --phone --address-line1
+        --address-line2 --address-line3 --city --country --postal-code --state --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default?api-version=2019-08-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"contactInformation\": {\r\n      \"contactPerson\":
+        \"John Mcclane\",\r\n      \"companyName\": \"Microsoft\",\r\n      \"phone\":
+        \"(800) 426-9400\",\r\n      \"emailList\": [\r\n        \"john@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"shippingAddress\": {\r\n      \"addressLine1\":
+        \"Microsoft Corporation\",\r\n      \"addressLine2\": \"One Microsoft Way\",\r\n
+        \     \"addressLine3\": \"Redmond\",\r\n      \"postalCode\": \"98052\",\r\n
+        \     \"city\": \"WA\",\r\n      \"state\": \"WA\",\r\n      \"country\":
+        \"United States\"\r\n    },\r\n    \"currentStatus\": {\r\n      \"status\":
+        \"Untracked\",\r\n      \"updateDateTime\": \"0001-01-01T00:00:00Z\",\r\n
+        \     \"comments\": \"Initialising Order with Untracked status\",\r\n      \"additionalOrderDetails\":
+        {}\r\n    },\r\n    \"orderHistory\": [\r\n      {\r\n        \"status\":
+        \"Untracked\",\r\n        \"updateDateTime\": \"0001-01-01T00:00:00Z\",\r\n
+        \       \"comments\": \"Initialising Order with Untracked status\",\r\n        \"additionalOrderDetails\":
+        {}\r\n      }\r\n    ],\r\n    \"deliveryTrackingInfo\": [],\r\n    \"returnTrackingInfo\":
+        []\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default\",\r\n
+        \ \"name\": \"default\",\r\n  \"type\": \"Microsoft.DataBoxEdge/dataBoxEdgeDevices/orders\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1330'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Dec 2020 05:36:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --device-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default?api-version=2019-08-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"contactInformation\": {\r\n      \"contactPerson\":
+        \"John Mcclane\",\r\n      \"companyName\": \"Microsoft\",\r\n      \"phone\":
+        \"(800) 426-9400\",\r\n      \"emailList\": [\r\n        \"john@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"shippingAddress\": {\r\n      \"addressLine1\":
+        \"Microsoft Corporation\",\r\n      \"addressLine2\": \"One Microsoft Way\",\r\n
+        \     \"addressLine3\": \"Redmond\",\r\n      \"postalCode\": \"98052\",\r\n
+        \     \"city\": \"WA\",\r\n      \"state\": \"WA\",\r\n      \"country\":
+        \"United States\"\r\n    },\r\n    \"currentStatus\": {\r\n      \"status\":
+        \"Untracked\",\r\n      \"updateDateTime\": \"0001-01-01T00:00:00Z\",\r\n
+        \     \"comments\": \"Initialising Order with Untracked status\",\r\n      \"additionalOrderDetails\":
+        {}\r\n    },\r\n    \"orderHistory\": [\r\n      {\r\n        \"status\":
+        \"Untracked\",\r\n        \"updateDateTime\": \"0001-01-01T00:00:00Z\",\r\n
+        \       \"comments\": \"Initialising Order with Untracked status\",\r\n        \"additionalOrderDetails\":
+        {}\r\n      }\r\n    ],\r\n    \"deliveryTrackingInfo\": [],\r\n    \"returnTrackingInfo\":
+        []\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default\",\r\n
+        \ \"name\": \"default\",\r\n  \"type\": \"Microsoft.DataBoxEdge/dataBoxEdgeDevices/orders\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1330'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Dec 2020 05:36:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --device-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders?api-version=2019-08-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"contactInformation\":
+        {\r\n          \"contactPerson\": \"John Mcclane\",\r\n          \"companyName\":
+        \"Microsoft\",\r\n          \"phone\": \"(800) 426-9400\",\r\n          \"emailList\":
+        [\r\n            \"john@microsoft.com\"\r\n          ]\r\n        },\r\n        \"shippingAddress\":
+        {\r\n          \"addressLine1\": \"Microsoft Corporation\",\r\n          \"addressLine2\":
+        \"One Microsoft Way\",\r\n          \"addressLine3\": \"Redmond\",\r\n          \"postalCode\":
+        \"98052\",\r\n          \"city\": \"WA\",\r\n          \"state\": \"WA\",\r\n
+        \         \"country\": \"United States\"\r\n        },\r\n        \"currentStatus\":
+        {\r\n          \"status\": \"Untracked\",\r\n          \"updateDateTime\":
+        \"0001-01-01T00:00:00Z\",\r\n          \"comments\": \"Initialising Order
+        with Untracked status\",\r\n          \"additionalOrderDetails\": {}\r\n        },\r\n
+        \       \"orderHistory\": [\r\n          {\r\n            \"status\": \"Untracked\",\r\n
+        \           \"updateDateTime\": \"0001-01-01T00:00:00Z\",\r\n            \"comments\":
+        \"Initialising Order with Untracked status\",\r\n            \"additionalOrderDetails\":
+        {}\r\n          }\r\n        ],\r\n        \"deliveryTrackingInfo\": [],\r\n
+        \       \"returnTrackingInfo\": []\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default\",\r\n
+        \     \"name\": \"default\",\r\n      \"type\": \"Microsoft.DataBoxEdge/dataBoxEdgeDevices/orders\"\r\n
+        \   }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Dec 2020 05:36:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --device-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default?api-version=2019-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 01 Dec 2020 05:36:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default/operationResults/04a9862e-d9b0-4eee-97db-fe9aa1ee3c76?api-version=2019-08-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --device-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders/default/operationResults/04a9862e-d9b0-4eee-97db-fe9aa1ee3c76?api-version=2019-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 01 Dec 2020 05:36:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge order list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --device-name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice/orders?api-version=2019-08-01
+  response:
+    body:
+      string: "{\r\n  \"value\": []\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '19'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Dec 2020 05:36:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - data-box-edge device delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 azsdk-python-databoxedgemanagementclient/unknown Python/3.7.9
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DataBoxEdge/dataBoxEdgeDevices/testedgedevice?api-version=2019-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 01 Dec 2020 05:37:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 204
+      message: No Content
+version: 1
