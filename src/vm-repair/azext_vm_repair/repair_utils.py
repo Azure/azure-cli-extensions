@@ -271,7 +271,18 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux):
+    logger.info('Unlocking attached copied disk...')
+    if is_linux:
+        return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+
+
+def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
+    """
+    Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
+    """
+
     # Installs the extension on repair VM and mounts the disk after unlocking.
     encryption_type, key_vault, kekurl, secreturl = _fetch_encryption_settings(source_vm)
     if is_linux:
@@ -296,7 +307,7 @@ def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_
             # Validating secret tag and setting original tag if it got changed
             _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
             logger.debug("Manually unlocking and mounting disk for Linux VMs.")
-            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
+            _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
     except AzCommandError as azCommandError:
         error_message = str(azCommandError)
         # Linux VM encryption extension bug where it fails and then continue to mount disk manually
@@ -304,15 +315,21 @@ def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_
             logger.debug("Expected bug for linux VMs. Ignoring error.")
             # Validating secret tag and setting original tag if it got changed
             _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
-            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
+            _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
         else:
             raise
 
 
-def _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name):
+def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
-    LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
+    LINUX_RUN_SCRIPT_NAME = 'linux-mount-encrypted-disk.sh'
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
+
+
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name):
+    # Unlocks the disk using the phasephrase and mounts it on the repair VM.
+    WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
+    return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):

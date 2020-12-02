@@ -63,6 +63,8 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             'rg': resource_group
         })
 
+        self.cmd('extension add -n azure-firewall')
+
         # workaround due to service limitation. It should be fixed in the future.
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus')
@@ -98,3 +100,5 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
 
         self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
+
+        self.cmd('extension remove -n azure-firewall')

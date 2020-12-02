@@ -3,9 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 def validate_configuration_type(configuration_type):
     if configuration_type.lower() != 'sourcecontrolconfiguration':
-        raise CLIError('Invalid configuration-type.  Valid value is "sourceControlConfiguration"')
+        raise InvalidArgumentValueError(
+            'Invalid configuration-type',
+            'Try specifying the valid value "sourceControlConfiguration"')
