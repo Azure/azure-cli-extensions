@@ -3,13 +3,10 @@
 Release History
 ===============
 
-0.2.9
-++++++
-* `az connectedk8s connect`: Added support for kubernetes distro/infra parameters and heuristics
-
 0.2.8
 ++++++
 * Added checks for proxy
+* `az connectedk8s connect`: Added support for kubernetes distro/infra parameters and heuristics
 
 0.2.7
 ++++++
