@@ -7,6 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
@@ -40,9 +41,13 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('sku', action=AddSku, nargs='+', help='The SKU type.')
         c.argument('etag', type=str, help='The etag for the devices.')
-        c.argument('data_box_edge_device_status', arg_type=get_enum_type(['ReadyToSetup', 'Online', 'Offline',
-                                                                          'NeedsAttention', 'Disconnected',
-                                                                          'PartiallyDisconnected', 'Maintenance']),
+        c.argument('data_box_edge_device_status', options_list=['--status'], arg_type=get_enum_type(['ReadyToSetup',
+                                                                                                     'Online',
+                                                                                                     'Offline',
+                                                                                                     'NeedsAttention',
+                                                                                                     'Disconnected',
+                                                                                                     'PartiallyDisconnected',
+                                                                                                     'Maintenance']),
                    help='The status of the Data Box Edge/Gateway device.')
         c.argument('description', type=str, help='The Description of the Data Box Edge/Gateway device.')
         c.argument('model_description', type=str, help='The description of the Data Box Edge/Gateway device model.')
