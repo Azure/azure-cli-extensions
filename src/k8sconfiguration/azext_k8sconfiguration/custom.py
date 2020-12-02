@@ -4,11 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+import io
 from urllib.parse import urlparse
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, \
+    RequiredArgumentMissingError, MutuallyExclusiveArgumentError
 from knack.log import get_logger
+from paramiko.ed25519key import Ed25519Key
 from paramiko.hostkeys import HostKeyEntry
-from Crypto.PublicKey import RSA
+from paramiko.ssh_exception import SSHException
+from Crypto.PublicKey import RSA, ECC, DSA
 
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
@@ -32,15 +36,21 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
         if ex.response.status_code == 404:
             # If Cluster not found
             if ex.message.__contains__("(ResourceNotFound)"):
-                message = "{0} Verify that the --cluster-type is correct and the resource exists.".format(ex.message)
+                message = ex.message
+                recommendation = 'Verify that the --cluster-type is correct and the Resource ' \
+                                 '{0}/{1}/{2} exists'.format(cluster_rp, cluster_type, cluster_name)
             # If Configuration not found
             elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
-                message = "(ConfigurationNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
-                          "sourcecontrolConfigurations/{3} could not be found!".format(cluster_rp, cluster_type,
+                message = '(ConfigurationNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/' \
+                          'sourcecontrolConfigurations/{3} could not be found!'.format(cluster_rp, cluster_type,
                                                                                        cluster_name, name)
+                recommendation = 'Verify that the Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration' \
+                                 '/sourcecontrolConfigurations/{3} exists'.format(cluster_rp, cluster_type,
+                                                                                  cluster_name, name)
             else:
                 message = ex.message
-            raise CLIError(message)
+                recommendation = ''
+            raise ResourceNotFoundError(message, recommendation) from ex
 
 
 # pylint: disable=too-many-locals
@@ -86,7 +96,7 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
                                                               operator_params=operator_params,
                                                               configuration_protected_settings=protected_settings,
                                                               operator_scope=scope,
-                                                              ssh_known_hosts=knownhost_data,
+                                                              ssh_known_hosts_contents=knownhost_data,
                                                               enable_helm_operator=enable_helm_operator,
                                                               helm_operator_properties=helm_operator_properties)
 
@@ -126,7 +136,7 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     knownhost_data = __get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
     if knownhost_data != '':
         __validate_known_hosts(knownhost_data)
-        config['ssh_known_hosts'] = knownhost_data
+        config['ssh_known_hosts_contents'] = knownhost_data
         update_yes = True
 
     if enable_helm_operator is not None:
@@ -142,10 +152,12 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
         update_yes = True
 
     if update_yes is False:
-        raise CLIError('Invalid update.  No values to update!')
+        raise RequiredArgumentMissingError(
+            'Invalid update. No values to update!',
+            'Verify that at least one changed parameter is provided in the update command')
 
-    # Flag which paramesters have been set and validate these settings against the set repository url
-    ssh_known_hosts_set = 'ssh_known_hosts' in config
+    # Flag which parameters have been set and validate these settings against the set repository url
+    ssh_known_hosts_set = 'ssh_known_hosts_contents' in config
     __validate_url_with_params(config['repository_url'], False, ssh_known_hosts_set, False)
 
     config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
@@ -176,11 +188,31 @@ def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, 
     ssh_private_key_data = __get_data_from_key_or_file(ssh_private_key, ssh_private_key_file)
 
     # Add gitops private key data to protected settings if exists
+    # Dry-run all key types to determine if the private key is in a valid format
+    invalid_rsa_key, invalid_ecc_key, invalid_dsa_key, invalid_ed25519_key = (False, False, False, False)
     if ssh_private_key_data != '':
         try:
-            RSA.importKey(__from_base64(ssh_private_key_data))
-        except Exception as ex:
-            raise CLIError("Error! ssh private key provided in wrong format, ensure your private key is valid") from ex
+            RSA.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_rsa_key = True
+        try:
+            ECC.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_ecc_key = True
+        try:
+            DSA.import_key(__from_base64(ssh_private_key_data))
+        except ValueError:
+            invalid_dsa_key = True
+        try:
+            key_obj = io.StringIO(__from_base64(ssh_private_key_data).decode('utf-8'))
+            Ed25519Key(file_obj=key_obj)
+        except SSHException:
+            invalid_ed25519_key = True
+
+        if invalid_rsa_key and invalid_ecc_key and invalid_dsa_key and invalid_ed25519_key:
+            raise InvalidArgumentValueError(
+                'Error! ssh private key provided in invalid format',
+                'Verify the key provided is a valid PEM-formatted key of type RSA, ECC, DSA, or Ed25519')
         protected_settings["sshPrivateKey"] = ssh_private_key_data
 
     # Check if both httpsUser and httpsKey exist, then add to protected settings
@@ -188,9 +220,13 @@ def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, 
         protected_settings['httpsUser'] = __to_base64(https_user)
         protected_settings['httpsKey'] = __to_base64(https_key)
     elif https_user != '':
-        raise CLIError('Error! --https-user must be proivded with --https-key')
+        raise RequiredArgumentMissingError(
+            'Error! --https-user used without --https-key',
+            'Try providing both --https-user and --https-key together')
     elif https_key != '':
-        raise CLIError('Error! --http-key must be provided with --http-user')
+        raise RequiredArgumentMissingError(
+            'Error! --http-key used without --http-user',
+            'Try providing both --https-user and --https-key together')
 
     return protected_settings
 
@@ -217,19 +253,30 @@ def __validate_url_with_params(repository_url, ssh_private_key_set, known_hosts_
 
     if scheme in ('http', 'https'):
         if ssh_private_key_set:
-            raise CLIError('Error! An ssh private key cannot be used with an http(s) url')
+            raise MutuallyExclusiveArgumentError(
+                'Error! An ssh private key cannot be used with an http(s) url',
+                'Verify the url provided is a valid ssh url and not an http(s) url')
         if known_hosts_contents_set:
-            raise CLIError('Error! ssh known_hosts cannot be used with an http(s) url')
+            raise MutuallyExclusiveArgumentError(
+                'Error! ssh known_hosts cannot be used with an http(s) url',
+                'Verify the url provided is a valid ssh url and not an http(s) url')
         if not https_auth_set and scheme == 'https':
             logger.warning('Warning! https url is being used without https auth params, ensure the repository '
                            'url provided is not a private repo')
     else:
         if https_auth_set:
-            raise CLIError('Error! https auth (--https-user and --https-key) cannot be used with a non-http(s) url')
+            raise MutuallyExclusiveArgumentError(
+                'Error! https auth (--https-user and --https-key) cannot be used with a non-http(s) url',
+                'Verify the url provided is a valid http(s) url and not an ssh url')
 
 
 def __validate_known_hosts(knownhost_data):
-    knownhost_str = __from_base64(knownhost_data).decode('utf-8')
+    try:
+        knownhost_str = __from_base64(knownhost_data).decode('utf-8')
+    except Exception as ex:
+        raise InvalidArgumentValueError(
+            'Error! ssh known_hosts is not a valid utf-8 base64 encoded string',
+            'Verify that the string provided safely decodes into a valid utf-8 format') from ex
     lines = knownhost_str.split('\n')
     for line in lines:
         line = line.strip(' ')
@@ -241,13 +288,16 @@ def __validate_known_hosts(knownhost_data):
             if not host_key:
                 raise Exception('not enough fields found in known_hosts line')
         except Exception as ex:
-            raise CLIError('Error! ssh known_hosts provided in wrong format, ensure your '
-                           'known_hosts provided is valid') from ex
+            raise InvalidArgumentValueError(
+                'Error! ssh known_hosts provided in wrong format',
+                'Verify that all lines in the known_hosts contents are provided in a valid sshd(8) format') from ex
 
 
 def __get_data_from_key_or_file(key, filepath):
     if key != '' and filepath != '':
-        raise CLIError("Error! Both textual key and key filepath cannot be provided")
+        raise MutuallyExclusiveArgumentError(
+            'Error! Both textual key and key filepath cannot be provided',
+            'Try providing the file parameter without providing the plaintext parameter')
     data = ''
     if filepath != '':
         data = __read_key_file(filepath)
@@ -266,7 +316,9 @@ def __read_key_file(path):
             raw_data = ''.join(data_list)
         return __to_base64(raw_data)
     except Exception as ex:
-        raise CLIError("Error! Unable to read key file specified with: {0} ".format(ex)) from ex
+        raise InvalidArgumentValueError(
+            'Error! Unable to read key file specified with: {0}'.format(ex),
+            'Verify that the filepath specified exists and contains valid utf-8 data') from ex
 
 
 def __from_base64(base64_str):
