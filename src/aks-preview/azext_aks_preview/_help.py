@@ -205,6 +205,9 @@ helps['aks create'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -267,6 +270,9 @@ helps['aks create'] = """
         - name: --appgw-subnet-prefix
           type: string
           short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+        - name: --appgw-subnet-cidr
+          type: string
+          short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
         - name: --appgw-id
           type: string
           short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
@@ -279,12 +285,18 @@ helps['aks create'] = """
         - name: --disable-sgxquotehelper
           type: bool
           short-summary: Disable SGX quote helper for confcom addon.
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --enable-pod-identity
+          type: bool
+          short-summary: (PREVIEW) Enable pod identity addon.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -428,12 +440,21 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --auto-upgrade-channel
+          type: string
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
         - name: --assign-identity
           type: string
           short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+        - name: --enable-pod-identity
+          type: bool
+          short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
+        - name: --disable-pod-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -471,6 +492,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity
       - name: Update the cluster to use user assigned managed identity in control plane.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
+      - name: Enable pod identity addon.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-pod-identity
+      - name: Disable pod identity addon.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
 """
 
 helps['aks kollect'] = """
@@ -528,7 +553,7 @@ helps['aks kanalyze'] = """
 
 helps['aks nodepool'] = """
     type: group
-    short-summary: Commands to manage node pools in Kubernetes kubernetes cluster.
+    short-summary: Commands to manage node pools in managed Kubernetes cluster.
 """
 helps['aks nodepool show'] = """
     type: command
@@ -572,6 +597,9 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --pod-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
@@ -734,6 +762,9 @@ parameters:
   - name: --appgw-subnet-prefix
     type: string
     short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-subnet-cidr
+    type: string
+    short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
   - name: --appgw-id
     type: string
     short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
@@ -751,7 +782,7 @@ examples:
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
     crafted: true
   - name: Enable ingress-appgw addon with subnet prefix.
-    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 --appgw-name gateway
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 --appgw-name gateway
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
@@ -796,4 +827,52 @@ helps['aks rotate-certs'] = """
     type: command
     short-summary: Rotate certificates and keys on a managed Kubernetes cluster
     long-summary: Kubernetes will be unavailable during cluster certificate rotation.
+"""
+
+helps['aks pod-identity'] = """
+    type: group
+    short-summary: Commands to manage pod identities in managed Kubernetes cluster.
+"""
+
+helps['aks pod-identity add'] = """
+    type: command
+    short-summary: Add a pod identity to a managed Kubernetes cluster
+    examples:
+    - name: Add pod identity
+      text: az aks pod-identity add --cluster-name MyManagedCluster --resource-group MyResourceGroup --namespace my-namespace --name my-identity --identity-resource-id <my-identity-resource-id>
+"""
+
+helps['aks pod-identity delete'] = """
+    type: command
+    short-summary: Remove a pod identity from a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity list'] = """
+    type: command
+    short-summary: List pod identities in a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity exception'] = """
+    type: group
+    short-summary: Commands to manage pod identity exceptions in managed Kubernetes cluster.
+"""
+
+helps['aks pod-identity exception add'] = """
+    type: command
+    short-summary: Add a pod identity exception to a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity exception delete'] = """
+    type: command
+    short-summary: Remove a pod identity exception from a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity exception update'] = """
+    type: command
+    short-summary: Update a pod identity exception in a managed Kubernetes cluster
+"""
+
+helps['aks pod-identity exception list'] = """
+    type: command
+    short-summary: List pod identity exceptions in a managed Kubernetes cluster
 """
