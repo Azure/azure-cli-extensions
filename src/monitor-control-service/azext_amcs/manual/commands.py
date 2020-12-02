@@ -16,8 +16,8 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule association',
                             data_collection_data_collection_rule_association,
                             client_factory=cf_data_collection_rule_association) as g:
-        g.custom_command('delete', 'insights__data_collection_rule_associations__delete', confirmation=True)
-        g.generic_update_command('update', custom_func_name='insights__data_collection_rule_associations__update')
+        g.custom_command('delete', 'data_collection_rule_associations_delete', confirmation=True)
+        g.generic_update_command('update', custom_func_name='data_collection_rule_associations_update')
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule
     data_collection_data_collection_rule = CliCommandType(
@@ -27,67 +27,67 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_command(
-            'list', 'insights__data_collection_rules__list')
+            'list', 'data_collection_rules_list')
         g.custom_command(
-            'create', 'insights__data_collection_rules__create')
+            'create', 'data_collection_rules_create')
         g.generic_update_command(
-            'update', setter_name='create', custom_func_name='insights__data_collection_rules__create__2__update')
+            'update', setter_name='create', custom_func_name='data_collection_rules_update')
 
     with self.command_group('monitor data-collection rule data-flow', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
-            'list', 'insights__data_collection_rules__get__2__data_flows__list')
+            'list', 'data_collection_rules_data_flows_list')
         g.generic_update_command(
-            'add', 'insights__data_collection_rules__create__2__data_flows__add')
+            'add', 'data_collection_rules_data_flows_add')
 
     with self.command_group('monitor data-collection rule log-analytics', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
-            'list', 'insights__data_collection_rules__get__2__destinations__log_analytics__list')
+            'list', 'data_collection_rules_log_analytics_list')
         g.custom_show_command(
-            'show', 'insights__data_collection_rules__get__2__destinations__log_analytics__show')
+            'show', 'data_collection_rules_log_analytics_show')
         g.generic_update_command(
-            'add', 'insights__data_collection_rules__create__2__destinations__log_analytics__add')
+            'add', 'data_collection_rules_log_analytics_add')
         g.generic_update_command(
-            'delete', 'insights__data_collection_rules__create__2__destinations__log_analytics__delete')
+            'delete', 'data_collection_rules_log_analytics_delete')
         g.generic_update_command(
-            'update', 'insights__data_collection_rules__create__2__destinations__log_analytics__update')
+            'update', 'data_collection_rules_log_analytics_update')
 
     with self.command_group('monitor data-collection rule performance-counter', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
-            'list', 'insights__data_collection_rules__get__2__data_sources__performance_counters__list')
+            'list', 'data_collection_rules_performance_counters_list')
         g.custom_show_command(
-            'show', 'insights__data_collection_rules__get__2__data_sources__performance_counters__show')
+            'show', 'data_collection_rules_performance_counters_show')
         g.generic_update_command(
-            'add', 'insights__data_collection_rules__create__2__data_sources__performance_counters__add')
+            'add', 'data_collection_rules_performance_counters_add')
         g.generic_update_command(
-            'delete', 'insights__data_collection_rules__create__2__data_sources__performance_counters__delete')
+            'delete', 'data_collection_rules_performance_counters_delete')
         g.generic_update_command(
-            'update', 'insights__data_collection_rules__create__2__data_sources__performance_counters__update')
+            'update', 'data_collection_rules_performance_counters_update')
 
     with self.command_group('monitor data-collection rule windows-event-log', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
-            'list', 'insights__data_collection_rules__get__2__data_sources__windows_event_logs__list')
+            'list', 'data_collection_rules_windows_event_logs_list')
         g.custom_show_command(
-            'show', 'insights__data_collection_rules__get__2__data_sources__windows_event_logs__show')
+            'show', 'data_collection_rules_windows_event_logs_show')
         g.generic_update_command(
-            'add', 'insights__data_collection_rules__create__2__data_sources__windows_event_logs__add')
+            'add', 'data_collection_rules_windows_event_logs_add')
         g.generic_update_command(
-            'delete', 'insights__data_collection_rules__create__2__data_sources__windows_event_logs__delete')
+            'delete', 'data_collection_rules_windows_event_logs_delete')
         g.generic_update_command(
-            'update', 'insights__data_collection_rules__create__2__data_sources__windows_event_logs__update')
+            'update', 'data_collection_rules_windows_event_logs_update')
 
     with self.command_group('monitor data-collection rule syslog', data_collection_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
-            'list', 'insights__data_collection_rules__get__2__data_sources__syslog__list')
+            'list', 'data_collection_rules_syslog_list')
         g.custom_show_command(
-            'show', 'insights__data_collection_rules__get__2__data_sources__syslog__show')
+            'show', 'data_collection_rules_syslog_show')
         g.generic_update_command(
-            'add', 'insights__data_collection_rules__create__2__data_sources__syslog__add')
+            'add', 'data_collection_rules_syslog_add')
         g.generic_update_command(
-            'delete', 'insights__data_collection_rules__create__2__data_sources__syslog__delete')
+            'delete', 'data_collection_rules_syslog_delete')
         g.generic_update_command(
-            'update', 'insights__data_collection_rules__create__2__data_sources__syslog__update')
+            'update', 'data_collection_rules_syslog_update')
