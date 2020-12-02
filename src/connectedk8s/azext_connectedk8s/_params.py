@@ -8,9 +8,7 @@ from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import get_location_type, get_enum_type
 from azure.cli.core.commands.parameters import (file_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-distribution_types = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
-infrastructure_types = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
+from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values
 
 
 def load_arguments(self, _):
@@ -27,8 +25,8 @@ def load_arguments(self, _):
         c.argument('http_proxy', options_list=['--proxy-http'], help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], help='List of URLs/CIDRs for which proxy should not to be used.')
         c.argument('proxy_cert', options_list=['--proxy-cert'], type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
-        c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(distribution_types))
-        c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(infrastructure_types))
+        c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
+        c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

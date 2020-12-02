@@ -200,7 +200,7 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
 
 
 def validate_infrastructure_type(infra):
-    for s in consts.infrastructure_types:
+    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
         if s.lower() == infra.lower():
             return s
     return "generic"
