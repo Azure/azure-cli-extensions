@@ -16,19 +16,19 @@ DEFAULT_PG_DB_NAME = 'postgres'
 
 
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
-                                     database_name=None, mysql_query=None, interactive_mode=False):
+                                     database_name=None, querytext=None, interactive_mode=False):
     mysql_server_endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return connect_to_server_helper("mysql", mysql_server_endpoint, DEFAULT_MYSQL_DB_NAME, server_name,
                                     administrator_login, administrator_login_password, database_name,
-                                    mysql_query, interactive_mode)
+                                    querytext, interactive_mode)
 
 
 def connect_to_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password=None,
-                                        database_name=None, postgres_query=None, interactive_mode=False):
+                                        database_name=None, querytext=None, interactive_mode=False):
     postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return connect_to_server_helper("postgres", postgresql_server_endpoint, DEFAULT_PG_DB_NAME, server_name,
                                     administrator_login, administrator_login_password, database_name,
-                                    postgres_query, interactive_mode)
+                                    querytext, interactive_mode)
 
 
 def connect_to_server_helper(server_type, endpoint, default_db_name, server_name, administrator_login,
@@ -49,9 +49,9 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
     # run in either interactive or simple connection mode
     if interactive:
         if query_command is not None:
-            logger.warning('Ignoring query command passed in. Cannot run a query and interactive mode simultaneously. \
-                           Please try running either a simple query using -c or run your query in interactive mode \
-                           using --interactive.')
+            logger.warning("Ignoring query command passed in. Cannot run a query and interactive mode simultaneously. "
+                           "Please try running either a simple query using -c or run your query in interactive "
+                           "mode using --interactive.")
 
         # if interactive mode indicated, use pgcli to connect
         try:

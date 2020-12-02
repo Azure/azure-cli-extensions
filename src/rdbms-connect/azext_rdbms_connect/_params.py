@@ -29,7 +29,4 @@ def load_arguments(self, _):
                        help='The login password of the administrator.')
             c.argument('database_name', arg_type=database_name_arg_type, options_list=['--database-name', '-d'], help='The name of a database.')
             c.argument('interactive_mode', options_list=['--interactive'], help='Pass this parameter to connect to database in interactive mode.')
-            if command_group == "mysql":
-                c.argument('mysql_query', options_list=['--mysql-query', '-c'], help='A query to run against the flexible server.')
-            elif command_group == "postgres":
-                c.argument('postgres_query', options_list=['--postgres-query', '-c'], help='A query to run against the flexible server.')
+            c.argument('querytext', options_list=['--querytext', '-c'], help='A query to run against the flexible server.')

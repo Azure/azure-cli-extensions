@@ -13,7 +13,7 @@ example:
   - name: Connect to a flexible server using administrator username and password. Default database is used if not specified.
     text: az mysql flexible-server connect -n testServer -u username -p password -d flexibleserverdb
   - name: Connect to a flexible server and execute a query with results outputted in a table.
-    text: az mysql flexible-server connect -n testServer -u username -p password --mysql-query "select host, user from mysql.user;" --output table
+    text: az mysql flexible-server connect -n testServer -u username -p password --querytext "select host, user from mysql.user;" --output table
 """
 
 helps['postgres flexible-server connect'] = """
@@ -23,5 +23,5 @@ example:
   - name: Connect to a flexible server using administrator username and password. Default database is used if not specified.
     text: az postgres flexible-server connect -n testServer -u username -p password -d postgres
   - name: Connect to a flexible server and execute a query with results outputted in a table.
-    text: az postgres flexible-server connect -n testServer -u username -p password --postgres-query "select * from pg_user;" --output table
+    text: az postgres flexible-server connect -n testServer -u username -p password --querytext "select * from pg_user;" --output table
 """
