@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import time
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -21,8 +22,16 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @try_manual
 def setup(test, rg):
     test.kwargs.update({
-        'signer_cert_file': os.path.join(TEST_DIR, 'CreateProvider_SingleSignerCert.pem'),
-        'new_signer_jwt_file': os.path.join(TEST_DIR, 'AddOrDeleteSignerCert_JWT.txt')
+        'init_cert1_file': os.path.join(TEST_DIR, 'cert_group_1', 'init_cert.pem'),
+        'init_cert2_file': os.path.join(TEST_DIR, 'cert_group_2', 'init_cert.pem'),
+        'new_signer_jwt_file': os.path.join(TEST_DIR, 'cert_group_1', 'new_signer_jwt.txt'),
+        'signed_jwt_policy1_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_1.txt'),
+        'signed_jwt_policy2_file': os.path.join(TEST_DIR, 'policies', 'signed_jwt_sgx_policy_2.txt'),
+        'unsigned_jwt_policy_file': os.path.join(TEST_DIR, 'policies', 'unsigned_jwt_sgx_policy.txt'),
+        'text_policy_file': os.path.join(TEST_DIR, 'policies', 'text_sgx_policy.txt'),
+        'att1': test.create_random_name('att1', 16),
+        'att2': test.create_random_name('att2', 16),
+        'att3': test.create_random_name('att3', 16)
     })
 
 
@@ -92,14 +101,14 @@ def step__attestationproviders_delete(test, rg):
 
 
 @try_manual
-def test_provider_with_signer(test, rg):
-    test.cmd('az attestation create -l westus -n myatt -g {rg} --certs-input-path {signer_cert_file}', checks=[
-        test.check('name', 'myatt'),
+def test_provider_with_signer_1(test, rg):
+    test.cmd('az attestation create -l westus -n {att1} -g {rg} --certs-input-path "{init_cert1_file}"', checks=[
+        test.check('name', '{att1}'),
         test.check('status', 'Ready'),
         test.check('trustModel', 'Isolated')
     ])
 
-    test.cmd('az attestation signer list -n myatt -g {rg}', checks=[
+    test.cmd('az attestation signer list -n {att1} -g {rg}', checks=[
         test.check('CertificateCount', 1),
         test.check('Certificates[0].use', 'sig'),
         test.exists('Certificates[0].alg'),
@@ -113,17 +122,109 @@ def test_provider_with_signer(test, rg):
     with open(test.kwargs['new_signer_jwt_file']) as f:
         test.kwargs['new_signer_jwt'] = f.read()
 
-    test.cmd('az attestation signer add -n myatt -g {rg} --signer {new_signer_jwt}',
+    test.cmd('az attestation signer add -n {att1} -g {rg} --signer {new_signer_jwt}',
              checks=test.check('CertificateCount', 2))
 
-    test.cmd('az attestation signer remove -n myatt -g {rg} --signer {new_signer_jwt}',
+    test.cmd('az attestation signer remove -n {att1} -g {rg} --signer {new_signer_jwt}',
              checks=test.check('CertificateCount', 1))
+
+
+@try_manual
+def test_provider_with_signer_2(test, rg):
+    test.cmd('az attestation create -l westus -n {att2} -g {rg} --certs-input-path "{init_cert2_file}"', checks=[
+        test.check('name', '{att2}'),
+        test.check('status', 'Ready'),
+        test.check('trustModel', 'Isolated')
+    ])
+
+    test.cmd('az attestation policy show -n {att2} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+        test.check('Algorithm', 'none'),
+        test.check('JwtLength', 907),
+        test.check('TextLength', 479),
+        test.exists('Jwt'),
+        test.exists('Text')
+    ])
+
+    test.cmd('az attestation policy set -n {att2} -g {rg} --attestation-type SGX-IntelSDK '
+             '-f "{signed_jwt_policy2_file}" --policy-format JWT', checks=[
+                test.check('Algorithm', 'RSA256'),
+                test.check('JwtLength', 2862),
+                test.check('TextLength', 608),
+                test.exists('Jwt'),
+                test.exists('Text')
+             ])
+
+
+@try_manual
+def test_provider_without_signer(test, rg):
+    test.cmd('az attestation create -l westus -n {att3} -g {rg}', checks=[
+        test.check('name', '{att3}'),
+        test.check('status', 'Ready'),
+        test.check('trustModel', 'AAD')
+    ])
+
+    test.cmd('az attestation policy show -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+        test.check('Algorithm', 'none'),
+        test.check('JwtLength', 907),
+        test.check('TextLength', 479),
+        test.exists('Jwt'),
+        test.exists('Text')
+    ])
+
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+             '-f "{text_policy_file}"', checks=[
+                test.check('Algorithm', 'none'),
+                test.check('JwtLength', 835),
+                test.check('TextLength', 430),
+                test.exists('Jwt'),
+                test.exists('Text')
+             ])
+
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+             '-f "{unsigned_jwt_policy_file}" --policy-format JWT', checks=[
+                test.check('Algorithm', 'none'),
+                test.check('JwtLength', 907),
+                test.check('TextLength', 479),
+                test.exists('Jwt'),
+                test.exists('Text')
+             ])
+
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+             '-f "{text_policy_file}"', checks=[
+                test.check('Algorithm', 'none'),
+                test.check('JwtLength', 835),
+                test.check('TextLength', 430),
+                test.exists('Jwt'),
+                test.exists('Text')
+             ])
+
+    with open(test.kwargs['unsigned_jwt_policy_file']) as f:
+        test.kwargs['unsigned_jwt_policy'] = f.read()
+
+    test.cmd('az attestation policy set -n {att3} -g {rg} --attestation-type SGX-IntelSDK '
+             '--new-attestation-policy {unsigned_jwt_policy} --policy-format JWT', checks=[
+                test.check('Algorithm', 'none'),
+                test.check('JwtLength', 907),
+                test.check('TextLength', 479),
+                test.exists('Jwt'),
+                test.exists('Text')
+             ])
+
+    test.cmd('az attestation policy reset -n {att3} -g {rg} --attestation-type SGX-IntelSDK', checks=[
+        test.check('Algorithm', 'none'),
+        test.check('JwtLength', 907),
+        test.check('TextLength', 479),
+        test.exists('Jwt'),
+        test.exists('Text')
+    ])
 
 
 # Env cleanup
 @try_manual
 def cleanup(test, rg):
-    pass
+    test.cmd('az attestation delete -n {att1} -g {rg} -y')
+    test.cmd('az attestation delete -n {att2} -g {rg} -y')
+    test.cmd('az attestation delete -n {att3} -g {rg} -y')
 
 
 # Testcase
@@ -136,6 +237,9 @@ def call_scenario(test, rg):
     step__attestationproviders_get3(test, rg)
     step__attestationproviders_patch(test, rg)
     step__attestationproviders_delete(test, rg)
+    test_provider_with_signer_1(test, rg)
+    test_provider_with_signer_2(test, rg)
+    test_provider_without_signer(test, rg)
     cleanup(test, rg)
 
 
