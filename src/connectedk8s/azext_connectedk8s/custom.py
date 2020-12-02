@@ -386,7 +386,6 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
     return True
 
 
-
 def get_config_dp_endpoint(cmd, location):
     cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
     config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(location, cloud_based_domain)
