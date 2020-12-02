@@ -10,4 +10,4 @@ def validate_configuration_type(configuration_type):
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise InvalidArgumentValueError(
             'Invalid configuration-type',
-            'Try specifying the valid valid value "sourceControlConfiguration"')
+            'Try specifying the valid value "sourceControlConfiguration"')
