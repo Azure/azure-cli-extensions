@@ -13,7 +13,6 @@ from azure.cli.testsdk.checkers import JMESPathCheckGreaterThan
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_device_create
-from .example_steps import step_device_show
 from .example_steps import step_device_list
 from .example_steps import step_device_list2
 from .example_steps import step_device_update
@@ -99,4 +98,3 @@ class DevicegeneralTest(ScenarioTest):
         call_general(self, rg)
         calc_coverage(__file__)
         raise_if()
-

@@ -53,10 +53,9 @@ def try_manual(func):
         except (ImportError, AttributeError) as e:
             print("@!!!!!!!!!!!!!!!!", e)
             import glob
-            for filename in glob.iglob(os.path.dirname(os.path.abspath(__file__))+"/../**", recursive=True):
+            for filename in glob.iglob(os.path.dirname(os.path.abspath(__file__)) + "/../**", recursive=True):
                 print(filename)
             print("#!!!!!!!!!!!!!!!!")
-            pass
         return func_to_call
 
     def wrapper(*args, **kwargs):

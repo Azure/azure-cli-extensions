@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+# pylint: disable=unused-argument
 
 from .. import try_manual
 
@@ -283,4 +283,3 @@ def step_list_sku(test, rg, checks=None):
         checks = []
     test.cmd('az data-box-edge list-sku',
              checks=checks)
-
