@@ -219,6 +219,14 @@ def test_provider_without_signer(test, rg):
     ])
 
 
+@try_manual
+def test_get_default_provider_by_location(test, rg):
+    test.cmd('az attestation get-default-by-location -l "West US"', checks=[
+        test.check('attestUri', 'https://sharedwus.wus.attest.azure.net'),
+        test.check('location', 'West US')
+    ])
+
+
 # Env cleanup
 @try_manual
 def cleanup(test, rg):
@@ -237,6 +245,7 @@ def call_scenario(test, rg):
     step__attestationproviders_get3(test, rg)
     step__attestationproviders_patch(test, rg)
     step__attestationproviders_delete(test, rg)
+    test_get_default_provider_by_location(test, rg)
     test_provider_with_signer_1(test, rg)
     test_provider_with_signer_2(test, rg)
     test_provider_without_signer(test, rg)

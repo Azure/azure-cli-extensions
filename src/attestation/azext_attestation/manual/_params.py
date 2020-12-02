@@ -42,6 +42,9 @@ def load_arguments(self, _):
         c.argument('certs_input_path', nargs='+',
                    help='Space-separated file paths to PEM/DER files containing certificates.')
 
+    with self.argument_context('attestation get-default-by-location') as c:
+        c.argument('loc', options_list=['--location', '-l'], help='Location. (eg: "West US")')
+
     for item in ['list', 'add', 'remove']:
         with self.argument_context('attestation signer {}'.format(item)) as c:
             c.extra('resource_group_name', resource_group_name_type, required=False)

@@ -14,7 +14,6 @@ import json
 import os
 
 from azext_attestation.generated._client_factory import cf_attestation_provider
-from azext_attestation.manual._client_factory import cf_policy_certificates
 from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
 from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
     AttestOpenEnclaveRequest, RuntimeData, InitTimeData
@@ -24,7 +23,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from jwcrypto.jwk import JWK
-from jwcrypto.jws import JWS
 from knack.cli import CLIError
 
 
@@ -265,3 +263,8 @@ def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_dat
         tenant_base_url=provider.attest_uri,
         request=request
     )
+
+
+def attestation_attestation_provider_get_default_by_location(client,
+                                                             loc):
+    return client.get_default_by_location(location=loc)
