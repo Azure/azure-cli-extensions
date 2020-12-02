@@ -8,8 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azext_attestation.generated._client_factory import cf_attestation_provider
-
 from knack.cli import CLIError
 
 

@@ -10,10 +10,10 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from knack.arguments import CLIArgumentType
+
 from azure.cli.core.commands.parameters import \
     tags_type, resource_group_name_type, get_resource_name_completion_list, get_enum_type
-
-from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):

@@ -13,17 +13,17 @@ import base64
 import json
 import os
 
-from azext_attestation.generated._client_factory import cf_attestation_provider
-from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
-from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
-    AttestOpenEnclaveRequest, RuntimeData, InitTimeData
-from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
-
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 from jwcrypto.jwk import JWK
 from knack.cli import CLIError
+
+from azext_attestation.generated._client_factory import cf_attestation_provider
+from azext_attestation.vendored_sdks.azure_attestation.models._attestation_client_enums import TeeKind
+from azext_attestation.vendored_sdks.azure_attestation.models._models_py3 import \
+    AttestOpenEnclaveRequest, RuntimeData, InitTimeData
+from azext_attestation.vendored_sdks.azure_mgmt_attestation.models import JsonWebKey
 
 
 tee_mapping = {

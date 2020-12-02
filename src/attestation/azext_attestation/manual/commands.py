@@ -18,7 +18,7 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
 
     from azext_attestation.generated._client_factory import cf_attestation_provider
-    from azext_attestation.manual._client_factory import cf_policy_certificates, cf_policy, cf_attest
+    from azext_attestation.manual._client_factory import cf_policy_certificates, cf_policy
 
     attestation_attestation_provider = CliCommandType(
         operations_tmpl='azext_attestation.vendored_sdks.attestation.operations._attestation_provider_operations#Attest'
@@ -35,16 +35,10 @@ def load_command_table(self, _):
         client_factory=cf_policy_certificates)
 
     policy_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
-                      '_policy_operations#PolicyOperations.{}'
+                       '_policy_operations#PolicyOperations.{}'
     policy_data_sdk = CliCommandType(
         operations_tmpl=policy_data_tmpl,
         client_factory=cf_policy)
-
-    attest_data_tmpl = 'azext_attestation.vendored_sdks.azure_attestation.operations.' \
-                       '_attest_operations#AttestOperations.{}'
-    attest_data_sdk = CliCommandType(
-        operations_tmpl=attest_data_tmpl,
-        client_factory=cf_attest)
 
     with self.command_group('attestation', attestation_attestation_provider,
                             client_factory=cf_attestation_provider, is_experimental=True) as g:
