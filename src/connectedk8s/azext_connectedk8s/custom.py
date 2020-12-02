@@ -47,7 +47,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    azure_cloud = send_cloud_telemetry(cmd)
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -88,6 +88,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     dp_endpoint_dogfood = None
     release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        azure_cloud = consts.Azure_DogfoodCloudName
         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
@@ -192,8 +193,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
 
+    # Setting the config dataplane endpoint
+    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
+    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(location, cloud_based_domain)
+
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, location, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -231,14 +236,20 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file)
+                         kube_context, no_wait, values_file_provided, values_file, azure_cloud)
 
     return put_cc_response
 
 
 def send_cloud_telemetry(cmd):
-    cloud_name = cmd.cli_ctx.cloud.name
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cloud_name})
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cmd.cli_ctx.cloud.name})
+    cloud_name = cmd.cli_ctx.cloud.name.upper()
+    # Setting cloud name to format that is understood by golang SDK.
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.PublicCloud_RMEndpoint:
+        cloud_name = consts.Azure_PublicCloudName
+    elif cmd.cli_ctx.cloud.endpoints.resource_manager == consts.USGovCloud_RMEndpoint:
+        cloud_name = consts.Azure_USGovCloudName
+    return cloud_name
 
 
 def validate_env_file_dogfood(values_file, values_file_provided):
@@ -498,7 +509,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    _ = send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -582,7 +593,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -595,6 +606,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--set", "global.azureEnvironment={}".format(cloud_name),
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
@@ -691,7 +703,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    _ = send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -782,9 +794,13 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
+    
+    # Setting the config dataplane endpoint
+    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
+    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(connected_cluster.location, cloud_based_domain)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, connected_cluster.location, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
