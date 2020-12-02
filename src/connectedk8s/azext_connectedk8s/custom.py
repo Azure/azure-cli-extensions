@@ -196,8 +196,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         utils.add_helm_repo(kube_config, kube_context)
 
     # Setting the config dataplane endpoint
-    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
-    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(location, cloud_based_domain)
+    config_dp_endpoint = get_config_dp_endpoint(cmd, location)
 
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
@@ -385,6 +384,13 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
         utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.', return_if_not_found=True)
         return False
     return True
+
+
+
+def get_config_dp_endpoint(cmd, location):
+    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
+    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(location, cloud_based_domain)
+    return config_dp_endpoint
 
 
 def get_public_key(key_pair):
@@ -803,8 +809,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         utils.add_helm_repo(kube_config, kube_context)
 
     # Setting the config dataplane endpoint
-    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
-    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(connected_cluster.location, cloud_based_domain)
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
