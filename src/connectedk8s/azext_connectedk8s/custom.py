@@ -72,6 +72,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                 summary='Proxy cert path does not exist')
         raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
+    proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
@@ -590,16 +592,19 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
                         "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if proxy_cert != "":
+    if https_proxy:
+        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+    if http_proxy:
+        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+    if no_proxy:
+        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
@@ -712,6 +717,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
                                 summary='Proxy cert path does not exist')
         raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
+    proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
@@ -801,13 +808,16 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
                         "--reuse-values",
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
                         "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
-    if proxy_cert != "":
+    if https_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+    if http_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+    if no_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
