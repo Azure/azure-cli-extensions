@@ -1,29 +1,27 @@
-from knack.util import CLIError
-from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
-import json
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
-def poll_output(poller, poll_interval=10):
+import json
+from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
+
+def print_poll_output(poller, poll_interval=10):
     print("Operation Status: " + poller.status())
+
     while not poller.done():
         print("Please wait " + str(poll_interval) + " seconds for the next update.")
         poller.wait(timeout=poll_interval)
         print("Operation Status: " + poller.status())
+
     return poller.status()
-
-def create_options_list (options, allowed_options_list): 
-    options_list = options.split(',')
-
-    if not set(options_list).issubset(set(allowed_options_list)):
-        print("Allowed options are: ", end='')
-        print(allowed_options_list)
-        raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
-
-    return options_list
 
 def create_identity_properties(user_assigned_identity_resource_id):
     if user_assigned_identity_resource_id is None:
         resource_identity_type = "SystemAssigned"
         user_assigned_identities = None
+
     else:
         resource_identity_type = "UserAssigned"
         user_identity_properties = UserIdentityProperties()
@@ -31,9 +29,9 @@ def create_identity_properties(user_assigned_identity_resource_id):
 
     return IdentityProperties(type=resource_identity_type, user_assigned_identities=user_assigned_identities)
 
-def keyvault_policy_output(keyvault_secret_uri, user_assigned_identity_resource_id, raw_result):
+def print_keyvault_policy_output(keyvault_secret_uri, user_assigned_identity_resource_id, raw_result):
     keyvault_name = keyvault_secret_uri.split("https://")[1].split('.')[0]
-    
+
     if user_assigned_identity_resource_id is not None:
         #if user ended resource id with a '/', remove it
         if user_assigned_identity_resource_id[-1] == '/':
@@ -50,17 +48,16 @@ def keyvault_policy_output(keyvault_secret_uri, user_assigned_identity_resource_
     print(f'az keyvault set-policy --name {keyvault_name} --secret-permissions get --object-id {identity_object_id}')
 
 def print_pipeline_output(obj):
-    
     is_importpipeline = "importPipelines" in obj.id
     is_exportpipeline = "exportPipelines" in obj.id
     is_pipelinerun = "pipelineRuns" in obj.id
 
     if is_pipelinerun:
         pipelinerun_type = "import" if "importPipelines" in obj.request.pipeline_resource_id else "export"
-    
+
     #unroll the obj
     obj = json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
-    d = {} 
+    d = {}
 
     if is_pipelinerun and pipelinerun_type == "import":
         d["name"] = obj["name"]
@@ -73,6 +70,7 @@ def print_pipeline_output(obj):
         d["finish_time"] = obj["response"]["finish_time"]
         d["catalog_digest"] = obj["response"]["catalog_digest"]
         d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
+
     elif is_pipelinerun and pipelinerun_type == "export":
         d["name"] = obj["name"]
         d["status"] = obj["response"]["status"]
@@ -84,6 +82,7 @@ def print_pipeline_output(obj):
         d["finish_time"] = obj["response"]["finish_time"]
         d["catalog_digest"] = obj["response"]["catalog_digest"]
         d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
+
     elif is_importpipeline:
         d["name"] = obj["name"]
         d["status"] = obj["provisioning_state"]
@@ -94,12 +93,12 @@ def print_pipeline_output(obj):
         d["options"] = obj["options"]
         d["identity_type"] = obj["identity"]["type"]
 
-        if(d["identity_type"] == "userAssigned"):
+        if d["identity_type"] == "userAssigned":
             d["user_assigned_identities"] = obj["identity"]["user_assigned_identities"]
         else:
             d["principal_id"] = obj["identity"]["principal_id"]
             d["tenant_id"] = obj["identity"]["tenant_id"]
-        
+
     elif is_exportpipeline:
         d["name"] = obj["name"]
         d["status"] = obj["provisioning_state"]
@@ -109,26 +108,24 @@ def print_pipeline_output(obj):
         d["options"] = obj["options"]
         d["identity_type"] = obj["identity"]["type"]
 
-        if(d["identity_type"] == "userAssigned"):
+        if d["identity_type"] == "userAssigned":
             d["user_assigned_identities"] = obj["identity"]["user_assigned_identities"]
         else:
             d["principal_id"] = obj["identity"]["principal_id"]
             d["tenant_id"] = obj["identity"]["tenant_id"]
-        
+
     print(json.dumps(d, indent=2))
-    
+
 def print_lite_pipeline_output(obj):
-    
     is_importpipeline = "importPipelines" in obj.id
     is_exportpipeline = "exportPipelines" in obj.id
     is_pipelinerun = "pipelineRuns" in obj.id
 
     if is_pipelinerun:
         pipelinerun_type = "import" if "importPipelines" in obj.request.pipeline_resource_id else "export"
-    
+
     #unroll the obj
     obj= json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
-    d = {} 
 
     if is_pipelinerun and pipelinerun_type == "import":
         NAME = obj["name"]
@@ -137,7 +134,7 @@ def print_lite_pipeline_output(obj):
         START_TIME = obj["response"]["start_time"]
         ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
 
-        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}') 
+        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}')
     elif is_pipelinerun and pipelinerun_type == "export":
         NAME = obj["name"]
         PIPELINERUN_TYPE = pipelinerun_type
@@ -145,7 +142,7 @@ def print_lite_pipeline_output(obj):
         START_TIME = obj["response"]["start_time"]
         ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
 
-        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}') 
+        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}')
     elif is_importpipeline:
         NAME = obj["name"]
         STATUS = obj["provisioning_state"]
@@ -159,8 +156,3 @@ def print_lite_pipeline_output(obj):
 
         print(f'Name: {NAME} | Status: {STATUS} | Storage Uri: {STORAGE_URI}')
         
-      
-    
-
-
-
