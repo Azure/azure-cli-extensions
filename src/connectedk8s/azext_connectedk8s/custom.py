@@ -801,7 +801,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
-    
+
     # Setting the config dataplane endpoint
     cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
     config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(connected_cluster.location, cloud_based_domain)
