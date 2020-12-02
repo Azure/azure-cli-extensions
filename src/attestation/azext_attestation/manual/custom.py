@@ -202,24 +202,31 @@ def set_policy(cmd, client, attestation_type, new_attestation_policy=None, new_a
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
 
     if policy_format == 'Text':
+        if provider.trust_model != 'AAD':
+            raise CLIError('Only supports Text policy under AAD model. Current model: {}. '
+                           'If you are using signed JWT policy, please specify --policy-format JWT'.
+                           format(provider.trust_model))
+
         import jwt
         try:
+            new_attestation_policy = \
+                base64.urlsafe_b64encode(new_attestation_policy.encode('ascii')).decode('ascii').strip('=')
             new_attestation_policy = {'AttestationPolicy': new_attestation_policy}
             new_attestation_policy = jwt.encode(
-                new_attestation_policy, key=''
+                new_attestation_policy, key='', algorithm='none'
             ).decode('ascii')
 
         except TypeError as e:
             print(e)
             raise CLIError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
-    print(new_attestation_policy)
-    raw_result = client.set(
+    client.set(
         tenant_base_url=provider.attest_uri,
         tee=tee_mapping[attestation_type],
         new_attestation_policy=new_attestation_policy
     )
-    return raw_result
+    return get_policy(cmd, client, attestation_type,
+                      resource_group_name=resource_group_name, provider_name=provider_name)
 
 
 def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0..', resource_group_name=None,
@@ -227,11 +234,13 @@ def reset_policy(cmd, client, attestation_type, policy_jws='eyJhbGciOiJub25lIn0.
 
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
-    return client.reset(
+    client.reset(
         tenant_base_url=provider.attest_uri,
         tee=tee_mapping[attestation_type],
         policy_jws=policy_jws
     )
+    return get_policy(cmd, client, attestation_type,
+                      resource_group_name=resource_group_name, provider_name=provider_name)
 
 
 def attest_open_enclave(cmd, client, report=None, runtime_data=None, runtime_data_type=None, init_time_data=None,

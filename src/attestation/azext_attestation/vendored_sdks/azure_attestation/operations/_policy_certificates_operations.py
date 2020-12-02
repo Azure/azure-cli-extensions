@@ -134,7 +134,7 @@ class PolicyCertificatesOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-        # query_parameters['api-version'] = '2018-09-01-preview'
+        query_parameters['api-version'] = '2018-09-01-preview'
 
         # Construct headers
         header_parameters = {}
@@ -151,7 +151,7 @@ class PolicyCertificatesOperations(object):
         body_content = self._serialize.body(policy_certificate_to_add, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 400, 401]:
@@ -172,8 +172,8 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    add.metadata = {'url': '/certificates%3aadd'}
-    # add.metadata = {'url': '/operations/policy/certificates'}
+    # add.metadata = {'url': '/certificates%3aadd'}
+    add.metadata = {'url': '/operations/policy/certificates'}
 
     def remove(
             self, tenant_base_url, policy_certificate_to_remove, custom_headers=None, raw=False, **operation_config):
