@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.8
+++++++
+* Added checks for proxy
+
 0.2.7
 ++++++
 * Fixed dependency version in setup file
