@@ -418,3 +418,54 @@ def validate_addons(namespace):
 
             raise CLIError(
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
+
+
+def validate_pod_identity_pod_labels(namespace):
+    if not hasattr(namespace, 'pod_labels'):
+        return
+    labels = namespace.pod_labels
+
+    if labels is None:
+        # no specify any labels
+        namespace.pod_labels = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.pod_labels = after_validation_labels
+
+
+def validate_pod_identity_resource_name(attr_name, required):
+    "Validate custom resource name for pod identity addon."
+
+    def validator(namespace):
+        if not hasattr(namespace, attr_name):
+            return
+
+        attr_value = getattr(namespace, attr_name)
+        if not attr_value:
+            if required:
+                raise CLIError('--name is required')
+            # set empty string for the resource name
+            attr_value = ''
+
+        setattr(namespace, attr_name, attr_value)
+
+    return validator
+
+
+def validate_pod_identity_resource_namespace(namespace):
+    "Validate custom resource name for pod identity addon."
+    if not hasattr(namespace, 'namespace'):
+        return
+
+    namespace_value = namespace.namespace
+    if not namespace_value:
+        # namespace cannot be empty
+        raise CLIError('--namespace is required')

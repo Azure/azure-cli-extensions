@@ -121,7 +121,9 @@ def load_arguments(self, _):
         c.argument('shared_key', help='Shared key.')
 
     with self.argument_context('network vpn-gateway connection list') as c:
+        # List commands cannot use --ids flag
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
 
     with self.argument_context('network vpn-gateway connection', arg_group='IP Security') as c:
         c.argument('sa_life_time_seconds', options_list='--sa-lifetime', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site-to-site VPN tunnel.', type=int)

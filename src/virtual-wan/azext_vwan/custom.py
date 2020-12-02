@@ -477,7 +477,7 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
                                   connection_bandwidth=None, shared_key=None, enable_bgp=None,
                                   enable_rate_limiting=None, enable_internet_security=None, no_wait=False,
                                   associated_route_table=None, propagated_route_tables=None, labels=None):
-    client = network_client_factory(cmd.cli_ctx).vpn_gateways
+    client = network_client_factory(cmd.cli_ctx).vpn_connections
     (VpnConnection,
      SubResource,
      RoutingConfiguration,
@@ -485,7 +485,6 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
                                             'SubResource',
                                             'RoutingConfiguration',
                                             'PropagatedRouteTable')
-    gateway = client.get(resource_group_name, gateway_name)
 
     propagated_route_tables = PropagatedRouteTable(
         labels=labels,
@@ -508,9 +507,8 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
         enable_internet_security=enable_internet_security,
         routing_configuration=routing_configuration
     )
-    _upsert(gateway, 'connections', conn, 'name')
-    return sdk_no_wait(no_wait, client.create_or_update,
-                       resource_group_name, gateway_name, gateway)
+
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, gateway_name, connection_name, conn)
 
 
 def list_vpn_gateways(cmd, resource_group_name=None):

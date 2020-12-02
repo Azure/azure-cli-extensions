@@ -245,98 +245,98 @@ helps['network vwan delete'] = """
 # region VpnGateway
 helps['network vpn-gateway'] = """
     type: group
-    short-summary: Manage VPN gateways.
+    short-summary: Manage site-to-site VPN gateways.
 """
 
 helps['network vpn-gateway create'] = """
     type: command
-    short-summary: Create a VPN gateway.
+    short-summary: Create a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway list'] = """
     type: command
-    short-summary: List VPN gateways.
+    short-summary: List site-to-site VPN gateways.
 """
 
 helps['network vpn-gateway show'] = """
     type: command
-    short-summary: Get the details of a VPN gateway.
+    short-summary: Get the details of a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway update'] = """
     type: command
-    short-summary: Update settings of a VPN gateway.
+    short-summary: Update settings of a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway delete'] = """
     type: command
-    short-summary: Delete a VPN gateway.
+    short-summary: Delete a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway connection'] = """
     type: group
-    short-summary: Manage VPN gateway connections.
+    short-summary: Manage site-to-site VPN gateway connections.
 """
 
 helps['network vpn-gateway connection create'] = """
     type: command
-    short-summary: Create a VPN gateway connection.
+    short-summary: Create a site-to-site VPN gateway connection.
     examples:
-      - name: Create a VPN gateway connection
+      - name: Create a site-to-site VPN gateway connection
         text: |
             az network vpn-gateway connection create -g MyRG -n MyConnection --gateway-name MyGateway --remote-vpn-site /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable2 --labels label1 label2
 """
 
 helps['network vpn-gateway connection list'] = """
     type: command
-    short-summary: List VPN gateway connections.
+    short-summary: List site-to-site VPN gateway connections.
     examples:
-      - name: List all connections for a given VPN gateway
+      - name: List all connections for a given site-to-site VPN gateway
         text: |
             az network vpn-gateway connection list -g MyRG --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection show'] = """
     type: command
-    short-summary: Get the details of a VPN gateway connection.
+    short-summary: Get the details of a site-to-site VPN gateway connection.
     examples:
-      - name: Get the details of a VPN gateway connection
+      - name: Get the details of a site-to-site VPN gateway connection
         text: |
             az network vpn-gateway connection show -g MyRG -n MyConnection --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection delete'] = """
     type: command
-    short-summary: Delete a VPN gateway connection.
+    short-summary: Delete a site-to-site VPN gateway connection.
     examples:
-      - name: Delete a VPN gateway connection
+      - name: Delete a site-to-site VPN gateway connection
         text: |
             az network vpn-gateway connection delete -g MyRG -n MyConnection --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the VPN gateway connection is met.
+    short-summary: Place the CLI in a waiting state until a condition of the site-to-site VPN gateway connection is met.
 """
 
 helps['network vpn-gateway connection ipsec-policy'] = """
     type: group
-    short-summary: Manage VPN gateway connection IPSec policies.
+    short-summary: Manage site-to-site VPN gateway connection IPSec policies.
 """
 
 helps['network vpn-gateway connection ipsec-policy add'] = """
     type: command
-    short-summary: Add an IPSec policy to a VPN gateway connection.
+    short-summary: Add an IPSec policy to a site-to-site VPN gateway connection.
 """
 
 helps['network vpn-gateway connection ipsec-policy list'] = """
     type: command
-    short-summary: List VPN gateway connection IPSec policies.
+    short-summary: List site-to-site VPN gateway connection IPSec policies.
 """
 
 helps['network vpn-gateway connection ipsec-policy remove'] = """
     type: command
-    short-summary: Remove an IPSec policy from a VPN gateway connection.
+    short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection.
 """
 # endregion
 
