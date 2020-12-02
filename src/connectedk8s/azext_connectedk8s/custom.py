@@ -511,7 +511,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
-    _ = send_cloud_telemetry(cmd)
+    send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -708,7 +708,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
-    _ = send_cloud_telemetry(cmd)
+    send_cloud_telemetry(cmd)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
