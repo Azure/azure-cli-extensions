@@ -8,7 +8,7 @@ import os
 from knack.util import CLIError
 from knack.log import get_logger
 import psycopg2
-import pymysql 
+import pymysql
 
 logger = get_logger(__name__)
 DEFAULT_MYSQL_DB_NAME = 'flexibleserverdb'
@@ -79,7 +79,7 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                 connection.set_session(autocommit=True)
             else:
                 # set ssl param to allow for connection
-                connection_kwargs['ssl'] = {"fake_flag_to_enable_tls":True}
+                connection_kwargs['ssl'] = {"fake_flag_to_enable_tls": True}
                 connection = pymysql.connect(**connection_kwargs)
             logger.warning('Successfully connected to %s.', server_name)
         except Exception as e:
