@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+
 def load_arguments(self, _):
     for item in ['create', 'update']:
         with self.argument_context('data-box-edge order {}'.format(item)) as c:
