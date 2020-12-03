@@ -8,12 +8,12 @@ from knack.help_files import helps
 
 helps['monitor data-collection'] = """
     type: group
-    short-summary: Manage data collection
+    short-summary: Manage data collection for monitor control service
 """
 
 helps['monitor data-collection rule association'] = """
     type: group
-    short-summary: Manage data collection rule association with data collection
+    short-summary: Manage data collection rule association for monitor control service
 """
 
 helps['monitor data-collection rule association list'] = """
@@ -79,7 +79,7 @@ achines/myVm"
 
 helps['monitor data-collection rule'] = """
     type: group
-    short-summary: Manage data collection rule with data collection
+    short-summary: Manage data collection rule for monitor control service
 """
 
 helps['monitor data-collection rule list'] = """

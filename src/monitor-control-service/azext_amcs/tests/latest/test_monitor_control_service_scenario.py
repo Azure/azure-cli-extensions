@@ -80,10 +80,11 @@ def call_scenario(test, rg):
 
 # Test class for Scenario
 @try_manual
-class Data_collectionScenarioTest(ScenarioTest):
+class Monitor_control_serviceScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestdata_collection_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_data_collection_Scenario(self, rg):
+    @ResourceGroupPreparer(name_prefix='clitestmonitor_control_service_myResourceGroup'[:7], key='rg',
+                           parameter_name='rg')
+    def test_monitor_control_service_Scenario(self, rg):
 
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()

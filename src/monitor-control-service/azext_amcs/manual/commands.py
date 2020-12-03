@@ -13,22 +13,22 @@ def load_command_table(self, _):
         pass
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule_association
-    data_collection_data_collection_rule_association = CliCommandType(
+    monitor_control_service_data_collection_rule_association = CliCommandType(
         operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rule_associations_operations#DataCol'
                         'lectionRuleAssociationsOperations.{}',
         client_factory=cf_data_collection_rule_association)
     with self.command_group('monitor data-collection rule association',
-                            data_collection_data_collection_rule_association,
+                            monitor_control_service_data_collection_rule_association,
                             client_factory=cf_data_collection_rule_association) as g:
         g.custom_command('delete', 'data_collection_rule_associations_delete', confirmation=True)
         g.generic_update_command('update', custom_func_name='data_collection_rule_associations_update')
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule
-    data_collection_data_collection_rule = CliCommandType(
+    monitor_control_service_data_collection_rule = CliCommandType(
         operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_rules_operations#DataCollectionRules'
                         'Operations.{}',
         client_factory=cf_data_collection_rule)
-    with self.command_group('monitor data-collection rule', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_command(
             'list', 'data_collection_rules_list')
@@ -37,14 +37,14 @@ def load_command_table(self, _):
         g.generic_update_command(
             'update', setter_name='create', custom_func_name='data_collection_rules_update')
 
-    with self.command_group('monitor data-collection rule data-flow', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule data-flow', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_data_flows_list')
         g.generic_update_command(
             'add', 'data_collection_rules_data_flows_add')
 
-    with self.command_group('monitor data-collection rule log-analytics', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule log-analytics', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_log_analytics_list')
@@ -57,7 +57,7 @@ def load_command_table(self, _):
         g.generic_update_command(
             'update', 'data_collection_rules_log_analytics_update')
 
-    with self.command_group('monitor data-collection rule performance-counter', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule performance-counter', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_performance_counters_list')
@@ -70,7 +70,7 @@ def load_command_table(self, _):
         g.generic_update_command(
             'update', 'data_collection_rules_performance_counters_update')
 
-    with self.command_group('monitor data-collection rule windows-event-log', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule windows-event-log', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_windows_event_logs_list')
@@ -83,7 +83,7 @@ def load_command_table(self, _):
         g.generic_update_command(
             'update', 'data_collection_rules_windows_event_logs_update')
 
-    with self.command_group('monitor data-collection rule syslog', data_collection_data_collection_rule,
+    with self.command_group('monitor data-collection rule syslog', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_syslog_list')

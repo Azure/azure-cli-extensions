@@ -43,12 +43,12 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='data_collection',
+    name='monitor_control_service',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools MonitorClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/data-collection',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/monitor-control-service',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

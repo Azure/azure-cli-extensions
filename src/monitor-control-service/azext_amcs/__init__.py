@@ -20,12 +20,12 @@ class MonitorClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_amcs.generated._client_factory import cf_data_collection_cl
-        data_collection_custom = CliCommandType(
+        from azext_amcs.generated._client_factory import cf_monitor_control_service_cl
+        monitor_control_service_custom = CliCommandType(
             operations_tmpl='azext_amcs.custom#{}',
-            client_factory=cf_data_collection_cl)
+            client_factory=cf_monitor_control_service_cl)
         parent = super(MonitorClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=data_collection_custom)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=monitor_control_service_custom)
 
     def load_command_table(self, args):
         from azext_amcs.generated.commands import load_command_table

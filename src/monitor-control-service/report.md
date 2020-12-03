@@ -3,10 +3,10 @@
 ## EXTENSION
 |CLI Extension|Command Groups|
 |---------|------------|
-|az data-collection|[groups](#CommandGroups)
+|az monitor-control-service|[groups](#CommandGroups)
 
 ## GROUPS
-### <a name="CommandGroups">Command groups in `az data-collection` extension </a>
+### <a name="CommandGroups">Command groups in `az monitor-control-service` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
 |az monitor data-collection rule association|DataCollectionRuleAssociations|[commands](#CommandsInDataCollectionRuleAssociations)|

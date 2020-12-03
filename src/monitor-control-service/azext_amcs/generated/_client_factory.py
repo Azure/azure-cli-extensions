@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 
-def cf_data_collection_cl(cli_ctx, *_):
+def cf_monitor_control_service_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_amcs.vendored_sdks.amcs import MonitorClient
     return get_mgmt_service_client(cli_ctx,
@@ -17,8 +17,8 @@ def cf_data_collection_cl(cli_ctx, *_):
 
 
 def cf_data_collection_rule_association(cli_ctx, *_):
-    return cf_data_collection_cl(cli_ctx).data_collection_rule_associations
+    return cf_monitor_control_service_cl(cli_ctx).data_collection_rule_associations
 
 
 def cf_data_collection_rule(cli_ctx, *_):
-    return cf_data_collection_cl(cli_ctx).data_collection_rules
+    return cf_monitor_control_service_cl(cli_ctx).data_collection_rules
