@@ -6,6 +6,10 @@
 
 from knack.help_files import helps
 
+helps['monitor data-collection'] = """
+    type: group
+    short-summary: Manage data collection
+"""
 
 helps['monitor data-collection rule association'] = """
     type: group
