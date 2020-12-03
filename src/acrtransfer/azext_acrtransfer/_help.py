@@ -66,7 +66,7 @@ helps['acrtransfer exportpipeline create'] = """
     examples: 
         - name: Create an export pipeline.
           text: az acrtransfer exportpipeline create -resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
-        - name: Create an import pipeline with a user assigned identity and all available options.
+        - name: Create an export pipeline with a user assigned identity, all available options.
           text: az acrtransfer exportpipeline create -resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options OverwriteBlobs,ContinueOnErrors --user-assigned-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity
 """
 
