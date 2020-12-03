@@ -111,9 +111,9 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, location, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
     # Setting uri
-    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     if dp_endpoint_dogfood:
         get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)

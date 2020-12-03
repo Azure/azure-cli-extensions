@@ -6,6 +6,11 @@
 
 # pylint: disable=line-too-long
 
+Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
+Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
+Azure_DogfoodCloudName = 'AZUREDOGFOOD'
+PublicCloud_OriginalName = 'AZURECLOUD'
+USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
