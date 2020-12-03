@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.70
+++++++
+* Revert to use CLIError to be compatible with azure cli versions < 2.15.0
+
 0.4.69
 +++++
 * Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
