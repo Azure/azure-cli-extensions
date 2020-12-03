@@ -17,31 +17,28 @@ from .. import try_manual
 def step_data_collection_rule_create(test, rg, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az monitor data-collection rule create '
-             '--location "eastus" '
-             '--data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
-             'streams="Microsoft-WindowsEvent" '
-             '--data-sources-performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
-             ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\Logical'
-             'Disk(_Total)\\\\Free Megabytes" counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-             'sampling-frequency-in-seconds=15 scheduled-transfer-period="PT1M" streams="Microsoft-Perf" '
-             '--data-sources-performance-counters name="appTeamExtraCounters" counter-specifiers="\\\\Process(_Total)\\'
-             '\\Thread Count" sampling-frequency-in-seconds=30 scheduled-transfer-period="PT5M" '
-             'streams="Microsoft-Perf" '
-             '--data-sources-syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" '
-             'log-levels="Emergency" streams="Microsoft-Syslog" '
-             '--data-sources-syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
-             'log-levels="Emergency" streams="Microsoft-Syslog" '
-             '--data-sources-windows-event-logs name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" '
-             'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
-             '--data-sources-windows-event-logs name="appTeam1AppEvents" scheduled-transfer-period="PT5M" '
-             'streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level  x-path-queries="Application!*[Sys'
-             'tem[(Level  '
-             '--destinations-log-analytics name="centralWorkspace" workspace-resource-id="/subscriptions/{subscription_'
-             'id}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" '
-             '--name "{myDataCollectionRule}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    rule_json = test.cmd('az monitor data-collection rule create '
+             '-g {rg} -n {myDataCollectionRule} --location "{location}" '
+             '--data-flow destination="{workspace_name}" stream="Microsoft-Perf" stream="Microsoft-Syslog" '
+             'stream="Microsoft-WindowsEvent" '
+             '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
+             '--performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total'
+             ')\\\\% Processor Time" counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\Logical'
+             'Disk(_Total)\\\\Free Megabytes" counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
+             'sampling-frequency=15 transfer-period="PT1M" stream="Microsoft-Perf" '
+             '--performance-counter name="appTeamExtraCounters" counter-specifier="\\\\Process(_Total)\\\\Thread Count"'
+             ' sampling-frequency=30 transfer-period="PT5M" stream="Microsoft-Perf" '
+             '--syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" '
+             'log-level="Emergency" stream="Microsoft-Syslog" '
+             '--syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" '
+             'log-level="Emergency" stream="Microsoft-Syslog" '
+             '--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" '
+             'stream="Microsoft-WindowsEvent" x-path-query="Security!" '
+             '--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" '
+             'stream="Microsoft-WindowsEvent" x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
+             'x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
+             checks=checks).get_output_in_json()
+    test.kwargs['rule_id'] = rule_json['id']
 
 
 # EXAMPLE: /DataCollectionRules/get/Get data collection rule
@@ -57,7 +54,7 @@ def step_data_collection_rule_show(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/get/List data collection rules by resource group
 @try_manual
-def step_data_collection_rule_list(test, rg, checks=None):
+def step_data_collection_rule_list_by_resource_group(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule list '
@@ -67,11 +64,10 @@ def step_data_collection_rule_list(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/get/List data collection rules by subscription
 @try_manual
-def step_data_collection_rule_list(test, rg, checks=None):
+def step_data_collection_rule_list_by_subscription(test, rg, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az monitor data-collection rule list '
-             '-g ""',
+    test.cmd('az monitor data-collection rule list ',
              checks=checks)
 
 
@@ -93,11 +89,9 @@ def step_data_collection_rule_association_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association create '
-             '--name "myAssociation" '
-             '--rule-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Insights/dataCollecti'
-             'onRules/{myDataCollectionRule}" '
-             '--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/M'
-             'icrosoft.Compute/virtualMachines/myVm"',
+             '--name "{myAssociation}" '
+             '--rule-id "{rule_id}" '
+             '--resource "{vm_id}"',
              checks=checks)
 
 
@@ -107,15 +101,14 @@ def step_data_collection_rule_association_show(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association show '
-             '--name "myAssociation" '
-             '--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/M'
-             'icrosoft.Compute/virtualMachines/myVm"',
+             '--name "{myAssociation}" '
+             '--resource "{vm_id}"',
              checks=checks)
 
 
 # EXAMPLE: /DataCollectionRuleAssociations/get/List associations for specified data collection rule
 @try_manual
-def step_data_collection_rule_association_list(test, rg, checks=None):
+def step_data_collection_rule_association_list_by_rule(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association list '
@@ -126,13 +119,11 @@ def step_data_collection_rule_association_list(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRuleAssociations/get/List associations for specified resource
 @try_manual
-def step_data_collection_rule_association_list(test, rg, checks=None):
+def step_data_collection_rule_association_list_by_resource(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association list '
-             '--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/M'
-             'icrosoft.Compute/virtualMachines/myVm" '
-             '-g ""',
+             '--resource "{vm_id}" ',
              checks=checks)
 
 
@@ -142,9 +133,8 @@ def step_data_collection_rule_association_delete(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association delete -y '
-             '--name "myAssociation" '
-             '--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/M'
-             'icrosoft.Compute/virtualMachines/myVm"',
+             '--name "{myAssociation}" '
+             '--resource "{vm_id}" ',
              checks=checks)
 
 

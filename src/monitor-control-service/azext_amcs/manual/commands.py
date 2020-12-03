@@ -20,7 +20,7 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule association',
                             monitor_control_service_data_collection_rule_association,
                             client_factory=cf_data_collection_rule_association) as g:
-        g.custom_command('delete', 'data_collection_rule_associations_delete', confirmation=True)
+        g.custom_command('create', 'data_collection_rule_associations_create')
         g.generic_update_command('update', custom_func_name='data_collection_rule_associations_update')
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule

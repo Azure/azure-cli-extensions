@@ -13,13 +13,12 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_data_collection_rule_create
 from .example_steps import step_data_collection_rule_show
-from .example_steps import step_data_collection_rule_list
-from .example_steps import step_data_collection_rule_list
-from .example_steps import step_data_collection_rule_update
+from .example_steps import step_data_collection_rule_list_by_resource_group
+from .example_steps import step_data_collection_rule_list_by_subscription
 from .example_steps import step_data_collection_rule_association_create
 from .example_steps import step_data_collection_rule_association_show
-from .example_steps import step_data_collection_rule_association_list
-from .example_steps import step_data_collection_rule_association_list
+from .example_steps import step_data_collection_rule_association_list_by_rule
+from .example_steps import step_data_collection_rule_association_list_by_resource
 from .example_steps import step_data_collection_rule_association_delete
 from .example_steps import step_data_collection_rule_delete
 from .. import (
@@ -35,7 +34,21 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup_scenario
 @try_manual
 def setup_scenario(test, rg):
-    pass
+    test.kwargs.update({
+        'rg': rg,
+        'workspace_name': test.create_random_name('clitest', 20),
+        'location': "eastus",
+        'vm': "vm1"
+    })
+
+    workspace_json = test.cmd(
+        "monitor log-analytics workspace create -g {rg} -n {workspace_name} --location {location} --quota 1 "
+        "--level 100 --sku CapacityReservation").get_output_in_json()
+    test.kwargs['workspace_id'] = workspace_json['id']
+
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+                       '--admin-username testadmin --authentication-type password').get_output_in_json()
+    test.kwargs['vm_id'] = vm_json['id']
 
 
 # Env cleanup_scenario
@@ -44,38 +57,63 @@ def cleanup_scenario(test, rg):
     pass
 
 
+@try_manual
+def step_data_collection_rule_update_tags(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([
+        test.check("tags.tag1", "A", case_sensitive=False),
+        test.check("tags.tag2", "B", case_sensitive=False),
+        test.check("tags.tag3", "C", case_sensitive=False),
+    ])
+    test.cmd('az monitor data-collection rule update '
+             '--tags tag1="A" tag2="B" tag3="C" '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
     step_data_collection_rule_create(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
+        test.check("location", "{location}", case_sensitive=False),
         test.check("name", "{myDataCollectionRule}", case_sensitive=False),
     ])
     step_data_collection_rule_show(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
+        test.check("location", "{location}", case_sensitive=False),
         test.check("name", "{myDataCollectionRule}", case_sensitive=False),
     ])
-    step_data_collection_rule_list(test, rg, checks=[
+    step_data_collection_rule_list_by_resource_group(test, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_data_collection_rule_list(test, rg, checks=[
+    step_data_collection_rule_list_by_subscription(test, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_data_collection_rule_update(test, rg, checks=[
-        test.check("location", "eastus", case_sensitive=False),
+    step_data_collection_rule_update_tags(test, rg, checks=[
+        test.check("location", "{location}", case_sensitive=False),
         test.check("name", "{myDataCollectionRule}", case_sensitive=False),
-        test.check("tags.tag1", "A", case_sensitive=False),
-        test.check("tags.tag2", "B", case_sensitive=False),
-        test.check("tags.tag3", "C", case_sensitive=False),
     ])
     step_data_collection_rule_association_create(test, rg, checks=[])
     step_data_collection_rule_association_show(test, rg, checks=[])
-    step_data_collection_rule_association_list(test, rg, checks=[])
-    step_data_collection_rule_association_list(test, rg, checks=[])
+    step_data_collection_rule_association_list_by_rule(test, rg, checks=[])
+    step_data_collection_rule_association_list_by_resource(test, rg, checks=[])
     step_data_collection_rule_association_delete(test, rg, checks=[])
     step_data_collection_rule_delete(test, rg, checks=[])
     cleanup_scenario(test, rg)
+
+
+# EXAMPLE: /DataCollectionRules/patch/Update data collection rule
+@try_manual
+def step_data_collection_rule_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule update '
+             '--tags tag1="A" tag2="B" tag3="C" '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
 
 
 # Test class for Scenario
@@ -92,9 +130,9 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'myDataCollectionRule': 'myCollectionRule',
+            'myAssociation': 'myAssociation'
         })
 
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-

@@ -117,6 +117,7 @@ helps['monitor data-collection rule create'] = """
             destination: Required. List of destinations for this data flow.
 
             Multiple actions can be specified by using more than one --data-flow argument.
+            Multiple actions can be specified by using more than one --destination argument.
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
@@ -189,6 +190,9 @@ will be used for this data and usually what table in Log Analytics the data will
 --name "myCollectionRule" \
 --data-flow destination="centralWorkspace" stream="Microsoft-Perf" stream="Microsoft-Syslog" \
 stream="Microsoft-WindowsEvent" \
+--log-analytics name="centralWorkspace" \
+resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
+rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
 --performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total)\\\\% Processor Time" \
 counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
 counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
@@ -204,10 +208,7 @@ stream="Microsoft-Syslog" \
 x-path-query="Security!" \
 --windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
 x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
-x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
---log-analytics name="centralWorkspace" \
-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
-rosoft.OperationalInsights/workspaces/centralTeamWorkspace"
+x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
 
 """
 

@@ -33,17 +33,17 @@ from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerf
 def load_arguments(self, _):
 
     with self.argument_context('monitor data-collection rule association create') as c:
-        c.argument('resource_uri', options_list=['--resource'], type=str, help='The identifier of the resource.')
-        c.argument('association_name', options_list=['--name', '-n'], type=str, help='The name of the association.')
-        c.argument('description', type=str, help='Description of the association.')
-        c.argument('rule_id', type=str, help='The resource ID of the data collection rule that is to be associated.')
+        c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
+        c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
+        c.argument('description', help='Description of the association.')
+        c.argument('rule_id', help='The resource ID of the data collection rule that is to be associated.')
 
     with self.argument_context('monitor data-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('data_collection_rule_name', options_list=['--name', '-n'], type=str, help='The name of the data '
+        c.argument('data_collection_rule_name', options_list=['--name', '-n'], help='The name of the data '
                    'collection rule. The name is case insensitive.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of the data collection rule.')
+        c.argument('description', help='Description of the data collection rule.')
 
         c.argument('data_flows', action=AddDataFlows, options_list=['--data-flow'], arg_group="Data Flow",
                    nargs='+', help='The specification of data flows.')
@@ -74,20 +74,20 @@ def load_arguments(self, _):
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownDataFlowStreams), nargs='+',
                    help='List of streams for this data flow.')
-        c.argument('destinations', options_list=['--destination'], type=str, nargs='+',
+        c.argument('destinations', options_list=['--destination'], nargs='+',
                    help='List of destinations for this data flow.')
 
     with self.argument_context('monitor data-collection rule log-analytics') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-        c.argument('name', options_list=['--name', '-n'], type=str,
+        c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the destination. This name should be unique across all destinations '
                    '(regardless of type) within the data collection rule.')
-        c.argument('workspace_resource_id', options_list=['--resource-id'], type=str,
+        c.argument('workspace_resource_id', options_list=['--resource-id'],
                    help='The resource ID of the Log Analytics workspace.')
 
     with self.argument_context('monitor data-collection rule performance-counter') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-        c.argument('name', options_list=['--name', '-n'], type=str,
+        c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownPerfCounterDataSourceStreams),
@@ -99,14 +99,14 @@ def load_arguments(self, _):
                    help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('sampling_frequency_in_seconds', options_list=['--sampling-frequency'], type=int,
                    help='The number of seconds between consecutive counter measurements (samples).')
-        c.argument('counter_specifiers', options_list=['--counter-specifier'], type=str, nargs='+',
+        c.argument('counter_specifiers', options_list=['--counter-specifier'], nargs='+',
                    help="A list of specifier names of the performance counters you want to collect."
                    "Use a wildcard (*) to collect a counter for all instances. "
                    "To get a list of performance counters on Windows, run the command 'typeperf'.")
 
     with self.argument_context('monitor data-collection rule windows-event-log') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-        c.argument('name', options_list=['--name', '-n'], type=str,
+        c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownWindowsEventLogDataSourceStreams),
@@ -115,12 +115,12 @@ def load_arguments(self, _):
         c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
                    arg_type=get_enum_type(KnownWindowsEventLogDataSourceScheduledTransferPeriod),
                    help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
-        c.argument('x_path_queries', options_list=['--x-path-query'], nargs='+', type=str,
+        c.argument('x_path_queries', options_list=['--x-path-query'], nargs='+',
                    help='A list of Windows Event Log queries in XPATH format.')
 
     with self.argument_context('monitor data-collection rule syslog') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-        c.argument('name', options_list=['--name', '-n'], type=str,
+        c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
         c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownSyslogDataSourceStreams),

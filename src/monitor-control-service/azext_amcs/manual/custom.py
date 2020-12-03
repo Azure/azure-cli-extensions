@@ -4,7 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-def data_collection_rule_associations_delete(client,
+def data_collection_rule_associations_create(client,
                                              resource_uri,
                                              association_name,
                                              description=None,
