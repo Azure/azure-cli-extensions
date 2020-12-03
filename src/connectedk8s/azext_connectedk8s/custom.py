@@ -741,6 +741,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy:
         raise CLIError(consts.No_Param_Error)
 
+    if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
+        raise CLIError(consts.EnableProxy_Conflict_Error)
+
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
