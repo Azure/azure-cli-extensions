@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.3.1
+++++++
+
+* Upgraded API version to latest stable
+* Fixed bugs
+
 0.3.0
 ++++++
 

@@ -118,7 +118,6 @@ class ServiceOperations(object):
     ):
         # type: (...) -> "models.ServicesDescription"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        print(kwargs)
 
         kwargsToCopy = ['type', 'access_policies', 'cosmos_db_configuration', 'authentication_configuration', 'cors_configuration', 'private_endpoint_connections', 'public_network_access', 'storage_account_name']
         properties = dict()
