@@ -113,7 +113,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='A unique name of this resource group artifact.')
         c.argument('display_name', help='Display name of this resource group artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('tags', tags_type, arg_group='Resource Group', help='Tags to be assigned to this resource group.')
 
     with self.argument_context('blueprint resource-group remove') as c:
@@ -142,7 +142,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters for policy assignment artifact. It can be a JSON string or JSON file path.')
 
@@ -161,7 +161,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
 
     with self.argument_context('blueprint artifact template create') as c:
@@ -179,7 +179,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters for ARM template artifact. It can be a JSON string or JSON file path.')
         c.argument('template', arg_type=template_type)

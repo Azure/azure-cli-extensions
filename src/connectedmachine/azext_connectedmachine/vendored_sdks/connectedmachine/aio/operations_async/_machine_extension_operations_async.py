@@ -52,7 +52,7 @@ class MachineExtensionOperations:
         tags: Optional[Dict[str, str]] = None,
         force_update_tag: Optional[str] = None,
         publisher: Optional[str] = None,
-        type: Optional[str] = None,
+        type_properties_type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
@@ -64,7 +64,7 @@ class MachineExtensionOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _extension_parameters = models.MachineExtension(tags=tags, location=location, force_update_tag=force_update_tag, publisher=publisher, type_properties_type=type, type_handler_version_properties_type_handler_version=type_handler_version, auto_upgrade_minor_version=auto_upgrade_minor_version, settings=settings, protected_settings=protected_settings, status=status)
+        extension_parameters = models.MachineExtension(tags=tags, location=location, force_update_tag=force_update_tag, publisher=publisher, type_properties_type=type_properties_type, type_handler_version_properties_type_handler_version=type_handler_version, auto_upgrade_minor_version=auto_upgrade_minor_version, settings=settings, protected_settings=protected_settings, status=status)
         api_version = "2020-08-02"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -88,7 +88,7 @@ class MachineExtensionOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_extension_parameters, 'MachineExtension')
+        body_content = self._serialize.body(extension_parameters, 'MachineExtension')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -118,7 +118,7 @@ class MachineExtensionOperations:
         tags: Optional[Dict[str, str]] = None,
         force_update_tag: Optional[str] = None,
         publisher: Optional[str] = None,
-        type: Optional[str] = None,
+        type_properties_type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
@@ -143,8 +143,9 @@ class MachineExtensionOperations:
         :type force_update_tag: str
         :param publisher: The name of the extension handler publisher.
         :type publisher: str
-        :param type: Specifies the type of the extension; an example is "CustomScriptExtension".
-        :type type: str
+        :param type_properties_type: Specifies the type of the extension; an example is
+         "CustomScriptExtension".
+        :type type_properties_type: str
         :param type_handler_version: Specifies the version of the script handler.
         :type type_handler_version: str
         :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
@@ -184,7 +185,7 @@ class MachineExtensionOperations:
                 tags=tags,
                 force_update_tag=force_update_tag,
                 publisher=publisher,
-                type=type,
+                type_properties_type=type_properties_type,
                 type_handler_version=type_handler_version,
                 auto_upgrade_minor_version=auto_upgrade_minor_version,
                 settings=settings,
@@ -237,7 +238,7 @@ class MachineExtensionOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _extension_parameters = models.MachineExtensionUpdate(tags=tags, force_update_tag=force_update_tag, publisher=publisher, type=type, type_handler_version=type_handler_version, auto_upgrade_minor_version=auto_upgrade_minor_version, settings=settings, protected_settings=protected_settings)
+        extension_parameters = models.MachineExtensionUpdate(tags=tags, force_update_tag=force_update_tag, publisher=publisher, type=type, type_handler_version=type_handler_version, auto_upgrade_minor_version=auto_upgrade_minor_version, settings=settings, protected_settings=protected_settings)
         api_version = "2020-08-02"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -261,7 +262,7 @@ class MachineExtensionOperations:
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_extension_parameters, 'MachineExtensionUpdate')
+        body_content = self._serialize.body(extension_parameters, 'MachineExtensionUpdate')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
 
