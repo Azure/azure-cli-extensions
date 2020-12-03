@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-
 from azext_acrtransfer._help import helps  # pylint: disable=unused-import
-
 
 class AcrtransferCommandsLoader(AzCommandsLoader):
 
@@ -27,6 +25,5 @@ class AcrtransferCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_acrtransfer._params import load_arguments
         load_arguments(self, command)
-
 
 COMMAND_LOADER_CLS = AcrtransferCommandsLoader

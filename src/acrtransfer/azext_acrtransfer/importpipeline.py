@@ -40,7 +40,7 @@ def list_importpipeline(cmd, client, resource_group_name, registry_name):
 
     for pipeline in raw_result:
         print_lite_pipeline_output(pipeline)
-   
+
 def delete_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
     poller = client.import_pipelines.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, import_pipeline_name=import_pipeline_name)  
     print_poll_output(poller)
