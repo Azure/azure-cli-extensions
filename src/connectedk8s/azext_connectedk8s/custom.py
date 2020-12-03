@@ -246,9 +246,9 @@ def send_cloud_telemetry(cmd):
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cmd.cli_ctx.cloud.name})
     cloud_name = cmd.cli_ctx.cloud.name.upper()
     # Setting cloud name to format that is understood by golang SDK.
-    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.PublicCloud_RMEndpoint:
+    if cloud_name == consts.PublicCloud_OriginalName:
         cloud_name = consts.Azure_PublicCloudName
-    elif cmd.cli_ctx.cloud.endpoints.resource_manager == consts.USGovCloud_RMEndpoint:
+    elif cloud_name == consts.USGovCloud_OriginalName:
         cloud_name = consts.Azure_USGovCloudName
     return cloud_name
 
