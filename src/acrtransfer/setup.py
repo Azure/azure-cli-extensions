@@ -14,7 +14,6 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 VERSION = '0.1.0'
 
@@ -32,7 +31,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'azure-cli-core'
 ]
@@ -46,10 +44,8 @@ setup(
     name='acrtransfer',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Acrtransfer Extension',
-    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
+    author_email='KraterDev@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
