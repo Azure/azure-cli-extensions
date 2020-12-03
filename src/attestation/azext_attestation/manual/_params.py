@@ -59,6 +59,8 @@ def load_arguments(self, _):
                                 '"maa-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
                                 'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
                                 'certificates'.format(item))
+                c.argument('signer_file', options_list=['--signer-file', '-f'],
+                           help='File name of the signer. (--signer and --signer-file/-f are mutually exclusive.)')
 
     for item in ['show', 'set', 'reset']:
         with self.argument_context('attestation policy {}'.format(item)) as c:

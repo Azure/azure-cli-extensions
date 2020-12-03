@@ -94,7 +94,22 @@ def attestation_attestation_provider_delete(client,
                          provider_name=provider_name)
 
 
-def add_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
+def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
+    if not signer and not signer_file:
+        raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+
+    if signer and signer_file:
+        raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+
+    if signer_file:
+        signer_file = os.path.expanduser(signer_file)
+        if not os.path.exists(signer_file):
+            raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+        if not os.path.isfile(signer_file):
+            raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+        with open(signer_file) as f:
+            signer = f.read()
+
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     token = client.add(tenant_base_url=provider.attest_uri, policy_certificate_to_add=signer)
@@ -114,7 +129,22 @@ def add_signer(cmd, client, signer, resource_group_name=None, provider_name=None
     return result
 
 
-def remove_signer(cmd, client, signer, resource_group_name=None, provider_name=None):
+def remove_signer(cmd, client, signer=None, signer_file=None, resource_group_name=None, provider_name=None):
+    if not signer and not signer_file:
+        raise CLIError('Please specify one of parameters: --signer or --signer-file/-f')
+
+    if signer and signer_file:
+        raise CLIError('--signer and --signer-file/-f are mutually exclusive.')
+
+    if signer_file:
+        signer_file = os.path.expanduser(signer_file)
+        if not os.path.exists(signer_file):
+            raise CLIError('Signer file "{}" does not exist.'.format(signer_file))
+        if not os.path.isfile(signer_file):
+            raise CLIError('Signer file "{}" is not a valid file name.'.format(signer_file))
+        with open(signer_file) as f:
+            signer = f.read()
+
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     client.remove(tenant_base_url=provider.attest_uri, policy_certificate_to_remove=signer)
@@ -143,6 +173,8 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
 
 
 def get_policy(cmd, client, attestation_type, resource_group_name=None, provider_name=None):
+    """ Retrieves the current policy for a given kind of attestation type. """
+
     provider_client = cf_attestation_provider(cmd.cli_ctx)
     provider = provider_client.get(resource_group_name=resource_group_name, provider_name=provider_name)
     token = client.get(tenant_base_url=provider.attest_uri, tee=tee_mapping[attestation_type]).token

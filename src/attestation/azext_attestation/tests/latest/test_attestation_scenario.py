@@ -119,6 +119,14 @@ def test_provider_with_signer_1(test, rg):
         test.exists('Algorithm')
     ])
 
+    """ Bypass this since the test file can be only used on old api version
+
+    test.cmd('az attestation signer add -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
+             checks=test.check('CertificateCount', 2))
+
+    test.cmd('az attestation signer remove -n {att1} -g {rg} -f "{new_signer_jwt_file}"',
+             checks=test.check('CertificateCount', 1))
+
     with open(test.kwargs['new_signer_jwt_file']) as f:
         test.kwargs['new_signer_jwt'] = f.read()
 
@@ -127,6 +135,7 @@ def test_provider_with_signer_1(test, rg):
 
     test.cmd('az attestation signer remove -n {att1} -g {rg} --signer {new_signer_jwt}',
              checks=test.check('CertificateCount', 1))
+    """
 
 
 @try_manual
