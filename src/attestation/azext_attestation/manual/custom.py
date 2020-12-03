@@ -11,12 +11,14 @@
 
 import base64
 import json
+import jwt
 import os
 
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
-from jwcrypto.jwk import JWK
 from knack.cli import CLIError
 
 from azext_attestation.generated._client_factory import cf_attestation_provider
@@ -74,9 +76,15 @@ def attestation_attestation_provider_create(client,
         with open(expand_path, 'rb') as f:
             pem_data = f.read()
 
-        raw_jwk = JWK.from_pem(pem_data)
-        jwk = JsonWebKey(kty=raw_jwk.key_type, alg='RS256', use='sig')
         cert = load_pem_x509_certificate(pem_data, backend=default_backend())
+        key = cert.public_key()
+        if isinstance(key, rsa.RSAPublicKey):
+            kty = 'RSA'
+            alg = 'RS256'
+        else:
+            raise CLIError('Unsupported key type: {}'.format(type(key)))
+
+        jwk = JsonWebKey(kty=kty, alg=alg, use='sig')
         jwk.x5c = [base64.b64encode(cert.public_bytes(Encoding.DER)).decode('ascii')]
         certs.append(jwk)
 
@@ -116,7 +124,6 @@ def add_signer(cmd, client, signer=None, signer_file=None, resource_group_name=N
     result = {'Jwt': token}
 
     if token:
-        import jwt
         header = jwt.get_unverified_header(token)
         result.update({
             'Algorithm': header.get('alg', ''),
@@ -159,7 +166,6 @@ def list_signers(cmd, client, resource_group_name=None, provider_name=None):
     result = {'Jwt': token}
 
     if token:
-        import jwt
         header = jwt.get_unverified_header(token)
         result.update({
             'Algorithm': header.get('alg', ''),

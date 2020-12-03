@@ -31,7 +31,6 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'jwcrypto==0.8',
     'pyjwt==1.7.1'
 ]
 
