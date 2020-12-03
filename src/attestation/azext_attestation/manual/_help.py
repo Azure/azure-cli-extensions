@@ -42,7 +42,7 @@ helps['attestation create'] = """
     examples:
       - name: AttestationProviders_Create
         text: |-
-               az attestation create --name "myattestationprovider" --resource-group "MyResourceGroup"
+               az attestation create --name "myattestationprovider" --resource-group "MyResourceGroup" -l westus
 """
 
 helps['attestation update'] = """
