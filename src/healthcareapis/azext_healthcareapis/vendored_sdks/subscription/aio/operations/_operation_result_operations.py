@@ -8,7 +8,7 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -25,7 +25,7 @@ class OperationResultOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.healthcareapis.models
+    :type models: ~healthcare_apis_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -53,16 +53,20 @@ class OperationResultOperations:
         :param operation_result_id: The ID of the operation result to get.
         :type operation_result_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: OperationResultsDescription or ErrorDetails or the result of cls(response)
-        :rtype: ~azure.mgmt.healthcareapis.models.OperationResultsDescription or ~azure.mgmt.healthcareapis.models.ErrorDetails
+        :return: OperationResultsDescription or ErrorDetails, or the result of cls(response)
+        :rtype: ~healthcare_apis_management_client.models.OperationResultsDescription or ~healthcare_apis_management_client.models.ErrorDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Union["models.OperationResultsDescription", "models.ErrorDetails"]]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
+        accept = "application/json"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'locationName': self._serialize.url("location_name", location_name, 'str'),
@@ -76,9 +80,8 @@ class OperationResultOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -88,7 +91,6 @@ class OperationResultOperations:
             error = self._deserialize(models.ErrorDetails, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('OperationResultsDescription', pipeline_response)
 
@@ -96,7 +98,7 @@ class OperationResultOperations:
             deserialized = self._deserialize('ErrorDetails', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/locations/{locationName}/operationresults/{operationResultId}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/locations/{locationName}/operationresults/{operationResultId}'}  # type: ignore

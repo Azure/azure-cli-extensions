@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
@@ -20,7 +20,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -32,7 +32,7 @@ class ServiceOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.healthcareapis.models
+    :type models: ~healthcare_apis_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -61,16 +61,20 @@ class ServiceOperations(object):
         :param resource_name: The name of the service instance.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ServicesDescription or the result of cls(response)
-        :rtype: ~azure.mgmt.healthcareapis.models.ServicesDescription
+        :return: ServicesDescription, or the result of cls(response)
+        :rtype: ~healthcare_apis_management_client.models.ServicesDescription
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
+        accept = "application/json"
 
         # Construct URL
-        url = self.get.metadata['url']
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -84,9 +88,8 @@ class ServiceOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -99,10 +102,10 @@ class ServiceOperations(object):
         deserialized = self._deserialize('ServicesDescription', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def _create_or_update_initial(
         self,
@@ -112,29 +115,30 @@ class ServiceOperations(object):
         location,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
         etag=None,  # type: Optional[str]
-        identity=None,  # type: Optional["models.ResourceIdentity"]
-        properties=None,  # type: Optional["models.ServicesProperties"]
+        type=None,  # type: Optional[Union[str, "models.ManagedServiceIdentityType"]]
+        access_policies=None,  # type: Optional[List["models.ServiceAccessPolicyEntry"]]
+        cosmos_db_configuration=None,  # type: Optional["models.ServiceCosmosDBConfigurationInfo"]
+        authentication_configuration=None,  # type: Optional["models.ServiceAuthenticationConfigurationInfo"]
+        cors_configuration=None,  # type: Optional["models.ServiceCorsConfigurationInfo"]
+        private_endpoint_connections=None,  # type: Optional[List["models.PrivateEndpointConnection"]]
+        public_network_access=None,  # type: Optional[Union[str, "models.PublicNetworkAccess"]]
+        storage_account_name=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ServicesDescription"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        print(kwargs)
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
 
-        kwargsToCopy = ['type', 'access_policies', 'cosmos_db_configuration', 'authentication_configuration', 'cors_configuration', 'private_endpoint_connections', 'public_network_access', 'storage_account_name']
-        properties = dict()
-        
-        for k in kwargsToCopy:
-            properties[k] = kwargs[k]
-            kwargs.pop(k)
-
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-
-        _service_description = models.ServicesDescription(kind=kind, location=location, tags=tags, etag=etag, identity=identity, properties=properties)
+        service_description = models.ServicesDescription(kind=kind, location=location, tags=tags, etag=etag, type_identity_type=type, access_policies=access_policies, cosmos_db_configuration=cosmos_db_configuration, authentication_configuration=authentication_configuration, cors_configuration=cors_configuration, private_endpoint_connections=private_endpoint_connections, public_network_access=public_network_access, storage_account_name=storage_account_name)
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_initial.metadata['url']
+        url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -149,14 +153,12 @@ class ServiceOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_service_description, 'ServicesDescription')
+        body_content = self._serialize.body(service_description, 'ServicesDescription')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -165,7 +167,6 @@ class ServiceOperations(object):
             error = self._deserialize(models.ErrorDetails, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('ServicesDescription', pipeline_response)
 
@@ -173,10 +174,10 @@ class ServiceOperations(object):
             deserialized = self._deserialize('ServicesDescription', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
@@ -186,11 +187,17 @@ class ServiceOperations(object):
         location,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
         etag=None,  # type: Optional[str]
-        identity=None,  # type: Optional["models.ResourceIdentity"]
-        properties=None,  # type: Optional["models.ServicesProperties"]
+        type=None,  # type: Optional[Union[str, "models.ManagedServiceIdentityType"]]
+        access_policies=None,  # type: Optional[List["models.ServiceAccessPolicyEntry"]]
+        cosmos_db_configuration=None,  # type: Optional["models.ServiceCosmosDBConfigurationInfo"]
+        authentication_configuration=None,  # type: Optional["models.ServiceAuthenticationConfigurationInfo"]
+        cors_configuration=None,  # type: Optional["models.ServiceCorsConfigurationInfo"]
+        private_endpoint_connections=None,  # type: Optional[List["models.PrivateEndpointConnection"]]
+        public_network_access=None,  # type: Optional[Union[str, "models.PublicNetworkAccess"]]
+        storage_account_name=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ServicesDescription"
+        # type: (...) -> LROPoller["models.ServicesDescription"]
         """Create or update the metadata of a service instance.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
@@ -198,42 +205,71 @@ class ServiceOperations(object):
         :param resource_name: The name of the service instance.
         :type resource_name: str
         :param kind: The kind of the service.
-        :type kind: str or ~azure.mgmt.healthcareapis.models.Kind
+        :type kind: str or ~healthcare_apis_management_client.models.Kind
         :param location: The resource location.
         :type location: str
         :param tags: The resource tags.
         :type tags: dict[str, str]
         :param etag: An etag associated with the resource, used for optimistic concurrency when editing
-     it.
+         it.
         :type etag: str
-        :param identity: Setting indicating whether the service has a managed identity associated with
-     it.
-        :type identity: ~azure.mgmt.healthcareapis.models.ResourceIdentity
-        :param properties: The common properties of a service.
-        :type properties: ~azure.mgmt.healthcareapis.models.ServicesProperties
+        :param type: Type of identity being specified, currently SystemAssigned and None are allowed.
+        :type type: str or ~healthcare_apis_management_client.models.ManagedServiceIdentityType
+        :param access_policies: The access policies of the service instance.
+        :type access_policies: list[~healthcare_apis_management_client.models.ServiceAccessPolicyEntry]
+        :param cosmos_db_configuration: The settings for the Cosmos DB database backing the service.
+        :type cosmos_db_configuration: ~healthcare_apis_management_client.models.ServiceCosmosDBConfigurationInfo
+        :param authentication_configuration: The authentication configuration for the service instance.
+        :type authentication_configuration: ~healthcare_apis_management_client.models.ServiceAuthenticationConfigurationInfo
+        :param cors_configuration: The settings for the CORS configuration of the service instance.
+        :type cors_configuration: ~healthcare_apis_management_client.models.ServiceCorsConfigurationInfo
+        :param private_endpoint_connections: The list of private endpoint connections that are set up
+         for this resource.
+        :type private_endpoint_connections: list[~healthcare_apis_management_client.models.PrivateEndpointConnection]
+        :param public_network_access: Control permission for data plane traffic coming from public
+         networks while private endpoint is enabled.
+        :type public_network_access: str or ~healthcare_apis_management_client.models.PublicNetworkAccess
+        :param storage_account_name: The name of the default export storage account.
+        :type storage_account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns ServicesDescription
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.healthcareapis.models.ServicesDescription]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either ServicesDescription or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~healthcare_apis_management_client.models.ServicesDescription]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        raw_result = self._create_or_update_initial(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            kind=kind,
-            location=location,
-            tags=tags,
-            etag=etag,
-            identity=identity,
-            properties=properties,
-            cls=lambda x,y,z: x,
-            **kwargs
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                kind=kind,
+                location=location,
+                tags=tags,
+                etag=etag,
+                type=type,
+                access_policies=access_policies,
+                cosmos_db_configuration=cosmos_db_configuration,
+                authentication_configuration=authentication_configuration,
+                cors_configuration=cors_configuration,
+                private_endpoint_connections=private_endpoint_connections,
+                public_network_access=public_network_access,
+                storage_account_name=storage_account_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('ServicesDescription', pipeline_response)
@@ -242,33 +278,48 @@ class ServiceOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def _update_initial(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
+        public_network_access=None,  # type: Optional[Union[str, "models.PublicNetworkAccess"]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ServicesDescription"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _service_patch_description = models.ServicesPatchDescription(tags=tags)
+        service_patch_description = models.ServicesPatchDescription(tags=tags, public_network_access=public_network_access)
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self._update_initial.metadata['url']
+        url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -283,14 +334,12 @@ class ServiceOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_service_patch_description, 'ServicesPatchDescription')
+        body_content = self._serialize.body(service_patch_description, 'ServicesPatchDescription')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -302,19 +351,20 @@ class ServiceOperations(object):
         deserialized = self._deserialize('ServicesDescription', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def begin_update(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
+        public_network_access=None,  # type: Optional[Union[str, "models.PublicNetworkAccess"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ServicesDescription"
+        # type: (...) -> LROPoller["models.ServicesDescription"]
         """Update the metadata of a service instance.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
@@ -323,24 +373,38 @@ class ServiceOperations(object):
         :type resource_name: str
         :param tags: Instance tags.
         :type tags: dict[str, str]
+        :param public_network_access: Control permission for data plane traffic coming from public
+         networks while private endpoint is enabled.
+        :type public_network_access: str or ~healthcare_apis_management_client.models.PublicNetworkAccess
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns ServicesDescription
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.healthcareapis.models.ServicesDescription]
-
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either ServicesDescription or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~healthcare_apis_management_client.models.ServicesDescription]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
-        raw_result = self._update_initial(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            tags=tags,
-            cls=lambda x,y,z: x,
-            **kwargs
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._update_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                tags=tags,
+                public_network_access=public_network_access,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('ServicesDescription', pipeline_response)
@@ -349,15 +413,25 @@ class ServiceOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def _delete_initial(
         self,
@@ -367,11 +441,15 @@ class ServiceOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
+        accept = "application/json"
 
         # Construct URL
-        url = self._delete_initial.metadata['url']
+        url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -385,8 +463,8 @@ class ServiceOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -397,9 +475,9 @@ class ServiceOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
-          return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def begin_delete(
         self,
@@ -407,7 +485,7 @@ class ServiceOperations(object):
         resource_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> None
+        # type: (...) -> LROPoller[None]
         """Delete a service instance.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
@@ -415,74 +493,98 @@ class ServiceOperations(object):
         :param resource_name: The name of the service instance.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :return: An instance of LROPoller that returns None
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
-
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            cls=lambda x,y,z: x,
-            **kwargs
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        lro_delay = kwargs.get(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}  # type: ignore
 
     def list(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ServicesDescriptionListResult"
+        # type: (...) -> Iterable["models.ServicesDescriptionListResult"]
         """Get all the service instances in a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ServicesDescriptionListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.healthcareapis.models.ServicesDescriptionListResult
+        :return: An iterator like instance of either ServicesDescriptionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~healthcare_apis_management_client.models.ServicesDescriptionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -508,49 +610,53 @@ class ServiceOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/services'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/services'}  # type: ignore
 
     def list_by_resource_group(
         self,
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ServicesDescriptionListResult"
+        # type: (...) -> Iterable["models.ServicesDescriptionListResult"]
         """Get all the service instances in a resource group.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ServicesDescriptionListResult or the result of cls(response)
-        :rtype: ~azure.mgmt.healthcareapis.models.ServicesDescriptionListResult
+        :return: An iterator like instance of either ServicesDescriptionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~healthcare_apis_management_client.models.ServicesDescriptionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
-                url = self.list_by_resource_group.metadata['url']
+                url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
-
-            # Construct parameters
-            query_parameters = {}  # type: Dict[str, Any]
-            query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
@@ -576,7 +682,7 @@ class ServiceOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services'}  # type: ignore
 
     def check_name_availability(
         self,
@@ -592,19 +698,23 @@ class ServiceOperations(object):
         :param type: The fully qualified resource type which includes provider namespace.
         :type type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ServicesNameAvailabilityInfo or the result of cls(response)
-        :rtype: ~azure.mgmt.healthcareapis.models.ServicesNameAvailabilityInfo
+        :return: ServicesNameAvailabilityInfo, or the result of cls(response)
+        :rtype: ~healthcare_apis_management_client.models.ServicesNameAvailabilityInfo
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesNameAvailabilityInfo"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
 
-        _check_name_availability_inputs = models.CheckNameAvailabilityParameters(name=name, type=type)
+        check_name_availability_inputs = models.CheckNameAvailabilityParameters(name=name, type=type)
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self.check_name_availability.metadata['url']
+        url = self.check_name_availability.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
         }
@@ -617,14 +727,12 @@ class ServiceOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_check_name_availability_inputs, 'CheckNameAvailabilityParameters')
+        body_content = self._serialize.body(check_name_availability_inputs, 'CheckNameAvailabilityParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -636,7 +744,7 @@ class ServiceOperations(object):
         deserialized = self._deserialize('ServicesNameAvailabilityInfo', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/checkNameAvailability'}
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/checkNameAvailability'}  # type: ignore

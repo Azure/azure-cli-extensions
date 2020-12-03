@@ -64,7 +64,7 @@ class OperationResultOperations(object):
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Union["models.OperationResultsDescription", "models.ErrorDetails"]]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
 
         # Construct URL
         url = self.get.metadata['url']

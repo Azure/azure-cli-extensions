@@ -6,4 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "0.2.0"
+from ._healthcare_apis_management_client import HealthcareApisManagementClient
+__all__ = ['HealthcareApisManagementClient']
