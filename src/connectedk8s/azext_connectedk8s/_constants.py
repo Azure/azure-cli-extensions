@@ -45,3 +45,4 @@ Cluster_Info_Not_Found_Type = 'Error while finding current cluster server detail
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
+No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'

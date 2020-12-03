@@ -5,7 +5,7 @@ Release History
 
 0.2.8
 ++++++
-* Added checks for proxy
+* Added checks for proxy and disable proxy
 
 0.2.7
 ++++++
