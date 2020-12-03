@@ -8,9 +8,13 @@ from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 imp
 from .utility_functions import print_poll_output, create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
 
 def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None):
-    options_list = options.split(',')
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
+
+    if options is None:
+        options_list = []
+    else:
+        options_list = options.split(',')
 
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
     import_pipeline_source_properties = ImportPipelineSourceProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri)
