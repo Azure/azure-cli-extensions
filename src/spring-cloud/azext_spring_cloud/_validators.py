@@ -46,7 +46,7 @@ def validate_sku(namespace):
 def validate_instance_count(namespace):
     if namespace.instance_count is not None:
         if namespace.instance_count < 1:
-            raise CLIError("--instance-count must be more than 0")
+            raise CLIError("--instance-count must be greater than 0")
 
 
 def validate_name(namespace):
