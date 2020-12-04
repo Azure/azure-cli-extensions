@@ -483,10 +483,10 @@ def app_tail_log(cmd, client, resource_group, service, name, deployment=None, in
         if not deployment:
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
         deployment_properties = client.deployments.get(
-            resource_group, service, name, deployment_name).properties
+            resource_group, service, name, deployment).properties
         if not deployment_properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment_name, name))
+                deployment, name))
         instances = deployment_properties.instances
         if len(instances) > 1:
             logger.warning("Multiple app instances found:")

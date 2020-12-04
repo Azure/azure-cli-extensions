@@ -1,5 +1,9 @@
 Release History
 ===============
+1.2.1
+-----
+* Add optional '--deployment' to 'az spring-cloud app logs' command
+
 1.2.0
 -----
 * Add support for sovereign cloud.
