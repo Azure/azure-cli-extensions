@@ -77,8 +77,21 @@ class TestValidateK8sNaming(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(namespace)
         self.assertEqual(str(cm.exception), err)
+
+    def test_valid_config_name(self):
+        config_name = "this-is-a-valid-config"
+        namespace = Name(config_name)
+        validators.validate_configuration_name(namespace)
     
     def test_caps_config_name(self):
+        config_name = "ThisIsaCapsConfigName"
+        namespace = Name(config_name)
+        err = 'Invalid configuration name parameter. Valid configuration names can only contain lowercase alphanumeric characters and hyphens'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_configuration_name(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_dot_config_name(self):
         config_name = "ThisIsaCapsConfigName"
         namespace = Name(config_name)
         err = 'Invalid configuration name parameter. Valid configuration names can only contain lowercase alphanumeric characters and hyphens'
