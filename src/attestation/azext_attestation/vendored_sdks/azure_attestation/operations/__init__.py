@@ -13,10 +13,12 @@ from ._policy_operations import PolicyOperations
 from ._policy_certificates_operations import PolicyCertificatesOperations
 from ._signing_certificates_operations import SigningCertificatesOperations
 from ._metadata_configuration_operations import MetadataConfigurationOperations
+from ._attest_operations import AttestOperations
 
 __all__ = [
     'PolicyOperations',
     'PolicyCertificatesOperations',
     'SigningCertificatesOperations',
     'MetadataConfigurationOperations',
+    'AttestOperations'
 ]

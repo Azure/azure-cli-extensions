@@ -6,14 +6,18 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
-from ._configuration_async import AttestationManagementClientConfiguration
-from .operations_async import OperationOperations
-from .operations_async import AttestationProviderOperations
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials_async import AsyncTokenCredential
+
+from ._configuration import AttestationManagementClientConfiguration
+from .operations import OperationOperations
+from .operations import AttestationProviderOperations
 from .. import models
 
 
@@ -21,15 +25,14 @@ class AttestationManagementClient(object):
     """Various APIs for managing resources in attestation service. This primarily encompasses per-tenant instance management.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.attestation.aio.operations_async.OperationOperations
+    :vartype operation: attestation_management_client.aio.operations.OperationOperations
     :ivar attestation_provider: AttestationProviderOperations operations
-    :vartype attestation_provider: azure.mgmt.attestation.aio.operations_async.AttestationProviderOperations
+    :vartype attestation_provider: attestation_management_client.aio.operations.AttestationProviderOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

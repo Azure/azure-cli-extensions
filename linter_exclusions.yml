@@ -121,6 +121,11 @@ aks update:
     enable_managed_identity:
       rule_exclusions:
       - option_length_too_long
+attestation policy set:
+  parameters:
+    new_attestation_policy:
+      rule_exclusions:
+      - option_length_too_long
 batch job create:
   parameters:
     job_manager_task_command_line:
