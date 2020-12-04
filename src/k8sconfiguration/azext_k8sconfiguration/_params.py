@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from ._validators import validate_configuration_type
+from ._validators import validate_configuration_type, validate_configuration_name, validate_operator_namespace, validate_operator_instance_name
 
 
 def load_arguments(self, _):
@@ -21,18 +21,28 @@ def load_arguments(self, _):
 
     with self.argument_context('k8sconfiguration') as c:
         c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('name', sourcecontrolconfiguration_type, options_list=['--name', '-n'])
-        c.argument('cluster_name', options_list=['--cluster-name', '-c'], help='Name of the Kubernetes cluster')
-        c.argument('cluster_type', arg_type=get_enum_type(['connectedClusters', 'managedClusters']),
+        c.argument('location',
+                   validator=get_default_location_from_resource_group)
+        c.argument('name', sourcecontrolconfiguration_type,
+                   options_list=['--name', '-n'],
+                   validator=validate_configuration_name)
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   help='Name of the Kubernetes cluster')
+        c.argument('cluster_type',
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters']),
                    help='Specify Arc clusters or AKS managed clusters.')
-        c.argument('repository_url', options_list=['--repository-url', '-u'],
+        c.argument('repository_url',
+                   options_list=['--repository-url', '-u'],
                    help='Url of the source control repository')
-        c.argument('enable_helm_operator', arg_type=get_three_state_flag(),
+        c.argument('enable_helm_operator',
+                   arg_type=get_three_state_flag(),
                    help='Enable support for Helm chart deployments')
-        c.argument('scope', arg_type=get_enum_type(['namespace', 'cluster']),
+        c.argument('scope',
+                   arg_type=get_enum_type(['namespace', 'cluster']),
                    help='''Specify scope of the operator to be 'namespace' or 'cluster' ''')
-        c.argument('configuration_type', validator=validate_configuration_type,
+        c.argument('configuration_type',
+                   validator=validate_configuration_type,
                    arg_type=get_enum_type(['sourceControlConfiguration']),
                    help='Type of the configuration')
         c.argument('helm_operator_params',
@@ -54,9 +64,11 @@ def load_arguments(self, _):
         c.argument('ssh_known_hosts_file',
                    help='Specify filepath to known_hosts contents containing public SSH keys required to access private Git instances')
         c.argument('operator_instance_name',
-                   help='Instance name of the Operator')
+                   help='Instance name of the Operator',
+                   validator=validate_operator_instance_name)
         c.argument('operator_namespace',
-                   help='Namespace in which to install the Operator')
+                   help='Namespace in which to install the Operator', 
+                   validator=validate_operator_namespace)
         c.argument('operator_type',
                    help='''Type of the operator. Valid value is 'flux' ''')
 
