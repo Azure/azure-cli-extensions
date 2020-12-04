@@ -17,14 +17,31 @@ def data_collection_rule_associations_create(client,
                          body=body)
 
 
-def data_collection_rule_associations_update(instance,
+def data_collection_rule_associations_update(client,
+                                             resource_uri,
+                                             association_name,
                                              description=None,
                                              rule_id=None):
+    from ..custom import monitor_data_collection_rule_association_show
+    instance = monitor_data_collection_rule_association_show(client, resource_uri, association_name)
+    body = instance.as_dict(keep_readonly=False)
+
     if description is not None:
-        instance.description = description
+        body['description'] = description
     if rule_id is not None:
-        instance.data_collection_rule_id = rule_id
-    return instance
+        body['data_collection_rule_id'] = rule_id
+    return client.create(resource_uri=resource_uri,
+                         association_name=association_name,
+                         body=body)
+
+
+def _data_collection_rules_create(client,
+                                  resource_group_name,
+                                  data_collection_rule_name,
+                                  body):
+    return client.create(resource_group_name=resource_group_name,
+                         data_collection_rule_name=data_collection_rule_name,
+                         body=body)
 
 
 def data_collection_rules_create(client,
@@ -53,12 +70,15 @@ def data_collection_rules_create(client,
     body['data_sources']['windows_event_logs'] = data_sources__windows_event_logs
     body['data_sources']['syslog'] = data_sources__syslog
     body['data_sources']['extensions'] = data_sources__extensions
-    return client.create(resource_group_name=resource_group_name,
-                         data_collection_rule_name=data_collection_rule_name,
-                         body=body)
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_update(instance,
+def data_collection_rules_update(client,
+                                 resource_group_name,
+                                 data_collection_rule_name,
                                  tags=None,
                                  description=None,
                                  data_flows=None,
@@ -68,25 +88,35 @@ def data_collection_rules_update(instance,
                                  data_sources__windows_event_logs=None,
                                  data_sources__syslog=None,
                                  data_sources__extensions=None):
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
     if tags is not None:
-        instance.tags = tags
+        body['tags'] = tags
     if description is not None:
-        instance.description = description
+        body['description'] = description
     if data_flows is not None:
-        instance.data_flows = data_flows
+        body['data_flows'] = data_flows
+    if 'destinations' not in body:
+        body['destinations'] = {}
     if destinations__log_analytics is not None:
-        instance.destinations.log_analytics = destinations__log_analytics
+        body['destinations']['log_analytics'] = destinations__log_analytics
     if destinations__azure_monitor_metrics is not None:
-        instance.destinations.azure_monitor_metrics = destinations__azure_monitor_metrics
+        body['destinations']['azure_monitor_metrics'] = destinations__azure_monitor_metrics
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
     if data_sources__performance_counters is not None:
-        instance.data_sources.performance_counters = data_sources__performance_counters
+        body['data_sources']['performance_counters'] = data_sources__performance_counters
     if data_sources__windows_event_logs is not None:
-        instance.data_sources.windows_event_logs = data_sources__windows_event_logs
+        body['data_sources']['windows_event_logs'] = data_sources__windows_event_logs
     if data_sources__syslog is not None:
-        instance.data_sources.syslog = data_sources__syslog
+        body['data_sources']['syslog'] = data_sources__syslog
     if data_sources__extensions is not None:
-        instance.data_sources.extensions = data_sources__extensions
-    return instance
+        body['data_sources']['extensions'] = data_sources__extensions
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
 def data_collection_rules_data_flows_list(client,
@@ -100,16 +130,25 @@ def data_collection_rules_data_flows_list(client,
         return []
 
 
-def data_collection_rules_data_flows_add(instance,
+def data_collection_rules_data_flows_add(client,
+                                         resource_group_name,
+                                         data_collection_rule_name,
                                          streams,
                                          destinations):
-    item_list = instance.data_flows
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_flows' not in body:
+        body['data_flows'] = []
     item = {
         'steams': streams,
         'destinations': destinations,
     }
-    item_list.append(item)
-    return instance
+    body['data_flows'].append(item)
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
 def data_collection_rules_log_analytics_list(client,
@@ -135,44 +174,82 @@ def data_collection_rules_log_analytics_show(client,
     return {}
 
 
-def data_collection_rules_log_analytics_add(instance,
+def data_collection_rules_log_analytics_add(client,
+                                            resource_group_name,
+                                            data_collection_rule_name,
                                             name,
                                             workspace_resource_id):
-    item_list = instance.destinations.log_analytics
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'destinations' not in body:
+        body['destinations'] = {}
+    if 'log_analytics' not in body['destinations']:
+        body['destinations']['log_analytics'] = []
+
+    item_list = body['destinations']['log_analytics']
     for item in item_list:
         if item['name'] == name:
             from azure.cli.core.azclierror import InvalidArgumentValueError
             raise InvalidArgumentValueError("Name {} exists.".format(name))
-
     item = {
         'name': name,
         'workspace_resource_id': workspace_resource_id
     }
-
     item_list.append(item)
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_log_analytics_delete(instance,
+def data_collection_rules_log_analytics_delete(client,
+                                               resource_group_name,
+                                               data_collection_rule_name,
                                                name):
-    item_list = instance.destinations.log_analytics
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'destinations' not in body:
+        body['destinations'] = {}
+    if 'log_analytics' not in body['destinations']:
+        body['destinations']['log_analytics'] = []
+
+    item_list = body['destinations']['log_analytics']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             item_list.pop(idx)
             break
-    return instance
+
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_log_analytics_update(instance,
+def data_collection_rules_log_analytics_update(client,
+                                               resource_group_name,
+                                               data_collection_rule_name,
                                                name,
                                                workspace_resource_id=None):
-    item_list = instance.destinations.log_analytics
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'destinations' not in body:
+        body['destinations'] = {}
+    if 'log_analytics' not in body['destinations']:
+        body['destinations']['log_analytics'] = []
+
+    item_list = body['destinations']['log_analytics']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             if workspace_resource_id is not None:
                 item['workspace_resource_id'] = workspace_resource_id
             break
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
 def data_collection_rules_list_by_subscription(client):
@@ -216,13 +293,23 @@ def data_collection_rules_performance_counters_show(client,
     return {}
 
 
-def data_collection_rules_performance_counters_add(instance,
+def data_collection_rules_performance_counters_add(client,
+                                                   resource_group_name,
+                                                   data_collection_rule_name,
                                                    name,
                                                    streams,
                                                    scheduled_transfer_period,
                                                    sampling_frequency_in_seconds,
                                                    counter_specifiers):
-    item_list = instance.data_sources.performance_counters
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'performance_counters' not in body['data_sources']:
+        body['data_sources']['performance_counters'] = []
+
+    item_list = body['data_sources']['performance_counters']
     for item in item_list:
         if item['name'] == name:
             from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -237,26 +324,52 @@ def data_collection_rules_performance_counters_add(instance,
     }
 
     item_list.append(item)
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_performance_counters_delete(instance,
+def data_collection_rules_performance_counters_delete(client,
+                                                      resource_group_name,
+                                                      data_collection_rule_name,
                                                       name):
-    item_list = instance.data_sources.performance_counters
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'performance_counters' not in body['data_sources']:
+        body['data_sources']['performance_counters'] = []
+
+    item_list = body['data_sources']['performance_counters']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             item_list.pop(idx)
             break
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_performance_counters_update(instance,
+def data_collection_rules_performance_counters_update(client,
+                                                      resource_group_name,
+                                                      data_collection_rule_name,
                                                       name,
                                                       streams=None,
                                                       scheduled_transfer_period=None,
                                                       sampling_frequency_in_seconds=None,
                                                       counter_specifiers=None):
-    item_list = instance.data_sources.performance_counters
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'performance_counters' not in body['data_sources']:
+        body['data_sources']['performance_counters'] = []
+
+    item_list = body['data_sources']['performance_counters']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             if streams is not None:
@@ -268,7 +381,10 @@ def data_collection_rules_performance_counters_update(instance,
             if counter_specifiers is not None:
                 item['counter_specifiers'] = counter_specifiers
             break
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
 def data_collection_rules_windows_event_logs_list(client,
@@ -294,12 +410,22 @@ def data_collection_rules_windows_event_logs_show(client,
     return {}
 
 
-def data_collection_rules_windows_event_logs_add(instance,
+def data_collection_rules_windows_event_logs_add(client,
+                                                 resource_group_name,
+                                                 data_collection_rule_name,
                                                  name,
                                                  steams,
                                                  scheduled_transfer_period,
                                                  x_path_queries):
-    item_list = instance.data_sources.windows_event_logs
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'windows_event_logs' not in body['data_sources']:
+        body['data_sources']['windows_event_logs'] = []
+
+    item_list = body['data_sources']['windows_event_logs']
     for item in item_list:
         if item['name'] == name:
             from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -313,25 +439,51 @@ def data_collection_rules_windows_event_logs_add(instance,
     }
 
     item_list.append(item)
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_windows_event_logs_delete(instance,
+def data_collection_rules_windows_event_logs_delete(client,
+                                                    resource_group_name,
+                                                    data_collection_rule_name,
                                                     name):
-    item_list = instance.data_sources.windows_event_logs
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'windows_event_logs' not in body['data_sources']:
+        body['data_sources']['windows_event_logs'] = []
+
+    item_list = body['data_sources']['windows_event_logs']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             item_list.pop(idx)
             break
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_windows_event_logs_update(instance,
+def data_collection_rules_windows_event_logs_update(client,
+                                                    resource_group_name,
+                                                    data_collection_rule_name,
                                                     name,
                                                     steams=None,
                                                     scheduled_transfer_period=None,
                                                     x_path_queries=None):
-    item_list = instance.data_sources.windows_event_logs
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'windows_event_logs' not in body['data_sources']:
+        body['data_sources']['windows_event_logs'] = []
+
+    item_list = body['data_sources']['windows_event_logs']
     for item in item_list:
         if item['name'] == name:
             if steams is not None:
@@ -341,7 +493,10 @@ def data_collection_rules_windows_event_logs_update(instance,
             if x_path_queries is not None:
                 item['x_path_queries'] = x_path_queries
             break
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
 def data_collection_rules_syslog_list(client,
@@ -367,12 +522,22 @@ def data_collection_rules_syslog_show(client,
     return {}
 
 
-def data_collection_rules_syslog_add(instance,
+def data_collection_rules_syslog_add(client,
+                                     resource_group_name,
+                                     data_collection_rule_name,
                                      name,
                                      streams,
                                      facility_names,
                                      log_levels=None):
-    item_list = instance.data_sources.syslog
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'syslog' not in body['data_sources']:
+        body['data_sources']['syslog'] = []
+
+    item_list = body['data_sources']['syslog']
     for item in item_list:
         if item['name'] == name:
             from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -386,26 +551,52 @@ def data_collection_rules_syslog_add(instance,
         item['log_levels'] = log_levels
 
     item_list.append(item)
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_syslog_delete(instance,
+def data_collection_rules_syslog_delete(client,
+                                        resource_group_name,
+                                        data_collection_rule_name,
                                         name):
-    item_list = instance.data_sources.syslog
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'syslog' not in body['data_sources']:
+        body['data_sources']['syslog'] = []
+
+    item_list = body['data_sources']['syslog']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             item_list.pop(idx)
             break
 
-    return instance
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
 
 
-def data_collection_rules_syslog_update(instance,
+def data_collection_rules_syslog_update(client,
+                                        resource_group_name,
+                                        data_collection_rule_name,
                                         name,
                                         streams=None,
                                         facility_names=None,
                                         log_levels=None):
-    item_list = instance.data_sources.syslog
+    from ..custom import monitor_data_collection_rule_show
+    instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
+    body = instance.as_dict(keep_readonly=False)
+    if 'data_sources' not in body:
+        body['data_sources'] = {}
+    if 'syslog' not in body['data_sources']:
+        body['data_sources']['syslog'] = []
+
+    item_list = body['data_sources']['syslog']
     for idx, item in enumerate(item_list):
         if item['name'] == name:
             if streams is not None:
@@ -414,4 +605,8 @@ def data_collection_rules_syslog_update(instance,
                 item['facility_names'] = facility_names
             if log_levels is not None:
                 item['log_levels'] = log_levels
-    return instance
+
+    return _data_collection_rules_create(client,
+                                         resource_group_name=resource_group_name,
+                                         data_collection_rule_name=data_collection_rule_name,
+                                         body=body)
