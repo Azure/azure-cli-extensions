@@ -9,6 +9,11 @@
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
 
+Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
+Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
+Azure_DogfoodCloudName = 'AZUREDOGFOOD'
+PublicCloud_OriginalName = 'AZURECLOUD'
+USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'

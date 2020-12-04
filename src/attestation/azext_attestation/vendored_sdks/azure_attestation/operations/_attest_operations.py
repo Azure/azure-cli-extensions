@@ -12,12 +12,13 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
+from knack.cli import CLIError
 
 from .. import models
 
 
-class SigningCertificatesOperations(object):
-    """SigningCertificatesOperations operations.
+class AttestOperations(object):
+    """AttestOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -25,6 +26,7 @@ class SigningCertificatesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
+    :ivar api_version: Client API version. Constant value: "2018-09-01".
     """
 
     models = models
@@ -34,31 +36,15 @@ class SigningCertificatesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
+        self.api_version = "2020-10-01"
 
         self.config = config
 
-    def get(
-            self, tenant_base_url, custom_headers=None, raw=False, **operation_config):
-        """Retrieves the attestation signing keys in use by the attestation
-        service.
-
-        Retrieves metadata signing certificates in use by the attestation
-        service.
-
-        :param tenant_base_url: The tenant name, for example
-         https://mytenant.attest.azure.net.
-        :type tenant_base_url: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: object or ClientRawResponse if raw=true
-        :rtype: object or ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+    def attest_open_enclave(
+            self, tenant_base_url, request, custom_headers=None, raw=False, **operation_config):
+        """Attest to an SGX-OpenEnclaveSDK enclave.
         """
-        # Construct URL
-        url = self.get.metadata['url']
+        url = '/attest/OpenEnclave'
         path_format_arguments = {
             'tenantBaseUrl': self._serialize.url("tenant_base_url", tenant_base_url, 'str', skip_quote=True)
         }
@@ -66,10 +52,12 @@ class SigningCertificatesOperations(object):
 
         # Construct parameters
         query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
         header_parameters['Accept'] = 'application/json'
+        header_parameters['Content-Type'] = 'text/plain'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -77,24 +65,26 @@ class SigningCertificatesOperations(object):
         if self.config.accept_language is not None:
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
+        # Construct body
+        body_content = self._serialize.body(request, 'AttestOpenEnclaveRequest')
+
         # Construct and send request
-        request = self._client.get(url, query_parameters, header_parameters)
+        request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 400]:
+        if response.status_code not in [200, 400, 401]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
 
         deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('object', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
+        if response.status_code == 401:
+            deserialized = self._deserialize('str', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/certs'}

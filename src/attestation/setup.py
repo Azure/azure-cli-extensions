@@ -10,9 +10,9 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 try:
-    from .manual.version import VERSION
+    from azext_attestation.manual.version import VERSION
 except ImportError:
     pass
 
@@ -30,9 +30,12 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'pyjwt==1.7.1'
+]
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_attestation.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
