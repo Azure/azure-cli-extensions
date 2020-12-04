@@ -9,11 +9,11 @@ from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, Scenario
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @ResourceGroupPreparer()
     def test_storage_adls_blob(self, resource_group):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
@@ -90,7 +90,7 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
 
 
 class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
     def test_storage_adls_blob_directory_move(self, resource_group, test_dir):
@@ -183,7 +183,7 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
 
 
 class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @ResourceGroupPreparer(location="centralus")
     def test_storage_adls_blob_move(self, resource_group):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
@@ -227,7 +227,7 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
 
 
 class StorageADLSDirectoryUploadTests(StorageScenarioMixin, LiveScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
     def test_storage_adls_blob_directory_upload(self, resource_group, test_dir):
@@ -280,7 +280,7 @@ class StorageADLSDirectoryUploadTests(StorageScenarioMixin, LiveScenarioTest):
 
 
 class StorageADLSDirectoryDownloadTests(StorageScenarioMixin, LiveScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
     def test_storage_adls_blob_directory_download(self, resource_group, test_dir):

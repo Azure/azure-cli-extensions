@@ -35,28 +35,39 @@ def setup(test, rg):
 
 # EXAMPLE: /Clusters/put/GetClusters
 @try_manual
-def step__clusters_put_getclusters(test, rg):
+def step__clusters_put_clusters(test, rg):
     test.cmd('az stack-hci cluster create '
              '--location "East US" '
              '--aad-client-id {aad_client_id} '
              '--aad-tenant-id {aad-tenant-id} '
              '--name "{cluster_name}" '
-             '--resource-group "{rg}"',
-             checks=[test.check('name', '{cluster_name}')])
+             '--resource-group "{rg}" '
+             '--tags tag0="value0" ',
+             checks=[
+                 test.check('location', "eastus"),
+                 test.check('name', '{cluster_name}'),
+                 test.check('resourceGroup', '{rg}'),
+                 test.check('tags', {'tag0': 'value0'})
+             ])
 
 
 # EXAMPLE: /Clusters/get/GetClusters
 @try_manual
-def step__clusters_get_getclusters(test, rg):
+def step__clusters_get_clusters(test, rg):
     test.cmd('az stack-hci cluster show '
              '--name "{cluster_name}" '
              '--resource-group "{rg}"',
-             checks=[test.check('name', '{cluster_name}')])
+             checks=[
+                 test.check('location', "eastus"),
+                 test.check('name', '{cluster_name}'),
+                 test.check('resourceGroup', '{rg}'),
+                 test.check('tags', {'tag0': 'value0'})
+             ])
 
 
 # EXAMPLE: /Clusters/get/ListClusters
 @try_manual
-def step__clusters_get_listclusters(test, rg, cluster_amount):
+def step__clusters_list_clusters(test, rg, cluster_amount):
     test.cmd('az stack-hci cluster list '
              '--resource-group "{rg}"',
              checks=[test.check('length([])', cluster_amount)])
@@ -64,7 +75,7 @@ def step__clusters_get_listclusters(test, rg, cluster_amount):
 
 # EXAMPLE: /Clusters/patch/GetClusters
 @try_manual
-def step__clusters_patch_getclusters(test, rg):
+def step__clusters_patch_clusters(test, rg):
     test.cmd('az stack-hci cluster update '
              '--tags tag1="value1" tag2="value2" '
              '--name "{cluster_name}" '
@@ -74,7 +85,7 @@ def step__clusters_patch_getclusters(test, rg):
 
 # EXAMPLE: /Clusters/delete/GetClusters
 @try_manual
-def step__clusters_delete_getclusters(test, rg):
+def step__clusters_delete_clusters(test, rg):
     test.cmd('az stack-hci cluster delete '
              '--name "{cluster_name}" '
              '--resource-group "{rg}" -y',
@@ -89,12 +100,12 @@ def cleanup(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
-    step__clusters_put_getclusters(test, rg)
-    step__clusters_get_getclusters(test, rg)
-    step__clusters_get_listclusters(test, rg, 1)
-    step__clusters_patch_getclusters(test, rg)
-    step__clusters_delete_getclusters(test, rg)
-    step__clusters_get_listclusters(test, rg, 0)
+    step__clusters_put_clusters(test, rg)
+    step__clusters_get_clusters(test, rg)
+    step__clusters_list_clusters(test, rg, 1)
+    step__clusters_patch_clusters(test, rg)
+    step__clusters_delete_clusters(test, rg)
+    step__clusters_list_clusters(test, rg, 0)
     cleanup(test, rg)
 
 
