@@ -158,6 +158,58 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                                  '--cluster-type {cluster_type}').get_output_in_json())
         self.assertEqual(new_count, config_count)
 
+    @ResourceGroupPreparer(name_prefix='cli_test_k8sconfiguration')
+    @record_only()
+    def test_k8sconfiguration_pass_on_good_key(self):
+        self.kwargs.update({
+            'name': 'cli-test-config12',
+            'cluster_name': 'nanthicluster0923',
+            'rg': 'nanthirg0923',
+            'repo_url': 'git://github.com/anubhav929/flux-get-started',
+            'operator_instance_name': 'cli-test-config10-opin',
+            'operator_namespace': 'cli-test-config10-opns',
+            'cluster_type': 'connectedClusters',
+            'scope': 'namespace',
+        })
+
+        rsa_key = "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUF1bVA5M09qRHdjdlEyZHZhRlJNNWYrMEhVSnFvOFJnbmdwaGN3NFZidnd1TVNoQTZFc2FyCjFsam1CNUNnT1NGNHJqNDIvcmdxMW1hWndoSUgvckdPSElNa0lIcjFrZmNKMnBrR3ZhK1NxVm4wWUhzMjBpUW02ay92ZXQKdXdVQ2J1QjlxSU5zL2h2b0ppQ21JMUVpVWZ4VGoxRFJCUG15OXR3Qm52bW5FS1kxZ2NhT2YrS2Y1aGhCc09pd00yZnBRTwp0aTlIcHVzM1JhNXpFeElWbjJzVitpRjVvV3ZZM1JQTTlKNXFPMXRObUtOWll6TjgzbDYxMlBzRmR1Vm1QM2NUUlJtK2pzCjdzZW5jY0U0RitzU0hQMlJpMk5DU0JvZ2RJOFR5VTlzeTM3Szl3bFJ5NGZkWWI1K1o3YUZjMjhTNDdDWlo5dTRFVXdWUEYKbjU4dTUzajU0empwdXNpei9ZWmx3MG5NeEQ5SXI0aHlJZ2s0NlUzVmdHR0NPUytZVTVZT2JURGhPRG5udk5VRkg2NVhCagpEM3l6WVJuRDA3b2swQ1JUR3RCOWMzTjBFNDBjUnlPeVpEQ0l5a0FPdHZXYnBUZzdnaXA2UDc4K2pLVlFnanFwRTVQdi9ICnl1dlB6cUJoUkpWcG5VR1dvWnFlcWJhd2N5RWZwdHFLaTNtWUdVMHBBQUFGa0U5cUs3SlBhaXV5QUFBQUIzTnphQzF5YzIKRUFBQUdCQUxwai9kem93OEhMME5uYjJoVVRPWC90QjFDYXFQRVlKNEtZWE1PRlc3OExqRW9RT2hMR3E5Wlk1Z2VRb0RraAplSzQrTnY2NEt0Wm1tY0lTQi82eGpoeURKQ0I2OVpIM0NkcVpCcjJ2a3FsWjlHQjdOdElrSnVwUDczcmJzRkFtN2dmYWlECmJQNGI2Q1lncGlOUklsSDhVNDlRMFFUNXN2YmNBWjc1cHhDbU5ZSEdqbi9pbitZWVFiRG9zRE5uNlVEcll2UjZick4wV3UKY3hNU0ZaOXJGZm9oZWFGcjJOMFR6UFNlYWp0YlRaaWpXV016Zk41ZXRkajdCWGJsWmo5M0UwVVp2bzdPN0hwM0hCT0JmcgpFaHo5a1l0alFrZ2FJSFNQRThsUGJNdCt5dmNKVWN1SDNXRytmbWUyaFhOdkV1T3dtV2ZidUJGTUZUeForZkx1ZDQrZU00CjZicklzLzJHWmNOSnpNUS9TSytJY2lJSk9PbE4xWUJoZ2prdm1GT1dEbTB3NFRnNTU3elZCUit1VndZdzk4czJFWnc5TzYKSk5Ba1V4clFmWE56ZEJPTkhFY2pzbVF3aU1wQURyYjFtNlU0TzRJcWVqKy9Qb3lsVUlJNnFST1Q3L3g4cnJ6ODZnWVVTVgphWjFCbHFHYW5xbTJzSE1oSDZiYWlvdDVtQmxOS1FBQUFBTUJBQUVBQUFHQkFMaElmSXFacUZKSFRXcllyN24rays4alR3ClFtcGJvWmc1YmZSWGdhdGljaEo4ZGlXOGlNblFFRVRBcFd0OU5FZ0tqbDRrSGRuSnoyUERkZzFIN0ExaHppbkNsdzZMTTAKYUkyMGxyR2NrWWpXNDRNd3ozYmRQNHlURTllSXRiM0pmN1pNSGpqek4rSy96bWN0eWdMeXFZSzVXYTljM1JnMXdIRWFNNAplakUvNDg4M25WUmJvSFJDcjFCVi8wQVVFTTZhNisrRHpVZW9WdWdWL3RsV3RVMlJuQlZ4eCtJS0FVSDZRTHJFU2JkUkRoCkVGUEFhRWtEb3crd3dDcFpqTXBhMHdRZXBDSkhwWkJLN1pBU25EU3R3Y2RKRE4yeHZzdVNOOGg0bkN0MlZWd0xRenJKeVAKU2VjcWM3M1hIc3E3VWx6ZU5veHlTVW9KZ2JjNTZoRzhWYS9ITlhsOUtkdkFlWUVzS1l1OW5NRUprVSt3VHo1KzUvM2wwVQpxSkErb0pTVTducjYydlVKQnljbXg0SFdBcjJ6QkR2QnFBUWMzRG9LWHczeVM1Z0c5Zkc0c25OUUkxOHVRSjdOSjdndHZHClpKRU56bTNJMmFTMzl5dndWZnFIMXpXVERxU2VNeWhYeWFnTkFEcGtCVEJIMVJQR2NtTFplclFmWWx1djVVUmFNTXdRQUEKQU1BdE9oNHFwUUhidm5tQ1RVakx4dXRrWnRaRlhNa0hmSTk5NS9Nd2RvWVY1eWRKV0pUVGsyKzB1QVBIcTZEejk2b3dWbQpjUkF2WDBDOVU5d3ZRMkpnR0Y1MDZzcmgzZkVpUzM2d1ArOFd0RjZ6ODd0enJwQnpQVHIxOGRONURCOEx5L3dXRk5BVTdqClBUbXM0dHlUY1VsRXR3eEt4TXJTNC9ROUZwMWozL3JNdnNZdGVaSVgycmN4YUhkWWJDVGJtTUpZS3lVTWVXTk56NXpub1EKcFcyd2NDSmpJc1MvS1F2WmR4cHZwNWd0RXE1WlEva3FvLzJVRWd1NHhwdDNWeUNma0FBQURCQVBOSHVEU1R0ZEpJWjdzcwpaQkVwcUE4TE54b1dMQ2RURnlpRERiUnpYOWVPTldkRFQ3NklaRE9HejczNXJhZUFSM2FiY0FhaUM0dDQwTFJTNGEyN29sCm9wK1dSak9wcjVNYUtOUnk4MCt6VWw3WUlSMjErKzVnMFVnNkRnQlBEdmFJSHFSTnRsZ2gyVXdTL0cva1lOaUlEY0JiS1EKOUcvdTI4ekRIRUtNL21YYS8wYnFtSm16ZUYvY1BLdHdScFE3clFoRnAwUkdFcnZtc0l4dDl6K0ZZZUdncjFBYUVTV0ZlTApmUmZsa0lnOVBWOEl0b09GN25qK2VtMkxkNTNCS1hSUUFBQU1FQXhDTFBueHFFVEsyMW5QOXFxQVYzMEZUUkhGNW9kRHg4ClpiYnZIbjgwdEgxQjYwZjRtTGJFRm56REZFR0NwS2Rwb3dyUXR6WUhnQzNBaGNJUE9BbXFXaDg0UEFPbisreHhFanNaQkwKRWhVWmNFUndkYTMzTnJDNTVEMzZxbDBMZEsrSGRuZUFzVGZhazh0bWVlOTJWb0RxdWovNGFSMjBmUTBJUFVzMU8rWHNRNQpGWVFYQzZndExHZGRzRVFoSDF6MTh6RGtWa1UwdEhlZkJaL2pFZXBiOEZScXoxR1hpT0hGK2xBZVE2b3crS0xlcWtCcXQ4CkZxMHhGdG90SlF4VnFWQUFBQUYycHZhVzV1YVhOQVJFVlRTMVJQVUMxUVRWVkdVRFpOQVFJRAotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K"
+        ed25519_key = "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNCNjF0RzkrNGFmOTZsWGoyUStjWjJMT2JpV1liMlRtWVR6N3NSV0JDM1hVZ0FBQUtCRzFWRWZSdFZSCkh3QUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQjYxdEc5KzRhZjk2bFhqMlErY1oyTE9iaVdZYjJUbVlUejdzUldCQzNYVWcKQUFBRURRTStLcCtOSWpJVUhSUklqRFE5VDZ0U0V0SG9Ic0w1QjlwbHpCNlZ2MnluclcwYjM3aHAvM3FWZVBaRDV4bllzNQp1SlpodlpPWmhQUHV4RllFTGRkU0FBQUFGMnB2YVc1dWFYTkFSRVZUUzFSUFVDMVFUVlZHVURaTkFRSURCQVVHCi0tLS0tRU5EIE9QRU5TU0ggUFJJVkFURSBLRVktLS0tLQo="
+        esdsa_key = "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFhQUFBQUJObFkyUnpZUwoxemFHRXlMVzVwYzNSd01qVTJBQUFBQ0c1cGMzUndNalUyQUFBQVFRUjBRc1BjWmJKeWZPaXE2a1M1d0VaeE5DbmR2YVJHCm1ETEUvVVBjakpDTDZQTVIyZmdPS2NnWlhzTEZkTUFzSnExS2d6TmNDN0ZXNGE0L0wrYTFWWUxDQUFBQXNIZ1RqTFY0RTQKeTFBQUFBRTJWalpITmhMWE5vWVRJdGJtbHpkSEF5TlRZQUFBQUlibWx6ZEhBeU5UWUFBQUJCQkhSQ3c5eGxzbko4NktycQpSTG5BUm5FMEtkMjlwRWFZTXNUOVE5eU1rSXZvOHhIWitBNHB5Qmxld3NWMHdDd21yVXFETTF3THNWYmhyajh2NXJWVmdzCklBQUFBZ0h1U3laU0NUZzJZbVNpOG9aY2c0cnVpODh0T1NUSm1aRVhkR09hdExySHNBQUFBWGFtOXBibTVwYzBCRVJWTkwKVkU5UUxWQk5WVVpRTmswQgotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K"
+
+        # Test each key type and see if the configuration configuration is created with no error
+        for private_key in [rsa_key, ed25519_key, esdsa_key]:
+            # Create a configuration
+            self.kwargs.update({
+                'ssh_private_key': private_key
+            })
+            self.cmd(''' k8sconfiguration create -g {rg}
+                    -n {name}
+                    -c {cluster_name}
+                    -u {repo_url}
+                    --cluster-type {cluster_type}
+                    --scope {scope}
+                    --operator-instance-name {operator_instance_name}
+                    --operator-namespace {operator_namespace}
+                    --operator-params \"--git-readonly \"
+                    --ssh-private-key {ssh_private_key}
+                    --enable-helm-operator
+                    --helm-operator-version 1.2.0
+                    --helm-operator-params \"--set git.ssh.secretName=gitops-privatekey-{operator_instance_name} --set tillerNamespace=kube-system\" ''')
+
+            self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('operatorInstanceName', '{operator_instance_name}'),
+                     self.check('operatorNamespace', '{operator_namespace}'),
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('operatorScope', 'namespace'),
+                     self.check('operatorType', 'Flux'),
+                 ])
+            self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_k8sconfiguration')
+    @record_only()
     def test_k8sconfiguration_fail_on_bad_key(self):
         self.kwargs.update({
             'name': 'cli-test-config10',
