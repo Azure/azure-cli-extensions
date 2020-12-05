@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -32,10 +32,9 @@ class K8sconfigurationScenarioTest(ScenarioTest):
             'ssh_known_hosts': 'Z2l0b3BzLWJpdGJ1Y2tldC10ZXN0LXNlcnZlci5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIHNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRQytNT0w3bjk2aGs3emVmMDNwak9vMGF3UENISkZ4NU04TjJ2L2tvODgvc202Y2VzOFljdnYyL0hoUlhRSFZHRUxqZjNuTXVGSVJPMEdMdTFabFNreGRUTUhGcXBxYzFjcUM2R3kveUJXRGM1SWFwWnJBMXFxeSsrZVdpelAzQXdMbWsrMUhXWGdtcHljZUtYNU9vd3VNT3cwd3RYRUdTcDhtVk0wV2VpUzEwWnZ5ZVVKK04zbkNvczMyWDhIeVpnc1pMUS9zSTB4NXN6ODQ2am5JZEFOckZsYU9MUTJ1ejRUa0M2ekNvd3lIdzlLWXJ5V2hJZDAraCt5SXQ5dUtqVHZsWFNpdm1ISjViZzdUWWlkbnFtbjI0UGE4WnFpbTE5UGszUjg0cW9qclVmYm1XT3VwUjdYNXZVVWZqYzhERFRxa3FnRmkxcWdVdE1mWGlMRXErZFVa'
         })
 
-        # List Configurations and get the count
-        config_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                    '--cluster-type {cluster_type}').get_output_in_json())
-        self.greater_than(config_count, 10)
+        # Check that the configuration does not already exist
+        with self.assertRaises(ResourceNotFoundError):
+            self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
 
         # Create a configuration
         self.cmd(''' k8sconfiguration create -g {rg}
@@ -63,11 +62,6 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                      self.check('sshKnownHostsContents', '{ssh_known_hosts}')
                  ])
 
-        # List the configurations again to see if we have one additional
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                 '--cluster-type {cluster_type}').get_output_in_json())
-        self.assertEqual(new_count, config_count + 1)
-
         # Get the configuration created
         self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
                  checks=[
@@ -84,11 +78,6 @@ class K8sconfigurationScenarioTest(ScenarioTest):
         # Delete the created configuration
         self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
 
-        # List Configurations and confirm the count is the same as we started
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                 '--cluster-type {cluster_type}').get_output_in_json())
-        self.assertEqual(new_count, config_count)
-
         # --------------------------------------------------------------------
         #  HTTPS SCENARIO TEST
         # --------------------------------------------------------------------
@@ -101,13 +90,13 @@ class K8sconfigurationScenarioTest(ScenarioTest):
             'operator_namespace': 'cli-test-config11-opns',
             'cluster_type': 'connectedClusters',
             'scope': 'namespace',
-            'https_user': 'dummy-bugbash',
-            'https_key': 'e5f3d17bfb95cb8d6bfd4f4cfb8c6bb8cfe0d59c'
+            'https_user': 'fake-username',
+            'https_key': 'fakepasswordthatiwoulduseforgithub'
         })
 
-        config_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                    '--cluster-type {cluster_type}').get_output_in_json())
-        self.greater_than(config_count, 10)
+        # Check that the configuration does not already exist
+        with self.assertRaises(ResourceNotFoundError):
+            self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
 
         self.cmd(''' k8sconfiguration create -g {rg}
                  -n {name}
@@ -133,11 +122,6 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                      self.check('operatorType', 'Flux')
                  ])
 
-        # List the configurations again to see if we have one additional
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                 '--cluster-type {cluster_type}').get_output_in_json())
-        self.assertEqual(new_count, config_count + 1)
-
         # Get the configuration created
         self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
                  checks=[
@@ -153,11 +137,6 @@ class K8sconfigurationScenarioTest(ScenarioTest):
         # Delete the created configuration
         self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
 
-        # List Configurations and confirm the count is the same as we started
-        new_count = len(self.cmd('k8sconfiguration list -g {rg} --cluster-name {cluster_name} '
-                                 '--cluster-type {cluster_type}').get_output_in_json())
-        self.assertEqual(new_count, config_count)
-
     @ResourceGroupPreparer(name_prefix='cli_test_k8sconfiguration')
     @record_only()
     def test_k8sconfiguration_pass_on_good_key(self):
@@ -166,8 +145,8 @@ class K8sconfigurationScenarioTest(ScenarioTest):
             'cluster_name': 'nanthicluster0923',
             'rg': 'nanthirg0923',
             'repo_url': 'git://github.com/anubhav929/flux-get-started',
-            'operator_instance_name': 'cli-test-config10-opin',
-            'operator_namespace': 'cli-test-config10-opns',
+            'operator_instance_name': 'cli-test-config12-opin',
+            'operator_namespace': 'cli-test-config12-opns',
             'cluster_type': 'connectedClusters',
             'scope': 'namespace',
         })
@@ -182,6 +161,11 @@ class K8sconfigurationScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'ssh_private_key': private_key
             })
+
+            # Check that the configuration does not already exist
+            with self.assertRaises(ResourceNotFoundError):
+                self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
+
             self.cmd(''' k8sconfiguration create -g {rg}
                     -n {name}
                     -c {cluster_name}
