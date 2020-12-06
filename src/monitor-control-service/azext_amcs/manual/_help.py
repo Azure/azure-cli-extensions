@@ -108,16 +108,15 @@ helps['monitor data-collection rule create'] = """
     type: command
     short-summary: "Create a data collection rule."
     parameters:
-      - name: --data-flow
+      - name: --data-flows
         short-summary: "The specification of data flows."
         long-summary: |
-            Usage: --data-flow streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
+            Usage: --data-flows streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
 
             streams: Required. List of streams for this data flow.
             destinations: Required. List of destinations for this data flow.
 
-            Multiple actions can be specified by using more than one --data-flow argument.
-            Multiple actions can be specified by using more than one --destination argument.
+            Multiple actions can be specified by using more than one --data-flows argument.
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
@@ -135,10 +134,10 @@ helps['monitor data-collection rule create'] = """
 
             name: Required. A friendly name for the destination.  This name should be unique across all destinations \
 (regardless of type) within the data collection rule.
-      - name: --performance-counter
+      - name: --performance-counters
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter streams=XX1 streams=XX2 transfer-period=XX \
+            Usage: --performance-counters streams=XX1 streams=XX2 transfer-period=XX \
 sampling-frequency=XX counter-specifiers=XX1 counter-specifiers=XX2 name=XX
 
             streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
@@ -153,11 +152,11 @@ command 'typeperf'.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
-            Multiple actions can be specified by using more than one --performance-counter argument.
-      - name: --windows-event-log
+            Multiple actions can be specified by using more than one --performance-counters argument.
+      - name: --windows-event-logs
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
+            Usage: --windows-event-logs streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
 x-path-queries=XX2 name=XX
 
             streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
@@ -168,7 +167,7 @@ to the nearest minute.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
-            Multiple actions can be specified by using more than one --windows-event-log argument.
+            Multiple actions can be specified by using more than one --windows-event-logs argument.
       - name: --syslog
         short-summary: "The list of Syslog data source configurations."
         long-summary: |
@@ -188,25 +187,25 @@ will be used for this data and usually what table in Log Analytics the data will
         text: |-
                az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
 --name "myCollectionRule" \
---data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
+--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
 streams="Microsoft-WindowsEvent" \
 --log-analytics name="centralWorkspace" \
 resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
 rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
---performance-counter name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
+--performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
 counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
 counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
 transfer-period="PT1M" streams="Microsoft-Perf" \
---performance-counter name="appTeamExtraCounters" \
+--performance-counters name="appTeamExtraCounters" \
 counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
 transfer-period="PT5M" streams="Microsoft-Perf" \
 --syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
 streams="Microsoft-Syslog" \
 --syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" \
 streams="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
+--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
 x-path-queries="Security!" \
---windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" streams="Microsoft-WindowsEvent" \
+--windows-event-logs name="appTeam1AppEvents" transfer-period="PT5M" streams="Microsoft-WindowsEvent" \
 x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
 x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
 
@@ -216,16 +215,15 @@ helps['monitor data-collection rule update'] = """
     type: command
     short-summary: "Update a data collection rule."
     parameters:
-      - name: --data-flow
+      - name: --data-flows
         short-summary: "The specification of data flows."
         long-summary: |
-            Usage: --data-flow streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
+            Usage: --data-flows streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
 
             streams: Required. List of streams for this data flow.
             destinations: Required. List of destinations for this data flow.
 
-            Multiple actions can be specified by using more than one --data-flow argument.
-            Multiple actions can be specified by using more than one --destination argument.
+            Multiple actions can be specified by using more than one --data-flows argument.
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
@@ -243,10 +241,10 @@ helps['monitor data-collection rule update'] = """
 
             name: Required. A friendly name for the destination.  This name should be unique across all destinations \
 (regardless of type) within the data collection rule.
-      - name: --performance-counter
+      - name: --performance-counters
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter streams=XX1 streams=XX2 transfer-period=XX \
+            Usage: --performance-counters streams=XX1 streams=XX2 transfer-period=XX \
 sampling-frequency=XX counter-specifiers=XX1 counter-specifiers=XX2 name=XX
 
             streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
@@ -261,11 +259,11 @@ command 'typeperf'.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
-            Multiple actions can be specified by using more than one --performance-counter argument.
-      - name: --windows-event-log
+            Multiple actions can be specified by using more than one --performance-counters argument.
+      - name: --windows-event-logs
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
+            Usage: --windows-event-logs streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
 x-path-queries=XX2 name=XX
 
             streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
@@ -276,7 +274,7 @@ to the nearest minute.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
-            Multiple actions can be specified by using more than one --windows-event-log argument.
+            Multiple actions can be specified by using more than one --windows-event-logs argument.
       - name: --syslog
         short-summary: "The list of Syslog data source configurations."
         long-summary: |
@@ -295,17 +293,17 @@ will be used for this data and usually what table in Log Analytics the data will
       - name: Update data collection rule
         text: |-
                az monitor data-collection rule update --resource-group "myResourceGroup" --name "myCollectionRule" \
---data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
+--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
 streams="Microsoft-WindowsEvent" \
 --log-analytics name="centralWorkspace" \
 resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
 rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
---performance-counter name="appTeamExtraCounters" \
+--performance-counters name="appTeamExtraCounters" \
 counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
 transfer-period="PT5M" streams="Microsoft-Perf" \
 --syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
 streams="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
+--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
 x-path-queries="Security!" \
 
 

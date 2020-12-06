@@ -51,7 +51,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('description', help='Description of the data collection rule.')
 
-        c.argument('data_flows', action=AddDataFlows, options_list=['--data-flow'], arg_group="Data Flow",
+        c.argument('data_flows', action=AddDataFlows, options_list=['--data-flows'], arg_group="Data Flow",
                    nargs='+', help='The specification of data flows.')
 
         c.argument('destinations__log_analytics', options_list=['--log-analytics'], arg_group="Destinations",
@@ -59,10 +59,10 @@ def load_arguments(self, _):
         c.argument('destinations__azure_monitor_metrics', options_list=['--monitor-metrics'], arg_group="Destinations",
                    action=AddDestinationsAzureMonitorMetrics, nargs='+', help='Azure Monitor Metrics destination.')
 
-        c.argument('data_sources__performance_counters', options_list=['--performance-counter'],
+        c.argument('data_sources__performance_counters', options_list=['--performance-counters'],
                    arg_group="Data Sources", action=AddDataSourcesPerformanceCounters, nargs='+',
                    help='The list of performance counter data source configurations.')
-        c.argument('data_sources__windows_event_logs', options_list=['--windows-event-log'], arg_group="Data Sources",
+        c.argument('data_sources__windows_event_logs', options_list=['--windows-event-logs'], arg_group="Data Sources",
                    action=AddDataSourcesWindowsEventLogs, nargs='+', help='The list of Windows Event Log data source '
                    'configurations.')
         c.argument('data_sources__syslog', options_list=['--syslog'], arg_group="Data Sources",
