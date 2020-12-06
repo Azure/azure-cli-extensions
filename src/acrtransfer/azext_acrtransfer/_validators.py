@@ -50,7 +50,7 @@ def validate_import_options(namespace):
         return
 
     options_list = options_str.split(',')
-    allowed_options_list = ["DisableSourceTrigger", "OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
+    allowed_options_list = ["OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
 
     if not set(options_list).issubset(set(allowed_options_list)):
         valid = False
@@ -87,3 +87,10 @@ def validate_pipeline_type(namespace):
 
     if not valid:
         raise CLIError("Invalid pipeline type. Pipeline type must be import or export.")
+
+def validate_source_trigger_enabled(namespace):
+    status_str = namespace.validate_source_trigger_enabled
+    valid = True
+
+    if status_str.lower not in ("true", "false"):
+        raise CLIError("Invalid source trigger enabled. Source trigger enabled must be true or false.")
