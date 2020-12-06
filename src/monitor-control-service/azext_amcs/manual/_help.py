@@ -111,10 +111,10 @@ helps['monitor data-collection rule create'] = """
       - name: --data-flow
         short-summary: "The specification of data flows."
         long-summary: |
-            Usage: --data-flow stream=XX1 stream=XX2 destination=XX1 destination=XX2
+            Usage: --data-flow streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
 
-            stream: Required. List of streams for this data flow.
-            destination: Required. List of destinations for this data flow.
+            streams: Required. List of streams for this data flow.
+            destinations: Required. List of destinations for this data flow.
 
             Multiple actions can be specified by using more than one --data-flow argument.
             Multiple actions can be specified by using more than one --destination argument.
@@ -138,16 +138,16 @@ helps['monitor data-collection rule create'] = """
       - name: --performance-counter
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter stream=XX1 stream=XX2 transfer-period=XX \
-sampling-frequency=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
+            Usage: --performance-counter streams=XX1 streams=XX2 transfer-period=XX \
+sampling-frequency=XX counter-specifiers=XX1 counter-specifiers=XX2 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
             transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
             sampling-frequency: Required. The number of seconds between consecutive counter measurements \
 (samples).
-            counter-specifier: Required. A list of specifier names of the performance counters you want to collect. \
+            counter-specifiers: Required. A list of specifier names of the performance counters you want to collect. \
 Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
 command 'typeperf'.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
@@ -157,14 +157,14 @@ command 'typeperf'.
       - name: --windows-event-log
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log stream=XX1 stream=XX2 transfer-period=XX x-path-query=XX1 \
-x-path-query=XX2 name=XX
+            Usage: --windows-event-log streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
+x-path-queries=XX2 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
             transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
-            x-path-query: Required. A list of Windows Event Log queries in XPATH format.
+            x-path-queries: Required. A list of Windows Event Log queries in XPATH format.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
@@ -172,13 +172,13 @@ to the nearest minute.
       - name: --syslog
         short-summary: "The list of Syslog data source configurations."
         long-summary: |
-            Usage: --syslog stream=XX1 stream=XX2 facility-name=XX1 facility-name=XX2 log-level=XX1 log-level=XX2 \
+            Usage: --syslog streams=XX1 streams=XX2 facility-names=XX1 facility-names=XX2 log-levels=XX1 log-levels=XX2 \
 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            facility-name: Required. The list of facility names.
-            log-level: The log levels to collect.
+            facility-names: Required. The list of facility names.
+            log-levels: The log levels to collect.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
@@ -188,27 +188,27 @@ will be used for this data and usually what table in Log Analytics the data will
         text: |-
                az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
 --name "myCollectionRule" \
---data-flow destination="centralWorkspace" stream="Microsoft-Perf" stream="Microsoft-Syslog" \
-stream="Microsoft-WindowsEvent" \
+--data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
+streams="Microsoft-WindowsEvent" \
 --log-analytics name="centralWorkspace" \
 resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
 rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
---performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total)\\\\% Processor Time" \
-counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
-counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
-transfer-period="PT1M" stream="Microsoft-Perf" \
+--performance-counter name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" \
+counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
+counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
+transfer-period="PT1M" streams="Microsoft-Perf" \
 --performance-counter name="appTeamExtraCounters" \
-counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
-transfer-period="PT5M" stream="Microsoft-Perf" \
---syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" log-level="Emergency" \
-stream="Microsoft-Syslog" \
---syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" log-level="Emergency" \
-stream="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
-x-path-query="Security!" \
---windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
-x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
-x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
+counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
+transfer-period="PT5M" streams="Microsoft-Perf" \
+--syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
+streams="Microsoft-Syslog" \
+--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" \
+streams="Microsoft-Syslog" \
+--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
+x-path-queries="Security!" \
+--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" streams="Microsoft-WindowsEvent" \
+x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
+x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
 
 """
 
@@ -219,12 +219,13 @@ helps['monitor data-collection rule update'] = """
       - name: --data-flow
         short-summary: "The specification of data flows."
         long-summary: |
-            Usage: --data-flow stream=XX1 stream=XX2 destination=XX1 destination=XX2
+            Usage: --data-flow streams=XX1 streams=XX2 destinations=XX1 destinations=XX2
 
-            stream: Required. List of streams for this data flow.
-            destination: Required. List of destinations for this data flow.
+            streams: Required. List of streams for this data flow.
+            destinations: Required. List of destinations for this data flow.
 
             Multiple actions can be specified by using more than one --data-flow argument.
+            Multiple actions can be specified by using more than one --destination argument.
       - name: --log-analytics
         short-summary: "List of Log Analytics destinations."
         long-summary: |
@@ -245,16 +246,16 @@ helps['monitor data-collection rule update'] = """
       - name: --performance-counter
         short-summary: "The list of performance counter data source configurations."
         long-summary: |
-            Usage: --performance-counter stream=XX1 stream=XX2 transfer-period=XX \
-sampling-frequency=XX counter-specifier=XX1 counter-specifier=XX2 name=XX
+            Usage: --performance-counter streams=XX1 streams=XX2 transfer-period=XX \
+sampling-frequency=XX counter-specifiers=XX1 counter-specifiers=XX2 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
             transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
             sampling-frequency: Required. The number of seconds between consecutive counter measurements \
 (samples).
-            counter-specifier: Required. A list of specifier names of the performance counters you want to collect. \
+            counter-specifiers: Required. A list of specifier names of the performance counters you want to collect. \
 Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the \
 command 'typeperf'.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
@@ -264,14 +265,14 @@ command 'typeperf'.
       - name: --windows-event-log
         short-summary: "The list of Windows Event Log data source configurations."
         long-summary: |
-            Usage: --windows-event-log stream=XX1 stream=XX2 transfer-period=XX x-path-query=XX1 \
-x-path-query=XX2 name=XX
+            Usage: --windows-event-log streams=XX1 streams=XX2 transfer-period=XX x-path-queries=XX1 \
+x-path-queries=XX2 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
             transfer-period: Required. The interval between data uploads (scheduled transfers), rounded up \
 to the nearest minute.
-            x-path-query: Required. A list of Windows Event Log queries in XPATH format.
+            x-path-queries: Required. A list of Windows Event Log queries in XPATH format.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
@@ -279,43 +280,34 @@ to the nearest minute.
       - name: --syslog
         short-summary: "The list of Syslog data source configurations."
         long-summary: |
-            Usage: --syslog stream=XX1 stream=XX2 facility-name=XX1 facility-name=XX2 log-level=XX1 log-level=XX2 \
+            Usage: --syslog streams=XX1 streams=XX2 facility-names=XX1 facility-names=XX2 log-levels=XX1 log-levels=XX2 \
 name=XX
 
-            stream: Required. List of streams that this data source will be sent to. A stream indicates what schema \
+            streams: Required. List of streams that this data source will be sent to. A stream indicates what schema \
 will be used for this data and usually what table in Log Analytics the data will be sent to.
-            facility-name: Required. The list of facility names.
-            log-level: The log levels to collect.
+            facility-names: Required. The list of facility names.
+            log-levels: The log levels to collect.
             name: Required. A friendly name for the data source.  This name should be unique across all data sources \
 (regardless of type) within the data collection rule.
 
             Multiple actions can be specified by using more than one --syslog argument.
     examples:
-      - name: Create data collection rule
+      - name: Update data collection rule
         text: |-
-               az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
---name "myCollectionRule" \
---data-flow destination="centralWorkspace" stream="Microsoft-Perf" stream="Microsoft-Syslog" \
-stream="Microsoft-WindowsEvent" \
---performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total)\\\\% Processor Time" \
-counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
-counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency=15 \
-transfer-period="PT1M" stream="Microsoft-Perf" \
---performance-counter name="appTeamExtraCounters" \
-counter-specifier="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
-transfer-period="PT5M" stream="Microsoft-Perf" \
---syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" log-level="Emergency" \
-stream="Microsoft-Syslog" \
---syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" log-level="Emergency" \
-stream="Microsoft-Syslog" \
---windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" stream="Microsoft-WindowsEvent" \
-x-path-query="Security!" \
---windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" stream="Microsoft-WindowsEvent" \
-x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" \
-x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
+               az monitor data-collection rule update --resource-group "myResourceGroup" --name "myCollectionRule" \
+--data-flow destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" \
+streams="Microsoft-WindowsEvent" \
 --log-analytics name="centralWorkspace" \
 resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Mic\
-rosoft.OperationalInsights/workspaces/centralTeamWorkspace"
+rosoft.OperationalInsights/workspaces/centralTeamWorkspace" \
+--performance-counter name="appTeamExtraCounters" \
+counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 \
+transfer-period="PT5M" streams="Microsoft-Perf" \
+--syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
+streams="Microsoft-Syslog" \
+--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
+x-path-queries="Security!" \
+
 
 """
 
@@ -326,4 +318,257 @@ helps['monitor data-collection rule delete'] = """
       - name: Delete data collection rule
         text: |-
                az monitor data-collection rule delete --name "myCollectionRule" --resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule data-flow'] = """
+    type: group
+    short-summary: Manage data flows.
+"""
+
+helps['monitor data-collection rule data-flow list'] = """
+    type: command
+    short-summary: List data flows.
+    examples:
+      - name: List data flows
+        text: |-
+               az monitor data-collection rule data-flow list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule data-flow add'] = """
+    type: command
+    short-summary: Add a data flow.
+    examples:
+      - name: Add a data flow
+        text: |-
+               az monitor data-collection rule data-flow add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --destinations XX3 XX4 --streams "Microsoft-Perf" "Microsoft-WindowsEvent"
+"""
+
+helps['monitor data-collection rule log-analytics'] = """
+    type: group
+    short-summary: Manage Log Analytics destinations.
+"""
+
+helps['monitor data-collection rule log-analytics list'] = """
+    type: command
+    short-summary: List Log Analytics destinations of a data collection rule.
+    examples:
+      - name: List Log Analytics destinations of a data collection rule
+        text: |-
+               az monitor data-collection rule log-analytics list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule log-analytics show'] = """
+    type: command
+    short-summary: Show a Log Analytics destination of a data collection rule.
+    examples:
+      - name: Show a Log Analytics destination of a data collection rule
+        text: |-
+               az monitor data-collection rule log-analytics show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "centralWorkspace"
+"""
+
+helps['monitor data-collection rule log-analytics add'] = """
+    type: command
+    short-summary: Add Log Analytics destinations of a data collection rule.
+    examples:
+      - name: Add Log Analytics destinations of a data collection rule
+        text: |-
+               az monitor data-collection rule log-analytics add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2" --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ff\
+c2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/workspace2"
+"""
+
+helps['monitor data-collection rule log-analytics delete'] = """
+    type: command
+    short-summary: Delete a Log Analytics destinations of a data collection rule.
+    examples:
+      - name: Delete a Log Analytics destinations of a data collection rule
+        text: |-
+               az monitor data-collection rule log-analytics delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2"
+"""
+
+helps['monitor data-collection rule log-analytics update'] = """
+    type: command
+    short-summary: Update a Log Analytics destination of a data collection rule.
+    examples:
+      - name: Update a Log Analytics destination of a data collection rule
+        text: |-
+               az monitor data-collection rule log-analytics update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2" --resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ff\
+c2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/anotherWorkspace"
+"""
+
+helps['monitor data-collection rule performance-counter'] = """
+    type: group
+    short-summary: Manage Log performance counter data source.
+"""
+
+helps['monitor data-collection rule performance-counter list'] = """
+    type: command
+    short-summary: List Log performance counter data sources.
+    examples:
+      - name: List Log performance counter data sources
+        text: |-
+               az monitor data-collection rule performance-counter list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule performance-counter show'] = """
+    type: command
+    short-summary: Show a Log performance counter data source.
+    examples:
+      - name: Show a Log performance counter data source
+        text: |-
+               az monitor data-collection rule performance-counter show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeamExtraCounters"
+"""
+
+helps['monitor data-collection rule performance-counter add'] = """
+    type: command
+    short-summary: Add a Log performance counter data source.
+    examples:
+      - name: Add a Log performance counter data source
+        text: |-
+               az monitor data-collection rule performance-counter add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters" --streams "Microsoft-Perf" \
+--counter-specifiers "\\\\Process(_Total)\\\\Thread Count" "\\\\LogicalDisk(_Total)\\\\Free Megabytes" \
+--sampling-frequency 30 --transfer-period PT15M
+"""
+
+helps['monitor data-collection rule performance-counter update'] = """
+    type: command
+    short-summary: Update a Log performance counter data source.
+    examples:
+      - name: Update a Log performance counter data source
+        text: |-
+               az monitor data-collection rule performance-counter update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters" --transfer-period PT1M
+"""
+
+helps['monitor data-collection rule performance-counter delete'] = """
+    type: command
+    short-summary: Delete a Log performance counter data source.
+    examples:
+      - name: Delete a Log performance counter data source
+        text: |-
+               az monitor data-collection rule performance-counter delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters"
+"""
+
+helps['monitor data-collection rule windows-event-log'] = """
+    type: group
+    short-summary: Manage Windows Event Log data source.
+"""
+
+helps['monitor data-collection rule windows-event-log list'] = """
+    type: command
+    short-summary: List Windows Event Log data sources.
+    examples:
+      - name: List Windows Event Log data sources
+        text: |-
+               az monitor data-collection rule windows-event-log list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule windows-event-log show'] = """
+    type: command
+    short-summary: Show a Windows Event Log data source.
+    examples:
+      - name: Show a Windows Event Log data source
+        text: |-
+               az monitor data-collection rule windows-event-log show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents"
+"""
+
+helps['monitor data-collection rule windows-event-log add'] = """
+    type: command
+    short-summary: Add a Windows Event Log data source.
+    examples:
+      - name: Add a Windows Event Log data source
+        text: |-
+               az monitor data-collection rule windows-event-log add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents" --transfer-period "PT1M" \
+--streams "Microsoft-WindowsEvent" --x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
+"System![System[(Level = 1 or Level = 2 or Level = 3)]]"
+"""
+
+helps['monitor data-collection rule windows-event-log update'] = """
+    type: command
+    short-summary: Update a Windows Event Log data source.
+    examples:
+      - name: Update a Windows Event Log data source
+        text: |-
+               az monitor data-collection rule windows-event-log update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents" \
+--x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
+"""
+
+helps['monitor data-collection rule windows-event-log delete'] = """
+    type: command
+    short-summary: Delete a Windows Event Log data source.
+    examples:
+      - name: Delete a Windows Event Log data source
+        text: |-
+               az monitor data-collection rule windows-event-log delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents"
+"""
+
+helps['monitor data-collection rule syslog'] = """
+    type: group
+    short-summary: Manage Syslog data source.
+"""
+
+helps['monitor data-collection rule syslog list'] = """
+    type: command
+    short-summary: List Syslog data sources.
+    examples:
+      - name: List Syslog data sources
+        text: |-
+               az monitor data-collection rule syslog list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection rule syslog show'] = """
+    type: command
+    short-summary: Show a Syslog data source.
+    examples:
+      - name: Show a Syslog data source
+        text: |-
+               az monitor data-collection rule syslog show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase"
+"""
+
+helps['monitor data-collection rule syslog add'] = """
+    type: command
+    short-summary: Add a Syslog data source.
+    examples:
+      - name: Add a Syslog data source
+        text: |-
+               az monitor data-collection rule syslog add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Alert" "Critical" \
+--streams "Microsoft-Syslog" 
+"""
+
+helps['monitor data-collection rule syslog update'] = """
+    type: command
+    short-summary: Update a Syslog data source.
+    examples:
+      - name: Update a Syslog data source
+        text: |-
+               az monitor data-collection rule syslog update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Emergency" "Critical"
+"""
+
+helps['monitor data-collection rule syslog delete'] = """
+    type: command
+    short-summary: Delete a Syslog data source.
+    examples:
+      - name: Delete a Syslog data source
+        text: |-
+               az monitor data-collection rule syslog delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase"
 """

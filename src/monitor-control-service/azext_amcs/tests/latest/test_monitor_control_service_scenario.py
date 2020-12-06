@@ -11,7 +11,6 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_data_collection_rule_create
 from .example_steps import step_data_collection_rule_show
 from .example_steps import step_data_collection_rule_list_by_resource_group
 from .example_steps import step_data_collection_rule_list_by_subscription
@@ -31,30 +30,30 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup_scenario
 @try_manual
-def setup_scenario(test, rg):
-    test.kwargs.update({
-        'rg': rg,
-        'workspace_name': test.create_random_name('clitest', 20),
-        'location': "eastus",
-        'vm': "vm1"
-    })
-
-    workspace_json = test.cmd(
-        "monitor log-analytics workspace create -g {rg} -n {workspace_name} --location {location} --quota 1 "
-        "--level 100 --sku CapacityReservation").get_output_in_json()
-    test.kwargs['workspace_id'] = workspace_json['id']
-
-    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
-                       '--admin-username testadmin --authentication-type password').get_output_in_json()
-    test.kwargs['vm_id'] = vm_json['id']
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test, rg):
-    pass
+def step_data_collection_rule_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    rule_json = test.cmd('az monitor data-collection rule create '
+             '-g {rg} -n {myDataCollectionRule} --location "{location}" '
+             '--data-flow destinations="{workspace_name}" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
+             'streams="Microsoft-WindowsEvent" '
+             '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
+             '--performance-counter name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
+             ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\Logical'
+             'Disk(_Total)\\\\Free Megabytes" counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
+             'sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" '
+             '--performance-counter name="appTeamExtraCounters" counter-specifiers="\\\\Process(_Total)\\\\Thread '
+             'Count" sampling-frequency=30 transfer-period="PT5M" streams="Microsoft-Perf" '
+             '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
+             'log-levels="Emergency" streams="Microsoft-Syslog" '
+             '--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" '
+             'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
+             '--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" '
+             'streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
+             'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
+             checks=checks).get_output_in_json()
+    test.kwargs['rule_id'] = rule_json['id']
 
 
 @try_manual
@@ -73,6 +72,333 @@ def step_data_collection_rule_update_tags(test, rg, checks=None):
              checks=checks)
 
 
+@try_manual
+def step_data_collection_rule_log_analytics_add(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule log-analytics add '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name {workspace2_name} '
+             '--resource-id "{workspace2_id}"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_log_analytics_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule log-analytics list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_log_analytics_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule log-analytics show '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name {workspace2_name} ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_log_analytics_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule log-analytics update '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name {workspace2_name} '
+             '--resource-id "{workspace3_id}"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_log_analytics_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule log-analytics delete '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name {workspace2_name} ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_data_flow_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule data-flow list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_data_flow_add(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule data-flow add '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" --destinations {workspace2_name} --streams "Microsoft-Perf"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_performance_counter_add(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule performance-counter add '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraCounters '
+             '--counter-specifiers "\\\\Memory\\\\Committed Bytes" "\\\\Processor(_Total)\\\\% Processor Time" '
+             '--sampling-frequency 15 '
+             '--transfer-period "PT1M" '
+             '--streams "Microsoft-Perf"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_performance_counter_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule performance-counter list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_performance_counter_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule performance-counter show '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraCounters ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_performance_counter_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule performance-counter update '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraCounters '
+             '--counter-specifiers "\\\\Processor(_Total)\\\\% Processor Time"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_performance_counter_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule performance-counter delete '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraCounters ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_windows_event_log_add(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule windows-event-log add '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraEvents '
+             '--transfer-period "PT1M" '
+             '--streams "Microsoft-WindowsEvent" '
+             '--x-path-queries "System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
+             '"Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_windows_event_log_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule windows-event-log list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_windows_event_log_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule windows-event-log show '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraEvents ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_windows_event_log_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule windows-event-log update '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraEvents '
+             '--x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_windows_event_log_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule windows-event-log delete '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name extraEvents ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_syslog_add(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule syslog add '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name "cronSyslog" '
+             '--facility-names "cron" '
+             '--log-levels "Debug" "Critical" "Emergency" '
+             '--streams "Microsoft-Syslog" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_syslog_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule syslog list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_syslog_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule syslog show '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name cronSyslog ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_syslog_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule syslog update '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name cronSyslog '
+             '--log-levels "Critical" "Emergency" ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_syslog_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([])
+    test.cmd('az monitor data-collection rule syslog delete '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}" '
+             '--name cronSyslog ',
+             checks=checks)
+
+
+@try_manual
+def step_data_collection_rule_association_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    checks.extend([
+        test.check("description", "{description}", case_sensitive=False),
+    ])
+    test.cmd('az monitor data-collection rule association update '
+             '--name "{myAssociation}" '
+             '--resource "{vm_id}" '
+             '--description "{description}" ',
+             checks=checks)
+
+
+# Env setup_scenario
+@try_manual
+def setup_scenario(test, rg):
+    test.kwargs.update({
+        'rg': rg,
+        'workspace_name': test.create_random_name('clitest', 20),
+        'workspace2_name': test.create_random_name('clitest', 20),
+        'workspace3_name': test.create_random_name('clitest', 20),
+        'location': "eastus",
+        'vm': "vm1",
+        'description': "this is description",
+    })
+
+    workspace_json = test.cmd(
+        "monitor log-analytics workspace create -g {rg} -n {workspace_name} --location {location} --quota 1 "
+        "--level 100 --sku CapacityReservation").get_output_in_json()
+    test.kwargs['workspace_id'] = workspace_json['id']
+
+    workspace2_json = test.cmd(
+        "monitor log-analytics workspace create -g {rg} -n {workspace2_name} --location {location} --quota 1 "
+        "--level 300 --sku CapacityReservation").get_output_in_json()
+    test.kwargs['workspace2_id'] = workspace2_json['id']
+
+    workspace3_json = test.cmd(
+        "monitor log-analytics workspace create -g {rg} -n {workspace3_name} --location {location} --quota 1 "
+        "--level 200 --sku CapacityReservation").get_output_in_json()
+    test.kwargs['workspace3_id'] = workspace3_json['id']
+
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+                       '--admin-username testadmin --authentication-type password').get_output_in_json()
+    test.kwargs['vm_id'] = vm_json['id']
+
+
+# Env cleanup_scenario
+@try_manual
+def cleanup_scenario(test, rg):
+    pass
+
+
 # Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
@@ -88,18 +414,57 @@ def call_scenario(test, rg):
     step_data_collection_rule_list_by_resource_group(test, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_data_collection_rule_list_by_subscription(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
+    step_data_collection_rule_list_by_subscription(test, rg, checks=[])
     step_data_collection_rule_update_tags(test, rg, checks=[
         test.check("location", "{location}", case_sensitive=False),
         test.check("name", "{myDataCollectionRule}", case_sensitive=False),
     ])
+
+    step_data_collection_rule_log_analytics_add(test, rg, checks=[])
+    step_data_collection_rule_log_analytics_list(test, rg, checks=[
+        test.check('length(@)', 2),
+    ])
+    step_data_collection_rule_log_analytics_show(test, rg, checks=[])
+    step_data_collection_rule_log_analytics_update(test, rg, checks=[])
+    step_data_collection_rule_log_analytics_delete(test, rg, checks=[])
+
+    step_data_collection_rule_performance_counter_add(test, rg, checks=[])
+    step_data_collection_rule_performance_counter_list(test, rg, checks=[
+        test.check('length(@)', 3),
+    ])
+    step_data_collection_rule_performance_counter_show(test, rg, checks=[])
+    step_data_collection_rule_performance_counter_update(test, rg, checks=[])
+    step_data_collection_rule_performance_counter_delete(test, rg, checks=[])
+
+    step_data_collection_rule_windows_event_log_add(test, rg, checks=[])
+    step_data_collection_rule_windows_event_log_list(test, rg, checks=[
+        test.check('length(@)', 3),
+    ])
+    step_data_collection_rule_windows_event_log_show(test, rg, checks=[])
+    step_data_collection_rule_windows_event_log_update(test, rg, checks=[])
+    step_data_collection_rule_windows_event_log_delete(test, rg, checks=[])
+
+    step_data_collection_rule_syslog_add(test, rg, checks=[])
+    step_data_collection_rule_syslog_list(test, rg, checks=[
+        test.check('length(@)', 2),
+    ])
+    step_data_collection_rule_syslog_show(test, rg, checks=[])
+    step_data_collection_rule_syslog_update(test, rg, checks=[])
+    step_data_collection_rule_syslog_delete(test, rg, checks=[])
+
+    step_data_collection_rule_log_analytics_add(test, rg, checks=[])
+    step_data_collection_rule_data_flow_add(test, rg, checks=[])
+    step_data_collection_rule_data_flow_list(test, rg, checks=[
+        test.check('length(@)', 2),
+    ])
+
     step_data_collection_rule_association_create(test, rg, checks=[])
     step_data_collection_rule_association_show(test, rg, checks=[])
     step_data_collection_rule_association_list_by_rule(test, rg, checks=[])
     step_data_collection_rule_association_list_by_resource(test, rg, checks=[])
+    step_data_collection_rule_association_update(test, rg, checks=[])
     step_data_collection_rule_association_delete(test, rg, checks=[])
+
     step_data_collection_rule_delete(test, rg, checks=[])
     cleanup_scenario(test, rg)
 

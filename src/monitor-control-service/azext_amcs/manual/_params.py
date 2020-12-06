@@ -32,7 +32,7 @@ from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerf
 
 def load_arguments(self, _):
 
-    with self.argument_context('monitor data-collection rule association create') as c:
+    with self.argument_context('monitor data-collection rule association') as c:
         c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
         c.argument('description', help='Description of the association.')
@@ -72,9 +72,9 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor data-collection rule data-flow') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
-        c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownDataFlowStreams), nargs='+',
-                   help='List of streams for this data flow.')
-        c.argument('destinations', options_list=['--destination'], nargs='+',
+        c.argument('streams', options_list=['--streams'], arg_type=get_enum_type(KnownDataFlowStreams),
+                   nargs='+', help='List of streams for this data flow.')
+        c.argument('destinations', options_list=['--destinations'], nargs='+',
                    help='List of destinations for this data flow.')
 
     with self.argument_context('monitor data-collection rule log-analytics') as c:
@@ -90,16 +90,16 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
-        c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownPerfCounterDataSourceStreams),
-                   nargs='+', help='List of streams that this data source will be sent to. A stream indicates '
-                   'what schema will be used for this data and usually what table in Log Analytics the data will '
-                   'be sent to.')
+        c.argument('streams', options_list=['--streams'], arg_type=get_enum_type(KnownPerfCounterDataSourceStreams),
+                   nargs='+', help='List of streams that this data source will be sent to. A stream '
+                   'indicates what schema will be used for this data and usually what table in Log Analytics the data '
+                   'will be sent to.')
         c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
                    arg_type=get_enum_type(KnownPerfCounterDataSourceScheduledTransferPeriod),
                    help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('sampling_frequency_in_seconds', options_list=['--sampling-frequency'], type=int,
                    help='The number of seconds between consecutive counter measurements (samples).')
-        c.argument('counter_specifiers', options_list=['--counter-specifier'], nargs='+',
+        c.argument('counter_specifiers', options_list=['--counter-specifiers'], nargs='+',
                    help="A list of specifier names of the performance counters you want to collect."
                    "Use a wildcard (*) to collect a counter for all instances. "
                    "To get a list of performance counters on Windows, run the command 'typeperf'.")
@@ -109,13 +109,14 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
-        c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownWindowsEventLogDataSourceStreams),
-                   nargs='+', help='List of streams that this data source will be sent to. A stream indicates what '
-                   'schema will be used for this data and usually what table in Log Analytics the data will be sent to.')
+        c.argument('streams', options_list=['--streams'], arg_type=get_enum_type(KnownWindowsEventLogDataSourceStreams),
+                   nargs='+', help='List of streams that this data source will be sent to. A stream '
+                   'indicates what schema will be used for this data and usually what table in Log Analytics the data '
+                   'will be sent to.')
         c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
                    arg_type=get_enum_type(KnownWindowsEventLogDataSourceScheduledTransferPeriod),
                    help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
-        c.argument('x_path_queries', options_list=['--x-path-query'], nargs='+',
+        c.argument('x_path_queries', options_list=['--x-path-queries'], nargs='+',
                    help='A list of Windows Event Log queries in XPATH format.')
 
     with self.argument_context('monitor data-collection rule syslog') as c:
@@ -123,11 +124,12 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'],
                    help='A friendly name for the data source. This name should be unique across all data sources '
                    '(regardless of type) within the data collection rule.')
-        c.argument('streams', options_list=['--stream'], arg_type=get_enum_type(KnownSyslogDataSourceStreams),
-                   nargs='+', help='List of streams that this data source will be sent to. A stream indicates what '
-                   'schema will be used for this data and usually what table in Log Analytics the data will be sent to.')
-        c.argument('facility_names', options_list=['--facility-name'],
+        c.argument('streams', options_list=['--streams'], arg_type=get_enum_type(KnownSyslogDataSourceStreams),
+                   nargs='+', help='List of streams that this data source will be sent to. A stream '
+                   'indicates what schema will be used for this data and usually what table in Log Analytics the data '
+                   'will be sent to.')
+        c.argument('facility_names', options_list=['--facility-names'],
                    arg_type=get_enum_type(KnownSyslogDataSourceFacilityNames), nargs='+',
                    help='The list of facility names.')
-        c.argument('log_levels', options_list=['--log-level'], arg_type=get_enum_type(KnownSyslogDataSourceLogLevels),
+        c.argument('log_levels', options_list=['--log-levels'], arg_type=get_enum_type(KnownSyslogDataSourceLogLevels),
                    nargs='+', help='The log levels to collect.')

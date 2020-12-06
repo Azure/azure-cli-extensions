@@ -141,7 +141,7 @@ def data_collection_rules_data_flows_add(client,
     if 'data_flows' not in body:
         body['data_flows'] = []
     item = {
-        'steams': streams,
+        'streams': streams,
         'destinations': destinations,
     }
     body['data_flows'].append(item)
@@ -169,7 +169,7 @@ def data_collection_rules_log_analytics_show(client,
     item_list = data_collection_rules_log_analytics_list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
-        if item['name'] == name:
+        if item.name == name:
             return item
     return {}
 
@@ -288,7 +288,7 @@ def data_collection_rules_performance_counters_show(client,
     item_list = data_collection_rules_performance_counters_list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
-        if item['name'] == name:
+        if item.name == name:
             return item
     return {}
 
@@ -405,7 +405,7 @@ def data_collection_rules_windows_event_logs_show(client,
     item_list = data_collection_rules_windows_event_logs_list(
         client, resource_group_name, data_collection_rule_name)
     for item in item_list:
-        if item['name'] == name:
+        if item.name == name:
             return item
     return {}
 
@@ -414,7 +414,7 @@ def data_collection_rules_windows_event_logs_add(client,
                                                  resource_group_name,
                                                  data_collection_rule_name,
                                                  name,
-                                                 steams,
+                                                 streams,
                                                  scheduled_transfer_period,
                                                  x_path_queries):
     from ..custom import monitor_data_collection_rule_show
@@ -433,7 +433,7 @@ def data_collection_rules_windows_event_logs_add(client,
 
     item = {
         'name': name,
-        'steams': steams,
+        'streams': streams,
         'scheduled_transfer_period': scheduled_transfer_period,
         'x_path_queries': x_path_queries
     }
@@ -472,7 +472,7 @@ def data_collection_rules_windows_event_logs_update(client,
                                                     resource_group_name,
                                                     data_collection_rule_name,
                                                     name,
-                                                    steams=None,
+                                                    streams=None,
                                                     scheduled_transfer_period=None,
                                                     x_path_queries=None):
     from ..custom import monitor_data_collection_rule_show
@@ -486,8 +486,8 @@ def data_collection_rules_windows_event_logs_update(client,
     item_list = body['data_sources']['windows_event_logs']
     for item in item_list:
         if item['name'] == name:
-            if steams is not None:
-                item['steams'] = name
+            if streams is not None:
+                item['streams'] = streams
             if scheduled_transfer_period is not None:
                 item['scheduled_transfer_period'] = scheduled_transfer_period
             if x_path_queries is not None:
@@ -517,7 +517,7 @@ def data_collection_rules_syslog_show(client,
     item_list = data_collection_rules_syslog_list(client, resource_group_name,
                                                   data_collection_rule_name)
     for item in item_list:
-        if item['name'] == name:
+        if item.name == name:
             return item
     return {}
 
@@ -544,6 +544,7 @@ def data_collection_rules_syslog_add(client,
             raise InvalidArgumentValueError("Name {} exists.".format(name))
 
     item = {
+        'name': name,
         'streams': streams,
         'facility_names': facility_names,
     }

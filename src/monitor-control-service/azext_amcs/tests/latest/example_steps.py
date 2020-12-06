@@ -13,32 +13,6 @@ from .. import try_manual
 
 
 # EXAMPLE: /DataCollectionRules/put/Create or update data collection rule
-@try_manual
-def step_data_collection_rule_create(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    rule_json = test.cmd('az monitor data-collection rule create '
-             '-g {rg} -n {myDataCollectionRule} --location "{location}" '
-             '--data-flow destination="{workspace_name}" stream="Microsoft-Perf" stream="Microsoft-Syslog" '
-             'stream="Microsoft-WindowsEvent" '
-             '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
-             '--performance-counter name="cloudTeamCoreCounters" counter-specifier="\\\\Processor(_Total'
-             ')\\\\% Processor Time" counter-specifier="\\\\Memory\\\\Committed Bytes" counter-specifier="\\\\Logical'
-             'Disk(_Total)\\\\Free Megabytes" counter-specifier="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-             'sampling-frequency=15 transfer-period="PT1M" stream="Microsoft-Perf" '
-             '--performance-counter name="appTeamExtraCounters" counter-specifier="\\\\Process(_Total)\\\\Thread Count"'
-             ' sampling-frequency=30 transfer-period="PT5M" stream="Microsoft-Perf" '
-             '--syslog name="cronSyslog" facility-name="cron" log-level="Debug" log-level="Critical" '
-             'log-level="Emergency" stream="Microsoft-Syslog" '
-             '--syslog name="syslogBase" facility-name="syslog" log-level="Alert" log-level="Critical" '
-             'log-level="Emergency" stream="Microsoft-Syslog" '
-             '--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" '
-             'stream="Microsoft-WindowsEvent" x-path-query="Security!" '
-             '--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" '
-             'stream="Microsoft-WindowsEvent" x-path-query="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
-             'x-path-query="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
-             checks=checks).get_output_in_json()
-    test.kwargs['rule_id'] = rule_json['id']
 
 
 # EXAMPLE: /DataCollectionRules/get/Get data collection rule

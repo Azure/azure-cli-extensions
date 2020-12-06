@@ -1,13 +1,36 @@
 |Scenario|Result|ErrorMessage|ErrorStack|ErrorNormalized|StartDt|EndDt|
-|step_data_collection_rule_create|successed||||2020-12-04 09:52:16.150100|2020-12-04 09:52:26.128187|
-|step_data_collection_rule_show|successed||||2020-12-04 09:52:26.128187|2020-12-04 09:52:28.271091|
-|step_data_collection_rule_list_by_resource_group|successed||||2020-12-04 09:52:28.271091|2020-12-04 09:52:30.414010|
-|step_data_collection_rule_list_by_subscription|failed|Query 'length(@)' doesn't yield expected value '1', instead the actual value is '3'. Data:  [   {     "dataFlows": [       {         "destinations": [           "clitesthldx5k3njrpoa"         ],         "streams": [           "Microsoft-Perf",           "Microsoft-Syslog",           "Microsoft-WindowsEvent"         ]       }     ],     "dataSources": {       "extensions": null,       "performanceCounters": [         {           "counterSpecifiers": [             "\\Processor(_Total)\\% Processor|Traceback (most recent call last):   File "C:\Users\kairu\projects\azure-cli-extensions\src\monitor-control-service\azext_amcs\tests\__init__.py", line 66, in wrapper     ret = func_to_call(*args, **kwargs)   File "C:\Users\kairu\projects\azure-cli-extensions\src\monitor-control-service\azext_amcs\tests\latest\example_steps.py", line 70, in step_data_collection_rule_list_by_subscription     test.cmd('az monitor data-collection rule list ',   File "c:\users\kairu\projects\azure-cli\src\azure-cli-||2020-12-04 09:52:30.414010|2020-12-04 09:52:31.275060|
-|step_data_collection_rule_update_tags|successed||||2020-12-04 09:52:31.352996|2020-12-04 09:52:40.405962|
-|step_data_collection_rule_association_create|successed||||2020-12-04 09:52:40.405962|2020-12-04 09:52:43.087835|
-|step_data_collection_rule_association_show|successed||||2020-12-04 09:52:43.087835|2020-12-04 09:52:44.828049|
-|step_data_collection_rule_association_list_by_rule|successed||||2020-12-04 09:52:44.828049|2020-12-04 09:52:45.719036|
-|step_data_collection_rule_association_list_by_resource|successed||||2020-12-04 09:52:45.719036|2020-12-04 09:52:47.627076|
-|step_data_collection_rule_association_delete|successed||||2020-12-04 09:52:47.627076|2020-12-04 09:52:49.879294|
-|step_data_collection_rule_delete|successed||||2020-12-04 09:52:49.879294|2020-12-04 09:52:57.082759|
-Coverage: 10/11
+|step_data_collection_rule_create|successed||||2020-12-06 02:58:34.407404|2020-12-06 02:58:41.178781|
+|step_data_collection_rule_show|successed||||2020-12-06 02:58:41.178781|2020-12-06 02:58:43.206729|
+|step_data_collection_rule_list_by_resource_group|successed||||2020-12-06 02:58:43.206729|2020-12-06 02:58:45.149328|
+|step_data_collection_rule_list_by_subscription|successed||||2020-12-06 02:58:45.149328|2020-12-06 02:58:50.072869|
+|step_data_collection_rule_update_tags|successed||||2020-12-06 02:58:50.072869|2020-12-06 02:58:56.076465|
+|step_data_collection_rule_log_analytics_add|successed||||2020-12-06 02:59:44.138067|2020-12-06 02:59:56.277966|
+|step_data_collection_rule_log_analytics_list|successed||||2020-12-06 02:58:58.454302|2020-12-06 02:58:59.471528|
+|step_data_collection_rule_log_analytics_show|successed||||2020-12-06 02:58:59.471528|2020-12-06 02:59:00.500334|
+|step_data_collection_rule_log_analytics_update|successed||||2020-12-06 02:59:00.500831|2020-12-06 02:59:03.466402|
+|step_data_collection_rule_log_analytics_delete|successed||||2020-12-06 02:59:03.466900|2020-12-06 02:59:05.721007|
+|step_data_collection_rule_performance_counter_add|successed||||2020-12-06 02:59:05.721007|2020-12-06 02:59:08.993883|
+|step_data_collection_rule_performance_counter_list|successed||||2020-12-06 02:59:08.994436|2020-12-06 02:59:12.571096|
+|step_data_collection_rule_performance_counter_show|successed||||2020-12-06 02:59:12.571096|2020-12-06 02:59:15.008225|
+|step_data_collection_rule_performance_counter_update|successed||||2020-12-06 02:59:15.008225|2020-12-06 02:59:17.863615|
+|step_data_collection_rule_performance_counter_delete|successed||||2020-12-06 02:59:17.863615|2020-12-06 02:59:22.432010|
+|step_data_collection_rule_windows_event_log_add|successed||||2020-12-06 02:59:22.432010|2020-12-06 02:59:25.059329|
+|step_data_collection_rule_windows_event_log_list|successed||||2020-12-06 02:59:25.059329|2020-12-06 02:59:26.288465|
+|step_data_collection_rule_windows_event_log_show|successed||||2020-12-06 02:59:26.288966|2020-12-06 02:59:27.714785|
+|step_data_collection_rule_windows_event_log_update|successed||||2020-12-06 02:59:27.723155|2020-12-06 02:59:30.582752|
+|step_data_collection_rule_windows_event_log_delete|successed||||2020-12-06 02:59:30.582752|2020-12-06 02:59:33.357552|
+|step_data_collection_rule_syslog_add|successed||||2020-12-06 02:59:33.358067|2020-12-06 02:59:36.828447|
+|step_data_collection_rule_syslog_list|successed||||2020-12-06 02:59:36.828447|2020-12-06 02:59:37.934577|
+|step_data_collection_rule_syslog_show|successed||||2020-12-06 02:59:37.935096|2020-12-06 02:59:39.386186|
+|step_data_collection_rule_syslog_update|successed||||2020-12-06 02:59:39.386186|2020-12-06 02:59:41.635780|
+|step_data_collection_rule_syslog_delete|successed||||2020-12-06 02:59:41.635780|2020-12-06 02:59:44.137570|
+|step_data_collection_rule_data_flow_add|successed||||2020-12-06 02:59:56.277966|2020-12-06 02:59:59.140896|
+|step_data_collection_rule_data_flow_list|successed||||2020-12-06 02:59:59.141432|2020-12-06 03:00:00.773618|
+|step_data_collection_rule_association_create|successed||||2020-12-06 03:00:00.773618|2020-12-06 03:00:03.641215|
+|step_data_collection_rule_association_show|successed||||2020-12-06 03:00:03.641215|2020-12-06 03:00:09.672166|
+|step_data_collection_rule_association_list_by_rule|successed||||2020-12-06 03:00:09.672166|2020-12-06 03:00:10.849577|
+|step_data_collection_rule_association_list_by_resource|successed||||2020-12-06 03:00:10.849577|2020-12-06 03:00:12.847313|
+|step_data_collection_rule_association_update|successed||||2020-12-06 03:00:12.847812|2020-12-06 03:00:16.336825|
+|step_data_collection_rule_association_delete|successed||||2020-12-06 03:00:16.336825|2020-12-06 03:00:21.037437|
+|step_data_collection_rule_delete|successed||||2020-12-06 03:00:21.037437|2020-12-06 03:00:26.551179|
+Coverage: 34/34

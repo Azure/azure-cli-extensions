@@ -26,9 +26,9 @@ class AddDataFlows(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'stream':
+            if kl == 'streams':
                 d['streams'] = v
-            elif kl == 'destination':
+            elif kl == 'destinations':
                 d['destinations'] = v
         return d
 
@@ -96,7 +96,7 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'stream':
+            if kl == 'streams':
                 d['streams'] = v
             elif kl == 'transfer-period':
                 d['scheduled_transfer_period'] = v[0]
@@ -105,7 +105,7 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
                     d['sampling_frequency_in_seconds'] = int(v[0])
                 except ValueError:
                     raise CLIError('usage error: invalid sampling-frequency-in-seconds={}'.format(v[0]))
-            elif kl == 'counter-specifier':
+            elif kl == 'counter-specifiers':
                 d['counter_specifiers'] = v
             elif kl == 'name':
                 d['name'] = v[0]
@@ -129,11 +129,11 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'stream':
+            if kl == 'streams':
                 d['streams'] = v
             elif kl == 'transfer-period':
                 d['scheduled_transfer_period'] = v[0]
-            elif kl == 'x-path-query':
+            elif kl == 'x-path-queries':
                 d['x_path_queries'] = v
             elif kl == 'name':
                 d['name'] = v[0]
@@ -157,11 +157,11 @@ class AddDataSourcesSyslog(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'stream':
+            if kl == 'streams':
                 d['streams'] = v
-            elif kl == 'facility-name':
+            elif kl == 'facility-names':
                 d['facility_names'] = v
-            elif kl == 'log-level':
+            elif kl == 'log-levels':
                 d['log_levels'] = v
             elif kl == 'name':
                 d['name'] = v[0]
