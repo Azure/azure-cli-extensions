@@ -17,7 +17,7 @@ from .. import try_manual
 
 # EXAMPLE: /DataCollectionRules/get/Get data collection rule
 @try_manual
-def step_data_collection_rule_show(test, rg, checks=None):
+def step_data_collection_rule_show(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule show '
@@ -28,7 +28,7 @@ def step_data_collection_rule_show(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/get/List data collection rules by resource group
 @try_manual
-def step_data_collection_rule_list_by_resource_group(test, rg, checks=None):
+def step_data_collection_rule_list_by_resource_group(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule list '
@@ -38,7 +38,7 @@ def step_data_collection_rule_list_by_resource_group(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/get/List data collection rules by subscription
 @try_manual
-def step_data_collection_rule_list_by_subscription(test, rg, checks=None):
+def step_data_collection_rule_list_by_subscription(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule list ',
@@ -47,7 +47,7 @@ def step_data_collection_rule_list_by_subscription(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/patch/Update data collection rule
 @try_manual
-def step_data_collection_rule_update(test, rg, checks=None):
+def step_data_collection_rule_update(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule update '
@@ -59,7 +59,7 @@ def step_data_collection_rule_update(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRuleAssociations/put/Create or update association
 @try_manual
-def step_data_collection_rule_association_create(test, rg, checks=None):
+def step_data_collection_rule_association_create(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association create '
@@ -71,7 +71,7 @@ def step_data_collection_rule_association_create(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRuleAssociations/get/Get association
 @try_manual
-def step_data_collection_rule_association_show(test, rg, checks=None):
+def step_data_collection_rule_association_show(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association show '
@@ -82,7 +82,7 @@ def step_data_collection_rule_association_show(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRuleAssociations/get/List associations for specified data collection rule
 @try_manual
-def step_data_collection_rule_association_list_by_rule(test, rg, checks=None):
+def step_data_collection_rule_association_list_by_rule(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association list '
@@ -93,7 +93,7 @@ def step_data_collection_rule_association_list_by_rule(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRuleAssociations/get/List associations for specified resource
 @try_manual
-def step_data_collection_rule_association_list_by_resource(test, rg, checks=None):
+def step_data_collection_rule_association_list_by_resource(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association list '
@@ -103,7 +103,7 @@ def step_data_collection_rule_association_list_by_resource(test, rg, checks=None
 
 # EXAMPLE: /DataCollectionRuleAssociations/delete/Delete association
 @try_manual
-def step_data_collection_rule_association_delete(test, rg, checks=None):
+def step_data_collection_rule_association_delete(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule association delete -y '
@@ -114,11 +114,10 @@ def step_data_collection_rule_association_delete(test, rg, checks=None):
 
 # EXAMPLE: /DataCollectionRules/delete/Delete data collection rule
 @try_manual
-def step_data_collection_rule_delete(test, rg, checks=None):
+def step_data_collection_rule_delete(test, _, checks=None):
     if checks is None:
         checks = []
     test.cmd('az monitor data-collection rule delete -y '
              '--name "{myDataCollectionRule}" '
              '--resource-group "{rg}"',
              checks=checks)
-

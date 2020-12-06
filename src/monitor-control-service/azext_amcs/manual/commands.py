@@ -57,7 +57,8 @@ def load_command_table(self, _):
         g.custom_command(
             'update', 'data_collection_rules_log_analytics_update')
 
-    with self.command_group('monitor data-collection rule performance-counter', monitor_control_service_data_collection_rule,
+    with self.command_group('monitor data-collection rule performance-counter',
+                            monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_performance_counters_list')
@@ -70,7 +71,8 @@ def load_command_table(self, _):
         g.custom_command(
             'update', 'data_collection_rules_performance_counters_update')
 
-    with self.command_group('monitor data-collection rule windows-event-log', monitor_control_service_data_collection_rule,
+    with self.command_group('monitor data-collection rule windows-event-log',
+                            monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
         g.custom_show_command(
             'list', 'data_collection_rules_windows_event_logs_list')

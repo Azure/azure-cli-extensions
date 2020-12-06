@@ -550,7 +550,7 @@ helps['monitor data-collection rule syslog add'] = """
         text: |-
                az monitor data-collection rule syslog add --rule-name "myCollectionRule" \
 --resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Alert" "Critical" \
---streams "Microsoft-Syslog" 
+--streams "Microsoft-Syslog"
 """
 
 helps['monitor data-collection rule syslog update'] = """

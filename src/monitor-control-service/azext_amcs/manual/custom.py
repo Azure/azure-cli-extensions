@@ -126,8 +126,7 @@ def data_collection_rules_data_flows_list(client,
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
         return instance.data_flows
-    else:
-        return []
+    return []
 
 
 def data_collection_rules_data_flows_add(client,
@@ -158,8 +157,7 @@ def data_collection_rules_log_analytics_list(client,
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
         return instance.destinations.log_analytics
-    else:
-        return []
+    return []
 
 
 def data_collection_rules_log_analytics_show(client,
@@ -241,7 +239,7 @@ def data_collection_rules_log_analytics_update(client,
         body['destinations']['log_analytics'] = []
 
     item_list = body['destinations']['log_analytics']
-    for idx, item in enumerate(item_list):
+    for item in item_list:
         if item['name'] == name:
             if workspace_resource_id is not None:
                 item['workspace_resource_id'] = workspace_resource_id
@@ -277,8 +275,7 @@ def data_collection_rules_performance_counters_list(client,
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
         return instance.data_sources.performance_counters
-    else:
-        return []
+    return []
 
 
 def data_collection_rules_performance_counters_show(client,
@@ -370,7 +367,7 @@ def data_collection_rules_performance_counters_update(client,
         body['data_sources']['performance_counters'] = []
 
     item_list = body['data_sources']['performance_counters']
-    for idx, item in enumerate(item_list):
+    for item in item_list:
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams
@@ -394,8 +391,7 @@ def data_collection_rules_windows_event_logs_list(client,
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
         return instance.data_sources.windows_event_logs
-    else:
-        return []
+    return []
 
 
 def data_collection_rules_windows_event_logs_show(client,
@@ -506,8 +502,7 @@ def data_collection_rules_syslog_list(client,
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
     if instance:
         return instance.data_sources.syslog
-    else:
-        return []
+    return []
 
 
 def data_collection_rules_syslog_show(client,
@@ -598,7 +593,7 @@ def data_collection_rules_syslog_update(client,
         body['data_sources']['syslog'] = []
 
     item_list = body['data_sources']['syslog']
-    for idx, item in enumerate(item_list):
+    for item in item_list:
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams

@@ -26,7 +26,6 @@ from .. import (
     calc_coverage
 )
 
-
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
@@ -35,24 +34,27 @@ def step_data_collection_rule_create(test, rg, checks=None):
     if checks is None:
         checks = []
     rule_json = test.cmd('az monitor data-collection rule create '
-             '-g {rg} -n {myDataCollectionRule} --location "{location}" '
-             '--data-flow destinations="{workspace_name}" streams="Microsoft-Perf" streams="Microsoft-Syslog" '
-             'streams="Microsoft-WindowsEvent" '
-             '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
-             '--performance-counter name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
-             ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\Logical'
-             'Disk(_Total)\\\\Free Megabytes" counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-             'sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" '
-             '--performance-counter name="appTeamExtraCounters" counter-specifiers="\\\\Process(_Total)\\\\Thread '
-             'Count" sampling-frequency=30 transfer-period="PT5M" streams="Microsoft-Perf" '
-             '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
-             'log-levels="Emergency" streams="Microsoft-Syslog" '
-             '--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" '
-             'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
-             '--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" '
-             'streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
-             'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
-             checks=checks).get_output_in_json()
+                         '-g {rg} -n {myDataCollectionRule} --location "{location}" '
+                         '--data-flow destinations="{workspace_name}" streams="Microsoft-Perf" '
+                         'streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" '
+                         '--log-analytics name="{workspace_name}" resource-id="{workspace_id}" '
+                         '--performance-counter name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total'
+                         ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" '
+                         'counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" '
+                         'counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
+                         'sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" '
+                         '--performance-counter name="appTeamExtraCounters" '
+                         'counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 '
+                         'transfer-period="PT5M" streams="Microsoft-Perf" '
+                         '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
+                         'log-levels="Emergency" streams="Microsoft-Syslog" '
+                         '--windows-event-log name="cloudSecurityTeamEvents" transfer-period="PT1M" '
+                         'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
+                         '--windows-event-log name="appTeam1AppEvents" transfer-period="PT5M" '
+                         'streams="Microsoft-WindowsEvent" '
+                         'x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
+                         'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
+                         checks=checks).get_output_in_json()
     test.kwargs['rule_id'] = rule_json['id']
 
 
@@ -488,7 +490,6 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestmonitor_control_service_myResourceGroup'[:7], key='rg',
                            parameter_name='rg')
     def test_monitor_control_service_Scenario(self, rg):
-
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })

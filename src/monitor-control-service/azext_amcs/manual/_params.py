@@ -3,6 +3,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
     tags_type,
@@ -37,6 +39,10 @@ def load_arguments(self, _):
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
         c.argument('description', help='Description of the association.')
         c.argument('rule_id', help='The resource ID of the data collection rule that is to be associated.')
+        c.argument('data_collection_rule_name', options_list=['--rule-name'])
+
+    with self.argument_context('monitor data-collection rule association list') as c:
+        c.argument('data_collection_rule_name', options_list=['--rule-name'], id_part=None)
 
     with self.argument_context('monitor data-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -65,6 +71,9 @@ def load_arguments(self, _):
                    type=validate_file_or_dict, help='The list of Azure VM extension data source configurations. '
                    'Expected value: json-string/@json-file.')
 
+    with self.argument_context('monitor data-collection rule list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+
     with self.argument_context('monitor data-collection rule create') as c:
         c.argument('data_collection_rule_name', id_part=None)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -77,6 +86,9 @@ def load_arguments(self, _):
         c.argument('destinations', options_list=['--destinations'], nargs='+',
                    help='List of destinations for this data flow.')
 
+    with self.argument_context('monitor data-collection rule data-flow list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+
     with self.argument_context('monitor data-collection rule log-analytics') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'],
@@ -84,6 +96,9 @@ def load_arguments(self, _):
                    '(regardless of type) within the data collection rule.')
         c.argument('workspace_resource_id', options_list=['--resource-id'],
                    help='The resource ID of the Log Analytics workspace.')
+
+    with self.argument_context('monitor data-collection rule log-analytics list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
 
     with self.argument_context('monitor data-collection rule performance-counter') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
@@ -104,6 +119,9 @@ def load_arguments(self, _):
                    "Use a wildcard (*) to collect a counter for all instances. "
                    "To get a list of performance counters on Windows, run the command 'typeperf'.")
 
+    with self.argument_context('monitor data-collection rule performance-counter list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+
     with self.argument_context('monitor data-collection rule windows-event-log') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'],
@@ -119,6 +137,9 @@ def load_arguments(self, _):
         c.argument('x_path_queries', options_list=['--x-path-queries'], nargs='+',
                    help='A list of Windows Event Log queries in XPATH format.')
 
+    with self.argument_context('monitor data-collection rule windows-event-log list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
+
     with self.argument_context('monitor data-collection rule syslog') as c:
         c.argument('data_collection_rule_name', options_list=['--rule-name'])
         c.argument('name', options_list=['--name', '-n'],
@@ -133,3 +154,6 @@ def load_arguments(self, _):
                    help='The list of facility names.')
         c.argument('log_levels', options_list=['--log-levels'], arg_type=get_enum_type(KnownSyslogDataSourceLogLevels),
                    nargs='+', help='The log levels to collect.')
+
+    with self.argument_context('monitor data-collection rule syslog list') as c:
+        c.argument('data_collection_rule_name', id_part=None)
