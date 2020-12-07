@@ -46,14 +46,16 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
 
 def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
     raw_result = client.pipeline_runs.get(resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
-    print_pipeline_output(raw_result)
+    return print_pipeline_output(raw_result)
 
 def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
-    poller = client.pipeline_runs.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
-    print_poll_output(poller)
+    client.pipeline_runs.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, pipeline_run_name=pipeline_run_name)
 
 def list_pipelinerun(cmd, client, resource_group_name, registry_name):
     raw_result = client.pipeline_runs.list(resource_group_name=resource_group_name, registry_name=registry_name)
+    pipe_list = []
 
     for pipelinerun in raw_result:
-        print_lite_pipeline_output(pipelinerun)
+        pipe_list.append(print_lite_pipeline_output(pipelinerun))
+    
+    return pipe_list

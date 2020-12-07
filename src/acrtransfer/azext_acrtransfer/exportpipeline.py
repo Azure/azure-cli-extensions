@@ -21,24 +21,26 @@ def create_exportpipeline(cmd, client, resource_group_name, registry_name, expor
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
     export_pipeline = ExportPipeline(identity=identity_properties, target=export_pipeline_target_properties, options=options_list)
 
-    poller = client.export_pipelines.begin_create(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name, export_pipeline_create_parameters=export_pipeline)
-    print_poll_output(poller)
+    client.export_pipelines.begin_create(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name, export_pipeline_create_parameters=export_pipeline)
 
     raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
-    print_pipeline_output(raw_result)
-
     print_keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri, user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
+
+    return print_pipeline_output(raw_result)
 
 def list_exportpipeline(cmd, client, resource_group_name, registry_name):
     raw_result = client.export_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
+    pipe_list = []
 
     for pipeline in raw_result:
-        print_lite_pipeline_output(pipeline)
-
+        pipe_list.append(print_lite_pipeline_output(pipeline))
+    
+    return pipe_list
+        
 def delete_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
-    poller = client.export_pipelines.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
-    print_poll_output(poller)
+    client.export_pipelines.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
 
 def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
     raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
-    print_pipeline_output(raw_result)
+    return print_pipeline_output(raw_result)
+   

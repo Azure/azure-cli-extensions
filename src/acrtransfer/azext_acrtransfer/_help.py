@@ -31,9 +31,9 @@ helps['acrtransfer importpipeline create'] = """
     short-summary: Create an import pipeline.
     examples: 
         - name: Create an import pipeline.
-          text: az acrtransfer importpipeline create -resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+          text: az acrtransfer import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
         - name: Create an import pipeline with a user assigned identity, all available options, and source trigger disabled. 
-          text: az acrtransfer importpipeline create -resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options DeleteSourceBlobOnSuccess,OverwriteTags,ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity --source-trigger-enabled False
+          text: az acrtransfer import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options DeleteSourceBlobOnSuccess,OverwriteTags,ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity --source-trigger-enabled False
 """
 
 helps['acrtransfer importpipeline list'] = """
@@ -41,7 +41,7 @@ helps['acrtransfer importpipeline list'] = """
     short-summary: List import pipelines on a container registry.
     examples: 
         - name: List import pipelines on a container registry
-          text: az acrtransfer importpipeline list -resource-group $MyRG --registry $MyReg
+          text: az acrtransfer import-pipeline list --resource-group $MyRG --registry $MyReg
 """
 
 helps['acrtransfer importpipeline show'] = """
@@ -49,7 +49,7 @@ helps['acrtransfer importpipeline show'] = """
     short-summary: Show an import pipeline in detail. 
     examples: 
         - name: Show a specific import pipeline in detail.
-          text: az acrtransfer importpipeline show -resource-group $MyRG --registry $MyReg --name $MyPipeline
+          text: az acrtransfer import-pipeline show --resource-group $MyRG --registry $MyReg --name $MyPipeline
 """
 
 helps['acrtransfer importpipeline delete'] = """
@@ -57,7 +57,7 @@ helps['acrtransfer importpipeline delete'] = """
     short-summary: Delete an import pipeline.
     examples: 
         - name: Delete an import pipeline.
-          text: az acrtransfer importpipeline delete -resource-group $MyRG --registry $MyReg --name $MyPipeline
+          text: az acrtransfer import-pipeline delete --resource-group $MyRG --registry $MyReg --name $MyPipeline
 """
 
 helps['acrtransfer exportpipeline create'] = """
@@ -65,9 +65,9 @@ helps['acrtransfer exportpipeline create'] = """
     short-summary: Create an export pipeline.
     examples: 
         - name: Create an export pipeline.
-          text: az acrtransfer exportpipeline create -resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+          text: az acrtransfer export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
         - name: Create an export pipeline with a user assigned identity, all available options.
-          text: az acrtransfer exportpipeline create -resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options OverwriteBlobs,ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity
+          text: az acrtransfer export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --keyvault-secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-account-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options OverwriteBlobs,ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity
 """
 
 helps['acrtransfer exportpipeline list'] = """
@@ -75,7 +75,7 @@ helps['acrtransfer exportpipeline list'] = """
     short-summary: List export pipelines on a container registry.
     examples: 
         - name: List export pipelines on a container registry
-          text: az acrtransfer exportpipeline list -resource-group $MyRG --registry $MyReg
+          text: az acrtransfer export-pipeline list --resource-group $MyRG --registry $MyReg
 """
 
 helps['acrtransfer exportpipeline show'] = """
@@ -83,7 +83,7 @@ helps['acrtransfer exportpipeline show'] = """
     short-summary: Show an export pipeline in detail. 
     examples: 
         - name: Show a specific export pipeline in detail.
-          text: az acrtransfer exportpipeline show -resource-group $MyRG --registry $MyReg --name $MyPipeline
+          text: az acrtransfer export-pipeline show --resource-group $MyRG --registry $MyReg --name $MyPipeline
 """
 
 helps['acrtransfer exportpipeline delete'] = """
@@ -91,7 +91,7 @@ helps['acrtransfer exportpipeline delete'] = """
     short-summary: Delete an export pipeline.
     examples: 
         - name: Delete an export pipeline.
-          text: az acrtransfer exportpipeline delete -resource-group $MyRG --registry $MyReg --name $MyPipeline
+          text: az acrtransfer export-pipeline delete --resource-group $MyRG --registry $MyReg --name $MyPipeline
 """
 
 helps['acrtransfer pipelinerun create'] = """
@@ -99,9 +99,9 @@ helps['acrtransfer pipelinerun create'] = """
     short-summary: Create a pipeline run.
     examples: 
         - name: Create an import pipeline run.
-          text: az acrtransfer pipelinerun create --resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --name $MyPipelineRunName --pipeline-type import --storage-blob $MyBlob
+          text: az acrtransfer pipeline-run create --resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --name $MyPipelineRunName --pipeline-type import --storage-blob $MyBlob
         - name: Create an export pipeline run with force update tag.
-          text: az acrtransfer pipelinerun create --resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --name $MyPipelineRunName --pipeline-type export --storage-blob $MyBlob --artifacts hello-world:latest,hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042 --force-update-tag
+          text: az acrtransfer pipeline-run create --resource-group $MyRG --registry $MyReg --pipeline $MyPipeline --name $MyPipelineRunName --pipeline-type export --storage-blob $MyBlob --artifacts hello-world:latest,hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042 --force-update-tag
 """
 
 helps['acrtransfer pipelinerun list'] = """
@@ -109,7 +109,7 @@ helps['acrtransfer pipelinerun list'] = """
     short-summary: List pipelineruns of all pipelines on a container registry.
     examples: 
         - name: List all export pipelines on a container registry
-          text: az acrtransfer pipelinerun list -resource-group $MyRG --registry $MyReg 
+          text: az acrtransfer pipeline-run list --resource-group $MyRG --registry $MyReg 
 """
 
 helps['acrtransfer pipelinerun show'] = """
@@ -117,7 +117,7 @@ helps['acrtransfer pipelinerun show'] = """
     short-summary: Show an export pipeline in detail. 
     examples: 
         - name: Show a specific export pipeline in detail.
-          text: az acrtransfer pipelinerun show -resource-group $MyRG --registry $MyReg --name $MyPipelineRun
+          text: az acrtransfer pipeline-run show --resource-group $MyRG --registry $MyReg --name $MyPipelineRun
 """
 
 helps['acrtransfer pipelinerun delete'] = """
@@ -125,5 +125,5 @@ helps['acrtransfer pipelinerun delete'] = """
     short-summary: Delete an export pipeline.
     examples: 
         - name: Delete an export pipeline.
-          text: az acrtransfer pipelinerun delete -resource-group $MyRG --registry $MyReg --name $MyPipelineRun
+          text: az acrtransfer pipeline-run delete --resource-group $MyRG --registry $MyReg --name $MyPipelineRun
 """

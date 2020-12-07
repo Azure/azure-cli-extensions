@@ -26,19 +26,19 @@ def load_command_table(self, _):
         min_api='2019-12-01-preview'
     )
 
-    with self.command_group('acrtransfer importpipeline', importpipeline_sdk) as g:
+    with self.command_group('acrtransfer import-pipeline', importpipeline_sdk) as g:
         g.custom_command('create', 'create_importpipeline')
         g.custom_command('delete', 'delete_importpipeline')
         g.custom_command('list', 'list_importpipeline')
         g.custom_command('show', 'get_importpipeline')
 
-    with self.command_group('acrtransfer exportpipeline', exportpipeline_sdk) as g:
+    with self.command_group('acrtransfer export-pipeline', exportpipeline_sdk) as g:
         g.custom_command('create', 'create_exportpipeline')
         g.custom_command('delete', 'delete_exportpipeline')
         g.custom_command('list', 'list_exportpipeline')
         g.custom_command('show', 'get_exportpipeline')
 
-    with self.command_group('acrtransfer pipelinerun', pipelinerun_sdk) as g:
+    with self.command_group('acrtransfer pipeline-run', pipelinerun_sdk) as g:
         g.custom_command('create', 'create_pipelinerun')
         g.custom_command('delete', 'delete_pipelinerun')
         g.custom_command('list', 'list_pipelinerun')

@@ -6,6 +6,7 @@
 
 import json
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
+from distutils import log as logger
 
 def print_poll_output(poller, poll_interval=10):
     print("Operation Status: " + poller.status())
@@ -44,8 +45,8 @@ def print_keyvault_policy_output(keyvault_secret_uri, user_assigned_identity_res
 
     identity_object_id = raw_result.identity.principal_id if user_assigned_identity_resource_id is None else raw_result.identity.user_assigned_identities[user_assigned_identity_resource_id].principal_id
 
-    print("***YOU MUST RUN THE FOLLOWING COMMAND PRIOR TO ATTEMPTING A PIPELINERUN OR EXPECTING SOURCETRIGGER TO SUCCESSFULLY IMPORT IMAGES***")
-    print(f'az keyvault set-policy --name {keyvault_name} --secret-permissions get --object-id {identity_object_id}')
+    logger.warn("***YOU MUST RUN THE FOLLOWING COMMAND PRIOR TO ATTEMPTING A PIPELINERUN OR EXPECTING SOURCETRIGGER TO SUCCESSFULLY IMPORT IMAGES***")
+    logger.warn(f'az keyvault set-policy --name {keyvault_name} --secret-permissions get --object-id {identity_object_id}')
 
 def print_pipeline_output(obj):
     is_importpipeline = "importPipelines" in obj.id
@@ -80,6 +81,7 @@ def print_pipeline_output(obj):
         d["progress_percentage"] = obj["response"]["progress"]["percentage"]
         d["start_time"] = obj["response"]["start_time"]
         d["finish_time"] = obj["response"]["finish_time"]
+        #d["duration"] = d["finish_time"] - d["start_time"]
         d["catalog_digest"] = obj["response"]["catalog_digest"]
         d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
 
@@ -114,7 +116,7 @@ def print_pipeline_output(obj):
             d["principal_id"] = obj["identity"]["principal_id"]
             d["tenant_id"] = obj["identity"]["tenant_id"]
 
-    print(json.dumps(d, indent=2))
+    return d
 
 def print_lite_pipeline_output(obj):
     is_importpipeline = "importPipelines" in obj.id
@@ -126,33 +128,31 @@ def print_lite_pipeline_output(obj):
 
     #unroll the obj
     obj= json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
+    d = {}
 
     if is_pipelinerun and pipelinerun_type == "import":
-        NAME = obj["name"]
-        PIPELINERUN_TYPE = pipelinerun_type
-        STATUS = obj["response"]["status"]
-        START_TIME = obj["response"]["start_time"]
-        ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
+        d["name"] = obj["name"]
+        d["pipelinerun_type"] = pipelinerun_type
+        d["status"] = obj["response"]["status"]
+        d["start_time"] = obj["response"]["start_time"].split('.')[0]
+        d["error_message"] = obj["response"]["pipeline_run_error_message"]
 
-        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}')
+        return d
+
     elif is_pipelinerun and pipelinerun_type == "export":
-        NAME = obj["name"]
-        PIPELINERUN_TYPE = pipelinerun_type
-        STATUS = obj["response"]["status"]
-        START_TIME = obj["response"]["start_time"]
-        ERROR_MESSAGE = obj["response"]["pipeline_run_error_message"]
-
-        print(f'Name: {NAME} | Type: {PIPELINERUN_TYPE} | Status: {STATUS} | Start Time: {START_TIME} | ERROR MESSAGE: {ERROR_MESSAGE}')
+        d["name"] = obj["name"]
+        d["pipelinerun_type"] = pipelinerun_type
+        d["status"] = obj["response"]["status"]
+        d["start_time"] = obj["response"]["start_time"].split('.')[0]
+        d["error_message"] = obj["response"]["pipeline_run_error_message"]
     elif is_importpipeline:
-        NAME = obj["name"]
-        STATUS = obj["provisioning_state"]
-        STORAGE_URI = obj["source"]["uri"]
+        d["name"] = obj["name"]
+        d["status"] = obj["provisioning_state"]
+        d["storage_uri"] = obj["source"]["uri"]
 
-        print(f'Name: {NAME} | Status: {STATUS} | Storage Uri: {STORAGE_URI}')   
     elif is_exportpipeline:
-        NAME = obj["name"]
-        STATUS = obj["provisioning_state"]
-        STORAGE_URI = obj["target"]["uri"]
+        d["name"] = obj["name"]
+        d["status"] = obj["provisioning_state"]
+        d["storage_uri"] = obj["target"]["uri"]
 
-        print(f'Name: {NAME} | Status: {STATUS} | Storage Uri: {STORAGE_URI}')
-        
+    return d        
