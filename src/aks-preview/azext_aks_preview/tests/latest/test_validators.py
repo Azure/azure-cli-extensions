@@ -257,5 +257,47 @@ class TestAssignIdentity(unittest.TestCase):
         validators.validate_assign_identity(namespace)
 
 
+class PodIdentityNamespace:
+
+    def __init__(self, identity_name):
+        self.identity_name = identity_name
+
+
+class TestValidatePodIdentityResourceName(unittest.TestCase):
+
+    def test_valid_required_resource_name(self):
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
+        namespace = PodIdentityNamespace('test-name')
+        validator(namespace)
+
+    def test_missing_required_resource_name(self):
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
+        namespace = PodIdentityNamespace(None)
+
+        with self.assertRaises(CLIError) as cm:
+            validator(namespace)
+        self.assertEqual(str(cm.exception), '--name is required')
+
+
+class PodIdentityResourceNamespace:
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+
+
+class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
+
+    def test_valid_required_resource_name(self):
+        namespace = PodIdentityResourceNamespace('test-name')
+        validators.validate_pod_identity_resource_namespace(namespace)
+
+    def test_missing_required_resource_name(self):
+        namespace = PodIdentityResourceNamespace(None)
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_pod_identity_resource_namespace(namespace)
+        self.assertEqual(str(cm.exception), '--namespace is required')
+
+
 if __name__ == "__main__":
     unittest.main()
