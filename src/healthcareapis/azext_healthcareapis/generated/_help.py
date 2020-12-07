@@ -19,16 +19,20 @@ helps['healthcareapis service'] = """
 
 helps['healthcareapis service list'] = """
     type: command
-    short-summary: Get all the service instances in a subscription.
+    short-summary: "Get all the service instances in a resource group. And Get all the service instances in a \
+subscription."
     examples:
       - name: List all services in resource group
         text: |-
                az healthcareapis service list --resource-group "rgname"
+      - name: List all services in subscription
+        text: |-
+               az healthcareapis service list
 """
 
 helps['healthcareapis service show'] = """
     type: command
-    short-summary: Get the metadata of a service instance.
+    short-summary: "Get the metadata of a service instance."
     examples:
       - name: Get metadata
         text: |-
@@ -37,27 +41,72 @@ helps['healthcareapis service show'] = """
 
 helps['healthcareapis service create'] = """
     type: command
-    short-summary: Create or update the metadata of a service instance.
+    short-summary: "Create the metadata of a service instance."
+    parameters:
+      - name: --access-policies
+        short-summary: "The access policies of the service instance."
+        long-summary: |
+            Usage: --access-policies object-id=XX
+
+            object-id: Required. An Azure AD object ID (User or Apps) that is allowed access to the FHIR service.
+
+            Multiple actions can be specified by using more than one --access-policies argument.
+      - name: --cosmos-db-configuration
+        short-summary: "The settings for the Cosmos DB database backing the service."
+        long-summary: |
+            Usage: --cosmos-db-configuration offer-throughput=XX key-vault-key-uri=XX
+
+            offer-throughput: The provisioned throughput for the backing database.
+            key-vault-key-uri: The URI of the customer-managed key for the backing database.
+      - name: --authentication-configuration
+        short-summary: "The authentication configuration for the service instance."
+        long-summary: |
+            Usage: --authentication-configuration authority=XX audience=XX smart-proxy-enabled=XX
+
+            authority: The authority url for the service
+            audience: The audience url for the service
+            smart-proxy-enabled: If the SMART on FHIR proxy is enabled
+      - name: --cors-configuration
+        short-summary: "The settings for the CORS configuration of the service instance."
+        long-summary: |
+            Usage: --cors-configuration origins=XX headers=XX methods=XX max-age=XX allow-credentials=XX
+
+            origins: The origins to be allowed via CORS.
+            headers: The headers to be allowed via CORS.
+            methods: The methods to be allowed via CORS.
+            max-age: The max age to be allowed via CORS.
+            allow-credentials: If credentials are allowed via CORS.
+      - name: --private-endpoint-connections
+        short-summary: "The list of private endpoint connections that are set up for this resource."
+        long-summary: |
+            Usage: --private-endpoint-connections status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
+
+            Multiple actions can be specified by using more than one --private-endpoint-connections argument.
     examples:
       - name: Create or Update a service with all parameters
         text: |-
-               az healthcareapis service create --resource-group "rg1" --resource-name "service1" --identity type="Syst\
-emAssigned" --kind "fhir-R4" --location "westus2" --properties "{\\"accessPolicies\\":[{\\"objectId\\":\\"c487e7d1-3210\
--41a3-8ccc-e9372b78da47\\"},{\\"objectId\\":\\"5b307da8-43d4-492b-8b66-b0294ade872f\\"}],\\"authenticationConfiguration\
-\\":{\\"audience\\":\\"https://azurehealthcareapis.com\\",\\"authority\\":\\"https://login.microsoftonline.com/abfde7b2\
--df0f-47e6-aabf-2462b07508dc\\",\\"smartProxyEnabled\\":true},\\"corsConfiguration\\":{\\"allowCredentials\\":false,\\"\
-headers\\":[\\"*\\"],\\"maxAge\\":1440,\\"methods\\":[\\"DELETE\\",\\"GET\\",\\"OPTIONS\\",\\"PATCH\\",\\"POST\\",\\"PU\
-T\\"],\\"origins\\":[\\"*\\"]},\\"cosmosDbConfiguration\\":{\\"offerThroughput\\":1000},\\"exportConfiguration\\":{\\"s\
-torageAccountName\\":\\"existingStorageAccount\\"}}"
+               az healthcareapis service create --resource-group "rg1" --resource-name "service1" --identity-type \
+"SystemAssigned" --kind "fhir-R4" --location "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da4\
+7" --access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --authentication-configuration \
+audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
+508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
+methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --cosmos-db-configuration \
+key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" offer-throughput=1000 --export-configuration-storage-a\
+ccount-name "existingStorageAccount" --public-network-access "Disabled"
       - name: Create or Update a service with minimum parameters
         text: |-
-               az healthcareapis service create --resource-group "rg1" --resource-name "service2" --kind "fhir-R4" --lo\
-cation "westus2" --properties "{\\"accessPolicies\\":[{\\"objectId\\":\\"c487e7d1-3210-41a3-8ccc-e9372b78da47\\"}]}"
+               az healthcareapis service create --resource-group "rg1" --resource-name "service2" --kind "fhir-R4" \
+--location "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47"
 """
 
 helps['healthcareapis service update'] = """
     type: command
-    short-summary: Update the metadata of a service instance.
+    short-summary: "Update the metadata of a service instance."
     examples:
       - name: Patch service
         text: |-
@@ -67,11 +116,26 @@ tag2="value2"
 
 helps['healthcareapis service delete'] = """
     type: command
-    short-summary: Delete a service instance.
+    short-summary: "Delete a service instance."
     examples:
       - name: Delete service
         text: |-
                az healthcareapis service delete --resource-group "rg1" --resource-name "service1"
+"""
+
+helps['healthcareapis service wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis service is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully created.
+        text: |-
+               az healthcareapis service wait --resource-group "rg1" --resource-name "service1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully updated.
+        text: |-
+               az healthcareapis service wait --resource-group "rg1" --resource-name "service1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully deleted.
+        text: |-
+               az healthcareapis service wait --resource-group "rg1" --resource-name "service1" --deleted
 """
 
 helps['healthcareapis operation-result'] = """
@@ -81,9 +145,104 @@ helps['healthcareapis operation-result'] = """
 
 helps['healthcareapis operation-result show'] = """
     type: command
-    short-summary: Get the operation result for a long running operation.
+    short-summary: "Get the operation result for a long running operation."
     examples:
       - name: Get operation result
         text: |-
                az healthcareapis operation-result show --location-name "westus" --operation-result-id "exampleid"
+"""
+
+helps['healthcareapis private-endpoint-connection'] = """
+    type: group
+    short-summary: healthcareapis private-endpoint-connection
+"""
+
+helps['healthcareapis private-endpoint-connection list'] = """
+    type: command
+    short-summary: "Lists all private endpoint connections for a service."
+    examples:
+      - name: PrivateEndpointConnection_List
+        text: |-
+               az healthcareapis private-endpoint-connection list --resource-group "rgname" --resource-name "service1"
+"""
+
+helps['healthcareapis private-endpoint-connection show'] = """
+    type: command
+    short-summary: "Gets the specified private endpoint connection associated with the service."
+    examples:
+      - name: PrivateEndpointConnection_GetConnection
+        text: |-
+               az healthcareapis private-endpoint-connection show --name "myConnection" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis private-endpoint-connection create'] = """
+    type: command
+    short-summary: "Update the state of the specified private endpoint connection associated with the service."
+    examples:
+      - name: PrivateEndpointConnection_CreateOrUpdate
+        text: |-
+               az healthcareapis private-endpoint-connection create --name "myConnection" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis private-endpoint-connection update'] = """
+    type: command
+    short-summary: "Update the state of the specified private endpoint connection associated with the service."
+"""
+
+helps['healthcareapis private-endpoint-connection delete'] = """
+    type: command
+    short-summary: "Deletes a private endpoint connection."
+    examples:
+      - name: PrivateEndpointConnections_Delete
+        text: |-
+               az healthcareapis private-endpoint-connection delete --name "myConnection" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis private-endpoint-connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis \
+private-endpoint-connection is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis private-endpoint-connection is \
+successfully created.
+        text: |-
+               az healthcareapis private-endpoint-connection wait --name "myConnection" --resource-group "rgname" \
+--resource-name "service1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis private-endpoint-connection is \
+successfully updated.
+        text: |-
+               az healthcareapis private-endpoint-connection wait --name "myConnection" --resource-group "rgname" \
+--resource-name "service1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis private-endpoint-connection is \
+successfully deleted.
+        text: |-
+               az healthcareapis private-endpoint-connection wait --name "myConnection" --resource-group "rgname" \
+--resource-name "service1" --deleted
+"""
+
+helps['healthcareapis private-link-resource'] = """
+    type: group
+    short-summary: healthcareapis private-link-resource
+"""
+
+helps['healthcareapis private-link-resource list'] = """
+    type: command
+    short-summary: "Gets the private link resources that need to be created for a service."
+    examples:
+      - name: PrivateLinkResources_ListGroupIds
+        text: |-
+               az healthcareapis private-link-resource list --resource-group "rgname" --resource-name "service1"
+"""
+
+helps['healthcareapis private-link-resource show'] = """
+    type: command
+    short-summary: "Gets a private link resource that need to be created for a service."
+    examples:
+      - name: PrivateLinkResources_Get
+        text: |-
+               az healthcareapis private-link-resource show --group-name "fhir" --resource-group "rgname" \
+--resource-name "service1"
 """

@@ -1,9 +1,13 @@
 .. :changelog:
 
- Release History
+Release History
 ===============
+0.6.0 (2020-11-04)
+++++++++++++++++++
+* Support Blob Inventory Policy in storage account
+
 0.5.0 (2020-11-02)
-++++++++++++++++
+++++++++++++++++++
 * Support resource access rules in storage account
 
 0.4.0 (2020-10-15)

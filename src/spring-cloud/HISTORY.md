@@ -1,5 +1,9 @@
 Release History
 ===============
+1.2.0
+-----
+* Add support for sovereign cloud.
+
 1.1.1
 -----
 * Reimport the updated version of Python SDK.
