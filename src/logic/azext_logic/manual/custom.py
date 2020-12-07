@@ -14,8 +14,10 @@ def logic_workflow_update(cmd,
                           tags=None,
                           state=None):
 
+    from azure.cli.core.azclierror import ValidationError
+
     if definition is not None and "definition" not in definition:
-        raise CLIError(str(definition) + " does not contain a 'definition' key")
+        raise ValidationError(str(definition) + " does not contain a 'definition' key")
 
     workflow = client.get(resource_group_name=resource_group_name, workflow_name=name)
 
