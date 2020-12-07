@@ -216,8 +216,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'retention_time': 120
         })
         self.kwargs['dest_sub_id'] = self.cmd('account show').get_output_in_json()['id']
-        self.cmd('storage container create -n {container_name_a} --account-name {account_name_a}')
-        self.cmd('storage container create -n {container_name_b} --account-name {account_name_b}')
+        self.cmd('storage container create -n {container_name_a} -g {resource_group} --account-name {account_name_a}')
+        self.cmd('storage container create -n {container_name_b} -g {resource_group} --account-name {account_name_b}')
         self.kwargs['dest_sas_a'] = self.cmd('storage container generate-sas --account-name {account_name_a} --name {container_name_a} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.kwargs['dest_sas_b'] = self.cmd('storage container generate-sas --account-name {account_name_b} --name {container_name_b} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.sas_replacer.add_sas_token(self.kwargs['dest_sas_a'])
