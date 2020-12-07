@@ -98,11 +98,11 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
 
     app_insights_target_status = False
-    if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
+    if app_insights or app_insights_key or disable_distributed_tracing is False:
         app_insights_target_status = True
         if trace_enabled is False:
             update_app_insights = True
-        elif app_insights is not None or (app_insights_key is not None and app_insights_key != trace_properties.app_insights_instrumentation_key):
+        elif app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
@@ -113,8 +113,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     if update_app_insights is True:
         if app_insights_target_status is False:
             trace_properties.trace_enabled = app_insights_target_status
-        elif trace_properties.app_insights_instrumentation_key is not None \
-                and app_insights is None and app_insights_key is None:
+        elif trace_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
             trace_properties.trace_enabled = app_insights_target_status
         else:
             trace_properties = update_tracing_config(cmd, resource_group, name, location,
@@ -1356,10 +1355,10 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
                           app_insights, disable_distributed_tracing):
     create_app_insights = False
     trace_properties = None
-    if app_insights_key is not None:
+    if app_insights_key:
         trace_properties = models.MonitoringSettingProperties(
             trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
-    elif app_insights is not None:
+    elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
@@ -1376,7 +1375,7 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
     if create_app_insights is True:
         try:
             instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
-            if instrumentation_key is not None:
+            if instrumentation_key:
                 trace_properties = models.MonitoringSettingProperties()
                 trace_properties.trace_enabled = True
                 trace_properties.app_insights_instrumentation_key = instrumentation_key
