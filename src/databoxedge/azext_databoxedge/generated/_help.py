@@ -187,7 +187,7 @@ helps['data-box-edge bandwidth-schedule create'] = """
       - name: BandwidthSchedulePut
         text: |-
                az data-box-edge bandwidth-schedule create --name "bandwidth-1" --device-name "testedgedevice" --days \
-"Sunday" --days "Monday" --rate-in-mbps 100 --start "0:0:0" --stop "13:59:0" --resource-group "GroupForEdgeAutomation"
+"Sunday" "Monday" --rate-in-mbps 100 --start "0:0:0" --stop "13:59:0" --resource-group "GroupForEdgeAutomation"
 """
 
 helps['data-box-edge bandwidth-schedule update'] = """
