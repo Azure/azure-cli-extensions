@@ -93,6 +93,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
         # Create web app.
         webapp_name = self.create_random_name('clitestwebapp', 24)
         plan = self.create_random_name('clitestplan', 24)
@@ -108,15 +110,65 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         # Connect AI to web app and update settings for web app.
-        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} -n {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
+        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    @StorageAccountPreparer()
+    def test_connect_function(self, resource_group, storage_account, location):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web',
+            'sa': storage_account
+        })
+
+        self.cmd('az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+            self.check('location', '{loc}'),
+            self.check('kind', '{kind}'),
+            self.check('applicationType', '{application_type}'),
+            self.check('applicationId', '{ai_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
+        # Create Azure function.
+        function_name = self.create_random_name('clitestfunction', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'function_name': function_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group} -n {plan}')
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa}', checks=[
+            self.check('state', 'Running'),
+            self.check('name', function_name)
+        ])
+
+        # Connect AI to function and update settings for function.
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
     """Test class for ApplicationInsights mgmt cli."""

@@ -70,10 +70,22 @@ helps['monitor app-insights component connect-webapp'] = """
     examples:
       - name: Connect AI to a web app and enable both profiler and snapshot debugger for the web app.
         text: |
-          az monitor app-insights component connect-webapp -g myRG -n myApp --enable-profiler --enable-snapshot-debugger
+          az monitor app-insights component connect-webapp -g myRG -a myAI --web-app myApp --enable-profiler --enable-snapshot-debugger
       - name: Connect AI to a web app using resource id and enable profiler and disable snapshot debugger for the web app.
         text: |
-          az monitor app-insights component connect-webapp --ids /subscriptions/mySub/resourceGroups/myRG/providers/Microsoft.Web/sites/myApp --enable-profiler --enable-snapshot-debugger false
+          az monitor app-insights component connect-webapp -g myRG -a myAI --web-app /subscriptions/mySub/resourceGroups/myRG/providers/Microsoft.Web/sites/myApp --enable-profiler --enable-snapshot-debugger false
+"""
+
+helps['monitor app-insights component connect-function'] = """
+    type: command
+    short-summary: Connect AI to an Azure function.
+    examples:
+      - name: Connect AI to an Azure function.
+        text: |
+          az monitor app-insights component connect-function -g myRG -a myAI --function myFunction
+      - name: Connect AI to an Azure function using resource id.
+        text: |
+          az monitor app-insights component connect-function -g myRG -a myAI --function /subscriptions/mySub/resourceGroups/myRG/providers/Microsoft.Web/sites/myFunction
 """
 
 helps['monitor app-insights component show'] = """
