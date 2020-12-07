@@ -14,19 +14,95 @@ from msrest.exceptions import HttpOperationError
 
 
 class AttestationPolicy(Model):
-    """AttestationPolicy.
 
-    :param policy: String-encoded attestation policy document.
-    :type policy: str
+    _attribute_map = {
+        'token': {'key': 'token', 'type': 'str'},
+    }
+
+    def __init__(self, *, token: str=None, **kwargs) -> None:
+        super(AttestationPolicy, self).__init__(**kwargs)
+        self.token = token
+
+
+class AttestSgxEnclaveRequest(Model):
+    """Attestation request for SGX-IntelSDK enclaves.
     """
 
     _attribute_map = {
-        'policy': {'key': 'policy', 'type': 'str'},
+        'quote': {'key': 'quote', 'type': 'str'},
+        'runtime_data': {'key': 'runtimeData', 'type': 'RuntimeData'},
+        'init_time_data': {'key': 'initTimeData', 'type': 'InitTimeData'},
+        'draft_policy_for_attestation': {'key': 'draftPolicyForAttestation', 'type': 'str'}
     }
 
-    def __init__(self, *, policy: str=None, **kwargs) -> None:
-        super(AttestationPolicy, self).__init__(**kwargs)
-        self.policy = policy
+    def __init__(self, quoto=None, runtime_data=None, init_time_data=None, draft_policy_for_attestation=None, **kwargs):
+        super(AttestSgxEnclaveRequest, self).__init__(**kwargs)
+        self.quoto = quoto
+        self.runtime_data = runtime_data
+        self.init_time_data = init_time_data
+        self.draft_policy_for_attestation = draft_policy_for_attestation
+
+
+class AttestOpenEnclaveRequest(Model):
+    """Attestation request for SGX-OpenEnclaveSDK enclaves.
+    """
+
+    _attribute_map = {
+        'report': {'key': 'report', 'type': 'str'},
+        'runtime_data': {'key': 'runtimeData', 'type': 'RuntimeData'},
+        'init_time_data': {'key': 'initTimeData', 'type': 'InitTimeData'},
+        'draft_policy_for_attestation': {'key': 'draftPolicyForAttestation', 'type': 'str'}
+    }
+
+    def __init__(self, report=None, runtime_data=None, init_time_data=None, draft_policy_for_attestation=None, **kwargs):
+        super(AttestOpenEnclaveRequest, self).__init__(**kwargs)
+        self.report = report
+        self.runtime_data = runtime_data
+        self.init_time_data = init_time_data
+        self.draft_policy_for_attestation = draft_policy_for_attestation
+
+
+class TPMOpenEnclaveRequest(Model):
+    """Attestation request for Trusted Platform Module (TPM) attestation.
+    """
+
+    _attribute_map = {
+        'data': {'key': 'data', 'type': 'str'}
+    }
+
+    def __init__(self, data=None, **kwargs):
+        super(TPMOpenEnclaveRequest, self).__init__(**kwargs)
+        self.data = data
+
+
+class RuntimeData(Model):
+    """Defines the \"run time data\" provided by the attestation target for use by the MAA
+    """
+
+    _attribute_map = {
+        'data': {'key': 'data', 'type': 'str'},
+        'data_type': {'key': 'dataType', 'type': 'DataType'}
+    }
+
+    def __init__(self, data=None, data_type=None, **kwargs):
+        super(RuntimeData, self).__init__(**kwargs)
+        self.data = data
+        self.data_type = data_type
+
+
+class InitTimeData(Model):
+    """Defines the \"initialization time data\" used to provision the attestation target for use by the MAA
+    """
+
+    _attribute_map = {
+        'data': {'key': 'data', 'type': 'str'},
+        'data_type': {'key': 'dataType', 'type': 'DataType'}
+    }
+
+    def __init__(self, data=None, data_type=None, **kwargs):
+        super(InitTimeData, self).__init__(**kwargs)
+        self.data = data
+        self.data_type = data_type
 
 
 class CloudError(Model):

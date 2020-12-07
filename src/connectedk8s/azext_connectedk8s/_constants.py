@@ -6,6 +6,11 @@
 
 # pylint: disable=line-too-long
 
+Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
+Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
+Azure_DogfoodCloudName = 'AZUREDOGFOOD'
+PublicCloud_OriginalName = 'AZURECLOUD'
+USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
@@ -45,3 +50,5 @@ Cluster_Info_Not_Found_Type = 'Error while finding current cluster server detail
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
+No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
+EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'

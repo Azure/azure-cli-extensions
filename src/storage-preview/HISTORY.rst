@@ -3,10 +3,18 @@
 Release History
 ===============
 
-0.5.0 (2020-11-06)
+0.7.0 (2020-12-07)
 ++++++++++++++++++
 * Add `az storage queue` command group and its sub command groups
 * Add `az storage message` command group
+
+0.6.0 (2020-11-04)
+++++++++++++++++++
+* Support Blob Inventory Policy in storage account
+
+0.5.0 (2020-11-02)
+++++++++++++++++++
+* Support resource access rules in storage account
 
 0.4.0 (2020-10-15)
 ++++++++++++++++++

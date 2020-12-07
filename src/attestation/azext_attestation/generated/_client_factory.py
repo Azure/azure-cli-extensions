@@ -9,37 +9,12 @@
 # --------------------------------------------------------------------------
 
 
-def cf_attestation_mgmt(cli_ctx, *_):
+def cf_attestation_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.azure_mgmt_attestation import AttestationManagementClient
-    return get_mgmt_service_client(cli_ctx, AttestationManagementClient)
+    return get_mgmt_service_client(cli_ctx,
+                                   AttestationManagementClient)
 
 
 def cf_attestation_provider(cli_ctx, *_):
-    return cf_attestation_mgmt(cli_ctx).attestation_provider
-
-
-def cf_attestation_data(cli_ctx, *_):
-    from ..vendored_sdks.azure_attestation import AttestationClient
-    from azure.cli.core._profile import Profile
-
-    profile = Profile(cli_ctx=cli_ctx)
-    cred, _, _ = profile.get_login_credentials(
-        resource="https://attest.azure.net")
-    return AttestationClient(credentials=cred)
-
-
-def cf_policy(cli_ctx, *_):
-    return cf_attestation_data(cli_ctx).policy
-
-
-def cf_policy_certificates(cli_ctx, *_):
-    return cf_attestation_data(cli_ctx).policy_certificates
-
-
-def cf_signing_certificates(cli_ctx, *_):
-    return cf_attestation_data(cli_ctx).signing_certificates
-
-
-def cf_metadata_configuration(cli_ctx, *_):
-    return cf_attestation_data(cli_ctx).metadata_configuration
+    return cf_attestation_cl(cli_ctx).attestation_provider
