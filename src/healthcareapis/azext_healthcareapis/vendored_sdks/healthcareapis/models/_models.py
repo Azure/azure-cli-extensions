@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.core.exceptions import HttpResponseError
+from msrest.serialization import Model
 from msrest.exceptions import HttpOperationError
-import msrest.serialization
 
-class Resource(msrest.serialization.Model):
+
+class Resource(Model):
     """Resource.
 
     Common fields that are returned in the response for all Azure Resource
@@ -30,53 +30,25 @@ class Resource(msrest.serialization.Model):
     :ivar type: The type of the resource. E.g.
      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param kind: Required. The kind of the service. Possible values include: "fhir", "fhir-Stu3",
-     "fhir-R4".
-    :type kind: str or ~azure.mgmt.healthcareapis.models.Kind
-    :param location: Required. The resource location.
-    :type location: str
-    :param tags: A set of tags. The resource tags.
-    :type tags: dict[str, str]
-    :param etag: An etag associated with the resource, used for optimistic concurrency when editing
-     it.
-    :type etag: str
-    :param identity: Setting indicating whether the service has a managed identity associated with
-     it.
-    :type identity: ~azure.mgmt.healthcareapis.models.ResourceIdentity
     """
 
     _validation = {
         'id': {'readonly': True},
-        'name': {'readonly': True, 'pattern': r'^[a-z0-9][a-z0-9-]{1,21}[a-z0-9]$'},
+        'name': {'readonly': True},
         'type': {'readonly': True},
-        'kind': {'required': True},
-        'location': {'required': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'etag': {'key': 'etag', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ResourceIdentity'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
-        self.kind = kwargs['kind']
-        self.location = kwargs['location']
-        self.tags = kwargs.get('tags', None)
-        self.etag = kwargs.get('etag', None)
-        self.identity = kwargs.get('identity', None)
 
 
 class AzureEntityResource(Resource):
@@ -119,7 +91,7 @@ class AzureEntityResource(Resource):
         self.etag = None
 
 
-class CheckNameAvailabilityParameters(msrest.serialization.Model):
+class CheckNameAvailabilityParameters(Model):
     """Input values.
 
     All required parameters must be populated in order to send to Azure.
@@ -141,16 +113,13 @@ class CheckNameAvailabilityParameters(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(CheckNameAvailabilityParameters, self).__init__(**kwargs)
-        self.name = kwargs['name']
-        self.type = kwargs['type']
+        self.name = kwargs.get('name', None)
+        self.type = kwargs.get('type', None)
 
 
-class CloudError(msrest.serialization.Model):
+class CloudError(Model):
     """CloudError.
     """
 
@@ -158,7 +127,7 @@ class CloudError(msrest.serialization.Model):
     }
 
 
-class ErrorDetails(msrest.serialization.Model):
+class ErrorDetails(Model):
     """Error details.
 
     :param error: Object containing error details.
@@ -169,10 +138,7 @@ class ErrorDetails(msrest.serialization.Model):
         'error': {'key': 'error', 'type': 'ErrorDetailsInternal'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ErrorDetails, self).__init__(**kwargs)
         self.error = kwargs.get('error', None)
 
@@ -189,7 +155,7 @@ class ErrorDetailsException(HttpOperationError):
         super(ErrorDetailsException, self).__init__(deserialize, response, 'ErrorDetails', *args)
 
 
-class ErrorDetailsInternal(msrest.serialization.Model):
+class ErrorDetailsInternal(Model):
     """Error details.
 
     Variables are only populated by the server, and will be ignored when
@@ -215,17 +181,14 @@ class ErrorDetailsInternal(msrest.serialization.Model):
         'target': {'key': 'target', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ErrorDetailsInternal, self).__init__(**kwargs)
         self.code = None
         self.message = None
         self.target = None
 
 
-class Operation(msrest.serialization.Model):
+class Operation(Model):
     """Service REST API operation.
 
     Variables are only populated by the server, and will be ignored when
@@ -251,17 +214,14 @@ class Operation(msrest.serialization.Model):
         'display': {'key': 'display', 'type': 'OperationDisplay'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(Operation, self).__init__(**kwargs)
         self.name = None
         self.origin = None
         self.display = kwargs.get('display', None)
 
 
-class OperationDisplay(msrest.serialization.Model):
+class OperationDisplay(Model):
     """The object that represents the operation.
 
     Variables are only populated by the server, and will be ignored when
@@ -291,10 +251,7 @@ class OperationDisplay(msrest.serialization.Model):
         'description': {'key': 'description', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(OperationDisplay, self).__init__(**kwargs)
         self.provider = None
         self.resource = None
@@ -302,48 +259,21 @@ class OperationDisplay(msrest.serialization.Model):
         self.description = None
 
 
-class OperationListResult(msrest.serialization.Model):
-    """A list of service operations. It contains a list of operations and a URL link to get the next set of results.
+class OperationResultsDescription(Model):
+    """The properties indicating the operation result of an operation on a
+    service.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :param next_link: The link used to get the next page of service description objects.
-    :type next_link: str
-    :ivar value: A list of service operations supported by the Microsoft.HealthcareApis resource
-     provider.
-    :vartype value: list[~azure.mgmt.healthcareapis.models.Operation]
-    """
-
-    _validation = {
-        'value': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'value': {'key': 'value', 'type': '[Operation]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(OperationListResult, self).__init__(**kwargs)
-        self.next_link = kwargs.get('next_link', None)
-        self.value = None
-
-
-class OperationResultsDescription(msrest.serialization.Model):
-    """The properties indicating the operation result of an operation on a service.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
 
     :ivar id: The ID of the operation returned.
     :vartype id: str
     :ivar name: The name of the operation result.
     :vartype name: str
-    :ivar status: The status of the operation being performed. Possible values include: "Canceled",
-     "Succeeded", "Failed", "Requested", "Running".
-    :vartype status: str or ~azure.mgmt.healthcareapis.models.OperationResultStatus
+    :ivar status: The status of the operation being performed. Possible values
+     include: 'Canceled', 'Succeeded', 'Failed', 'Requested', 'Running'
+    :vartype status: str or
+     ~azure.mgmt.healthcareapis.models.OperationResultStatus
     :ivar start_time: The time that the operation was started.
     :vartype start_time: str
     :param properties: Additional properties of the operation result.
@@ -365,10 +295,7 @@ class OperationResultsDescription(msrest.serialization.Model):
         'properties': {'key': 'properties', 'type': 'object'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(OperationResultsDescription, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -377,7 +304,7 @@ class OperationResultsDescription(msrest.serialization.Model):
         self.properties = kwargs.get('properties', None)
 
 
-class PrivateEndpoint(msrest.serialization.Model):
+class PrivateEndpoint(Model):
     """The Private Endpoint resource.
 
     Variables are only populated by the server, and will be ignored when
@@ -500,7 +427,7 @@ class PrivateLinkResource(Resource):
         self.required_zone_names = kwargs.get('required_zone_names', None)
 
 
-class PrivateLinkResourceListResult(msrest.serialization.Model):
+class PrivateLinkResourceListResult(Model):
     """A list of private link resources.
 
     :param value: Array of private link resources
@@ -516,7 +443,7 @@ class PrivateLinkResourceListResult(msrest.serialization.Model):
         self.value = kwargs.get('value', None)
 
 
-class PrivateLinkServiceConnectionState(msrest.serialization.Model):
+class PrivateLinkServiceConnectionState(Model):
     """A collection of information about the state of the connection between
     service consumer and provider.
 
@@ -580,42 +507,7 @@ class ProxyResource(Resource):
         super(ProxyResource, self).__init__(**kwargs)
 
 
-class ResourceIdentity(msrest.serialization.Model):
-    """Setting indicating whether the service has a managed identity associated with it.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar principal_id: The principal ID of the resource identity.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant ID of the resource.
-    :vartype tenant_id: str
-    :param type: Type of identity being specified, currently SystemAssigned and None are allowed.
-     Possible values include: "SystemAssigned", "None".
-    :type type: str or ~azure.mgmt.healthcareapis.models.ManagedServiceIdentityType
-    """
-
-    _validation = {
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ResourceIdentity, self).__init__(**kwargs)
-        self.principal_id = None
-        self.tenant_id = None
-        self.type = kwargs.get('type', None)
-
-
-class ServiceAccessPolicyEntry(msrest.serialization.Model):
+class ServiceAccessPolicyEntry(Model):
     """An access policy entry.
 
     All required parameters must be populated in order to send to Azure.
@@ -633,15 +525,12 @@ class ServiceAccessPolicyEntry(msrest.serialization.Model):
         'object_id': {'key': 'objectId', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServiceAccessPolicyEntry, self).__init__(**kwargs)
-        self.object_id = kwargs['object_id']
+        self.object_id = kwargs.get('object_id', None)
 
 
-class ServiceAuthenticationConfigurationInfo(msrest.serialization.Model):
+class ServiceAuthenticationConfigurationInfo(Model):
     """Authentication configuration information.
 
     :param authority: The authority url for the service
@@ -658,17 +547,14 @@ class ServiceAuthenticationConfigurationInfo(msrest.serialization.Model):
         'smart_proxy_enabled': {'key': 'smartProxyEnabled', 'type': 'bool'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServiceAuthenticationConfigurationInfo, self).__init__(**kwargs)
         self.authority = kwargs.get('authority', None)
         self.audience = kwargs.get('audience', None)
         self.smart_proxy_enabled = kwargs.get('smart_proxy_enabled', None)
 
 
-class ServiceCorsConfigurationInfo(msrest.serialization.Model):
+class ServiceCorsConfigurationInfo(Model):
     """The settings for the CORS configuration of the service instance.
 
     :param origins: The origins to be allowed via CORS.
@@ -695,10 +581,7 @@ class ServiceCorsConfigurationInfo(msrest.serialization.Model):
         'allow_credentials': {'key': 'allowCredentials', 'type': 'bool'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServiceCorsConfigurationInfo, self).__init__(**kwargs)
         self.origins = kwargs.get('origins', None)
         self.headers = kwargs.get('headers', None)
@@ -707,7 +590,7 @@ class ServiceCorsConfigurationInfo(msrest.serialization.Model):
         self.allow_credentials = kwargs.get('allow_credentials', None)
 
 
-class ServiceCosmosDbConfigurationInfo(msrest.serialization.Model):
+class ServiceCosmosDbConfigurationInfo(Model):
     """The settings for the Cosmos DB database backing the service.
 
     :param offer_throughput: The provisioned throughput for the backing
@@ -727,19 +610,17 @@ class ServiceCosmosDbConfigurationInfo(msrest.serialization.Model):
         'key_vault_key_uri': {'key': 'keyVaultKeyUri', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServiceCosmosDbConfigurationInfo, self).__init__(**kwargs)
         self.offer_throughput = kwargs.get('offer_throughput', None)
         self.key_vault_key_uri = kwargs.get('key_vault_key_uri', None)
 
 
-class ServiceExportConfigurationInfo(msrest.serialization.Model):
+class ServiceExportConfigurationInfo(Model):
     """Export operation configuration information.
 
-    :param storage_account_name: The name of the default export storage account.
+    :param storage_account_name: The name of the default export storage
+     account.
     :type storage_account_name: str
     """
 
@@ -747,15 +628,12 @@ class ServiceExportConfigurationInfo(msrest.serialization.Model):
         'storage_account_name': {'key': 'storageAccountName', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServiceExportConfigurationInfo, self).__init__(**kwargs)
         self.storage_account_name = kwargs.get('storage_account_name', None)
 
 
-class ServicesResource(msrest.serialization.Model):
+class ServicesResource(Model):
     """The common properties of a service.
 
     Variables are only populated by the server, and will be ignored when
@@ -858,46 +736,20 @@ class ServicesDescription(ServicesResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'Kind'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'etag': {'key': 'etag', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ResourceIdentity'},
+        'identity': {'key': 'identity', 'type': 'ServicesResourceIdentity'},
         'properties': {'key': 'properties', 'type': 'ServicesProperties'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServicesDescription, self).__init__(**kwargs)
         self.properties = kwargs.get('properties', None)
 
 
-class ServicesDescriptionListResult(msrest.serialization.Model):
-    """A list of service description objects with a next link.
-
-    :param next_link: The link used to get the next page of service description objects.
-    :type next_link: str
-    :param value: A list of service description objects.
-    :type value: list[~azure.mgmt.healthcareapis.models.ServicesDescription]
-    """
-
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'value': {'key': 'value', 'type': '[ServicesDescription]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ServicesDescriptionListResult, self).__init__(**kwargs)
-        self.next_link = kwargs.get('next_link', None)
-        self.value = kwargs.get('value', None)
-
-
-class ServicesNameAvailabilityInfo(msrest.serialization.Model):
+class ServicesNameAvailabilityInfo(Model):
     """The properties indicating whether a given service name is available.
 
     Variables are only populated by the server, and will be ignored when
@@ -925,17 +777,14 @@ class ServicesNameAvailabilityInfo(msrest.serialization.Model):
         'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServicesNameAvailabilityInfo, self).__init__(**kwargs)
         self.name_available = None
         self.reason = None
         self.message = kwargs.get('message', None)
 
 
-class ServicesPatchDescription(msrest.serialization.Model):
+class ServicesPatchDescription(Model):
     """The description of the service.
 
     :param tags: Instance tags
@@ -952,16 +801,13 @@ class ServicesPatchDescription(msrest.serialization.Model):
         'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServicesPatchDescription, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
         self.public_network_access = kwargs.get('public_network_access', None)
 
 
-class ServicesProperties(msrest.serialization.Model):
+class ServicesProperties(Model):
     """The properties of a service instance.
 
     Variables are only populated by the server, and will be ignored when
@@ -1017,10 +863,7 @@ class ServicesProperties(msrest.serialization.Model):
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ServicesProperties, self).__init__(**kwargs)
         self.provisioning_state = None
         self.access_policies = kwargs.get('access_policies', None)
@@ -1032,7 +875,7 @@ class ServicesProperties(msrest.serialization.Model):
         self.public_network_access = kwargs.get('public_network_access', None)
 
 
-class ServicesResourceIdentity(msrest.serialization.Model):
+class ServicesResourceIdentity(Model):
     """Setting indicating whether the service has a managed identity associated
     with it.
 
