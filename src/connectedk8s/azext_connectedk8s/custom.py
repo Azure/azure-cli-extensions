@@ -623,6 +623,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, resourc
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
     if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+    if https_proxy or http_proxy or no_proxy:
+        cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -708,7 +710,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  kube_config=None, kube_context=None, no_wait=False):
+                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -735,6 +737,12 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy:
+        raise CLIError(consts.No_Param_Error)
+
+    if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
+        raise CLIError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
@@ -837,6 +845,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_upgrade.extend(["--set", "global.httpProxy={}".format(http_proxy)])
     if no_proxy:
         cmd_helm_upgrade.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if https_proxy or http_proxy or no_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
+    if disable_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:

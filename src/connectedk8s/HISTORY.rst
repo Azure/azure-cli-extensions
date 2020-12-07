@@ -5,7 +5,7 @@ Release History
 
 0.2.8
 ++++++
-* Added checks for proxy
+* Added checks for proxy and added disable-proxy
 * Updated config dataplane endpoint to support other clouds
 
 0.2.7
