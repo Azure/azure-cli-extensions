@@ -118,8 +118,9 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         else:
             trace_properties = update_tracing_config(cmd, resource_group, name, location,
                                                      app_insights_key, app_insights, disable_distributed_tracing)
-        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
-                    resource_group_name=resource_group, service_name=name, properties=trace_properties)
+        if trace_properties is not None:
+            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
 
     # update service tags
     if tags is not None:
@@ -1383,6 +1384,7 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
             logger.warning(
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            return None
     return trace_properties
 
 
