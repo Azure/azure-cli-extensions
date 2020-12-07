@@ -21,59 +21,59 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 def load_arguments(self, _):
 
-    with self.argument_context('communication list') as c:
+    with self.argument_context('communication service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('communication show') as c:
+    with self.argument_context('communication service show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
 
-    with self.argument_context('communication create') as c:
+    with self.argument_context('communication service create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('data_location', type=str, help='The location where the communication service stores its data at '
                    'rest.')
 
-    with self.argument_context('communication update') as c:
+    with self.argument_context('communication service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
         c.argument('tags', tags_type)
 
-    with self.argument_context('communication delete') as c:
+    with self.argument_context('communication service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
 
-    with self.argument_context('communication link-notification-hub') as c:
+    with self.argument_context('communication service link-notification-hub') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
         c.argument('resource_id', type=str, help='The resource ID of the notification hub')
         c.argument('connection_string', type=str, help='Connection string for the notification hub')
 
-    with self.argument_context('communication list-key') as c:
+    with self.argument_context('communication service list-key') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.')
 
-    with self.argument_context('communication regenerate-key') as c:
+    with self.argument_context('communication service regenerate-key') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
         c.argument('key_type', arg_type=get_enum_type(['Primary', 'Secondary']), help='The keyType to regenerate. Must '
                    'be either \'primary\' or \'secondary\'(case-insensitive).')
 
-    with self.argument_context('communication wait') as c:
+    with self.argument_context('communication service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
 
-    with self.argument_context('communication show-status') as c:
+    with self.argument_context('communication status show') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('operation_id', type=str, help='The ID of an ongoing async operation')

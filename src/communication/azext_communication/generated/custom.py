@@ -12,27 +12,27 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def communication_list(client,
-                       resource_group_name=None):
+def communication_service_list(client,
+                               resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
 
 
-def communication_show(client,
-                       resource_group_name,
-                       name):
+def communication_service_show(client,
+                               resource_group_name,
+                               name):
     return client.get(resource_group_name=resource_group_name,
                       communication_service_name=name)
 
 
-def communication_create(client,
-                         resource_group_name,
-                         name,
-                         location=None,
-                         tags=None,
-                         data_location=None,
-                         no_wait=False):
+def communication_service_create(client,
+                                 resource_group_name,
+                                 name,
+                                 location=None,
+                                 tags=None,
+                                 data_location=None,
+                                 no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -42,53 +42,53 @@ def communication_create(client,
                        data_location=data_location)
 
 
-def communication_update(client,
-                         resource_group_name,
-                         name,
-                         tags=None):
+def communication_service_update(client,
+                                 resource_group_name,
+                                 name,
+                                 tags=None):
     return client.update(resource_group_name=resource_group_name,
                          communication_service_name=name,
                          tags=tags)
 
 
-def communication_delete(client,
-                         resource_group_name,
-                         name,
-                         no_wait=False):
+def communication_service_delete(client,
+                                 resource_group_name,
+                                 name,
+                                 no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        communication_service_name=name)
 
 
-def communication_link_notification_hub(client,
-                                        resource_group_name,
-                                        name,
-                                        resource_id=None,
-                                        connection_string=None):
+def communication_service_link_notification_hub(client,
+                                                resource_group_name,
+                                                name,
+                                                resource_id=None,
+                                                connection_string=None):
     return client.link_notification_hub(resource_group_name=resource_group_name,
                                         communication_service_name=name,
                                         resource_id=resource_id,
                                         connection_string=connection_string)
 
 
-def communication_list_key(client,
-                           resource_group_name,
-                           name):
+def communication_service_list_key(client,
+                                   resource_group_name,
+                                   name):
     return client.list_key(resource_group_name=resource_group_name,
                            communication_service_name=name)
 
 
-def communication_regenerate_key(client,
-                                 resource_group_name,
-                                 name,
-                                 key_type=None):
+def communication_service_regenerate_key(client,
+                                         resource_group_name,
+                                         name,
+                                         key_type=None):
     return client.regenerate_key(resource_group_name=resource_group_name,
                                  communication_service_name=name,
                                  key_type=key_type)
 
 
-def communication_show_status(client,
+def communication_status_show(client,
                               location,
                               operation_id):
     return client.get(location=location,

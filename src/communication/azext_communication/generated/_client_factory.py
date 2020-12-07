@@ -11,14 +11,14 @@
 
 def cf_communication_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_communication.vendored_sdks.communication import CommunicationServiceManagementClient
+    from ..vendored_sdks.communication import CommunicationServiceManagementClient
     return get_mgmt_service_client(cli_ctx,
                                    CommunicationServiceManagementClient)
 
 
-def cf_communication_service(cli_ctx, *_):
+def cf_service(cli_ctx, *_):
     return cf_communication_cl(cli_ctx).communication_service
 
 
-def cf_operation_statuses(cli_ctx, *_):
+def cf_status(cli_ctx, *_):
     return cf_communication_cl(cli_ctx).operation_statuses
