@@ -10,14 +10,14 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
-class AddValidatorNodesSku(argparse.Action):
+class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.validator_nodes_sku = action
+        namespace.sku = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -31,15 +31,17 @@ class AddValidatorNodesSku(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'capacity':
-                d['capacity'] = v[0]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'tier':
+                d['tier'] = v[0]
         return d
 
 
-class AddBlockchainMemberCreateFirewallRules(argparse._AppendAction):
+class AddBlockchainBlockchainMemberCreateFirewallRules(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddBlockchainMemberCreateFirewallRules, self).__call__(parser, namespace, action, option_string)
+        super(AddBlockchainBlockchainMemberCreateFirewallRules, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

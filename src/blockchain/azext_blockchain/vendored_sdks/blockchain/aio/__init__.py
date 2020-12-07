@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._blockchain_management_client_async import BlockchainManagementClient
+from ._blockchain_management_client import BlockchainManagementClient
 __all__ = ['BlockchainManagementClient']

@@ -11,7 +11,6 @@ try:
     from ._models_py3 import ApiKeyCollection
     from ._models_py3 import BlockchainMember
     from ._models_py3 import BlockchainMemberCollection
-    from ._models_py3 import BlockchainMemberNodesSku
     from ._models_py3 import BlockchainMemberPropertiesUpdate
     from ._models_py3 import BlockchainMemberUpdate
     from ._models_py3 import Consortium
@@ -40,7 +39,6 @@ except (SyntaxError, ImportError):
     from ._models import ApiKeyCollection  # type: ignore
     from ._models import BlockchainMember  # type: ignore
     from ._models import BlockchainMemberCollection  # type: ignore
-    from ._models import BlockchainMemberNodesSku  # type: ignore
     from ._models import BlockchainMemberPropertiesUpdate  # type: ignore
     from ._models import BlockchainMemberUpdate  # type: ignore
     from ._models import Consortium  # type: ignore
@@ -77,7 +75,6 @@ __all__ = [
     'ApiKeyCollection',
     'BlockchainMember',
     'BlockchainMemberCollection',
-    'BlockchainMemberNodesSku',
     'BlockchainMemberPropertiesUpdate',
     'BlockchainMemberUpdate',
     'Consortium',
