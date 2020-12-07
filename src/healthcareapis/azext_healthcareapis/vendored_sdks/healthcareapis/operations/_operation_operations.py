@@ -103,4 +103,4 @@ class OperationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.HealthcareApis/operations'}
+    list.metadata = {'url': '/providers/Microsoft.HealthcareApispeizhou/operations'}

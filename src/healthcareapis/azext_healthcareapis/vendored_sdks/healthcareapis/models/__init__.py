@@ -21,6 +21,7 @@ try:
     from ._models_py3 import ServiceCorsConfigurationInfo
     from ._models_py3 import ServiceCosmosDBConfigurationInfo
     from ._models_py3 import ServiceExportConfigurationInfo
+    from ._models_py3 import ServiceAcrConfigurationInfo
     from ._models_py3 import ServicesDescription
     from ._models_py3 import ServicesDescriptionListResult
     from ._models_py3 import ServicesNameAvailabilityInfo
@@ -41,6 +42,7 @@ except (SyntaxError, ImportError):
     from ._models import ServiceCorsConfigurationInfo  # type: ignore
     from ._models import ServiceCosmosDBConfigurationInfo  # type: ignore
     from ._models import ServiceExportConfigurationInfo  # type: ignore
+    from ._models import ServiceAcrConfigurationInfo
     from ._models import ServicesDescription  # type: ignore
     from ._models import ServicesDescriptionListResult  # type: ignore
     from ._models import ServicesNameAvailabilityInfo  # type: ignore
@@ -70,6 +72,7 @@ __all__ = [
     'ServiceCorsConfigurationInfo',
     'ServiceCosmosDBConfigurationInfo',
     'ServiceExportConfigurationInfo',
+    'ServiceAcrConfigurationInfo',
     'ServicesDescription',
     'ServicesDescriptionListResult',
     'ServicesNameAvailabilityInfo',

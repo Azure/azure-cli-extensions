@@ -474,6 +474,44 @@ class ServiceExportConfigurationInfo(msrest.serialization.Model):
         self.storage_account_name = kwargs.get('storage_account_name', None)
 
 
+class ServiceArcConfigurationInfo(msrest.serialization.Model):
+    """Acr operation configuration information.
+
+    :param login_servers: The list of the login servers.
+    :type login_servers: str
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServiceArcConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = kwargs.get('login_servers', None)
+
+
+class ServiceAcrConfigurationInfo(msrest.serialization.Model):
+    """Acr operation configuration information.
+
+    :param login_servers: The list of the login servers.
+    :type login_servers: list[str]
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServiceAcrConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = kwargs.get('login_servers', None)
+
+
 class ServicesDescription(Resource):
     """The description of the service.
 
@@ -630,6 +668,8 @@ class ServicesProperties(msrest.serialization.Model):
     :type cors_configuration: ~azure.mgmt.healthcareapis.models.ServiceCorsConfigurationInfo
     :param export_configuration: The settings for the export operation of the service instance.
     :type export_configuration: ~azure.mgmt.healthcareapis.models.ServiceExportConfigurationInfo
+    :param acr_configuration: The settings for the acr operation of the service instance.
+    :type acr_configuration: ~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
     """
 
     _validation = {
@@ -643,6 +683,7 @@ class ServicesProperties(msrest.serialization.Model):
         'authentication_configuration': {'key': 'authenticationConfiguration', 'type': 'ServiceAuthenticationConfigurationInfo'},
         'cors_configuration': {'key': 'corsConfiguration', 'type': 'ServiceCorsConfigurationInfo'},
         'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
+        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
     }
 
     def __init__(
@@ -656,3 +697,4 @@ class ServicesProperties(msrest.serialization.Model):
         self.authentication_configuration = kwargs.get('authentication_configuration', None)
         self.cors_configuration = kwargs.get('cors_configuration', None)
         self.export_configuration = kwargs.get('export_configuration', None)
+        self.acr_configuration = kwargs.get('acr_configuration', None)
