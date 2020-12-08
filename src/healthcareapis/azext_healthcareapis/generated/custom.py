@@ -43,13 +43,7 @@ def healthcareapis_service_create(client,
                                   export_configuration_storage_account_name=None,
                                   no_wait=False):
 
-
-    service_description = {
-        'kind': kind,
-        'location': location,
-        'tags': tags,
-        'etag': etag,
-        'identity_type': identity_type,
+    propertes = {
         'access_policies': access_policies,
         'cosmos_db_configuration': cosmos_db_configuration,
         'authentication_configuration': authentication_configuration,
@@ -59,6 +53,11 @@ def healthcareapis_service_create(client,
         'export_configuration_storage_account_name': export_configuration_storage_account_name
     }
 
+    service_description = {
+        'name': resource_name,
+        'kind': kind,
+        'location': location
+    }
 
     return sdk_no_wait(no_wait,
                        client.create_or_update,
