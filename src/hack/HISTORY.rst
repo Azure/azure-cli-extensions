@@ -34,3 +34,5 @@ Release History
 ++++++
 * Use new Serverless mode for CosmosDB
 * Fixed CosmosDB MondoDB database creation
+* Fix runtime names for App Service Web App creation
+* Use latest available App Service runtimes
