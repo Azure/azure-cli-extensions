@@ -1,63 +1,210 @@
-# Azure CLI data-collection Extension #
-This is the extension for data-collection
+# Azure CLI monitor-control-service Extension #
+This is the extension for monitor-control-service
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name data-collection
+az extension add --name monitor-control-service
 ```
 
 ### Included Features ###
-#### data-collection data-collection-rule-association ####
+#### data-collection rule ####
 ##### Create #####
 ```
-az data-collection data-collection-rule-association create --association-name "myAssociation" \
-    --data-collection-rule-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Insights/dataCollectionRules/myCollectionRule" \
-    --resource-uri "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm" 
+az monitor data-collection rule create --resource-group "myResourceGroup" --location "eastus" \
+--name "myCollectionRule" \
+--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" \
+--log-analytics name="centralWorkspace" resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" \
+--performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\Processor(_Total)\\% Processor Time" counter-specifiers="\\Memory\\Committed Bytes" counter-specifiers="\\LogicalDisk(_Total)\\Free Megabytes" counter-specifiers="\\PhysicalDisk(_Total)\\Avg. Disk Queue Length" sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" \
+--performance-counters name="appTeamExtraCounters" counter-specifiers="\\Process(_Total)\\Thread Count" sampling-frequency=30 transfer-period="PT5M" streams="Microsoft-Perf" \
+--syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
+--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
+--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" x-path-queries="Security!" \
+--windows-event-logs name="appTeam1AppEvents" transfer-period="PT5M" streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
 ```
 ##### Show #####
 ```
-az data-collection data-collection-rule-association show --association-name "myAssociation" \
-    --resource-uri "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm" 
+az monitor data-collection rule show --name "myCollectionRule" --resource-group "myResourceGroup"
 ```
 ##### List #####
+List data collection rules by resource group
 ```
-az data-collection data-collection-rule-association list --data-collection-rule-name "myCollectionRule" \
-    --resource-group "myResourceGroup" 
+az monitor data-collection rule list --resource-group "myResourceGroup"
 ```
-##### Delete #####
+List data collection rules by subscription
 ```
-az data-collection data-collection-rule-association delete --association-name "myAssociation" \
-    --resource-uri "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm" 
-```
-#### data-collection data-collection-rule ####
-##### Create #####
-```
-az data-collection data-collection-rule create --location "eastus" \
-    --data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" \
-    --data-sources-performance-counters name="cloudTeamCoreCounters" counter-specifiers="\\\\Processor(_Total)\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" sampling-frequency-in-seconds=15 scheduled-transfer-period="PT1M" streams="Microsoft-Perf" \
-    --data-sources-performance-counters name="appTeamExtraCounters" counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency-in-seconds=30 scheduled-transfer-period="PT5M" streams="Microsoft-Perf" \
-    --data-sources-syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
-    --data-sources-syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
-    --data-sources-windows-event-logs name="cloudSecurityTeamEvents" scheduled-transfer-period="PT1M" streams="Microsoft-WindowsEvent" x-path-queries="Security!" \
-    --data-sources-windows-event-logs name="appTeam1AppEvents" scheduled-transfer-period="PT5M" streams="Microsoft-WindowsEvent" x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" \
-    --destinations-log-analytics name="centralWorkspace" workspace-resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" \
-    --name "myCollectionRule" --resource-group "myResourceGroup" 
-```
-##### Show #####
-```
-az data-collection data-collection-rule show --name "myCollectionRule" --resource-group "myResourceGroup"
-```
-##### List #####
-```
-az data-collection data-collection-rule list --resource-group "myResourceGroup"
+az monitor data-collection rule list
 ```
 ##### Update #####
 ```
-az data-collection data-collection-rule update --tags tag1="A" tag2="B" tag3="C" --name "myCollectionRule" \
-    --resource-group "myResourceGroup" 
+az monitor data-collection rule update --resource-group "myResourceGroup" --name "myCollectionRule" \
+--data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" \
+--log-analytics name="centralWorkspace" resource-id="/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/centralTeamWorkspace" \
+--performance-counters name="appTeamExtraCounters" counter-specifiers="\\Process(_Total)\\Thread Count" sampling-frequency=30 transfer-period="PT5M" streams="Microsoft-Perf" \
+--syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" \
+--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" x-path-queries="Security!" \
 ```
 ##### Delete #####
 ```
-az data-collection data-collection-rule delete --name "myCollectionRule" --resource-group "myResourceGroup"
+az monitor data-collection rule delete --name "myCollectionRule" --resource-group "myResourceGroup"
+```
+
+#### data-collection rule data-flow ####
+##### List #####
+```
+az monitor data-collection rule data-flow list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+```
+##### Add #####
+```
+az monitor data-collection rule data-flow add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --destinations XX3 XX4 --streams "Microsoft-Perf" "Microsoft-WindowsEvent"
+```
+
+#### data-collection rule log-analytics ####
+##### List #####
+```
+az monitor data-collection rule log-analytics list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+```
+##### Show #####
+```
+az monitor data-collection rule log-analytics show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "centralWorkspace"
+```
+##### Add #####
+```
+az monitor data-collection rule log-analytics add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2" \
+--resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/workspace2"
+```
+##### Delete #####
+```
+az monitor data-collection rule log-analytics delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2"
+```
+##### Update #####
+```
+az monitor data-collection rule log-analytics update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "workspace2" \
+--resource-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/anotherWorkspace"
+```
+
+#### data-collection rule performance-counter ####
+##### List #####
+```
+az monitor data-collection rule performance-counter list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+```
+##### Show #####
+```
+az monitor data-collection rule performance-counter show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeamExtraCounters"
+```
+##### Add #####
+```
+az monitor data-collection rule performance-counter add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters" --streams "Microsoft-Perf" \
+--counter-specifiers "\\Process(_Total)\\Thread Count" "\\LogicalDisk(_Total)\\Free Megabytes" \
+--sampling-frequency 30 --transfer-period PT15M
+```
+##### Delete #####
+```
+az monitor data-collection rule performance-counter delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters"
+```
+##### Update #####
+```
+az monitor data-collection rule performance-counter update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "team2ExtraCounters" --transfer-period PT1M
+```
+
+#### data-collection rule windows-event-log ####
+##### List #####
+```
+az monitor data-collection rule windows-event-log list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+```
+##### Show #####
+```
+az monitor data-collection rule windows-event-log show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents"
+```
+##### Add #####
+```
+az monitor data-collection rule windows-event-log add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents" --transfer-period "PT1M" \
+--streams "Microsoft-WindowsEvent" \
+--x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" "System![System[(Level = 1 or Level = 2 or Level = 3)]]"
+```
+##### Delete #####
+```
+az monitor data-collection rule windows-event-log delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents"
+```
+##### Update #####
+```
+az monitor data-collection rule windows-event-log update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "appTeam1AppEvents" \
+--x-path-queries "Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"
+```
+
+#### data-collection rule syslog ####
+##### List #####
+```
+az monitor data-collection rule syslog list --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup"
+```
+##### Show #####
+```
+az monitor data-collection rule syslog show --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase"
+```
+##### Add #####
+```
+az monitor data-collection rule syslog add --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Alert" "Critical" \
+--streams "Microsoft-Syslog"
+```
+##### Delete #####
+```
+az monitor data-collection rule syslog delete --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase"
+```
+##### Update #####
+```
+az monitor data-collection rule syslog update --rule-name "myCollectionRule" \
+--resource-group "myResourceGroup" --name "syslogBase" --facility-names "syslog" --log-levels "Emergency" "Critical"
+```
+
+#### data-collection rule association ####
+##### Create #####
+```
+az monitor data-collection rule association create --name "myAssociation" \
+--rule-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Insights/dataCollectionRules/myCollectionRule" --resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+```
+##### Show #####
+```
+az monitor data-collection rule association show --name "myAssociation" \
+--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+```
+##### Update #####
+```
+az monitor data-collection rule association update --name "myAssociation" \
+--rule-id "/subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Insights/dataCollectionRules/myCollectionRule" --resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+```
+##### List #####
+List associations for specified data collection rule
+```
+az monitor data-collection rule association list --rule-name "myCollectionRule" --resource-group "myResourceGroup" 
+```
+List associations for specified resource
+```
+az monitor data-collection rule association list \
+--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+```
+##### Delete #####
+```
+az monitor data-collection rule association delete --name "myAssociation" \
+--resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
 ```

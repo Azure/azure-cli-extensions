@@ -7,7 +7,7 @@
 
 import argparse
 from collections import defaultdict
-from knack.util import CLIError
+from azure.cli.core.azclierror import ValidationError
 
 
 class AddDataFlows(argparse._AppendAction):
@@ -22,7 +22,7 @@ class AddDataFlows(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -46,7 +46,7 @@ class AddDestinationsLogAnalytics(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -70,7 +70,7 @@ class AddDestinationsAzureMonitorMetrics(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -92,7 +92,7 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -105,7 +105,7 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
                 try:
                     d['sampling_frequency_in_seconds'] = int(v[0])
                 except ValueError:
-                    raise CLIError('usage error: invalid sampling-frequency-in-seconds={}'.format(v[0]))
+                    raise ValidationError('invalid sampling-frequency={}'.format(v[0]))
             elif kl == 'counter-specifiers':
                 d['counter_specifiers'] = v
             elif kl == 'name':
@@ -125,7 +125,7 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -153,7 +153,7 @@ class AddDataSourcesSyslog(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ValidationError('{} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
