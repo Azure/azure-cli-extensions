@@ -1,9 +1,6 @@
 Microsoft Azure CLI 'attestation' Extension
 ==========================================
 
-This package is for the 'attestation' extension, i.e. `az attestation`.
-More info on [Microsoft Azure cloud security attestation](https://azure.microsoft.com/en-us/blog/microsoft-azure-updates-cloud-security-attestation/).
-
 ### Usage ###
 #### Install the extension ####
 Install this extension using the below CLI command
