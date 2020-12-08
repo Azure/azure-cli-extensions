@@ -6,16 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration import DataShareManagementClientConfiguration
 from .operations import AccountOperations
@@ -30,38 +28,38 @@ from .operations import ShareSubscriptionOperations
 from .operations import ConsumerSourceDataSetOperations
 from .operations import SynchronizationSettingOperations
 from .operations import TriggerOperations
-from . import models
+from .. import models
 
 
 class DataShareManagementClient(object):
     """Creates a Microsoft.DataShare management client.
 
     :ivar account: AccountOperations operations
-    :vartype account: data_share_management_client.operations.AccountOperations
+    :vartype account: data_share_management_client.aio.operations.AccountOperations
     :ivar consumer_invitation: ConsumerInvitationOperations operations
-    :vartype consumer_invitation: data_share_management_client.operations.ConsumerInvitationOperations
+    :vartype consumer_invitation: data_share_management_client.aio.operations.ConsumerInvitationOperations
     :ivar data_set: DataSetOperations operations
-    :vartype data_set: data_share_management_client.operations.DataSetOperations
+    :vartype data_set: data_share_management_client.aio.operations.DataSetOperations
     :ivar data_set_mapping: DataSetMappingOperations operations
-    :vartype data_set_mapping: data_share_management_client.operations.DataSetMappingOperations
+    :vartype data_set_mapping: data_share_management_client.aio.operations.DataSetMappingOperations
     :ivar invitation: InvitationOperations operations
-    :vartype invitation: data_share_management_client.operations.InvitationOperations
+    :vartype invitation: data_share_management_client.aio.operations.InvitationOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: data_share_management_client.operations.OperationOperations
+    :vartype operation: data_share_management_client.aio.operations.OperationOperations
     :ivar share: ShareOperations operations
-    :vartype share: data_share_management_client.operations.ShareOperations
+    :vartype share: data_share_management_client.aio.operations.ShareOperations
     :ivar provider_share_subscription: ProviderShareSubscriptionOperations operations
-    :vartype provider_share_subscription: data_share_management_client.operations.ProviderShareSubscriptionOperations
+    :vartype provider_share_subscription: data_share_management_client.aio.operations.ProviderShareSubscriptionOperations
     :ivar share_subscription: ShareSubscriptionOperations operations
-    :vartype share_subscription: data_share_management_client.operations.ShareSubscriptionOperations
+    :vartype share_subscription: data_share_management_client.aio.operations.ShareSubscriptionOperations
     :ivar consumer_source_data_set: ConsumerSourceDataSetOperations operations
-    :vartype consumer_source_data_set: data_share_management_client.operations.ConsumerSourceDataSetOperations
+    :vartype consumer_source_data_set: data_share_management_client.aio.operations.ConsumerSourceDataSetOperations
     :ivar synchronization_setting: SynchronizationSettingOperations operations
-    :vartype synchronization_setting: data_share_management_client.operations.SynchronizationSettingOperations
+    :vartype synchronization_setting: data_share_management_client.aio.operations.SynchronizationSettingOperations
     :ivar trigger: TriggerOperations operations
-    :vartype trigger: data_share_management_client.operations.TriggerOperations
+    :vartype trigger: data_share_management_client.aio.operations.TriggerOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription identifier.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -70,16 +68,15 @@ class DataShareManagementClient(object):
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        credential: "AsyncTokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DataShareManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -110,15 +107,12 @@ class DataShareManagementClient(object):
         self.trigger = TriggerOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> DataShareManagementClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "DataShareManagementClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)
