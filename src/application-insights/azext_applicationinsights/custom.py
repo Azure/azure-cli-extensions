@@ -144,7 +144,7 @@ def update_component_tags(client, application, resource_group_name, tags):
     return client.update_tags(resource_group_name, application, tags)
 
 
-def connect_webapp(cmd, client, application, resource_group_name, app_service, enable_profiler=None, enable_snapshot_debugger=None):
+def connect_webapp(cmd, client, resource_group_name, application, app_service, enable_profiler=None, enable_snapshot_debugger=None):
     from azure.cli.command_modules.appservice.custom import update_app_settings
 
     app_insights = client.get(resource_group_name, application)
