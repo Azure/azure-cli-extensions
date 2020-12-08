@@ -7,7 +7,7 @@
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location
 
 
 def transform_targets(providers):
@@ -83,9 +83,9 @@ def load_command_table(self, _):
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
-        w.command('delete', 'delete', validator=validate_workspace_info)
+        w.command('delete', 'delete', validator=validate_workspace_info_no_location)
         w.command('list', 'list')
-        w.command('show', 'show', validator=validate_workspace_info)
+        w.command('show', 'show', validator=validate_workspace_info_no_location)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
 

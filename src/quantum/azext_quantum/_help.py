@@ -21,7 +21,7 @@ helps['quantum job'] = """
       - name: Submit the Q# program from the current folder
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace \\
-               --job-name MyJob
+               -l MyLocation --job-name MyJob
       - name: Get the status of an Azure Quantum job
         text: |-
             az quantum job show -g MyResourceGroup -w MyWorkspace \\
@@ -38,7 +38,7 @@ helps['quantum target'] = """
     examples:
       - name: Get the list of targets available in a Azure Quantum workspaces
         text: |-
-            az quantum target list -g MyResourceGroup -w MyWorkspace
+            az quantum target list -g MyResourceGroup -w MyWorkspace -l MyLocation
       - name: Select a default when submitting jobs to Azure Quantum
         text: |-
             az quantum target set -t target-id
@@ -62,7 +62,7 @@ helps['quantum workspace'] = """
             az quantum workspace delete -g MyResourceGroup -w MyWorkspace
       - name: Select a default Azure Quantum workspace for future commands
         text: |-
-            az quantum workspace set -g MyResourceGroup -w MyWorkspace
+            az quantum workspace set -g MyResourceGroup -w MyWorkspace -l MyLocation
       - name: Show the currently selected default Azure Quantum workspace
         text: |-
             az quantum workspace show

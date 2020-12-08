@@ -14,7 +14,7 @@ from ..vendored_sdks.azure_mgmt_quantum.models import Provider
 
 
 class WorkspaceInfo(object):
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None):
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -33,11 +33,13 @@ class WorkspaceInfo(object):
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
+        self.location = select_value('location', location)
 
     def clear(self):
         self.subscription = ''
         self.resource_group = ''
         self.name = ''
+        self.location = ''
 
     def save(self, cmd):
         from azure.cli.core.util import ConfiguredDefaultSetter
@@ -45,12 +47,13 @@ class WorkspaceInfo(object):
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
             cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
+            cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
+
 
 def get_basic_quantum_workspace(location, info, storage_account):
     qw = QuantumWorkspace()
     # Use a default provider 
-    # Replace this with user specified providers as part of task:
-    # https://ms-quantum.visualstudio.com/Quantum%20Program/_workitems/edit/16184
+    # Replace this with user specified providers as part of task 16184.
     prov = Provider()
     prov.provider_id = "Microsoft"
     prov.provider_sku = "Basic"
@@ -110,7 +113,7 @@ def show(cmd, resource_group_name=None, workspace_name=None):
     Get the details of the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
     if (not info.resource_group) or (not info.name):
         raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     ws = client.get(info.resource_group, info.name)

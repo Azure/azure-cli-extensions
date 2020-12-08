@@ -16,21 +16,21 @@ from .target import TargetInfo
 logger = logging.getLogger(__name__)
 
 
-def list(cmd, resource_group_name=None, workspace_name=None):
+def list(cmd, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     return client.list()
 
 
-def show(cmd, job_id, resource_group_name=None, workspace_name=None):
+def show(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the job's status and details.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     return client.get(job_id)
 
 
@@ -160,7 +160,7 @@ def _parse_blob_url(url):
     }
 
 
-def output(cmd, job_id, resource_group_name=None, workspace_name=None):
+def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the results of a Q# execution.
     """
@@ -176,8 +176,8 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None):
     else:
         logger.debug("Downloading job results blob into %s", path)
 
-        info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-        client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
+        info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+        client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
         job = client.get(job_id)
 
         if job.status != "Succeeded":
@@ -192,7 +192,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None):
         return data
 
 
-def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wait_secs=5):
+def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes execution.
     """
@@ -201,8 +201,8 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wa
     def has_completed(job):
         return job.status in ("Succeeded", "Failed", "Cancelled")
 
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
     # TODO: LROPoller...
     w = False
@@ -222,8 +222,8 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, max_poll_wa
     return job
 
 
-def execute(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
-            job_name=None, shots=None, storage=None, no_build=False):
+def execute(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+            project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
     Submit a job for quantum execution on Azure Quantum, and waits for the result.
     """
@@ -231,7 +231,7 @@ def execute(cmd, program_args, resource_group_name=None, workspace_name=None, ta
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
-    job = wait(cmd, job.id, resource_group_name, workspace_name)
+    job = wait(cmd, job.id, resource_group_name, workspace_name, location)
     logger.debug(job)
 
     if not job.status == "Succeeded":

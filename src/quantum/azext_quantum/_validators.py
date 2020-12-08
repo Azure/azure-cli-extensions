@@ -8,14 +8,14 @@
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
 
-
-def validate_workspace_info(cmd, namespace):
+def validate_workspace_internal(cmd, namespace, require_location):
     """
-    Makes sure all parameters for a workspace are available.
+    Internal implementation to validate workspace info parameters with an optional location
     """
     group = getattr(namespace, 'resource_group_name', None)
     name = getattr(namespace, 'workspace_name', None)
-    ws = WorkspaceInfo(cmd, group, name)
+    location = getattr(namespace, 'location', None)
+    ws = WorkspaceInfo(cmd, group, name, location)
 
     if not ws.subscription:
         raise ValueError("Missing subscription argument")
@@ -23,6 +23,21 @@ def validate_workspace_info(cmd, namespace):
         raise ValueError("Missing resource-group argument")
     if not ws.name:
         raise ValueError("Missing workspace-name argument")
+    if require_location and not ws.location:
+        raise ValueError("Missing location argument") 
+
+def validate_workspace_info(cmd, namespace):
+    """
+    Makes sure all parameters for a workspace are available including location.
+    """
+    validate_workspace_internal(cmd, namespace, True)
+
+
+def validate_workspace_info_no_location(cmd, namespace):
+    """
+    Makes sure all parameters for a workspace are available, not including location.
+    """
+    validate_workspace_internal(cmd, namespace, False)
 
 
 def validate_target_info(cmd, namespace):

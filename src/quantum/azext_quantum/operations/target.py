@@ -51,12 +51,12 @@ def set(cmd, target_id=None):
     return info
 
 
-def list(cmd, resource_group_name=None, workspace_name=None):
+def list(cmd, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     return client.get_status()
 
 
