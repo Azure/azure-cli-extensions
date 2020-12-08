@@ -141,14 +141,14 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         api_key = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group} --api-key {apiKey}').get_output_in_json()
         assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
-        assert len(api_key['linkedWriteProperties']) == 1
+        assert len(api_key['linkedWriteProperties']) == 0
 
         api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyB}').get_output_in_json()
         assert (api_key['apiKey'] is not None)
 
-        api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyC} --write-properties ""').get_output_in_json()
+        api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyC} --write-properties "WriteAnnotations"').get_output_in_json()
         assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
-        assert len(api_key['linkedWriteProperties']) == 0
+        assert len(api_key['linkedWriteProperties']) == 1
 
         api_keys = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group}').get_output_in_json()
         assert len(api_keys) == 3
@@ -216,8 +216,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'retention_time': 120
         })
         self.kwargs['dest_sub_id'] = self.cmd('account show').get_output_in_json()['id']
-        self.cmd('storage container create -n {container_name_a} --account-name {account_name_a}')
-        self.cmd('storage container create -n {container_name_b} --account-name {account_name_b}')
+        self.cmd('storage container create -n {container_name_a} -g {resource_group} --account-name {account_name_a}')
+        self.cmd('storage container create -n {container_name_b} -g {resource_group} --account-name {account_name_b}')
         self.kwargs['dest_sas_a'] = self.cmd('storage container generate-sas --account-name {account_name_a} --name {container_name_a} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.kwargs['dest_sas_b'] = self.cmd('storage container generate-sas --account-name {account_name_b} --name {container_name_b} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.sas_replacer.add_sas_token(self.kwargs['dest_sas_a'])
