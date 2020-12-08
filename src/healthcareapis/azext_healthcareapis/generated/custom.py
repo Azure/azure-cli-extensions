@@ -42,22 +42,29 @@ def healthcareapis_service_create(client,
                                   public_network_access=None,
                                   export_configuration_storage_account_name=None,
                                   no_wait=False):
+
+
+    service_description = {
+        'kind': kind,
+        'location': location,
+        'tags': tags,
+        'etag': etag,
+        'identity_type': identity_type,
+        'access_policies': access_policies,
+        'cosmos_db_configuration': cosmos_db_configuration,
+        'authentication_configuration': authentication_configuration,
+        'cors_configuration': cors_configuration,
+        'private_endpoint_connections': private_endpoint_connections,
+        'public_network_access': public_network_access,
+        'export_configuration_storage_account_name': export_configuration_storage_account_name
+    }
+
+
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=kind,
-                       location=location,
-                       tags=tags,
-                       etag=etag,
-                       type=identity_type,
-                       access_policies=access_policies,
-                       cosmos_db_configuration=cosmos_db_configuration,
-                       authentication_configuration=authentication_configuration,
-                       cors_configuration=cors_configuration,
-                       private_endpoint_connections=private_endpoint_connections,
-                       public_network_access=public_network_access,
-                       storage_account_name=export_configuration_storage_account_name)
+                       service_description=service_description)
 
 
 def healthcareapis_service_update(client,
