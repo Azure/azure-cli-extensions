@@ -5,8 +5,9 @@
 # pylint: disable=line-too-long
 
 import json
-from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
 from distutils import log as logger
+from collections import OrderedDict
+from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
 
 def print_poll_output(poller, poll_interval=10):
     print("Operation Status: " + poller.status())
@@ -58,7 +59,7 @@ def print_pipeline_output(obj):
 
     #unroll the obj
     obj = json.loads(json.dumps(obj, default=lambda o: getattr(o, '__dict__', str(o))))
-    d = {}
+    d = OrderedDict()
 
     if is_pipelinerun and pipelinerun_type == "import":
         d["name"] = obj["name"]
@@ -68,10 +69,10 @@ def print_pipeline_output(obj):
         d["imported_artifacts"] = obj["response"]["imported_artifacts"]
         d["progress_percentage"] = obj["response"]["progress"]["percentage"]
         d["start_time"] = obj["response"]["start_time"]
-        d["finish_time"] = obj["response"]["finish_time"]
+        d["duration"] = get_duration(d["start_time"], obj["response"]["finish_time"])
         d["catalog_digest"] = obj["response"]["catalog_digest"]
-        d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
-
+        d["pipeline_run_error"] = obj["response"]["pipeline_run_error_message"]
+        
     elif is_pipelinerun and pipelinerun_type == "export":
         d["name"] = obj["name"]
         d["status"] = obj["response"]["status"]
@@ -80,11 +81,10 @@ def print_pipeline_output(obj):
         d["exported_artifacts"] = obj["request"]["artifacts"]
         d["progress_percentage"] = obj["response"]["progress"]["percentage"]
         d["start_time"] = obj["response"]["start_time"]
-        d["finish_time"] = obj["response"]["finish_time"]
-        #d["duration"] = d["finish_time"] - d["start_time"]
+        d["duration"] = get_duration(d["start_time"], obj["response"]["finish_time"])
         d["catalog_digest"] = obj["response"]["catalog_digest"]
         d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
-
+        
     elif is_importpipeline:
         d["name"] = obj["name"]
         d["status"] = obj["provisioning_state"]
@@ -115,7 +115,7 @@ def print_pipeline_output(obj):
         else:
             d["principal_id"] = obj["identity"]["principal_id"]
             d["tenant_id"] = obj["identity"]["tenant_id"]
-
+        
     return d
 
 def print_lite_pipeline_output(obj):
@@ -155,4 +155,17 @@ def print_lite_pipeline_output(obj):
         d["status"] = obj["provisioning_state"]
         d["storage_uri"] = obj["target"]["uri"]
 
-    return d        
+    return d   
+
+    
+def get_duration(start_time, finish_time):
+    from dateutil.parser import parse
+    try:
+        duration = parse(finish_time) - parse(start_time)
+        hours = "{0:02d}".format((24 * duration.days) + (duration.seconds // 3600))
+        minutes = "{0:02d}".format((duration.seconds % 3600) // 60)
+        seconds = "{0:02d}".format(duration.seconds % 60)
+        return "{0}:{1}:{2}".format(hours, minutes, seconds)
+    except:
+        logger.debug("Unable to get duration with start_time '%s' and finish_time '%s'", start_time, finish_time)
+        return ' '     

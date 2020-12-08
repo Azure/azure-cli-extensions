@@ -17,16 +17,41 @@ def create_exportpipeline(cmd, client, resource_group_name, registry_name, expor
         options_list = options.split(',')
 
     export_pipeline_target_type = "AzureStorageBlobContainer"
-    export_pipeline_target_properties = ExportPipelineTargetProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri, type=export_pipeline_target_type)
+    export_pipeline_target_properties = ExportPipelineTargetProperties(key_vault_uri=keyvault_secret_uri, 
+                                                                       uri=storage_account_container_uri, 
+                                                                       type=export_pipeline_target_type)
+
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
-    export_pipeline = ExportPipeline(identity=identity_properties, target=export_pipeline_target_properties, options=options_list)
+    export_pipeline = ExportPipeline(identity=identity_properties, 
+                                     target=export_pipeline_target_properties, 
+                                     options=options_list)
 
-    client.export_pipelines.begin_create(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name, export_pipeline_create_parameters=export_pipeline)
+    client.export_pipelines.begin_create(resource_group_name=resource_group_name, 
+                                         registry_name=registry_name, 
+                                         export_pipeline_name=export_pipeline_name, 
+                                         export_pipeline_create_parameters=export_pipeline)
 
-    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
-    print_keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri, user_assigned_identity_resource_id=user_assigned_identity_resource_id, raw_result=raw_result)
+    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, 
+                                             registry_name=registry_name, 
+                                             export_pipeline_name=export_pipeline_name)
+
+    print_keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri, 
+                                 user_assigned_identity_resource_id=user_assigned_identity_resource_id, 
+                                 raw_result=raw_result)
 
     return print_pipeline_output(raw_result)
+
+def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
+    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, 
+                                             registry_name=registry_name, 
+                                             export_pipeline_name=export_pipeline_name)
+                                             
+    return print_pipeline_output(raw_result)
+           
+def delete_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
+    client.export_pipelines.begin_delete(resource_group_name=resource_group_name, 
+                                         registry_name=registry_name, 
+                                         export_pipeline_name=export_pipeline_name)
 
 def list_exportpipeline(cmd, client, resource_group_name, registry_name):
     raw_result = client.export_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
@@ -36,11 +61,4 @@ def list_exportpipeline(cmd, client, resource_group_name, registry_name):
         pipe_list.append(print_lite_pipeline_output(pipeline))
     
     return pipe_list
-        
-def delete_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
-    client.export_pipelines.begin_delete(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
 
-def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
-    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name, registry_name=registry_name, export_pipeline_name=export_pipeline_name)
-    return print_pipeline_output(raw_result)
-   
