@@ -7,10 +7,10 @@
 import time
 from knack.util import CLIError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
-from .utility_functions import print_poll_output, print_pipeline_output, print_lite_pipeline_output
+from .utility_functions import print_pipeline_output, print_lite_pipeline_output
 
 
-def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_name, pipeline_run_name, pipeline_type, storage_blob_name, artifacts=None, force_update_tag=False):
+def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name, pipeline_run_name, pipeline_type, storage_blob_name, artifacts=None, force_update_tag=False):
     '''Create a pipeline run.'''
 
     if pipeline_type == "import":
@@ -53,14 +53,13 @@ def create_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
                                       pipeline_run_name=pipeline_run_name,
                                       pipeline_run_create_parameters=pipeline_run)
 
-    return get_pipelinerun(cmd=cmd,
-                           client=client,
+    return get_pipelinerun(client=client,
                            resource_group_name=resource_group_name,
                            registry_name=registry_name,
                            pipeline_run_name=pipeline_run_name)
 
 
-def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
+def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):
     '''Get a pipeline run.'''
 
     raw_result = client.pipeline_runs.get(resource_group_name=resource_group_name,
@@ -70,7 +69,7 @@ def get_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_ru
     return print_pipeline_output(raw_result)
 
 
-def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline_run_name):
+def delete_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):
     '''Delete a pipeline run.'''
 
     client.pipeline_runs.begin_delete(resource_group_name=resource_group_name,
@@ -78,7 +77,7 @@ def delete_pipelinerun(cmd, client, resource_group_name, registry_name, pipeline
                                       pipeline_run_name=pipeline_run_name)
 
 
-def list_pipelinerun(cmd, client, resource_group_name, registry_name):
+def list_pipelinerun(client, resource_group_name, registry_name):
     '''List pipeline runs on a registry.'''
 
     raw_result = client.pipeline_runs.list(resource_group_name=resource_group_name, registry_name=registry_name)

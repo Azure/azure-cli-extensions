@@ -5,10 +5,10 @@
 # pylint: disable=line-too-long
 
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ExportPipeline, ExportPipelineTargetProperties
-from .utility_functions import print_poll_output, create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
+from .utility_functions import create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
 
 
-def create_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None):
+def create_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None):
     '''Create an export pipeline.'''
 
     keyvault_secret_uri = keyvault_secret_uri.lower()
@@ -45,7 +45,7 @@ def create_exportpipeline(cmd, client, resource_group_name, registry_name, expor
     return print_pipeline_output(raw_result)
 
 
-def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
+def get_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Get an export pipeline.'''
 
     raw_result = client.export_pipelines.get(resource_group_name=resource_group_name,
@@ -55,7 +55,7 @@ def get_exportpipeline(cmd, client, resource_group_name, registry_name, export_p
     return print_pipeline_output(raw_result)
 
 
-def delete_exportpipeline(cmd, client, resource_group_name, registry_name, export_pipeline_name):
+def delete_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Delete an export pipeline.'''
 
     client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
@@ -63,7 +63,7 @@ def delete_exportpipeline(cmd, client, resource_group_name, registry_name, expor
                                          export_pipeline_name=export_pipeline_name)
 
 
-def list_exportpipeline(cmd, client, resource_group_name, registry_name):
+def list_exportpipeline(client, resource_group_name, registry_name):
     '''List export pipelines on a registry.'''
 
     raw_result = client.export_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
