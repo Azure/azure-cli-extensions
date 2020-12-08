@@ -7,7 +7,10 @@
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
 from .utility_functions import print_poll_output, create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
 
+
 def create_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None, source_trigger_enabled="True"):
+    '''Create an import pipeline'''
+
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
@@ -24,45 +27,52 @@ def create_importpipeline(cmd, client, resource_group_name, registry_name, impor
 
     pipeline_source_trigger_properties = PipelineSourceTriggerProperties(status=source_trigger_status)
     pipeline_trigger_properties = PipelineTriggerProperties(source_trigger=pipeline_source_trigger_properties)
-    import_pipeline = ImportPipeline(identity=identity_properties, 
-                                     source=import_pipeline_source_properties, 
-                                     trigger=pipeline_trigger_properties, 
+    import_pipeline = ImportPipeline(identity=identity_properties,
+                                     source=import_pipeline_source_properties,
+                                     trigger=pipeline_trigger_properties,
                                      options=options_list)
 
-    client.import_pipelines.begin_create(resource_group_name=resource_group_name, 
-                                         registry_name=registry_name, 
-                                         import_pipeline_name=import_pipeline_name, 
+    client.import_pipelines.begin_create(resource_group_name=resource_group_name,
+                                         registry_name=registry_name,
+                                         import_pipeline_name=import_pipeline_name,
                                          import_pipeline_create_parameters=import_pipeline)
 
-    raw_result = client.import_pipelines.get(resource_group_name=resource_group_name, 
-                                             registry_name=registry_name, 
+    raw_result = client.import_pipelines.get(resource_group_name=resource_group_name,
+                                             registry_name=registry_name,
                                              import_pipeline_name=import_pipeline_name)
 
     print_keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri,
-                                 user_assigned_identity_resource_id=user_assigned_identity_resource_id, 
+                                 user_assigned_identity_resource_id=user_assigned_identity_resource_id,
                                  raw_result=raw_result)
 
     return print_pipeline_output(raw_result)
 
+
 def get_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
-    raw_result = client.import_pipelines.get(resource_group_name=resource_group_name, 
-                                             registry_name=registry_name, 
+    '''Get an import pipeline.'''
+
+    raw_result = client.import_pipelines.get(resource_group_name=resource_group_name,
+                                             registry_name=registry_name,
                                              import_pipeline_name=import_pipeline_name)
-                                             
+
     return print_pipeline_output(raw_result)
 
+
 def delete_importpipeline(cmd, client, resource_group_name, registry_name, import_pipeline_name):
-    client.import_pipelines.begin_delete(resource_group_name=resource_group_name, 
-                                         registry_name=registry_name, 
-                                         import_pipeline_name=import_pipeline_name)  
+    '''Delete an import pipeline.'''
+
+    client.import_pipelines.begin_delete(resource_group_name=resource_group_name,
+                                         registry_name=registry_name,
+                                         import_pipeline_name=import_pipeline_name)
+
 
 def list_importpipeline(cmd, client, resource_group_name, registry_name):
+    '''List import pipelines on a registry'''
+
     raw_result = client.import_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
     pipe_list = []
 
     for pipeline in raw_result:
         pipe_list.append(print_lite_pipeline_output(pipeline))
-    
-    return pipe_list
 
-    
+    return pipe_list

@@ -7,6 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_acrtransfer._client_factory import cf_acrtransfer
 
+
 def load_command_table(self, _):
     importpipeline_sdk = CliCommandType(
         operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ImportPipelinesOperations.{}',
@@ -46,4 +47,3 @@ def load_command_table(self, _):
 
     with self.command_group('acrtransfer', is_preview=True):
         pass
-    

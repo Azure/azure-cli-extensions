@@ -6,6 +6,7 @@
 
 from knack.util import CLIError
 
+
 def validate_storage_account_container_uri(namespace):
     uri = namespace.storage_account_container_uri
     valid = True
@@ -15,6 +16,7 @@ def validate_storage_account_container_uri(namespace):
 
     if not valid:
         raise CLIError("Invalid storage account container URI. Please provide a storage account container URI of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note - The exact URI form may be different outside of AzureCloud.")
+
 
 def validate_keyvault_secret_uri(namespace):
     uri = namespace.keyvault_secret_uri
@@ -29,6 +31,7 @@ def validate_keyvault_secret_uri(namespace):
     if not valid:
         raise CLIError("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
 
+
 def validate_user_assigned_identity_resource_id(namespace):
     identity_id = namespace.user_assigned_identity_resource_id
     valid = True
@@ -41,6 +44,7 @@ def validate_user_assigned_identity_resource_id(namespace):
 
     if not valid:
         raise CLIError("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
+
 
 def validate_import_options(namespace):
     options_str = namespace.options
@@ -60,6 +64,7 @@ def validate_import_options(namespace):
         print(allowed_options_list)
         raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
+
 def validate_export_options(namespace):
     options_str = namespace.options
     valid = True
@@ -78,6 +83,7 @@ def validate_export_options(namespace):
         print(allowed_options_list)
         raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
+
 def validate_pipeline_type(namespace):
     pipeline_type = namespace.pipeline_type
     valid = True
@@ -88,12 +94,13 @@ def validate_pipeline_type(namespace):
     if not valid:
         raise CLIError("Invalid pipeline type. Pipeline type must be import or export.")
 
+
 def validate_source_trigger_enabled(namespace):
     status_str = namespace.source_trigger_enabled
     valid = True
 
     if status_str.lower() not in ("true", "false"):
         valid = False
-    
+
     if not valid:
         raise CLIError("Invalid source trigger enabled. Source trigger enabled must be true or false.")
