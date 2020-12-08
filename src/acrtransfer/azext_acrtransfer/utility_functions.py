@@ -9,16 +9,6 @@ from distutils import log as logger
 from collections import OrderedDict
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import IdentityProperties, UserIdentityProperties
 
-def print_poll_output(poller, poll_interval=10):
-    print("Operation Status: " + poller.status())
-
-    while not poller.done():
-        print("Please wait " + str(poll_interval) + " seconds for the next update.")
-        poller.wait(timeout=poll_interval)
-        print("Operation Status: " + poller.status())
-
-    return poller.status()
-
 def create_identity_properties(user_assigned_identity_resource_id):
     if user_assigned_identity_resource_id is None:
         resource_identity_type = "SystemAssigned"
