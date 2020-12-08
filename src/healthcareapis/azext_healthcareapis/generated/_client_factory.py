@@ -17,7 +17,7 @@ def cf_healthcareapis_cl(cli_ctx, *_):
 
 
 def cf_service(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).service
+    return cf_healthcareapis_cl(cli_ctx).services
 
 
 def cf_operation_result(cli_ctx, *_):
