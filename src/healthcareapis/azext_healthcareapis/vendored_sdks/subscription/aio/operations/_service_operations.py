@@ -152,6 +152,14 @@ class ServiceOperations:
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(service_description, 'ServicesDescription')
         body_content_kwargs['content'] = body_content
+
+        print("5")
+        print(url)
+        print(query_parameters)
+        print(header_parameters)
+        print(body_content)
+        print(body_content_kwargs)
+
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
