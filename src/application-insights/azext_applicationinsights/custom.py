@@ -10,10 +10,11 @@ import isodate
 from knack.util import CLIError
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.profiles import ResourceType
 
 logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
@@ -143,10 +144,14 @@ def update_component_tags(client, application, resource_group_name, tags):
     return client.update_tags(resource_group_name, application, tags)
 
 
-def connect_webapp(cmd, resource_group_name, webapp_name, enable_profiler=None, enable_snapshot_debugger=None):
+def connect_webapp(cmd, client, resource_group_name, application, app_service, enable_profiler=None, enable_snapshot_debugger=None):
     from azure.cli.command_modules.appservice.custom import update_app_settings
 
-    settings = []
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -156,7 +161,17 @@ def connect_webapp(cmd, resource_group_name, webapp_name, enable_profiler=None, 
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=1.0.0")
     elif enable_snapshot_debugger is False:
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=disabled")
-    return update_app_settings(cmd, resource_group_name, webapp_name, settings)
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
+
+
+def connect_function(cmd, client, resource_group_name, application, app_service):
+    from azure.cli.command_modules.appservice.custom import update_app_settings
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 
 def get_component(client, application, resource_group_name):
