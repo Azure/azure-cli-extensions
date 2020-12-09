@@ -12,6 +12,15 @@
 from .. import try_manual
 
 
+# EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
+@try_manual
+def step_term_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az confluent term list',
+             checks=checks)
+
+
 # EXAMPLE: /Organization/put/Organization_Create
 @try_manual
 def step_organization_create(test, rg, checks=None):

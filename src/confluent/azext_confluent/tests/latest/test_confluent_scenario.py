@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from .example_steps import step_term_list
 from .example_steps import step_organization_create
 from .example_steps import step_organization_show
 from .example_steps import step_organization_list
@@ -43,6 +44,7 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
+    step_term_list(test, rg, checks=[])
     step_organization_create(test, rg, checks=[
         test.check("location", "West US", case_sensitive=False),
         test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),

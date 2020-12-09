@@ -15,6 +15,15 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
+    from azext_confluent.generated._client_factory import cf_marketplace_agreement
+    confluent_marketplace_agreement = CliCommandType(
+        operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._marketplace_agreement_operations#Marketpla'
+        'ceAgreementOperations.{}',
+        client_factory=cf_marketplace_agreement)
+    with self.command_group('confluent term', confluent_marketplace_agreement, client_factory=cf_marketplace_agreement,
+                            is_experimental=True) as g:
+        g.custom_command('list', 'confluent_term_list')
+
     from azext_confluent.generated._client_factory import cf_organization
     confluent_organization = CliCommandType(
         operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._organization_operations#OrganizationOperat'

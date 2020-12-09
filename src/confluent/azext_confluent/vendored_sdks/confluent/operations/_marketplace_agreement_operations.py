@@ -64,6 +64,7 @@ class MarketplaceAgreementOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-03-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,6 +81,7 @@ class MarketplaceAgreementOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
                 request = self._client.get(url, query_parameters, header_parameters)
             else:
@@ -137,6 +139,7 @@ class MarketplaceAgreementOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         body = models.ConfluentAgreementResource(properties=properties)
+        api_version = "2020-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -149,6 +152,7 @@ class MarketplaceAgreementOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
