@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.0
+-----
+* Support Java In-Process Agent.
+
 2.0.0
 -----
 * Switch api-version from 2019-05-01-preview to 2020-07-01

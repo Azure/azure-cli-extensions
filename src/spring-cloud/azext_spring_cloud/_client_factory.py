@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from .vendored_sdks.appplatform import AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient
 
 
 def cf_spring_cloud(cli_ctx, *_):

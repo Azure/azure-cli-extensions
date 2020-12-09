@@ -157,6 +157,8 @@ def validate_tracing_parameters(namespace):
                        "can not be set with '--disable-distributed-tracing'.")
     if namespace.app_insights and namespace.app_insights_key:
         raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
+        raise CLIError("Sampling Rate must be in the range [0,100].")
 
 
 def validate_vnet(cmd, namespace):

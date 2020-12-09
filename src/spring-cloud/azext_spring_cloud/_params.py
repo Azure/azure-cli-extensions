@@ -14,7 +14,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters, validate_instance_count)
 from ._utils import ApiType
 
-from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2020_11_01_preview.models import RuntimeVersion, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -56,6 +56,11 @@ def load_arguments(self, _):
             c.argument('disable_distributed_tracing',
                        arg_type=get_three_state_flag(),
                        help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
+                       validator=validate_tracing_parameters)
+            c.argument('sampling_rate',
+                       is_preview=True,
+                       type=float,
+                       help="Sampling Rate of application insights. Maximum is 100.",
                        validator=validate_tracing_parameters)
             c.argument('tags', arg_type=tags_type)
 
