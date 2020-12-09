@@ -197,3 +197,10 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
+
+
+def validate_infrastructure_type(infra):
+    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
+        if s.lower() == infra.lower():
+            return s
+    return "generic"

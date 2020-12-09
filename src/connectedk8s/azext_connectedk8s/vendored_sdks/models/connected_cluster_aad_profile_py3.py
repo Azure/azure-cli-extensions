@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class ConnectedClusterAADProfile(Model):
-    """ConnectedClusterAADProfile.
+    """AAD profile of the connected cluster.
 
     All required parameters must be populated in order to send to Azure.
 
