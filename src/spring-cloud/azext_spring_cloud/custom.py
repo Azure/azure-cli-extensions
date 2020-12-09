@@ -44,12 +44,11 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
                         vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
-                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, sku='Standard', tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
     properties = models.ClusterResourceProperties()
-    resource = models.ServiceResource(location=location, properties=properties)
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
         properties.network_profile = models.NetworkProfile(
@@ -60,16 +59,23 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
-    if sku is None:
-        sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
-    update_tracing_config(cmd, resource_group, name, location, properties,
-                          app_insights_key, app_insights, disable_distributed_tracing)
-
     resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group, service_name=name, resource=resource)
+
+    poller = client.services.create_or_update(
+        resource_group, name, resource)
+    logger.warning(" - Creating Service ..")
+    while poller.done() is False:
+        sleep(5)
+    if disable_distributed_tracing is not True:
+        logger.warning("Start configure distributed tracing")
+        trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+                                                 disable_distributed_tracing)
+        if trace_properties is not None:
+            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
+    return poller
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
@@ -85,46 +91,47 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         updated_resource.sku = full_sku
         update_service_sku = True
 
-    resource = client.get(resource_group, name)
+    resource = client.services.get(resource_group, name)
     location = resource.location
-    resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
+    trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     app_insights_target_status = False
-    if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
+    if app_insights or app_insights_key or disable_distributed_tracing is False:
         app_insights_target_status = True
-        if resource_properties.trace.enabled is False:
+        if trace_enabled is False:
             update_app_insights = True
-        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+        elif app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
-        if resource_properties.trace.enabled is True:
+        if trace_enabled is True:
             update_app_insights = True
 
     # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
-            resource_properties.trace.enabled = app_insights_target_status
-        elif resource_properties.trace.app_insight_instrumentation_key is not None \
-                and app_insights is None and app_insights_key is None:
-            resource_properties.trace.enabled = app_insights_target_status
+            trace_properties.trace_enabled = app_insights_target_status
+        elif trace_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
+            trace_properties.trace_enabled = app_insights_target_status
         else:
-            update_tracing_config(cmd, resource_group, name, location, resource_properties, app_insights_key,
-                                  app_insights, disable_distributed_tracing)
-        updated_resource_properties.trace = resource_properties.trace
+            trace_properties = update_tracing_config(cmd, resource_group, name, location,
+                                                     app_insights_key, app_insights, disable_distributed_tracing)
+        if trace_properties is not None:
+            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
 
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_app_insights is False and update_service_tags is False and update_service_sku is False:
+    if update_service_tags is False and update_service_sku is False:
         return resource
 
     updated_resource.properties = updated_resource_properties
-    return sdk_no_wait(no_wait, client.update,
+    return sdk_no_wait(no_wait, client.services.update,
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
@@ -192,11 +199,12 @@ def app_create(cmd, client, resource_group, service, name,
         size_in_gb=5, mount_path="/tmp")
 
     resource = client.services.get(resource_group, service)
-    location = resource.location
+
+    _validate_instance_count(resource.sku.tier, instance_count)
 
     app_resource = models.AppResource()
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
     if assign_identity is True:
         app_resource.identity = models.ManagedIdentityProperties(type="systemassigned")
 
@@ -208,7 +216,6 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
-        instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=None,
@@ -225,8 +232,9 @@ def app_create(cmd, client, resource_group, service, name,
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    poller = client.deployments.create_or_update(
-        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+    poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME,
+                                                 properties=properties,
+                                                 sku=models.Sku(name="S0", tier="STANDARD", capacity=instance_count))
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
@@ -240,7 +248,7 @@ def app_create(cmd, client, resource_group, service, name,
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
 
     app_poller = client.apps.update(resource_group, service, name, app_resource)
     logger.warning(
@@ -300,7 +308,6 @@ def app_update(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=None,
         memory_in_gb=None,
-        instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
@@ -452,14 +459,18 @@ def app_scale(cmd, client, resource_group, service, name,
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
-        memory_in_gb=memory,
-        instance_count=instance_count,)
+        memory_in_gb=memory)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
-                       resource_group, service, name, deployment, properties)
+                       resource_group, service, name, deployment, properties=properties, sku=sku)
 
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
@@ -633,15 +644,21 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     if name in deployments:
         raise CLIError("Deployment " + name + " already exists")
 
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     if not skip_clone_settings:
         active_deployment_name = client.apps.get(
             resource_group, service, app).properties.active_deployment_name
+        if not active_deployment_name:
+            raise CLIError("No production deployment found, use --skip-clone-settings to skip copying settings from "
+                           "production deployment.")
         active_deployment = client.deployments.get(
             resource_group, service, app, active_deployment_name)
         if active_deployment:
             cpu = cpu or active_deployment.properties.deployment_settings.cpu
             memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
-            instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
+            instance_count = instance_count or active_deployment.sku.capacity
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
     else:
@@ -663,6 +680,19 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        file_type)
 
 
+def _validate_instance_count(sku, instance_count=None):
+    if instance_count is not None:
+        sku = sku.upper()
+        if sku == "STANDARD":
+            if instance_count > 500:
+                raise CLIError(
+                    "Standard SKU can have at most 500 app instances in total, but got '{}'".format(instance_count))
+        if sku == "BASIC":
+            if instance_count > 25:
+                raise CLIError(
+                    "Basic SKU can have at most 25 app instances in total, but got '{}'".format(instance_count))
+
+
 def deployment_list(cmd, client, resource_group, service, app):
     return client.deployments.list(resource_group, service, app)
 
@@ -674,6 +704,35 @@ def deployment_get(cmd, client, resource_group, service, app, name):
 def deployment_delete(cmd, client, resource_group, service, app, name):
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
+
+
+def is_valid_git_uri(uri):
+    return uri.startswith("https://") or uri.startswith("git@")
+
+
+def validate_config_server_settings(client, resource_group, name, git_property):
+    error_msg = "Git URI should start with \"https://\" or \"git@\""
+    if git_property:
+        if not is_valid_git_uri(git_property.uri):
+            raise CLIError(error_msg)
+        if git_property.repositories:
+            for repository in git_property.repositories:
+                if not is_valid_git_uri(repository.uri):
+                    raise CLIError(error_msg)
+
+    try:
+        result = sdk_no_wait(False, client.validate, resource_group, name, git_property).result()
+    except Exception as err:  # pylint: disable=broad-except
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+
+    if not result.is_valid:
+        for item in result.details or []:
+            if not item.name:
+                logger.error("Default repository with URI \"%s\" meets error:", item.uri)
+            else:
+                logger.error("Repository named \"%s\" with URI \"%s\" meets error:", item.name, item.uri)
+            logger.error("\n".join(item.messages))
+        raise CLIError("Config Server settings contain error.")
 
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
@@ -713,36 +772,27 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['repos']
 
     config_property['repositories'] = repositories
-    git_property = client._deserialize(
-        'ConfigServerGitProperty', config_property)
-    config_server_settings = models.ConfigServerSettings(
-        git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
-    return sdk_no_wait(no_wait, client.update,
-                       resource_group, name, service_resource)
+    git_property = client._deserialize('ConfigServerGitProperty', config_property)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
+    return sdk_no_wait(no_wait, client.update_put, resource_group, name, config_server_properties)
 
 
 def config_get(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server:
+    config_server_resource = client.get(resource_group, name)
+
+    if not config_server_resource.properties.config_server:
         raise CLIError("Config server not set.")
-    return config_server.git_property
+    return config_server_resource
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties(
-        config_server=models.ConfigServerSettings())
-    properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    appResource = models.ServiceResource(properties=properties)
-
-    return client.update(resource_group, name, appResource)
+    config_server_properties = models.ConfigServerProperties()
+    return client.update_put(resource_group, name, config_server_properties)
 
 
 def config_git_set(cmd, client, resource_group, name, uri,
@@ -754,33 +804,27 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    git_property = models.ConfigServerGitProperty(uri=uri)
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    config.uri = uri
-    config.label = label
-    config.search_paths = search_paths
-    config.username = username
-    config.password = password
-    config.host_key = host_key
-    config.host_key_algorithm = host_key_algorithm
-    config.private_key = private_key
-    config.strict_host_key_checking = strict_host_key_checking
+    git_property.label = label
+    git_property.search_paths = search_paths
+    git_property.username = username
+    git_property.password = password
+    git_property.host_key = host_key
+    git_property.host_key_algorithm = host_key_algorithm
+    git_property.private_key = private_key
+    git_property.strict_host_key_checking = strict_host_key_checking
 
-    config_server = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
 
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
@@ -793,24 +837,27 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     host_key_algorithm=None,
                     private_key=None,
                     strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+    git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    if config.repositories:
-        repos = [repo for repo in config.repositories if repo.name == repo_name]
+    if pattern:
+        pattern = pattern.split(",")
+
+    if git_property.repositories:
+        repos = [repo for repo in git_property.repositories if repo.name == repo_name]
         if repos:
-            raise CLIError("Repo '{}' already exiests.".format(repo_name))
+            raise CLIError("Repo '{}' already exists.".format(repo_name))
     else:
-        config.repositories = []
+        git_property.repositories = []
 
     repository = models.GitPatternRepository(
         uri=uri,
         name=repo_name,
+        pattern=pattern,
         label=label,
         search_paths=search_paths,
         username=username,
@@ -820,40 +867,38 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         private_key=private_key,
         strict_host_key_checking=strict_host_key_checking)
 
-    config.repositories.append(repository)
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    git_property.repositories.append(repository)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_resource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_resource_properties)
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Adding config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server or not config_server.config or not config_server.config.repositories:
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config.repositories.remove(repository[0])
+    git_property.repositories.remove(repository[0])
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Deleting config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_update(cmd, client, resource_group, name, repo_name,
@@ -867,13 +912,12 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                        host_key_algorithm=None,
                        private_key=None,
                        strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
@@ -883,33 +927,39 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     if pattern:
         pattern = pattern.split(",")
 
-    repository = repository[0]
-    repository = models.GitPatternRepository()
-    repository.uri = uri or repository.uri
-    repository.label = label or repository.label
-    repository.search_paths = search_paths or repository.search_paths
-    repository.username = username or repository.username
-    repository.password = password or repository.password
-    repository.host_key = host_key or repository.host_key
-    repository.host_key_algorithm = host_key_algorithm or repository.host_key_algorithm
-    repository.private_key = private_key or repository.private_key
-    repository.strict_host_key_checking = strict_host_key_checking or repository.strict_host_key_checking
+    old_repository = repository[0]
+    git_property.repositories.remove(old_repository)
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    repository = models.GitPatternRepository(name=old_repository.name, uri=uri or old_repository.uri)
+    repository.pattern = pattern or old_repository.pattern
+    repository.label = label or old_repository.label
+    repository.search_paths = search_paths or old_repository.search_paths
+    repository.username = username or old_repository.username
+    repository.password = password or old_repository.password
+    repository.host_key = host_key or old_repository.host_key
+    repository.host_key_algorithm = host_key_algorithm or old_repository.host_key_algorithm
+    repository.private_key = private_key or old_repository.private_key
+    repository.strict_host_key_checking = strict_host_key_checking or old_repository.strict_host_key_checking
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    git_property.repositories.append(repository)
+
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_list(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
-    return config.repositories
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
+        raise CLIError("Repos not found.")
+
+    return config_server.git_property.repositories
 
 
 def binding_list(cmd, client, resource_group, service, app):
@@ -1158,8 +1208,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,
-        instance_count=instance_count,)
+        runtime_version=runtime_version)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     user_source_info = models.UserSourceInfo(
         version=version,
         relative_path=relative_path,
@@ -1212,10 +1262,10 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
-                           resource_group, service, app, name, properties)
+                           resource_group, service, app, name, properties=properties, sku=sku)
 
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
-                       resource_group, service, app, name, properties)
+                       resource_group, service, app, name, properties=properties, sku=sku)
 
 
 def _get_app_log(url, user_name, password, exceptions):
@@ -1302,44 +1352,40 @@ def get_app_insights_key(cli_ctx, resource_group, name):
     return appinsights.instrumentation_key
 
 
-def check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing):
-    if (app_insights is not None or app_insights_key is not None) and disable_distributed_tracing is True:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' can not be set with '--disable-distributed-tracing true'.")
-    if app_insights is not None and app_insights_key is not None:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
-
-
-def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
+def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
                           app_insights, disable_distributed_tracing):
     create_app_insights = False
-
-    if app_insights_key is not None:
-        resource_properties.trace = models.TraceProperties(
-            enabled=True, app_insight_instrumentation_key=app_insights_key)
-    elif app_insights is not None:
+    trace_properties = None
+    if app_insights_key:
+        trace_properties = models.MonitoringSettingProperties(
+            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
+    elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
                                                        resource_id_dict['resource_name'])
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif disable_distributed_tracing is not True:
         create_app_insights = True
 
     if create_app_insights is True:
         try:
             instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
-            if instrumentation_key is not None:
-                resource_properties.trace = models.TraceProperties(
-                    enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            if instrumentation_key:
+                trace_properties = models.MonitoringSettingProperties()
+                trace_properties.trace_enabled = True
+                trace_properties.app_insights_instrumentation_key = instrumentation_key
         except Exception:  # pylint: disable=broad-except
             logger.warning(
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            return None
+    return trace_properties
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
