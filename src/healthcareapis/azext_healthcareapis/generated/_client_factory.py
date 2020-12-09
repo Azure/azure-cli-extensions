@@ -21,12 +21,12 @@ def cf_service(cli_ctx, *_):
 
 
 def cf_operation_result(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).operation_result
+    return cf_healthcareapis_cl(cli_ctx).operation_results
 
 
 def cf_private_endpoint_connection(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).private_endpoint_connection
+    return cf_healthcareapis_cl(cli_ctx).private_endpoint_connections
 
 
 def cf_private_link_resource(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).private_link_resource
+    return cf_healthcareapis_cl(cli_ctx).private_link_resources

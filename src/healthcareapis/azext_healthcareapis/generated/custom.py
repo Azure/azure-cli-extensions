@@ -77,17 +77,6 @@ def healthcareapis_service_update(client,
                                   public_network_access=None,
                                   no_wait=False):
 
-
-    properties = {
-        'public_network_access': public_network_access
-    }
-
-    service_description = {
-        'name': resource_name,
-        'tags': tags,
-        'properties': properties
-    }
-
     return sdk_no_wait(no_wait,
                        client.update,
                        resource_group_name=resource_group_name,
