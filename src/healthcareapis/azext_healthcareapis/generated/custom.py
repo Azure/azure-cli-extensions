@@ -90,7 +90,7 @@ def healthcareapis_service_delete(client,
                                   resource_name,
                                   no_wait=False):
     return sdk_no_wait(no_wait,
-                       client.begin_delete,
+                       client.delete,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name)
 
