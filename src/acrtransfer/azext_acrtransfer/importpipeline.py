@@ -14,11 +14,6 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
-    if options is None:
-        options_list = []
-    else:
-        options_list = options.split(',')
-
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
     import_pipeline_source_properties = ImportPipelineSourceProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri)
     source_trigger_status = "Enabled" if source_trigger_enabled else "Disabled"
@@ -28,7 +23,7 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
     import_pipeline = ImportPipeline(identity=identity_properties,
                                      source=import_pipeline_source_properties,
                                      trigger=pipeline_trigger_properties,
-                                     options=options_list)
+                                     options=options)
 
     client.import_pipelines.begin_create(resource_group_name=resource_group_name,
                                          registry_name=registry_name,

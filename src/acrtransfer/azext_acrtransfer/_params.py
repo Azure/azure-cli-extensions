@@ -20,12 +20,12 @@ def load_arguments(self, _):
         c.argument('user_assigned_identity_resource_id', options_list=['--assign-identity', '-i'], validator=validate_user_assigned_identity_resource_id, help='User assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.')
 
     with self.argument_context('acrtransfer import-pipeline') as c:
-        c.argument('options', options_list=['--options', '-z'], validator=validate_import_options, help='Comma separated list of options. May only contain the following options: DeleteSourceBlobOnSuccess,OverwriteTags,ContinueOnErrors,DisableSourceTrigger.')
+        c.argument('options', options_list=['--options', '-z'], nargs='+', validator=validate_import_options, help='Space-separated list of options. May only contain the following options: DeleteSourceBlobOnSuccess,OverwriteTags,ContinueOnErrors,DisableSourceTrigger.')
         c.argument('import_pipeline_name', options_list=['--name', '-n'], help='Name of the import pipeline.')
         c.argument('source_trigger_enabled', options_list=['--source-trigger-enabled', '-e'], arg_type=get_three_state_flag(), help='Boolean parameter that determines whether source trigger is enabled on the pipeline. Must be either True or False. True by default.')
 
     with self.argument_context('acrtransfer export-pipeline') as c:
-        c.argument('options', options_list=['--options', '-z'], validator=validate_export_options, help='Comma separated list of options. May only container the following options: OverwriteBlobs,ContinueOnErrors.')
+        c.argument('options', options_list=['--options', '-z'], nargs='+', validator=validate_export_options, help='Space-separated list of options. May only container the following options: OverwriteBlobs,ContinueOnErrors.')
         c.argument('export_pipeline_name', options_list=['--name', '-n'], help='Name of the export pipeline.')
 
     with self.argument_context('acrtransfer pipeline-run') as c:
@@ -34,4 +34,4 @@ def load_arguments(self, _):
         c.argument('pipeline_run_name', options_list=['--name', '-n'], help='Name of the pipeline run.')
         c.argument('force_update_tag', options_list=['--force-update-tag', '-f'], action='store_true', help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
         c.argument('storage_blob_name', options_list=['--storage-blob', '-b'], help='Name of the storage blob to be imported or exported.')
-        c.argument('artifacts', options_list=['--artifacts', '-a'], help='Comma separated list of container artifacts. Artifacts must be either of the form `repository:tag` or `repository@digest` such as hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')
+        c.argument('artifacts', options_list=['--artifacts', '-a'], nargs='+', help='Space-separated list of container artifacts. Artifacts must be either of the form `repository:tag` or `repository@digest` such as hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')

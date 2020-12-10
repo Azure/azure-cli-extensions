@@ -45,16 +45,12 @@ def validate_user_assigned_identity_resource_id(namespace):
 
 
 def validate_import_options(namespace):
-    options_str = namespace.options
+    options = namespace.options
     valid = True
 
-    if options_str is None:
-        return
-
-    options_list = options_str.split(',')
     allowed_options_list = ["OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
 
-    if not set(options_list).issubset(set(allowed_options_list)):
+    if not set(options).issubset(set(allowed_options_list)):
         valid = False
 
     if not valid:
@@ -63,16 +59,12 @@ def validate_import_options(namespace):
 
 
 def validate_export_options(namespace):
-    options_str = namespace.options
+    options = namespace.options
     valid = True
 
-    if options_str is None:
-        return
-
-    options_list = options_str.split(',')
     allowed_options_list = ["OverwriteBlobs", "ContinueOnErrors"]
 
-    if not set(options_list).issubset(set(allowed_options_list)):
+    if not set(options).issubset(set(allowed_options_list)):
         valid = False
 
     if not valid:

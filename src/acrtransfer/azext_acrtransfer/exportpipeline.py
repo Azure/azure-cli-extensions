@@ -14,11 +14,6 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
-    if options is None:
-        options_list = []
-    else:
-        options_list = options.split(',')
-
     export_pipeline_target_type = "AzureStorageBlobContainer"
     export_pipeline_target_properties = ExportPipelineTargetProperties(key_vault_uri=keyvault_secret_uri,
                                                                        uri=storage_account_container_uri,
@@ -27,7 +22,7 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
     export_pipeline = ExportPipeline(identity=identity_properties,
                                      target=export_pipeline_target_properties,
-                                     options=options_list)
+                                     options=options)
 
     client.export_pipelines.begin_create(resource_group_name=resource_group_name,
                                          registry_name=registry_name,
