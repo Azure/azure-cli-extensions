@@ -14,10 +14,10 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
-from ._client_factory import cf_spring_cloud_20201101preview
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -77,7 +77,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
         if sampling_rate:
             if not app_insights_key and not app_insights:
                 CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
-            client_preview = cf_spring_cloud_20201101preview
+            client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
             logger.warning("Start configure Application Insights")
             trace_properties = update_application_insights_config(cmd, resource_group, name, app_insights_key, app_insights, sampling_rate)
             if trace_properties is not None:
