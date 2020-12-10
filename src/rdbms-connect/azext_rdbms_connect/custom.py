@@ -16,7 +16,7 @@ DEFAULT_PG_DB_NAME = 'postgres'
 
 
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
-                                     database_name=None, querytext=None, interactive_mode=False):
+                                     database_name=None, querytext=None, interactive_mode=None):
     mysql_server_endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return connect_to_server_helper("mysql", mysql_server_endpoint, DEFAULT_MYSQL_DB_NAME, server_name,
                                     administrator_login, administrator_login_password, database_name,
@@ -24,7 +24,7 @@ def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, admi
 
 
 def connect_to_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password=None,
-                                        database_name=None, querytext=None, interactive_mode=False):
+                                        database_name=None, querytext=None, interactive_mode=None):
     postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return connect_to_server_helper("postgres", postgresql_server_endpoint, DEFAULT_PG_DB_NAME, server_name,
                                     administrator_login, administrator_login_password, database_name,
@@ -43,11 +43,11 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                        default_db_name)
         database_name = default_db_name
 
-    if administrator_login_password is None and not interactive:
+    if administrator_login_password is None and interactive is None:
         raise CLIError("Please provide password (--admin-password / -p) or run in --interactive mode.")
 
     # run in either interactive or simple connection mode
-    if interactive:
+    if interactive is not None:
         if query_command is not None:
             logger.warning("Ignoring query command passed in. Cannot run a query and interactive mode simultaneously. "
                            "Please try running either a simple query using -c or run your query in interactive "
@@ -83,8 +83,8 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                 connection = pymysql.connect(**connection_kwargs)
             logger.warning('Successfully connected to %s.', server_name)
         except Exception as e:
-            logger.warning('Failed connection to %s. Check error and validate firewall and public access \
-                           or virtual network settings.', server_name)
+            logger.warning("Failed connection to %s. Check error and validate firewall and public access "
+                           "or virtual network settings.", server_name)
             raise CLIError("Unable to connect to flexible server: {}".format(e))
 
         if query_command is not None:

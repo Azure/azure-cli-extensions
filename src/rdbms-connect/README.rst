@@ -9,6 +9,11 @@ Usage
 
 To install the extension separately can run:
 
+:: 
+    az extension add --name rdbms-connect
+
+Then can run connect commands:
+
 ::
     az postgres flexible-server connect -n testServer -u username -p password --postgres-query "select * from pg_user;" --output table
 
