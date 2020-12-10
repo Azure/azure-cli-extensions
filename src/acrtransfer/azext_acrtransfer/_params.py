@@ -25,7 +25,7 @@ def load_arguments(self, _):
         c.argument('user_assigned_identity_resource_id', options_list=['--assign-identity', '-i'], validator=validate_user_assigned_identity_resource_id, help='User assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.')
         c.argument('force_update_tag', options_list=['--force-update-tag', '-f'], help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
         c.argument('storage_blob_name', options_list=['--storage-blob', '-b'], help='Name of the storage blob.')
-        c.argument('artifacts', options_list=['--artifacts', '-a'], help='Comma separated list of container artifacts. Artifacts must be either of the form hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')
+        c.argument('artifacts', options_list=['--artifacts', '-a'], help='Comma separated list of container artifacts. Artifacts must be either of the form `repository:tag` or `repository@digest`. e.g. hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')
         c.argument('source_trigger_enabled', options_list=['--source-trigger-enabled', '-e'], validator=validate_source_trigger_enabled, help='Boolean parameter that determines whether source trigger is enabled on the pipeline. Must be either True or False. True by default.')
         c.argument('output', options_list=['--output', '-o'])
 
