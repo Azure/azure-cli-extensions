@@ -93,14 +93,3 @@ def validate_pipeline_type(namespace):
 
     if not valid:
         raise CLIError("Invalid pipeline type. Pipeline type must be import or export.")
-
-
-def validate_source_trigger_enabled(namespace):
-    status_str = namespace.source_trigger_enabled
-    valid = True
-
-    if status_str.lower() not in ("true", "false"):
-        valid = False
-
-    if not valid:
-        raise CLIError("Invalid source trigger enabled. Source trigger enabled must be true or false.")
