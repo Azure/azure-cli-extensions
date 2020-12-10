@@ -120,12 +120,12 @@ def show(cmd, resource_group_name=None, workspace_name=None):
     return ws
 
 
-def set(cmd, workspace_name, resource_group_name=None):
+def set(cmd, workspace_name, resource_group_name=None, location=None):
     """
     Set the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     ws = client.get(info.resource_group, info.name)
     if ws:
         info.save(cmd)

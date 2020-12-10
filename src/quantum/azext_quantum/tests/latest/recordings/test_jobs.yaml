@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Dec 2020 00:41:53 GMT
+      - Thu, 10 Dec 2020 00:41:54 GMT
       etag:
       - '"57010011-0000-0700-0000-5fa604730000"'
       expires:
@@ -47,50 +47,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
-        quantumclient/2019-11-04-preview Azure-SDK-For-Python
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-workspace-westus/providerStatus
-  response:
-    body:
-      string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
-    headers:
-      content-length:
-      - '1040'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 10 Dec 2020 00:41:54 GMT
-      request-context:
-      - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
-      server:
-      - Microsoft-IIS/10.0
-      set-cookie:
-      - ARRAffinity=27001002d8b8551188d2c7cc4823ffdcadf45dae9b5914f9158d130543bcca9c;Path=/;HttpOnly;Secure;Domain=westus.quantum.azure.com
-      - ARRAffinitySameSite=27001002d8b8551188d2c7cc4823ffdcadf45dae9b5914f9158d130543bcca9c;Path=/;HttpOnly;SameSite=None;Secure;Domain=westus.quantum.azure.com
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK

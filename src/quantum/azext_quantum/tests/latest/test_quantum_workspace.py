@@ -9,7 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TEST_SUBS
+from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TEST_SUBS, TEST_WORKSPACE_CREATE_DELETE, TEST_WORKSPACE_LOCATION, TEST_WORKSPACE_SA
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -34,7 +34,7 @@ class QuantumScenarioTest(ScenarioTest):
         ])
 
         # set
-        self.cmd(f'az quantum workspace set -g {TEST_RG} -w {TEST_WORKSPACE} -o json', checks=[
+        self.cmd(f'az quantum workspace set -g {TEST_RG} -w {TEST_WORKSPACE} -l {TEST_WORKSPACE_LOCATION} -o json', checks=[
             self.check("name", TEST_WORKSPACE)
         ])
 
@@ -47,13 +47,13 @@ class QuantumScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace clear')
 
         # create
-        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -sa {TEST_WORKSPACE_SA} -o json'), checks=[
+        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -sa {TEST_WORKSPACE_SA} -o json', checks=[
             self.check("name", TEST_WORKSPACE_CREATE_DELETE),
             self.check("provisioningState", "Succeeded")
         ])
 
         # delete
-        self.cmd(f'az quantum workspace delete -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -o json'), checks=[
+        self.cmd(f'az quantum workspace delete -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -o json', checks=[
             self.check("name", TEST_WORKSPACE_CREATE_DELETE),
             self.check("provisioningState", "Deleting")
         ])

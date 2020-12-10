@@ -81,6 +81,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--workspace")
     args.append(ws.name)
 
+    args.append("--location")
+    args.append(ws.location)
+
     args.append("--target")
     args.append(target.target_id)
 
@@ -103,7 +106,7 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append(token)
 
     args.append("--base-uri")
-    args.append(base_url())
+    args.append(base_url(ws.location))
 
     args.extend(program_args)
 
@@ -113,8 +116,8 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     return args
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, target_id=None, project=None,
-           job_name=None, shots=None, storage=None, no_build=False):
+def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
+           target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
     Submit a Q# project for execution to Azure Quantum.
     """
@@ -127,7 +130,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, tar
 
     logger.info("Project built successfully.")
 
-    ws = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
