@@ -13,7 +13,7 @@ helps['acrtransfer'] = """
 
 helps['acrtransfer import-pipeline'] = """
     type: group
-    short-summary: Commands to manage ACR import pipelines.
+    short-summary: Manage ACR import pipelines.
 """
 
 helps['acrtransfer export-pipeline'] = """
