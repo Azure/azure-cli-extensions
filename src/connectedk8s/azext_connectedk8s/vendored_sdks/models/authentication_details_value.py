@@ -9,21 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from msrest.serialization import Model
 
 
-class ResourceIdentityType(str, Enum):
+class AuthenticationDetailsValue(Model):
+    """Authentication token value.
 
-    none = "None"
-    system_assigned = "SystemAssigned"
+    :param token: Authentication token.
+    :type token: str
+    """
 
+    _attribute_map = {
+        'token': {'key': 'token', 'type': 'str'},
+    }
 
-class ProvisioningState(str, Enum):
-
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-    provisioning = "Provisioning"
-    updating = "Updating"
-    deleting = "Deleting"
-    accepted = "Accepted"
+    def __init__(self, **kwargs):
+        super(AuthenticationDetailsValue, self).__init__(**kwargs)
+        self.token = kwargs.get('token', None)

@@ -96,6 +96,13 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  checks=[JMESPathCheck('tags.atag', 123),
                          JMESPathCheck('definition.triggers.When_a_feed_item_is_published.recurrence.interval', 2)])
 
+        self.cmd('az logic workflow update '
+                 '--resource-group "{rg}" '
+                 '--tag atag=foo '
+                 '--name "{testWorkflow}"',
+                 checks=[JMESPathCheck('tags.atag', 'foo'),
+                         JMESPathCheck('definition.triggers.When_a_feed_item_is_published.recurrence.interval', 2)])
+
         self.cmd('az logic workflow delete '
                  '--resource-group "{rg}" '
                  '--name "{testWorkflow}" '
