@@ -18,12 +18,12 @@ helps['acrtransfer import-pipeline'] = """
 
 helps['acrtransfer export-pipeline'] = """
     type: group
-    short-summary: Commands to manage ACR export pipelines.
+    short-summary: Manage ACR export pipelines.
 """
 
 helps['acrtransfer pipeline-run'] = """
     type: group
-    short-summary: Commands to manage ACR pipelineruns on both import and export pipelines.
+    short-summary: Manage ACR  import and export pipeline runs.
 """
 
 helps['acrtransfer import-pipeline create'] = """
@@ -38,7 +38,7 @@ helps['acrtransfer import-pipeline create'] = """
 
 helps['acrtransfer import-pipeline list'] = """
     type: command
-    short-summary: List import pipelines on a container registry.
+    short-summary: List import pipelines on a Container Registry.
     examples:
         - name: List import pipelines on a container registry
           text: az acrtransfer import-pipeline list --resource-group $MyRG --registry $MyReg
@@ -72,7 +72,7 @@ helps['acrtransfer export-pipeline create'] = """
 
 helps['acrtransfer export-pipeline list'] = """
     type: command
-    short-summary: List export pipelines on a container registry.
+    short-summary: List export pipelines on a Container Registry.
     examples:
         - name: List export pipelines on a container registry
           text: az acrtransfer export-pipeline list --resource-group $MyRG --registry $MyReg
