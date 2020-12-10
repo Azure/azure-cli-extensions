@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.util import CLIError
+from distutils import log as logger
 
 
 def validate_storage_account_container_uri(namespace):
@@ -22,10 +23,7 @@ def validate_keyvault_secret_uri(namespace):
     uri = namespace.keyvault_secret_uri
     valid = True
 
-    if "https://" not in uri:
-        valid = False
-
-    if "/secrets/" not in uri:
+    if "https://" not in uri or "/secrets/" not in uri:
         valid = False
 
     if not valid:
@@ -60,8 +58,7 @@ def validate_import_options(namespace):
         valid = False
 
     if not valid:
-        print("Allowed options are: ", end='')
-        print(allowed_options_list)
+        logger.warn("Allowed options are: " + str(allowed_options_list))
         raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
 
@@ -79,8 +76,7 @@ def validate_export_options(namespace):
         valid = False
 
     if not valid:
-        print("Allowed options are: ", end='')
-        print(allowed_options_list)
+        logger.warn("Allowed options are: " + str(allowed_options_list))
         raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
 
