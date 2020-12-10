@@ -8,7 +8,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['acrtransfer'] = """
     type: group
-    short-summary: Commands to manage the ACR Transfer feature.
+    short-summary: Manage Azure Container Registry transfer operations and resources.
 """
 
 helps['acrtransfer import-pipeline'] = """
