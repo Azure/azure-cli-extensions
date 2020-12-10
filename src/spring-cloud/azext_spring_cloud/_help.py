@@ -439,3 +439,26 @@ helps['spring-cloud app custom-domain unbind'] = """
     type: command
     short-summary: Unbind a custom-domain of the app.
 """
+
+helps['spring-cloud application-insights'] = """
+    type: group
+    short-summary: Commands to management Application Insights in Azure Spring Cloud.
+"""
+
+helps['spring-cloud application-insights show'] = """
+    type: command
+    short-summary: Show Application Insights settings.
+"""
+
+helps['spring-cloud application-insights enable'] = """
+    type: command
+    short-summary: Enable Application Insights and Java In-process Agent.
+    examples:
+        - name: Enable Application Insights and Java In-process Agent.
+          text: az spring-cloud application-insights enable -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+"""
+
+helps['spring-cloud application-insights disable'] = """
+    type: command
+    short-summary: Disable Application Insights and Java In-process Agent.
+"""

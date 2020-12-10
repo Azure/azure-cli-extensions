@@ -14,7 +14,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters, validate_instance_count)
 from ._utils import ApiType
 
-from .vendored_sdks.appplatform.v2020_11_01_preview.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -41,7 +41,7 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
-
+        c.argument('sampling_rate', is_preview=True, type=float, help="Sampling Rate of application insights. Maximum is 100.", validator=validate_tracing_parameters)
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
 
@@ -56,11 +56,6 @@ def load_arguments(self, _):
             c.argument('disable_distributed_tracing',
                        arg_type=get_three_state_flag(),
                        help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
-                       validator=validate_tracing_parameters)
-            c.argument('sampling_rate',
-                       is_preview=True,
-                       type=float,
-                       help="Sampling Rate of application insights. Maximum is 100.",
                        validator=validate_tracing_parameters)
             c.argument('tags', arg_type=tags_type)
 
@@ -247,3 +242,18 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
+    
+    with self.argument_context('spring-cloud application-insights set') as c:
+        c.argument('app_insights_key',
+                    is_preview=True,
+                    help="Instrumentation key of the existing Application Insights",
+                    validator=validate_tracing_parameters)
+        c.argument('app_insights',
+                    is_preview=True,
+                    help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                    validator=validate_tracing_parameters)
+        c.argument('sampling_rate',
+                    is_preview=True,
+                    type=float,
+                    help="Sampling Rate of application insights. Maximum is 100.",
+                    validator=validate_tracing_parameters)

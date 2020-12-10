@@ -14,8 +14,10 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2020_11_01_preview import models
-from .vendored_sdks.appplatform.v2020_11_01_preview.models import _app_platform_management_client_enums as AppPlatformEnums
+from ._client_factory import cf_spring_cloud_20201101preview
+from .vendored_sdks.appplatform.v2020_07_01 import models
+from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
+from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -73,16 +75,18 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
         sleep(5)
     if disable_distributed_tracing is not True:
         if sampling_rate:
-            logger.warning("Start configure Java In-precess Agent")
-            trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
-                                                     disable_distributed_tracing, sampling_rate)
+            if not app_insights_key and not app_insights:
+                CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
+            client_preview = cf_spring_cloud_20201101preview
+            logger.warning("Start configure Application Insights")
+            trace_properties = update_application_insights_config(cmd, resource_group, name, app_insights_key, app_insights, sampling_rate)
             if trace_properties is not None:
-                sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                sdk_no_wait(no_wait, client_preview.monitoring_settings.update_put,
                             resource_group_name=resource_group, service_name=name, properties=trace_properties)
         else:
             logger.warning("Start configure distributed tracing")
             trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
-                                                     disable_distributed_tracing, sampling_rate)
+                                                     disable_distributed_tracing)
             if trace_properties is not None:
                 sdk_no_wait(no_wait, client.monitoring_settings.update_put,
                             resource_group_name=resource_group, service_name=name, properties=trace_properties)
@@ -90,7 +94,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_distributed_tracing=None, sampling_rate=None, sku=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
     update_app_insights = False
     update_service_tags = False
@@ -107,13 +111,13 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     updated_resource_properties = models.ClusterResourceProperties()
     trace_properties = client.monitoring_settings.get(resource_group, name).properties
     trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
-    if not trace_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
-        CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
 
     app_insights_target_status = False
-    if app_insights or app_insights_key or sampling_rate or disable_distributed_tracing is False:
+    if app_insights or app_insights_key or disable_distributed_tracing is False:
         app_insights_target_status = True
-        if trace_enabled is False or app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key) or (sampling_rate and sampling_rate != trace_properties.app_insights_sampling_rate):
+        if trace_enabled is False:
+            update_app_insights = True
+        elif app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
     elif disable_distributed_tracing is True:
         app_insights_target_status = False
@@ -124,14 +128,11 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     if update_app_insights is True:
         if app_insights_target_status is False:
             trace_properties.trace_enabled = app_insights_target_status
-        elif trace_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key and not sampling_rate:
-            trace_properties.trace_enabled = app_insights_target_status
         elif trace_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
-            trace_properties = update_tracing_config(cmd, resource_group, name, location,
-                                                     trace_properties.app_insights_instrumentation_key, app_insights, disable_distributed_tracing, sampling_rate)
+            trace_properties.trace_enabled = app_insights_target_status
         else:
             trace_properties = update_tracing_config(cmd, resource_group, name, location,
-                                                     app_insights_key, app_insights, disable_distributed_tracing, sampling_rate)
+                                                     app_insights_key, app_insights, disable_distributed_tracing)
         if trace_properties is not None:
             sdk_no_wait(no_wait, client.monitoring_settings.update_put,
                         resource_group_name=resource_group, service_name=name, properties=trace_properties)
@@ -148,6 +149,17 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     return sdk_no_wait(no_wait, client.services.update,
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
+    # update service tags
+    if tags is not None:
+        updated_resource.tags = tags
+        update_service_tags = True
+
+    if update_service_tags is False and update_service_sku is False:
+        return resource
+
+    updated_resource.properties = updated_resource_properties
+    return sdk_no_wait(no_wait, client.services.update,
+                       resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
     logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
@@ -1367,43 +1379,25 @@ def get_app_insights_key(cli_ctx, resource_group, name):
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
-                          app_insights, disable_distributed_tracing, sampling_rate):
+                          app_insights, disable_distributed_tracing):
     create_app_insights = False
     trace_properties = None
-    if sampling_rate:
-        if app_insights_key:
+    if app_insights_key:
+        trace_properties = models.MonitoringSettingProperties(
+            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
+    elif app_insights:
+        if is_valid_resource_id(app_insights):
+            resource_id_dict = parse_resource_id(app_insights)
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                       resource_id_dict['resource_name'])
             trace_properties = models.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=app_insights_key, app_insights_sampling_rate=sampling_rate)
-        elif app_insights:
-            if is_valid_resource_id(app_insights):
-                resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                           resource_id_dict['resource_name'])
-                trace_properties = models.MonitoringSettingProperties(
-                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
-            else:
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
-                trace_properties = models.MonitoringSettingProperties(
-                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
-        elif disable_distributed_tracing is not True:
-            create_app_insights = True
-    else:
-        if app_insights_key:
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+        else:
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
-        elif app_insights:
-            if is_valid_resource_id(app_insights):
-                resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                           resource_id_dict['resource_name'])
-                trace_properties = models.MonitoringSettingProperties(
-                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
-            else:
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
-                trace_properties = models.MonitoringSettingProperties(
-                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
-        elif disable_distributed_tracing is not True:
-            create_app_insights = True
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+    elif disable_distributed_tracing is not True:
+        create_app_insights = True
 
     if create_app_insights is True:
         try:
@@ -1419,6 +1413,40 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
             return None
     return trace_properties
 
+def update_application_insights_config(cmd, resource_group, service_name, app_insights_key,
+                                       app_insights, sampling_rate):
+    trace_properties = None
+    if sampling_rate:
+        if app_insights_key:
+            trace_properties = models_20201101preview.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=app_insights_key, app_insights_sampling_rate=sampling_rate)
+        elif app_insights:
+            if is_valid_resource_id(app_insights):
+                resource_id_dict = parse_resource_id(app_insights)
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                           resource_id_dict['resource_name'])
+                trace_properties = models_20201101preview.MonitoringSettingProperties(
+                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
+            else:
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+                trace_properties = models_20201101preview.MonitoringSettingProperties(
+                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
+    else:
+        if app_insights_key:
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
+        elif app_insights:
+            if is_valid_resource_id(app_insights):
+                resource_id_dict = parse_resource_id(app_insights)
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                           resource_id_dict['resource_name'])
+                trace_properties = models.MonitoringSettingProperties(
+                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+            else:
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+                trace_properties = models.MonitoringSettingProperties(
+                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+    return trace_properties
 
 def try_create_application_insights(cmd, resource_group, name, location):
     creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
@@ -1450,3 +1478,24 @@ def try_create_application_insights(cmd, resource_group, name, location):
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
 
     return appinsights.instrumentation_key
+
+def app_insights_set(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, no_wait=False):
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
+    if not trace_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
+        CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
+    trace_properties = update_application_insights_config(cmd, resource_group, name, app_insights_key, app_insights, sampling_rate)
+    if trace_properties is not None:
+        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                    resource_group_name=resource_group, service_name=name, properties=trace_properties)
+
+def app_insights_delete(cmd, client, resource_group, name, no_wait=False):
+    trace_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
+    if trace_properties is not None:
+        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                    resource_group_name=resource_group, service_name=name, properties=trace_properties)
+
+def app_insights_get(cmd, client, resource_group, name, no_wait=False):
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
+    if not trace_properties:
+        raise CLIError("Application Insights not set.")
+    return trace_properties

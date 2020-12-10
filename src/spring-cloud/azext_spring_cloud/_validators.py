@@ -160,7 +160,6 @@ def validate_tracing_parameters(namespace):
     if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise CLIError("Sampling Rate must be in the range [0,100].")
 
-
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
        not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
