@@ -15,31 +15,41 @@ try:
     from .connected_cluster_identity_py3 import ConnectedClusterIdentity
     from .connected_cluster_aad_profile_py3 import ConnectedClusterAADProfile
     from .connected_cluster_py3 import ConnectedCluster
+    from .hybrid_connection_config_py3 import HybridConnectionConfig
     from .credential_result_py3 import CredentialResult
     from .credential_results_py3 import CredentialResults
+    from .authentication_details_value_py3 import AuthenticationDetailsValue
+    from .authentication_details_py3 import AuthenticationDetails
     from .connected_cluster_patch_py3 import ConnectedClusterPatch
-    from .error_details_py3 import ErrorDetails
-    from .error_response_py3 import ErrorResponse, ErrorResponseException
     from .resource_py3 import Resource
     from .tracked_resource_py3 import TrackedResource
+    from .error_additional_info_py3 import ErrorAdditionalInfo
+    from .error_response_error_py3 import ErrorResponseError
+    from .error_response_py3 import ErrorResponse, ErrorResponseException
 except (SyntaxError, ImportError):
     from .operation_display import OperationDisplay
     from .operation import Operation
     from .connected_cluster_identity import ConnectedClusterIdentity
     from .connected_cluster_aad_profile import ConnectedClusterAADProfile
     from .connected_cluster import ConnectedCluster
+    from .hybrid_connection_config import HybridConnectionConfig
     from .credential_result import CredentialResult
     from .credential_results import CredentialResults
+    from .authentication_details_value import AuthenticationDetailsValue
+    from .authentication_details import AuthenticationDetails
     from .connected_cluster_patch import ConnectedClusterPatch
-    from .error_details import ErrorDetails
-    from .error_response import ErrorResponse, ErrorResponseException
     from .resource import Resource
     from .tracked_resource import TrackedResource
+    from .error_additional_info import ErrorAdditionalInfo
+    from .error_response_error import ErrorResponseError
+    from .error_response import ErrorResponse, ErrorResponseException
 from .connected_cluster_paged import ConnectedClusterPaged
 from .operation_paged import OperationPaged
-from .kubernetes_connect_rp_client_enums import (
+from .connected_kubernetes_client_enums import (
     ResourceIdentityType,
     ProvisioningState,
+    ConnectivityStatus,
+    AuthenticationMethod,
 )
 
 __all__ = [
@@ -48,15 +58,21 @@ __all__ = [
     'ConnectedClusterIdentity',
     'ConnectedClusterAADProfile',
     'ConnectedCluster',
+    'HybridConnectionConfig',
     'CredentialResult',
     'CredentialResults',
+    'AuthenticationDetailsValue',
+    'AuthenticationDetails',
     'ConnectedClusterPatch',
-    'ErrorDetails',
-    'ErrorResponse', 'ErrorResponseException',
     'Resource',
     'TrackedResource',
+    'ErrorAdditionalInfo',
+    'ErrorResponseError',
+    'ErrorResponse', 'ErrorResponseException',
     'ConnectedClusterPaged',
     'OperationPaged',
     'ResourceIdentityType',
     'ProvisioningState',
+    'ConnectivityStatus',
+    'AuthenticationMethod',
 ]

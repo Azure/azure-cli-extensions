@@ -9,15 +9,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-try:
-    from ._models_py3 import AttestationPolicy
-except (SyntaxError, ImportError):
-    from ._models import AttestationPolicy
+
+from ._models_py3 import AttestationPolicy, \
+    AttestSgxEnclaveRequest, AttestOpenEnclaveRequest, TPMOpenEnclaveRequest, RuntimeData, InitTimeData
+
 from ._attestation_client_enums import (
-    TeeKind,
+    TeeKind, DataType
 )
 
 __all__ = [
     'AttestationPolicy',
+    'AttestSgxEnclaveRequest',
+    'AttestOpenEnclaveRequest',
+    'TPMOpenEnclaveRequest',
+    'RuntimeData',
+    'InitTimeData',
     'TeeKind',
+    'DataType'
 ]
