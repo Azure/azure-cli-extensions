@@ -6,6 +6,9 @@
 
 # pylint: disable=line-too-long
 
+Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
+Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
+
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
 Azure_DogfoodCloudName = 'AZUREDOGFOOD'
@@ -50,5 +53,6 @@ Cluster_Info_Not_Found_Type = 'Error while finding current cluster server detail
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
+Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'
 No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
 EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'

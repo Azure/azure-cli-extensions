@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long, too-many-statements
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
 from azure.cli.command_modules.monitor.actions import get_period_type
-from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account
+from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account, validate_app_service
 
 
 def load_arguments(self, _):
@@ -38,9 +38,12 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
 
     with self.argument_context('monitor app-insights component connect-webapp') as c:
-        c.argument('webapp_name', options_list=['--name', '-n'], help="Name of the web app.", id_part='name')
+        c.argument('app_service', options_list=['--web-app'], help="Name or resource id of the web app.", validator=validate_app_service, id_part=None)
         c.argument('enable_profiler', help='Enable collecting profiling traces that help you see where time is spent in code. Currently it is only supported for .NET/.NET Core Web Apps.', arg_type=get_three_state_flag())
         c.argument('enable_snapshot_debugger', options_list=['--enable-snapshot-debugger', '--enable-debugger'], help='Enable snapshot debugger when an exception is thrown. Currently it is only supported for .NET/.NET Core Web Apps.', arg_type=get_three_state_flag())
+
+    with self.argument_context('monitor app-insights component connect-function') as c:
+        c.argument('app_service', options_list=['--function'], help="Name or resource id of the Azure function.", validator=validate_app_service)
 
     with self.argument_context('monitor app-insights component billing') as c:
         c.argument('stop_sending_notification_when_hitting_cap', options_list=['-s', '--stop'], arg_type=get_three_state_flag(),
