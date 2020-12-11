@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.util import CLIError
 from distutils import log as logger
+from knack.util import CLIError
 
 
 def validate_storage_account_container_uri(namespace):
@@ -16,7 +16,7 @@ def validate_storage_account_container_uri(namespace):
         valid = False
 
     if not valid:
-        raise CLIError("Invalid storage account container URI. Please provide a storage account container URI of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note - The exact URI form may be different outside of AzureCloud.")
+        logger.warn("Invalid storage account container URI. Please provide a storage account container URI of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note - The exact URI form may be different outside of AzureCloud.")
 
 
 def validate_keyvault_secret_uri(namespace):
@@ -27,7 +27,7 @@ def validate_keyvault_secret_uri(namespace):
         valid = False
 
     if not valid:
-        raise CLIError("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
+        logger.warn("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
 
 
 def validate_user_assigned_identity_resource_id(namespace):
@@ -41,7 +41,7 @@ def validate_user_assigned_identity_resource_id(namespace):
         valid = False
 
     if not valid:
-        raise CLIError("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
+        logger.warn("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
 
 
 def validate_import_options(namespace):
@@ -50,12 +50,15 @@ def validate_import_options(namespace):
 
     allowed_options_list = ["OverwriteTags", "DeleteSourceBlobOnSuccess", "ContinueOnErrors"]
 
+    if options is None:
+        return
+
     if not set(options).issubset(set(allowed_options_list)):
         valid = False
 
     if not valid:
         logger.warn("Allowed options are: " + str(allowed_options_list))
-        raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
+        logger.warn("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
 
 def validate_export_options(namespace):
@@ -64,12 +67,15 @@ def validate_export_options(namespace):
 
     allowed_options_list = ["OverwriteBlobs", "ContinueOnErrors"]
 
+    if options is None:
+        return
+
     if not set(options).issubset(set(allowed_options_list)):
         valid = False
 
     if not valid:
         logger.warn("Allowed options are: " + str(allowed_options_list))
-        raise CLIError("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
+        logger.warn("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
 
 
 def validate_pipeline_type(namespace):
@@ -80,4 +86,4 @@ def validate_pipeline_type(namespace):
         valid = False
 
     if not valid:
-        raise CLIError("Invalid pipeline type. Pipeline type must be import or export.")
+        logger.warn("Invalid pipeline type. Pipeline type must be import or export.")

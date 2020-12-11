@@ -9,7 +9,7 @@ from .utility_functions import create_identity_properties, print_keyvault_policy
 
 
 def create_importpipeline(client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None, source_trigger_enabled=True):
-    '''Create an import pipelin.'''
+    '''Create an import pipeline.'''
 
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
