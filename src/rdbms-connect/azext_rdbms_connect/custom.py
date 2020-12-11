@@ -50,7 +50,7 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
     if interactive is not None:
         if query_command is not None:
             logger.warning("Ignoring query command passed in. Cannot run a query and interactive mode simultaneously. "
-                           "Please try running either a simple query using -c or run your query in interactive "
+                           "Please try running either a simple query using -q or run your query in interactive "
                            "mode using --interactive.")
 
         # if interactive mode indicated, use pgcli to connect

@@ -89,13 +89,13 @@ class RdbmsConnectMgmtScenarioTest(ScenarioTest):
                  checks=NoneCheck())
 
         # test connection to the server with a simple query
-        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -c {}'
+        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -q {}'
                  .format(database_engine, server_name, username, generated_password, default_database, simple_query),
                  checks=[JMESPathCheck('length(@)', 1)])
 
         # test with invalid username
         username_wrong = 'fakeusername'
-        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -c {}'
+        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -q {}'
                  .format(database_engine, server_name, username_wrong, generated_password, default_database, simple_query),
                  expect_failure=True)
 
