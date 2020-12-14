@@ -39,15 +39,85 @@ helps['timeseriesinsights environment show'] = """
                az timeseriesinsights environment show --name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights environment create'] = """
+helps['timeseriesinsights environment gen1'] = """
+    type: group
+    short-summary: Manage environment with timeseriesinsights sub group gen1
+"""
+
+helps['timeseriesinsights environment gen1 create'] = """
     type: command
     short-summary: "Create an environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
+scale out of environments after they have been created.
+      - name: --partition-key-properties
+        short-summary: "The list of event properties which will be used to partition data in the environment. \
+Currently, only a single partition key property is supported."
+        long-summary: |
+            Usage: --partition-key-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --partition-key-properties argument.
     examples:
       - name: EnvironmentsCreate
         text: |-
-               az timeseriesinsights environment create --name "env1" --parameters "{\\"kind\\":\\"Gen1\\",\\"location\
-\\":\\"West US\\",\\"properties\\":{\\"dataRetentionTime\\":\\"P31D\\",\\"partitionKeyProperties\\":[{\\"name\\":\\"Dev\
-iceId1\\",\\"type\\":\\"String\\"}]},\\"sku\\":{\\"name\\":\\"S1\\",\\"capacity\\":1}}" --resource-group "rg1"
+               az timeseriesinsights environment gen1 create --name "env1" --location "West US" --data-retention-time \
+"P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
+"""
+
+helps['timeseriesinsights environment gen2'] = """
+    type: group
+    short-summary: Manage environment with timeseriesinsights sub group gen2
+"""
+
+helps['timeseriesinsights environment gen2 create'] = """
+    type: command
+    short-summary: "Create an environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
+scale out of environments after they have been created.
+      - name: --time-series-id-properties
+        short-summary: "The list of event properties which will be used to define the environment's time series id."
+        long-summary: |
+            Usage: --time-series-id-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --time-series-id-properties argument.
+      - name: --storage-configuration
+        short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
+service to connect to the customer storage account that is used to store the environment's data."
+        long-summary: |
+            Usage: --storage-configuration account-name=XX management-key=XX
+
+            account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
+            management-key: Required. The value of the management key that grants the Time Series Insights service \
+write access to the storage account. This property is not shown in environment responses.
+      - name: --warm-store-configuration
+        short-summary: "The warm store configuration provides the details to create a warm store cache that will \
+retain a copy of the environment's data available for faster query."
+        long-summary: |
+            Usage: --warm-store-configuration data-retention=XX
+
+            data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
+available for query from the warm store.
 """
 
 helps['timeseriesinsights environment update'] = """
@@ -107,68 +177,31 @@ helps['timeseriesinsights event-source show'] = """
                az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source create'] = """
+helps['timeseriesinsights event-source microsoft.-event-hub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group microsoft.-event-hub
+"""
+
+helps['timeseriesinsights event-source microsoft.-event-hub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
-    parameters:
-      - name: --event-hub-event-source-create-or-update-parameters
-        short-summary: "Parameters supplied to the Create or Update Event Source operation for an EventHub event \
-source."
-        long-summary: |
-            Usage: --event-hub-event-source-create-or-update-parameters timestamp-property-name=XX \
-event-source-resource-id=XX service-bus-namespace=XX event-hub-name=XX consumer-group-name=XX key-name=XX \
-shared-access-key=XX kind=XX local-timestamp=XX location=XX tags=XX
-
-            timestamp-property-name: The event property that will be used as the event source's timestamp. If a value \
-isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be \
-used.
-            event-source-resource-id: Required. The resource id of the event source in Azure Resource Manager.
-            service-bus-namespace: Required. The name of the service bus that contains the event hub.
-            event-hub-name: Required. The name of the event hub.
-            consumer-group-name: Required. The name of the event hub's consumer group that holds the partitions from \
-which events will be read.
-            key-name: Required. The name of the SAS key that grants the Time Series Insights service access to the \
-event hub. The shared access policies for this key must grant 'Listen' permissions to the event hub.
-            shared-access-key: Required. The value of the shared access key that grants the Time Series Insights \
-service read access to the event hub. This property is not shown in event source responses.
-            kind: Required. The kind of the event source.
-            local-timestamp: An object that represents the local timestamp property. It contains the format of local \
-timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for \
-localTimestamp, or if null, then the local timestamp will not be ingressed with the events.
-            location: Required. The location of the resource.
-            tags: Key-value pairs of additional properties for the resource.
-      - name: --io-t-hub-event-source-create-or-update-parameters
-        short-summary: "Parameters supplied to the Create or Update Event Source operation for an IoTHub event \
-source."
-        long-summary: |
-            Usage: --io-t-hub-event-source-create-or-update-parameters timestamp-property-name=XX \
-event-source-resource-id=XX iot-hub-name=XX consumer-group-name=XX key-name=XX shared-access-key=XX kind=XX \
-local-timestamp=XX location=XX tags=XX
-
-            timestamp-property-name: The event property that will be used as the event source's timestamp. If a value \
-isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be \
-used.
-            event-source-resource-id: Required. The resource id of the event source in Azure Resource Manager.
-            iot-hub-name: Required. The name of the iot hub.
-            consumer-group-name: Required. The name of the iot hub's consumer group that holds the partitions from \
-which events will be read.
-            key-name: Required. The name of the Shared Access Policy key that grants the Time Series Insights service \
-access to the iot hub. This shared access policy key must grant 'service connect' permissions to the iot hub.
-            shared-access-key: Required. The value of the Shared Access Policy key that grants the Time Series \
-Insights service read access to the iot hub. This property is not shown in event source responses.
-            kind: Required. The kind of the event source.
-            local-timestamp: An object that represents the local timestamp property. It contains the format of local \
-timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for \
-localTimestamp, or if null, then the local timestamp will not be ingressed with the events.
-            location: Required. The location of the resource.
-            tags: Key-value pairs of additional properties for the resource.
     examples:
       - name: CreateEventHubEventSource
         text: |-
-               az timeseriesinsights event-source create --environment-name "env1" --name "es1" \
---event-hub-event-source-create-or-update-parameters location="West US" timestamp-property-name="someTimestampProperty"\
- event-source-resource-id="somePathInArm" service-bus-namespace="sbn" event-hub-name="ehn" consumer-group-name="cgn" \
-key-name="managementKey" shared-access-key="someSecretvalue" --resource-group "rg1"
+               az timeseriesinsights event-source microsoft.-event-hub create --environment-name "env1" --name "es1" \
+--location "West US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
+--key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
+--timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source microsoft.-io-t-hub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group microsoft.-io-t-hub
+"""
+
+helps['timeseriesinsights event-source microsoft.-io-t-hub create'] = """
+    type: command
+    short-summary: "Create an event source under the specified environment."
 """
 
 helps['timeseriesinsights event-source update'] = """

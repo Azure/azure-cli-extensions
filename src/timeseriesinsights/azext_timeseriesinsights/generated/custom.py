@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -29,11 +28,49 @@ def timeseriesinsights_environment_show(client,
                       expand=expand)
 
 
-def timeseriesinsights_environment_create(client,
-                                          resource_group_name,
-                                          environment_name,
-                                          parameters,
-                                          no_wait=False):
+def timeseriesinsights_environment_gen1_create(client,
+                                               resource_group_name,
+                                               environment_name,
+                                               location,
+                                               sku,
+                                               data_retention_time,
+                                               tags=None,
+                                               storage_limit_exceeded_behavior=None,
+                                               partition_key_properties=None,
+                                               no_wait=False):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'Gen1'
+    parameters['sku'] = sku
+    parameters['data_retention_time'] = data_retention_time
+    parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    parameters['partition_key_properties'] = partition_key_properties
+    return sdk_no_wait(no_wait,
+                       client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       environment_name=environment_name,
+                       parameters=parameters)
+
+
+def timeseriesinsights_environment_gen2_create(client,
+                                               resource_group_name,
+                                               environment_name,
+                                               location,
+                                               sku,
+                                               time_series_id_properties,
+                                               storage_configuration,
+                                               tags=None,
+                                               warm_store_configuration=None,
+                                               no_wait=False):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'Gen2'
+    parameters['sku'] = sku
+    parameters['time_series_id_properties'] = time_series_id_properties
+    parameters['storage_configuration'] = storage_configuration
+    parameters['warm_store_configuration'] = warm_store_configuration
     return sdk_no_wait(no_wait,
                        client.create_or_update,
                        resource_group_name=resource_group_name,
@@ -78,24 +115,62 @@ def timeseriesinsights_event_source_show(client,
                       event_source_name=event_source_name)
 
 
-def timeseriesinsights_event_source_create(client,
-                                           resource_group_name,
-                                           environment_name,
-                                           event_source_name,
-                                           event_hub_event_source_create_or_update_parameters=None,
-                                           io_t_hub_event_source_create_or_update_parameters=None):
-    all_parameters = []
-    if event_hub_event_source_create_or_update_parameters is not None:
-        all_parameters.append(event_hub_event_source_create_or_update_parameters)
-    if io_t_hub_event_source_create_or_update_parameters is not None:
-        all_parameters.append(io_t_hub_event_source_create_or_update_parameters)
-    if len(all_parameters) > 1:
-        raise CLIError('at most one of  event_hub_event_source_create_or_update_parameters, '
-                       'io_t_hub_event_source_create_or_update_parameters is needed for parameters!')
-    if len(all_parameters) != 1:
-        raise CLIError('parameters is required. but none of event_hub_event_source_create_or_update_parameters, '
-                       'io_t_hub_event_source_create_or_update_parameters is provided!')
-    parameters = all_parameters[0] if len(all_parameters) == 1 else None
+def timeseriesinsights_event_source_microsoft._event_hub_create(client,
+                                                                resource_group_name,
+                                                                environment_name,
+                                                                event_source_name,
+                                                                location,
+                                                                event_source_resource_id,
+                                                                service_bus_namespace,
+                                                                event_hub_name,
+                                                                consumer_group_name,
+                                                                key_name,
+                                                                shared_access_key,
+                                                                tags=None,
+                                                                local_timestamp=None,
+                                                                timestamp_property_name=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'MicrosoftEventHub'
+    parameters['local_timestamp'] = local_timestamp
+    parameters['timestamp_property_name'] = timestamp_property_name
+    parameters['event_source_resource_id'] = event_source_resource_id
+    parameters['service_bus_namespace'] = service_bus_namespace
+    parameters['event_hub_name'] = event_hub_name
+    parameters['consumer_group_name'] = consumer_group_name
+    parameters['key_name'] = key_name
+    parameters['shared_access_key'] = shared_access_key
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   environment_name=environment_name,
+                                   event_source_name=event_source_name,
+                                   parameters=parameters)
+
+
+def timeseriesinsights_event_source_microsoft._io_t_hub_create(client,
+                                                               resource_group_name,
+                                                               environment_name,
+                                                               event_source_name,
+                                                               location,
+                                                               event_source_resource_id,
+                                                               iot_hub_name,
+                                                               consumer_group_name,
+                                                               key_name,
+                                                               shared_access_key,
+                                                               tags=None,
+                                                               local_timestamp=None,
+                                                               timestamp_property_name=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['kind'] = 'MicrosoftIoTHub'
+    parameters['local_timestamp'] = local_timestamp
+    parameters['timestamp_property_name'] = timestamp_property_name
+    parameters['event_source_resource_id'] = event_source_resource_id
+    parameters['iot_hub_name'] = iot_hub_name
+    parameters['consumer_group_name'] = consumer_group_name
+    parameters['key_name'] = key_name
+    parameters['shared_access_key'] = shared_access_key
     return client.create_or_update(resource_group_name=resource_group_name,
                                    environment_name=environment_name,
                                    event_source_name=event_source_name,

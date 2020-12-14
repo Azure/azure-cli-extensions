@@ -24,7 +24,8 @@ def load_command_table(self, _):
                             client_factory=cf_environment) as g:
         g.custom_command('list', 'timeseriesinsights_environment_list')
         g.custom_show_command('show', 'timeseriesinsights_environment_show')
-        g.custom_command('create', 'timeseriesinsights_environment_create', supports_no_wait=True)
+        g.custom_command('gen1 create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
+        g.custom_command('gen2 create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_update', supports_no_wait=True)
         g.custom_command('delete', 'timeseriesinsights_environment_delete', confirmation=True)
         g.custom_wait_command('wait', 'timeseriesinsights_environment_show')
@@ -38,7 +39,8 @@ def load_command_table(self, _):
                             client_factory=cf_event_source) as g:
         g.custom_command('list', 'timeseriesinsights_event_source_list')
         g.custom_show_command('show', 'timeseriesinsights_event_source_show')
-        g.custom_command('create', 'timeseriesinsights_event_source_create')
+        g.custom_command('microsoft.-event-hub create', 'timeseriesinsights_event_source_microsoft._event_hub_create')
+        g.custom_command('microsoft.-io-t-hub create', 'timeseriesinsights_event_source_microsoft._io_t_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_update')
         g.custom_command('delete', 'timeseriesinsights_event_source_delete', confirmation=True)
 

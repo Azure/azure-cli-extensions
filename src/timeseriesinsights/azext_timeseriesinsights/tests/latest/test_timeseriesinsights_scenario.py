@@ -11,7 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_environment_create
+from .example_steps import step_environment_gen1_create
 from .example_steps import step_environment_list
 from .example_steps import step_environment_list
 from .example_steps import step_environment_show
@@ -21,7 +21,7 @@ from .example_steps import step_access_policy_list
 from .example_steps import step_access_policy_show
 from .example_steps import step_access_policy_update
 from .example_steps import step_access_policy_delete
-from .example_steps import step_event_source_create
+from .example_steps import step_event_source_microsoft__event_hub_create
 from .example_steps import step_event_source_show
 from .example_steps import step_event_source_list
 from .example_steps import step_event_source_update
@@ -58,9 +58,7 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
-    step_environment_create(test, rg, checks=[
-        test.check("name", "{myEnvironment}", case_sensitive=False),
-    ])
+    step_environment_gen1_create(test, rg, checks=[])
     step_environment_list(test, rg, checks=[
         test.check('length(@)', 1),
     ])
@@ -69,9 +67,15 @@ def call_scenario(test, rg):
     ])
     step_environment_show(test, rg, checks=[
         test.check("name", "{myEnvironment}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("dataRetentionTime", "P31D", case_sensitive=False),
+        test.check("sku.name", "S1", case_sensitive=False),
+        test.check("sku.capacity", 1),
     ])
     step_environment_update(test, rg, checks=[
         test.check("name", "{myEnvironment}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("dataRetentionTime", "P31D", case_sensitive=False),
         test.check("tags.someTag", "someTagValue", case_sensitive=False),
     ])
     step_access_policy_create(test, rg, checks=[
@@ -93,17 +97,27 @@ def call_scenario(test, rg):
         test.check("principalObjectId", "aGuid", case_sensitive=False),
     ])
     step_access_policy_delete(test, rg, checks=[])
-    step_event_source_create(test, rg, checks=[
-        test.check("name", "{myEventSource}", case_sensitive=False),
-    ])
+    step_event_source_microsoft__event_hub_create(test, rg, checks=[])
     step_event_source_show(test, rg, checks=[
         test.check("name", "{myEventSource}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("consumerGroupName", "cgn", case_sensitive=False),
+        test.check("eventHubName", "ehn", case_sensitive=False),
+        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
+        test.check("keyName", "managementKey", case_sensitive=False),
+        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
     ])
     step_event_source_list(test, rg, checks=[
         test.check('length(@)', 1),
     ])
     step_event_source_update(test, rg, checks=[
         test.check("name", "{myEventSource}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("consumerGroupName", "cgn", case_sensitive=False),
+        test.check("eventHubName", "ehn", case_sensitive=False),
+        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
+        test.check("keyName", "managementKey", case_sensitive=False),
+        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
         test.check("tags.someKey", "someValue", case_sensitive=False),
     ])
     step_event_source_delete(test, rg, checks=[])

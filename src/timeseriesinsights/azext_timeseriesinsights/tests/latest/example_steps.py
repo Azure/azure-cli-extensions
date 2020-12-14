@@ -14,14 +14,15 @@ from .. import try_manual
 
 # EXAMPLE: /Environments/put/EnvironmentsCreate
 @try_manual
-def step_environment_create(test, rg, checks=None):
+def step_environment_gen1_create(test, rg, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az timeseriesinsights environment create '
+    test.cmd('az timeseriesinsights environment gen1 create '
              '--name "{myEnvironment}" '
-             '--parameters "{{\\"kind\\":\\"Gen1\\",\\"location\\":\\"West US\\",\\"properties\\":{{\\"dataRetentionTim'
-             'e\\":\\"P31D\\",\\"partitionKeyProperties\\":[{{\\"name\\":\\"DeviceId1\\",\\"type\\":\\"String\\"}}]}},'
-             '\\"sku\\":{{\\"name\\":\\"S1\\",\\"capacity\\":1}}}}" '
+             '--location "West US" '
+             '--data-retention-time "P31D" '
+             '--partition-key-properties name="DeviceId1" type="String" '
+             '--sku name="S1" capacity=1 '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -135,15 +136,20 @@ def step_access_policy_delete(test, rg, checks=None):
 
 # EXAMPLE: /EventSources/put/CreateEventHubEventSource
 @try_manual
-def step_event_source_create(test, rg, checks=None):
+def step_event_source_microsoft__event_hub_create(test, rg, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az timeseriesinsights event-source create '
+    test.cmd('az timeseriesinsights event-source microsoft.-event-hub create '
              '--environment-name "{myEnvironment}" '
              '--name "{myEventSource}" '
-             '--event-hub-event-source-create-or-update-parameters location="West US" timestamp-property-name="someTime'
-             'stampProperty" event-source-resource-id="somePathInArm" service-bus-namespace="sbn" event-hub-name="ehn" '
-             'consumer-group-name="cgn" key-name="managementKey" shared-access-key="someSecretvalue" '
+             '--location "West US" '
+             '--consumer-group-name "cgn" '
+             '--event-hub-name "ehn" '
+             '--event-source-resource-id "somePathInArm" '
+             '--key-name "managementKey" '
+             '--service-bus-namespace "sbn" '
+             '--shared-access-key "someSecretvalue" '
+             '--timestamp-property-name "someTimestampProperty" '
              '--resource-group "{rg}"',
              checks=checks)
 

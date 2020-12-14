@@ -30,7 +30,8 @@
 |[az timeseriesinsights environment list](#EnvironmentsListByResourceGroup)|ListByResourceGroup|[Parameters](#ParametersEnvironmentsListByResourceGroup)|[Example](#ExamplesEnvironmentsListByResourceGroup)|
 |[az timeseriesinsights environment list](#EnvironmentsListBySubscription)|ListBySubscription|[Parameters](#ParametersEnvironmentsListBySubscription)|[Example](#ExamplesEnvironmentsListBySubscription)|
 |[az timeseriesinsights environment show](#EnvironmentsGet)|Get|[Parameters](#ParametersEnvironmentsGet)|[Example](#ExamplesEnvironmentsGet)|
-|[az timeseriesinsights environment create](#EnvironmentsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersEnvironmentsCreateOrUpdate#Create)|[Example](#ExamplesEnvironmentsCreateOrUpdate#Create)|
+|[az timeseriesinsights environment gen1 create](#EnvironmentsCreateOrUpdate#Create#Gen1)|CreateOrUpdate#Create#Gen1|[Parameters](#ParametersEnvironmentsCreateOrUpdate#Create#Gen1)|[Example](#ExamplesEnvironmentsCreateOrUpdate#Create#Gen1)|
+|[az timeseriesinsights environment gen2 create](#EnvironmentsCreateOrUpdate#Create#Gen2)|CreateOrUpdate#Create#Gen2|[Parameters](#ParametersEnvironmentsCreateOrUpdate#Create#Gen2)|Not Found|
 |[az timeseriesinsights environment update](#EnvironmentsUpdate)|Update|[Parameters](#ParametersEnvironmentsUpdate)|[Example](#ExamplesEnvironmentsUpdate)|
 |[az timeseriesinsights environment delete](#EnvironmentsDelete)|Delete|[Parameters](#ParametersEnvironmentsDelete)|[Example](#ExamplesEnvironmentsDelete)|
 
@@ -39,7 +40,8 @@
 |---------|------------|--------|-----------|
 |[az timeseriesinsights event-source list](#EventSourcesListByEnvironment)|ListByEnvironment|[Parameters](#ParametersEventSourcesListByEnvironment)|[Example](#ExamplesEventSourcesListByEnvironment)|
 |[az timeseriesinsights event-source show](#EventSourcesGet)|Get|[Parameters](#ParametersEventSourcesGet)|[Example](#ExamplesEventSourcesGet)|
-|[az timeseriesinsights event-source create](#EventSourcesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersEventSourcesCreateOrUpdate#Create)|[Example](#ExamplesEventSourcesCreateOrUpdate#Create)|
+|[az timeseriesinsights event-source microsoft.-event-hub create](#EventSourcesCreateOrUpdate#Create#Microsoft.EventHub)|CreateOrUpdate#Create#Microsoft.EventHub|[Parameters](#ParametersEventSourcesCreateOrUpdate#Create#Microsoft.EventHub)|[Example](#ExamplesEventSourcesCreateOrUpdate#Create#Microsoft.EventHub)|
+|[az timeseriesinsights event-source microsoft.-io-t-hub create](#EventSourcesCreateOrUpdate#Create#Microsoft.IoTHub)|CreateOrUpdate#Create#Microsoft.IoTHub|[Parameters](#ParametersEventSourcesCreateOrUpdate#Create#Microsoft.IoTHub)|Not Found|
 |[az timeseriesinsights event-source update](#EventSourcesUpdate)|Update|[Parameters](#ParametersEventSourcesUpdate)|[Example](#ExamplesEventSourcesUpdate)|
 |[az timeseriesinsights event-source delete](#EventSourcesDelete)|Delete|[Parameters](#ParametersEventSourcesDelete)|[Example](#ExamplesEventSourcesDelete)|
 
@@ -161,20 +163,38 @@ az timeseriesinsights environment show --name "env1" --resource-group "rg1"
 |**--environment-name**|string|The name of the Time Series Insights environment associated with the specified resource group.|environment_name|environmentName|
 |**--expand**|string|Setting $expand=status will include the status of the internal services of the environment in the Time Series Insights service.|expand|$expand|
 
-#### <a name="EnvironmentsCreateOrUpdate#Create">Command `az timeseriesinsights environment create`</a>
+#### <a name="EnvironmentsCreateOrUpdate#Create#Gen1">Command `az timeseriesinsights environment gen1 create`</a>
 
-##### <a name="ExamplesEnvironmentsCreateOrUpdate#Create">Example</a>
+##### <a name="ExamplesEnvironmentsCreateOrUpdate#Create#Gen1">Example</a>
 ```
-az timeseriesinsights environment create --name "env1" --parameters "{\\"kind\\":\\"Gen1\\",\\"location\\":\\"West \
-US\\",\\"properties\\":{\\"dataRetentionTime\\":\\"P31D\\",\\"partitionKeyProperties\\":[{\\"name\\":\\"DeviceId1\\",\\\
-"type\\":\\"String\\"}]},\\"sku\\":{\\"name\\":\\"S1\\",\\"capacity\\":1}}" --resource-group "rg1"
+az timeseriesinsights environment gen1 create --name "env1" --location "West US" --data-retention-time "P31D" \
+--partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 ```
-##### <a name="ParametersEnvironmentsCreateOrUpdate#Create">Parameters</a> 
+##### <a name="ParametersEnvironmentsCreateOrUpdate#Create#Gen1">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Name of an Azure Resource group.|resource_group_name|resourceGroupName|
 |**--environment-name**|string|Name of the environment|environment_name|environmentName|
-|**--parameters**|object|Parameters for creating an environment resource.|parameters|parameters|
+|**--location**|string|The location of the resource.|gen1_location|location|
+|**--sku**|object|The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 environments the sku determines the capacity of the environment, the ingress rate, and the billing rate.|gen1_sku|sku|
+|**--data-retention-time**|duration|ISO8601 timespan specifying the minimum number of days the environment's events will be available for query.|gen1_data_retention_time|dataRetentionTime|
+|**--tags**|dictionary|Key-value pairs of additional properties for the resource.|gen1_tags|tags|
+|**--storage-limit-exceeded-behavior**|choice|The behavior the Time Series Insights service should take when the environment's capacity has been exceeded. If "PauseIngress" is specified, new events will not be read from the event source. If "PurgeOldData" is specified, new events will continue to be read and old events will be deleted from the environment. The default behavior is PurgeOldData.|gen1_storage_limit_exceeded_behavior|storageLimitExceededBehavior|
+|**--partition-key-properties**|array|The list of event properties which will be used to partition data in the environment. Currently, only a single partition key property is supported.|gen1_partition_key_properties|partitionKeyProperties|
+
+#### <a name="EnvironmentsCreateOrUpdate#Create#Gen2">Command `az timeseriesinsights environment gen2 create`</a>
+
+##### <a name="ParametersEnvironmentsCreateOrUpdate#Create#Gen2">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of an Azure Resource group.|resource_group_name|resourceGroupName|
+|**--environment-name**|string|Name of the environment|environment_name|environmentName|
+|**--location**|string|The location of the resource.|gen2_location|location|
+|**--sku**|object|The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 environments the sku determines the capacity of the environment, the ingress rate, and the billing rate.|gen2_sku|sku|
+|**--time-series-id-properties**|array|The list of event properties which will be used to define the environment's time series id.|gen2_time_series_id_properties|timeSeriesIdProperties|
+|**--storage-configuration**|object|The storage configuration provides the connection details that allows the Time Series Insights service to connect to the customer storage account that is used to store the environment's data.|gen2_storage_configuration|storageConfiguration|
+|**--tags**|dictionary|Key-value pairs of additional properties for the resource.|gen2_tags|tags|
+|**--warm-store-configuration**|object|The warm store configuration provides the details to create a warm store cache that will retain a copy of the environment's data available for faster query.|gen2_warm_store_configuration|warmStoreConfiguration|
 
 #### <a name="EnvironmentsUpdate">Command `az timeseriesinsights environment update`</a>
 
@@ -227,23 +247,49 @@ az timeseriesinsights event-source show --environment-name "env1" --name "es1" -
 |**--environment-name**|string|The name of the Time Series Insights environment associated with the specified resource group.|environment_name|environmentName|
 |**--event-source-name**|string|The name of the Time Series Insights event source associated with the specified environment.|event_source_name|eventSourceName|
 
-#### <a name="EventSourcesCreateOrUpdate#Create">Command `az timeseriesinsights event-source create`</a>
+#### <a name="EventSourcesCreateOrUpdate#Create#Microsoft.EventHub">Command `az timeseriesinsights event-source microsoft.-event-hub create`</a>
 
-##### <a name="ExamplesEventSourcesCreateOrUpdate#Create">Example</a>
+##### <a name="ExamplesEventSourcesCreateOrUpdate#Create#Microsoft.EventHub">Example</a>
 ```
-az timeseriesinsights event-source create --environment-name "env1" --name "es1" --event-hub-event-source-create-or-upd\
-ate-parameters location="West US" timestamp-property-name="someTimestampProperty" event-source-resource-id="somePathInA\
-rm" service-bus-namespace="sbn" event-hub-name="ehn" consumer-group-name="cgn" key-name="managementKey" \
-shared-access-key="someSecretvalue" --resource-group "rg1"
+az timeseriesinsights event-source microsoft.-event-hub create --environment-name "env1" --name "es1" --location "West \
+US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" --key-name \
+"managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" --timestamp-property-name \
+"someTimestampProperty" --resource-group "rg1"
 ```
-##### <a name="ParametersEventSourcesCreateOrUpdate#Create">Parameters</a> 
+##### <a name="ParametersEventSourcesCreateOrUpdate#Create#Microsoft.EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Name of an Azure Resource group.|resource_group_name|resourceGroupName|
 |**--environment-name**|string|The name of the Time Series Insights environment associated with the specified resource group.|environment_name|environmentName|
 |**--event-source-name**|string|Name of the event source.|event_source_name|eventSourceName|
-|**--event-hub-event-source-create-or-update-parameters**|object|Parameters supplied to the Create or Update Event Source operation for an EventHub event source.|event_hub_event_source_create_or_update_parameters|EventHubEventSourceCreateOrUpdateParameters|
-|**--io-t-hub-event-source-create-or-update-parameters**|object|Parameters supplied to the Create or Update Event Source operation for an IoTHub event source.|io_t_hub_event_source_create_or_update_parameters|IoTHubEventSourceCreateOrUpdateParameters|
+|**--location**|string|The location of the resource.|microsoft._event_hub_location|location|
+|**--event-source-resource-id**|string|The resource id of the event source in Azure Resource Manager.|microsoft._event_hub_event_source_resource_id|eventSourceResourceId|
+|**--service-bus-namespace**|string|The name of the service bus that contains the event hub.|microsoft._event_hub_service_bus_namespace|serviceBusNamespace|
+|**--event-hub-name**|string|The name of the event hub.|microsoft._event_hub_event_hub_name|eventHubName|
+|**--consumer-group-name**|string|The name of the event hub's consumer group that holds the partitions from which events will be read.|microsoft._event_hub_consumer_group_name|consumerGroupName|
+|**--key-name**|string|The name of the SAS key that grants the Time Series Insights service access to the event hub. The shared access policies for this key must grant 'Listen' permissions to the event hub.|microsoft._event_hub_key_name|keyName|
+|**--shared-access-key**|string|The value of the shared access key that grants the Time Series Insights service read access to the event hub. This property is not shown in event source responses.|microsoft._event_hub_shared_access_key|sharedAccessKey|
+|**--tags**|dictionary|Key-value pairs of additional properties for the resource.|microsoft._event_hub_tags|tags|
+|**--local-timestamp**|object|An object that represents the local timestamp property. It contains the format of local timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for localTimestamp, or if null, then the local timestamp will not be ingressed with the events.|microsoft._event_hub_local_timestamp|localTimestamp|
+|**--timestamp-property-name**|string|The event property that will be used as the event source's timestamp. If a value isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be used.|microsoft._event_hub_timestamp_property_name|timestampPropertyName|
+
+#### <a name="EventSourcesCreateOrUpdate#Create#Microsoft.IoTHub">Command `az timeseriesinsights event-source microsoft.-io-t-hub create`</a>
+
+##### <a name="ParametersEventSourcesCreateOrUpdate#Create#Microsoft.IoTHub">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of an Azure Resource group.|resource_group_name|resourceGroupName|
+|**--environment-name**|string|The name of the Time Series Insights environment associated with the specified resource group.|environment_name|environmentName|
+|**--event-source-name**|string|Name of the event source.|event_source_name|eventSourceName|
+|**--location**|string|The location of the resource.|microsoft._io_t_hub_location|location|
+|**--event-source-resource-id**|string|The resource id of the event source in Azure Resource Manager.|microsoft._io_t_hub_event_source_resource_id|eventSourceResourceId|
+|**--iot-hub-name**|string|The name of the iot hub.|microsoft._io_t_hub_iot_hub_name|iotHubName|
+|**--consumer-group-name**|string|The name of the iot hub's consumer group that holds the partitions from which events will be read.|microsoft._io_t_hub_consumer_group_name|consumerGroupName|
+|**--key-name**|string|The name of the Shared Access Policy key that grants the Time Series Insights service access to the iot hub. This shared access policy key must grant 'service connect' permissions to the iot hub.|microsoft._io_t_hub_key_name|keyName|
+|**--shared-access-key**|string|The value of the Shared Access Policy key that grants the Time Series Insights service read access to the iot hub. This property is not shown in event source responses.|microsoft._io_t_hub_shared_access_key|sharedAccessKey|
+|**--tags**|dictionary|Key-value pairs of additional properties for the resource.|microsoft._io_t_hub_tags|tags|
+|**--local-timestamp**|object|An object that represents the local timestamp property. It contains the format of local timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for localTimestamp, or if null, then the local timestamp will not be ingressed with the events.|microsoft._io_t_hub_local_timestamp|localTimestamp|
+|**--timestamp-property-name**|string|The event property that will be used as the event source's timestamp. If a value isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be used.|microsoft._io_t_hub_timestamp_property_name|timestampPropertyName|
 
 #### <a name="EventSourcesUpdate">Command `az timeseriesinsights event-source update`</a>
 
