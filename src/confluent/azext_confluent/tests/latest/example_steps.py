@@ -14,7 +14,7 @@ from .. import try_manual
 
 # EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
 @try_manual
-def step_term_list(test, rg, checks=None):
+def step_term_list(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent term list',
@@ -23,7 +23,7 @@ def step_term_list(test, rg, checks=None):
 
 # EXAMPLE: /Organization/put/Organization_Create
 @try_manual
-def step_organization_create(test, rg, checks=None):
+def step_organization_create(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent organization create '
@@ -43,7 +43,7 @@ def step_organization_create(test, rg, checks=None):
 
 # EXAMPLE: /Organization/get/Organization_Get
 @try_manual
-def step_organization_show(test, rg, checks=None):
+def step_organization_show(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent organization show '
@@ -54,7 +54,7 @@ def step_organization_show(test, rg, checks=None):
 
 # EXAMPLE: /Organization/get/Organization_ListByResourceGroup
 @try_manual
-def step_organization_list(test, rg, checks=None):
+def step_organization_list(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent organization list '
@@ -64,7 +64,7 @@ def step_organization_list(test, rg, checks=None):
 
 # EXAMPLE: /Organization/patch/Confluent_Update
 @try_manual
-def step_organization_update(test, rg, checks=None):
+def step_organization_update(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent organization update '
@@ -76,7 +76,7 @@ def step_organization_update(test, rg, checks=None):
 
 # EXAMPLE: /Organization/delete/Confluent_Delete
 @try_manual
-def step_organization_delete(test, rg, checks=None):
+def step_organization_delete(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az confluent organization delete -y '
