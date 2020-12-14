@@ -44,35 +44,38 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
-    step_term_list(test, rg, checks=[])
+    step_term_list(test, rg, checks=[
+        test.greater_than('length(@)', 1)
+    ])
     step_organization_create(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
+        test.check("location", "eastus2euap", case_sensitive=False),
         test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "string", case_sensitive=False),
-        test.check("userDetail.lastName", "string", case_sensitive=False),
-        test.check("tags.Environment", "Dev", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_show(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
+        test.check("location", "eastus2euap", case_sensitive=False),
         test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "string", case_sensitive=False),
-        test.check("userDetail.lastName", "string", case_sensitive=False),
-        test.check("tags.Environment", "Dev", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_list(test, rg, checks=[
-        test.check('length(@)', 1),
+        test.greater_than('length(@)', 0),
     ])
-    step_organization_list(test, rg, checks=[
-        test.check('length(@)', 1),
+    step_organization_list(test, "", checks=[
+        test.greater_than('length(@)', 0),
     ])
     step_organization_update(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
+        test.check("location", "eastus2euap", case_sensitive=False),
         test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "string", case_sensitive=False),
-        test.check("userDetail.lastName", "string", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
+        test.check("tags.client", "dev-client", case_sensitive=False),
     ])
     step_organization_delete(test, rg, checks=[])
     cleanup_scenario(test, rg)

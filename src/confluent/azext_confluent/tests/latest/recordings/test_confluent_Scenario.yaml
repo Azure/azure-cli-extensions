@@ -1,0 +1,464 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent term list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Confluent/agreements?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Confluent/agreements/marketplace","name":"marketplace","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"Microsoft","product":"marketplace","plan":"marketplace","licenseTextLink":"https://azure.microsoft.com/en-us/support/legal/marketplace-terms/","privacyPolicyLink":"http://www.microsoft.com/privacy","retrieveDatetime":null,"signature":"ASDFGHJKLBDR","accepted":false}},{"id":"/subscriptions/{subscriptionId}/providers/Microsoft.Confluent/agreements/default","name":"confluent","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"Confluent","product":"marketplace","plan":"confluent","licenseTextLink":"https://www.confluent.io/marketplace-terms-of-service/","privacyPolicyLink":"https://assets.confluent.io/m/1353b6c3146e5feb/original/20200911-Confluent_Privacy_Statement.pdf","retrieveDatetime":null,"signature":"ASDFGHJKLBPG","accepted":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '993'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:03:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"environment": "Dev"}, "location": "eastus2euap", "properties":
+      {"offerDetail": {"publisherId": "confluentinc", "id": "confluent-cloud-azure-stag",
+      "planId": "confluent-cloud-azure-payg-stag", "planName": "Confluent Cloud -
+      Pay as you Go", "termUnit": "P1M"}, "userDetail": {"firstName": "contoso", "lastName":
+      "zhou", "emailAddress": "contoso@microsoft.com"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '370'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --offer-detail --user-detail --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Accepted","organizationId":null,"ssoUrl":null,"offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Started"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/5a8d8fa0-98c3-4140-86be-b4852679ba53?api-version=2020-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '754'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:03:09 GMT
+      etag:
+      - '"0200bafe-0000-3400-0000-5fd70e2d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/5a8d8fa0-98c3-4140-86be-b4852679ba53?api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:44fd1f8b-df35-48c9-8fa6-f5e19b8bb5be
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Creating","organizationId":null,"ssoUrl":null,"offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Started"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '754'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:03:42 GMT
+      etag:
+      - '"0200bffe-0000-3400-0000-5fd70e320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Subscribed"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '838'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:13 GMT
+      etag:
+      - '"0200e1fe-0000-3400-0000-5fd70e660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Subscribed"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '838'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:15 GMT
+      etag:
+      - '"0200e1fe-0000-3400-0000-5fd70e660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Subscribed"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '850'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Subscribed"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '850'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"client": "dev-client", "env": "dev"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"client":"dev-client","env":"dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
+        Cloud - Pay as you Go","termUnit":"P1M","status":"Subscribed"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '852'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:26 GMT
+      etag:
+      - '"0200eafe-0000-3400-0000-5fd70e790000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confluent organization delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
+        (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 14 Dec 2020 07:04:29 GMT
+      etag:
+      - '"0200ecfe-0000-3400-0000-5fd70e7d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/8336f9d9-c696-43a2-a4e6-90db0a0882d1?api-version=2020-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:44fd1f8b-df35-48c9-8fa6-f5e19b8bb5be
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+version: 1

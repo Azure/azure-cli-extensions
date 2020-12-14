@@ -27,10 +27,11 @@ def step_organization_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization create '
-             '--location "West US" '
-             '--offer-detail id="string" plan-id="string" plan-name="string" publisher-id="string" term-unit="string" '
-             '--user-detail email-address="contoso@microsoft.com" first-name="string" last-name="string" '
-             '--tags Environment="Dev" '
+             '--location "eastus2euap" '
+             '--offer-detail id="confluent-cloud-azure-stag" plan-id="confluent-cloud-azure-payg-stag" '
+             'plan-name="Confluent Cloud - Pay as you Go" publisher-id="confluentinc" term-unit="P1M" '
+             '--user-detail email-address="contoso@microsoft.com" first-name="contoso" last-name="zhou" '
+             '--tags environment="Dev" '
              '--name "{myOrganization}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -61,16 +62,6 @@ def step_organization_list(test, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Organization/get/Organization_ListBySubscription
-@try_manual
-def step_organization_list(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az confluent organization list '
-             '-g ""',
-             checks=checks)
-
-
 # EXAMPLE: /Organization/patch/Confluent_Update
 @try_manual
 def step_organization_update(test, rg, checks=None):
@@ -92,4 +83,3 @@ def step_organization_delete(test, rg, checks=None):
              '--name "{myOrganization}" '
              '--resource-group "{rg}"',
              checks=checks)
-
