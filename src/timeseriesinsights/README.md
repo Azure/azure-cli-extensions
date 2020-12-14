@@ -1,95 +1,104 @@
-Microsoft Azure CLI 'timeseriesinsights' Extension
-==========================================
+# Azure CLI timeseriesinsights Extension #
+This is the extension for timeseriesinsights
 
-This package is for the 'timeseriesinsights' extension:
-
-```sh
-az timeseriesinsights
+### How to use ###
+Install this extension using the below CLI command
 ```
-
-## Install
-
-```sh
 az extension add --name timeseriesinsights
 ```
 
-## Uninstall
-
-```sh
-az extension remove --name timeseriesinsights
+### Included Features ###
+#### timeseriesinsights environment ####
+##### Create #####
 ```
-
-## Examples
-
-All commands are for Bash. For PowerShell, please set the variables like 
-
-```powershell
-$rg='rg1'
+az timeseriesinsights environment create --name "env1" \
+    --parameters "{\\"kind\\":\\"Gen1\\",\\"location\\":\\"West US\\",\\"properties\\":{\\"dataRetentionTime\\":\\"P31D\\",\\"partitionKeyProperties\\":[{\\"name\\":\\"DeviceId1\\",\\"type\\":\\"String\\"}]},\\"sku\\":{\\"name\\":\\"S1\\",\\"capacity\\":1}}" \
+    --resource-group "rg1" 
 ```
-
-### Create a resource group for the environments
-
-```sh
-rg={resource_group_name}
-az group create --name $rg --location westus
+##### Show #####
 ```
-
-### Create a standard environment
-
-```sh
-env={standard_environment_name}
-az timeseriesinsights environment standard create -g $rg --name $env --location westus --sku-name S1 --sku-capacity 1 --data-retention-time 31 --partition-key-properties DeviceId1 --storage-limit-exceeded-behavior PauseIngress
+az timeseriesinsights environment show --name "env1" --resource-group "rg1"
 ```
-
-### Create a storage account and use it to create a long-term environment
-
-```sh
-storage={storage_account_name}
-env_lt={longterm_environment_name}
-
-az storage account create -g $rg -n $storage --https-only
-key=$(az storage account keys list -g $rg -n $storage --query [0].value --output tsv)
-
-az timeseriesinsights environment longterm create -g $rg --name $env_lt --location westus --sku-name L1 --sku-capacity 1 --data-retention 7 --time-series-id-properties DeviceId1 --storage-account-name $storage --storage-management-key $key
+##### List #####
 ```
-
-### Create an event hub and use it to create an event source
-
-```sh
-ehns={eventhub_namespace}
-eh={eventhub_name}
-
-az eventhubs namespace create -g $rg -n $ehns
-es_resource_id=$(az eventhubs eventhub create -g $rg -n $eh --namespace-name $ehns --query id --output tsv)
-shared_access_key=$(az eventhubs namespace authorization-rule keys list -g $rg --namespace-name $ehns -n RootManageSharedAccessKey --query primaryKey --output tsv)
-
-az timeseriesinsights event-source eventhub create -g $rg --environment-name $env --name {es1} --key-name RootManageSharedAccessKey --shared-access-key $shared_access_key --event-source-resource-id $es_resource_id --consumer-group-name '$Default' --timestamp-property-name DeviceId
+az timeseriesinsights environment list --resource-group "rg1"
 ```
-
-### Create an IoT hub and use it to create an event source
-
-```sh
-iothub={iothub_name}
-es_resource_id=$(az iot hub create -g $rg -n $iothub --query id --output tsv)
-shared_access_key=$(az iot hub policy list -g $rg --hub-name $iothub --query "[?keyName=='iothubowner'].primaryKey" --output tsv)
-az timeseriesinsights event-source iothub create -g $rg --environment-name $env --name {es2} --consumer-group-name '$Default' --key-name iothubowner --shared-access-key $shared_access_key --event-source-resource-id $es_resource_id --timestamp-property-name DeviceId
+##### Update #####
 ```
-
-### Create a reference data set     
-
-```sh
-az timeseriesinsights reference-data-set create -g $rg --environment-name $env --name {rds} --key-properties DeviceId1 String DeviceFloor Double --data-string-comparison-behavior Ordinal
+az timeseriesinsights environment update --name "env1" --tags someTag="someTagValue" --resource-group "rg1"
 ```
-
-### Create an access policy
-
-```sh
-az timeseriesinsights access-policy create -g $rg --environment-name $env --name ap1 --principal-object-id 001 --description "some description" --roles Contributor Reader
+##### Delete #####
 ```
-
-### Delete the environment and all its sub-resources
-
-```sh
-az timeseriesinsights environment delete --resource-group $rg --name $env
-az group delete -n $rg
+az timeseriesinsights environment delete --name "env1" --resource-group "rg1"
+```
+#### timeseriesinsights event-source ####
+##### Create #####
+```
+az timeseriesinsights event-source create --environment-name "env1" --name "es1" \
+    --event-hub-event-source-create-or-update-parameters location="West US" timestamp-property-name="someTimestampProperty" event-source-resource-id="somePathInArm" service-bus-namespace="sbn" event-hub-name="ehn" consumer-group-name="cgn" key-name="managementKey" shared-access-key="someSecretvalue" \
+    --resource-group "rg1" 
+```
+##### Show #####
+```
+az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
+```
+##### List #####
+```
+az timeseriesinsights event-source list --environment-name "env1" --resource-group "rg1"
+```
+##### Update #####
+```
+az timeseriesinsights event-source update --environment-name "env1" --name "es1" --tags someKey="someValue" \
+    --resource-group "rg1" 
+```
+##### Delete #####
+```
+az timeseriesinsights event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
+```
+#### timeseriesinsights reference-data-set ####
+##### Create #####
+```
+az timeseriesinsights reference-data-set create --environment-name "env1" --location "West US" \
+    --key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
+    --resource-group "rg1" 
+```
+##### Show #####
+```
+az timeseriesinsights reference-data-set show --environment-name "env1" --name "rds1" --resource-group "rg1"
+```
+##### List #####
+```
+az timeseriesinsights reference-data-set list --environment-name "env1" --resource-group "rg1"
+```
+##### Update #####
+```
+az timeseriesinsights reference-data-set update --environment-name "env1" --name "rds1" --tags someKey="someValue" \
+    --resource-group "rg1" 
+```
+##### Delete #####
+```
+az timeseriesinsights reference-data-set delete --environment-name "env1" --name "rds1" --resource-group "rg1"
+```
+#### timeseriesinsights access-policy ####
+##### Create #####
+```
+az timeseriesinsights access-policy create --name "ap1" --environment-name "env1" --description "some description" \
+    --principal-object-id "aGuid" --roles "Reader" --resource-group "rg1" 
+```
+##### Show #####
+```
+az timeseriesinsights access-policy show --name "ap1" --environment-name "env1" --resource-group "rg1"
+```
+##### List #####
+```
+az timeseriesinsights access-policy list --environment-name "env1" --resource-group "rg1"
+```
+##### Update #####
+```
+az timeseriesinsights access-policy update --name "ap1" --roles "Reader" --roles "Contributor" \
+    --environment-name "env1" --resource-group "rg1" 
+```
+##### Delete #####
+```
+az timeseriesinsights access-policy delete --name "ap1" --environment-name "env1" --resource-group "rg1"
 ```
