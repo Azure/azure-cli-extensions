@@ -9,7 +9,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    with self.command_group('monitor data-collection', is_preview=True):
+    with self.command_group('monitor data-collection', is_experimental=True):
         pass
 
     from azext_amcs.generated._client_factory import cf_data_collection_rule_association
