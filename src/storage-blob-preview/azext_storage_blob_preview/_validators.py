@@ -371,8 +371,10 @@ def validate_source_url(cmd, namespace):  # pylint: disable=too-many-statements
 
 
 def validate_blob_type(namespace):
-    if not namespace.blob_type:
-        namespace.blob_type = 'page' if namespace.file_path.endswith('.vhd') else 'block'
+    if not namespace.blob_type and namespace.file_path and namespace.file_path.endswith('.vhd'):
+        namespace.blob_type = 'page'
+    else:
+        namespace.blob_type = 'block'
 
 
 def validate_storage_data_plane_list(namespace):
@@ -1042,3 +1044,14 @@ def validate_blob_arguments(namespace):
     if not namespace.blob_url and not all([namespace.blob_name, namespace.container_name]):
         raise RequiredArgumentMissingError(
             "Please specify --blob-url or combination of blob name, container name and storage account arguments.")
+
+
+def validate_upload_blob(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if namespace.file_path and namespace.data:
+        raise InvalidArgumentValueError("usage error: please only specify one of --file and --data to upload.")
+    if not namespace.file_path and not namespace.data:
+        raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
+    if namespace.file_path is not None:
+        namespace.data = open(namespace.file_path, 'rb')
+    del namespace.file_path

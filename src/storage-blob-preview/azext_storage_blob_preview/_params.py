@@ -407,7 +407,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import validate_encryption_scope_client_params, \
-            add_progress_callback_v2
+            add_progress_callback_v2, validate_upload_blob
         from .sdkutil import get_blob_types
 
         t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
@@ -416,8 +416,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_precondition_options()
         c.register_content_settings_argument(t_blob_content_settings, update=False)
 
-        c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
-                   help='Path of the file to upload as the blob content.')
+        c.extra('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
+                help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
+        c.argument('data', help='The blob data to upload.', required=False, is_preview=True)
+        c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
+                   'supplied for optimal performance.', is_preview=True)
         c.argument('overwrite', arg_type=get_three_state_flag(),
                    help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
                    'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
