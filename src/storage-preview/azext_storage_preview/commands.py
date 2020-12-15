@@ -82,7 +82,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                                                resource_type=CUSTOM_MGMT_PREVIEW_STORAGE),
                             resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2019-06-01', is_preview=True) as g:
         g.show_command('show', 'get_service_properties')
-        g.custom_command('update', 'update_file_service_properties')
+        g.generic_update_command('update',
+                                 getter_name='get_service_properties',
+                                 setter_name='set_service_properties',
+                                 custom_func_name='update_file_service_properties')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,

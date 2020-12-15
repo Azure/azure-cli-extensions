@@ -274,9 +274,8 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
 
         self.cmd('{cmd} show -n {sa2} -g {rg}').assert_with_checks(
-            JMESPathCheck('shareDeleteRetentionPolicy.enabled', False),
-            JMESPathCheck('shareDeleteRetentionPolicy.days', 0),
-            JMESPathCheck('protocolSettings', None))
+            JMESPathCheck('shareDeleteRetentionPolicy', None),
+            JMESPathCheck('protocolSettings.smb.multichannel', None))
 
         self.cmd(
             '{cmd} update --enable-smb-multichannel -n {sa} -g {rg}').assert_with_checks(
