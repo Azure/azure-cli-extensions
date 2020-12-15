@@ -111,9 +111,9 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, location, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
     # Setting uri
-    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     if dp_endpoint_dogfood:
         get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
@@ -197,3 +197,10 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
+
+
+def validate_infrastructure_type(infra):
+    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
+        if s.lower() == infra.lower():
+            return s
+    return "generic"

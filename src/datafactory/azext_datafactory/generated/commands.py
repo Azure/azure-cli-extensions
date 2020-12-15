@@ -26,7 +26,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'datafactory_factory_show')
         g.custom_command('create', 'datafactory_factory_create')
         g.custom_command('update', 'datafactory_factory_update')
-        g.custom_command('delete', 'datafactory_factory_delete')
+        g.custom_command('delete', 'datafactory_factory_delete', confirmation=True)
         g.custom_command('configure-factory-repo', 'datafactory_factory_configure_factory_repo')
         g.custom_command('get-data-plane-access', 'datafactory_factory_get_data_plane_access')
         g.custom_command('get-git-hub-access-token', 'datafactory_factory_get_git_hub_access_token')
@@ -45,7 +45,7 @@ def load_command_table(self, _):
         g.custom_command('managed create', 'datafactory_integration_runtime_managed_create')
         g.custom_command('self-hosted create', 'datafactory_integration_runtime_self_hosted_create')
         g.custom_command('update', 'datafactory_integration_runtime_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_delete')
+        g.custom_command('delete', 'datafactory_integration_runtime_delete', confirmation=True)
         g.custom_command('get-connection-info', 'datafactory_integration_runtime_get_connection_info')
         g.custom_command('get-monitoring-data', 'datafactory_integration_runtime_get_monitoring_data')
         g.custom_command('get-status', 'datafactory_integration_runtime_get_status')
@@ -67,7 +67,7 @@ def load_command_table(self, _):
                             client_factory=cf_integration_runtime_node, is_experimental=True) as g:
         g.custom_show_command('show', 'datafactory_integration_runtime_node_show')
         g.custom_command('update', 'datafactory_integration_runtime_node_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_node_delete')
+        g.custom_command('delete', 'datafactory_integration_runtime_node_delete', confirmation=True)
         g.custom_command('get-ip-address', 'datafactory_integration_runtime_node_get_ip_address')
 
     from azext_datafactory.generated._client_factory import cf_linked_service
@@ -80,7 +80,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')
-        g.custom_command('delete', 'datafactory_linked_service_delete')
+        g.generic_update_command('update', setter_arg_name='properties', custom_func_name=''
+                                 'datafactory_linked_service_update')
+        g.custom_command('delete', 'datafactory_linked_service_delete', confirmation=True)
 
     from azext_datafactory.generated._client_factory import cf_dataset
     datafactory_dataset = CliCommandType(
@@ -92,7 +94,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_dataset_list')
         g.custom_show_command('show', 'datafactory_dataset_show')
         g.custom_command('create', 'datafactory_dataset_create')
-        g.custom_command('delete', 'datafactory_dataset_delete')
+        g.generic_update_command('update', setter_arg_name='properties',
+                                 custom_func_name='datafactory_dataset_update')
+        g.custom_command('delete', 'datafactory_dataset_delete', confirmation=True)
 
     from azext_datafactory.generated._client_factory import cf_pipeline
     datafactory_pipeline = CliCommandType(
@@ -105,7 +109,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'datafactory_pipeline_show')
         g.custom_command('create', 'datafactory_pipeline_create')
         g.generic_update_command('update', setter_arg_name='pipeline', custom_func_name='datafactory_pipeline_update')
-        g.custom_command('delete', 'datafactory_pipeline_delete')
+        g.custom_command('delete', 'datafactory_pipeline_delete', confirmation=True)
         g.custom_command('create-run', 'datafactory_pipeline_create_run')
 
     from azext_datafactory.generated._client_factory import cf_pipeline_run
@@ -138,7 +142,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'datafactory_trigger_list')
         g.custom_show_command('show', 'datafactory_trigger_show')
         g.custom_command('create', 'datafactory_trigger_create')
-        g.custom_command('delete', 'datafactory_trigger_delete')
+        g.generic_update_command('update', setter_arg_name='properties',
+                                 custom_func_name='datafactory_trigger_update')
+        g.custom_command('delete', 'datafactory_trigger_delete', confirmation=True)
         g.custom_command('get-event-subscription-status', 'datafactory_trigger_get_event_subscription_status')
         g.custom_command('query-by-factory', 'datafactory_trigger_query_by_factory')
         g.custom_command('start', 'datafactory_trigger_start', supports_no_wait=True)
@@ -155,5 +161,6 @@ def load_command_table(self, _):
         client_factory=cf_trigger_run)
     with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run,
                             is_experimental=True) as g:
+        g.custom_command('cancel', 'datafactory_trigger_run_cancel')
         g.custom_command('query-by-factory', 'datafactory_trigger_run_query_by_factory')
         g.custom_command('rerun', 'datafactory_trigger_run_rerun')

@@ -140,4 +140,39 @@ def _custom_functions(preview_versions):
             except(TypeError, ValueError):
                 return version
 
+        @functions.signature({'types': ['object']})
+        def _func_pprint_labels(self, labels):  # pylint: disable=no-self-use
+            """Custom JMESPath `pprint_labels` function that pretty print labels"""
+            if not labels:
+                return ''
+            return ' '.join([
+                '{}={}'.format(k, labels[k])
+                for k in sorted(labels.keys())
+            ])
+
     return CustomFunctions()
+
+
+def aks_pod_identity_exceptions_table_format(result):
+    """Format pod identity exceptions results as a summary for display with "-o table"."""
+    preview = {}
+    parsed = compile_jmes("""podIdentityProfile.userAssignedIdentityExceptions[].{
+        name: name,
+        namespace: namespace,
+        PodLabels: podLabels | pprint_labels(@)
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+
+
+def aks_pod_identities_table_format(result):
+    """Format pod identities results as a summary for display with "-o table"."""
+    preview = {}
+    parsed = compile_jmes("""podIdentityProfile.userAssignedIdentities[].{
+        name: name,
+        namespace: namespace,
+        provisioningState: provisioningState
+        identity: identity.resourceId
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))

@@ -45,3 +45,7 @@ def cf_vpn_site_configs(cli_ctx, _):
 
 def cf_vpn_gateways(cli_ctx, _):
     return network_client_factory(cli_ctx).vpn_gateways
+
+
+def cf_vpn_gateway_connection(cli_ctx, _):
+    return network_client_factory(cli_ctx).vpn_connections

@@ -1830,8 +1830,7 @@ class ManagedClusterWindowsProfile(Model):
     """
 
     _validation = {
-        'admin_username': {'required': True, 'pattern': r'^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$'},
-        'admin_password': {'pattern': r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%\^&\*\(\)])[a-zA-Z\d!@#$%\^&\*\(\)]{12,123}$'},
+        'admin_username': {'required': True},
     }
 
     _attribute_map = {
