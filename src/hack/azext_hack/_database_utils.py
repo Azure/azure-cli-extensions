@@ -137,7 +137,7 @@ class Database():
                     Capability(name='EnableServerless'),
                     Capability(name='DisableRateLimitingResponses')
                 ],
-                tags = {'CosmosAccountType': 'Non-Production'}
+                tags={'CosmosAccountType': 'Non-Production'}
             )
         }
         steps.append(DatabaseCreationStep(
@@ -148,8 +148,8 @@ class Database():
             'account_name': name,
             'database_name': name,
             'create_update_mongo_db_database_parameters': MongoDBDatabaseCreateUpdateParameters(
-                resource = {'id': name},
-                options = {}
+                resource={'id': name},
+                options={}
             )
         }
         steps.append(DatabaseCreationStep(
