@@ -246,3 +246,47 @@ helps['healthcareapis private-link-resource show'] = """
                az healthcareapis private-link-resource show --group-name "fhir" --resource-group "rgname" \
 --resource-name "service1"
 """
+
+helps['healthcareapis acr'] = """
+    type: group
+    short-summary: healthcareapis acr
+"""
+
+helps['healthcareapis acr list'] = """
+    type: command
+    short-summary: "Lists all container registries associated with the service."
+    examples:
+      - name: Acr_List
+        text: |-
+               az healthcareapis acr list --resource-group "rgname" --resource-name "service1"
+"""
+
+helps['healthcareapis acr add'] = """
+    type: command
+    short-summary: "Add a list of registries to the service, repeated ones will be ignored."
+    examples:
+      - name: Acr_Add_Two
+        text: |-
+               az healthcareapis acr add --login_servers "test1.azurecr.io, test2.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr remove'] = """
+    type: command
+    short-summary: "Remove a list of registries from the service, non-existing ones will be ignored."
+    examples:
+      - name: Acr_Remove_Two
+        text: |-
+               az healthcareapis acr remove --login_servers "test1.azurecr.io, test2.azurecr.io"  --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr reset'] = """
+    type: command
+    short-summary: "Reset the container registries associated with the service to a new list."
+    examples:
+      - name: Acr_Reset
+        text: |-
+               az healthcareapis acr reset --login_servers "test.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+"""

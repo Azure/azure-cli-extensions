@@ -29,6 +29,13 @@ def load_command_table(self, _):
         g.custom_command('delete', 'healthcareapis_service_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'healthcareapis_service_show')
 
+    with self.command_group('healthcareapis acr', healthcareapis_service, client_factory=cf_service,
+                            is_experimental=True) as g:
+        g.custom_command('list', 'healthcareapis_acr_list')
+        g.custom_command('add', 'healthcareapis_acr_add', supports_no_wait=True)
+        g.custom_command('reset', 'healthcareapis_acr_reset', supports_no_wait=True)
+        g.custom_command('remove', 'healthcareapis_acr_remove', supports_no_wait=True)
+
     from azext_healthcareapis.generated._client_factory import cf_operation_result
     healthcareapis_operation_result = CliCommandType(
         operations_tmpl='azext_healthcareapis.vendored_sdks.healthcareapis.operations._operation_result_operations#Oper'

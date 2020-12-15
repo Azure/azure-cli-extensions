@@ -131,12 +131,6 @@ class ServicesOperations(object):
         # Construct body
         body_content = self._serialize.body(service_description, 'ServicesDescription')
 
-        print(url)
-        print(query_parameters)
-        print(header_parameters)
-        print(body_content)
-        print(service_description)
-
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)

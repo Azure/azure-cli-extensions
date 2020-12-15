@@ -29,6 +29,7 @@ try:
     from ._models_py3 import ServiceCorsConfigurationInfo
     from ._models_py3 import ServiceCosmosDbConfigurationInfo
     from ._models_py3 import ServiceExportConfigurationInfo
+    from ._models_py3 import ServiceAcrConfigurationInfo
     from ._models_py3 import ServicesDescription
     from ._models_py3 import ServicesNameAvailabilityInfo
     from ._models_py3 import ServicesPatchDescription
@@ -56,6 +57,7 @@ except (SyntaxError, ImportError):
     from ._models import ServiceCorsConfigurationInfo
     from ._models import ServiceCosmosDbConfigurationInfo
     from ._models import ServiceExportConfigurationInfo
+    from ._models import ServiceAcrConfigurationInfo
     from ._models import ServicesDescription
     from ._models import ServicesNameAvailabilityInfo
     from ._models import ServicesPatchDescription
@@ -97,6 +99,7 @@ __all__ = [
     'ServiceCorsConfigurationInfo',
     'ServiceCosmosDbConfigurationInfo',
     'ServiceExportConfigurationInfo',
+    'ServiceAcrConfigurationInfo',
     'ServicesDescription',
     'ServicesNameAvailabilityInfo',
     'ServicesPatchDescription',

@@ -633,6 +633,27 @@ class ServiceExportConfigurationInfo(Model):
         self.storage_account_name = storage_account_name
 
 
+class ServiceArcConfigurationInfo(Model):
+    """Acr operation configuration information.
+
+    :param login_servers: The list of the login servers.
+    :type login_servers: str
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        login_servers = None,
+        **kwargs
+    ):
+        super(ServiceArcConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = login_servers
+
+
 class ServicesResource(Model):
     """The common properties of a service.
 
@@ -846,6 +867,8 @@ class ServicesProperties(Model):
      values include: 'Enabled', 'Disabled'
     :type public_network_access: str or
      ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
+    :param acr_configuration: The settings for the data convert operation of the service instance.
+    :type acr_configuration: ~azure.mgmt.healthcareapis.models.ServiceArcConfigurationInfo
     """
 
     _validation = {
@@ -861,9 +884,10 @@ class ServicesProperties(Model):
         'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
         'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
+        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceArcConfigurationInfo'},
     }
 
-    def __init__(self, *, access_policies=None, cosmos_db_configuration=None, authentication_configuration=None, cors_configuration=None, export_configuration=None, private_endpoint_connections=None, public_network_access=None, **kwargs) -> None:
+    def __init__(self, *, access_policies=None, cosmos_db_configuration=None, authentication_configuration=None, cors_configuration=None, export_configuration=None, private_endpoint_connections=None, public_network_access=None,acr_configuration=None, **kwargs) -> None:
         super(ServicesProperties, self).__init__(**kwargs)
         self.provisioning_state = None
         self.access_policies = access_policies
@@ -873,6 +897,7 @@ class ServicesProperties(Model):
         self.export_configuration = export_configuration
         self.private_endpoint_connections = private_endpoint_connections
         self.public_network_access = public_network_access
+        self.acr_configuration = acr_configuration
 
 
 class ServicesResourceIdentity(Model):

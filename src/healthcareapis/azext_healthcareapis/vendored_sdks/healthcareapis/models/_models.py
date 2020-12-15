@@ -633,6 +633,44 @@ class ServiceExportConfigurationInfo(Model):
         self.storage_account_name = kwargs.get('storage_account_name', None)
 
 
+class ServiceArcConfigurationInfo(Model):
+    """Acr operation configuration information.
+
+    :param login_servers: The list of the login servers.
+    :type login_servers: str
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServiceArcConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = kwargs.get('login_servers', None)
+
+
+class ServiceAcrConfigurationInfo(Model):
+    """Acr operation configuration information.
+
+    :param login_servers: The list of the login servers.
+    :type login_servers: list[str]
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServiceAcrConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = kwargs.get('login_servers', None)
+
+
 class ServicesResource(Model):
     """The common properties of a service.
 
@@ -846,6 +884,10 @@ class ServicesProperties(Model):
      values include: 'Enabled', 'Disabled'
     :type public_network_access: str or
      ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
+    :param acr_configuration: The settings for the acr operation of the
+	service instance.
+    :type acr_configuration:
+	~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
     """
 
     _validation = {
@@ -861,6 +903,7 @@ class ServicesProperties(Model):
         'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
         'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
+        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
     }
 
     def __init__(self, **kwargs):
@@ -873,6 +916,7 @@ class ServicesProperties(Model):
         self.export_configuration = kwargs.get('export_configuration', None)
         self.private_endpoint_connections = kwargs.get('private_endpoint_connections', None)
         self.public_network_access = kwargs.get('public_network_access', None)
+        self.acr_configuration = kwargs.get('acr_configuration', None)
 
 
 class ServicesResourceIdentity(Model):
