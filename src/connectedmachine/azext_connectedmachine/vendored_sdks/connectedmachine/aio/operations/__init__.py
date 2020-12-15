@@ -6,5 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._connected_machine import ConnectedMachine
-__all__ = ['ConnectedMachine']
+from ._machine_operations import MachineOperations
+from ._machine_extension_operations import MachineExtensionOperations
+from ._operation_operations import OperationOperations
+
+__all__ = [
+    'MachineOperations',
+    'MachineExtensionOperations',
+    'OperationOperations',
+]

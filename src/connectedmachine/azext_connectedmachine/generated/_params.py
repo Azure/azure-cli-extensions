@@ -24,31 +24,31 @@ from azure.cli.core.commands.validators import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('connectedmachine list') as c:
+    with self.argument_context('connectedmachine machine list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('connectedmachine show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('machine_name', options_list=['--name', '-n', '--machine-name'], type=str, help='The name of the '
-                   'hybrid machine.', id_part='name')
-
-    with self.argument_context('connectedmachine delete') as c:
+    with self.argument_context('connectedmachine machine show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', options_list=['--name', '-n', '--machine-name'], type=str, help='The name of the '
                    'hybrid machine.', id_part='name')
 
-    with self.argument_context('connectedmachine extension list') as c:
+    with self.argument_context('connectedmachine machine delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', options_list=['--name', '-n', '--machine-name'], type=str, help='The name of the '
+                   'hybrid machine.', id_part='name')
+
+    with self.argument_context('connectedmachine machine-extension list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine containing the extension.')
         c.argument('expand', type=str, help='The expand expression to apply on the operation.')
 
-    with self.argument_context('connectedmachine extension show') as c:
+    with self.argument_context('connectedmachine machine-extension show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine containing the extension.', id_part='name')
         c.argument('name', options_list=['-n', '--extension-name', '--name'], type=str, help='The name of the machine '
                    'extension.', id_part='child_name_1')
 
-    with self.argument_context('connectedmachine extension create') as c:
+    with self.argument_context('connectedmachine machine-extension create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine where the extension should be created or '
                    'updated.')
@@ -60,8 +60,8 @@ def load_arguments(self, _):
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
-                   'is "CustomScriptExtension".')
+        c.argument('type_properties_type', type=str, help='Specifies the type of the extension; an example is '
+                   '"CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
         c.argument('auto_upgrade_minor_version', options_list=['--auto-upgrade-minor'],
                    arg_type=get_three_state_flag(), help='Indicates whether the extension should use a newer minor '
@@ -73,7 +73,7 @@ def load_arguments(self, _):
                    'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                    'value: json-string/@json-file.')
 
-    with self.argument_context('connectedmachine extension update') as c:
+    with self.argument_context('connectedmachine machine-extension update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine where the extension should be created or '
                    'updated.', id_part='name')
@@ -96,14 +96,14 @@ def load_arguments(self, _):
                    'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                    'value: json-string/@json-file.')
 
-    with self.argument_context('connectedmachine extension delete') as c:
+    with self.argument_context('connectedmachine machine-extension delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine where the extension should be deleted.',
                    id_part='name')
         c.argument('name', options_list=['-n', '--extension-name', '--name'], type=str, help='The name of the machine '
                    'extension.', id_part='child_name_1')
 
-    with self.argument_context('connectedmachine extension wait') as c:
+    with self.argument_context('connectedmachine machine-extension wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the machine containing the extension.', id_part='name')
         c.argument('name', options_list=['-n', '--extension-name', '--name'], type=str, help='The name of the machine '
