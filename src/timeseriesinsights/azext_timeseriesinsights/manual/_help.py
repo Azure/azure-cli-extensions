@@ -1,0 +1,345 @@
+# --------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for
+# license information.
+# --------------------------------------------------------------------------
+# pylint: disable=too-many-lines
+
+from knack.help_files import helps
+
+
+helps['timeseriesinsights environment'] = """
+    type: group
+    short-summary: Manage environment with timeseriesinsights
+"""
+
+helps['timeseriesinsights environment list'] = """
+    type: command
+    short-summary: "Lists all the available environments associated with the subscription and within the specified \
+resource group. And Lists all the available environments within a subscription, irrespective of the resource groups."
+    examples:
+      - name: EnvironmentsByResourceGroup
+        text: |-
+               az timeseriesinsights environment list --resource-group "rg1"
+      - name: EnvironmentsBySubscription
+        text: |-
+               az timeseriesinsights environment list
+"""
+
+helps['timeseriesinsights environment show'] = """
+    type: command
+    short-summary: "Gets the environment with the specified name in the specified subscription and resource group."
+    examples:
+      - name: EnvironmentsGet
+        text: |-
+               az timeseriesinsights environment show --name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights environment gen1'] = """
+    type: group
+    short-summary: Manage environment with timeseriesinsights sub group gen1
+"""
+
+helps['timeseriesinsights environment gen1 create'] = """
+    type: command
+    short-summary: "Create an environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
+scale out of environments after they have been created.
+      - name: --partition-key-properties
+        short-summary: "The list of event properties which will be used to partition data in the environment. \
+Currently, only a single partition key property is supported."
+        long-summary: |
+            Usage: --partition-key-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --partition-key-properties argument.
+    examples:
+      - name: EnvironmentsCreate
+        text: |-
+               az timeseriesinsights environment gen1 create --name "env1" --location "West US" --data-retention-time \
+"P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
+"""
+
+helps['timeseriesinsights environment gen2'] = """
+    type: group
+    short-summary: Manage environment with timeseriesinsights sub group gen2
+"""
+
+helps['timeseriesinsights environment gen2 create'] = """
+    type: command
+    short-summary: "Create an environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
+scale out of environments after they have been created.
+      - name: --time-series-id-properties
+        short-summary: "The list of event properties which will be used to define the environment's time series id."
+        long-summary: |
+            Usage: --time-series-id-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --time-series-id-properties argument.
+      - name: --storage-configuration
+        short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
+service to connect to the customer storage account that is used to store the environment's data."
+        long-summary: |
+            Usage: --storage-configuration account-name=XX management-key=XX
+
+            account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
+            management-key: Required. The value of the management key that grants the Time Series Insights service \
+write access to the storage account. This property is not shown in environment responses.
+      - name: --warm-store-configuration
+        short-summary: "The warm store configuration provides the details to create a warm store cache that will \
+retain a copy of the environment's data available for faster query."
+        long-summary: |
+            Usage: --warm-store-configuration data-retention=XX
+
+            data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
+available for query from the warm store.
+"""
+
+helps['timeseriesinsights environment update'] = """
+    type: command
+    short-summary: "Updates the environment with the specified name in the specified subscription and resource group."
+    examples:
+      - name: EnvironmentsUpdate
+        text: |-
+               az timeseriesinsights environment update --name "env1" --tags someTag="someTagValue" --resource-group \
+"rg1"
+"""
+
+helps['timeseriesinsights environment delete'] = """
+    type: command
+    short-summary: "Deletes the environment with the specified name in the specified subscription and resource group."
+    examples:
+      - name: EnvironmentsDelete
+        text: |-
+               az timeseriesinsights environment delete --name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights environment wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the timeseriesinsights environment is met.
+    examples:
+      - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
+created.
+        text: |-
+               az timeseriesinsights environment wait --name "env1" --resource-group "rg1" --created
+      - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
+updated.
+        text: |-
+               az timeseriesinsights environment wait --name "env1" --resource-group "rg1" --updated
+"""
+
+helps['timeseriesinsights event-source'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights
+"""
+
+helps['timeseriesinsights event-source list'] = """
+    type: command
+    short-summary: "Lists all the available event sources associated with the subscription and within the specified \
+resource group and environment."
+    examples:
+      - name: ListEventSourcesByEnvironment
+        text: |-
+               az timeseriesinsights event-source list --environment-name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source show'] = """
+    type: command
+    short-summary: "Gets the event source with the specified name in the specified environment."
+    examples:
+      - name: GetEventHubEventSource
+        text: |-
+               az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source microsoft.-event-hub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group microsoft.-event-hub
+"""
+
+helps['timeseriesinsights event-source microsoft.-event-hub create'] = """
+    type: command
+    short-summary: "Create an event source under the specified environment."
+    examples:
+      - name: CreateEventHubEventSource
+        text: |-
+               az timeseriesinsights event-source microsoft.-event-hub create --environment-name "env1" --name "es1" \
+--location "West US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
+--key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
+--timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source microsoft.-io-t-hub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group microsoft.-io-t-hub
+"""
+
+helps['timeseriesinsights event-source microsoft.-io-t-hub create'] = """
+    type: command
+    short-summary: "Create an event source under the specified environment."
+"""
+
+helps['timeseriesinsights event-source update'] = """
+    type: command
+    short-summary: "Updates the event source with the specified name in the specified subscription, resource group, \
+and environment."
+    examples:
+      - name: UpdateEventSource
+        text: |-
+               az timeseriesinsights event-source update --environment-name "env1" --name "es1" --tags \
+someKey="someValue" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source delete'] = """
+    type: command
+    short-summary: "Deletes the event source with the specified name in the specified subscription, resource group, \
+and environment."
+    examples:
+      - name: DeleteEventSource
+        text: |-
+               az timeseriesinsights event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights reference-data-set'] = """
+    type: group
+    short-summary: Manage reference data set with timeseriesinsights
+"""
+
+helps['timeseriesinsights reference-data-set list'] = """
+    type: command
+    short-summary: "Lists all the available reference data sets associated with the subscription and within the \
+specified resource group and environment."
+    examples:
+      - name: ReferenceDataSetsListByEnvironment
+        text: |-
+               az timeseriesinsights reference-data-set list --environment-name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights reference-data-set show'] = """
+    type: command
+    short-summary: "Gets the reference data set with the specified name in the specified environment."
+    examples:
+      - name: ReferenceDataSetsGet
+        text: |-
+               az timeseriesinsights reference-data-set show --environment-name "env1" --name "rds1" --resource-group \
+"rg1"
+"""
+
+helps['timeseriesinsights reference-data-set create'] = """
+    type: command
+    short-summary: "Create a reference data set in the specified environment."
+    parameters:
+      - name: --key-properties
+        short-summary: "The list of key properties for the reference data set."
+        long-summary: |
+            Usage: --key-properties name=XX type=XX
+
+            name: The name of the key property.
+            type: The type of the key property.
+
+            Multiple actions can be specified by using more than one --key-properties argument.
+    examples:
+      - name: ReferenceDataSetsCreate
+        text: |-
+               az timeseriesinsights reference-data-set create --environment-name "env1" --location "West US" \
+--key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
+--resource-group "rg1"
+"""
+
+helps['timeseriesinsights reference-data-set update'] = """
+    type: command
+    short-summary: "Updates the reference data set with the specified name in the specified subscription, resource \
+group, and environment."
+    examples:
+      - name: ReferenceDataSetsUpdate
+        text: |-
+               az timeseriesinsights reference-data-set update --environment-name "env1" --name "rds1" --tags \
+someKey="someValue" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights reference-data-set delete'] = """
+    type: command
+    short-summary: "Deletes the reference data set with the specified name in the specified subscription, resource \
+group, and environment."
+    examples:
+      - name: ReferenceDataSetsDelete
+        text: |-
+               az timeseriesinsights reference-data-set delete --environment-name "env1" --name "rds1" \
+--resource-group "rg1"
+"""
+
+helps['timeseriesinsights access-policy'] = """
+    type: group
+    short-summary: Manage access policy with timeseriesinsights
+"""
+
+helps['timeseriesinsights access-policy list'] = """
+    type: command
+    short-summary: "Lists all the available access policies associated with the environment."
+    examples:
+      - name: AccessPoliciesByEnvironment
+        text: |-
+               az timeseriesinsights access-policy list --environment-name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights access-policy show'] = """
+    type: command
+    short-summary: "Gets the access policy with the specified name in the specified environment."
+    examples:
+      - name: AccessPoliciesGet
+        text: |-
+               az timeseriesinsights access-policy show --name "ap1" --environment-name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights access-policy create'] = """
+    type: command
+    short-summary: "Create an access policy in the specified environment."
+    examples:
+      - name: AccessPoliciesCreate
+        text: |-
+               az timeseriesinsights access-policy create --name "ap1" --environment-name "env1" --description "some \
+description" --principal-object-id "aGuid" --roles "Reader" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights access-policy update'] = """
+    type: command
+    short-summary: "Updates the access policy with the specified name in the specified subscription, resource group, \
+and environment."
+    examples:
+      - name: AccessPoliciesUpdate
+        text: |-
+               az timeseriesinsights access-policy update --name "ap1" --roles "Reader" --roles "Contributor" \
+--environment-name "env1" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights access-policy delete'] = """
+    type: command
+    short-summary: "Deletes the access policy with the specified name in the specified subscription, resource group, \
+and environment."
+    examples:
+      - name: AccessPoliciesDelete
+        text: |-
+               az timeseriesinsights access-policy delete --name "ap1" --environment-name "env1" --resource-group \
+"rg1"
+"""
