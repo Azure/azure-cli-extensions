@@ -35,19 +35,17 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cosmosdb-pitr',
+    name='cosmosdb-continuous-backup',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Cosmosdb-pitr Extension',
-    # TODO: Update author and email, if applicable
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
+    description='Microsoft Azure Command-Line Tools Cosmosdb-continuous-backup Extension',
+    author='Kalyan khandrika',
+    author_email='kakhandr@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
