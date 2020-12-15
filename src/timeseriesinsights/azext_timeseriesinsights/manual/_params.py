@@ -28,6 +28,31 @@ from azext_timeseriesinsights.action import (
 
 def load_arguments(self, _):
 
+    with self.argument_context('timeseriesinsights environment list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('timeseriesinsights environment show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the Time Series Insights environment associated with the specified resource group.', id_part=''
+                   'name')
+        c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
+                   'of the environment in the Time Series Insights service.')
+    
+    with self.argument_context('timeseriesinsights environment delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the Time Series Insights environment associated with the specified resource group.', id_part=''
+                   'name')
+
+    with self.argument_context('timeseriesinsights environment wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the Time Series Insights environment associated with the specified resource group.', id_part=''
+                   'name')
+        c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
+                   'of the environment in the Time Series Insights service.')
+
     with self.argument_context('timeseriesinsights environment gen1') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of '
@@ -68,6 +93,27 @@ def load_arguments(self, _):
                    'configuration provides the details to create a warm store cache that will retain a copy of the '
                    'environment\'s data available for faster query.')
     
+    with self.argument_context('timeseriesinsights event-source list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.')
+
+    with self.argument_context('timeseriesinsights event-source show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='The name '
+                   'of the Time Series Insights event source associated with the specified environment.', id_part=''
+                   'child_name_1')
+
+    with self.argument_context('timeseriesinsights event-source delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='The name '
+                   'of the Time Series Insights event source associated with the specified environment.', id_part=''
+                   'child_name_1')
+
     with self.argument_context('timeseriesinsights event-source event-hub') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '

@@ -173,29 +173,29 @@ helps['timeseriesinsights event-source show'] = """
                az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source microsoft.-event-hub'] = """
+helps['timeseriesinsights event-source event-hub'] = """
     type: group
-    short-summary: Manage event source with timeseriesinsights sub group microsoft.-event-hub
+    short-summary: Manage event source with timeseriesinsights sub group event-hub
 """
 
-helps['timeseriesinsights event-source microsoft.-event-hub create'] = """
+helps['timeseriesinsights event-source event-hub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
     examples:
       - name: CreateEventHubEventSource
         text: |-
-               az timeseriesinsights event-source microsoft.-event-hub create --environment-name "env1" --name "es1" \
+               az timeseriesinsights event-source event-hub create --environment-name "env1" --name "es1" \
 --location "West US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
 --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
 --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source microsoft.-io-t-hub'] = """
+helps['timeseriesinsights event-source iot-hub'] = """
     type: group
-    short-summary: Manage event source with timeseriesinsights sub group microsoft.-io-t-hub
+    short-summary: Manage event source with timeseriesinsights sub group iot-hub
 """
 
-helps['timeseriesinsights event-source microsoft.-io-t-hub create'] = """
+helps['timeseriesinsights event-source iot-hub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
 """

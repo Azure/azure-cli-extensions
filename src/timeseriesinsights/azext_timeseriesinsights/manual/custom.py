@@ -12,6 +12,29 @@
 from azure.cli.core.util import sdk_no_wait
 
 
+def timeseriesinsights_environment_list(client,
+                                        resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def timeseriesinsights_environment_show(client,
+                                        resource_group_name,
+                                        environment_name,
+                                        expand=None):
+    return client.get(resource_group_name=resource_group_name,
+                      environment_name=environment_name,
+                      expand=expand)
+
+
+def timeseriesinsights_environment_delete(client,
+                                          resource_group_name,
+                                          environment_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         environment_name=environment_name)
+
+
 def timeseriesinsights_environment_gen1_create(client,
                                                resource_group_name,
                                                environment_name,
@@ -60,6 +83,31 @@ def timeseriesinsights_environment_gen2_create(client,
                        resource_group_name=resource_group_name,
                        environment_name=environment_name,
                        parameters=parameters)
+
+
+def timeseriesinsights_event_source_list(client,
+                                         resource_group_name,
+                                         environment_name):
+    return client.list_by_environment(resource_group_name=resource_group_name,
+                                      environment_name=environment_name)
+
+
+def timeseriesinsights_event_source_show(client,
+                                         resource_group_name,
+                                         environment_name,
+                                         event_source_name):
+    return client.get(resource_group_name=resource_group_name,
+                      environment_name=environment_name,
+                      event_source_name=event_source_name)
+
+
+def timeseriesinsights_event_source_delete(client,
+                                           resource_group_name,
+                                           environment_name,
+                                           event_source_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name)
 
 
 def timeseriesinsights_event_source_event_hub_create(client,

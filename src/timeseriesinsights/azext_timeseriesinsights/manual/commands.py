@@ -15,6 +15,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._environments_operations#'
         'EnvironmentsOperations.{}',
         client_factory=cf_environment)
+    with self.command_group('timeseriesinsights environment', timeseriesinsights_environment,
+                            client_factory=cf_environment, is_experimental=True) as g:
+        g.custom_command('list', 'timeseriesinsights_environment_list')
+        g.custom_show_command('show', 'timeseriesinsights_environment_show')
+        g.custom_command('delete', 'timeseriesinsights_environment_delete', confirmation=True)
+        g.custom_wait_command('wait', 'timeseriesinsights_environment_show')
+    
     with self.command_group('timeseriesinsights environment gen1', timeseriesinsights_environment,
                             client_factory=cf_environment) as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
@@ -30,6 +37,12 @@ def load_command_table(self, _):
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._event_sources_operations'
         '#EventSourcesOperations.{}',
         client_factory=cf_event_source)
+    with self.command_group('timeseriesinsights event-source', timeseriesinsights_event_source,
+                            client_factory=cf_event_source, is_experimental=True) as g:
+        g.custom_command('list', 'timeseriesinsights_event_source_list')
+        g.custom_show_command('show', 'timeseriesinsights_event_source_show')
+        g.custom_command('delete', 'timeseriesinsights_event_source_delete', confirmation=True)
+
     with self.command_group('timeseriesinsights event-source event-hub', timeseriesinsights_event_source,
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_event_hub_create')
