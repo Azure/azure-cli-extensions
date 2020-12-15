@@ -13,20 +13,21 @@ from msrest.serialization import Model
 
 
 class ProviderDescription(Model):
-    """Information about a Provider.
+    """Information about a Provider. A Provider is an entity that offers Targets
+    to run Azure Quantum Jobs.
 
-    :param id: Unique Provider's id.
+    :param id: Unique provider's id.
     :type id: str
     :param name: Provider's display name.
     :type name: str
-    :param properties: A list of Provider-specific properties.
-    :type properties: ~quantum.models.ProviderDescriptionProperties
+    :param properties: A list of provider-specific properties.
+    :type properties: ~quantum.models.ProviderProperties
     """
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'properties': {'key': 'properties', 'type': 'ProviderDescriptionProperties'},
+        'properties': {'key': 'properties', 'type': 'ProviderProperties'},
     }
 
     def __init__(self, *, id: str=None, name: str=None, properties=None, **kwargs) -> None:

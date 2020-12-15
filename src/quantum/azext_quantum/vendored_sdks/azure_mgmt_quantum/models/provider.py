@@ -13,16 +13,19 @@ from msrest.serialization import Model
 
 
 class Provider(Model):
-    """Json representation of provider, used for json serialization and
-    deserialization and save the meta information of provider.
+    """Information about a Provider. A Provider is an entity that offers Targets
+    to run Azure Quantum Jobs.
 
-    :param provider_id: partner id field
+    :param provider_id: Unique id of this provider.
     :type provider_id: str
-    :param provider_sku: sku field
+    :param provider_sku: The sku associated with pricing information for this
+     provider.
     :type provider_sku: str
-    :param instance_uri: serviceUri field
+    :param instance_uri: A Uri identifying the specific instance of this
+     provider.
     :type instance_uri: str
-    :param application_name: application name field
+    :param application_name: The provider's marketplace application display
+     name.
     :type application_name: str
     :param provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'Launching', 'Updating', 'Deleting', 'Deleted',

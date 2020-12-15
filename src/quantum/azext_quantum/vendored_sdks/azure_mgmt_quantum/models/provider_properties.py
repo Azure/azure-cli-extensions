@@ -15,7 +15,7 @@ from msrest.serialization import Model
 class ProviderProperties(Model):
     """Provider properties.
 
-    :param description: Description about this Provider.
+    :param description: A description about this provider.
     :type description: str
     :param provider_type: Provider type.
     :type provider_type: str
@@ -28,10 +28,15 @@ class ProviderProperties(Model):
     :param managed_application: Provider's Managed-Application info
     :type managed_application:
      ~quantum.models.ProviderPropertiesManagedApplication
-    :param targets: The list of targets available from this provider
+    :param targets: The list of targets available from this provider.
     :type targets: list[~quantum.models.TargetDescription]
-    :param skus: The list of skus selected for this provider
+    :param skus: The list of skus available from this provider.
     :type skus: list[~quantum.models.SkuDescription]
+    :param quota_dimensions: The list of quota dimensions from the provider.
+    :type quota_dimensions: list[~quantum.models.QuotaDimension]
+    :param pricing_dimensions: The list of pricing dimensions from the
+     provider.
+    :type pricing_dimensions: list[~quantum.models.PricingDimension]
     """
 
     _attribute_map = {
@@ -43,6 +48,8 @@ class ProviderProperties(Model):
         'managed_application': {'key': 'managedApplication', 'type': 'ProviderPropertiesManagedApplication'},
         'targets': {'key': 'targets', 'type': '[TargetDescription]'},
         'skus': {'key': 'skus', 'type': '[SkuDescription]'},
+        'quota_dimensions': {'key': 'quotaDimensions', 'type': '[QuotaDimension]'},
+        'pricing_dimensions': {'key': 'pricingDimensions', 'type': '[PricingDimension]'},
     }
 
     def __init__(self, **kwargs):
@@ -55,3 +62,5 @@ class ProviderProperties(Model):
         self.managed_application = kwargs.get('managed_application', None)
         self.targets = kwargs.get('targets', None)
         self.skus = kwargs.get('skus', None)
+        self.quota_dimensions = kwargs.get('quota_dimensions', None)
+        self.pricing_dimensions = kwargs.get('pricing_dimensions', None)

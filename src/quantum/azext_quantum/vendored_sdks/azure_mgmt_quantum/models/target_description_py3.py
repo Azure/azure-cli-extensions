@@ -13,17 +13,20 @@ from msrest.serialization import Model
 
 
 class TargetDescription(Model):
-    """Descript provider's target information to end customer.
+    """Information about a Target. A target is the component that can process a
+    specific type of Job.
 
-    :param id: Unique target id
+    :param id: Unique target id.
     :type id: str
-    :param name: Display name of target
+    :param name: Display name of this target.
     :type name: str
-    :param description: Description about this sku
+    :param description: A description about this target.
     :type description: str
-    :param accepted_data_formats: List of data formats
+    :param accepted_data_formats: List of data formats accepted by this
+     target.
     :type accepted_data_formats: list[str]
-    :param accepted_content_encodings: List of content encodings
+    :param accepted_content_encodings: List of content encodings accepted by
+     this target.
     :type accepted_content_encodings: list[str]
     """
 

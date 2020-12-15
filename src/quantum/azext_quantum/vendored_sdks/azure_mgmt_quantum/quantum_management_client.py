@@ -15,6 +15,7 @@ from msrestazure import AzureConfiguration
 from .version import VERSION
 from .operations.workspaces_operations import WorkspacesOperations
 from .operations.offerings_operations import OfferingsOperations
+from .operations.operations import Operations
 from . import models
 
 
@@ -60,6 +61,8 @@ class QuantumManagementClient(SDKClient):
     :vartype workspaces: quantum.operations.WorkspacesOperations
     :ivar offerings: Offerings operations
     :vartype offerings: quantum.operations.OfferingsOperations
+    :ivar operations: Operations operations
+    :vartype operations: quantum.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -83,4 +86,6 @@ class QuantumManagementClient(SDKClient):
         self.workspaces = WorkspacesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.offerings = OfferingsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.operations = Operations(
             self._client, self.config, self._serialize, self._deserialize)

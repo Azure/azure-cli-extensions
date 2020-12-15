@@ -79,7 +79,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     if (not info.resource_group):
         raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     quantum_workspace = get_basic_quantum_workspace(location, info, storage_account)
-    return client.create_and_update(info.resource_group, info.name, quantum_workspace, polling=False)
+    return client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
 
 
 def delete(cmd, resource_group_name=None, workspace_name=None):

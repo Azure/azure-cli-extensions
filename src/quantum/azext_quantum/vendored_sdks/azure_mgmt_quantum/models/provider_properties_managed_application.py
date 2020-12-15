@@ -15,9 +15,9 @@ from msrest.serialization import Model
 class ProviderPropertiesManagedApplication(Model):
     """Provider's Managed-Application info.
 
-    :param publisher_id: Provider's publisher id
+    :param publisher_id: Provider's publisher id.
     :type publisher_id: str
-    :param offer_id: Provider's offer id
+    :param offer_id: Provider's offer id.
     :type offer_id: str
     """
 

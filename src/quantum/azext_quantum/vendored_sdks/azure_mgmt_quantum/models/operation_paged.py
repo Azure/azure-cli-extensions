@@ -9,12 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .workspaces_operations import WorkspacesOperations
-from .offerings_operations import OfferingsOperations
-from .operations import Operations
+from msrest.paging import Paged
 
-__all__ = [
-    'WorkspacesOperations',
-    'OfferingsOperations',
-    'Operations',
-]
+
+class OperationPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Operation <quantum.models.Operation>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Operation]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(OperationPaged, self).__init__(*args, **kwargs)

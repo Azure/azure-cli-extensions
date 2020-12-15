@@ -12,33 +12,40 @@
 try:
     from .error_definition_py3 import ErrorDefinition
     from .error_response_py3 import ErrorResponse, ErrorResponseException
+    from .provider_py3 import Provider
     from .quantum_workspace_identity_py3 import QuantumWorkspaceIdentity
     from .quantum_workspace_py3 import QuantumWorkspace
-    from .provider_description_properties_py3 import ProviderDescriptionProperties
-    from .provider_description_py3 import ProviderDescription
-    from .provider_py3 import Provider
-    from .workspace_resource_properties_py3 import WorkspaceResourceProperties
     from .provider_properties_aad_py3 import ProviderPropertiesAad
     from .provider_properties_managed_application_py3 import ProviderPropertiesManagedApplication
     from .target_description_py3 import TargetDescription
+    from .quota_dimension_py3 import QuotaDimension
+    from .pricing_detail_py3 import PricingDetail
     from .sku_description_py3 import SkuDescription
+    from .pricing_dimension_py3 import PricingDimension
     from .provider_properties_py3 import ProviderProperties
+    from .provider_description_py3 import ProviderDescription
+    from .operation_display_py3 import OperationDisplay
+    from .operation_py3 import Operation
 except (SyntaxError, ImportError):
     from .error_definition import ErrorDefinition
     from .error_response import ErrorResponse, ErrorResponseException
+    from .provider import Provider
     from .quantum_workspace_identity import QuantumWorkspaceIdentity
     from .quantum_workspace import QuantumWorkspace
-    from .provider_description_properties import ProviderDescriptionProperties
-    from .provider_description import ProviderDescription
-    from .provider import Provider
-    from .workspace_resource_properties import WorkspaceResourceProperties
     from .provider_properties_aad import ProviderPropertiesAad
     from .provider_properties_managed_application import ProviderPropertiesManagedApplication
     from .target_description import TargetDescription
+    from .quota_dimension import QuotaDimension
+    from .pricing_detail import PricingDetail
     from .sku_description import SkuDescription
+    from .pricing_dimension import PricingDimension
     from .provider_properties import ProviderProperties
+    from .provider_description import ProviderDescription
+    from .operation_display import OperationDisplay
+    from .operation import Operation
 from .quantum_workspace_paged import QuantumWorkspacePaged
 from .provider_description_paged import ProviderDescriptionPaged
+from .operation_paged import OperationPaged
 from .quantum_management_client_enums import (
     Status,
     UsableStatus,
@@ -48,19 +55,23 @@ from .quantum_management_client_enums import (
 __all__ = [
     'ErrorDefinition',
     'ErrorResponse', 'ErrorResponseException',
+    'Provider',
     'QuantumWorkspaceIdentity',
     'QuantumWorkspace',
-    'ProviderDescriptionProperties',
-    'ProviderDescription',
-    'Provider',
-    'WorkspaceResourceProperties',
     'ProviderPropertiesAad',
     'ProviderPropertiesManagedApplication',
     'TargetDescription',
+    'QuotaDimension',
+    'PricingDetail',
     'SkuDescription',
+    'PricingDimension',
     'ProviderProperties',
+    'ProviderDescription',
+    'OperationDisplay',
+    'Operation',
     'QuantumWorkspacePaged',
     'ProviderDescriptionPaged',
+    'OperationPaged',
     'Status',
     'UsableStatus',
     'ProvisioningStatus',

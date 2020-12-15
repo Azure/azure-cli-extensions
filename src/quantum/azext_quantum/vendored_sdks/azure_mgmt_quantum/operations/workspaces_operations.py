@@ -100,10 +100,10 @@ class WorkspacesOperations(object):
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
 
-    def _create_and_update_initial(
+    def _create_or_update_initial(
             self, resource_group_name, workspace_name, quantum_workspace, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = self.create_and_update.metadata['url']
+        url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
@@ -149,7 +149,7 @@ class WorkspacesOperations(object):
 
         return deserialized
 
-    def create_and_update(
+    def create_or_update(
             self, resource_group_name, workspace_name, quantum_workspace, custom_headers=None, raw=False, polling=True, **operation_config):
         """Creates or updates a workspace resource.
 
@@ -173,7 +173,7 @@ class WorkspacesOperations(object):
         :raises:
          :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
         """
-        raw_result = self._create_and_update_initial(
+        raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
             workspace_name=workspace_name,
             quantum_workspace=quantum_workspace,
@@ -198,7 +198,7 @@ class WorkspacesOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_and_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
     def update(
             self, resource_group_name, workspace_name, quantum_workspace, custom_headers=None, raw=False, **operation_config):
@@ -303,8 +303,6 @@ class WorkspacesOperations(object):
         deserialized = None
 
         if response.status_code == 202:
-            deserialized = self._deserialize('QuantumWorkspace', response)
-        if response.status_code == 204:
             deserialized = self._deserialize('QuantumWorkspace', response)
 
         if raw:

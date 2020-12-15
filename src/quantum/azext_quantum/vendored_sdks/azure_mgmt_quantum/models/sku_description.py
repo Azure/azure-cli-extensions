@@ -13,16 +13,20 @@ from msrest.serialization import Model
 
 
 class SkuDescription(Model):
-    """Descript provider's information to end customer.
+    """Information about a specific sku.
 
-    :param id: unique sku id
+    :param id: Unique sku id.
     :type id: str
-    :param name: display name of sku
+    :param name: Display name of this sku.
     :type name: str
-    :param description: Description about this sku
+    :param description: Description about this sku.
     :type description: str
-    :param targets: list of targets for the sku
+    :param targets: The list of targets available for this sku.
     :type targets: list[str]
+    :param quota_dimensions: The list of quota dimensions for this sku.
+    :type quota_dimensions: list[~quantum.models.QuotaDimension]
+    :param pricing_details: The list of pricing details for the sku.
+    :type pricing_details: list[~quantum.models.PricingDetail]
     """
 
     _attribute_map = {
@@ -30,6 +34,8 @@ class SkuDescription(Model):
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'targets': {'key': 'targets', 'type': '[str]'},
+        'quota_dimensions': {'key': 'quotaDimensions', 'type': '[QuotaDimension]'},
+        'pricing_details': {'key': 'pricingDetails', 'type': '[PricingDetail]'},
     }
 
     def __init__(self, **kwargs):
@@ -38,3 +44,5 @@ class SkuDescription(Model):
         self.name = kwargs.get('name', None)
         self.description = kwargs.get('description', None)
         self.targets = kwargs.get('targets', None)
+        self.quota_dimensions = kwargs.get('quota_dimensions', None)
+        self.pricing_details = kwargs.get('pricing_details', None)

@@ -13,16 +13,20 @@ from msrest.serialization import Model
 
 
 class SkuDescription(Model):
-    """Descript provider's information to end customer.
+    """Information about a specific sku.
 
-    :param id: unique sku id
+    :param id: Unique sku id.
     :type id: str
-    :param name: display name of sku
+    :param name: Display name of this sku.
     :type name: str
-    :param description: Description about this sku
+    :param description: Description about this sku.
     :type description: str
-    :param targets: list of targets for the sku
+    :param targets: The list of targets available for this sku.
     :type targets: list[str]
+    :param quota_dimensions: The list of quota dimensions for this sku.
+    :type quota_dimensions: list[~quantum.models.QuotaDimension]
+    :param pricing_details: The list of pricing details for the sku.
+    :type pricing_details: list[~quantum.models.PricingDetail]
     """
 
     _attribute_map = {
@@ -30,11 +34,15 @@ class SkuDescription(Model):
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'targets': {'key': 'targets', 'type': '[str]'},
+        'quota_dimensions': {'key': 'quotaDimensions', 'type': '[QuotaDimension]'},
+        'pricing_details': {'key': 'pricingDetails', 'type': '[PricingDetail]'},
     }
 
-    def __init__(self, *, id: str=None, name: str=None, description: str=None, targets=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, name: str=None, description: str=None, targets=None, quota_dimensions=None, pricing_details=None, **kwargs) -> None:
         super(SkuDescription, self).__init__(**kwargs)
         self.id = id
         self.name = name
         self.description = description
         self.targets = targets
+        self.quota_dimensions = quota_dimensions
+        self.pricing_details = pricing_details
