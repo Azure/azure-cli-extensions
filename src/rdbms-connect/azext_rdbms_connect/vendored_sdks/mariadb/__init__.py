@@ -9,21 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from ._configuration import MariaDBManagementClientConfiguration
+from ._maria_db_management_client import MariaDBManagementClient
+__all__ = ['MariaDBManagementClient', 'MariaDBManagementClientConfiguration']
 
+from .version import VERSION
 
-class ResourceIdentityType(str, Enum):
+__version__ = VERSION
 
-    none = "None"
-    system_assigned = "SystemAssigned"
-
-
-class ProvisioningState(str, Enum):
-
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-    provisioning = "Provisioning"
-    updating = "Updating"
-    deleting = "Deleting"
-    accepted = "Accepted"

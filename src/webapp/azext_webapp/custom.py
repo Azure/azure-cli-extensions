@@ -312,73 +312,199 @@ def _should_create_new_asp(cmd, rg_name, asp_name, location):
     return True
 
 
-def enable_one_deploy(cmd, resource_group_name, name, src, deploy_type=None, is_async=None, target_path=None, timeout=None, slot=None):
-    import ntpath
-    logger.info("Preparing for deployment")
-    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+# OneDeploy
+def perform_onedeploy(cmd,
+                      resource_group_name,
+                      name,
+                      src_path=None,
+                      src_url=None,
+                      type=None,
+                      async=None,
+                      target_path=None,
+                      restart=None,
+                      clean=None,
+                      ignore_stack=None,
+                      timeout=None,
+                      slot=None):
+    params = OneDeployParams()
 
-    try:
-        scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
-    except ValueError:
-        raise CLIError('Failed to fetch scm url for for app {}'.format(name))
+    params.cmd = cmd
+    params.resource_group_name = resource_group_name
+    params.webapp_name = name
+    params.src_path = src_path
+    params.src_url = src_url
+    params.artifact_type = type
+    params.is_async_deployment = async
+    params.target_path = target_path
+    params.should_restart = restart
+    params.is_clean_deployment = clean
+    params.should_ignore_stack = ignore_stack
+    params.timeout = timeout
+    params.slot = slot
 
-    # Interpret deployment type from the file extension if the type parameter is not passed
-    if deploy_type is None:
-        fileName = ntpath.basename(src)
-        fileExtension = fileName.split(".", 1)[1]
-        if fileExtension in ('war', 'jar', 'zip', 'ear'):
-            deploy_type = fileExtension
-        elif fileExtension in ('sh', 'bat'):
-            deploy_type = 'startup'
-        else:
-            deploy_type = 'static'
+    return _perform_onedeploy_internal(params)
 
-    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. Possible values: static, zip, war, jar, ear, startup", deploy_type)
-    deploy_url = scm_url + '/api/publish?type=' + deploy_type
 
-    if is_async is not None:
-        deploy_url = deploy_url + '&async=true'
+# Class for OneDeploy parameters
+class OneDeployParams(object):
+    pass
 
-    if target_path is not None:
-        deploy_url = deploy_url + '&path=' + target_path
 
-    deployment_status_url = scm_url + '/api/deployments/latest'
+def _validate_onedeploy_params(params):
+    if params.src_path and params.src_url:
+        raise CLIError('Only one of --src-path and --src-url can be specified')
 
+    if not params.src_path and not params.src_url:
+        raise CLIError('Either of --src-path or --src-url must be specified')
+
+    if params.src_url and not params.artifact_type:
+        raise CLIError('Deployment type is mandatory when deploying from URLs. Use --type')
+
+
+def _build_onedeploy_url(params):
+    scm_url = _get_scm_url(params.cmd, params.resource_group_name, params.webapp_name, params.slot)
+    deploy_url = scm_url + '/api/publish?type=' + params.artifact_type
+
+    if params.is_async_deployment is not None:
+        deploy_url = deploy_url + '&async=' + str(params.is_async_deployment)
+
+    if params.should_restart is not None:
+        deploy_url = deploy_url + '&restart=' + str(params.should_restart)
+
+    if params.is_clean_deployment is not None:
+        deploy_url = deploy_url + '&clean=' + str(params.is_clean_deployment)
+
+    if params.should_ignore_stack is not None:
+        deploy_url = deploy_url + '&ignorestack=' + str(params.should_ignore_stack)
+
+    if params.target_path is not None:
+        deploy_url = deploy_url + '&path=' + params.target_path
+
+    return deploy_url
+
+
+def _get_onedeploy_status_url(params):
+    scm_url = _get_scm_url(params.cmd, params.resource_group_name, params.webapp_name, params.slot)
+    return scm_url + '/api/deployments/latest'
+
+
+def _get_basic_headers(params):
+    import urllib3
     from azure.cli.core.util import (
         should_disable_connection_verify,
         get_az_user_agent
     )
 
-    import urllib3
-    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
-    headers = authorization
-    headers['Content-Type'] = 'application/octet-stream'
+    user_name, password = _get_site_credential(params.cmd.cli_ctx, params.resource_group_name, params.webapp_name, params.slot)
+
+    if params.src_path:
+        content_type = 'application/octet-stream'
+    elif params.src_url:
+        content_type = 'application/json'
+    else:
+        raise CLIError('Unable to determine source location of the artifact being deployed')
+
+    headers = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
     headers['Cache-Control'] = 'no-cache'
     headers['User-Agent'] = get_az_user_agent()
+    headers['Content-Type'] = content_type
 
-    import requests
+    return headers
+
+
+def _get_onedeploy_request_body(params):
     import os
+    import json
 
-    # Read file content
-    with open(os.path.realpath(os.path.expanduser(src)), 'rb') as fs:
-        artifact_content = fs.read()
-        logger.warning("Starting deployment...")
-        res = requests.post(deploy_url, data=artifact_content, headers=headers, verify=not should_disable_connection_verify())
+    if params.src_path:
+        logger.info('Deploying from local path: ' + params.src_path)
+        try:
+            with open(os.path.realpath(os.path.expanduser(params.src_path)), 'rb') as fs:
+                body = fs.read()
+        except Exception as e:
+            raise CLIError("Either '{}' is not a valid local file path or you do not have permissions to access it".format(params.src_path)) from e
+    elif params.src_url:
+        logger.info('Deploying from URL: ' + params.src_url)
+        body = json.dumps({
+            "packageUri": params.src_url
+        })
+    else:
+        raise CLIError('Unable to determine source location of the artifact being deployed')
 
-    # check if an error occured during deployment
-    if res.status_code == 400:
-        raise CLIError("An error occured durng deployment: {}".format(res.text))
+    return body
+
+
+def _update_artifact_type(params):
+    import ntpath
+
+    if params.artifact_type is not None:
+        return
+
+    # Interpret deployment type from the file extension if the type parameter is not passed
+    file_name = ntpath.basename(params.src_path)
+    file_extension = file_name.split(".", 1)[1]
+    if file_extension in ('war', 'jar', 'ear', 'zip'):
+        params.artifact_type = file_extension
+    elif file_extension in ('sh', 'bat'):
+        params.artifact_type = 'startup'
+    else:
+        params.artifact_type = 'static'
+    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. " +
+                   "Possible values: war, jar, ear, zip, startup, script, static", params.artifact_type)
+
+
+def _make_onedeploy_request(params):
+    import requests
+
+    from azure.cli.core.util import (
+        should_disable_connection_verify,
+    )
+
+    # Build the request body, headers, API URL and status URL
+    body = _get_onedeploy_request_body(params)
+    headers = _get_basic_headers(params)
+    deploy_url = _build_onedeploy_url(params)
+    deployment_status_url = _get_onedeploy_status_url(params)
+
+    logger.info("Deployment API: " + deploy_url)
+    response = requests.post(deploy_url, data=body, headers=headers, verify=not should_disable_connection_verify())
+
+    # check the status of async deployment
+    if response.status_code == 202:
+        logger.info("Asynchronous deployment request completed")
+        response_body = _check_zip_deployment_status(params.cmd, params.resource_group_name, params.webapp_name, deployment_status_url, headers, params.timeout)
+        logger.info(response_body)
+        return
+
+    if response.status_code == 200:
+        return
+
+    # API not available yet!
+    if response.status_code == 404:
+        raise CLIError("This API isn't available in this environment yet!")
 
     # check if there's an ongoing process
-    if res.status_code == 409:
+    if response.status_code == 409:
         raise CLIError("There may be an ongoing deployment or your app setting has WEBSITE_RUN_FROM_PACKAGE. "
                        "Please track your deployment in {} and ensure the WEBSITE_RUN_FROM_PACKAGE app setting "
                        "is removed.".format(deployment_status_url))
 
-    # check the status of async deployment
-    if res.status_code == 202:
-        logger.warning("Asynchronous deployment request has been recieved")
-        response = _check_zip_deployment_status(cmd, resource_group_name, name, deployment_status_url, authorization, timeout)
-        return response
+    # check if an error occured during deployment
+    if response.status_code:
+        raise CLIError("An error occured during deployment. Status Code: {}, Details: {}".format(response.status_code, response.text))
 
-    return logger.warning("Deployment has completed successfully")
+
+# OneDeploy
+def _perform_onedeploy_internal(params):
+
+    # Do basic paramter validation
+    _validate_onedeploy_params(params)
+
+    # Update artifact type, if required
+    _update_artifact_type(params)
+
+    # Now make the OneDeploy API call
+    logger.info("Initiating deployment")
+    _make_onedeploy_request(params)
+
+    return logger.info("Deployment has completed successfully")
