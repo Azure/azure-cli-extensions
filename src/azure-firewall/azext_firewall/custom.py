@@ -491,15 +491,18 @@ def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None):
+                                   dns_servers=None, enable_dns_proxy=None,
+                                   sku=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
      FirewallPolicyThreatIntelWhitelist,
-     DnsSettings) = cmd.get_models('FirewallPolicy',
-                                   'SubResource',
-                                   'FirewallPolicyThreatIntelWhitelist',
-                                   'DnsSettings')
+     DnsSettings,
+     FirewallPolicySku) = cmd.get_models('FirewallPolicy',
+                                         'SubResource',
+                                         'FirewallPolicyThreatIntelWhitelist',
+                                         'DnsSettings',
+                                         'FirewallPolicySku')
     firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
                                      threat_intel_mode=threat_intel_mode,
                                      location=location,
@@ -514,6 +517,9 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
             dns_settings = DnsSettings(servers=dns_servers,
                                        enable_proxy=enable_dns_proxy or False)
             firewall_policy.dns_settings = dns_settings
+    if cmd.supported_api_version(min_api='2020-07-01'):
+        if sku is not None:
+            firewall_policy.sku = FirewallPolicySku(tier=sku)
 
     return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
