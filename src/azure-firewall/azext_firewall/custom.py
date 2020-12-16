@@ -628,7 +628,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      source_addresses=None, destination_addresses=None,
                                                      destination_ports=None,
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
-                                                     source_ip_groups=None, destination_ip_groups=None):
+                                                     source_ip_groups=None, destination_ip_groups=None,
+                                                     target_urls=None, enable_terminate_tls=False):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
@@ -660,7 +661,9 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                destination_addresses=destination_addresses,
                                fqdn_tags=fqdn_tags,
                                target_fqdns=target_fqdns,
-                               source_ip_groups=source_ip_groups)
+                               target_urls=target_urls,
+                               source_ip_groups=source_ip_groups,
+                               terminate_tls=enable_terminate_tls)
     filter_rule_collection = FirewallPolicyFilterRuleCollection(name=rule_collection_name,
                                                                 priority=rule_priority,
                                                                 rule_collection_type="FirewallPolicyFilterRule",
@@ -699,7 +702,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           destination_addresses=None, destination_ports=None,
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None,
-                                          translated_address=None, translated_port=None):
+                                          translated_address=None, translated_port=None,
+                                          target_urls=None, enable_terminate_tls=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,

@@ -449,11 +449,15 @@ class AzureFirewallScenario(ScenarioTest):
                  --rule-collection-group-name {collectiongroup} -n filter-collection-2 --collection-priority 14000 \
                  --action Allow --rule-name application-rule --rule-type ApplicationRule \
                  --description "test" --destination-addresses "202.120.36.15" "202.120.36.16" --source-addresses "202.120.36.13" "202.120.36.14" --protocols Http=12800 Https=12801 \
-                 --fqdn-tags AzureBackup HDInsight', checks=[
-            self.check('length(ruleCollections)', 3),
-            self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
-            self.check('ruleCollections[2].name', "filter-collection-2")
-        ])
+                 --fqdn-tags AzureBackup HDInsight '
+                 '--target-urls www.google.com www.bing.com '
+                 '--enable-terminate-tls true',
+                 checks=[
+                     self.check('length(ruleCollections)', 3),
+                     self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[2].name', "filter-collection-2")
+                ]
+            )
 
         self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection-2 \
                                  --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 1000 \
