@@ -455,7 +455,10 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(ruleCollections)', 3),
                      self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
-                     self.check('ruleCollections[2].name', "filter-collection-2")
+                     self.check('ruleCollections[2].name', "filter-collection-2"),
+                     self.check('ruleCollections[2].rules[0].ruleType', 'ApplicationRule'),
+                     self.check('ruleCollections[2].rules[0].terminateTls', True),
+                     self.check('ruleCollections[2].rules[0].targetUrls', "['www.google.com', 'www.bing.com']")
                 ]
             )
 
@@ -475,12 +478,24 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('length(@)', 4)
         ])
 
-        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} \
-                 --rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 \
-                 --rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 \
-                 --destination-addresses 202.120.36.15 202.120.36.16 --protocols Http=12800 Https=12801 --target-fqdns www.bing.com', checks=[
-            self.check('length(ruleCollections[2].rules)', 2)
-        ])
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
+                 '--rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 '
+                 '--destination-addresses 202.120.36.15 202.120.36.16 --protocols Http=12800 Https=12801 --target-fqdns www.bing.com',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 2),
+                ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-3 '
+                 '--rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 '
+                 '--destination-addresses 10.120.36.15 10.120.36.16 --target-urls microsoft.com  ',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 3),
+                     self.check('ruleCollections[2].rules[2].name', 'application-rule-3'),
+                     self.check('ruleCollections[2].rules[2].terminateTls', False),
+                     self.check('ruleCollections[2].rules[2].targetUrls', "['microsoft.com']")
+                ])
 
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} \
                  --rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 \

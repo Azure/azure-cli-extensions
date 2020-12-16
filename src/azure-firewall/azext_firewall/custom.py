@@ -703,7 +703,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None,
                                           translated_address=None, translated_port=None,
-                                          target_urls=None, enable_terminate_tls=None):
+                                          target_urls=None, enable_terminate_tls=False):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -751,7 +751,9 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                destination_addresses=destination_addresses,
                                fqdn_tags=fqdn_tags,
                                target_fqdns=target_fqdns,
-                               source_ip_groups=source_ip_groups)
+                               target_urls=target_urls,
+                               source_ip_groups=source_ip_groups,
+                               terminate_tls=enable_terminate_tls)
     elif rule_type == 'NatRule':
         rule = NatRule(name=rule_name,
                        description=description,
