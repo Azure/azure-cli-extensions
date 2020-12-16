@@ -20,7 +20,7 @@ helps['spring-cloud create'] = """
     - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
     - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey --sampling-rate 100
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
     - name: Create a new Azure Spring Cloud with distributed tracing disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-distributed-tracing
     - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
@@ -440,25 +440,24 @@ helps['spring-cloud app custom-domain unbind'] = """
     short-summary: Unbind a custom-domain of the app.
 """
 
-helps['spring-cloud application-insights'] = """
+helps['spring-cloud app-insights'] = """
     type: group
     short-summary: Commands to management Application Insights in Azure Spring Cloud.
 """
 
-helps['spring-cloud application-insights show'] = """
+helps['spring-cloud app-insights show'] = """
     type: command
     short-summary: Show Application Insights settings.
 """
 
-helps['spring-cloud application-insights enable'] = """
+helps['spring-cloud app-insights update'] = """
     type: command
-    short-summary: Enable Application Insights and Java In-process Agent.
+    short-summary: Update Application Insights settings.
+    examples:
     examples:
         - name: Enable Application Insights and Java In-process Agent.
-          text: az spring-cloud application-insights enable -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+        - name: Disable Application Insights.
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable true
 """
 
-helps['spring-cloud application-insights disable'] = """
-    type: command
-    short-summary: Disable Application Insights and Java In-process Agent.
-"""

@@ -150,11 +150,26 @@ def validate_jvm_options(namespace):
     if namespace.jvm_options is not None:
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
-
 def validate_tracing_parameters(namespace):
+    if namespace.disable_app_insights and namespace.disable_distributed_tracing:
+        raise CLIError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
+    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                       "can not be set with '--disable-app-insights'.")
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_distributed_tracing:
         raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
                        "can not be set with '--disable-distributed-tracing'.")
+    if namespace.app_insights and namespace.app_insights_key:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.app_insights == "":
+        raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+    if namespace.disable_app_insights and namespace.enable_java_agent:
+        raise CLIError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
+
+def validate_app_insights_parameters(namespace):
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
+                       "can not be set with '--disable'.")
     if namespace.app_insights and namespace.app_insights_key:
         raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
