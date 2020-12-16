@@ -15,7 +15,7 @@ ms.devlang: azure-cli
 
 This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.
 
-The list of extensions is also available  from the CLI. To get it, run [az extension list-available](/cli/azure/extension?view=azure-cli-latest#az-extension-list-available):
+The list of extensions is also available  from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az-extension-list-available):
 
 ```azurecli-interactive
 az extension list-available --output table
