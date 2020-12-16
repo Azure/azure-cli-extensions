@@ -109,8 +109,10 @@ jobs:
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
+    - bash: |
+        pip install --upgrade pip
+        pip install wheel==0.30.0
+      displayName: 'Install wheel==0.30.0, pip'
     - bash: ./scripts/ci/test_source.sh
       displayName: 'Run integration test and build test'
       env:
