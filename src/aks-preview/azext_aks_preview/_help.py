@@ -297,6 +297,9 @@ helps['aks create'] = """
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
+        - name: --tags
+          type: string
+          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -332,6 +335,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
         - name: Create a kubernetes cluster with ephemeral os enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
+        - name: Create a kubernetes cluster with custom tags
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -455,6 +460,9 @@ helps['aks update'] = """
         - name: --disable-pod-identity
           type: bool
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
+        - name: --tags
+          type: string
+          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -496,6 +504,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-pod-identity
       - name: Disable pod identity addon.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
+      - name: Update the tags of a kubernetes cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
 """
 
 helps['aks kollect'] = """
