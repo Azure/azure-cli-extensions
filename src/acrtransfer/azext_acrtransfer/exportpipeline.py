@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ExportPipeline, ExportPipelineTargetProperties
+from .vendored_sdks.containerregistry.v2019_12_01_preview.models._container_registry_management_client_enums import PipelineSourceType
 from .utility_functions import create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
 
 
@@ -14,7 +15,7 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
     keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
 
-    export_pipeline_target_type = "AzureStorageBlobContainer"
+    export_pipeline_target_type = PipelineSourceType.AZURE_STORAGE_BLOB_CONTAINER
     export_pipeline_target_properties = ExportPipelineTargetProperties(key_vault_uri=keyvault_secret_uri,
                                                                        uri=storage_account_container_uri,
                                                                        type=export_pipeline_target_type)
