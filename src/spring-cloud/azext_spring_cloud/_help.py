@@ -460,4 +460,3 @@ helps['spring-cloud app-insights update'] = """
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable true
 """
-

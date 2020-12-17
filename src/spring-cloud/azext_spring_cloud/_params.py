@@ -57,15 +57,15 @@ def load_arguments(self, _):
                        arg_type=get_three_state_flag(),
                        help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
                        validator=validate_tracing_parameters,
-                       deprecate_info=c.deprecate(target='--disable_distributed_tracing', redirect='--disable_app_insights', hide=True))            
+                       deprecate_info=c.deprecate(target='--disable_distributed_tracing', redirect='--disable_app_insights', hide=True))
             c.argument('disable_app_insights',
                        arg_type=get_three_state_flag(),
                        help="Disable Application Insights, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
                        validator=validate_tracing_parameters)
             c.argument('enable_java_agent', is_preview=True,
-                        arg_type=get_three_state_flag(),
-                        help="Enable java in-process agent",
-                        validator=validate_tracing_parameters)
+                       arg_type=get_three_state_flag(),
+                       help="Enable java in-process agent",
+                       validator=validate_tracing_parameters)
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
@@ -251,19 +251,19 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
-    
+
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
-                    help="Instrumentation key of the existing Application Insights",
-                    validator=validate_app_insights_parameters)
+                   help="Instrumentation key of the existing Application Insights",
+                   validator=validate_app_insights_parameters)
         c.argument('app_insights',
-                    help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
-                    validator=validate_app_insights_parameters)
+                   help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   validator=validate_app_insights_parameters)
         c.argument('sampling_rate',
-                    type=float,
-                    help="Sampling Rate of application insights. Maximum is 100.",
-                    validator=validate_app_insights_parameters)
+                   type=float,
+                   help="Sampling Rate of application insights. Maximum is 100.",
+                   validator=validate_app_insights_parameters)
         c.argument('disable',
-                    arg_type=get_three_state_flag(),
-                    help="Disable Application Insights.",
-                    validator=validate_app_insights_parameters)
+                   arg_type=get_three_state_flag(),
+                   help="Disable Application Insights.",
+                   validator=validate_app_insights_parameters)
