@@ -10,7 +10,7 @@ from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):
-    from azext_timeseriesinsights.generated._client_factory import cf_environment
+    from azext_timeseriesinsights.manual._client_factory import cf_environment
     timeseriesinsights_environment = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._environments_operations#'
         'EnvironmentsOperations.{}',
@@ -32,7 +32,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen2_update', supports_no_wait=True)
 
-    from azext_timeseriesinsights.generated._client_factory import cf_event_source
+    from azext_timeseriesinsights.manual._client_factory import cf_event_source
     timeseriesinsights_event_source = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._event_sources_operations'
         '#EventSourcesOperations.{}',
