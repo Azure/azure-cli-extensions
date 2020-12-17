@@ -22,7 +22,7 @@ helps['spring-cloud create'] = """
     - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
     - name: Create a new Azure Spring Cloud with distributed tracing disabled.
-      text: az spring-cloud create -n MyService -g MyResourceGroup --disable-distributed-tracing
+      text: az spring-cloud create -n MyService -g MyResourceGroup --disable-app-insights
     - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
       text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
     - name: Create a new Azure Spring Cloud with VNet-injected via giving subnets resource ID
@@ -36,7 +36,7 @@ helps['spring-cloud update'] = """
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
     - name: Enable the distributed tracing of the existing Azure Spring Cloud.
-      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-distributed-tracing false
+      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-app-insights false
     - name: Update the tags of the existing Azure Spring Cloud.
       text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
