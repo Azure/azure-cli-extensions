@@ -126,7 +126,11 @@ class ServiceOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         service_description = models.ServicesDescription(kind=kind, location=location, tags=tags, etag=etag, type_identity_type=type, access_policies=access_policies, cosmos_db_configuration=cosmos_db_configuration, authentication_configuration=authentication_configuration, cors_configuration=cors_configuration, private_endpoint_connections=private_endpoint_connections, public_network_access=public_network_access, storage_account_name=storage_account_name)
+=======
+        _service_description = models.ServicesDescription(kind=kind, location=location, tags=tags, etag=etag, identity=identity, properties=properties)
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -306,7 +310,11 @@ class ServiceOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         service_patch_description = models.ServicesPatchDescription(tags=tags, public_network_access=public_network_access)
+=======
+        _service_patch_description = models.ServicesPatchDescription(tags=tags)
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -432,12 +440,17 @@ class ServiceOperations:
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
         accept = "application/json"
+=======
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        api_version = "2020-03-30"
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -546,12 +559,17 @@ class ServiceOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
         accept = "application/json"
+=======
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        api_version = "2020-03-30"
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
 
         def prepare_request(next_link=None):
             # Construct headers
@@ -616,12 +634,17 @@ class ServiceOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-30"
         accept = "application/json"
+=======
+        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
+        api_version = "2020-03-30"
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
 
         def prepare_request(next_link=None):
             # Construct headers
@@ -695,7 +718,11 @@ class ServiceOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/aio/operations/_service_operations.py
         check_name_availability_inputs = models.CheckNameAvailabilityParameters(name=name, type=type)
+=======
+        _check_name_availability_inputs = models.CheckNameAvailabilityParameters(name=name, type=type)
+>>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/aio/operations_async/_service_operations_async.py
         api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
