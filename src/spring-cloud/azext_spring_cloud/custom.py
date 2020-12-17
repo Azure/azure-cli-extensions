@@ -1483,9 +1483,6 @@ def try_create_application_insights(cmd, resource_group, name, location):
 def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
     if disable:
         trace_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
-        if trace_properties is not None:
-            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
-                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
     else:
         trace_properties = client.monitoring_settings.get(resource_group, name).properties
         if not trace_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
