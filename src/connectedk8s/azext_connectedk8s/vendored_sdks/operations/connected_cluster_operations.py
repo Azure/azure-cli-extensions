@@ -68,26 +68,9 @@ class ConnectedClusterOperations(object):
         # Construct body
         body_content = self._serialize.body(connected_cluster, 'ConnectedCluster')
 
-        def print_request(req):
-            print('HTTP/1.1 {method} {url}\n{headers}\n\n{body}'.format(
-                method=req.method,
-                url=req.url,
-                headers='\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
-                body=req.body,
-            ))
-
-        def print_response(res):
-            print('HTTP/1.1 {status_code}\n{headers}\n\n{body}'.format(
-                status_code=res.status_code,
-                headers='\n'.join('{}: {}'.format(k, v) for k, v in res.headers.items()),
-                body=res.content,
-            ))
-
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
-        print_request(request)
         response = self._client.send(request, stream=False, **operation_config)
-        print_response(response)
         if response.status_code not in [200, 201]:
             raise models.ErrorResponseException(self._deserialize, response)
 
