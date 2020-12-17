@@ -24,11 +24,7 @@ class ConnectedClusterOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-<<<<<<< HEAD
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-01-01-preview".
-=======
     :ivar api_version: The API version to use for the request. Constant value: "2020-01-01-preview".
->>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
     """
 
     models = models
@@ -56,7 +52,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -72,10 +68,26 @@ class ConnectedClusterOperations(object):
         # Construct body
         body_content = self._serialize.body(connected_cluster, 'ConnectedCluster')
 
+        def print_request(req):
+            print('HTTP/1.1 {method} {url}\n{headers}\n\n{body}'.format(
+                method=req.method,
+                url=req.url,
+                headers='\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+                body=req.body,
+            ))
+
+        def print_response(res):
+            print('HTTP/1.1 {status_code}\n{headers}\n\n{body}'.format(
+                status_code=res.status_code,
+                headers='\n'.join('{}: {}'.format(k, v) for k, v in res.headers.items()),
+                body=res.content,
+            ))
+
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
+        print_request(request)
         response = self._client.send(request, stream=False, **operation_config)
-
+        print_response(response)
         if response.status_code not in [200, 201]:
             raise models.ErrorResponseException(self._deserialize, response)
 
@@ -193,7 +205,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -264,7 +276,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -309,7 +321,7 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -379,11 +391,7 @@ class ConnectedClusterOperations(object):
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def list_cluster_user_credentials(
-<<<<<<< HEAD
-            self, resource_group_name, cluster_name, value, custom_headers=None, raw=False, **operation_config):
-=======
             self, resource_group_name, cluster_name, value, client_proxy=None, custom_headers=None, raw=False, **operation_config):
->>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
         """Gets cluster user credentials of a connected cluster.
 
         Gets cluster user credentials of the connected cluster with a specified
@@ -395,18 +403,12 @@ class ConnectedClusterOperations(object):
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
-<<<<<<< HEAD
-        :param value:
-        :type value:
-         ~azure.mgmt.hybridkubernetes.models.AuthenticationDetailsValue
-=======
         :param value: Authentication token value.
         :type value:
          ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.AuthenticationDetailsValue
         :param client_proxy: Parameter to indicate whether the request is for
          client side proxy or not
         :type client_proxy: bool
->>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -434,13 +436,9 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-<<<<<<< HEAD
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
-=======
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
         if client_proxy is not None:
             query_parameters['ClientProxy'] = self._serialize.query("client_proxy", client_proxy, 'bool')
->>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
 
         # Construct headers
         header_parameters = {}
@@ -512,7 +510,7 @@ class ConnectedClusterOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -578,7 +576,7 @@ class ConnectedClusterOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
