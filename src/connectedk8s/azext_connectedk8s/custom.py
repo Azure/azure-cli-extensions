@@ -769,6 +769,10 @@ def get_user_aad_details(kube_config, required_user):
                 return "", "", ""
             else:
                 auth_provider_config = user_details.get('auth-provider').get('config')
+                if auth_provider_config is None:
+                    return "", "", ""
+                if (auth_provider_config.get('apiserver-id') is None) or (auth_provider_config.get('client-id') is None) or (auth_provider_config.get('tenant-id') is None):
+                    return "", "", ""
                 telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AutoDetectedAADProfile': True})
                 return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
     telemetry.set_user_fault()
