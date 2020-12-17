@@ -236,32 +236,59 @@ def timeseriesinsights_event_source_event_hub_update(client,
                                                      resource_group_name,
                                                      environment_name,
                                                      event_source_name,
-                                                     location,
-                                                     event_source_resource_id,
-                                                     service_bus_namespace,
-                                                     event_hub_name,
-                                                     consumer_group_name,
-                                                     key_name,
-                                                     shared_access_key,
-                                                     tags=None,
+
+                                                     event_source_resource_id=None,
+                                                     service_bus_namespace=None,
+                                                     event_hub_name=None,
+                                                     consumer_group_name=None,
+                                                     key_name=None,
+                                                     shared_access_key=None,
                                                      local_timestamp=None,
-                                                     timestamp_property_name=None):
-    parameters = {}
-    parameters['location'] = location
-    parameters['tags'] = tags
-    parameters['kind'] = 'Microsoft.EventHub'
-    parameters['local_timestamp'] = local_timestamp
-    parameters['timestamp_property_name'] = timestamp_property_name
-    parameters['event_source_resource_id'] = event_source_resource_id
-    parameters['service_bus_namespace'] = service_bus_namespace
-    parameters['event_hub_name'] = event_hub_name
-    parameters['consumer_group_name'] = consumer_group_name
-    parameters['key_name'] = key_name
-    parameters['shared_access_key'] = shared_access_key
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   environment_name=environment_name,
-                                   event_source_name=event_source_name,
-                                   parameters=parameters)
+                                                     timestamp_property_name=None,
+                                                     tags=None):
+    from ..custom import timeseriesinsights_event_source_show
+    instance = timeseriesinsights_event_source_show(client, resource_group_name, environment_name, event_source_name)
+    body = instance.as_dict(keep_readonly=False)
+    if body['kind'] != 'Microsoft.EventHub':
+        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
+            body['kind'], 'Microsoft.EventHub'))
+
+    put_parameters = {}
+    if event_source_resource_id is not None:
+        put_parameters['event_source_resource_id'] = event_source_resource_id
+    if service_bus_namespace is not None:
+        put_parameters['service_bus_namespace'] = service_bus_namespace
+    if event_hub_name is not None:
+        put_parameters['event_hub_name'] = event_hub_name
+    if consumer_group_name is not None:
+        put_parameters['consumer_group_name'] = consumer_group_name
+    if key_name is not None:
+        put_parameters['key_name'] = key_name
+    if shared_access_key is not None:
+        put_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        put_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        put_parameters['timestamp_property_name'] = timestamp_property_name
+
+    patch_parameters = {}
+    if tags is not None:
+        if put_parameters:
+            put_parameters['tags'] = tags
+        else:
+            patch_parameters['tags'] = tags
+
+    if put_parameters:
+        body.update(put_parameters)
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       event_source_name=event_source_name,
+                                       parameters=body)
+    else:
+        return client.update(resource_group_name=resource_group_name,
+                             environment_name=environment_name,
+                             event_source_name=event_source_name,
+                             event_source_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_event_source_iot_hub_create(client,
@@ -298,27 +325,53 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                                                    resource_group_name,
                                                    environment_name,
                                                    event_source_name,
-                                                   location,
-                                                   event_source_resource_id,
-                                                   iot_hub_name,
-                                                   consumer_group_name,
-                                                   key_name,
-                                                   shared_access_key,
-                                                   tags=None,
+
+                                                   event_source_resource_id=None,
+                                                   iot_hub_name=None,
+                                                   consumer_group_name=None,
+                                                   key_name=None,
+                                                   shared_access_key=None,
                                                    local_timestamp=None,
-                                                   timestamp_property_name=None):
-    parameters = {}
-    parameters['location'] = location
-    parameters['tags'] = tags
-    parameters['kind'] = 'Microsoft.IoTHub'
-    parameters['local_timestamp'] = local_timestamp
-    parameters['timestamp_property_name'] = timestamp_property_name
-    parameters['event_source_resource_id'] = event_source_resource_id
-    parameters['iot_hub_name'] = iot_hub_name
-    parameters['consumer_group_name'] = consumer_group_name
-    parameters['key_name'] = key_name
-    parameters['shared_access_key'] = shared_access_key
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   environment_name=environment_name,
-                                   event_source_name=event_source_name,
-                                   parameters=parameters)
+                                                   timestamp_property_name=None,
+                                                   tags=None):
+    from ..custom import timeseriesinsights_event_source_show
+    instance = timeseriesinsights_event_source_show(client, resource_group_name, environment_name, event_source_name)
+    body = instance.as_dict(keep_readonly=False)
+    if body['kind'] != 'Microsoft.IoTHub':
+        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
+            body['kind'], 'Microsoft.IoTHub'))
+
+    put_parameters = {}
+    if event_source_resource_id is not None:
+        put_parameters['event_source_resource_id'] = event_source_resource_id
+    if iot_hub_name is not None:
+        put_parameters['iot_hub_name'] = iot_hub_name
+    if consumer_group_name is not None:
+        put_parameters['consumer_group_name'] = consumer_group_name
+    if key_name is not None:
+        put_parameters['key_name'] = key_name
+    if shared_access_key is not None:
+        put_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        put_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        put_parameters['timestamp_property_name'] = timestamp_property_name
+
+    patch_parameters = {}
+    if tags is not None:
+        if put_parameters:
+            put_parameters['tags'] = tags
+        else:
+            patch_parameters['tags'] = tags
+
+    if put_parameters:
+        body.update(put_parameters)
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       event_source_name=event_source_name,
+                                       parameters=body)
+    else:
+        return client.update(resource_group_name=resource_group_name,
+                             environment_name=environment_name,
+                             event_source_name=event_source_name,
+                             event_source_update_parameters=patch_parameters)
