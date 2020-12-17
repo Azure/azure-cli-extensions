@@ -1,5 +1,25 @@
 Release History
 ===============
+2.0.1
+-----
+* Fix 'az spring-cloud app list' command issues.
+
+2.0.0
+-----
+* Switch api-version from 2019-05-01-preview to 2020-07-01
+
+1.2.0
+-----
+* Add support for sovereign cloud.
+
+1.1.1
+-----
+* Reimport the updated version of Python SDK.
+
+1.1.0
+-----
+* Support Steeltoe feature.
+
 1.0.1
 -----
 * Optimize VNet Injection validator

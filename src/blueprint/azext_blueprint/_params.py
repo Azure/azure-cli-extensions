@@ -113,7 +113,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='A unique name of this resource group artifact.')
         c.argument('display_name', help='Display name of this resource group artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('tags', tags_type, arg_group='Resource Group', help='Tags to be assigned to this resource group.')
 
     with self.argument_context('blueprint resource-group remove') as c:
@@ -142,7 +142,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters for policy assignment artifact. It can be a JSON string or JSON file path.')
 
@@ -161,7 +161,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
 
     with self.argument_context('blueprint artifact template create') as c:
@@ -179,7 +179,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
         c.argument('display_name', help='DisplayName of this artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
-        c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('depends_on', nargs='*', help="Artifacts which need to be deployed before the specified artifact. Use '--depends-on' with no values to remove dependencies.")
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters for ARM template artifact. It can be a JSON string or JSON file path.')
         c.argument('template', arg_type=template_type)
@@ -219,10 +219,7 @@ def load_arguments(self, _):
             from .action import ResourceGroupAssignAddAction
             c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')
             c.argument('location', arg_type=get_location_type(self.cli_ctx))
-            c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), default='SystemAssigned', arg_group='Identity', help='Type of the managed identity.')
-            c.argument('identity_principal_id', options_list=['--principal-id'], arg_group='Identity', help='Azure Active Directory principal ID associated with this Identity.')
-            c.argument('identity_tenant_id', options_list=['--tenant-id'], arg_group='Identity', help='ID of the Azure Active Directory.')
-            c.argument('identity_user_assigned_identities', options_list=['--user-assigned-identities'], arg_group='Identity', nargs='+', help='The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.')
+            c.argument('user_assigned_identity', arg_group='Identity', help='The user-assigned managed identity associated with the resource.')
             c.argument('display_name', help='One-liner string explain this resource.')
             c.argument('description', help='Multi-line explain this resource.')
             c.argument('blueprint_id', options_list=['--blueprint-version'], help='Resource ID of the published version of a blueprint definition.')
@@ -230,6 +227,12 @@ def load_arguments(self, _):
             c.argument('resource_groups', options_list=['--resource-group-value'], action=ResourceGroupAssignAddAction, nargs='+', help="Key=Value pairs for a resource group. Keys include 'artifact_name'(required), 'name', 'location'.")
             c.argument('locks_mode', arg_type=get_enum_type(AssignmentLockMode), help='Lock mode.')
             c.argument('locks_excluded_principals', help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
+
+    with self.argument_context('blueprint assignment create') as c:
+        c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), default='SystemAssigned', arg_group='Identity', help='Type of the managed identity.')
+
+    with self.argument_context('blueprint assignment update') as c:
+        c.argument('identity_type', arg_type=get_enum_type(ManagedServiceIdentityType), arg_group='Identity', help='Type of the managed identity.')
 
     with self.argument_context('blueprint assignment delete') as c:
         c.argument('assignment_name', options_list=['--name', '-n'], help='Name of the blueprint assignment.')

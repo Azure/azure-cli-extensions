@@ -9,11 +9,4 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import HybridComputeManagementClientConfiguration
-from ._hybrid_compute_management_client import HybridComputeManagementClient
-__all__ = ['HybridComputeManagementClient', 'HybridComputeManagementClientConfiguration']
-
-from .version import VERSION
-
-__version__ = VERSION
-
+__path__ = __import__('pkgutil').extend_path(__path__, __name__)

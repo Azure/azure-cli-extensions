@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import AttestationManagementClientConfiguration
 from .operations import OperationOperations
 from .operations import AttestationProviderOperations
@@ -25,15 +27,14 @@ class AttestationManagementClient(object):
     """Various APIs for managing resources in attestation service. This primarily encompasses per-tenant instance management.
 
     :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.attestation.operations.OperationOperations
+    :vartype operation: attestation_management_client.operations.OperationOperations
     :ivar attestation_provider: AttestationProviderOperations operations
-    :vartype attestation_provider: azure.mgmt.attestation.operations.AttestationProviderOperations
+    :vartype attestation_provider: attestation_management_client.operations.AttestationProviderOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(

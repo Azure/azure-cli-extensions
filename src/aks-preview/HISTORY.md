@@ -2,6 +2,48 @@
 
 Release History
 ===============
+0.4.70
+++++++
+* Revert to use CLIError to be compatible with azure cli versions < 2.15.0
+
+0.4.69
++++++
+* Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
+
+0.4.68
++++++
+* Add support for AAD Pod Identity resources configuration in Azure CLI.
+
+0.4.67
++++++
+* Add support for node configuration when creating cluster or agent pool.
+* Support private DNS zone for AKS private cluster.
+
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+* Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
+
+0.4.65
++++++
+* Honor addon names defined in Azure CLI
+* Add LicenseType support for Windows
+* Remove patterns for adminUsername and adminPassword in WindowsProfile
+
+0.4.64
++++++
+* Add support for Open Service Mesh as an AKS addon
+* Add support to get available upgrade versions for an agent pool in AKS
+
+0.4.63
++++++
+* Enable the September (2020-09-01) for use with the AKS commands
+* Support Start/Stop cluster feature in preview
+* Support ephemeral OS functionality
+* Add new properties to the autoscaler profile: max-empty-bulk-delete, skip-nodes-with-local-storage, skip-nodes-with-system-pods, expander, max-total-unready-percentage, ok-total-unready-count and new-pod-scale-up-delay
+* Fix case sensitive issue for AKS dashboard addon
+* Remove PREVIEW from azure policy addon
+
 0.4.62
 +++++
 * Add support for enable/disable confcom (sgx) addon.

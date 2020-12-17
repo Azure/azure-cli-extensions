@@ -45,8 +45,8 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, aad_server_app_id=None, aad_client_app_id=None):
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, aad_server_app_id=None, aad_client_app_id=None, distribution='auto', infrastructure='auto'):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -54,7 +54,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    azure_cloud = send_cloud_telemetry(cmd)
 
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
@@ -103,6 +103,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+
+    proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
@@ -121,6 +130,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     dp_endpoint_dogfood = None
     release_train_dogfood = None
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        azure_cloud = consts.Azure_DogfoodCloudName
         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
@@ -138,9 +148,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
-    # Get kubernetes cluster info for telemetry
+    # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
+    if distribution == 'auto':
+        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_distro = distribution
+    if infrastructure == 'auto':
+        kubernetes_infra = get_kubernetes_infra(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_infra = infrastructure
 
     is_aad_enabled = False
     aad_profile = None
@@ -149,14 +166,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
-        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format("https://go.microsoft.com/fwlink/?linkid=2144200"))
+        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -196,7 +214,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags, aad_profile)
+                cc = generate_request_payload(configuration, location, public_key, tags, aad_profile, kubernetes_distro, kubernetes_infra)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
@@ -230,8 +248,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, location)
+
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, location, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -261,21 +282,28 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags, aad_profile)
+    cc = generate_request_payload(configuration, location, public_key, tags, aad_profile, kubernetes_distro, kubernetes_infra)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Install azure-arc agents
-    helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled, extension_operator_enabled)
+    helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
+                         kube_context, no_wait, values_file_provided, values_file, is_aad_enabled, extension_operator_enabled, azure_cloud)
+
     return put_cc_response
 
 
 def send_cloud_telemetry(cmd):
-    cloud_name = cmd.cli_ctx.cloud.name
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cloud_name})
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AzureCloud': cmd.cli_ctx.cloud.name})
+    cloud_name = cmd.cli_ctx.cloud.name.upper()
+    # Setting cloud name to format that is understood by golang SDK.
+    if cloud_name == consts.PublicCloud_OriginalName:
+        cloud_name = consts.Azure_PublicCloudName
+    elif cloud_name == consts.USGovCloud_OriginalName:
+        cloud_name = consts.Azure_USGovCloudName
+    return cloud_name
 
 
 def get_extension_operator_flag(values_file, values_file_provided):
@@ -433,6 +461,12 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
     return True
 
 
+def get_config_dp_endpoint(cmd, location):
+    cloud_based_domain = cmd.cli_ctx.cloud.endpoints.active_directory.split('.')[2]
+    config_dp_endpoint = "https://{}.dp.kubernetesconfiguration.azure.{}".format(location, cloud_based_domain)
+    return config_dp_endpoint
+
+
 def get_public_key(key_pair):
     pubKey = key_pair.publickey()
     seq = asn1.DerSequence([pubKey.n, pubKey.e])
@@ -456,21 +490,67 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):
+def get_kubernetes_distro(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
         if api_response.items:
             labels = api_response.items[0].metadata.labels
-            if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
+            provider_id = str(api_response.items[0].spec.provider_id)
+            annotations = list(api_response.items)[0].metadata.annotations
+            if labels.get("node.openshift.io/os_id"):
                 return "openshift"
-        return "default"
+            if labels.get("kubernetes.azure.com/node-image-version"):
+                return "aks"
+            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
+                return "gke"
+            if labels.get("eks.amazonaws.com/nodegroup"):
+                return "eks"
+            if labels.get("minikube.k8s.io/version"):
+                return "minikube"
+            if provider_id.startswith("kind://"):
+                return "kind"
+            if provider_id.startswith("k3s://"):
+                return "k3s"
+            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
+                return "rancher_rke"
+            if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
+                return "generic"                   # return "aks_hci"
+        return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution', raise_error=False)
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
+                                           raise_error=False)
+        return "generic"
 
 
-def generate_request_payload(configuration, location, public_key, tags, aad_profile):
+def get_kubernetes_infra(configuration):  # Heuristic
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        if api_response.items:
+            provider_id = str(api_response.items[0].spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "k3s" or infra == "kind":
+                return "generic"
+            if infra == "azure":
+                return "azure"
+            if infra == "gce":
+                return "gcp"
+            if infra == "aws":
+                return "aws"
+            if infra == "moc":                  # Todo: ask from aks hci team for more reliable identifier in node labels,etc
+                return "generic"                # return "azure_stack_hci"
+            return utils.validate_infrastructure_type(infra)
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Error occured while trying to fetch kubernetes infrastructure.")
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
+                                           raise_error=False)
+        return "generic"
+
+
+def generate_request_payload(configuration, location, public_key, tags, aad_profile, kubernetes_distro, kubernetes_infra):
     if aad_profile is None:
         aad_profile = ConnectedClusterAADProfile(
             tenant_id="",
@@ -488,9 +568,24 @@ def generate_request_payload(configuration, location, public_key, tags, aad_prof
         identity=identity,
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
-        tags=tags
+        tags=tags,
+        distribution=kubernetes_distro,
+        infrastructure=kubernetes_infra
     )
     return cc
+
+
+def get_kubeconfig_node_dict(kube_config=None):
+    if kube_config is None:
+        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+    try:
+        kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
+    except Exception as ex:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Error while fetching details from kubeconfig')
+        raise CLIError("Error while fetching details from kubeconfig." + str(ex))
+    return kubeconfig_data
 
 
 def get_server_address(kube_config, kube_context):
@@ -674,6 +769,10 @@ def get_user_aad_details(kube_config, required_user):
                 return "", "", ""
             else:
                 auth_provider_config = user_details.get('auth-provider').get('config')
+                if auth_provider_config is None:
+                    return "", "", ""
+                if (auth_provider_config.get('apiserver-id') is None) or (auth_provider_config.get('client-id') is None) or (auth_provider_config.get('tenant-id') is None):
+                    return "", "", ""
                 telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AutoDetectedAADProfile': True})
                 return auth_provider_config.get('apiserver-id'), auth_provider_config.get('client-id'), auth_provider_config.get('tenant-id')
     telemetry.set_user_fault()
@@ -788,28 +887,37 @@ def get_release_namespace(kube_config, kube_context):
     return None
 
 
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, private_key_pem,
+def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, is_aad_enabled,
-                         extension_operator_enabled):
+                         extension_operator_enabled, cloud_name):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                        "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
                         "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--set", "systemDefaultValues.extensionoperator.enabled={}".format(extension_operator_enabled),
+                        "--set", "global.azureEnvironment={}".format(cloud_name),
                         "--output", "json"]
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
+    if https_proxy:
+        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+    if http_proxy:
+        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+    if no_proxy:
+        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if proxy_cert:
+        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+    if https_proxy or http_proxy or no_proxy:
+        cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -1094,8 +1202,8 @@ def get_release_train():
 # pylint: disable=line-too-long
 
 
-def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
-                  kube_config=None, kube_context=None, no_wait=False):
+def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
+                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1113,6 +1221,21 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
+
+    # check whether proxy cert path exists
+    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+                                summary='Proxy cert path does not exist')
+        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+
+    proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy:
+        raise CLIError(consts.No_Param_Error)
+
+    if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
+        raise CLIError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided = False
@@ -1149,13 +1272,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
-
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
-    }
-    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -1181,12 +1297,32 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = get_kubernetes_infra(configuration)
+
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
 
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, connected_cluster.location, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1203,12 +1339,21 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
                         "--reuse-values",
-                        "--set", "global.httpsProxy={}".format(https_proxy),
-                        "--set", "global.httpProxy={}".format(http_proxy),
-                        "--set", "global.noProxy={}".format(no_proxy),
                         "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
+    if https_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+    if http_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+    if no_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if https_proxy or http_proxy or no_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
+    if disable_proxy:
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
+    if proxy_cert:
+        cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

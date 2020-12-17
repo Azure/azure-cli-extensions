@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.4
+++++++
+* Synced with Azure cli-extensions repo
+ 
 0.3.3
 ++++++
 * Fixed Custom tenant Id passability

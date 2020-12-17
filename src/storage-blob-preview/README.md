@@ -2,4 +2,9 @@ Microsoft Azure CLI 'storage-blob-preview' Extension
 ==========================================
 
 This package is for the 'storage-blob-preview' extension.
-i.e. 'az storage-blob-preview'
+
+### How to use ###
+Install this extension using the below CLI command
+```
+az extension add --name storage-blob-preview
+```

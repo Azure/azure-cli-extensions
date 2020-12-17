@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-from math import ceil, isnan, isclose
+from math import isnan, isclose
 from ipaddress import ip_network
 
 from knack.log import get_logger
@@ -16,7 +16,7 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_03_01.models import ManagedClusterPropertiesAutoScalerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 from ._helpers import (_fuzzy_match)
 
@@ -214,7 +214,7 @@ def validate_spot_max_price(namespace):
     if not isnan(namespace.spot_max_price):
         if namespace.priority != "Spot":
             raise CLIError("--spot_max_price can only be set when --priority is Spot")
-        if namespace.spot_max_price > 0 and not isclose(namespace.spot_max_price * 100000 % 1, 0, rel_tol=1e-06):
+        if len(str(namespace.spot_max_price).split(".")) > 1 and len(str(namespace.spot_max_price).split(".")[1]) > 5:
             raise CLIError("--spot_max_price can only include up to 5 decimal places")
         if namespace.spot_max_price <= 0 and not isclose(namespace.spot_max_price, -1.0, rel_tol=1e-06):
             raise CLIError(
@@ -234,12 +234,19 @@ def validate_user(namespace):
 
 
 def validate_vnet_subnet_id(namespace):
-    if namespace.vnet_subnet_id is not None:
-        if namespace.vnet_subnet_id == '':
-            return
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.vnet_subnet_id):
-            raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+    _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
+
+
+def validate_pod_subnet_id(namespace):
+    _validate_subnet_id(namespace.pod_subnet_id, "--pod-subnet-id")
+
+
+def _validate_subnet_id(subnet_id, name):
+    if subnet_id is None or subnet_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(subnet_id):
+        raise CLIError(name + " is not a valid Azure resource ID.")
 
 
 def validate_load_balancer_outbound_ports(namespace):
@@ -254,8 +261,8 @@ def validate_load_balancer_outbound_ports(namespace):
 def validate_load_balancer_idle_timeout(namespace):
     """validate load balancer profile idle timeout"""
     if namespace.load_balancer_idle_timeout is not None:
-        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 120:
-            raise CLIError("--load-balancer-idle-timeout must be in the range [4,120]")
+        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
+            raise CLIError("--load-balancer-idle-timeout must be in the range [4,100]")
 
 
 def validate_nodepool_tags(ns):
@@ -404,9 +411,60 @@ def validate_addons(namespace):
             matches = str(matches)[1:-1]
             all_addons = list(ADDONS)
             all_addons = str(all_addons)[1:-1]
-            if len(matches) == 0:
+            if not matches:
                 raise CLIError(
                     f"The addon \"{addon_arg}\" is not a recognized addon option. Possible options: {all_addons}")
 
             raise CLIError(
-                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")
+                f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
+
+
+def validate_pod_identity_pod_labels(namespace):
+    if not hasattr(namespace, 'pod_labels'):
+        return
+    labels = namespace.pod_labels
+
+    if labels is None:
+        # no specify any labels
+        namespace.pod_labels = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.pod_labels = after_validation_labels
+
+
+def validate_pod_identity_resource_name(attr_name, required):
+    "Validate custom resource name for pod identity addon."
+
+    def validator(namespace):
+        if not hasattr(namespace, attr_name):
+            return
+
+        attr_value = getattr(namespace, attr_name)
+        if not attr_value:
+            if required:
+                raise CLIError('--name is required')
+            # set empty string for the resource name
+            attr_value = ''
+
+        setattr(namespace, attr_name, attr_value)
+
+    return validator
+
+
+def validate_pod_identity_resource_namespace(namespace):
+    "Validate custom resource name for pod identity addon."
+    if not hasattr(namespace, 'namespace'):
+        return
+
+    namespace_value = namespace.namespace
+    if not namespace_value:
+        # namespace cannot be empty
+        raise CLIError('--namespace is required')

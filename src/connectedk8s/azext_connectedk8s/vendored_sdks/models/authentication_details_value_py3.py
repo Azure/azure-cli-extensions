@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class AuthenticationDetailsValue(Model):
-    """AuthenticationDetailsValue.
+    """Authentication token value.
 
     :param token: Authentication token.
     :type token: str

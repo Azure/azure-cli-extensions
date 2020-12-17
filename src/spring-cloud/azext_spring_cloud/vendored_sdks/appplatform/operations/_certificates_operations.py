@@ -12,6 +12,8 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
+from msrest.polling import LROPoller, NoPolling
+from msrestazure.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -25,7 +27,7 @@ class CertificatesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client Api Version. Constant value: "2019-05-01-preview".
+    :ivar api_version: Client Api Version. Constant value: "2020-07-01".
     """
 
     models = models
@@ -35,7 +37,7 @@ class CertificatesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-05-01-preview"
+        self.api_version = "2020-07-01"
 
         self.config = config
 
@@ -57,8 +59,8 @@ class CertificatesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CertificateResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CertificateResource or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -105,30 +107,9 @@ class CertificatesOperations(object):
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/certificates/{certificateName}'}
 
-    def create_or_update(
-            self, resource_group_name, service_name, certificate_name, properties=None, custom_headers=None, raw=False, **operation_config):
-        """Create or update certificate resource.
 
-        :param resource_group_name: The name of the resource group that
-         contains the resource. You can obtain this value from the Azure
-         Resource Manager API or the portal.
-        :type resource_group_name: str
-        :param service_name: The name of the Service resource.
-        :type service_name: str
-        :param certificate_name: The name of the certificate resource.
-        :type certificate_name: str
-        :param properties: Properties of the certificate resource payload.
-        :type properties: ~azure.mgmt.appplatform.models.CertificateProperties
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: CertificateResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.models.CertificateResource or
-         ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
-        """
+    def _create_or_update_initial(
+            self, resource_group_name, service_name, certificate_name, properties=None, custom_headers=None, raw=False, **operation_config):
         certificate_resource = models.CertificateResource(properties=properties)
 
         # Construct URL
@@ -163,13 +144,18 @@ class CertificatesOperations(object):
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201, 202]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
 
         deserialized = None
+
         if response.status_code == 200:
+            deserialized = self._deserialize('CertificateResource', response)
+        if response.status_code == 201:
+            deserialized = self._deserialize('CertificateResource', response)
+        if response.status_code == 202:
             deserialized = self._deserialize('CertificateResource', response)
 
         if raw:
@@ -177,11 +163,10 @@ class CertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/certificates/{certificateName}'}
 
-    def delete(
-            self, resource_group_name, service_name, certificate_name, custom_headers=None, raw=False, **operation_config):
-        """Delete the certificate resource.
+    def create_or_update(
+            self, resource_group_name, service_name, certificate_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Create or update certificate resource.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -191,15 +176,53 @@ class CertificatesOperations(object):
         :type service_name: str
         :param certificate_name: The name of the certificate resource.
         :type certificate_name: str
+        :param properties: Properties of the certificate resource payload.
+        :type properties:
+         ~azure.mgmt.appplatform.v2020_07_01.models.CertificateProperties
         :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: None or ClientRawResponse if raw=true
-        :rtype: None or ~msrest.pipeline.ClientRawResponse
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns CertificateResource or
+         ClientRawResponse<CertificateResource> if raw==True
+        :rtype:
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
+        raw_result = self._create_or_update_initial(
+            resource_group_name=resource_group_name,
+            service_name=service_name,
+            certificate_name=certificate_name,
+            properties=properties,
+            custom_headers=custom_headers,
+            raw=True,
+            **operation_config
+        )
+
+        def get_long_running_output(response):
+            deserialized = self._deserialize('CertificateResource', response)
+
+            if raw:
+                client_raw_response = ClientRawResponse(deserialized, response)
+                return client_raw_response
+
+            return deserialized
+
+        lro_delay = operation_config.get(
+            'long_running_operation_timeout',
+            self.config.long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/certificates/{certificateName}'}
+
+
+    def _delete_initial(
+            self, resource_group_name, service_name, certificate_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
@@ -227,7 +250,7 @@ class CertificatesOperations(object):
         request = self._client.delete(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
@@ -235,6 +258,51 @@ class CertificatesOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
+
+    def delete(
+            self, resource_group_name, service_name, certificate_name, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Delete the certificate resource.
+
+        :param resource_group_name: The name of the resource group that
+         contains the resource. You can obtain this value from the Azure
+         Resource Manager API or the portal.
+        :type resource_group_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
+        :param certificate_name: The name of the certificate resource.
+        :type certificate_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns None or
+         ClientRawResponse<None> if raw==True
+        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        """
+        raw_result = self._delete_initial(
+            resource_group_name=resource_group_name,
+            service_name=service_name,
+            certificate_name=certificate_name,
+            custom_headers=custom_headers,
+            raw=True,
+            **operation_config
+        )
+
+        def get_long_running_output(response):
+            if raw:
+                client_raw_response = ClientRawResponse(None, response)
+                return client_raw_response
+
+        lro_delay = operation_config.get(
+            'long_running_operation_timeout',
+            self.config.long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/certificates/{certificateName}'}
 
     def list(
@@ -254,7 +322,7 @@ class CertificatesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of CertificateResource
         :rtype:
-         ~azure.mgmt.appplatform.models.CertificateResourcePaged[~azure.mgmt.appplatform.models.CertificateResource]
+         ~azure.mgmt.appplatform.v2020_07_01.models.CertificateResourcePaged[~azure.mgmt.appplatform.v2020_07_01.models.CertificateResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):

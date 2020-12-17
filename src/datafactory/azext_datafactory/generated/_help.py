@@ -19,28 +19,28 @@ helps['datafactory factory'] = """
 
 helps['datafactory factory list'] = """
     type: command
-    short-summary: Lists factories under the specified subscription.
+    short-summary: "Lists factories under the specified subscription."
     examples:
       - name: Factories_ListByResourceGroup
         text: |-
-               az datafactory factory list --resource-group "myResourceGroup"
+               az datafactory factory list --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory show'] = """
     type: command
-    short-summary: Gets a factory.
+    short-summary: "Gets a factory."
     examples:
       - name: Factories_Get
         text: |-
-               az datafactory factory show --name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory factory show --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory create'] = """
     type: command
-    short-summary: Creates or updates a factory.
+    short-summary: "Creates or updates a factory."
     parameters:
       - name: --factory-vsts-configuration
-        short-summary: Factory's VSTS repo information.
+        short-summary: "Factory's VSTS repo information."
         long-summary: |
             Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
 repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
@@ -54,7 +54,7 @@ repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
             root-folder: Required. Root folder.
             last-commit-id: Last commit id.
       - name: --factory-git-hub-configuration
-        short-summary: Factory's GitHub repo information.
+        short-summary: "Factory's GitHub repo information."
         long-summary: |
             Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
 collaboration-branch=XX root-folder=XX last-commit-id=XX
@@ -69,35 +69,35 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
-               az datafactory factory create --location "East US" --name "myFactoryName" --resource-group \
-"myResourceGroup"
+               az datafactory factory create --location "East US" --name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
 """
 
 helps['datafactory factory update'] = """
     type: command
-    short-summary: Updates a factory.
+    short-summary: "Updates a factory."
     examples:
       - name: Factories_Update
         text: |-
-               az datafactory factory update --name "myFactoryName" --tags exampleTag="exampleValue" --resource-group \
-"myResourceGroup"
+               az datafactory factory update --name "exampleFactoryName" --tags exampleTag="exampleValue" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory delete'] = """
     type: command
-    short-summary: Deletes a factory.
+    short-summary: "Deletes a factory."
     examples:
       - name: Factories_Delete
         text: |-
-               az datafactory factory delete --name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory factory delete --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory configure-factory-repo'] = """
     type: command
-    short-summary: Updates a factory's repo information.
+    short-summary: "Updates a factory's repo information."
     parameters:
       - name: --factory-vsts-configuration
-        short-summary: Factory's VSTS repo information.
+        short-summary: "Factory's VSTS repo information."
         long-summary: |
             Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
 repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
@@ -111,7 +111,7 @@ repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
             root-folder: Required. Root folder.
             last-commit-id: Last commit id.
       - name: --factory-git-hub-configuration
-        short-summary: Factory's GitHub repo information.
+        short-summary: "Factory's GitHub repo information."
         long-summary: |
             Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
 collaboration-branch=XX root-folder=XX last-commit-id=XX
@@ -127,30 +127,30 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
       - name: Factories_ConfigureFactoryRepo
         text: |-
                az datafactory factory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1\
-234-12345678abc/resourceGroups/myResourceGroup/providers/Microsoft.DataFactory/factories/myFactoryName" \
+234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
 --factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
 repository-name="repo" root-folder="/" tenant-id="" --location "East US"
 """
 
 helps['datafactory factory get-data-plane-access'] = """
     type: command
-    short-summary: Get Data Plane access.
+    short-summary: "Get Data Plane access."
     examples:
       - name: Factories_GetDataPlaneAccess
         text: |-
-               az datafactory factory get-data-plane-access --name "myFactoryName" --access-resource-path "" \
+               az datafactory factory get-data-plane-access --name "exampleFactoryName" --access-resource-path "" \
 --expire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time \
-"2018-11-10T02:46:20.2659347Z" --resource-group "myResourceGroup"
+"2018-11-10T02:46:20.2659347Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory factory get-git-hub-access-token'] = """
     type: command
-    short-summary: Get GitHub Access Token.
+    short-summary: "Get GitHub Access Token."
     examples:
       - name: Factories_GetGitHubAccessToken
         text: |-
-               az datafactory factory get-git-hub-access-token --name "myFactoryName" --git-hub-access-code "some" \
---git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "myResourceGroup"
+               az datafactory factory get-git-hub-access-token --name "exampleFactoryName" --git-hub-access-code \
+"some" --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime'] = """
@@ -160,22 +160,22 @@ helps['datafactory integration-runtime'] = """
 
 helps['datafactory integration-runtime list'] = """
     type: command
-    short-summary: Lists integration runtimes.
+    short-summary: "Lists integration runtimes."
     examples:
       - name: IntegrationRuntimes_ListByFactory
         text: |-
-               az datafactory integration-runtime list --factory-name "myFactoryName" --resource-group \
-"myResourceGroup"
+               az datafactory integration-runtime list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime show'] = """
     type: command
-    short-summary: Gets an integration runtime.
+    short-summary: "Gets an integration runtime."
     examples:
       - name: IntegrationRuntimes_Get
         text: |-
-               az datafactory integration-runtime show --factory-name "myFactoryName" --name "myIntegrationRuntime" \
---resource-group "myResourceGroup"
+               az datafactory integration-runtime show --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime linked-integration-runtime'] = """
@@ -185,14 +185,15 @@ helps['datafactory integration-runtime linked-integration-runtime'] = """
 
 helps['datafactory integration-runtime linked-integration-runtime create'] = """
     type: command
-    short-summary: Create a linked integration runtime entry in a shared integration runtime.
+    short-summary: "Create a linked integration runtime entry in a shared integration runtime."
     examples:
       - name: IntegrationRuntimes_CreateLinkedIntegrationRuntime
         text: |-
                az datafactory integration-runtime linked-integration-runtime create --name \
 "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" --location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" \
---subscription-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "myFactoryName" --integration-runtime-name \
-"myIntegrationRuntime" --resource-group "myResourceGroup" --subscription-id "12345678-1234-1234-1234-12345678abc"
+--subscription-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" \
+--integration-runtime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup" --subscription-id \
+"12345678-1234-1234-1234-12345678abc"
 """
 
 helps['datafactory integration-runtime managed'] = """
@@ -202,12 +203,7 @@ helps['datafactory integration-runtime managed'] = """
 
 helps['datafactory integration-runtime managed create'] = """
     type: command
-    short-summary: Creates or updates an integration runtime.
-    examples:
-      - name: IntegrationRuntimes_Create
-        text: |-
-               az datafactory integration-runtime managed create --factory-name "myFactoryName" --description "A \
-selfhosted integration runtime" --name "myIntegrationRuntime" --resource-group "myResourceGroup"
+    short-summary: "Creates or updates an integration runtime."
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
@@ -217,138 +213,139 @@ helps['datafactory integration-runtime self-hosted'] = """
 
 helps['datafactory integration-runtime self-hosted create'] = """
     type: command
-    short-summary: Creates or updates an integration runtime.
+    short-summary: "Creates or updates an integration runtime."
     examples:
       - name: IntegrationRuntimes_Create
         text: |-
-               az datafactory integration-runtime self-hosted create --factory-name "myFactoryName" --description "A \
-selfhosted integration runtime" --name "myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime self-hosted create --factory-name "exampleFactoryName" --description \
+"A selfhosted integration runtime" --name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime update'] = """
     type: command
-    short-summary: Updates an integration runtime.
+    short-summary: "Updates an integration runtime."
     examples:
       - name: IntegrationRuntimes_Update
         text: |-
-               az datafactory integration-runtime update --factory-name "myFactoryName" --name "myIntegrationRuntime" \
---resource-group "myResourceGroup" --auto-update "Off" --update-delay-offset "\\"PT3H\\""
+               az datafactory integration-runtime update --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup" --auto-update "Off" --update-delay-offset \
+"\\"PT3H\\""
 """
 
 helps['datafactory integration-runtime delete'] = """
     type: command
-    short-summary: Deletes an integration runtime.
+    short-summary: "Deletes an integration runtime."
     examples:
       - name: IntegrationRuntimes_Delete
         text: |-
-               az datafactory integration-runtime delete --factory-name "myFactoryName" --name "myIntegrationRuntime" \
---resource-group "myResourceGroup"
+               az datafactory integration-runtime delete --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-connection-info'] = """
     type: command
-    short-summary: Gets the on-premises integration runtime connection information for encrypting the on-premises data \
-source credentials.
+    short-summary: "Gets the on-premises integration runtime connection information for encrypting the on-premises \
+data source credentials."
     examples:
       - name: IntegrationRuntimes_GetConnectionInfo
         text: |-
-               az datafactory integration-runtime get-connection-info --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime get-connection-info --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-monitoring-data'] = """
     type: command
-    short-summary: Get the integration runtime monitoring data, which includes the monitor data for all the nodes \
-under this integration runtime.
+    short-summary: "Get the integration runtime monitoring data, which includes the monitor data for all the nodes \
+under this integration runtime."
     examples:
       - name: IntegrationRuntimes_GetMonitoringData
         text: |-
-               az datafactory integration-runtime get-monitoring-data --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime get-monitoring-data --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime get-status'] = """
     type: command
-    short-summary: Gets detailed status information for an integration runtime.
+    short-summary: "Gets detailed status information for an integration runtime."
     examples:
       - name: IntegrationRuntimes_GetStatus
         text: |-
-               az datafactory integration-runtime get-status --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime get-status --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime list-auth-key'] = """
     type: command
-    short-summary: Retrieves the authentication keys for an integration runtime.
+    short-summary: "Retrieves the authentication keys for an integration runtime."
     examples:
       - name: IntegrationRuntimes_ListAuthKeys
         text: |-
-               az datafactory integration-runtime list-auth-key --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime list-auth-key --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime regenerate-auth-key'] = """
     type: command
-    short-summary: Regenerates the authentication key for an integration runtime.
+    short-summary: "Regenerates the authentication key for an integration runtime."
     examples:
       - name: IntegrationRuntimes_RegenerateAuthKey
         text: |-
-               az datafactory integration-runtime regenerate-auth-key --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --key-name "authKey2" --resource-group "myResourceGroup"
+               az datafactory integration-runtime regenerate-auth-key --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --key-name "authKey2" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime remove-link'] = """
     type: command
-    short-summary: Remove all linked integration runtimes under specific data factory in a self-hosted integration \
-runtime.
+    short-summary: "Remove all linked integration runtimes under specific data factory in a self-hosted integration \
+runtime."
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime remove-link --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --linked-factory-name "myFactoryName-linked" --resource-group "myResourceGroup"
+               az datafactory integration-runtime remove-link --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --linked-factory-name "exampleFactoryName-linked" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime start'] = """
     type: command
-    short-summary: Starts a ManagedReserved type integration runtime.
+    short-summary: "Starts a ManagedReserved type integration runtime."
     examples:
       - name: IntegrationRuntimes_Start
         text: |-
-               az datafactory integration-runtime start --factory-name "myFactoryName" --name \
-"myManagedIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime start --factory-name "exampleFactoryName" --name \
+"exampleManagedIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime stop'] = """
     type: command
-    short-summary: Stops a ManagedReserved type integration runtime.
+    short-summary: "Stops a ManagedReserved type integration runtime."
     examples:
       - name: IntegrationRuntimes_Stop
         text: |-
-               az datafactory integration-runtime stop --factory-name "myFactoryName" --name \
-"myManagedIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime stop --factory-name "exampleFactoryName" --name \
+"exampleManagedIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime sync-credentials'] = """
     type: command
-    short-summary: Force the integration runtime to synchronize credentials across integration runtime nodes, and this \
-will override the credentials across all worker nodes with those available on the dispatcher node. If you already have \
-the latest credential backup file, you should manually import it (preferred) on any self-hosted integration runtime \
-node than using this API directly.
+    short-summary: "Force the integration runtime to synchronize credentials across integration runtime nodes, and \
+this will override the credentials across all worker nodes with those available on the dispatcher node. If you already \
+have the latest credential backup file, you should manually import it (preferred) on any self-hosted integration \
+runtime node than using this API directly."
     examples:
       - name: IntegrationRuntimes_SyncCredentials
         text: |-
-               az datafactory integration-runtime sync-credentials --factory-name "myFactoryName" --name \
-"myIntegrationRuntime" --resource-group "myResourceGroup"
+               az datafactory integration-runtime sync-credentials --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime upgrade'] = """
     type: command
-    short-summary: Upgrade self-hosted integration runtime to latest version if availability.
+    short-summary: "Upgrade self-hosted integration runtime to latest version if availability."
     examples:
       - name: IntegrationRuntimes_Upgrade
         text: |-
-               az datafactory integration-runtime upgrade --factory-name "myFactoryName" --name "myIntegrationRuntime" \
---resource-group "myResourceGroup"
+               az datafactory integration-runtime upgrade --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime wait'] = """
@@ -358,8 +355,8 @@ helps['datafactory integration-runtime wait'] = """
       - name: Pause executing next line of CLI script until the datafactory integration-runtime is successfully \
 created.
         text: |-
-               az datafactory integration-runtime wait --factory-name "myFactoryName" --name "myIntegrationRuntime" \
---resource-group "myResourceGroup" --created
+               az datafactory integration-runtime wait --factory-name "exampleFactoryName" --name \
+"exampleIntegrationRuntime" --resource-group "exampleResourceGroup" --created
 """
 
 helps['datafactory integration-runtime-node'] = """
@@ -369,43 +366,43 @@ helps['datafactory integration-runtime-node'] = """
 
 helps['datafactory integration-runtime-node show'] = """
     type: command
-    short-summary: Gets a self-hosted integration runtime node.
+    short-summary: "Gets a self-hosted integration runtime node."
     examples:
       - name: IntegrationRuntimeNodes_Get
         text: |-
-               az datafactory integration-runtime-node show --factory-name "myFactoryName" --integration-runtime-name \
-"myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
+               az datafactory integration-runtime-node show --factory-name "exampleFactoryName" \
+--integration-runtime-name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime-node update'] = """
     type: command
-    short-summary: Updates a self-hosted integration runtime node.
+    short-summary: "Updates a self-hosted integration runtime node."
     examples:
       - name: IntegrationRuntimeNodes_Update
         text: |-
-               az datafactory integration-runtime-node update --factory-name "myFactoryName" \
---integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup" \
+               az datafactory integration-runtime-node update --factory-name "exampleFactoryName" \
+--integration-runtime-name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup" \
 --concurrent-jobs-limit 2
 """
 
 helps['datafactory integration-runtime-node delete'] = """
     type: command
-    short-summary: Deletes a self-hosted integration runtime node.
+    short-summary: "Deletes a self-hosted integration runtime node."
     examples:
       - name: IntegrationRuntimesNodes_Delete
         text: |-
-               az datafactory integration-runtime-node delete --factory-name "myFactoryName" \
---integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
+               az datafactory integration-runtime-node delete --factory-name "exampleFactoryName" \
+--integration-runtime-name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime-node get-ip-address'] = """
     type: command
-    short-summary: Get the IP address of self-hosted integration runtime node.
+    short-summary: "Get the IP address of self-hosted integration runtime node."
     examples:
       - name: IntegrationRuntimeNodes_GetIpAddress
         text: |-
-               az datafactory integration-runtime-node get-ip-address --factory-name "myFactoryName" \
---integration-runtime-name "myIntegrationRuntime" --node-name "Node_1" --resource-group "myResourceGroup"
+               az datafactory integration-runtime-node get-ip-address --factory-name "exampleFactoryName" \
+--integration-runtime-name "exampleIntegrationRuntime" --node-name "Node_1" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service'] = """
@@ -415,43 +412,54 @@ helps['datafactory linked-service'] = """
 
 helps['datafactory linked-service list'] = """
     type: command
-    short-summary: Lists linked services.
+    short-summary: "Lists linked services."
     examples:
       - name: LinkedServices_ListByFactory
         text: |-
-               az datafactory linked-service list --factory-name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory linked-service list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
 """
 
 helps['datafactory linked-service show'] = """
     type: command
-    short-summary: Gets a linked service.
+    short-summary: "Gets a linked service."
     examples:
       - name: LinkedServices_Get
         text: |-
-               az datafactory linked-service show --factory-name "myFactoryName" --name "myLinkedService" \
---resource-group "myResourceGroup"
+               az datafactory linked-service show --factory-name "exampleFactoryName" --name "exampleLinkedService" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service create'] = """
     type: command
-    short-summary: Creates or updates a linked service.
+    short-summary: "Creates or updates a linked service."
     examples:
       - name: LinkedServices_Create
         text: |-
-               az datafactory linked-service create --factory-name "myFactoryName" --properties \
+               az datafactory linked-service create --factory-name "exampleFactoryName" --properties \
 "{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{\\"connectionString\\":{\\"type\\":\\"SecureString\\",\\"value\\"\
 :\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name \
-"myLinkedService" --resource-group "myResourceGroup"
+"exampleLinkedService" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory linked-service update'] = """
+    type: command
+    short-summary: "Creates or updates a linked service."
+    examples:
+      - name: LinkedServices_Update
+        text: |-
+               az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example \
+description" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
     type: command
-    short-summary: Deletes a linked service.
+    short-summary: "Deletes a linked service."
     examples:
       - name: LinkedServices_Delete
         text: |-
-               az datafactory linked-service delete --factory-name "myFactoryName" --name "myLinkedService" \
---resource-group "myResourceGroup"
+               az datafactory linked-service delete --factory-name "exampleFactoryName" --name "exampleLinkedService" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset'] = """
@@ -461,45 +469,64 @@ helps['datafactory dataset'] = """
 
 helps['datafactory dataset list'] = """
     type: command
-    short-summary: Lists datasets.
+    short-summary: "Lists datasets."
     examples:
       - name: Datasets_ListByFactory
         text: |-
-               az datafactory dataset list --factory-name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory dataset list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset show'] = """
     type: command
-    short-summary: Gets a dataset.
+    short-summary: "Gets a dataset."
     examples:
       - name: Datasets_Get
         text: |-
-               az datafactory dataset show --name "myDataset" --factory-name "myFactoryName" --resource-group \
-"myResourceGroup"
+               az datafactory dataset show --name "exampleDataset" --factory-name "exampleFactoryName" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset create'] = """
     type: command
-    short-summary: Creates or updates a dataset.
+    short-summary: "Creates or updates a dataset."
     examples:
       - name: Datasets_Create
         text: |-
                az datafactory dataset create --properties "{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{\\"type\
-\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"myLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\"type\
-\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"TextF\
-ormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\\"typ\
-e\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "myDataset" --factory-name "myFactoryName" \
---resource-group "myResourceGroup"
+\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"},\\"parameters\\":{\\"MyFileName\\":{\\\
+"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}},\\"typeProperties\\":{\\"format\\":{\\"type\\":\\"\
+TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"},\\"folderPath\\":{\
+\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset" --factory-name \
+"exampleFactoryName" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory dataset update'] = """
+    type: command
+    short-summary: "Creates or updates a dataset."
+    parameters:
+      - name: --folder
+        short-summary: "The folder that this Dataset is in. If not specified, Dataset will appear at the root level."
+        long-summary: |
+            Usage: --folder name=XX
+
+            name: The name of the folder that this Dataset is in.
+    examples:
+      - name: Datasets_Update
+        text: |-
+               az datafactory dataset update --description "Example description" --linked-service-name \
+"{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
+"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" \
+--factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
     type: command
-    short-summary: Deletes a dataset.
+    short-summary: "Deletes a dataset."
     examples:
       - name: Datasets_Delete
         text: |-
-               az datafactory dataset delete --name "myDataset" --factory-name "myFactoryName" --resource-group \
-"myResourceGroup"
+               az datafactory dataset delete --name "exampleDataset" --factory-name "exampleFactoryName" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline'] = """
@@ -509,78 +536,81 @@ helps['datafactory pipeline'] = """
 
 helps['datafactory pipeline list'] = """
     type: command
-    short-summary: Lists pipelines.
+    short-summary: "Lists pipelines."
     examples:
       - name: Pipelines_ListByFactory
         text: |-
-               az datafactory pipeline list --factory-name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory pipeline list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
 """
 
 helps['datafactory pipeline show'] = """
     type: command
-    short-summary: Gets a pipeline.
+    short-summary: "Gets a pipeline."
     examples:
       - name: Pipelines_Get
         text: |-
-               az datafactory pipeline show --factory-name "myFactoryName" --name "myPipeline" --resource-group \
-"myResourceGroup"
+               az datafactory pipeline show --factory-name "exampleFactoryName" --name "examplePipeline" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline create'] = """
     type: command
-    short-summary: Creates or updates a pipeline.
+    short-summary: "Creates or updates a pipeline."
     examples:
       - name: Pipelines_Create
         text: |-
-               az datafactory pipeline create --factory-name "myFactoryName" --pipeline "{\\"activities\\":[{\\"name\\"\
-:\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\":[{\\"name\\":\\"ExampleCo\
-pyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\"\
-:\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\"outputs\
-\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"\
-@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\\"typeProperties\\":{\\"d\
-ataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"BlobSource\\"}}}],\\"isSeq\
-uential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}\
-],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}},\\"variabl\
-es\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\"JobId\\":{\\"type\\":\\"Expression\\",\
-\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "myPipeline" --resource-group "myResourceGroup"
+               az datafactory pipeline create --factory-name "exampleFactoryName" --pipeline \
+"{\\"activities\\":[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activiti\
+es\\":[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"\
+parameters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\
+\\":\\"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"typ\
+e\\":\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exam\
+pleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\"\
+:{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipe\
+line().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameLi\
+st\\":{\\"type\\":\\"Array\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":\
+{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline update'] = """
     type: command
-    short-summary: Creates or updates a pipeline.
+    short-summary: "Creates or updates a pipeline."
     examples:
       - name: Pipelines_Update
         text: |-
-               az datafactory pipeline update --factory-name "myFactoryName" --description "Example description" \
+               az datafactory pipeline update --factory-name "exampleFactoryName" --description "Example description" \
 --activities "[{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{\\"activities\\"\
 :[{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{\\"type\\":\\"DatasetReference\\",\\"param\
 eters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\\
-"myDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\\"Exp\
-ression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"myDataset\\"}],\
-\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"\
-BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameter\
-s.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name "myPipeline" \
---resource-group "myResourceGroup"
+"exampleDataset\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"MyFileName\\":{\\"type\\":\
+\\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDa\
+taset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"\
+type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline(\
+).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name \
+"examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """
     type: command
-    short-summary: Deletes a pipeline.
+    short-summary: "Deletes a pipeline."
     examples:
       - name: Pipelines_Delete
         text: |-
-               az datafactory pipeline delete --factory-name "myFactoryName" --name "myPipeline" --resource-group \
-"myResourceGroup"
+               az datafactory pipeline delete --factory-name "exampleFactoryName" --name "examplePipeline" \
+--resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline create-run'] = """
     type: command
-    short-summary: Creates a run of a pipeline.
+    short-summary: "Creates a run of a pipeline."
     examples:
       - name: Pipelines_CreateRun
         text: |-
-               az datafactory pipeline create-run --factory-name "myFactoryName" --parameters \
-"{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}" --name "myPipeline" --resource-group "myResourceGroup"
+               az datafactory pipeline create-run --factory-name "exampleFactoryName" --parameters \
+"{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}" --name "examplePipeline" --resource-group \
+"exampleResourceGroup"
 """
 
 helps['datafactory pipeline-run'] = """
@@ -590,30 +620,30 @@ helps['datafactory pipeline-run'] = """
 
 helps['datafactory pipeline-run show'] = """
     type: command
-    short-summary: Get a pipeline run by its run ID.
+    short-summary: "Get a pipeline run by its run ID."
     examples:
       - name: PipelineRuns_Get
         text: |-
-               az datafactory pipeline-run show --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
+               az datafactory pipeline-run show --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
 """
 
 helps['datafactory pipeline-run cancel'] = """
     type: command
-    short-summary: Cancel a pipeline run by its run ID.
+    short-summary: "Cancel a pipeline run by its run ID."
     examples:
       - name: PipelineRuns_Cancel
         text: |-
-               az datafactory pipeline-run cancel --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"
+               az datafactory pipeline-run cancel --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"
 """
 
 helps['datafactory pipeline-run query-by-factory'] = """
     type: command
-    short-summary: Query pipeline runs in the factory based on input filter conditions.
+    short-summary: "Query pipeline runs in the factory based on input filter conditions."
     parameters:
       - name: --filters
-        short-summary: List of filters.
+        short-summary: "List of filters."
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
@@ -625,7 +655,7 @@ ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTi
 
             Multiple actions can be specified by using more than one --filters argument.
       - name: --order-by
-        short-summary: List of OrderBy option.
+        short-summary: "List of OrderBy option."
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
@@ -638,9 +668,9 @@ ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp
     examples:
       - name: PipelineRuns_QueryByFactory
         text: |-
-               az datafactory pipeline-run query-by-factory --factory-name "myFactoryName" --filters \
-operand="PipelineName" operator="Equals" values="myPipeline" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
---last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "myResourceGroup"
+               az datafactory pipeline-run query-by-factory --factory-name "exampleFactoryName" --filters \
+operand="PipelineName" operator="Equals" values="examplePipeline" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
+--last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory activity-run'] = """
@@ -650,10 +680,10 @@ helps['datafactory activity-run'] = """
 
 helps['datafactory activity-run query-by-pipeline-run'] = """
     type: command
-    short-summary: Query activity runs based on input filter conditions.
+    short-summary: "Query activity runs based on input filter conditions."
     parameters:
       - name: --filters
-        short-summary: List of filters.
+        short-summary: "List of filters."
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
@@ -665,7 +695,7 @@ ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTi
 
             Multiple actions can be specified by using more than one --filters argument.
       - name: --order-by
-        short-summary: List of OrderBy option.
+        short-summary: "List of OrderBy option."
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
@@ -678,9 +708,9 @@ ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp
     examples:
       - name: ActivityRuns_QueryByPipelineRun
         text: |-
-               az datafactory activity-run query-by-pipeline-run --factory-name "myFactoryName" --last-updated-after \
-"2018-06-16T00:36:44.3345758Z" --last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "myResourceGroup" \
---run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
+               az datafactory activity-run query-by-pipeline-run --factory-name "exampleFactoryName" \
+--last-updated-after "2018-06-16T00:36:44.3345758Z" --last-updated-before "2018-06-16T00:49:48.3686473Z" \
+--resource-group "exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"
 """
 
 helps['datafactory trigger'] = """
@@ -690,104 +720,115 @@ helps['datafactory trigger'] = """
 
 helps['datafactory trigger list'] = """
     type: command
-    short-summary: Lists triggers.
+    short-summary: "Lists triggers."
     examples:
       - name: Triggers_ListByFactory
         text: |-
-               az datafactory trigger list --factory-name "myFactoryName" --resource-group "myResourceGroup"
+               az datafactory trigger list --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory trigger show'] = """
     type: command
-    short-summary: Gets a trigger.
+    short-summary: "Gets a trigger."
     examples:
       - name: Triggers_Get
         text: |-
-               az datafactory trigger show --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger"
+               az datafactory trigger show --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
+--name "exampleTrigger"
 """
 
 helps['datafactory trigger create'] = """
     type: command
-    short-summary: Creates or updates a trigger.
+    short-summary: "Creates or updates a trigger."
     examples:
       - name: Triggers_Create
         text: |-
-               az datafactory trigger create --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlobNameList\\":[\\"exampl\
-eoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\":\\"myPipeline\\"}}],\\\
-"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"\
-interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}" --name "myTrigger"
+               az datafactory trigger create --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --properties "{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{\\"parameters\\":{\\"OutputBlo\
+bNameList\\":[\\"exampleoutput.csv\\"]},\\"pipelineReference\\":{\\"type\\":\\"PipelineReference\\",\\"referenceName\\"\
+:\\"examplePipeline\\"}}],\\"typeProperties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\\"f\
+requency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}\
+}" --name "exampleTrigger"
+"""
+
+helps['datafactory trigger update'] = """
+    type: command
+    short-summary: "Creates or updates a trigger."
+    examples:
+      - name: Triggers_Update
+        text: |-
+               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --description "Example description" --name "exampleTrigger"
 """
 
 helps['datafactory trigger delete'] = """
     type: command
-    short-summary: Deletes a trigger.
+    short-summary: "Deletes a trigger."
     examples:
       - name: Triggers_Delete
         text: |-
-               az datafactory trigger delete --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger"
+               az datafactory trigger delete --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger get-event-subscription-status'] = """
     type: command
-    short-summary: Get a trigger's event subscription status.
+    short-summary: "Get a trigger's event subscription status."
     examples:
       - name: Triggers_GetEventSubscriptionStatus
         text: |-
-               az datafactory trigger get-event-subscription-status --factory-name "myFactoryName" --resource-group \
-"myResourceGroup" --name "myTrigger"
+               az datafactory trigger get-event-subscription-status --factory-name "exampleFactoryName" \
+--resource-group "exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger query-by-factory'] = """
     type: command
-    short-summary: Query triggers.
+    short-summary: "Query triggers."
     examples:
       - name: Triggers_QueryByFactory
         text: |-
-               az datafactory trigger query-by-factory --factory-name "myFactoryName" --parent-trigger-name \
-"myTrigger" --resource-group "myResourceGroup"
+               az datafactory trigger query-by-factory --factory-name "exampleFactoryName" --parent-trigger-name \
+"exampleTrigger" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory trigger start'] = """
     type: command
-    short-summary: Starts a trigger.
+    short-summary: "Starts a trigger."
     examples:
       - name: Triggers_Start
         text: |-
-               az datafactory trigger start --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger"
+               az datafactory trigger start --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger stop'] = """
     type: command
-    short-summary: Stops a trigger.
+    short-summary: "Stops a trigger."
     examples:
       - name: Triggers_Stop
         text: |-
-               az datafactory trigger stop --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger"
+               az datafactory trigger stop --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
+--name "exampleTrigger"
 """
 
 helps['datafactory trigger subscribe-to-event'] = """
     type: command
-    short-summary: Subscribe event trigger to events.
+    short-summary: "Subscribe event trigger to events."
     examples:
       - name: Triggers_SubscribeToEvents
         text: |-
-               az datafactory trigger subscribe-to-event --factory-name "myFactoryName" --resource-group \
-"myResourceGroup" --name "myTrigger"
+               az datafactory trigger subscribe-to-event --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger unsubscribe-from-event'] = """
     type: command
-    short-summary: Unsubscribe event trigger from events.
+    short-summary: "Unsubscribe event trigger from events."
     examples:
       - name: Triggers_UnsubscribeFromEvents
         text: |-
-               az datafactory trigger unsubscribe-from-event --factory-name "myFactoryName" --resource-group \
-"myResourceGroup" --name "myTrigger"
+               az datafactory trigger unsubscribe-from-event --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --name "exampleTrigger"
 """
 
 helps['datafactory trigger wait'] = """
@@ -796,8 +837,8 @@ helps['datafactory trigger wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the datafactory trigger is successfully created.
         text: |-
-               az datafactory trigger wait --factory-name "myFactoryName" --resource-group "myResourceGroup" --name \
-"myTrigger" --created
+               az datafactory trigger wait --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
+--name "exampleTrigger" --created
 """
 
 helps['datafactory trigger-run'] = """
@@ -805,12 +846,22 @@ helps['datafactory trigger-run'] = """
     short-summary: datafactory trigger-run
 """
 
+helps['datafactory trigger-run cancel'] = """
+    type: command
+    short-summary: "Cancel a single trigger instance by runId."
+    examples:
+      - name: Triggers_Cancel
+        text: |-
+               az datafactory trigger-run cancel --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "exampleTrigger"
+"""
+
 helps['datafactory trigger-run query-by-factory'] = """
     type: command
-    short-summary: Query trigger runs.
+    short-summary: "Query trigger runs."
     parameters:
       - name: --filters
-        short-summary: List of filters.
+        short-summary: "List of filters."
         long-summary: |
             Usage: --filters operand=XX operator=XX values=XX
 
@@ -822,7 +873,7 @@ ActivityType and Status, and to query trigger runs are TriggerName, TriggerRunTi
 
             Multiple actions can be specified by using more than one --filters argument.
       - name: --order-by
-        short-summary: List of OrderBy option.
+        short-summary: "List of OrderBy option."
         long-summary: |
             Usage: --order-by order-by=XX order=XX
 
@@ -835,17 +886,17 @@ ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp
     examples:
       - name: TriggerRuns_QueryByFactory
         text: |-
-               az datafactory trigger-run query-by-factory --factory-name "myFactoryName" --filters \
-operand="TriggerName" operator="Equals" values="myTrigger" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
---last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "myResourceGroup"
+               az datafactory trigger-run query-by-factory --factory-name "exampleFactoryName" --filters \
+operand="TriggerName" operator="Equals" values="exampleTrigger" --last-updated-after "2018-06-16T00:36:44.3345758Z" \
+--last-updated-before "2018-06-16T00:49:48.3686473Z" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory trigger-run rerun'] = """
     type: command
-    short-summary: Rerun single trigger instance by runId.
+    short-summary: "Rerun single trigger instance by runId."
     examples:
       - name: Triggers_Rerun
         text: |-
-               az datafactory trigger-run rerun --factory-name "myFactoryName" --resource-group "myResourceGroup" \
---run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "myTrigger"
+               az datafactory trigger-run rerun --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "exampleTrigger"
 """

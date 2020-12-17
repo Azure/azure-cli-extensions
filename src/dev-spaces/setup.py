@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "1.0.5"
+VERSION = "1.0.6"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -36,7 +36,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azds-azcli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dev-spaces',
     classifiers=CLASSIFIERS,
     package_data={'azext_dev_spaces': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
