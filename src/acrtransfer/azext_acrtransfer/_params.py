@@ -29,7 +29,7 @@ def load_arguments(self, _):
         c.argument('export_pipeline_name', options_list=['--name', '-n'], help='Name of the export pipeline.')
 
     with self.argument_context('acr pipeline-run') as c:
-        c.argument('pipeline_name', options_list=['--pipeline', '-p'], help='Name of the pipeline.')
+        c.argument('pipeline_name', options_list=['--pipeline', '-p'], help='Name of the pipeline to run.')
         c.argument('pipeline_type', options_list=['--pipeline-type', '-t'], validator=validate_pipeline_type, help='Type of pipeline. Must be either import or export.')
         c.argument('pipeline_run_name', options_list=['--name', '-n'], help='Name of the pipeline run.')
         c.argument('force_update_tag', options_list=['--force-update-tag', '-f'], action='store_true', help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
