@@ -415,12 +415,34 @@ def timeseriesinsights_reference_data_set_update(client,
                                                  key_properties=None,
                                                  data_string_comparison_behavior=None,
                                                  tags=None):
-    reference_data_set_update_parameters = {}
-    reference_data_set_update_parameters['tags'] = tags
-    return client.update(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         reference_data_set_name=reference_data_set_name,
-                         reference_data_set_update_parameters=reference_data_set_update_parameters)
+    instance = timeseriesinsights_reference_data_set_show(client, resource_group_name, environment_name,
+                                                          reference_data_set_name)
+    body = instance.as_dict(keep_readonly=False)
+
+    put_parameters = {}
+    if key_properties is not None:
+        put_parameters['key_properties'] = key_properties
+    if data_string_comparison_behavior is not None:
+        put_parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
+
+    patch_parameters = {}
+    if tags is not None:
+        if put_parameters:
+            put_parameters['tags'] = tags
+        else:
+            patch_parameters['tags'] = tags
+
+    if put_parameters:
+        body.update(put_parameters)
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       reference_data_set_name=reference_data_set_name,
+                                       parameters=body)
+    else:
+        return client.update(resource_group_name=resource_group_name,
+                             environment_name=environment_name,
+                             reference_data_set_name=reference_data_set_name,
+                             reference_data_set_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_reference_data_set_delete(client,
@@ -469,15 +491,40 @@ def timeseriesinsights_access_policy_update(client,
                                             resource_group_name,
                                             environment_name,
                                             access_policy_name,
+                                            principal_object_id=None,
                                             description=None,
                                             roles=None):
-    access_policy_update_parameters = {}
-    access_policy_update_parameters['description'] = description
-    access_policy_update_parameters['roles'] = roles
-    return client.update(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         access_policy_name=access_policy_name,
-                         access_policy_update_parameters=access_policy_update_parameters)
+    instance = timeseriesinsights_access_policy_show(client, resource_group_name, environment_name, access_policy_name)
+    body = instance.as_dict(keep_readonly=False)
+
+    put_parameters = {}
+    if principal_object_id is not None:
+        put_parameters['principal_object_id'] = principal_object_id
+
+    patch_parameters = {}
+    if description is not None:
+        if put_parameters:
+            put_parameters['description'] = description
+        else:
+            patch_parameters['description'] = description
+
+    if roles is not None:
+        if put_parameters:
+            put_parameters['roles'] = roles
+        else:
+            patch_parameters['roles'] = roles
+
+    if put_parameters:
+        body.update(put_parameters)
+        return client.create_or_update(resource_group_name=resource_group_name,
+                                       environment_name=environment_name,
+                                       access_policy_name=access_policy_name,
+                                       parameters=body)
+    else:
+        return client.update(resource_group_name=resource_group_name,
+                             environment_name=environment_name,
+                             access_policy_name=access_policy_name,
+                             access_policy_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_access_policy_delete(client,

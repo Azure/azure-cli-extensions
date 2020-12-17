@@ -150,6 +150,7 @@ class AddWarmStoreConfiguration(argparse.Action):
                 d['data_retention'] = v[0]
         return d
 
+
 class AddKeyProperties(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
