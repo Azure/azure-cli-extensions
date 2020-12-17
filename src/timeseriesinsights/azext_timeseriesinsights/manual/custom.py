@@ -375,3 +375,120 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                              environment_name=environment_name,
                              event_source_name=event_source_name,
                              event_source_update_parameters=patch_parameters)
+
+
+def timeseriesinsights_reference_data_set_list(client,
+                                               resource_group_name,
+                                               environment_name):
+    return client.list_by_environment(resource_group_name=resource_group_name,
+                                      environment_name=environment_name)
+
+
+def timeseriesinsights_reference_data_set_show(client,
+                                               resource_group_name,
+                                               environment_name,
+                                               reference_data_set_name):
+    return client.get(resource_group_name=resource_group_name,
+                      environment_name=environment_name,
+                      reference_data_set_name=reference_data_set_name)
+
+
+def timeseriesinsights_reference_data_set_create(client,
+                                                 resource_group_name,
+                                                 environment_name,
+                                                 reference_data_set_name,
+                                                 location,
+                                                 key_properties,
+                                                 tags=None,
+                                                 data_string_comparison_behavior=None):
+    parameters = {}
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['key_properties'] = key_properties
+    parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   environment_name=environment_name,
+                                   reference_data_set_name=reference_data_set_name,
+                                   parameters=parameters)
+
+
+def timeseriesinsights_reference_data_set_update(client,
+                                                 resource_group_name,
+                                                 environment_name,
+                                                 reference_data_set_name,
+                                                 key_properties=None,
+                                                 data_string_comparison_behavior=None,
+                                                 tags=None):
+    reference_data_set_update_parameters = {}
+    reference_data_set_update_parameters['tags'] = tags
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         reference_data_set_name=reference_data_set_name,
+                         reference_data_set_update_parameters=reference_data_set_update_parameters)
+
+
+def timeseriesinsights_reference_data_set_delete(client,
+                                                 resource_group_name,
+                                                 environment_name,
+                                                 reference_data_set_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         reference_data_set_name=reference_data_set_name)
+
+
+def timeseriesinsights_access_policy_list(client,
+                                          resource_group_name,
+                                          environment_name):
+    return client.list_by_environment(resource_group_name=resource_group_name,
+                                      environment_name=environment_name)
+
+
+def timeseriesinsights_access_policy_show(client,
+                                          resource_group_name,
+                                          environment_name,
+                                          access_policy_name):
+    return client.get(resource_group_name=resource_group_name,
+                      environment_name=environment_name,
+                      access_policy_name=access_policy_name)
+
+
+def timeseriesinsights_access_policy_create(client,
+                                            resource_group_name,
+                                            environment_name,
+                                            access_policy_name,
+                                            principal_object_id=None,
+                                            description=None,
+                                            roles=None):
+    parameters = {}
+    parameters['principal_object_id'] = principal_object_id
+    parameters['description'] = description
+    parameters['roles'] = roles
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   environment_name=environment_name,
+                                   access_policy_name=access_policy_name,
+                                   parameters=parameters)
+
+
+def timeseriesinsights_access_policy_update(client,
+                                            resource_group_name,
+                                            environment_name,
+                                            access_policy_name,
+                                            description=None,
+                                            roles=None):
+    access_policy_update_parameters = {}
+    access_policy_update_parameters['description'] = description
+    access_policy_update_parameters['roles'] = roles
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         access_policy_name=access_policy_name,
+                         access_policy_update_parameters=access_policy_update_parameters)
+
+
+def timeseriesinsights_access_policy_delete(client,
+                                            resource_group_name,
+                                            environment_name,
+                                            access_policy_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         access_policy_name=access_policy_name)
+
