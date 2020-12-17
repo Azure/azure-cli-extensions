@@ -1501,9 +1501,9 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
         if sampling_rate:
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
-        else:
+        elif  trace_properties.app_insights_sampling_rate:
             trace_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=trace_properties.app_insights_sampling_rate)
     if trace_properties is not None:
         sdk_no_wait(no_wait, client.monitoring_settings.update_put,
                     resource_group_name=resource_group, service_name=name, properties=trace_properties)
