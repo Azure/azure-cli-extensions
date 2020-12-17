@@ -16,6 +16,7 @@ def export_pipeline_output_format(result):
 
 
 def pipeline_run_output_format(result):
+
     return _output_format(result, _pipeline_run_format_group)
 
 
@@ -40,13 +41,24 @@ def _export_pipeline_format_group(item):
 
 def _pipeline_run_format_group(item):
     print(item)
-    return OrderedDict([
-        ('NAME', _get_value(item, 'name')),
-        ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
-        ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
-        ('STATUS', _get_value(item, 'response', 'status')),
-        ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))
-    ])
+    if "importPipelines" in _get_value(item, 'request', 'pipelineResourceId'):
+        return OrderedDict([
+            ('NAME', _get_value(item, 'name')),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
+            ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
+            ('SOURCE_TRIGGER', str('_' in _get_value(item, 'name'))),
+            ('STATUS', _get_value(item, 'response', 'status')),
+            ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))
+        ])
+
+    else:
+        return OrderedDict([
+            ('NAME', _get_value(item, 'name')),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
+            ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
+            ('STATUS', _get_value(item, 'response', 'status')),
+            ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))
+        ])
 
 
 def _output_format(result, format_group):
