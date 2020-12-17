@@ -58,7 +58,7 @@ def validate_import_options(namespace):
 
     if not valid:
         logger.warn("Allowed options are: " + str(allowed_options_list))
-        logger.warn("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
+        logger.warn("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
 def validate_export_options(namespace):
@@ -75,7 +75,7 @@ def validate_export_options(namespace):
 
     if not valid:
         logger.warn("Allowed options are: " + str(allowed_options_list))
-        logger.warn("Invalid option found in options parameter. Please provide a comma separated list of allowed options.")
+        logger.warn("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
 def validate_pipeline_type(namespace):
