@@ -366,13 +366,15 @@ class AzureFirewallScenario(ScenarioTest):
             'collection_group_priority': 10000
         })
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
-                 '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com',
+                 '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com '
+                 '--sku Premium',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.microsoft.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '101.0.0.0'),
-                     self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1')
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1'),
+                     self.check('sku.tier', 'Premium')
                  ])
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
