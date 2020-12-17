@@ -22,8 +22,7 @@ from azext_timeseriesinsights.action import (
     AddPartitionKeyProperties,
     AddTimeSeriesIdProperties,
     AddStorageConfiguration,
-    AddWarmStoreConfiguration,
-    AddKeyProperties
+    AddWarmStoreConfiguration
 )
 
 def load_arguments(self, _):

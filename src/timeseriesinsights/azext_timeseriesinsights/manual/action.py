@@ -146,27 +146,3 @@ class AddWarmStoreConfiguration(argparse.Action):
             if kl == 'data-retention':
                 d['data_retention'] = v[0]
         return d
-
-
-class AddKeyProperties(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddKeyProperties, self).__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'name':
-                d['name'] = v[0]
-            elif kl == 'type':
-                d['type'] = v[0]
-        return d
