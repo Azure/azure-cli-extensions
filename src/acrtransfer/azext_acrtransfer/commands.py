@@ -8,6 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_acrtransfer._client_factory import cf_acrtransfer
 from ._format import import_pipeline_output_format, export_pipeline_output_format, pipeline_run_output_format
 
+
 def load_command_table(self, _):
     importpipeline_sdk = CliCommandType(
         operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ImportPipelinesOperations.{}',
@@ -39,7 +40,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_exportpipeline')
         g.custom_command('show', 'get_exportpipeline')
 
-    with self.command_group('acr pipeline-run', pipelinerun_sdk, table_transformer= pipeline_run_output_format, is_preview=True) as g:
+    with self.command_group('acr pipeline-run', pipelinerun_sdk, table_transformer=pipeline_run_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_pipelinerun')
         g.custom_command('delete', 'delete_pipelinerun')
         g.custom_command('list', 'list_pipelinerun')

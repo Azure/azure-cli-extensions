@@ -6,6 +6,7 @@
 
 from collections import OrderedDict
 
+
 def import_pipeline_output_format(result):
     return _output_format(result, _import_pipeline_format_group)
 
@@ -21,7 +22,7 @@ def pipeline_run_output_format(result):
 def _import_pipeline_format_group(item):
     print(item)
     return OrderedDict([
-        ('NAME',  _get_value(item, 'name')), 
+        ('NAME', _get_value(item, 'name')),
         ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
         ('STORAGE_ACCOUNT', _get_value(item, 'source', 'uri')),
         ('SOURCE_TRIGGER', _get_value(item, 'trigger', 'sourceTrigger', 'status'))
@@ -31,7 +32,7 @@ def _import_pipeline_format_group(item):
 def _export_pipeline_format_group(item):
     print(item)
     return OrderedDict([
-        ('NAME',  _get_value(item, 'name')), 
+        ('NAME', _get_value(item, 'name')),
         ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
         ('STORAGE_ACCOUNT', _get_value(item, 'target', 'uri'))
     ])
@@ -40,11 +41,11 @@ def _export_pipeline_format_group(item):
 def _pipeline_run_format_group(item):
     print(item)
     return OrderedDict([
-        ('NAME',  _get_value(item, 'name')), 
+        ('NAME', _get_value(item, 'name')),
         ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
         ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
         ('STATUS', _get_value(item, 'response', 'status')),
-        ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))   
+        ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))
     ])
 
 

@@ -31,24 +31,24 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
                                          export_pipeline_create_parameters=export_pipeline)
 
     return client.export_pipelines.get(resource_group_name=resource_group_name,
-                                             registry_name=registry_name,
-                                             export_pipeline_name=export_pipeline_name)
+                                       registry_name=registry_name,
+                                       export_pipeline_name=export_pipeline_name)
 
 
 def get_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Get an export pipeline.'''
 
     return client.export_pipelines.get(resource_group_name=resource_group_name,
-                                             registry_name=registry_name,
-                                             export_pipeline_name=export_pipeline_name)
+                                       registry_name=registry_name,
+                                       export_pipeline_name=export_pipeline_name)
 
 
 def delete_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Delete an export pipeline.'''
 
     return client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
-                                         registry_name=registry_name,
-                                         export_pipeline_name=export_pipeline_name)
+                                                registry_name=registry_name,
+                                                export_pipeline_name=export_pipeline_name)
 
 
 def list_exportpipeline(client, resource_group_name, registry_name):
