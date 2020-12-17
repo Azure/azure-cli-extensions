@@ -24,7 +24,11 @@ class ConnectedClusterOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
+<<<<<<< HEAD
     :ivar api_version: The API version to use for this operation. Constant value: "2020-01-01-preview".
+=======
+    :ivar api_version: The API version to use for the request. Constant value: "2020-01-01-preview".
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
     """
 
     models = models
@@ -104,7 +108,7 @@ class ConnectedClusterOperations(object):
         :param connected_cluster: Parameters supplied to Create a Connected
          Cluster.
         :type connected_cluster:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedCluster
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -113,11 +117,11 @@ class ConnectedClusterOperations(object):
         :return: An instance of LROPoller that returns ConnectedCluster or
          ClientRawResponse<ConnectedCluster> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster]]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         raw_result = self._create_initial(
             resource_group_name=resource_group_name,
@@ -170,10 +174,11 @@ class ConnectedClusterOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ConnectedCluster or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.ConnectedCluster or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         connected_cluster_patch = models.ConnectedClusterPatch(tags=tags, agent_public_key_certificate=agent_public_key_certificate)
 
@@ -242,10 +247,11 @@ class ConnectedClusterOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ConnectedCluster or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.ConnectedCluster or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -348,7 +354,7 @@ class ConnectedClusterOperations(object):
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
@@ -373,7 +379,11 @@ class ConnectedClusterOperations(object):
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def list_cluster_user_credentials(
+<<<<<<< HEAD
             self, resource_group_name, cluster_name, value, custom_headers=None, raw=False, **operation_config):
+=======
+            self, resource_group_name, cluster_name, value, client_proxy=None, custom_headers=None, raw=False, **operation_config):
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
         """Gets cluster user credentials of a connected cluster.
 
         Gets cluster user credentials of the connected cluster with a specified
@@ -385,19 +395,29 @@ class ConnectedClusterOperations(object):
         :param cluster_name: The name of the Kubernetes cluster on which get
          is called.
         :type cluster_name: str
+<<<<<<< HEAD
         :param value:
         :type value:
          ~azure.mgmt.hybridkubernetes.models.AuthenticationDetailsValue
+=======
+        :param value: Authentication token value.
+        :type value:
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.AuthenticationDetailsValue
+        :param client_proxy: Parameter to indicate whether the request is for
+         client side proxy or not
+        :type client_proxy: bool
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CredentialResults or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.CredentialResults or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype:
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.CredentialResults
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         client_authentication_details = None
         if value is not None:
@@ -414,7 +434,13 @@ class ConnectedClusterOperations(object):
 
         # Construct parameters
         query_parameters = {}
+<<<<<<< HEAD
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+=======
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        if client_proxy is not None:
+            query_parameters['ClientProxy'] = self._serialize.query("client_proxy", client_proxy, 'bool')
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
 
         # Construct headers
         header_parameters = {}
@@ -469,9 +495,9 @@ class ConnectedClusterOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ConnectedCluster
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 
@@ -536,9 +562,9 @@ class ConnectedClusterOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ConnectedCluster
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.3.3'
+VERSION = '0.3.4'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -51,8 +51,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='k8connect@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/connectedk8s',
     long_description=README + '\n\n' + HISTORY,
     long_description_content_type="text/markdown",
     license='MIT',

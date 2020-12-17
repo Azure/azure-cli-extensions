@@ -1,3 +1,18 @@
+0.1.13
+++++++++++++++++++
+
+* `az monitor app-insights component connect-function`: Enable application insights on Azure function.
+
+0.1.12
+++++++++++++++++++
+
+* `az monitor app-insights component connect-webapp`: Enable application insights on web app.
+
+0.1.11
+++++++++++++++++++
+
+* `az monitor app-insights component update`: Update consent message.
+
 0.1.10
 ++++++++++++++++++
 

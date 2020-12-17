@@ -75,8 +75,8 @@ class ClusterPrincipalAssignmentOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _principal_assignment_name = models.ClusterPrincipalAssignmentCheckNameRequest(name=name, type=type)
-        api_version = "2020-06-14"
+        principal_assignment_name = models.ClusterPrincipalAssignmentCheckNameRequest(name=name, type=type)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -97,9 +97,8 @@ class ClusterPrincipalAssignmentOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_principal_assignment_name, 'ClusterPrincipalAssignmentCheckNameRequest')
+        body_content = self._serialize.body(principal_assignment_name, 'ClusterPrincipalAssignmentCheckNameRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -142,7 +141,7 @@ class ClusterPrincipalAssignmentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignment"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -162,7 +161,6 @@ class ClusterPrincipalAssignmentOperations(object):
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -195,8 +193,8 @@ class ClusterPrincipalAssignmentOperations(object):
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.ClusterPrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
-        api_version = "2020-06-14"
+        parameters = models.ClusterPrincipalAssignment(principal_id=principal_id, role=role, tenant_id=tenant_id, principal_type=principal_type)
+        api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -218,9 +216,8 @@ class ClusterPrincipalAssignmentOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'ClusterPrincipalAssignment')
+        body_content = self._serialize.body(parameters, 'ClusterPrincipalAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
 
@@ -231,7 +228,6 @@ class ClusterPrincipalAssignmentOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('ClusterPrincipalAssignment', pipeline_response)
 
@@ -255,7 +251,7 @@ class ClusterPrincipalAssignmentOperations(object):
         principal_type=None,  # type: Optional[Union[str, "models.PrincipalType"]]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.ClusterPrincipalAssignment"]
         """Create a Kusto cluster principalAssignment.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -265,7 +261,7 @@ class ClusterPrincipalAssignmentOperations(object):
         :param principal_assignment_name: The name of the Kusto principalAssignment.
         :type principal_assignment_name: str
         :param principal_id: The principal ID assigned to the cluster principal. It can be a user
-     email, application ID, or security group name.
+         email, application ID, or security group name.
         :type principal_id: str
         :param role: Cluster principal role.
         :type role: str or ~kusto_management_client.models.ClusterPrincipalRole
@@ -274,6 +270,7 @@ class ClusterPrincipalAssignmentOperations(object):
         :param principal_type: Principal type.
         :type principal_type: str or ~kusto_management_client.models.PrincipalType
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -288,17 +285,19 @@ class ClusterPrincipalAssignmentOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._create_or_update_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            principal_assignment_name=principal_assignment_name,
-            principal_id=principal_id,
-            role=role,
-            tenant_id=tenant_id,
-            principal_type=principal_type,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                principal_assignment_name=principal_assignment_name,
+                principal_id=principal_id,
+                role=role,
+                tenant_id=tenant_id,
+                principal_type=principal_type,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -313,7 +312,15 @@ class ClusterPrincipalAssignmentOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     def _delete_initial(
@@ -327,7 +334,7 @@ class ClusterPrincipalAssignmentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -346,7 +353,6 @@ class ClusterPrincipalAssignmentOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -367,7 +373,7 @@ class ClusterPrincipalAssignmentOperations(object):
         principal_assignment_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Deletes a Kusto cluster principalAssignment.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
@@ -377,6 +383,7 @@ class ClusterPrincipalAssignmentOperations(object):
         :param principal_assignment_name: The name of the Kusto principalAssignment.
         :type principal_assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -391,13 +398,15 @@ class ClusterPrincipalAssignmentOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            principal_assignment_name=principal_assignment_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                principal_assignment_name=principal_assignment_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -409,7 +418,15 @@ class ClusterPrincipalAssignmentOperations(object):
         if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/principalAssignments/{principalAssignmentName}'}  # type: ignore
 
     def list(
@@ -433,9 +450,13 @@ class ClusterPrincipalAssignmentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterPrincipalAssignmentListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-06-14"
+        api_version = "2020-09-18"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = 'application/json'
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -449,15 +470,11 @@ class ClusterPrincipalAssignmentOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):

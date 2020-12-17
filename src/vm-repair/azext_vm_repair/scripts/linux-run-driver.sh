@@ -19,9 +19,7 @@ if [ $(ls | wc -l) -eq 3 ]; then
 		# Normal GitHub script scenario
 		if [ "$1" != "no-op" ]; then
 			chmod u+x $1 &&
-			# Work around for passing space characters through run-command
-			params=$(echo "$2" | sed "s/%20/ /") &&
-			command_string="$1 $params" &&
+			command_string="$*" &&
 			bash -e  $command_string >> $logFile
 		else # Custom script scenario
 			# Call the same script but it will only run the appended custom scripts

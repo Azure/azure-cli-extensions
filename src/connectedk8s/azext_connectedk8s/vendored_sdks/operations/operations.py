@@ -22,7 +22,11 @@ class Operations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
+<<<<<<< HEAD
     :ivar api_version: The API version to use for this operation. Constant value: "2020-01-01-preview".
+=======
+    :ivar api_version: The API version to use for the request. Constant value: "2020-01-01-preview".
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
     """
 
     models = models
@@ -48,9 +52,9 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Operation
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.OperationPaged[~azure.mgmt.hybridkubernetes.models.Operation]
+         ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.OperationPaged[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.Operation]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 
@@ -60,7 +64,11 @@ class Operations(object):
 
                 # Construct parameters
                 query_parameters = {}
+<<<<<<< HEAD
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+=======
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+>>>>>>> 6a80a1dabb11e8b3604c1b04cd547c02faac5dc4
 
             else:
                 url = next_link

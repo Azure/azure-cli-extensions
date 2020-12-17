@@ -11,7 +11,7 @@ import warnings
 from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -48,8 +48,8 @@ class IntegrationRuntimeObjectMetadataOperations:
         factory_name: str,
         integration_runtime_name: str,
         **kwargs
-    ) -> "models.SsisObjectMetadataStatusResponse":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
+    ) -> Optional["models.SsisObjectMetadataStatusResponse"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.SsisObjectMetadataStatusResponse"]]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
@@ -72,7 +72,6 @@ class IntegrationRuntimeObjectMetadataOperations:
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -91,13 +90,13 @@ class IntegrationRuntimeObjectMetadataOperations:
         return deserialized
     _refresh_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
 
-    async def refresh(
+    async def begin_refresh(
         self,
         resource_group_name: str,
         factory_name: str,
         integration_runtime_name: str,
         **kwargs
-    ) -> "models.SsisObjectMetadataStatusResponse":
+    ) -> AsyncLROPoller["models.SsisObjectMetadataStatusResponse"]:
         """Refresh a SSIS integration runtime object metadata.
 
         :param resource_group_name: The resource group name.
@@ -107,12 +106,13 @@ class IntegrationRuntimeObjectMetadataOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: SsisObjectMetadataStatusResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SsisObjectMetadataStatusResponse
+        :return: An instance of AsyncLROPoller that returns either SsisObjectMetadataStatusResponse or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.SsisObjectMetadataStatusResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -121,13 +121,15 @@ class IntegrationRuntimeObjectMetadataOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._refresh_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            integration_runtime_name=integration_runtime_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._refresh_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                integration_runtime_name=integration_runtime_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -142,8 +144,16 @@ class IntegrationRuntimeObjectMetadataOperations:
         if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    refresh.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_refresh.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
 
     async def get(
         self,
@@ -153,7 +163,8 @@ class IntegrationRuntimeObjectMetadataOperations:
         metadata_path: Optional[str] = None,
         **kwargs
     ) -> "models.SsisObjectMetadataListResponse":
-        """Get a SSIS integration runtime object metadata by specified path. The return is pageable metadata list.
+        """Get a SSIS integration runtime object metadata by specified path. The return is pageable
+        metadata list.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -172,7 +183,7 @@ class IntegrationRuntimeObjectMetadataOperations:
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        _get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
+        get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -195,10 +206,9 @@ class IntegrationRuntimeObjectMetadataOperations:
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _get_metadata_request is not None:
-            body_content = self._serialize.body(_get_metadata_request, 'GetSsisObjectMetadataRequest')
+        if get_metadata_request is not None:
+            body_content = self._serialize.body(get_metadata_request, 'GetSsisObjectMetadataRequest')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content

@@ -59,7 +59,7 @@ def validate_create(cmd, namespace):
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
-    encryption_type, _, _ = _fetch_encryption_settings(source_vm)
+    encryption_type, _, _, _ = _fetch_encryption_settings(source_vm)
     # Currently only supporting single pass
     if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
         if not namespace.unlock_encrypted_vm:

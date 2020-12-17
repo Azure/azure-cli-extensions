@@ -25,6 +25,14 @@ class ProvisioningState(str, Enum):
     move_failed = "MoveFailed"
 
 
+class ManagedIdentityType(str, Enum):
+
+    none = "None"
+    system_assigned = "SystemAssigned"
+    user_assigned = "UserAssigned"
+    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
+
+
 class ConfigServerState(str, Enum):
 
     not_available = "NotAvailable"
@@ -34,20 +42,12 @@ class ConfigServerState(str, Enum):
     updating = "Updating"
 
 
-class TraceProxyState(str, Enum):
+class MonitoringSettingState(str, Enum):
 
     not_available = "NotAvailable"
     failed = "Failed"
     succeeded = "Succeeded"
     updating = "Updating"
-
-
-class ManagedIdentityType(str, Enum):
-
-    none = "None"
-    system_assigned = "SystemAssigned"
-    user_assigned = "UserAssigned"
-    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
 
 
 class TestKeyType(str, Enum):
@@ -67,6 +67,7 @@ class AppResourceProvisioningState(str, Enum):
 class UserSourceType(str, Enum):
 
     jar = "Jar"
+    net_core_zip = "NetCoreZip"
     source = "Source"
 
 
@@ -74,6 +75,7 @@ class RuntimeVersion(str, Enum):
 
     java_8 = "Java_8"
     java_11 = "Java_11"
+    net_core_31 = "NetCore_31"
 
 
 class DeploymentResourceProvisioningState(str, Enum):
@@ -112,3 +114,16 @@ class ResourceSkuRestrictionsReasonCode(str, Enum):
 
     quota_id = "QuotaId"
     not_available_for_subscription = "NotAvailableForSubscription"
+
+
+class SupportedRuntimeValue(str, Enum):
+
+    java_8 = "Java_8"
+    java_11 = "Java_11"
+    net_core_31 = "NetCore_31"
+
+
+class SupportedRuntimePlatform(str, Enum):
+
+    java = "Java"
+    net_core = ".NET Core"

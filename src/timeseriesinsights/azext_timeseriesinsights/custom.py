@@ -28,7 +28,7 @@ def create_timeseriesinsights_environment_standard(cmd, client,
         data_retention_time=data_retention_time,
         storage_limit_exceeded_behavior=storage_limit_exceeded_behavior,
         # Need to confirm whether multiple key properties are supported
-        partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties]
+        partition_key_properties=[TimeSeriesIdProperty(name=id_property, type="String") for id_property in partition_key_properties] if partition_key_properties else None
     )
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, environment_name=environment_name, parameters=parameters)
 

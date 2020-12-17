@@ -118,35 +118,24 @@ class Namespace:
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
 
 
-class TestVNetSubnetId(unittest.TestCase):
-    def test_invalid_vnet_subnet_id(self):
+class TestSubnetId(unittest.TestCase):
+    def test_invalid_subnet_id(self):
         invalid_vnet_subnet_id = "dummy subnet id"
-        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
         err = ("--vnet-subnet-id is not a valid Azure resource ID.")
 
         with self.assertRaises(CLIError) as cm:
-            validators.validate_vnet_subnet_id(namespace)
+            validators._validate_subnet_id(invalid_vnet_subnet_id, "--vnet-subnet-id")
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_vnet_subnet_id(self):
-        invalid_vnet_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"
-        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
-        validators.validate_vnet_subnet_id(namespace)
+        valid_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"
+        validators._validate_subnet_id(valid_subnet_id, "something")
 
     def test_none_vnet_subnet_id(self):
-        invalid_vnet_subnet_id = None
-        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
-        validators.validate_vnet_subnet_id(namespace)
+        validators._validate_subnet_id(None, "something")
 
     def test_empty_vnet_subnet_id(self):
-        invalid_vnet_subnet_id = ""
-        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
-        validators.validate_vnet_subnet_id(namespace)
-
-
-class VnetSubnetIdNamespace:
-    def __init__(self, vnet_subnet_id):
-        self.vnet_subnet_id = vnet_subnet_id
+        validators._validate_subnet_id("", "something")
 
 
 class MaxSurgeNamespace:
@@ -179,7 +168,7 @@ class TestMaxSurge(unittest.TestCase):
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
-        valid = [5, 5.12345, -1.0]
+        valid = [5, 5.12345, -1.0, 0.068, 0.071, 5.00000000]
         for v in valid:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(v))
 
@@ -191,6 +180,9 @@ class TestSpotMaxPrice(unittest.TestCase):
     def test_throws_if_non_valid_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(-2))
+        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_spot_max_price(SpotMaxPriceNamespace(0))
         self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_if_input_max_price_for_regular(self):
@@ -263,6 +255,48 @@ class TestAssignIdentity(unittest.TestCase):
         empty_identity_id = ""
         namespace = AssignIdentityNamespace(empty_identity_id)
         validators.validate_assign_identity(namespace)
+
+
+class PodIdentityNamespace:
+
+    def __init__(self, identity_name):
+        self.identity_name = identity_name
+
+
+class TestValidatePodIdentityResourceName(unittest.TestCase):
+
+    def test_valid_required_resource_name(self):
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
+        namespace = PodIdentityNamespace('test-name')
+        validator(namespace)
+
+    def test_missing_required_resource_name(self):
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
+        namespace = PodIdentityNamespace(None)
+
+        with self.assertRaises(CLIError) as cm:
+            validator(namespace)
+        self.assertEqual(str(cm.exception), '--name is required')
+
+
+class PodIdentityResourceNamespace:
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+
+
+class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
+
+    def test_valid_required_resource_name(self):
+        namespace = PodIdentityResourceNamespace('test-name')
+        validators.validate_pod_identity_resource_namespace(namespace)
+
+    def test_missing_required_resource_name(self):
+        namespace = PodIdentityResourceNamespace(None)
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_pod_identity_resource_namespace(namespace)
+        self.assertEqual(str(cm.exception), '--namespace is required')
 
 
 if __name__ == "__main__":

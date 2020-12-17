@@ -39,10 +39,11 @@ class SigningCertificatesOperations(object):
 
     def get(
             self, tenant_base_url, custom_headers=None, raw=False, **operation_config):
-        """Retrieves the OpenID Configuration data for the Azure Attestation
-        Service.
+        """Retrieves the attestation signing keys in use by the attestation
+        service.
 
-        Retrieves attestation signing keys in use by the attestation service.
+        Retrieves metadata signing certificates in use by the attestation
+        service.
 
         :param tenant_base_url: The tenant name, for example
          https://mytenant.attest.azure.net.

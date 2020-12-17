@@ -9,8 +9,11 @@ import datetime
 import isodate
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from msrestazure.azure_exceptions import CloudError
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
 
 logger = get_logger(__name__)
@@ -98,7 +101,7 @@ def _apm_migration_consent(cmd, new_workspace_resource_id, existing_workspace_re
 
         if need_consent:
             from azure.cli.core.util import user_confirmation
-            user_confirmation('Specified workspace is configured with workspace-based access mode and some APM features may be impacted.  Please refer to https://aka.ms/apm-workspace-access-mode for details. Do you want to continue?')
+            user_confirmation('Specified workspace is configured with workspace-based access mode and some APM features may be impacted. Consider selecting another workspace or allow resource-based access in the workspace settings. Please refer to https://aka.ms/apm-workspace-access-mode for details. Do you want to continue?')
 
 
 def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
@@ -141,6 +144,36 @@ def update_component_tags(client, application, resource_group_name, tags):
     return client.update_tags(resource_group_name, application, tags)
 
 
+def connect_webapp(cmd, client, resource_group_name, application, app_service, enable_profiler=None, enable_snapshot_debugger=None):
+    from azure.cli.command_modules.appservice.custom import update_app_settings
+
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    if enable_profiler is True:
+        settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
+    elif enable_profiler is False:
+        settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=disabled")
+
+    if enable_snapshot_debugger is True:
+        settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=1.0.0")
+    elif enable_snapshot_debugger is False:
+        settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=disabled")
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
+
+
+def connect_function(cmd, client, resource_group_name, application, app_service):
+    from azure.cli.command_modules.appservice.custom import update_app_settings
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
+
+
 def get_component(client, application, resource_group_name):
     return client.get(resource_group_name, application)
 
@@ -171,8 +204,7 @@ def create_api_key(cmd, client, application, resource_group_name, api_key, read_
     if read_properties is None:
         read_properties = ['ReadTelemetry', 'AuthenticateSDKControlChannel']
     if write_properties is None:
-        write_properties = ['WriteAnnotations']
-        logger.warning('Set write permission to "WriteAnnotations". This default permission will be removed in the future.')
+        write_properties = []
     linked_read_properties, linked_write_properties = get_linked_properties(cmd.cli_ctx, application, resource_group_name, read_properties, write_properties)
     api_key_request = APIKeyRequest(name=api_key,
                                     linked_read_properties=linked_read_properties,
@@ -228,3 +260,95 @@ def update_component_linked_storage_account(client, resource_group_name, applica
 
 def delete_component_linked_storage_account(client, resource_group_name, application):
     return client.delete(resource_group_name=resource_group_name, resource_name=application)
+
+
+def list_export_configurations(client, application, resource_group_name):
+    return client.list(resource_group_name, application)
+
+
+def create_export_configuration(cmd, client, application, resource_group_name, record_types, dest_account,
+                                dest_container, dest_sas, dest_sub_id, dest_type='Blob', is_enabled='true'):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+    sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+                                    subscription_id=dest_sub_id).storage_accounts
+    storage_accounts = list(sc_op.list())
+    storage_account = None
+    for x in storage_accounts:
+        if x.name.lower() == dest_account.lower():
+            storage_account = x
+            break
+
+    if not storage_account:
+        raise CLIError("Destination storage account {} does not exist, "
+                       "use 'az storage account list' to get storage account list".format(dest_account))
+
+    dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
+    dest_address += dest_container + '?' + dest_sas
+
+    export_config_request = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        destination_type=dest_type,
+        destination_address=dest_address,
+        destination_storage_subscription_id=dest_sub_id,
+        destination_storage_location_id=storage_account.primary_location,
+        destination_account_id=storage_account.id,
+        is_enabled=is_enabled,
+    )
+    return client.create(resource_group_name, application, export_config_request)
+
+
+def update_export_configuration(cmd, client, application, resource_group_name, export_id, record_types=None,
+                                dest_account=None, dest_container=None, dest_sas=None, dest_sub_id=None, dest_type=None,
+                                is_enabled=None):
+    from .vendored_sdks.mgmt_applicationinsights.models import ApplicationInsightsComponentExportRequest
+
+    export_config_request = ApplicationInsightsComponentExportRequest(
+        record_types=', '.join(record_types) if record_types else None,
+        is_enabled=is_enabled,
+    )
+
+    if dest_sub_id is not None or dest_account is not None or dest_container is not None:
+        if not dest_sas:
+            raise CLIError("The SAS token for the destination storage container required.")
+        pre_config = get_export_configuration(client, application, resource_group_name, export_id)
+        if dest_sub_id is None:
+            dest_sub_id = pre_config.destination_storage_subscription_id
+        if dest_account is None:
+            if dest_sub_id != pre_config.destination_storage_subscription_id:
+                raise CLIError("The destination storage account name required.")
+            dest_account = pre_config.storage_name
+        if dest_container is None:
+            dest_container = pre_config.container_name
+        if dest_type is None:
+            dest_type = 'Blob'
+
+        sc_op = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+                                        subscription_id=dest_sub_id).storage_accounts
+        storage_accounts = list(sc_op.list())
+        storage_account = None
+        for x in storage_accounts:
+            if x.name.lower() == dest_account.lower():
+                storage_account = x
+                break
+
+        if not storage_account:
+            raise CLIError("Destination storage account {} does not exist, "
+                           "use 'az storage account list' to get storage account list".format(dest_account))
+
+        dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
+        dest_address += dest_container + '?' + dest_sas
+        export_config_request.destination_type = dest_type
+        export_config_request.destination_address = dest_address
+        export_config_request.destination_storage_subscription_id = dest_sub_id
+        export_config_request.destination_storage_location_id = storage_account.primary_location
+        export_config_request.destination_account_id = storage_account.id
+
+    return client.update(resource_group_name, application, export_id, export_config_request)
+
+
+def get_export_configuration(client, application, resource_group_name, export_id):
+    return client.get(resource_group_name, application, export_id)
+
+
+def delete_export_configuration(client, application, resource_group_name, export_id):
+    return client.delete(resource_group_name, application, export_id)

@@ -18,11 +18,20 @@ class BlueprintScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint')
     def test_blueprint(self, resource_group):
-
         self.kwargs.update({
-            'blueprintName': 'test-bp',
-            'subscription': '00000000-0000-0000-0000-000000000000',
-            'assignmentName': 'Assignment-test-bp'
+            'blueprintName': self.create_random_name(prefix='test-bp-', length=24),
+            'subscription': self.get_subscription_id(),
+            'assignmentName': self.create_random_name(prefix='Assignment-test-bp', length=24),
+            'identityName': self.create_random_name(prefix='testid_', length=24),
+            'rgName': self.create_random_name(prefix='blueprint-rg-', length=24)
+        })
+
+        test_identity = self.cmd('az identity create '
+                                 '-g {rg} '
+                                 '-n {identityName}').get_output_in_json()
+        self.kwargs.update({
+            'userAssignedIdentity': test_identity['id'],
+            'identityPrincipalId': test_identity['principalId']
         })
 
         self.cmd(
@@ -80,16 +89,18 @@ class BlueprintScenarioTest(ScenarioTest):
             '--change-notes "First release"',
             checks=[])
 
-        assignment = self.cmd(
-            'az blueprint assignment create '
-            '--name "{assignmentName}" '
-            '--location "westus2" '
-            '--identity-type "SystemAssigned" '
-            '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
-            '--locks-mode "None" '
-            '--resource-group-value artifact_name=myRgArt name=blueprint-rg location=westus2 '
-            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
-            checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
+        import mock
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            assignment = self.cmd(
+                'az blueprint assignment create '
+                '--name "{assignmentName}" '
+                '--location "westus2" '
+                '--identity-type "SystemAssigned" '
+                '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
+                '--locks-mode "None" '
+                '--resource-group-value artifact_name=myRgArt name={rgName} location=westus2 '
+                '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
+                checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 
         principal_id = assignment['identity']['principalId']
         assert len(principal_id) > 0
@@ -103,6 +114,29 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd(
             'az blueprint assignment show '
             '--name "{assignmentName}"',
+            checks=[])
+
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd(
+                'az role assignment create '
+                '--assignee-object-id {identityPrincipalId} '
+                '--role Owner '
+                '--scope /subscriptions/{subscription}/resourceGroups/{rgName}')
+
+        import time
+        time.sleep(600)
+        assignment = self.cmd(
+            'az blueprint assignment update '
+            '--name "{assignmentName}" '
+            '--user-assigned-identity {userAssignedIdentity} '
+            '--locks-mode "AllResourcesReadOnly" ',
+            checks=[self.exists('identity.userAssignedIdentities'),
+                    self.check('locks.mode', 'AllResourcesReadOnly', case_sensitive=False)]).get_output_in_json()
+
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '--updated',
             checks=[])
 
         self.cmd(
@@ -133,7 +167,7 @@ class BlueprintScenarioTest(ScenarioTest):
         # delete the resource group that contains the created resources to clean up
         self.cmd('az group delete '
                  '--subscription "{subscription}" '
-                 '--name "blueprint-rg" '
+                 '--name "{rgName}" '
                  '-y')
 
     @AllowLargeResponse()
@@ -141,9 +175,9 @@ class BlueprintScenarioTest(ScenarioTest):
     def test_blueprint_import(self, resource_group):
 
         self.kwargs.update({
-            'blueprintName': 'test-import-bp',
-            'subscription': '00000000-0000-0000-0000-000000000000',
-            'assignmentName': 'Assignment-test-import-bp'
+            'blueprintName': self.create_random_name(prefix='test-import-bp', length=24),
+            'subscription': self.get_subscription_id(),
+            'assignmentName': self.create_random_name(prefix='Assignment-test-import-bp', length=32)
         })
 
         self.cmd(
@@ -177,17 +211,18 @@ class BlueprintScenarioTest(ScenarioTest):
             '--version "1.0" '
             '--change-notes "First release"',
             checks=[JMESPathCheck('name', '1.0')])
-
-        assignment = self.cmd(
-            'az blueprint assignment create '
-            '--name "{assignmentName}" '
-            '--location "westus2" '
-            '--identity-type "SystemAssigned" '
-            '--blueprint-version "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
-            '--locks-mode "None" '
-            '--resource-group-value artifact_name=storageRG name=storage-rg location=westus2 '
-            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
-            checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
+        import mock
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            assignment = self.cmd(
+                'az blueprint assignment create '
+                '--name "{assignmentName}" '
+                '--location "westus2" '
+                '--identity-type "SystemAssigned" '
+                '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
+                '--locks-mode "None" '
+                '--resource-group-value artifact_name=storageRG name=storage-rg location=westus2 '
+                '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
+                checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 
         principal_id = assignment['identity']['principalId']
         assert len(principal_id) > 0

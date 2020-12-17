@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class AuthenticationDetails(Model):
-    """AuthenticationDetails.
+    """Authentication details of the user.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -23,9 +23,9 @@ class AuthenticationDetails(Model):
     :ivar authentication_method: Required. The mode of client authentication.
      Default value: "Token" .
     :vartype authentication_method: str
-    :param value: Required.
+    :param value: Required. Authentication token value.
     :type value:
-     ~azure.mgmt.hybridkubernetes.models.AuthenticationDetailsValue
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.AuthenticationDetailsValue
     """
 
     _validation = {

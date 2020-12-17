@@ -356,7 +356,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
                  ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='centralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -366,13 +366,15 @@ class AzureFirewallScenario(ScenarioTest):
             'collection_group_priority': 10000
         })
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
-                 '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com',
+                 '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com '
+                 '--sku Premium',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.microsoft.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '101.0.0.0'),
-                     self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1')
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1'),
+                     self.check('sku.tier', 'Premium')
                  ])
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
@@ -453,9 +455,20 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('ruleCollections[2].name', "filter-collection-2")
         ])
 
+        self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection-2 \
+                                 --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 1000 \
+                                 --action DNAT --rule-name network-rule --description "test" \
+                                 --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
+                                 --translated-fqdn www.google.com --translated-port 1234 \
+                                 --destination-ports 12000 12001 --ip-protocols TCP UDP', checks=[
+            self.check('length(ruleCollections)', 4),
+            self.check('ruleCollections[3].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+            self.check('ruleCollections[3].name', "nat-collection-2")
+        ])
+
         self.cmd('network firewall policy rule-collection-group collection list -g {rg} --policy-name {policy} \
                  --rule-collection-group-name {collectiongroup}', checks=[
-            self.check('length(@)', 3)
+            self.check('length(@)', 4)
         ])
 
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} \
@@ -481,7 +494,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy} \
                  --rule-collection-group-name {collectiongroup} --name filter-collection-1', checks=[
-            self.check('length(ruleCollections)', 2)
+            self.check('length(ruleCollections)', 3)
         ])
 
         self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
@@ -509,13 +522,11 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(creation_data['name'], self.kwargs['policy'])
         self.assertEqual(creation_data['dnsSettings']['servers'], self.kwargs['dns_servers'].split())
         self.assertEqual(creation_data['dnsSettings']['enableProxy'], None)     # None instead of False
-        self.assertEqual(creation_data['dnsSettings']['requireProxyForNetworkRules'], True)
 
         show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['policy'])
         self.assertEqual(show_data['dnsSettings']['servers'], self.kwargs['dns_servers'].split())
         self.assertEqual(show_data['dnsSettings']['enableProxy'], None)
-        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], True)
 
         self.cmd('network firewall policy update '
                  '--resource {rg} '
@@ -526,17 +537,14 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['name'], self.kwargs['policy'])
         self.assertEqual(show_data['dnsSettings']['servers'], ['10.0.1.0'])  # update successfully
         self.assertEqual(show_data['dnsSettings']['enableProxy'], True)     # update succesefully
-        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], True)
 
         self.cmd('network firewall policy update '
                  '--resource {rg} '
-                 '--name {policy} '
-                 '--require-dns-proxy-for-network-rules false').get_output_in_json()
+                 '--name {policy} ').get_output_in_json()
         show_data = self.cmd('network firewall policy show --resource-group {rg} --name {policy}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['policy'])
         self.assertEqual(show_data['dnsSettings']['servers'], ['10.0.1.0'])
         self.assertEqual(show_data['dnsSettings']['enableProxy'], True)
-        self.assertEqual(show_data['dnsSettings']['requireProxyForNetworkRules'], False)
 
         self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
 
@@ -673,18 +681,15 @@ class AzureFirewallScenario(ScenarioTest):
 
         creation_data = self.cmd('network firewall create -g {rg} -n {fw} '
                                  '--dns-servers {dns_servers} '
-                                 '--enable-dns-proxy false '
-                                 '--require-dns-proxy-for-network-rules false').get_output_in_json()
+                                 '--enable-dns-proxy false ').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['fw'])
         self.assertEqual(creation_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(creation_data['Network.DNS.EnableProxy'], 'False')
-        self.assertEqual(creation_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
+        self.assertEqual(creation_data['Network.DNS.EnableProxy'], 'false')
 
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
         self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'False')
-        self.assertEqual(show_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
+        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'false')
 
         self.cmd('network firewall update -g {rg} -n {fw} '
                  '--enable-dns-proxy true').get_output_in_json()
@@ -692,7 +697,6 @@ class AzureFirewallScenario(ScenarioTest):
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
         self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'True')
-        self.assertEqual(show_data['Network.DNS.RequireProxyForNetworkRules'], 'False')
+        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'true')
 
         self.cmd('network firewall delete -g {rg} --name {fw}')

@@ -1,0 +1,97 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "japaneast"
+        },
+        "networkInterfaceName": {
+            "value": "test-vm650"
+        },
+        "subnetName": {
+            "value": "default2"
+        },
+        "virtualNetworkName": {
+            "value": "test-rg-vnet"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.2.11.0/24"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default1",
+                    "properties": {
+                        "addressPrefix": "10.2.11.128/25"
+                    }
+                },
+                {
+                    "name": "default2",
+                    "properties": {
+                        "addressPrefix": "10.2.11.0/25"
+                    }
+                }
+            ]
+        },
+        "publicIpAddressName": {
+            "value": "test-vm-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "value": "Basic"
+        },
+        "virtualMachineName": {
+            "value": "test-vm"
+        },
+        "virtualMachineComputerName": {
+            "value": "test-vm"
+        },
+        "virtualMachineRG": {
+            "value": "test-rg"
+        },
+        "osDiskType": {
+            "value": "Premium_LRS"
+        },
+        "dataDisks": {
+            "value": [
+                {
+                    "lun": 0,
+                    "createOption": "attach",
+                    "caching": "None",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "test-vm_DataDisk_0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": {
+                        "id": null
+                    }
+                }
+            ]
+        },
+        "dataDiskResources": {
+            "value": [
+                {
+                    "name": "test-vm_DataDisk_0",
+                    "sku": "Premium_LRS",
+                    "properties": {
+                        "diskSizeGB": 16,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                }
+            ]
+        },
+        "virtualMachineSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "adminUsername": {
+            "value": "AzureUser"
+        }
+    }
+}
