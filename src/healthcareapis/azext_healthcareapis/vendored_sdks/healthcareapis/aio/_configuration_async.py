@@ -44,7 +44,7 @@ class HealthcareApisManagementClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2019-09-16"
+        self.api_version = "2020-03-30"
         self.credential_scopes = ['https://management.azure.com/.default']
         kwargs.setdefault('sdk_moniker', 'mgmt-healthcareapis/{}'.format(VERSION))
         self._configure(**kwargs)

@@ -62,7 +62,7 @@ class ServiceOperations:
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescription"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
 
         # Construct URL
         url = self.get.metadata['url']
@@ -115,7 +115,7 @@ class ServiceOperations:
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
         _service_description = models.ServicesDescription(kind=kind, location=location, tags=tags, etag=etag, identity=identity, properties=properties)
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -247,7 +247,7 @@ class ServiceOperations:
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
         _service_patch_description = models.ServicesPatchDescription(tags=tags)
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -349,7 +349,7 @@ class ServiceOperations:
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
 
         # Construct URL
         url = self._delete_initial.metadata['url']
@@ -439,7 +439,7 @@ class ServiceOperations:
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -505,7 +505,7 @@ class ServiceOperations:
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ServicesDescriptionListResult"]
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -577,7 +577,7 @@ class ServiceOperations:
         error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
 
         _check_name_availability_inputs = models.CheckNameAvailabilityParameters(name=name, type=type)
-        api_version = "2019-09-16"
+        api_version = "2020-03-30"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
