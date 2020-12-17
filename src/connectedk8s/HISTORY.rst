@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.3
+++++++
+* Fixed Custom tenant Id passability
+
 0.3.2
 ++++++
 * Fixed aad server/client app id validation
