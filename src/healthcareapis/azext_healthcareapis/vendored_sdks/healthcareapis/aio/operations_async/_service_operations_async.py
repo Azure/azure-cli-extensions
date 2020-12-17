@@ -97,7 +97,7 @@ class ServiceOperations:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def _create_or_update_initial(
         self,
@@ -161,7 +161,7 @@ class ServiceOperations:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def create_or_update(
         self,
@@ -234,7 +234,7 @@ class ServiceOperations:
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def _update_initial(
         self,
@@ -288,7 +288,7 @@ class ServiceOperations:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def update(
         self,
@@ -339,7 +339,7 @@ class ServiceOperations:
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def _delete_initial(
         self,
@@ -380,7 +380,7 @@ class ServiceOperations:
         if cls:
           return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     async def delete(
         self,
@@ -424,7 +424,7 @@ class ServiceOperations:
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services/{resourceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}'}
 
     def list(
         self,
@@ -487,7 +487,7 @@ class ServiceOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApispeizhou/services'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/services'}
 
     def list_by_resource_group(
         self,
@@ -554,7 +554,7 @@ class ServiceOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApispeizhou/services'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services'}
 
     async def check_name_availability(
         self,
@@ -616,4 +616,4 @@ class ServiceOperations:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApispeizhou/checkNameAvailability'}
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/checkNameAvailability'}

@@ -99,4 +99,4 @@ class OperationResultOperations:
           return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApispeizhou/locations/{locationName}/operationresults/{operationResultId}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.HealthcareApis/locations/{locationName}/operationresults/{operationResultId}'}
