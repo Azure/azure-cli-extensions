@@ -9,18 +9,14 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_timeseriesinsights.generated._help import helps  # pylint: disable=unused-import
-try:
-    from azext_timeseriesinsights.manual._help import helps  # pylint: disable=reimported
-except ImportError:
-    pass
+from azext_timeseriesinsights._help import helps  # pylint: disable=unused-import
 
 
 class TimeSeriesInsightsClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_timeseriesinsights.generated._client_factory import cf_timeseriesinsights_cl
+        from azext_timeseriesinsights._client_factory import cf_timeseriesinsights_cl
         timeseriesinsights_custom = CliCommandType(
             operations_tmpl='azext_timeseriesinsights.custom#{}',
             client_factory=cf_timeseriesinsights_cl)
@@ -28,23 +24,13 @@ class TimeSeriesInsightsClientCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=timeseriesinsights_custom)
 
     def load_command_table(self, args):
-        from azext_timeseriesinsights.generated.commands import load_command_table
+        from azext_timeseriesinsights.commands import load_command_table
         load_command_table(self, args)
-        try:
-            from azext_timeseriesinsights.manual.commands import load_command_table as load_command_table_manual
-            load_command_table_manual(self, args)
-        except ImportError:
-            pass
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_timeseriesinsights.generated._params import load_arguments
+        from azext_timeseriesinsights._params import load_arguments
         load_arguments(self, command)
-        try:
-            from azext_timeseriesinsights.manual._params import load_arguments as load_arguments_manual
-            load_arguments_manual(self, command)
-        except ImportError:
-            pass
 
 
 COMMAND_LOADER_CLS = TimeSeriesInsightsClientCommandsLoader

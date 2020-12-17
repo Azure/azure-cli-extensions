@@ -10,7 +10,7 @@ from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):
-    from azext_timeseriesinsights.manual._client_factory import cf_environment
+    from azext_timeseriesinsights._client_factory import cf_environment
     timeseriesinsights_environment = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._environments_operations#'
         'EnvironmentsOperations.{}',
@@ -32,7 +32,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen2_update', supports_no_wait=True)
 
-    from azext_timeseriesinsights.manual._client_factory import cf_event_source
+    from azext_timeseriesinsights._client_factory import cf_event_source
     timeseriesinsights_event_source = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._event_sources_operations'
         '#EventSourcesOperations.{}',
@@ -53,7 +53,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'timeseriesinsights_event_source_iot_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_iot_hub_update')
 
-    from azext_timeseriesinsights.manual._client_factory import cf_reference_data_set
+    from azext_timeseriesinsights._client_factory import cf_reference_data_set
     timeseriesinsights_reference_data_set = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._reference_data_sets_oper'
         'ations#ReferenceDataSetsOperations.{}',
@@ -66,7 +66,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'timeseriesinsights_reference_data_set_update')
         g.custom_command('delete', 'timeseriesinsights_reference_data_set_delete', confirmation=True)
 
-    from azext_timeseriesinsights.manual._client_factory import cf_access_policy
+    from azext_timeseriesinsights._client_factory import cf_access_policy
     timeseriesinsights_access_policy = CliCommandType(
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._access_policies_operatio'
         'ns#AccessPoliciesOperations.{}',
