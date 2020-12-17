@@ -65,7 +65,7 @@ def print_pipeline_output(obj):
         d["pipeline_resource_id"] = obj["request"]["pipeline_resource_id"]
         d["progress_percentage"] = obj["response"]["progress"]["percentage"]
         d["start_time"] = obj["response"]["start_time"]
-        d["duration"] = get_duration(d["start_time"], obj["response"]["finish_time"])
+        d["duration"] = _get_duration(d["start_time"], obj["response"]["finish_time"])
         d["catalog_digest"] = obj["response"]["catalog_digest"]
         d["pipeline_run_error_message"] = obj["response"]["pipeline_run_error_message"]
 
@@ -143,7 +143,7 @@ def print_lite_pipeline_output(obj):
     return d
 
 
-def get_duration(start_time, finish_time):
+def _get_duration(start_time, finish_time):
     '''Takes datetime strings and returns duration'''
 
     from dateutil.parser import parse

@@ -1,0 +1,67 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+
+from collections import OrderedDict
+
+def import_pipeline_output_format(result):
+    return _output_format(result, _import_pipeline_format_group)
+
+
+def export_pipeline_output_format(result):
+    return _output_format(result, _export_pipeline_format_group)
+
+
+def pipeline_run_output_format(result):
+    return _output_format(result, _pipeline_run_format_group)
+
+
+def _import_pipeline_format_group(item):
+    print(item)
+    return OrderedDict([
+        ('NAME',  _get_value(item, 'name')), 
+        ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
+        ('STORAGE_ACCOUNT', _get_value(item, 'source', 'uri')),
+        ('SOURCE_TRIGGER', _get_value(item, 'trigger', 'sourceTrigger', 'status'))
+    ])
+
+
+def _export_pipeline_format_group(item):
+    print(item)
+    return OrderedDict([
+        ('NAME',  _get_value(item, 'name')), 
+        ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
+        ('STORAGE_ACCOUNT', _get_value(item, 'target', 'uri'))
+    ])
+
+
+def _pipeline_run_format_group(item):
+    print(item)
+    return OrderedDict([
+        ('NAME',  _get_value(item, 'name')), 
+        ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
+        ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
+        ('STATUS', _get_value(item, 'response', 'status')),
+        ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))   
+    ])
+
+
+def _output_format(result, format_group):
+    if 'value' in result and isinstance(result['value'], list):
+        result = result['value']
+    obj_list = result if isinstance(result, list) else [result]
+    return [format_group(item) for item in obj_list]
+
+
+def _get_value(item, *args):
+    '''Get a nested value from a dict.
+    :param dict item: The dict object
+    '''
+    try:
+        for arg in args:
+            item = item[arg]
+        return str(item) if item or item == 0 else ' '
+    except (KeyError, TypeError, IndexError):
+        return ' '

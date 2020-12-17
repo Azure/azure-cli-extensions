@@ -6,7 +6,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_acrtransfer._client_factory import cf_acrtransfer
-
+from ._format import import_pipeline_output_format, export_pipeline_output_format, pipeline_run_output_format
 
 def load_command_table(self, _):
     importpipeline_sdk = CliCommandType(
@@ -27,23 +27,20 @@ def load_command_table(self, _):
         min_api='2019-12-01-preview'
     )
 
-    with self.command_group('acrtransfer import-pipeline', importpipeline_sdk) as g:
+    with self.command_group('acr import-pipeline', importpipeline_sdk, table_transformer=import_pipeline_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_importpipeline')
         g.custom_command('delete', 'delete_importpipeline')
         g.custom_command('list', 'list_importpipeline')
         g.custom_command('show', 'get_importpipeline')
 
-    with self.command_group('acrtransfer export-pipeline', exportpipeline_sdk) as g:
+    with self.command_group('acr export-pipeline', exportpipeline_sdk, table_transformer=export_pipeline_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_exportpipeline')
         g.custom_command('delete', 'delete_exportpipeline')
         g.custom_command('list', 'list_exportpipeline')
         g.custom_command('show', 'get_exportpipeline')
 
-    with self.command_group('acrtransfer pipeline-run', pipelinerun_sdk) as g:
+    with self.command_group('acr pipeline-run', pipelinerun_sdk, table_transformer= pipeline_run_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_pipelinerun')
         g.custom_command('delete', 'delete_pipelinerun')
         g.custom_command('list', 'list_pipelinerun')
         g.custom_command('show', 'get_pipelinerun')
-
-    with self.command_group('acrtransfer', is_preview=True):
-        pass

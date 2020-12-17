@@ -48,42 +48,29 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
     force_update_tag_str = str(time.time()) if force_update_tag else None
     pipeline_run = PipelineRun(request=pipeline_run_request, force_update_tag=force_update_tag_str)
 
-    client.pipeline_runs.begin_create(resource_group_name=resource_group_name,
-                                      registry_name=registry_name,
-                                      pipeline_run_name=pipeline_run_name,
-                                      pipeline_run_create_parameters=pipeline_run)
-
-    return get_pipelinerun(client=client,
-                           resource_group_name=resource_group_name,
-                           registry_name=registry_name,
-                           pipeline_run_name=pipeline_run_name)
+    return client.pipeline_runs.begin_create(resource_group_name=resource_group_name,
+                                             registry_name=registry_name,
+                                             pipeline_run_name=pipeline_run_name,
+                                             pipeline_run_create_parameters=pipeline_run)
 
 
 def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):
     '''Get a pipeline run.'''
 
-    raw_result = client.pipeline_runs.get(resource_group_name=resource_group_name,
-                                          registry_name=registry_name,
-                                          pipeline_run_name=pipeline_run_name)
-
-    return print_pipeline_output(raw_result)
+    return client.pipeline_runs.get(resource_group_name=resource_group_name,
+                                    registry_name=registry_name,
+                                    pipeline_run_name=pipeline_run_name)
 
 
 def delete_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):
     '''Delete a pipeline run.'''
 
-    client.pipeline_runs.begin_delete(resource_group_name=resource_group_name,
-                                      registry_name=registry_name,
-                                      pipeline_run_name=pipeline_run_name)
+    return client.pipeline_runs.begin_delete(resource_group_name=resource_group_name,
+                                             registry_name=registry_name,
+                                             pipeline_run_name=pipeline_run_name)
 
 
 def list_pipelinerun(client, resource_group_name, registry_name):
     '''List pipeline runs on a registry.'''
 
-    raw_result = client.pipeline_runs.list(resource_group_name=resource_group_name, registry_name=registry_name)
-    pipe_list = []
-
-    for pipelinerun in raw_result:
-        pipe_list.append(print_lite_pipeline_output(pipelinerun))
-
-    return pipe_list
+    return client.pipeline_runs.list(resource_group_name=resource_group_name, registry_name=registry_name)

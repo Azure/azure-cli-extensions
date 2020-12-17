@@ -29,31 +29,23 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
                                          export_pipeline_name=export_pipeline_name,
                                          export_pipeline_create_parameters=export_pipeline)
 
-    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name,
+    return client.export_pipelines.get(resource_group_name=resource_group_name,
                                              registry_name=registry_name,
                                              export_pipeline_name=export_pipeline_name)
-
-    print_keyvault_policy_output(keyvault_secret_uri=keyvault_secret_uri,
-                                 user_assigned_identity_resource_id=user_assigned_identity_resource_id,
-                                 raw_result=raw_result)
-
-    return print_pipeline_output(raw_result)
 
 
 def get_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Get an export pipeline.'''
 
-    raw_result = client.export_pipelines.get(resource_group_name=resource_group_name,
+    return client.export_pipelines.get(resource_group_name=resource_group_name,
                                              registry_name=registry_name,
                                              export_pipeline_name=export_pipeline_name)
-
-    return print_pipeline_output(raw_result)
 
 
 def delete_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name):
     '''Delete an export pipeline.'''
 
-    client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
+    return client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
                                          registry_name=registry_name,
                                          export_pipeline_name=export_pipeline_name)
 
@@ -61,10 +53,4 @@ def delete_exportpipeline(client, resource_group_name, registry_name, export_pip
 def list_exportpipeline(client, resource_group_name, registry_name):
     '''List export pipelines on a registry.'''
 
-    raw_result = client.export_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
-    pipe_list = []
-
-    for pipeline in raw_result:
-        pipe_list.append(print_lite_pipeline_output(pipeline))
-
-    return pipe_list
+    return client.export_pipelines.list(resource_group_name=resource_group_name, registry_name=registry_name)
