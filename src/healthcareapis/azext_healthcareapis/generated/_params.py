@@ -146,19 +146,19 @@ def load_arguments(self, _):
 
     with self.argument_context('healthcareapis acr list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
+        c.argument('resource_name', type=str, help='The name of the service instance.')
 
     with self.argument_context('healthcareapis acr add') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('login_servers', type=str, help='The list of login servers shall be added to the service instance.')
+        c.argument('login_servers', type=str, help='The list of login servers that shall be added to the service instance.')
 
     with self.argument_context('healthcareapis acr remove') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('login_servers', type=str, help='The list of login servers shall be removed from the service instance.')
+        c.argument('login_servers', type=str, help='The list of login servers that shall be removed from the service instance.')
 
     with self.argument_context('healthcareapis acr reset') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('login_servers', type=str, help='The list of login servers substitute for the existing one.')
+        c.argument('login_servers', type=str, help='The list of login servers to substitute for the existing one.')
