@@ -21,12 +21,12 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'timeseriesinsights_environment_show')
         g.custom_command('delete', 'timeseriesinsights_environment_delete', confirmation=True)
         g.custom_wait_command('wait', 'timeseriesinsights_environment_show')
-    
+
     with self.command_group('timeseriesinsights environment gen1', timeseriesinsights_environment,
                             client_factory=cf_environment) as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen1_update', supports_no_wait=True)
-    
+
     with self.command_group('timeseriesinsights environment gen2', timeseriesinsights_environment,
                             client_factory=cf_environment) as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
@@ -47,7 +47,7 @@ def load_command_table(self, _):
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_event_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_event_hub_update')
-    
+
     with self.command_group('timeseriesinsights event-source iot-hub', timeseriesinsights_event_source,
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_iot_hub_create')

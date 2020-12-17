@@ -22,7 +22,8 @@ from azext_timeseriesinsights.action import (
     AddPartitionKeyProperties,
     AddTimeSeriesIdProperties,
     AddStorageConfiguration,
-    AddWarmStoreConfiguration
+    AddWarmStoreConfiguration,
+    AddKeyProperties
 )
 
 def load_arguments(self, _):
@@ -32,7 +33,7 @@ def load_arguments(self, _):
 
     with self.argument_context('timeseriesinsights environment show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+        c.argument('environment_name', options_list=['--name', '-n'], type=str, help='The name '
                    'of the Time Series Insights environment associated with the specified resource group.', id_part=''
                    'name')
         c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
@@ -40,13 +41,13 @@ def load_arguments(self, _):
     
     with self.argument_context('timeseriesinsights environment delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+        c.argument('environment_name', options_list=['--name', '-n'], type=str, help='The name '
                    'of the Time Series Insights environment associated with the specified resource group.', id_part=''
                    'name')
 
     with self.argument_context('timeseriesinsights environment wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+        c.argument('environment_name', options_list=['--name', '-n'], type=str, help='The name '
                    'of the Time Series Insights environment associated with the specified resource group.', id_part=''
                    'name')
         c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
@@ -54,8 +55,8 @@ def load_arguments(self, _):
 
     with self.argument_context('timeseriesinsights environment gen1') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of '
-                   'the environment')
+        c.argument('environment_name', options_list=['--name', '-n'], type=str, help='Name of the environment', id_part=''
+                   'name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -64,7 +65,7 @@ def load_arguments(self, _):
                    'ingress rate, and the billing rate.')
         c.argument('data_retention_time', help='ISO8601 timespan specifying the minimum number of days the '
                    'environment\'s events will be available for query.')
-        c.argument('storage_limit_exceeded_behavior', arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
+        c.argument('storage_limit_exceeded_behavior', options_list=['--limit-exceeded-behavior'], arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
                    help='The behavior the Time Series Insights service should take when the environment\'s capacity '
                    'has been exceeded. If "PauseIngress" is specified, new events will not be read from the event '
                    'source. If "PurgeOldData" is specified, new events will continue to be read and old events will be '
@@ -75,8 +76,8 @@ def load_arguments(self, _):
 
     with self.argument_context('timeseriesinsights environment gen2') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of '
-                   'the environment')
+        c.argument('environment_name', options_list=['--name', '-n'], type=str, help='Name of the environment', id_part=''
+                   'name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -94,31 +95,29 @@ def load_arguments(self, _):
     
     with self.argument_context('timeseriesinsights event-source list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
-                   'with the specified resource group.')
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
 
     with self.argument_context('timeseriesinsights event-source show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
                    'with the specified resource group.', id_part='name')
-        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='The name '
-                   'of the Time Series Insights event source associated with the specified environment.', id_part=''
-                   'child_name_1')
+        c.argument('event_source_name', options_list=['--name', '-n'], type=str, help='The name '
+                   'of the Time Series Insights event source associated with the specified environment.', id_part='child_name_1')
 
     with self.argument_context('timeseriesinsights event-source delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
                    'with the specified resource group.', id_part='name')
-        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='The name '
-                   'of the Time Series Insights event source associated with the specified environment.', id_part=''
-                   'child_name_1')
+        c.argument('event_source_name', options_list=['--name', '-n'], type=str, help='The name '
+                   'of the Time Series Insights event source associated with the specified environment.', id_part='child_name_1')
 
     with self.argument_context('timeseriesinsights event-source event-hub') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
-                   'with the specified resource group.')
-        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='Name of '
-                   'the event source.')
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('event_source_name', options_list=['--name', '-n'], type=str, help='Name of '
+                   'the event source.', id_part='child_name_1')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -129,11 +128,11 @@ def load_arguments(self, _):
         c.argument('timestamp_property_name', type=str, help='The event property that will be used as the event '
                    'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
                    'empty-string is specified, the event creation time will be used.')
-        c.argument('event_source_resource_id', type=str, help='The resource id of the event source in Azure Resource '
+        c.argument('event_source_resource_id', options_list=['--resource-id'], type=str, help='The resource id of the event source in Azure Resource '
                    'Manager.')
-        c.argument('service_bus_namespace', type=str, help='The name of the service bus that contains the event hub.')
-        c.argument('event_hub_name', type=str, help='The name of the event hub.')
-        c.argument('consumer_group_name', type=str, help='The name of the event hub\'s consumer group that holds the '
+        c.argument('service_bus_namespace', options_list=['--service-bus'], type=str, help='The name of the service bus that contains the event hub.')
+        c.argument('event_hub_name', options_list=['--event-hub'], type=str, help='The name of the event hub.')
+        c.argument('consumer_group_name', options_list=['--consumer-group'], type=str, help='The name of the event hub\'s consumer group that holds the '
                    'partitions from which events will be read.')
         c.argument('key_name', type=str, help='The name of the SAS key that grants the Time Series Insights service '
                    'access to the event hub. The shared access policies for this key must grant \'Listen\' permissions '
@@ -144,10 +143,10 @@ def load_arguments(self, _):
 
     with self.argument_context('timeseriesinsights event-source iot-hub') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
-                   'with the specified resource group.')
-        c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='Name of '
-                   'the event source.')
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('event_source_name', options_list=['--name', '-n'], type=str, help='Name of '
+                   'the event source.', id_part='child_name_1')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -158,10 +157,10 @@ def load_arguments(self, _):
         c.argument('timestamp_property_name', type=str, help='The event property that will be used as the event '
                    'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
                    'empty-string is specified, the event creation time will be used.')
-        c.argument('event_source_resource_id', type=str, help='The resource id of the event source in Azure Resource '
+        c.argument('event_source_resource_id', options_list=['--resource-id'], type=str, help='The resource id of the event source in Azure Resource '
                    'Manager.')
-        c.argument('iot_hub_name', type=str, help='The name of the iot hub.')
-        c.argument('consumer_group_name', type=str, help='The name of the iot hub\'s consumer group that holds the '
+        c.argument('iot_hub_name', options_list=['--iot-hub'], type=str, help='The name of the iot hub.')
+        c.argument('consumer_group_name', options_list=['--consumer-group'], type=str, help='The name of the iot hub\'s consumer group that holds the '
                    'partitions from which events will be read.')
         c.argument('key_name', type=str, help='The name of the Shared Access Policy key that grants the Time Series '
                    'Insights service access to the iot hub. This shared access policy key must grant \'service '
@@ -170,3 +169,40 @@ def load_arguments(self, _):
                    'Series Insights service read access to the iot hub. This property is not shown in event source '
                    'responses.')
 
+    with self.argument_context('timeseriesinsights reference-data-set') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('reference_data_set_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the Time Series Insights reference data set associated with the specified '
+                   'environment.', id_part='child_name_1')
+        
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('key_properties', action=AddKeyProperties, nargs='+', help='The list of key properties for the '
+                   'reference data set.')
+        c.argument('data_string_comparison_behavior', options_list=['--comparison-behavior'], arg_type=get_enum_type(['Ordinal', 'OrdinalIgnoreCase']), help=''
+                   'The reference data set key comparison behavior can be set using this property. By default, the '
+                   'value is \'Ordinal\' - which means case sensitive key comparison will be performed while joining '
+                   'reference data with events or while adding new reference data. When \'OrdinalIgnoreCase\' is set, '
+                   'case insensitive comparison will be used.')
+
+    with self.argument_context('timeseriesinsights reference-data-set create') as c:
+        c.argument('environment_name', id_part=None)
+        c.argument('reference_data_set_name', id_part=None)
+
+    with self.argument_context('timeseriesinsights access-policy') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', options_list=['--environment'], type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('access_policy_name', options_list=['--name', '-n'], type=str, help='The '
+                   'name of the Time Series Insights access policy associated with the specified environment.',
+                   id_part='child_name_1')
+        c.argument('principal_object_id', type=str, help='The objectId of the principal in Azure Active Directory.')
+        c.argument('description', type=str, help='An description of the access policy.')
+        c.argument('roles', nargs='+', help='The list of roles the principal is assigned on the environment.')
+
+    with self.argument_context('timeseriesinsights access-policy create') as c:
+        c.argument('environment_name', id_part=None)
+        c.argument('access_policy_name', id_part=None)
