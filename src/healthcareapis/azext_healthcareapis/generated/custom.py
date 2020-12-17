@@ -193,14 +193,10 @@ def healthcareapis_acr_add(client,
         if login_server not in new_login_servers:
             new_login_servers.append(login_server)
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)
 
 
 def healthcareapis_acr_remove(client,
@@ -217,16 +213,11 @@ def healthcareapis_acr_remove(client,
     for login_server in login_servers:
         if login_server in new_login_servers:
             new_login_servers.remove(login_server)
-    print(new_login_servers)
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)
 
 
 def healthcareapis_acr_reset(client,
@@ -239,11 +230,7 @@ def healthcareapis_acr_reset(client,
     login_servers = login_servers.split() if login_servers else []
     service_description.properties.acr_configuration.login_servers = login_servers
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)

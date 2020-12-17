@@ -267,7 +267,7 @@ helps['healthcareapis acr add'] = """
     examples:
       - name: Acr_Add_Two
         text: |-
-               az healthcareapis acr add --login_servers "test1.azurecr.io, test2.azurecr.io" --resource-group "rgname" \
+               az healthcareapis acr add --login_servers "test1.azurecr.io test2.azurecr.io" --resource-group "rgname" \
 --resource-name "service1"
 """
 
@@ -277,7 +277,7 @@ helps['healthcareapis acr remove'] = """
     examples:
       - name: Acr_Remove_Two
         text: |-
-               az healthcareapis acr remove --login_servers "test1.azurecr.io, test2.azurecr.io"  --resource-group "rgname" \
+               az healthcareapis acr remove --login_servers "test1.azurecr.io test2.azurecr.io"  --resource-group "rgname" \
 --resource-name "service1"
 """
 
